@@ -1,0 +1,2 @@
+PKG_CFLAGS=@cflags@ $(C_VISIBILITY)
+PKG_LIBS=@libs@

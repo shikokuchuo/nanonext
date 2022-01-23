@@ -1,0 +1,108 @@
+# nanonext - Core - S3 Methods for Base Generics -------------------------------
+
+#' Start Listener/Dialer
+#'
+#' Start a Listener/Dialer.
+#'
+#' @param x a Listener or Dialer.
+#' @param async [default TRUE] logical flag whether the connection attempt,
+#'     including any name resolution, is to be made asynchronously. This helps
+#'     an application be more resilient, but it also generally makes diagnosing
+#'     failures somewhat more difficult.  If FALSE, failure, such as if the
+#'     connection is refused, will be returned immediately, and no further
+#'     action will be taken.
+#' @param ... not used.
+#'
+#' @return Zero (invisibly) on success.
+#'
+#' @name start
+#' @rdname start
+#'
+NULL
+
+#' @rdname start
+#' @method start nanoListener
+#' @export
+#'
+start.nanoListener <- function(x, ...) {
+
+  xc <- .Call(rnng_listener_start, x)
+  if (xc) message(xc, " : ", nng_error(xc)) else message("listener started...")
+  invisible(xc)
+
+}
+
+#' @rdname start
+#' @method start nanoDialer
+#' @export
+#'
+start.nanoDialer <- function(x, async = TRUE, ...) {
+
+  xc <- .Call(rnng_dialer_start, x, async)
+  if (xc) message(xc, " : ", nng_error(xc)) else message("dialer started...")
+  invisible(xc)
+
+}
+
+#' Close Connection
+#'
+#' Close Connection on a Socket, Context, Dialer or Listener.
+#'
+#' @param con a Socket, Context, Dialer or Listener.
+#' @param ... not used.
+#'
+#' @return Zero (invisibly) on success.
+#'
+#' @name close
+#' @rdname close
+#'
+NULL
+
+#' @rdname close
+#' @method close nanoSocket
+#' @export
+#'
+close.nanoSocket <- function(con, ...) {
+
+  xc <- .Call(rnng_close, con)
+  if (xc) message(xc, " : ", nng_error(xc)) else message("socket closed")
+  invisible(xc)
+
+}
+
+#' @rdname close
+#' @method close nanoContext
+#' @export
+#'
+close.nanoContext <- function(con, ...) {
+
+  xc <- .Call(rnng_ctx_close, con)
+  if (xc) message(xc, " : ", nng_error(xc)) else message("context closed")
+  invisible(xc)
+
+}
+
+#' @rdname close
+#' @method close nanoDialer
+#' @export
+#'
+close.nanoDialer <- function(con, ...) {
+
+  xc <- .Call(rnng_dialer_close, con)
+  if (xc) message(xc, " : ", nng_error(xc)) else message("dialer closed")
+  invisible(xc)
+
+}
+
+#' @rdname close
+#' @method close nanoListener
+#' @export
+#'
+close.nanoListener <- function(con, ...) {
+
+  xc <- .Call(rnng_listener_close, con)
+  if (xc) message(xc, " : ", nng_error(xc)) else message("listener closed")
+  invisible(xc)
+
+}
+

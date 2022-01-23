@@ -1,0 +1,62 @@
+library(nanonext)
+
+n <- nano("req", listen = "inproc://nanonext", autostart = FALSE)
+n1 <- nano("rep", dial = "inproc://nanonext", autostart = FALSE)
+
+invisible(inherits(n, "nanoObject") || stop())
+invisible(inherits(n$socket, "nanoSocket") || stop())
+invisible(inherits(n$socket, "nano") || stop())
+invisible(is.integer(attr(n$socket, "id")) || stop())
+invisible(n$socket$state == "opened" || stop())
+invisible(n$socket$protocol == "req" || stop())
+invisible(n$socket_setopt("ms", "req:resend-time", 2000) == 0 || stop())
+
+invisible(inherits(n$listener[[1]], "nanoListener") || stop())
+invisible(n$listener[[1]]$url == "inproc://nanonext" || stop())
+invisible(n$listener[[1]]$state == "not started" || stop())
+invisible(n$listener_setopt("size", "recv-size-max", 1024) == 0 || stop())
+invisible(suppressMessages(n$listener_start()) == 0L || stop())
+invisible(n$listener[[1]]$state == "started" || stop())
+
+invisible(inherits(n1$dialer[[1]], "nanoDialer") || stop())
+invisible(n1$dialer[[1]]$url == "inproc://nanonext" || stop())
+invisible(n1$dialer[[1]]$state == "not started" || stop())
+invisible(n1$dialer_setopt("ms", "reconnect-time-min", 2000) == 0 || stop())
+invisible(suppressMessages(n1$dialer_start()) == 0L || stop())
+invisible(n1$dialer[[1]]$state == "started" || stop())
+
+suppressMessages(n$send_aio(data.frame(), timeout = 1000))
+invisible(suppressMessages(n1$recv()))
+suppressMessages(n1$send_vec_aio("test reply", timeout = 1000))
+invisible(suppressMessages(n$recv_vec("character")))
+
+n$dial(url = "inproc://two", autostart = FALSE)
+invisible(inherits(n$dialer[[1L]], "nanoDialer") || stop())
+
+ctx <- context(n$socket)
+invisible(inherits(ctx, "nanoContext") || stop())
+invisible(inherits(ctx, "nano") || stop())
+invisible(is.integer(ctx$id) || stop())
+invisible(ctx$state == "opened" || stop())
+invisible(ctx$protocol == "req" || stop())
+invisible(setopt(ctx, "ms", "send-timeout", 2000) == 0 || stop())
+invisible(suppressMessages(close(ctx)) == 0L || stop())
+invisible(ctx$state == "closed" || stop())
+
+sub <- nano("sub", dial = "inproc://nanonext", autostart = FALSE)
+invisible(suppressMessages(subscribe(sub$socket, "test")) == 0L || stop())
+invisible(suppressMessages(unsubscribe(sub$socket, "test")) == 0L || stop())
+invisible(suppressMessages(subscribe(sub$socket, NULL)) == 0L || stop())
+invisible(suppressMessages(unsubscribe(sub$socket, NULL)) == 0L || stop())
+invisible(suppressMessages(sub$socket_close()) == 0L || stop())
+
+invisible(suppressMessages(close(n$listener[[1]])) == 0L || stop())
+invisible(suppressMessages(close(n1$dialer[[1]])) == 0L || stop())
+invisible(suppressMessages(n$socket_close()) == 0L || stop())
+invisible(suppressMessages(n1$socket_close()) == 0L || stop())
+invisible(n$socket$state == "closed" || stop())
+invisible(n1$socket$state == "closed" || stop())
+
+invisible(is.character(nng_version()) || stop())
+invisible(is.character(nng_error(0L)) || stop())
+

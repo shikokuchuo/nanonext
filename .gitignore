@@ -1,0 +1,12 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+*.log
+src/Makevars
+nanonext.Rcheck/00_pkg_src/nanonext/
+nanonext.Rcheck/
+*.gz
+docs
+include
+lib
