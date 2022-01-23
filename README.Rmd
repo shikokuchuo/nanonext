@@ -17,7 +17,7 @@ knitr::opts_chunk$set(
 
 <!-- badges: start -->
 
-[![nanonext status badge](https://shikokuchuo.r-universe.dev/badges/nanonext?color=112d4e)](https://shikokuchuo.r-universe.dev) 
+[![nanonext status badge](https://shikokuchuo.r-universe.dev/badges/nanonext?color=3f72af)](https://shikokuchuo.r-universe.dev) 
 [![R-CMD-check](https://github.com/shikokuchuo/nanonext/workflows/R-CMD-check/badge.svg)](https://github.com/shikokuchuo/nanonext/actions)
 
 <!-- badges: end -->
@@ -111,19 +111,13 @@ This is available in system package repositories as:
 -   `nng` (Homebrew on MacOS)
 -   `nng` from vcpkg (see <https://vcpkg.io/>).
 
-A system installation of 'libnng' in the standard filesystem locations will be detected and used. <sup>(1)</sup>
+A system installation of 'libnng' in the standard filesystem locations will be detected and used if possible.
 
-Otherwise, a release version<sup>(2)</sup> of 'libnng'will be downloaded and built from source automatically during package installation (Note: this requires 'cmake' to be installed and on your $PATH).
+Otherwise, a release version of 'libnng' will be downloaded and built from source automatically during package installation (note: this requires 'cmake').
 
 #### Windows
 
 Pre-built libraries (for i386 / x64 / x64-UCRT) are automatically downloaded during the package installation process.
-
-#### Notes
-
-1.  For building 'libnng' from source, ensure that 'cmake' uses the C compiler flag '-fPIC' by passing the option<br /> `-DCMAKE_C_FLAGS="${CMAKE_C_FLAGS} -fPIC"` if required.
-
-2.  Latest source releases: <https://github.com/nanomsg/nng/releases>
 
 ### Upstream
 
