@@ -6,7 +6,7 @@
 <!-- badges: start -->
 
 [![nanonext status
-badge](https://shikokuchuo.r-universe.dev/badges/nanonext)](https://shikokuchuo.r-universe.dev)
+badge](https://shikokuchuo.r-universe.dev/badges/nanonext?color=112d4e)](https://shikokuchuo.r-universe.dev)
 [![R-CMD-check](https://github.com/shikokuchuo/nanonext/workflows/R-CMD-check/badge.svg)](https://github.com/shikokuchuo/nanonext/actions)
 
 <!-- badges: end -->
@@ -130,7 +130,7 @@ recv(socket2)
 
 ### Building from source
 
-#### Linux / Mac
+#### Linux / Mac / Solaris
 
 Installation from source requires the C library ‘libnng’ along with its
 development headers.

@@ -44,7 +44,7 @@ else
   echo "Prior system libnng installation not found"
   echo "Preparing to download and build library from source..."
   curl -L https://github.com/nanomsg/nng/archive/refs/tags/v$LIB_VER.tar.gz -o nng.tar.gz
-  tar -xzf nng.tar.gz
+  gzip -dc nng.tar.gz | tar -xf -
   rm -f nng.tar.gz
   cd nng-$LIB_VER
   mkdir build
@@ -81,7 +81,7 @@ if [ $? -ne 0 ]; then
     echo "Attempt to use system libnng failed"
     echo "Preparing to download and build library from source..."
     curl -L https://github.com/nanomsg/nng/archive/refs/tags/v$LIB_VER.tar.gz -o nng.tar.gz
-    tar -xzf nng.tar.gz
+    gzip -dc nng.tar.gz | tar -xf -
     rm -f nng.tar.gz
     cd nng-$LIB_VER
     mkdir build
