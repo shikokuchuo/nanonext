@@ -179,21 +179,13 @@
 <li>
 <code>nng</code> from vcpkg (see <a href="https://vcpkg.io/" class="external-link uri">https://vcpkg.io/</a>).</li>
 </ul>
-<p>A system installation of ‘libnng’ in the standard filesystem locations will be detected and used. <sup>(1)</sup></p>
-<p>Otherwise, a release version<sup>(2)</sup> of ‘libnng’will be downloaded and built from source automatically during package installation (Note: this requires ’cmake’ to be installed and on your $PATH).</p>
+<p>A system installation of ‘libnng’ in the standard filesystem locations will be detected and used if possible.</p>
+<p>Otherwise, a release version of ‘libnng’ will be downloaded and built from source automatically during package installation (note: this requires ‘cmake’).</p>
 </div>
 <div class="section level4">
 <h4 id="windows">Windows<a class="anchor" aria-label="anchor" href="#windows"></a>
 </h4>
 <p>Pre-built libraries (for i386 / x64 / x64-UCRT) are automatically downloaded during the package installation process.</p>
-</div>
-<div class="section level4">
-<h4 id="notes">Notes<a class="anchor" aria-label="anchor" href="#notes"></a>
-</h4>
-<ol style="list-style-type: decimal">
-<li><p>For building ‘libnng’ from source, ensure that ‘cmake’ uses the C compiler flag ‘-fPIC’ by passing the option<br><code>-DCMAKE_C_FLAGS="${CMAKE_C_FLAGS} -fPIC"</code> if required.</p></li>
-<li><p>Latest source releases: <a href="https://github.com/nanomsg/nng/releases" class="external-link uri">https://github.com/nanomsg/nng/releases</a></p></li>
-</ol>
 </div>
 </div>
 <div class="section level3">
@@ -247,7 +239,7 @@
 <div class="dev-status">
 <h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
-<li><a href="https://shikokuchuo.r-universe.dev" class="external-link"><img src="https://shikokuchuo.r-universe.dev/badges/nanonext?color=112d4e" alt="nanonext status badge"></a></li>
+<li><a href="https://shikokuchuo.r-universe.dev" class="external-link"><img src="https://shikokuchuo.r-universe.dev/badges/nanonext?color=3f72af" alt="nanonext status badge"></a></li>
 <li><a href="https://github.com/shikokuchuo/nanonext/actions" class="external-link"><img src="https://github.com/shikokuchuo/nanonext/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a></li>
 </ul>
 </div>
