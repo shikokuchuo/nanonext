@@ -21,6 +21,7 @@
 <meta property="og:description" content="R binding for NNG (Nanomsg Next Gen), a successor to ZeroMQ. NNG is 
     a socket library providing high-performance scalability protocols, or common
     communication patterns, the basic building blocks for distributed systems.">
+<meta property="og:image" content="https://shikokuchuo.net/nanonext/logo.png">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
@@ -41,7 +42,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.0.9000</span>
       </span>
     </div>
 
@@ -80,23 +81,23 @@
       </header><div class="row">
   <div class="contents col-md-9">
 <div class="section level1">
-<div class="page-header"><h1 id="nanonext-">nanonext <img src="reference/figures/nanonext.png" alt="nanonext logo" align="right" width="120"><a class="anchor" aria-label="anchor" href="#nanonext-"></a>
+<div class="page-header"><h1 id="nanonext-">nanonext <a href="https://shikokuchuo.net/nanonext/" alt="nanonext"><img src="reference/figures/logo.png" alt="nanonext logo" align="right" width="120"></a>
+<a class="anchor" aria-label="anchor" href="#nanonext-"></a>
 </h1></div>
 <!-- badges: start -->
 
-<!-- badges: end -->
 <p>R binding for NNG (Nanomsg Next Gen), a successor to ZeroMQ. NNG is a socket library providing high-performance scalability protocols, or common communication patterns, the basic building blocks for distributed systems.</p>
 <p>Designed for performance and reliability, the NNG library is written in C and {nanonext} is a light-weight wrapper with no external package dependencies. Supported transports include inproc (intra-process), IPC (inter-process), TCP/IP (IPv4 or IPv6), and WebSocket.</p>
 <p>Can be used for sending data across networks, but equally as an interface for code and processes to communicate with each other. Receive data generated in Python, perform analysis in R, and send results to a C++ program – all on the same computer or on networks spanning the globe.</p>
 <div class="section level3">
 <h3 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h3>
-<p>Install the latest version of {nanonext} from rOpenSci R-universe:</p>
+<p>Install the latest release from CRAN:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"nanonext"</span>, repos <span class="op">=</span> <span class="st">"https://shikokuchuo.r-universe.dev"</span><span class="op">)</span></code></pre></div>
-<p>or the Github source:</p>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"nanonext"</span><span class="op">)</span></code></pre></div>
+<p>or the latest development version from rOpenSci R-universe:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"shikokuchuo/nanonext"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"nanonext"</span>, repos <span class="op">=</span> <span class="st">"https://shikokuchuo.r-universe.dev"</span><span class="op">)</span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="interfaces">Interfaces<a class="anchor" aria-label="anchor" href="#interfaces"></a>
@@ -189,16 +190,10 @@
 </div>
 </div>
 <div class="section level3">
-<h3 id="upstream">Upstream<a class="anchor" aria-label="anchor" href="#upstream"></a>
+<h3 id="links">Links<a class="anchor" aria-label="anchor" href="#links"></a>
 </h3>
-<ul>
-<li>NNG: <a href="https://nng.nanomsg.org/" class="external-link uri">https://nng.nanomsg.org/</a>
-</li>
-<li>Github: <a href="https://github.com/nanomsg/nng" class="external-link uri">https://github.com/nanomsg/nng</a>
-</li>
-<li>Documentation: <a href="https://nng.nanomsg.org/man/tip/" class="external-link uri">https://nng.nanomsg.org/man/tip/</a>
-</li>
-</ul>
+<p>nanonext on CRAN: <a href="https://cran.r-project.org/package=nanonext" class="external-link uri">https://cran.r-project.org/package=nanonext</a><br> Package website: <a href="https://shikokuchuo.net/nanonext/" class="uri">https://shikokuchuo.net/nanonext/</a><br></p>
+<p>NNG website: <a href="https://nng.nanomsg.org/" class="external-link uri">https://nng.nanomsg.org/</a><br> NNG documentation: <a href="https://nng.nanomsg.org/man/tip/" class="external-link uri">https://nng.nanomsg.org/man/tip/</a><br></p>
 </div>
 </div>
   </div>
@@ -207,6 +202,7 @@
     <div class="links">
 <h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
+<li><a href="https://cloud.r-project.org/package=nanonext" class="external-link">View on CRAN</a></li>
 <li><a href="https://github.com/shikokuchuo/nanonext/" class="external-link">Browse source code</a></li>
 <li><a href="https://github.com/shikokuchuo/nanonext/issues" class="external-link">Report a bug</a></li>
 </ul>
@@ -239,6 +235,7 @@
 <div class="dev-status">
 <h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
+<li><a href="https://CRAN.R-project.org/package=nanonext" class="external-link"><img src="https://www.r-pkg.org/badges/version/nanonext?color=112d4e" alt="CRAN status"></a></li>
 <li><a href="https://shikokuchuo.r-universe.dev" class="external-link"><img src="https://shikokuchuo.r-universe.dev/badges/nanonext?color=3f72af" alt="nanonext status badge"></a></li>
 <li><a href="https://github.com/shikokuchuo/nanonext/actions" class="external-link"><img src="https://github.com/shikokuchuo/nanonext/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a></li>
 </ul>
