@@ -1,14 +1,15 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# nanonext <img src="man/figures/nanonext.png" alt="nanonext logo" align="right" width="120"/>
+# nanonext <a href="https://shikokuchuo.net/nanonext/" alt="nanonext"><img src="man/figures/logo.png" alt="nanonext logo" align="right" width="120"/></a>
 
 <!-- badges: start -->
 
+[![CRAN
+status](https://www.r-pkg.org/badges/version/nanonext?color=112d4e)](https://CRAN.R-project.org/package=nanonext)
 [![nanonext status
 badge](https://shikokuchuo.r-universe.dev/badges/nanonext?color=3f72af)](https://shikokuchuo.r-universe.dev)
 [![R-CMD-check](https://github.com/shikokuchuo/nanonext/workflows/R-CMD-check/badge.svg)](https://github.com/shikokuchuo/nanonext/actions)
-
 <!-- badges: end -->
 
 R binding for NNG (Nanomsg Next Gen), a successor to ZeroMQ. NNG is a
@@ -29,16 +30,16 @@ globe.
 
 ### Installation
 
-Install the latest version of {nanonext} from rOpenSci R-universe:
+Install the latest release from CRAN:
+
+``` r
+install.packages("nanonext")
+```
+
+or the latest development version from rOpenSci R-universe:
 
 ``` r
 install.packages("nanonext", repos = "https://shikokuchuo.r-universe.dev")
-```
-
-or the Github source:
-
-``` r
-remotes::install_github("shikokuchuo/nanonext")
 ```
 
 ### Interfaces
@@ -154,8 +155,10 @@ requires ‘cmake’).
 Pre-built libraries (for i386 / x64 / x64-UCRT) are automatically
 downloaded during the package installation process.
 
-### Upstream
+### Links
 
--   NNG: <https://nng.nanomsg.org/>
--   Github: <https://github.com/nanomsg/nng>
--   Documentation: <https://nng.nanomsg.org/man/tip/>
+nanonext on CRAN: <https://cran.r-project.org/package=nanonext><br />
+Package website: <https://shikokuchuo.net/nanonext/><br />
+
+NNG website: <https://nng.nanomsg.org/><br /> NNG documentation:
+<https://nng.nanomsg.org/man/tip/><br />

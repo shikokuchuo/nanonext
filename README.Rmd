@@ -13,13 +13,12 @@ knitr::opts_chunk$set(
 )
 ```
 
-# nanonext <img src="man/figures/nanonext.png" alt="nanonext logo" align="right" width="120"/>
+# nanonext <a href="https://shikokuchuo.net/nanonext/" alt="nanonext"><img src="man/figures/logo.png" alt="nanonext logo" align="right" width="120"/></a>
 
 <!-- badges: start -->
-
+[![CRAN status](https://www.r-pkg.org/badges/version/nanonext?color=112d4e)](https://CRAN.R-project.org/package=nanonext)
 [![nanonext status badge](https://shikokuchuo.r-universe.dev/badges/nanonext?color=3f72af)](https://shikokuchuo.r-universe.dev) 
 [![R-CMD-check](https://github.com/shikokuchuo/nanonext/workflows/R-CMD-check/badge.svg)](https://github.com/shikokuchuo/nanonext/actions)
-
 <!-- badges: end -->
 
 R binding for NNG (Nanomsg Next Gen), a successor to ZeroMQ. NNG is a socket library providing high-performance scalability protocols, or common communication patterns, the basic building blocks for distributed systems.
@@ -30,16 +29,16 @@ Can be used for sending data across networks, but equally as an interface for co
 
 ### Installation
 
-Install the latest version of {nanonext} from rOpenSci R-universe:
+Install the latest release from CRAN:
+
+```{r cran, eval=FALSE}
+install.packages("nanonext")
+```
+
+or the latest development version from rOpenSci R-universe:
 
 ```{r runiv, eval=FALSE}
 install.packages("nanonext", repos = "https://shikokuchuo.r-universe.dev")
-```
-
-or the Github source:
-
-```{r github, eval=FALSE}
-remotes::install_github("shikokuchuo/nanonext")
 ```
 
 ### Interfaces
@@ -119,8 +118,10 @@ Otherwise, a release version of 'libnng' will be downloaded and built from sourc
 
 Pre-built libraries (for i386 / x64 / x64-UCRT) are automatically downloaded during the package installation process.
 
-### Upstream
+### Links
 
--   NNG: <https://nng.nanomsg.org/>
--   Github: <https://github.com/nanomsg/nng>
--   Documentation: <https://nng.nanomsg.org/man/tip/>
+nanonext on CRAN: <https://cran.r-project.org/package=nanonext><br />
+Package website: <https://shikokuchuo.net/nanonext/><br />
+
+NNG website: <https://nng.nanomsg.org/><br />
+NNG documentation: <https://nng.nanomsg.org/man/tip/><br />

@@ -71,10 +71,9 @@ R binding for NNG (Nanomsg Next Gen), a successor to ZeroMQ. NNG is a socket
 
 
     nanonext website: \url{https://shikokuchuo.net/nanonext/} \cr
-    nanonext Github: \url{https://github.com/shikokuchuo/nanonext/}
+    nanonext on CRAN: \url{https://cran.r-project.org/package=nanonext}
 
-    NNG website: \url{https://nng.nanomsg.org/} \cr
-    NNG Github: \url{https://github.com/nanomsg/nng}
+    NNG website: \url{https://nng.nanomsg.org/}
 }
 
 \section{Licence notices}{
