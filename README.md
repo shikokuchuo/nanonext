@@ -36,7 +36,7 @@ Install the latest release from CRAN:
 install.packages("nanonext")
 ```
 
-or the latest development version from rOpenSci R-universe:
+or the development version from rOpenSci R-universe:
 
 ``` r
 install.packages("nanonext", repos = "https://shikokuchuo.r-universe.dev")
