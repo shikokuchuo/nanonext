@@ -3,24 +3,6 @@
 #include <nng/nng.h>
 #include "nanonext.h"
 
-
-/* utils -------------------------------------------------------------------- */
-
-SEXP rnng_strerror(SEXP error) {
-
-  int xc = INTEGER(error)[0];
-  const char *err = nng_strerror(xc);
-  return Rf_mkString(err);
-
-}
-
-SEXP rnng_version(void) {
-
-  const char *ver = nng_version();
-  return Rf_mkString(ver);
-
-}
-
 /* external pointer finalisers ---------------------------------------------- */
 
 static void context_finalizer(SEXP xptr) {
@@ -78,7 +60,7 @@ SEXP rnng_ctx_open(SEXP socket) {
   Rf_setAttrib(context, nano_SocketSymbol, Rf_ScalarInteger(sid));
 
   UNPROTECT(2);
-  return(context);
+  return context;
 
 }
 
@@ -276,7 +258,7 @@ SEXP rnng_send(SEXP socket, SEXP data, SEXP block, SEXP echo) {
   if (xc)
     return Rf_ScalarInteger(xc);
   if (ech != 0)
-    return(data);
+    return data;
   return R_NilValue;
 
 }
@@ -299,7 +281,7 @@ SEXP rnng_recv(SEXP socket, SEXP block) {
   memcpy(rp, buf, sz);
   nng_free(buf, sz);
   UNPROTECT(1);
-  return(res);
+  return res;
 
 }
 
@@ -314,21 +296,29 @@ SEXP rnng_send_aio(SEXP socket, SEXP data, SEXP timeout) {
   const R_xlen_t dlen = XLENGTH(data);
   nng_msg *msgp[dlen];
   nng_aio *aiop[dlen];
+  int xc;
 
   for (R_xlen_t i = 0; i < dlen; i++) {
     SEXP vec = VECTOR_ELT(data, i);
     const R_xlen_t vlen = XLENGTH(vec);
     void *dp = (void *) RAW(vec);
-    int xc = nng_msg_alloc(&msgp[i], 0);
-    if (xc)
+    if ((xc = nng_msg_alloc(&msgp[i], 0))) {
+      R_xlen_t j = i;
+      while (j > 0) {
+        nng_msg_free(msgp[--j]);
+      }
       return Rf_ScalarInteger(xc);
-    xc = nng_msg_append(msgp[i], dp, vlen);
-    if (xc)
-      return Rf_ScalarInteger(xc);
+    }
 
-    xc = nng_aio_alloc(&aiop[i], NULL, NULL);
-    if (xc)
+    if ((xc = nng_msg_append(msgp[i], dp, vlen)) ||
+        (xc = nng_aio_alloc(&aiop[i], NULL, NULL))) {
+      R_xlen_t j = i;
+      while (j >= 0) {
+        nng_msg_free(msgp[j--]);
+      }
       return Rf_ScalarInteger(xc);
+    }
+
     nng_aio_set_msg(aiop[i], msgp[i]);
     nng_aio_set_timeout(aiop[i], dur);
     nng_send_aio(*sock, aiop[i]);
@@ -337,7 +327,7 @@ SEXP rnng_send_aio(SEXP socket, SEXP data, SEXP timeout) {
   SEXP out = PROTECT(Rf_allocVector(INTSXP, dlen));
   for (R_xlen_t i = 0; i < dlen; i++) {
     nng_aio_wait(aiop[i]);
-    int xc = nng_aio_result(aiop[i]);
+    xc = nng_aio_result(aiop[i]);
     if (xc) {
       nng_msg *dmsg = nng_aio_get_msg(aiop[i]);
       nng_msg_free(dmsg);
@@ -359,9 +349,10 @@ SEXP rnng_recv_aio(SEXP socket, SEXP n, SEXP timeout) {
   const R_xlen_t dlen = Rf_asInteger(n);
   const nng_duration dur = (nng_duration) Rf_asInteger(timeout);
   nng_aio *aiop[dlen];
+  int xc;
 
   for (R_xlen_t i = 0; i < dlen; i++) {
-    int xc = nng_aio_alloc(&aiop[i], NULL, NULL);
+    xc = nng_aio_alloc(&aiop[i], NULL, NULL);
     if (xc)
       return Rf_ScalarInteger(xc);
     nng_aio_set_timeout(aiop[i], dur);
@@ -371,7 +362,7 @@ SEXP rnng_recv_aio(SEXP socket, SEXP n, SEXP timeout) {
   SEXP res = PROTECT(Rf_allocVector(VECSXP, dlen));
   for (R_xlen_t i = 0; i < dlen; i++) {
     nng_aio_wait(aiop[i]);
-    int xc = nng_aio_result(aiop[i]);
+    xc = nng_aio_result(aiop[i]);
     if (xc) {
       nng_aio_free(aiop[i]);
       SET_VECTOR_ELT(res, i, Rf_ScalarInteger(xc));
@@ -389,7 +380,7 @@ SEXP rnng_recv_aio(SEXP socket, SEXP n, SEXP timeout) {
   }
 
   UNPROTECT(1);
-  return(res);
+  return res;
 
 }
 
@@ -402,21 +393,27 @@ SEXP rnng_ctx_send(SEXP context, SEXP data, SEXP timeout) {
   const R_xlen_t dlen = XLENGTH(data);
   nng_msg *msgp[dlen];
   nng_aio *aiop[dlen];
+  int xc;
 
   for (R_xlen_t i = 0; i < dlen; i++) {
     SEXP vec = VECTOR_ELT(data, i);
     const R_xlen_t vlen = XLENGTH(vec);
     void *dp = (void *) RAW(vec);
-    int xc = nng_msg_alloc(&msgp[i], 0);
-    if (xc)
+    if ((xc = nng_msg_alloc(&msgp[i], 0))) {
+      R_xlen_t j = i;
+      while (j > 0) {
+        nng_msg_free(msgp[--j]);
+      }
       return Rf_ScalarInteger(xc);
-    xc = nng_msg_append(msgp[i], dp, vlen);
-    if (xc)
+    }
+    if ((xc = nng_msg_append(msgp[i], dp, vlen)) ||
+        (xc = nng_aio_alloc(&aiop[i], NULL, NULL))) {
+      R_xlen_t j = i;
+      while (j >= 0) {
+        nng_msg_free(msgp[j--]);
+      }
       return Rf_ScalarInteger(xc);
-
-    xc = nng_aio_alloc(&aiop[i], NULL, NULL);
-    if (xc)
-      return Rf_ScalarInteger(xc);
+    }
     nng_aio_set_msg(aiop[i], msgp[i]);
     nng_aio_set_timeout(aiop[i], dur);
     nng_ctx_send(*ctxp, aiop[i]);
@@ -425,7 +422,7 @@ SEXP rnng_ctx_send(SEXP context, SEXP data, SEXP timeout) {
   SEXP out = PROTECT(Rf_allocVector(INTSXP, dlen));
   for (R_xlen_t i = 0; i < dlen; i++) {
     nng_aio_wait(aiop[i]);
-    int xc = nng_aio_result(aiop[i]);
+    xc = nng_aio_result(aiop[i]);
     if (xc) {
       nng_msg *dmsg = nng_aio_get_msg(aiop[i]);
       nng_msg_free(dmsg);
@@ -447,9 +444,10 @@ SEXP rnng_ctx_recv(SEXP context, SEXP n, SEXP timeout) {
   const R_xlen_t dlen = Rf_asInteger(n);
   const nng_duration dur = (nng_duration) Rf_asInteger(timeout);
   nng_aio *aiop[dlen];
+  int xc;
 
   for (R_xlen_t i = 0; i < dlen; i++) {
-    int xc = nng_aio_alloc(&aiop[i], NULL, NULL);
+    xc = nng_aio_alloc(&aiop[i], NULL, NULL);
     if (xc)
       return Rf_ScalarInteger(xc);
     nng_aio_set_timeout(aiop[i], dur);
@@ -459,7 +457,7 @@ SEXP rnng_ctx_recv(SEXP context, SEXP n, SEXP timeout) {
   SEXP res = PROTECT(Rf_allocVector(VECSXP, dlen));
   for (R_xlen_t i = 0; i < dlen; i++) {
     nng_aio_wait(aiop[i]);
-    int xc = nng_aio_result(aiop[i]);
+    xc = nng_aio_result(aiop[i]);
     if (xc) {
       nng_aio_free(aiop[i]);
       SET_VECTOR_ELT(res, i, Rf_ScalarInteger(xc));
@@ -477,7 +475,7 @@ SEXP rnng_ctx_recv(SEXP context, SEXP n, SEXP timeout) {
   }
 
   UNPROTECT(1);
-  return(res);
+  return res;
 
 }
 

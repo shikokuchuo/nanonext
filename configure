@@ -6,6 +6,9 @@
 # Library settings
 PKG_TEST_HEADER="<nng/nng.h>"
 PKG_LIBS="-lnng"
+if [ "$NANONEXT_TLS" ]; then
+  PKG_LIBS="$PKG_LIBS -lmbedtls -lmbedx509 -lmbedcrypto"
+fi
 PKG_CFLAGS=""
 LIB_VER="1.5.2"
 SYS_LIB=0
@@ -77,7 +80,23 @@ CFLAGS=`${R_HOME}/bin/R CMD config CFLAGS`
 echo "#include $PKG_TEST_HEADER" | ${CC} ${PKG_CFLAGS} ${CFLAGS} -E -xc - >/dev/null 2>&1
 
 if [ $? -ne 0 ]; then
-  if [ $SYS_LIB = 1 ]; then
+  if [ "$SYS_LIB" -ne 1 ]; then
+    echo "------------------------------[ NANONEXT ]------------------------------"
+    echo "Configuration failed because 'libnng' was not found."
+    echo "Automatic download and/or build also failed. Try installing:"
+    echo " * deb: libnng-dev (Debian, Ubuntu, etc.)"
+    echo " * rpm: nng-devel (Fedora, CentOS etc.)"
+    echo " * arch: https://aur.archlinux.org/nng.git (Arch from AUR)"
+    echo " * brew: nng (MacOS)"
+    echo "Alternatively:"
+    echo " * vcpkg: nng (Linux/MacOS, follow getting started instructions at"
+    echo "               https://vcpkg.io/ starting from your HOME directory)"
+    echo "If 'libnng' is already installed but in a non-standard location, you"
+    echo "may set INCLUDE_DIR and LIB_DIR manually via:"
+    echo "R CMD INSTALL --configure-vars='INCLUDE_DIR=... LIB_DIR=...'"
+    echo "-------------------------------------------------------------------------"
+    exit 1
+  else
     echo "Attempt to use system libnng failed"
     echo "Preparing to download and build library from source..."
     curl -L https://github.com/nanomsg/nng/archive/refs/tags/v$LIB_VER.tar.gz -o nng.tar.gz
@@ -118,22 +137,6 @@ if [ $? -ne 0 ]; then
       echo "-------------------------------------------------------------------------"
       exit 1
     fi
-  else
-    echo "------------------------------[ NANONEXT ]------------------------------"
-    echo "Configuration failed because 'libnng' was not found."
-    echo "Automatic download and/or build also failed. Try installing:"
-    echo " * deb: libnng-dev (Debian, Ubuntu, etc.)"
-    echo " * rpm: nng-devel (Fedora, CentOS etc.)"
-    echo " * arch: https://aur.archlinux.org/nng.git (Arch from AUR)"
-    echo " * brew: nng (MacOS)"
-    echo "Alternatively:"
-    echo " * vcpkg: nng (Linux/MacOS, follow getting started instructions at"
-    echo "               https://vcpkg.io/ starting from your HOME directory)"
-    echo "If 'libnng' is already installed but in a non-standard location, you"
-    echo "may set INCLUDE_DIR and LIB_DIR manually via:"
-    echo "R CMD INSTALL --configure-vars='INCLUDE_DIR=... LIB_DIR=...'"
-    echo "-------------------------------------------------------------------------"
-    exit 1
   fi
 fi
 

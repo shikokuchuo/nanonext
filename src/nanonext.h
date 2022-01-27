@@ -49,6 +49,7 @@ extern SEXP rnng_listener_set_size(SEXP, SEXP, SEXP);
 extern SEXP rnng_listener_set_string(SEXP, SEXP, SEXP);
 extern SEXP rnng_listener_set_uint64(SEXP, SEXP, SEXP);
 extern SEXP rnng_listener_start(SEXP);
+extern SEXP rnng_ncurl(SEXP);
 extern SEXP rnng_protocol_open(SEXP);
 extern SEXP rnng_recv(SEXP, SEXP);
 extern SEXP rnng_recv_aio(SEXP, SEXP, SEXP);

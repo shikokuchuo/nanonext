@@ -7,11 +7,20 @@
 nng_version()
 }
 \value{
-A character vector.
+A character vector of length 2.
 }
 \description{
-Returns the version of 'libnng' used.
+Returns the version of 'libnng' used and whether TLS is supported.
 }
+\section{TLS Support}{
+
+
+    The environment variable 'NANONEXT_TLS=1' may be set, e.g. by using
+    \code{Sys.setenv(NANONEXT_TLS=1)}, prior to package installation to enable
+    TLS where the system NNG library has been built with TLS support (using
+    Mbed TLS). Note: this is not applicable to Windows systems.
+}
+
 \examples{
 nng_version()
 
