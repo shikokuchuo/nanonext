@@ -17,20 +17,23 @@ Named list of 2 elements: 'raw' containing a raw vector of the received
 nano cURL - a minimalistic http(s) client.
 }
 \details{
-Only performs HTTP GET operations, and does not follow HTTP redirects.
+In interactive sessions, will prompt upon receiving a redirect
+    location whether to follow or not (default is Yes). In non-interactive
+    sessions, redirects are never followed.
 
     The raw vector may be saved to a file using \code{\link{writeBin}} to
     re-create the original resource.
 
     The data vector is a character string allowing further parsing within R,
-    as HTML, JSON etc.
+    as HTML, JSON etc. if the served content was a valid text format, or NULL
+    otherwise, e.g. content was a binary file).
 }
 \section{TLS Support}{
 
 
     Connecting to secure https sites is supported if your version of the NNG
     library was built with TLS support (using Mbed TLS) and the environment
-    variable NANONEXT_TLS=1 was set when installing the package e.g. by
+    variable 'NANONEXT_TLS' was set when installing the package e.g. by
     \code{Sys.setenv(NANONEXT_TLS=1)}. Note: not applicable for Windows systems.
 }
 

@@ -8,7 +8,7 @@
 #'
 #' @section TLS Support:
 #'
-#'     The environment variable 'NANONEXT_TLS=1' may be set, e.g. by using
+#'     The environment variable 'NANONEXT_TLS' may be set, e.g. by
 #'     \code{Sys.setenv(NANONEXT_TLS=1)}, prior to package installation to enable
 #'     TLS where the system NNG library has been built with TLS support (using
 #'     Mbed TLS). Note: this is not applicable to Windows systems.
@@ -54,19 +54,22 @@ nng_error <- function(error) {
 #' @return Named list of 2 elements: 'raw' containing a raw vector of the received
 #'     resource and 'data', the raw vector converted to a character string.
 #'
-#' @details Only performs HTTP GET operations, and does not follow HTTP redirects.
+#' @details In interactive sessions, will prompt upon receiving a redirect
+#'     location whether to follow or not (default is Yes). In non-interactive
+#'     sessions, redirects are never followed.
 #'
 #'     The raw vector may be saved to a file using \code{\link{writeBin}} to
 #'     re-create the original resource.
 #'
 #'     The data vector is a character string allowing further parsing within R,
-#'     as HTML, JSON etc.
+#'     as HTML, JSON etc. if the served content was a valid text format, or NULL
+#'     otherwise, e.g. content was a binary file).
 #'
 #' @section TLS Support:
 #'
 #'     Connecting to secure https sites is supported if your version of the NNG
 #'     library was built with TLS support (using Mbed TLS) and the environment
-#'     variable NANONEXT_TLS=1 was set when installing the package e.g. by
+#'     variable 'NANONEXT_TLS' was set when installing the package e.g. by
 #'     \code{Sys.setenv(NANONEXT_TLS=1)}. Note: not applicable for Windows systems.
 #'
 #' @export
@@ -78,8 +81,13 @@ ncurl <- function(http) {
   if (is.integer(res)) {
     message(res, " : ", nng_error(res))
     return(invisible(res))
+  } else if (is.character(res)) {
+    continue <- if (interactive()) readline(paste0("Follow redirect to <", res, ">? [Y/n] ")) else "n"
+    continue %in% c("n", "N", "no", "NO") && return(invisible(res))
+    return(ncurl(res))
   }
-  list(raw = res, data = rawToChar(res))
+  data <- tryCatch(rawToChar(res), error = function(e) NULL)
+  list(raw = res, data = data)
 
 }
 

@@ -114,7 +114,18 @@ SEXP rnng_ncurl(SEXP http) {
 
   code = nng_http_res_get_status(res);
   if (code != 200)
-    REprintf("HTTP Server Responded: %d %s\n", code, nng_http_res_get_reason(res));
+    REprintf("HTTP Server Response: %d %s\n", code, nng_http_res_get_reason(res));
+  if (code >= 300 && code < 400) {
+    const char *location = nng_http_res_get_header(res, "Location");
+    SEXP ret = Rf_mkString(location);
+    if (tls)
+      nng_tls_config_free(cfg);
+    nng_http_res_free(res);
+    nng_http_req_free(req);
+    nng_http_client_free(client);
+    nng_url_free(url);
+    return ret;
+  }
 
   nng_http_res_get_data(res, &data, &sz);
   SEXP vec = PROTECT(Rf_allocVector(RAWSXP, sz));
