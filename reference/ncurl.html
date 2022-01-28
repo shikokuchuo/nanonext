@@ -74,11 +74,14 @@
     </div>
     <div id="details">
     <h2>Details</h2>
-    <p>Only performs HTTP GET operations, and does not follow HTTP redirects.</p>
+    <p>In interactive sessions, will prompt upon receiving a redirect
+    location whether to follow or not (default is Yes). In non-interactive
+    sessions, redirects are never followed.</p>
 <p>The raw vector may be saved to a file using <code><a href="https://rdrr.io/r/base/readBin.html" class="external-link">writeBin</a></code> to
     re-create the original resource.</p>
 <p>The data vector is a character string allowing further parsing within R,
-    as HTML, JSON etc.</p>
+    as HTML, JSON etc. if the served content was a valid text format, or NULL
+    otherwise, e.g. content was a binary file).</p>
     </div>
     <div id="tls-support">
     <h2>TLS Support</h2>
@@ -87,7 +90,7 @@
 
 <p>Connecting to secure https sites is supported if your version of the NNG
     library was built with TLS support (using Mbed TLS) and the environment
-    variable NANONEXT_TLS=1 was set when installing the package e.g. by
+    variable 'NANONEXT_TLS' was set when installing the package e.g. by
     <code>Sys.setenv(NANONEXT_TLS=1)</code>. Note: not applicable for Windows systems.</p>
     </div>
 
