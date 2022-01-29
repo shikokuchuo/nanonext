@@ -69,19 +69,21 @@
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>Named list of 2 elements: 'raw' containing a raw vector of the received
-    resource and 'data', the raw vector converted to a character string.</p>
-    </div>
-    <div id="details">
-    <h2>Details</h2>
-    <p>In interactive sessions, will prompt upon receiving a redirect
-    location whether to follow or not (default is Yes). In non-interactive
-    sessions, redirects are never followed.</p>
-<p>The raw vector may be saved to a file using <code><a href="https://rdrr.io/r/base/readBin.html" class="external-link">writeBin</a></code> to
-    re-create the original resource.</p>
-<p>The data vector is a character string allowing further parsing within R,
-    as HTML, JSON etc. if the served content was a valid text format, or NULL
-    otherwise, e.g. content was a binary file).</p>
+    <p>Named list of 2 elements:</p><ul><li><p><code>$raw</code> - a raw vector of the received resource (may be saved
+    to a file using <code><a href="https://rdrr.io/r/base/readBin.html" class="external-link">writeBin</a></code> to re-create the original)</p></li>
+<li><p><code>$data</code> - the raw vector converted to a character string (if
+    the served content was a recognised text format), allowing further parsing
+    within R as html, json, xml etc., or NULL otherwise (if the content was a
+    binary file etc.)</p></li>
+</ul></div>
+    <div id="redirects">
+    <h2>Redirects</h2>
+    
+
+
+<p>In interactive sessions, will prompt upon receiving a redirect location
+    whether to follow or not (default: yes). In non-interactive sessions,
+    redirects are never followed.</p>
     </div>
     <div id="tls-support">
     <h2>TLS Support</h2>
@@ -94,6 +96,22 @@
     <code>Sys.setenv(NANONEXT_TLS=1)</code>. Note: not applicable for Windows systems.</p>
     </div>
 
+    <div id="ref-examples">
+    <h2>Examples</h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu">ncurl</span><span class="op">(</span><span class="st">"http://httpbin.org/headers"</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $raw</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [1] 7b 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [26] 74 22 3a 20 22 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [51] 58 2d 41 6d 7a 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [76] 2d 36 31 66 35 35 39 38 61 2d 35 61 39 35 39 36 38 30 37 66 32 66 61 38 66</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [101] 37 36 31 61 31 37 30 61 36 22 0a 20 20 7d 0a 7d 0a</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $data</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-61f5598a-5a9596807f2fa8f761a170a6\"\n  }\n}\n"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-in"></span>
+</code></pre></div>
+    </div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top"><h2 data-toc-skip>Contents</h2>

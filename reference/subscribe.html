@@ -78,14 +78,13 @@ NULL subscribes to all topics.</p></dd>
     </div>
     <div id="details">
     <h2>Details</h2>
-    <p>To use pub/sub you must use <code><a href="send_vec.html">send_vec</a></code> and
-    <code><a href="recv_vec.html">recv_vec</a></code> so that the messages are not serialised otherwise
-    the topics will not be recognised.</p>
-<p>Note: the publisher needs to send a vector that separates the topic from
-    the rest of the message such as <code>send_vec(socket, c("topic", "message"))</code>
-    (this ensures that topic ends with the required null byte for it to be
-    recognised).</p>
-    </div>
+    <p>To use pub/sub the publisher must:</p><ul><li><p>specify <code>mode = 'raw'</code> when sending to allow the topics to be
+    recognised by the receiving party.</p></li>
+<li><p>send a vector that separates the topic from the rest of the message
+    e.g. <code>send(socket, c("topic", "message"), mode = "raw")</code> - this
+    ensures that topic ends with the required null byte for it to be
+    recognised.</p></li>
+</ul></div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
@@ -96,10 +95,10 @@ NULL subscribes to all topics.</p></dd>
 <span class="r-in"></span>
 <span class="r-in"><span class="fu">subscribe</span><span class="op">(</span><span class="va">sub</span>, <span class="st">"examples"</span><span class="op">)</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> subscribed topic: examples</span>
-<span class="r-in"><span class="fu"><a href="send_vec.html">send_vec</a></span><span class="op">(</span><span class="va">pub</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"examples"</span>, <span class="st">"this is an example"</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span class="fu"><a href="send.html">send</a></span><span class="op">(</span><span class="va">pub</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"examples"</span>, <span class="st">"this is an example"</span><span class="op">)</span>, mode <span class="op">=</span> <span class="st">"raw"</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 65 78 61 6d 70 6c 65 73 00 74 68 69 73 20 69 73 20 61 6e 20 65 78 61 6d 70</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [26] 6c 65 00</span>
-<span class="r-in"><span class="fu"><a href="recv_vec.html">recv_vec</a></span><span class="op">(</span><span class="va">sub</span>, <span class="st">"character"</span><span class="op">)</span></span>
+<span class="r-in"><span class="fu"><a href="recv.html">recv</a></span><span class="op">(</span><span class="va">sub</span>, <span class="st">"character"</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $raw</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 65 78 61 6d 70 6c 65 73 00 74 68 69 73 20 69 73 20 61 6e 20 65 78 61 6d 70</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [26] 6c 65 00</span>
@@ -107,10 +106,10 @@ NULL subscribes to all topics.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $data</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "examples"           "this is an example"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"><span class="fu"><a href="send_vec.html">send_vec</a></span><span class="op">(</span><span class="va">pub</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"other"</span>, <span class="st">"this other topic will not be received"</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span class="fu"><a href="send.html">send</a></span><span class="op">(</span><span class="va">pub</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"other"</span>, <span class="st">"this other topic will not be received"</span><span class="op">)</span>, mode <span class="op">=</span> <span class="st">"raw"</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 6f 74 68 65 72 00 74 68 69 73 20 6f 74 68 65 72 20 74 6f 70 69 63 20 77 69</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [26] 6c 6c 20 6e 6f 74 20 62 65 20 72 65 63 65 69 76 65 64 00</span>
-<span class="r-in"><span class="fu"><a href="recv_vec.html">recv_vec</a></span><span class="op">(</span><span class="va">sub</span>, <span class="st">"character"</span><span class="op">)</span></span>
+<span class="r-in"><span class="fu"><a href="recv.html">recv</a></span><span class="op">(</span><span class="va">sub</span>, <span class="st">"character"</span><span class="op">)</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> 8 : Try again</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="fu"><a href="close.html">close</a></span><span class="op">(</span><span class="va">pub</span><span class="op">)</span></span>

@@ -57,6 +57,7 @@
 <h2 class="page-header" data-toc-text="0.1.0.9000" id="nanonext-0109000-under-development">nanonext 0.1.0.9000 (under development)<a class="anchor" aria-label="anchor" href="#nanonext-0109000-under-development"></a></h2>
 <ul><li>Add <code><a href="../reference/ncurl.html">ncurl()</a></code> minimalistic http(s) client.</li>
 <li>Allow setting the environment variable ‘NANONEXT_TLS’ prior to package installation to enable TLS where the system NNG library has been built with TLS support (using Mbed TLS).</li>
+<li>All send and receive functions, e.g. <code><a href="../reference/send.html">send()</a></code>/<code><a href="../reference/recv.html">recv()</a></code>, gain the argument ‘mode’ for choosing whether or not to serialize R objects, consolidating the functionality of the ’_vec’ series of functions, e.g. send_vec()/recv_vec(). The ’_vec’ series of functions is consequently deprecated.</li>
 </ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.1.0" id="nanonext-010">nanonext 0.1.0<small>2022-01-25</small><a class="anchor" aria-label="anchor" href="#nanonext-010"></a></h2>
