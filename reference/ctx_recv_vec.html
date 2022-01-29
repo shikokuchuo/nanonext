@@ -81,11 +81,10 @@
     <dl><dt>context</dt>
 <dd><p>a Context.</p></dd>
 <dt>mode</dt>
-<dd><p>[default 'serial'] whether data will be sent serialized or as a
-raw vector. Use 'serial' for sending and receiving within R to ensure
-perfect reproducibility. Use 'raw' for sending vectors of any type (will be
-converted to a raw byte vector for sending) - essential when interfacing
-with external applications.</p></dd>
+<dd><p>[default 'serial'] mode of vector to be read - one of 'serial',
+'character', 'complex', 'double', 'integer', 'logical', 'numeric', or 'raw'.
+The default 'serial' means a serialised R object, for the other modes,
+the raw vector received will be converted into the respective mode.</p></dd>
 <dt>n</dt>
 <dd><p>[default 1L] number of messages to receive asynchronously.</p></dd>
 <dt>timeout</dt>
