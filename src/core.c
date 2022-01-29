@@ -243,23 +243,19 @@ SEXP rnng_listener_close(SEXP listener) {
 /* send and recv ------------------------------------------------------------ */
 /* nng flags: bitmask of NNG_FLAG_ALLOC = 1u + NNG_FLAG_NONBLOCK = 2u ------- */
 
-SEXP rnng_send(SEXP socket, SEXP data, SEXP block, SEXP echo) {
+SEXP rnng_send(SEXP socket, SEXP data, SEXP block) {
 
   if (R_ExternalPtrTag(socket) != nano_SocketSymbol)
     error_return("'socket' is not a valid Socket");
   nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(socket);
-  const Rboolean ech = Rf_asLogical(echo);
   const Rboolean blk = Rf_asLogical(block);
   int flags = blk == 1 ? 0 : 2u;
   const R_xlen_t dlen = XLENGTH(data);
   void *dp = (void *) RAW(data);
   int xc =  nng_send(*sock, dp, dlen, flags);
-
   if (xc)
     return Rf_ScalarInteger(xc);
-  if (ech != 0)
-    return data;
-  return R_NilValue;
+  return data;
 
 }
 

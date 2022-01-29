@@ -25,7 +25,7 @@ sent data. Set to FALSE for performance-critical applications where
 invisble NULL will be returned instead.}
 }
 \value{
-Raw vector of sent data, or invisible NULL if 'echo' is set to FALSE.
+Raw vector of sent data, or zero (invisibly) if 'echo' is set to FALSE.
 }
 \description{
 Send data over a Socket.

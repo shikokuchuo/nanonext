@@ -17,7 +17,7 @@
 #'     sent data. Set to FALSE for performance-critical applications where
 #'     invisble NULL will be returned instead.
 #'
-#' @return Raw vector of sent data, or invisible NULL if 'echo' is set to FALSE.
+#' @return Raw vector of sent data, or zero (invisibly) if 'echo' is set to FALSE.
 #'
 #' @examples
 #' pub <- socket("pub", dial = "inproc://nanonext")
@@ -35,9 +35,9 @@ send <- function(socket, data, mode = c("serial", "raw"), block = FALSE, echo = 
   data <- switch(mode,
                  serial = serialize(object = data, connection = NULL),
                  raw = if (is.raw(data)) data else writeBin(object = data, con = raw()))
-  res <- .Call(rnng_send, socket, data, block, echo)
+  res <- .Call(rnng_send, socket, data, block)
   if (is.integer(res)) message(res, " : ", nng_error(res))
-  if (is.null(res)) invisible() else res
+  if (missing(echo) || isTRUE(echo)) res else invisible(0L)
 
 }
 
@@ -47,7 +47,6 @@ send <- function(socket, data, mode = c("serial", "raw"), block = FALSE, echo = 
 #'     to set send timeouts.
 #'
 #' @inheritParams send
-#' @param socket a Socket.
 #' @param ... one or more R objects (if mode = 'raw', R vectors) to send
 #'     asynchronously.
 #' @param timeout in ms. If unspecified, a socket-specific default timeout will
@@ -247,10 +246,10 @@ recv_aio <- function(socket,
 #'
 send_vec <- function(socket, data, block = FALSE, echo = TRUE) {
 
-
-  res <- .Call(rnng_send, socket, data, block, echo)
+  data <- if (is.raw(data)) data else writeBin(object = data, con = raw())
+  res <- .Call(rnng_send, socket, data, block)
   if (is.integer(res)) message(res, " : ", nng_error(res))
-  if (is.null(res)) invisible() else res
+  if (missing(echo) || isTRUE(echo)) res else invisible()
 
 }
 

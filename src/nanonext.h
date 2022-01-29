@@ -53,7 +53,7 @@ extern SEXP rnng_ncurl(SEXP);
 extern SEXP rnng_protocol_open(SEXP);
 extern SEXP rnng_recv(SEXP, SEXP);
 extern SEXP rnng_recv_aio(SEXP, SEXP, SEXP);
-extern SEXP rnng_send(SEXP, SEXP, SEXP, SEXP);
+extern SEXP rnng_send(SEXP, SEXP, SEXP);
 extern SEXP rnng_send_aio(SEXP, SEXP, SEXP);
 extern SEXP rnng_socket_set_bool(SEXP, SEXP, SEXP);
 extern SEXP rnng_socket_set_int(SEXP, SEXP, SEXP);

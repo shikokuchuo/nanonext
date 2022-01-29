@@ -59,7 +59,7 @@ static const R_CallMethodDef CallEntries[] = {
   {"rnng_protocol_open", (DL_FUNC) &rnng_protocol_open, 1},
   {"rnng_recv", (DL_FUNC) &rnng_recv, 2},
   {"rnng_recv_aio", (DL_FUNC) &rnng_recv_aio, 3},
-  {"rnng_send", (DL_FUNC) &rnng_send, 4},
+  {"rnng_send", (DL_FUNC) &rnng_send, 3},
   {"rnng_send_aio", (DL_FUNC) &rnng_send_aio, 3},
   {"rnng_socket_set_bool", (DL_FUNC) &rnng_socket_set_bool, 3},
   {"rnng_socket_set_int", (DL_FUNC) &rnng_socket_set_int, 3},

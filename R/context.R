@@ -102,7 +102,7 @@ ctx_send <- function(context, ..., mode = c("serial", "raw"), timeout) {
 #' Receive any number of R objects asynchronously over a Context, with the
 #'     ability to set receive timeouts.
 #'
-#' @inheritParams ctx_send
+#' @param context a Context.
 #' @inheritParams recv_aio
 #'
 #' @return Named list of 2 elements: 'raw' containing a list of received raw
@@ -157,6 +157,162 @@ ctx_recv <- function(context,
                           raw = res[[i]],
                           readBin(con = res[[i]], what = mode, n = length(res[[i]])))
   }
+  on.exit(expr = NULL)
+  if (missing(keep.raw) || isTRUE(keep.raw)) list(raw = res, data = data) else data
+
+}
+
+#' Reply over Context (Server for Req/Rep Protocol)
+#'
+#' Implements an executor/server for the rep node of the req/rep protocol. Awaits
+#'     data, applies an arbitrary specified function, and returns the result
+#'     to the caller/client.
+#'
+#' @param context a Context.
+#' @param send_mode [default 'serial'] whether data will be sent serialized or
+#'     as a raw vector. Use 'serial' for sending and receiving within R to ensure
+#'     perfect reproducibility. Use 'raw' for sending vectors of any type (will be
+#'     converted to a raw byte vector for sending) - essential when interfacing
+#'     with external applications.
+#' @param recv_mode [default 'serial'] mode of vector to be read - one of 'serial',
+#'     'character', 'complex', 'double', 'integer', 'logical', 'numeric', or 'raw'.
+#'     The default 'serial' means a serialised R object, for the other modes,
+#'     the raw vector received will be converted into the respective mode.
+#' @param execute a function which takes the received (converted) data as its
+#'     first argument. Can be an anonymous function of the form \code{function(x) do(x)}.
+#'     Additional arguments can also be passed in through '...'.
+#' @param timeout in ms. If unspecified, a socket-specific default timeout will
+#'     be used. Note this applies to each of the receive and send legs, hence the
+#'     total elapsed time could be up to twice this parameter plus the time to
+#'     perform 'execute' on the received data.
+#' @param ... additional arguments passed to the function specified in 'reply'.
+#'
+#' @return Invisible NULL.
+#'
+#' @details Async recv will block while awaiting a message to arrive and is
+#'     usually the desired result. Set a timeout to allow the function to return
+#'     if no data is forthcoming.
+#'
+#'     In case of an error in unserialisation or data conversion, the function
+#'     will return the received raw vector to allow the data to be recovered.
+#'
+#' @examples
+#' req <- socket("req", listen = "tcp://127.0.0.1:6546")
+#' rep <- socket("rep", dial = "tcp://127.0.0.1:6546")
+#'
+#' ctxq <- context(req)
+#' ctxp <- context(rep)
+#'
+#' ctx_send(ctxq, 2022, timeout = 100)
+#' ctx_rep(ctxp, execute = function(x) x + 1, send_mode = "raw", timeout = 100)
+#' ctx_recv(ctxq, mode = "double", timeout = 100, keep.raw = FALSE)
+#'
+#' ctx_send(ctxq, 100, mode = "raw", timeout = 100)
+#' ctx_rep(ctxp, recv_mode = "double", execute = log, base = 10, timeout = 100)
+#' ctx_recv(ctxq, timeout = 100, keep.raw = FALSE)
+#'
+#' close(req)
+#' close(rep)
+#'
+#' @export
+#'
+ctx_rep <- function(context,
+                    ...,
+                    recv_mode = c("serial", "character", "complex", "double",
+                                  "integer", "logical", "numeric", "raw"),
+                    send_mode = c("serial", "raw"),
+                    execute,
+                    timeout) {
+
+  recv_mode <- match.arg(recv_mode)
+  send_mode <- match.arg(send_mode)
+  if (missing(timeout)) timeout <- -2L
+  res <- .Call(rnng_ctx_recv, context, 1L, timeout)[[1L]]
+  is.integer(res) && {
+    message(res, " : ", nng_error(res))
+    return(invisible(res))
+  }
+  on.exit(expr = return(res))
+  data <- switch(recv_mode,
+                 serial = unserialize(connection = res),
+                 character = (r <- readBin(con = res, what = recv_mode, n = length(res)))[r != ""],
+                 raw = res,
+                 readBin(con = res, what = recv_mode, n = length(res)))
+  on.exit(expr = NULL)
+  msg <- execute(data, ...)
+  ctx_send(context, msg, mode = send_mode, timeout = timeout)
+
+}
+
+#' Request over Context (Client for Req/Rep Protocol)
+#'
+#' Implements a caller/client for the req node of the req/rep protocol. Sends
+#'     data to the rep node (executor/server) and awaits the result to be returned.
+#'
+#' @inheritParams ctx_rep
+#' @inheritParams ctx_recv
+#' @param data an R object (if mode is not 'serial', an R vector).
+#' @param timeout in ms. If unspecified, a socket-specific default timeout will
+#'     be used. Note this applies to each of the send and receive legs, hence the
+#'     total elapsed time could be up to twice this parameter.
+#'
+#' @return Named list of 2 elements: 'raw' containing the raw vector received
+#'     from the server and 'data' containing the converted R object, or else the
+#'     converted R object if 'keep.raw' is set to FALSE.
+#'
+#' @details Async recv will block while awaiting a response from the server and
+#'     is usually the desired behaviour. Set a timeout to allow the function to
+#'     return in case of no response.
+#'
+#'     In case of an error in unserialisation or data conversion, the function
+#'     will return the received raw vector to allow the data to be recovered.
+#'
+#' @examples
+#' req <- socket("req", listen = "tcp://127.0.0.1:6546")
+#' rep <- socket("rep", dial = "tcp://127.0.0.1:6546")
+#'
+#' ctxq <- context(req)
+#' ctxp <- context(rep)
+#'
+#' # works if req and rep are running in parallel in different processes
+#' ctx_rep(ctxp, execute = function(x) x + 1, timeout = 10)
+#' ctx_req(ctxq, data = 2022, timeout = 10)
+#'
+#' close(req)
+#' close(rep)
+#'
+#' @export
+#'
+ctx_req <- function(context,
+                    data,
+                    send_mode = c("serial", "raw"),
+                    recv_mode = c("serial", "character", "complex", "double",
+                                  "integer", "logical", "numeric", "raw"),
+                    timeout,
+                    keep.raw = TRUE) {
+
+  send_mode <- match.arg(send_mode)
+  recv_mode <- match.arg(recv_mode)
+  if (missing(timeout)) timeout <- -2L
+  data <- list(switch(send_mode,
+                      serial = serialize(object = data, connection = NULL),
+                      if (is.raw(data)) data else writeBin(object = data, con = raw())))
+  res <- .Call(rnng_ctx_send, context, data, timeout)[[1L]]
+  res == 0L || {
+    message(res, " : ", nng_error(res))
+    return(invisible(res))
+  }
+  res <- .Call(rnng_ctx_recv, context, 1L, timeout)[[1L]]
+  is.integer(res) && {
+    message(res, " : ", nng_error(res))
+    return(invisible(res))
+  }
+  on.exit(expr = return(res))
+  data <- switch(recv_mode,
+                 serial = unserialize(connection = res),
+                 character = (r <- readBin(con = res, what = recv_mode, n = length(res)))[r != ""],
+                 raw = res,
+                 readBin(con = res, what = recv_mode, n = length(res)))
   on.exit(expr = NULL)
   if (missing(keep.raw) || isTRUE(keep.raw)) list(raw = res, data = data) else data
 

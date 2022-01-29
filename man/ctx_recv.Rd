@@ -18,11 +18,10 @@ ctx_recv(
 
 \item{n}{[default 1L] number of messages to receive asynchronously.}
 
-\item{mode}{[default 'serial'] whether data will be sent serialized or as a
-raw vector. Use 'serial' for sending and receiving within R to ensure
-perfect reproducibility. Use 'raw' for sending vectors of any type (will be
-converted to a raw byte vector for sending) - essential when interfacing
-with external applications.}
+\item{mode}{[default 'serial'] mode of vector to be read - one of 'serial',
+'character', 'complex', 'double', 'integer', 'logical', 'numeric', or 'raw'.
+The default 'serial' means a serialised R object, for the other modes,
+the raw vector received will be converted into the respective mode.}
 
 \item{timeout}{in ms. If unspecified, a socket-specific default timeout will
 be used.}
