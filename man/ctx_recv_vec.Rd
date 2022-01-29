@@ -15,17 +15,20 @@ ctx_recv_vec(
 \arguments{
 \item{context}{a Context.}
 
-\item{mode}{[default 'character'] mode of vector to be read - one of
-'character', 'complex', 'double', 'integer', 'logical', 'numeric', 'raw'.}
+\item{mode}{[default 'serial'] whether data will be sent serialized or as a
+raw vector. Use 'serial' for sending and receiving within R to ensure
+perfect reproducibility. Use 'raw' for sending vectors of any type (will be
+converted to a raw byte vector for sending) - essential when interfacing
+with external applications.}
 
 \item{n}{[default 1L] number of messages to receive asynchronously.}
 
 \item{timeout}{in ms. If unspecified, a socket-specific default timeout will
 be used.}
 
-\item{keep.raw}{[default TRUE] TRUE to keep the received raw vector (useful
-for verification e.g. via hashing). If FALSE, will return the
-unserialised object only.}
+\item{keep.raw}{[default TRUE] logical flag whether to keep the received raw
+vector (useful for verification e.g. via hashing). If FALSE, will return
+the converted data only.}
 }
 \value{
 Named list of 2 elements: 'raw' containing a list of received raw
@@ -38,25 +41,14 @@ Named list of 2 elements: 'raw' containing a list of received raw
     element use \code{$data[[1]]}.
 }
 \description{
-Receive vector data asynchronously over a Context (with ability to set a
-    timeout). The counterpart to \code{\link{ctx_send_vec}}, data will be
-    re-created from the raw vector according to the specified mode. Can be
-    used when interfacing with external programs.
+DEPRECATED [Use ctx_recv specifying mode] Receive vector data asynchronously
+    over a Context (with ability to set a timeout). The counterpart to
+    \code{\link{ctx_send_vec}}, data will be re-created from the raw vector
+    according to the specified mode. Can be used when interfacing with
+    external programs.
 }
 \details{
 Async recv will block while awaiting all 'n' messages to arrive. Set
     a timeout to ensure that the function returns under all conditions.
 }
-\examples{
-req <- socket("req", listen = "inproc://nanonext")
-rep <- socket("rep", dial = "inproc://nanonext")
-
-ctxq <- context(req)
-ctxp <- context(rep)
-ctx_send_vec(ctxq, c(1.1, 2.2), c(3.3, 4.4), timeout = 100)
-ctx_recv_vec(ctxp, "double", 2L, timeout = 100)
-
-close(req)
-close(rep)
-
-}
+\keyword{internal}

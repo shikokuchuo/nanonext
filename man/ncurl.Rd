@@ -10,24 +10,27 @@ ncurl(http)
 \item{http}{the URL/address of the resource to retrieve.}
 }
 \value{
-Named list of 2 elements: 'raw' containing a raw vector of the received
-    resource and 'data', the raw vector converted to a character string.
+Named list of 2 elements:
+    \itemize{
+    \item{\code{$raw}} {- a raw vector of the received resource (may be saved
+    to a file using \code{\link{writeBin}} to re-create the original)}
+    \item{\code{$data}} {- the raw vector converted to a character string (if
+    the served content was a recognised text format), allowing further parsing
+    within R as html, json, xml etc., or NULL otherwise (if the content was a
+    binary file etc.)}
+    }
 }
 \description{
 nano cURL - a minimalistic http(s) client.
 }
-\details{
-In interactive sessions, will prompt upon receiving a redirect
-    location whether to follow or not (default is Yes). In non-interactive
-    sessions, redirects are never followed.
+\section{Redirects}{
 
-    The raw vector may be saved to a file using \code{\link{writeBin}} to
-    re-create the original resource.
 
-    The data vector is a character string allowing further parsing within R,
-    as HTML, JSON etc. if the served content was a valid text format, or NULL
-    otherwise, e.g. content was a binary file).
+    In interactive sessions, will prompt upon receiving a redirect location
+    whether to follow or not (default: yes). In non-interactive sessions,
+    redirects are never followed.
 }
+
 \section{TLS Support}{
 
 
@@ -37,3 +40,7 @@ In interactive sessions, will prompt upon receiving a redirect
     \code{Sys.setenv(NANONEXT_TLS=1)}. Note: not applicable for Windows systems.
 }
 
+\examples{
+ncurl("http://httpbin.org/headers")
+
+}

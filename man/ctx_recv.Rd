@@ -4,40 +4,53 @@
 \alias{ctx_recv}
 \title{Receive over Context (Async)}
 \usage{
-ctx_recv(context, n = 1L, timeout, keep.raw = TRUE)
+ctx_recv(
+  context,
+  n = 1L,
+  mode = c("serial", "character", "complex", "double", "integer", "logical", "numeric",
+    "raw"),
+  timeout,
+  keep.raw = TRUE
+)
 }
 \arguments{
 \item{context}{a Context.}
 
 \item{n}{[default 1L] number of messages to receive asynchronously.}
 
+\item{mode}{[default 'serial'] whether data will be sent serialized or as a
+raw vector. Use 'serial' for sending and receiving within R to ensure
+perfect reproducibility. Use 'raw' for sending vectors of any type (will be
+converted to a raw byte vector for sending) - essential when interfacing
+with external applications.}
+
 \item{timeout}{in ms. If unspecified, a socket-specific default timeout will
 be used.}
 
-\item{keep.raw}{[default TRUE] TRUE to keep the received raw vector (useful
-for verification e.g. via hashing). If FALSE, will return the
-unserialised object only.}
+\item{keep.raw}{[default TRUE] logical flag whether to keep the received raw
+vector (useful for verification e.g. via hashing). If FALSE, will return
+the converted data only.}
 }
 \value{
 Named list of 2 elements: 'raw' containing a list of received raw
-    vectors and 'data' containing a list of unserialised R objects, or else a
-    list of unserialised R objects if keep.raw is set to FALSE.
+    vectors and 'data' containing a list of converted R objects, or else a
+    list of converted R objects if keep.raw is set to FALSE.
 
     Note: a list of lists is always returned even when n = 1. To access the
     first raw element, for example, use \code{$raw[[1]]} and the first data
     element use \code{$data[[1]]}.
 }
 \description{
-Receive serialised data asynchronously over a Context (with ability to set a
-    timeout). For sending and receiving within R.
+Receive any number of R objects asynchronously over a Context, with the
+    ability to set receive timeouts.
 }
 \details{
 Async recv will block while awaiting all 'n' messages to arrive. Set
-    a timeout to ensure that the function returns under all conditions.
+    a timeout to ensure that the function returns under all scenarios.
 
-    In case of an error in unserialisation (e.g. the data was not sent
-    serialised), the function will still return a list of received raw vectors
-    to allow the data to be recovered.
+    In case of an error in unserialisation or data conversion, the function
+    will still return a list of received raw vectors to allow the data to be
+    recovered.
 }
 \examples{
 req <- socket("req", listen = "inproc://nanonext")
@@ -47,6 +60,9 @@ ctxq <- context(req)
 ctxp <- context(rep)
 ctx_send(ctxq, data.frame(a = 1, b = 2), data.frame(c = 3, d = 4), timeout = 100)
 ctx_recv(ctxp, 2L, timeout = 100)
+
+ctx_send(ctxq, c(1.1, 2.2), c(3.3, 4.4), mode = "raw", timeout = 100)
+ctx_recv(ctxp, n = 2L, mode = "double", timeout = 100)
 
 close(req)
 close(rep)

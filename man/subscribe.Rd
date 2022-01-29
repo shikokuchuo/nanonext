@@ -20,24 +20,25 @@ For a socket using the sub protocol in a publisher/subscriber pattern. Set a
     topic to subscribe to.
 }
 \details{
-To use pub/sub you must use \code{\link{send_vec}} and
-    \code{\link{recv_vec}} so that the messages are not serialised otherwise
-    the topics will not be recognised.
-
-    Note: the publisher needs to send a vector that separates the topic from
-    the rest of the message such as \code{send_vec(socket, c("topic", "message"))}
-    (this ensures that topic ends with the required null byte for it to be
-    recognised).
+To use pub/sub the publisher must:
+    \itemize{
+    \item{specify \code{mode = 'raw'} when sending to allow the topics to be
+    recognised by the receiving party.}
+    \item{send a vector that separates the topic from the rest of the message
+    e.g. \code{send(socket, c("topic", "message"), mode = "raw")} - this
+    ensures that topic ends with the required null byte for it to be
+    recognised.}
+    }
 }
 \examples{
 pub <- socket("pub", listen = "inproc://nanonext")
 sub <- socket("sub", dial = "inproc://nanonext")
 
 subscribe(sub, "examples")
-send_vec(pub, c("examples", "this is an example"))
-recv_vec(sub, "character")
-send_vec(pub, c("other", "this other topic will not be received"))
-recv_vec(sub, "character")
+send(pub, c("examples", "this is an example"), mode = "raw")
+recv(sub, "character")
+send(pub, c("other", "this other topic will not be received"), mode = "raw")
+recv(sub, "character")
 
 close(pub)
 close(sub)

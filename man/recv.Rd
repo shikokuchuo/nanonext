@@ -4,30 +4,41 @@
 \alias{recv}
 \title{Receive}
 \usage{
-recv(socket, block = FALSE, keep.raw = TRUE)
+recv(
+  socket,
+  mode = c("serial", "character", "complex", "double", "integer", "logical", "numeric",
+    "raw"),
+  block = FALSE,
+  keep.raw = TRUE
+)
 }
 \arguments{
 \item{socket}{a Socket.}
 
+\item{mode}{[default 'serial'] mode of vector to be read - one of 'serial',
+'character', 'complex', 'double', 'integer', 'logical', 'numeric', or 'raw'.
+The default 'serial' means a serialised R object, for the other modes,
+the raw vector received will be converted into the respective mode.}
+
 \item{block}{[default FALSE] logical flag whether to block until successful
 or return immediately even if unsuccessful (e.g. nothing to receive).}
 
-\item{keep.raw}{[default TRUE] TRUE to keep the received raw vector (useful
-for verification e.g. via hashing). If FALSE, will return the
-unserialised object only.}
+\item{keep.raw}{[default TRUE] logical flag whether to keep the received raw
+vector (useful for verification e.g. via hashing). If FALSE, will return
+the converted data only.}
 }
 \value{
 Named list of 2 elements: 'raw' containing the received raw vector
-    and 'data' containing the unserialised R object, or else the unserialised
-    R object if 'keep.raw' is set to FALSE.
+    and 'data' containing the converted R object, or else the converted R
+    object if 'keep.raw' is set to FALSE.
 }
 \description{
-Receive serialised data over a Socket. For sending and receiving within R.
+Receive data over a Socket.
 }
 \details{
-In case of an error in unserialisation (e.g. the data was not sent
-    serialised), the function will still return the received raw vector to
-    allow the data to be recovered.
+In case of an error in unserialisation or data conversion, the
+    function will still return the received raw vector to allow the data to
+    be recovered.
 }
 \examples{
 s1 <- socket("bus", listen = "inproc://nanonext")
@@ -36,9 +47,14 @@ s2 <- socket("bus", dial = "inproc://nanonext")
 send(s1, data.frame(a = 1, b = 2))
 res <- recv(s2)
 res
-
 send(s1, data.frame(a = 1, b = 2), echo = FALSE)
 recv(s2, keep.raw = FALSE)
+
+send(s1, c(1.1, 2.2, 3.3), mode = "raw")
+res <- recv(s2, mode = "double")
+res
+send(s1, "example test", mode = "raw", echo = FALSE)
+recv(s2, mode = "character", keep.raw = FALSE)
 
 close(s1)
 close(s2)

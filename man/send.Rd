@@ -4,12 +4,18 @@
 \alias{send}
 \title{Send}
 \usage{
-send(socket, data, block = FALSE, echo = TRUE)
+send(socket, data, mode = c("serial", "raw"), block = FALSE, echo = TRUE)
 }
 \arguments{
 \item{socket}{a Socket.}
 
-\item{data}{an R object, which will be sent serialized.}
+\item{data}{an R object (if mode = 'raw', an R vector).}
+
+\item{mode}{[default 'serial'] whether data will be sent serialized or as a
+raw vector. Use 'serial' for sending and receiving within R to ensure
+perfect reproducibility. Use 'raw' for sending vectors of any type (will be
+converted to a raw byte vector for sending) - essential when interfacing
+with external applications.}
 
 \item{block}{[default FALSE] logical flag whether to block until successful
 or return immediately even if unsuccessful (e.g. no connection available).}
@@ -22,13 +28,13 @@ invisble NULL will be returned instead.}
 Raw vector of sent data, or invisible NULL if 'echo' is set to FALSE.
 }
 \description{
-Send data over a Socket. For sending and receiving within R. Objects are sent
-    serialized to ensure perfect reproducibility.
+Send data over a Socket.
 }
 \examples{
 pub <- socket("pub", dial = "inproc://nanonext")
 
 send(pub, data.frame(a = 1, b = 2))
+send(pub, c(10.1, 20.2, 30.3), mode = "raw")
 
 close(pub)
 

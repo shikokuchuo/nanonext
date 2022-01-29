@@ -9,7 +9,8 @@ ctx_send_vec(context, ..., timeout)
 \arguments{
 \item{context}{a Context.}
 
-\item{...}{one or more R objects to send (serialised) asynchronously.}
+\item{...}{one or more R objects (if mode = 'raw', R vectors) to send
+asynchronously.}
 
 \item{timeout}{in ms. If unspecified, a socket-specific default timeout will
 be used.}
@@ -18,9 +19,10 @@ be used.}
 A vector of zeros (invisibly) on success.
 }
 \description{
-Send any number of R vectors asynchronously over a Context, with the ability
-    to set (optional) send timeouts. Data will be sent as binary without R
-    serialisation, hence appropriate for interfacing with external programs.
+DEPRECATED [Use ctx_send specifying mode = 'raw'] Send any number of R vectors
+    asynchronously over a Context, with the ability to set (optional) send
+    timeouts. Data will be sent as binary without R serialisation, hence
+    appropriate for interfacing with external programs.
 }
 \details{
 Will block if the send is in progress and has not yet completed -
@@ -28,15 +30,4 @@ Will block if the send is in progress and has not yet completed -
     that can be queued if they have yet to be received. Set a timeout to
     ensure the function returns under all conditions.
 }
-\examples{
-req <- socket("req", listen = "inproc://nanonext")
-rep <- socket("rep", dial = "inproc://nanonext")
-
-ctx <- context(req)
-out <- ctx_send_vec(ctx, c(1.1, 2.2), c(3.3, 4.4), timeout = 1000)
-out
-
-close(req)
-close(rep)
-
-}
+\keyword{internal}

@@ -43,8 +43,8 @@
 #' nano$listener
 #'
 #' nano1 <- nano("bus", dial = "inproc://nanonext")
-#' nano$send_vec("example test")
-#' nano1$recv_vec("character")
+#' nano$send("example test", mode = "raw")
+#' nano1$recv("character")
 #'
 #' nano$socket_close()
 #' nano1$socket_close()
@@ -90,51 +90,36 @@ nano <- function(protocol = c("pair", "bus", "push", "pull", "req", "rep",
                                autostart = TRUE) listen(nano,
                                                         url = url,
                                                         autostart = autostart)
-  nano[["recv"]] <- function(block = FALSE, keep.raw = TRUE) recv(socket,
-                                                                  block = block,
-                                                                  keep.raw = keep.raw)
+  nano[["recv"]] <- function(mode = c("serial", "character", "complex", "double",
+                                      "integer", "logical", "numeric", "raw"),
+                             block = FALSE,
+                             keep.raw = TRUE) recv(socket,
+                                                   mode = mode,
+                                                   block = block,
+                                                   keep.raw = keep.raw)
   nano[["recv_aio"]] <- function(n = 1L,
+                                 mode = c("serial", "character", "complex", "double",
+                                          "integer", "logical", "numeric", "raw"),
                                  timeout,
                                  keep.raw = TRUE) recv_aio(socket,
                                                            n = n,
+                                                           mode = mode,
                                                            timeout = timeout,
                                                            keep.raw = keep.raw)
-  nano[["recv_vec"]] <- function(mode = c("character", "complex", "double", "integer",
-                                          "logical", "numeric", "raw"),
-                                 block = FALSE,
-                                 keep.raw = TRUE) recv_vec(socket,
-                                                           mode = mode,
-                                                           block = block,
-                                                           keep.raw = keep.raw)
-  nano[["recv_vec_aio"]] <- function(mode = c("character", "complex", "double", "integer",
-                                              "logical", "numeric", "raw"),
-                                     n = 1L,
-                                     timeout,
-                                     keep.raw = TRUE) recv_vec_aio(socket,
-                                                                   mode = mode,
-                                                                   n = n,
-                                                                   timeout = timeout,
-                                                                   keep.raw = keep.raw)
   nano[["send"]] <- function(data,
+                             mode = c("serial", "raw"),
                              block = FALSE,
                              echo = TRUE) send(socket,
                                                data = data,
+                                               mode = mode,
                                                block = block,
                                                echo = echo)
   nano[["send_aio"]] <- function(...,
+                                 mode = c("serial", "raw"),
                                  timeout) send_aio(socket,
                                                    ...,
+                                                   mode = mode,
                                                    timeout = timeout)
-  nano[["send_vec"]] <- function(data,
-                                 block = FALSE,
-                                 echo = TRUE) send_vec(socket,
-                                                       data = data,
-                                                       block = block,
-                                                       echo = echo)
-  nano[["send_vec_aio"]] <- function(...,
-                                     timeout) send_vec_aio(socket,
-                                                           ...,
-                                                           timeout = timeout)
   nano[["socket_close"]] <- function() close(socket)
   nano[["socket_setopt"]] <- function(type = c("bool", "int", "ms", "size",
                                                "string", "uint64"),

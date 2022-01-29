@@ -4,12 +4,19 @@
 \alias{send_aio}
 \title{Send Async}
 \usage{
-send_aio(socket, ..., timeout)
+send_aio(socket, ..., mode = c("serial", "raw"), timeout)
 }
 \arguments{
 \item{socket}{a Socket.}
 
-\item{...}{one or more R objects to send (serialised) asynchronously.}
+\item{...}{one or more R objects (if mode = 'raw', R vectors) to send
+asynchronously.}
+
+\item{mode}{[default 'serial'] whether data will be sent serialized or as a
+raw vector. Use 'serial' for sending and receiving within R to ensure
+perfect reproducibility. Use 'raw' for sending vectors of any type (will be
+converted to a raw byte vector for sending) - essential when interfacing
+with external applications.}
 
 \item{timeout}{in ms. If unspecified, a socket-specific default timeout will
 be used.}
@@ -19,20 +26,23 @@ A vector of zeros (invisibly) on success.
 }
 \description{
 Send any number of R objects asynchronously over a Socket, with the ability
-    to set (optional) send timeouts. For sending and receiving within R -
-    objects are sent serialized to ensure perfect reproducibility.
+    to set send timeouts.
 }
 \details{
 Will block if the send is in progress and has not yet completed -
     certain protocol / transport combinations may limit the number of messages
     that can be queued if they have yet to be received. Set a timeout to
-    ensure the function returns under all conditions.
+    ensure the function returns under all scenarios.
 }
 \examples{
 pub <- socket("pub", dial = "inproc://nanonext")
 
 send_aio(pub, data.frame(a = 1, b = 2), data.frame(c = 3, d = 4), timeout = 100)
 out <- send_aio(pub, data.frame(a = 1, b = 2), data.frame(c = 3, d = 4), timeout = 100)
+out
+
+send_aio(pub, "message 1", "message 2", mode = "raw", timeout = 100)
+out <- send_aio(pub, "message 1", "message 2", mode = "raw", timeout = 100)
 out
 
 close(pub)

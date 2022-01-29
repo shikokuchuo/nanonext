@@ -23,14 +23,8 @@ invisble NULL will be returned instead.}
 Raw vector of sent data, or invisible NULL if 'echo' is set to FALSE.
 }
 \description{
-Send vector data over a Socket. Data will be sent as binary without R
-    serialisation, hence appropriate for interfacing with external programs.
+DEPRECATED [Use send specifying mode = 'raw'] Send vector data over a Socket.
+    Data will be sent as binary without R serialisation, hence appropriate
+    for interfacing with external programs.
 }
-\examples{
-pub <- socket("pub", dial = "inproc://nanonext")
-
-send_vec(pub, c(10.1, 20.2, 30.3))
-
-close(pub)
-
-}
+\keyword{internal}

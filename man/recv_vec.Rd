@@ -30,22 +30,9 @@ Named list of 2 elements: 'raw' containing the received raw vector
     decoded vector of type 'mode' if keep.raw is set to FALSE.
 }
 \description{
-Receive vector data over a Socket. The counterpart to \code{\link{send_vec}},
-    data will be re-created from the raw vector according to the specified
-    mode. Can be used when interfacing with external programs.
+DEPRECATED [Use recv specifying mode] Receive vector data over a Socket. The
+    counterpart to \code{\link{send_vec}}, data will be re-created from the
+    raw vector according to the specified mode. Can be used when interfacing
+    with external programs.
 }
-\examples{
-s1 <- socket("bus", listen = "inproc://nanonext")
-s2 <- socket("bus", dial = "inproc://nanonext")
-
-send_vec(s1, c(1.1, 2.2, 3.3))
-res <- recv_vec(s2, "double")
-res
-
-send_vec(s1, "example test", echo = FALSE)
-recv_vec(s2, "character", keep.raw = FALSE)
-
-close(s1)
-close(s2)
-
-}
+\keyword{internal}

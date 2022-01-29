@@ -4,40 +4,52 @@
 \alias{recv_aio}
 \title{Receive Async}
 \usage{
-recv_aio(socket, n = 1L, timeout, keep.raw = TRUE)
+recv_aio(
+  socket,
+  n = 1L,
+  mode = c("serial", "character", "complex", "double", "integer", "logical", "numeric",
+    "raw"),
+  timeout,
+  keep.raw = TRUE
+)
 }
 \arguments{
 \item{socket}{a Socket.}
 
 \item{n}{[default 1L] number of messages to receive asynchronously.}
 
+\item{mode}{[default 'serial'] mode of vector to be read - one of 'serial',
+'character', 'complex', 'double', 'integer', 'logical', 'numeric', or 'raw'.
+The default 'serial' means a serialised R object, for the other modes,
+the raw vector received will be converted into the respective mode.}
+
 \item{timeout}{in ms. If unspecified, a socket-specific default timeout will
 be used.}
 
-\item{keep.raw}{[default TRUE] TRUE to keep the received raw vector (useful
-for verification e.g. via hashing). If FALSE, will return the
-unserialised object only.}
+\item{keep.raw}{[default TRUE] logical flag whether to keep the received raw
+vector (useful for verification e.g. via hashing). If FALSE, will return
+the converted data only.}
 }
 \value{
 Named list of 2 elements: 'raw' containing a list of received raw
-    vectors and 'data' containing a list of unserialised R objects, or else a
-    list of unserialised R objects if keep.raw is set to FALSE.
+    vectors and 'data' containing a list of converted R objects, or else a
+    list of converted R objects if keep.raw is set to FALSE.
 
-    Note: a list of lists is always returned even when n = 1. To access the
-    first raw element, for example, use \code{$raw[[1]]} and the first data
+    Note: a list of lists is always returned even when n = 1. For example, to
+    access the first raw element, use \code{$raw[[1]]} and the first data
     element use \code{$data[[1]]}.
 }
 \description{
-Receive serialised data asynchronously over a Socket (with ability to set a
-    timeout). For sending and receiving within R.
+Receive any number of R objects asynchronously over a Socket, with the
+    ability to set receive timeouts.
 }
 \details{
 Async recv will block while awaiting all 'n' messages to arrive. Set
-    a timeout to ensure that the function returns under all conditions.
+    a timeout to ensure that the function returns under all scenarios.
 
-    In case of an error in unserialisation (e.g. the data was not sent
-    serialised), the function will still return a list of received raw vectors
-    to allow the data to be recovered.
+    In case of an error in unserialisation or data conversion, the function
+    will still return a list of received raw vectors to allow the data to be
+    recovered.
 }
 \examples{
 s1 <- socket("pair", listen = "inproc://nanonext")
@@ -46,9 +58,15 @@ s2 <- socket("pair", dial = "inproc://nanonext")
 send_aio(s1, data.frame(a = 1, b = 2), data.frame(c = 3, d = 4), timeout = 100)
 res <- recv_aio(s2, 2L, timeout = 100)
 res
-
 send_aio(s1, data.frame(a = 1, b = 2), data.frame(c = 3, d = 4), timeout = 100)
 recv_aio(s2, 2L, timeout = 100, keep.raw = FALSE)
+
+send_aio(s1, c(1.1, 2.2), c(3.3, 4.4), mode = "raw", timeout = 100)
+res <- recv_aio(s2, n = 2L, mode = "double", timeout = 100)
+res
+
+send_aio(s1, "message 1", "message 2", mode = "raw", timeout = 100)
+recv_aio(s2, n = 2L, mode = "character", timeout = 100, keep.raw = FALSE)
 
 close(s1)
 close(s2)

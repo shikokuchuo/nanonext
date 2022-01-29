@@ -4,12 +4,19 @@
 \alias{ctx_send}
 \title{Send over Context (Async)}
 \usage{
-ctx_send(context, ..., timeout)
+ctx_send(context, ..., mode = c("serial", "raw"), timeout)
 }
 \arguments{
 \item{context}{a Context.}
 
-\item{...}{one or more R objects to send (serialised) asynchronously.}
+\item{...}{one or more R objects (if mode = 'raw', R vectors) to send
+asynchronously.}
+
+\item{mode}{[default 'serial'] whether data will be sent serialized or as a
+raw vector. Use 'serial' for sending and receiving within R to ensure
+perfect reproducibility. Use 'raw' for sending vectors of any type (will be
+converted to a raw byte vector for sending) - essential when interfacing
+with external applications.}
 
 \item{timeout}{in ms. If unspecified, a socket-specific default timeout will
 be used.}
@@ -19,14 +26,13 @@ A vector of zeros (invisibly) on success.
 }
 \description{
 Send any number of R objects asynchronously over a Context, with the ability
-    to set (optional) send timeouts. For sending and receiving within R -
-    objects are sent serialized to ensure perfect reproducibility.
+    to set send timeouts.
 }
 \details{
 Will block if the send is in progress and has not yet completed -
     certain protocol / transport combinations may limit the number of messages
     that can be queued if they have yet to be received. Set a timeout to
-    ensure the function returns under all conditions.
+    ensure the function returns under all scenarios.
 }
 \examples{
 req <- socket("req", listen = "inproc://nanonext")
@@ -34,6 +40,11 @@ rep <- socket("rep", dial = "inproc://nanonext")
 
 ctx <- context(req)
 out <- ctx_send(ctx, data.frame(a = 1, b = 2), data.frame(c = 3, d = 4), timeout = 100)
+out
+
+msg <- recv_aio(rep, n = 2L, timeout = 100)
+
+out <- ctx_send(ctx, c(1.1, 2.2), c(3.3, 4.4), mode = "raw", timeout = 100)
 out
 
 close(req)

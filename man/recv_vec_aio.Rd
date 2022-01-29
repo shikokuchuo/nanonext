@@ -38,27 +38,14 @@ Named list of 2 elements: 'raw' containing a list of received raw
     element use \code{$data[[1]]}.
 }
 \description{
-Receive vector data asynchronously over a Socket (with ability to set a
-    timeout). The counterpart to \code{\link{send_vec_aio}}, data will be
-    re-created from the raw vector according to the specified mode. Can be
-    used when interfacing with external programs.
+DEPRECATED [Use recv_aio specifying mode] Receive vector data asynchronously
+    over a Socket (with ability to set a timeout). The counterpart to
+    \code{\link{send_vec_aio}}, data will be re-created from the raw vector
+    according to the specified mode. Can be used when interfacing with external
+    programs.
 }
 \details{
 Async recv will block while awaiting all 'n' messages to arrive. Set
     a timeout to ensure that the function returns under all conditions.
 }
-\examples{
-s1 <- socket("pair", listen = "inproc://nanonext")
-s2 <- socket("pair", dial = "inproc://nanonext")
-
-send_vec_aio(s1, c(1.1, 2.2), c(3.3, 4.4), timeout = 100)
-res <- recv_vec_aio(s2, "double", 2L, timeout = 100)
-res
-
-send_vec_aio(s1, "message 1", "message 2", timeout = 100)
-recv_vec_aio(s2, "character", 2L, timeout = 100, keep.raw = FALSE)
-
-close(s1)
-close(s2)
-
-}
+\keyword{internal}
