@@ -17,9 +17,9 @@ ctx_rep(
 \arguments{
 \item{context}{a Context.}
 
-\item{...}{additional arguments passed to the function specified in 'reply'.}
+\item{...}{additional arguments passed to the function specified by 'execute'.}
 
-\item{recv_mode}{[default 'serial'] mode of vector to be read - one of 'serial',
+\item{recv_mode}{[default 'serial'] mode of vector to be received - one of 'serial',
 'character', 'complex', 'double', 'integer', 'logical', 'numeric', or 'raw'.
 The default 'serial' means a serialised R object, for the other modes,
 the raw vector received will be converted into the respective mode.}

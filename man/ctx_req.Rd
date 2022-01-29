@@ -17,7 +17,7 @@ ctx_req(
 \arguments{
 \item{context}{a Context.}
 
-\item{data}{an R object (if mode is not 'serial', an R vector).}
+\item{data}{an R object (if send_mode = 'raw', an R vector).}
 
 \item{send_mode}{[default 'serial'] whether data will be sent serialized or
 as a raw vector. Use 'serial' for sending and receiving within R to ensure
@@ -25,7 +25,7 @@ perfect reproducibility. Use 'raw' for sending vectors of any type (will be
 converted to a raw byte vector for sending) - essential when interfacing
 with external applications.}
 
-\item{recv_mode}{[default 'serial'] mode of vector to be read - one of 'serial',
+\item{recv_mode}{[default 'serial'] mode of vector to be received - one of 'serial',
 'character', 'complex', 'double', 'integer', 'logical', 'numeric', or 'raw'.
 The default 'serial' means a serialised R object, for the other modes,
 the raw vector received will be converted into the respective mode.}

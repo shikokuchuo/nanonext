@@ -36,7 +36,10 @@ send <- function(socket, data, mode = c("serial", "raw"), block = FALSE, echo = 
                  serial = serialize(object = data, connection = NULL),
                  raw = if (is.raw(data)) data else writeBin(object = data, con = raw()))
   res <- .Call(rnng_send, socket, data, block)
-  if (is.integer(res)) message(res, " : ", nng_error(res))
+  is.integer(res) && {
+    message(res, " : ", nng_error(res))
+    return(invisible(res))
+  }
   if (missing(echo) || isTRUE(echo)) res else invisible(0L)
 
 }
@@ -94,7 +97,7 @@ send_aio <- function(socket, ..., mode = c("serial", "raw"), timeout) {
 #' Receive data over a Socket.
 #'
 #' @param socket a Socket.
-#' @param mode [default 'serial'] mode of vector to be read - one of 'serial',
+#' @param mode [default 'serial'] mode of vector to be received - one of 'serial',
 #'     'character', 'complex', 'double', 'integer', 'logical', 'numeric', or 'raw'.
 #'     The default 'serial' means a serialised R object, for the other modes,
 #'     the raw vector received will be converted into the respective mode.
@@ -248,7 +251,10 @@ send_vec <- function(socket, data, block = FALSE, echo = TRUE) {
 
   data <- if (is.raw(data)) data else writeBin(object = data, con = raw())
   res <- .Call(rnng_send, socket, data, block)
-  if (is.integer(res)) message(res, " : ", nng_error(res))
+  is.integer(res) && {
+    message(res, " : ", nng_error(res))
+    return(invisible(res))
+  }
   if (missing(echo) || isTRUE(echo)) res else invisible()
 
 }

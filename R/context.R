@@ -174,7 +174,7 @@ ctx_recv <- function(context,
 #'     perfect reproducibility. Use 'raw' for sending vectors of any type (will be
 #'     converted to a raw byte vector for sending) - essential when interfacing
 #'     with external applications.
-#' @param recv_mode [default 'serial'] mode of vector to be read - one of 'serial',
+#' @param recv_mode [default 'serial'] mode of vector to be received - one of 'serial',
 #'     'character', 'complex', 'double', 'integer', 'logical', 'numeric', or 'raw'.
 #'     The default 'serial' means a serialised R object, for the other modes,
 #'     the raw vector received will be converted into the respective mode.
@@ -185,7 +185,7 @@ ctx_recv <- function(context,
 #'     be used. Note this applies to each of the receive and send legs, hence the
 #'     total elapsed time could be up to twice this parameter plus the time to
 #'     perform 'execute' on the received data.
-#' @param ... additional arguments passed to the function specified in 'reply'.
+#' @param ... additional arguments passed to the function specified by 'execute'.
 #'
 #' @return Invisible NULL.
 #'
@@ -251,7 +251,7 @@ ctx_rep <- function(context,
 #'
 #' @inheritParams ctx_rep
 #' @inheritParams ctx_recv
-#' @param data an R object (if mode is not 'serial', an R vector).
+#' @param data an R object (if send_mode = 'raw', an R vector).
 #' @param timeout in ms. If unspecified, a socket-specific default timeout will
 #'     be used. Note this applies to each of the send and receive legs, hence the
 #'     total elapsed time could be up to twice this parameter.
