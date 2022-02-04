@@ -36,10 +36,10 @@ pub <- socket("pub", dial = "inproc://nanonext")
 
 aio <- send_aio(pub, data.frame(a = 1, b = 2), timeout = 100)
 aio
-aio_call(aio)
+aio_call(aio)$result
 
 aio <- send_aio(pub, "message 1", mode = "raw", timeout = 100)
-aio_call(aio)
+aio_call(aio)$result
 
 close(pub)
 

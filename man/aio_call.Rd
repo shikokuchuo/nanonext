@@ -10,10 +10,7 @@ aio_call(aio)
 \item{aio}{An Aio (object of class 'sendAio' or 'recvAio').}
 }
 \value{
-For a 'sendAio', zero on success. For a 'recvAio', either a named list
-    of 2 elements: 'raw' containing the received raw vector and 'data' containing
-    the converted R object, or else just the converted R object depending on
-    the parameters set.
+The original Aio object (invisibly).
 }
 \description{
 Retrieve the result of an asynchronous AIO operation. Will wait for the AIO
@@ -21,8 +18,15 @@ Retrieve the result of an asynchronous AIO operation. Will wait for the AIO
     the Aio is deallocated and further actions cannot be performed on it.
 }
 \details{
-For a 'recvAio', in case of an error in unserialisation or data
-    conversion, the received raw vector will be saved in $raw to allow the
+For a 'sendAio', the send result will be attached to the Aio in
+    \code{$result}. This will be zero on success.
+
+    For a 'recvAio', the received raw vector will be attached in \code{$raw}
+    (unless 'keep.raw' was set to FALSE when receiving), and the converted R
+    object in \code{$data}.
+
+    For a 'recvAio', in case of an error in unserialisation or data conversion,
+    the received raw vector will always be saved in \code{$raw} to allow the
     data to be recovered.
 }
 \examples{
