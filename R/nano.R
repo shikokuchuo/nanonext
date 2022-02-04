@@ -201,12 +201,31 @@ print.nanoListener <- function(x, ...) {
 
 #' @export
 #'
-print.nano <- function(x, ...) {
+print.recvAio <- function(x, ...) {
 
-  klass <- attr(x, "class")[1L]
-  switch(klass,
-         recvAio = cat("< recvAio > - use aio_call() to retrieve message\n"),
-         sendAio = cat("< sendAio > - use aio_call() to retrieve result\n"))
+  cat("< recvAio >\n")
+  is.null(attr(x, "raw")) && is.null(attr(x, "data")) && {
+    cat(": use aio_call() to retrieve message\n")
+    return(invisible(x))
+  }
+  if (!is.null(attr(x, "raw")))
+    cat(" - $raw for raw message\n")
+  if (!is.null(attr(x, "data")))
+    cat(" - $data for message data\n")
+  invisible(x)
+
+}
+
+#' @export
+#'
+print.sendAio <- function(x, ...) {
+
+  cat("< sendAio >\n")
+  if (is.null(attr(x, "result"))) {
+    cat(": use aio_call() to retrieve result\n")
+  } else {
+    cat(" - $result for send result\n")
+  }
   invisible(x)
 
 }

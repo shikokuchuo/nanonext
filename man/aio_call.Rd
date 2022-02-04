@@ -20,17 +20,25 @@ Retrieve the result of an asynchronous AIO operation. Will wait for the AIO
     operation (blocking) if not yet complete. Once the result is retrieved,
     the Aio is deallocated and further actions cannot be performed on it.
 }
+\details{
+For a 'recvAio', in case of an error in unserialisation or data
+    conversion, the received raw vector will be saved in $raw to allow the
+    data to be recovered.
+}
 \examples{
 s1 <- socket("pair", listen = "inproc://nanonext")
 s2 <- socket("pair", dial = "inproc://nanonext")
 
-status <- send_aio(s1, data.frame(a = 1, b = 2), timeout = 100)
-status
-aio_call(status)
-
-res <- recv_aio(s2, timeout = 100, keep.raw = FALSE)
+res <- send_aio(s1, data.frame(a = 1, b = 2), timeout = 100)
 res
 aio_call(res)
+res
+res$result
+
+res <- recv_aio(s2, timeout = 100)
+res
+aio_call(res)$data
+res
 
 close(s1)
 close(s2)

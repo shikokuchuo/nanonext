@@ -104,20 +104,15 @@ ctx_send <- function(context, data, mode = c("serial", "raw"), timeout, echo = T
 #' @inheritParams recv
 #' @inheritParams send_aio
 #'
-#' @return Named list of 2 elements: 'raw' containing a list of received raw
-#'     vectors and 'data' containing a list of converted R objects, or else a
-#'     list of converted R objects if keep.raw is set to FALSE.
+#' @return Named list of 2 elements: 'raw' containing the received raw vector
+#'     and 'data' containing the converted R object, or else the converted R
+#'     object if 'keep.raw' is set to FALSE.
 #'
-#'     Note: a list of lists is always returned even when n = 1. To access the
-#'     first raw element, for example, use \code{$raw[[1]]} and the first data
-#'     element use \code{$data[[1]]}.
-#'
-#' @details Async recv will block while awaiting all 'n' messages to arrive. Set
-#'     a timeout to ensure that the function returns under all scenarios.
+#' @details Async recv will block while awaiting the receive operation to complete.
+#'     Set a timeout to ensure that the function returns under all scenarios.
 #'
 #'     In case of an error in unserialisation or data conversion, the function
-#'     will still return a list of received raw vectors to allow the data to be
-#'     recovered.
+#'     will still return the received raw vector to allow the data to be recovered.
 #'
 #' @examples
 #' req <- socket("req", listen = "inproc://nanonext")

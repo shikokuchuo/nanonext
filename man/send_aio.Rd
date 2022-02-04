@@ -39,7 +39,6 @@ aio
 aio_call(aio)
 
 aio <- send_aio(pub, "message 1", mode = "raw", timeout = 100)
-aio
 aio_call(aio)
 
 close(pub)

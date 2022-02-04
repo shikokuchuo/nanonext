@@ -72,7 +72,6 @@ send <- function(socket,
 #' aio_call(aio)
 #'
 #' aio <- send_aio(pub, "message 1", mode = "raw", timeout = 100)
-#' aio
 #' aio_call(aio)
 #'
 #' close(pub)
@@ -182,14 +181,18 @@ recv <- function(socket,
 #' res <- recv_aio(s2, timeout = 100, keep.raw = FALSE)
 #' res
 #' aio_call(res)
+#' res
 #'
 #' send_aio(s1, c(1.1, 2.2, 3.3), mode = "raw", timeout = 100)
 #' res <- recv_aio(s2, mode = "double", timeout = 100)
 #' aio_call(res)
+#' res
 #'
 #' send_aio(s1, "message 1", mode = "raw", timeout = 100)
 #' res <- recv_aio(s2, mode = "character", timeout = 100)
 #' aio_call(res)
+#' res$raw
+#' res$data
 #'
 #' close(s1)
 #' close(s2)
@@ -208,10 +211,9 @@ recv_aio <- function(socket,
   if (is.integer(aio)) {
     message(aio, " : ", nng_error(aio))
   } else {
-    attr(aio, "mode") <- mode
-    attr(aio, "keep.raw") <- missing(keep.raw) || isTRUE(keep.raw)
+    attr(aio, "callparams") <- list(mode, missing(keep.raw) || isTRUE(keep.raw))
   }
-  invisible(aio)
+  aio
 
 }
 
@@ -228,17 +230,24 @@ recv_aio <- function(socket,
 #'     the converted R object, or else just the converted R object depending on
 #'     the parameters set.
 #'
+#' @details For a 'recvAio', in case of an error in unserialisation or data
+#'     conversion, the received raw vector will be saved in $raw to allow the
+#'     data to be recovered.
+#'
 #' @examples
 #' s1 <- socket("pair", listen = "inproc://nanonext")
 #' s2 <- socket("pair", dial = "inproc://nanonext")
 #'
-#' status <- send_aio(s1, data.frame(a = 1, b = 2), timeout = 100)
-#' status
-#' aio_call(status)
-#'
-#' res <- recv_aio(s2, timeout = 100, keep.raw = FALSE)
+#' res <- send_aio(s1, data.frame(a = 1, b = 2), timeout = 100)
 #' res
 #' aio_call(res)
+#' res
+#' res$result
+#'
+#' res <- recv_aio(s2, timeout = 100)
+#' res
+#' aio_call(res)$data
+#' res
 #'
 #' close(s1)
 #' close(s2)
@@ -248,28 +257,36 @@ recv_aio <- function(socket,
 aio_call <- function(aio) {
 
   if (inherits(aio, "recvAio")) {
+
+    mode <- attr(aio, "callparams")[[1L]]
+    keep.raw <- attr(aio, "callparams")[[2L]]
     res <- .Call(rnng_aio_get_msg, aio)
+    if (keep.raw) attr(aio, "raw") <- res
     is.integer(res) && {
       message(res, " : ", nng_error(res))
-      return(invisible(res))
+      return(invisible(aio))
     }
-    on.exit(expr = return(res))
-    mode <- attr(aio, "mode")
+    on.exit(expr = {
+      attr(aio, "raw") <- res
+      return(invisible(aio))
+    })
     data <- switch(mode,
                    serial = unserialize(connection = res),
                    character = (r <- readBin(con = res, what = mode, n = length(res)))[r != ""],
                    raw = res,
                    readBin(con = res, what = mode, n = length(res)))
+    attr(aio, "data") <- data
     on.exit(expr = NULL)
-    if (attr(aio, "keep.raw")) list(raw = res, data = data) else data
+    invisible(aio)
 
   } else if (inherits(aio, "sendAio")) {
+
     res <- .Call(rnng_aio_result, aio)
+    attr(aio, "result") <- res
     if (res) {
       message(res, " : ", nng_error(res))
-      return(invisible(res))
     }
-    res
+    invisible(aio)
 
   } else {
     stop("this function may only be used on an Aio")

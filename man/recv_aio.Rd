@@ -46,14 +46,18 @@ send_aio(s1, data.frame(a = 1, b = 2), timeout = 100)
 res <- recv_aio(s2, timeout = 100, keep.raw = FALSE)
 res
 aio_call(res)
+res
 
 send_aio(s1, c(1.1, 2.2, 3.3), mode = "raw", timeout = 100)
 res <- recv_aio(s2, mode = "double", timeout = 100)
 aio_call(res)
+res
 
 send_aio(s1, "message 1", mode = "raw", timeout = 100)
 res <- recv_aio(s2, mode = "character", timeout = 100)
 aio_call(res)
+res$raw
+res$data
 
 close(s1)
 close(s2)
