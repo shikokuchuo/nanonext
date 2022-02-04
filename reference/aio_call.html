@@ -73,15 +73,17 @@
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>For a 'sendAio', zero on success. For a 'recvAio', either a named list
-    of 2 elements: 'raw' containing the received raw vector and 'data' containing
-    the converted R object, or else just the converted R object depending on
-    the parameters set.</p>
+    <p>The original Aio object (invisibly).</p>
     </div>
     <div id="details">
     <h2>Details</h2>
-    <p>For a 'recvAio', in case of an error in unserialisation or data
-    conversion, the received raw vector will be saved in $raw to allow the
+    <p>For a 'sendAio', the send result will be attached to the Aio in
+    <code>$result</code>. This will be zero on success.</p>
+<p>For a 'recvAio', the received raw vector will be attached in <code>$raw</code>
+    (unless 'keep.raw' was set to FALSE when receiving), and the converted R
+    object in <code>$data</code>.</p>
+<p>For a 'recvAio', in case of an error in unserialisation or data conversion,
+    the received raw vector will always be saved in <code>$raw</code> to allow the
     data to be recovered.</p>
     </div>
 
