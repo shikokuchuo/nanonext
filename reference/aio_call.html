@@ -78,6 +78,12 @@
     the converted R object, or else just the converted R object depending on
     the parameters set.</p>
     </div>
+    <div id="details">
+    <h2>Details</h2>
+    <p>For a 'recvAio', in case of an error in unserialisation or data
+    conversion, the received raw vector will be saved in $raw to allow the
+    data to be recovered.</p>
+    </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
@@ -86,18 +92,28 @@
 <span class="r-in"><span class="va">s2</span> <span class="op">&lt;-</span> <span class="fu"><a href="socket.html">socket</a></span><span class="op">(</span><span class="st">"pair"</span>, dial <span class="op">=</span> <span class="st">"inproc://nanonext"</span><span class="op">)</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> dialer started...</span>
 <span class="r-in"></span>
-<span class="r-in"><span class="va">status</span> <span class="op">&lt;-</span> <span class="fu"><a href="send_aio.html">send_aio</a></span><span class="op">(</span><span class="va">s1</span>, <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>a <span class="op">=</span> <span class="fl">1</span>, b <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>, timeout <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">status</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt; sendAio &gt; - use aio_call() to retrieve result</span>
-<span class="r-in"><span class="fu">aio_call</span><span class="op">(</span><span class="va">status</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="send_aio.html">send_aio</a></span><span class="op">(</span><span class="va">s1</span>, <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>a <span class="op">=</span> <span class="fl">1</span>, b <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>, timeout <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">res</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt; sendAio &gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> : use aio_call() to retrieve result</span>
+<span class="r-in"><span class="fu">aio_call</span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">res</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt; sendAio &gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - $result for send result</span>
+<span class="r-in"><span class="va">res</span><span class="op">$</span><span class="va">result</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
 <span class="r-in"></span>
-<span class="r-in"><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="recv_aio.html">recv_aio</a></span><span class="op">(</span><span class="va">s2</span>, timeout <span class="op">=</span> <span class="fl">100</span>, keep.raw <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="recv_aio.html">recv_aio</a></span><span class="op">(</span><span class="va">s2</span>, timeout <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">res</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt; recvAio &gt; - use aio_call() to retrieve message</span>
-<span class="r-in"><span class="fu">aio_call</span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt; recvAio &gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> : use aio_call() to retrieve message</span>
+<span class="r-in"><span class="fu">aio_call</span><span class="op">(</span><span class="va">res</span><span class="op">)</span><span class="op">$</span><span class="va">data</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   a b</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1 1 2</span>
+<span class="r-in"><span class="va">res</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt; recvAio &gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - $raw for raw message</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - $data for message data</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="fu"><a href="close.html">close</a></span><span class="op">(</span><span class="va">s1</span><span class="op">)</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> socket closed</span>
