@@ -57,14 +57,15 @@
 <h2 class="page-header" data-toc-text="0.1.0.9000" id="nanonext-0109000-under-development">nanonext 0.1.0.9000 (under development)<a class="anchor" aria-label="anchor" href="#nanonext-0109000-under-development"></a></h2>
 <div class="section level5">
 <h5 id="new-features-0-1-0-9000">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-1-0-9000"></a></h5>
-<ul><li>New <code><a href="../reference/ctx_rep.html">ctx_rep()</a></code> and <code><a href="../reference/ctx_req.html">ctx_req()</a></code> functions implement the full logic of an RPC server/client. Designed to be run in separate processes, the server will await data and apply an arbitrary function to it before returning a result, whilst the client will send data to the server and await a response.</li>
+<ul><li>Implemented full async I/O capabilities allowing <code><a href="../reference/send_aio.html">send_aio()</a></code> and <code><a href="../reference/recv_aio.html">recv_aio()</a></code> to return Aio objects, for which the results may be called using <code><a href="../reference/aio_call.html">aio_call()</a></code>.</li>
+<li>New <code><a href="../reference/ctx_rep.html">ctx_rep()</a></code> and <code><a href="../reference/ctx_req.html">ctx_req()</a></code> functions implement the full logic of an RPC server/client. Designed to be run in separate processes, the server will await data and apply an arbitrary function before returning a result, whilst the client will send data to the server and await a response.</li>
 <li>New <code><a href="../reference/ncurl.html">ncurl()</a></code> minimalistic http(s) client.</li>
 <li>Allow setting the environment variable ‘NANONEXT_TLS’ prior to package installation to enable TLS where the system NNG library has been built with TLS support (using Mbed TLS).</li>
 </ul></div>
 <div class="section level5">
 <h5 id="updates-0-1-0-9000">Updates<a class="anchor" aria-label="anchor" href="#updates-0-1-0-9000"></a></h5>
 <ul><li>All send and receive functions, e.g. <code><a href="../reference/send.html">send()</a></code>/<code><a href="../reference/recv.html">recv()</a></code>, gain a revamped ‘mode’ argument. This now permits the choice of whether to use R serialization, consolidating the functionality of the ’_vec’ series of functions.</li>
-<li>The ’_vec’ series of functions (‘send_vec’, ‘recv_vec’ etc.) is deprecated and will be removed in a future release.</li>
+<li>Functions ‘send_vec’ and ‘recv_vec’ are deprecated and will be removed in a future release.</li>
 </ul></div>
 </div>
     <div class="section level2">

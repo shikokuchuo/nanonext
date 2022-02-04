@@ -16,6 +16,12 @@
     <loc>https://shikokuchuo.net/nanonext/news/index.html</loc>
   </url>
   <url>
+    <loc>https://shikokuchuo.net/nanonext/reference/aio_call.html</loc>
+  </url>
+  <url>
+    <loc>https://shikokuchuo.net/nanonext/reference/aio_stop.html</loc>
+  </url>
+  <url>
     <loc>https://shikokuchuo.net/nanonext/reference/close.html</loc>
   </url>
   <url>
@@ -25,9 +31,6 @@
     <loc>https://shikokuchuo.net/nanonext/reference/ctx_recv.html</loc>
   </url>
   <url>
-    <loc>https://shikokuchuo.net/nanonext/reference/ctx_recv_vec.html</loc>
-  </url>
-  <url>
     <loc>https://shikokuchuo.net/nanonext/reference/ctx_rep.html</loc>
   </url>
   <url>
@@ -35,9 +38,6 @@
   </url>
   <url>
     <loc>https://shikokuchuo.net/nanonext/reference/ctx_send.html</loc>
-  </url>
-  <url>
-    <loc>https://shikokuchuo.net/nanonext/reference/ctx_send_vec.html</loc>
   </url>
   <url>
     <loc>https://shikokuchuo.net/nanonext/reference/dial.html</loc>
@@ -79,9 +79,6 @@
     <loc>https://shikokuchuo.net/nanonext/reference/recv_vec.html</loc>
   </url>
   <url>
-    <loc>https://shikokuchuo.net/nanonext/reference/recv_vec_aio.html</loc>
-  </url>
-  <url>
     <loc>https://shikokuchuo.net/nanonext/reference/send.html</loc>
   </url>
   <url>
@@ -89,9 +86,6 @@
   </url>
   <url>
     <loc>https://shikokuchuo.net/nanonext/reference/send_vec.html</loc>
-  </url>
-  <url>
-    <loc>https://shikokuchuo.net/nanonext/reference/send_vec_aio.html</loc>
   </url>
   <url>
     <loc>https://shikokuchuo.net/nanonext/reference/setopt.html</loc>
