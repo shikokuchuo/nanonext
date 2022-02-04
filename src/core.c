@@ -35,6 +35,16 @@ static void listener_finalizer(SEXP xptr) {
 
 }
 
+static void aio_finalizer(SEXP xptr) {
+
+  if (R_ExternalPtrAddr(xptr) == NULL)
+    return;
+  nng_aio *xp = (nng_aio *) R_ExternalPtrAddr(xptr);
+  nng_aio_free(xp);
+  R_ClearExternalPtr(xptr);
+
+}
+
 /* contexts ----------------------------------------------------------------- */
 
 SEXP rnng_ctx_open(SEXP socket) {
@@ -246,13 +256,13 @@ SEXP rnng_listener_close(SEXP listener) {
 SEXP rnng_send(SEXP socket, SEXP data, SEXP block) {
 
   if (R_ExternalPtrTag(socket) != nano_SocketSymbol)
-    error_return("'socket' is not a valid Socket");
+    error_return("'socket' is not a valid Socket or Context");
   nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(socket);
   const Rboolean blk = Rf_asLogical(block);
   int flags = blk == 1 ? 0 : 2u;
   const R_xlen_t dlen = XLENGTH(data);
   void *dp = (void *) RAW(data);
-  int xc =  nng_send(*sock, dp, dlen, flags);
+  int xc = nng_send(*sock, dp, dlen, flags);
   if (xc)
     return Rf_ScalarInteger(xc);
   return data;
@@ -285,98 +295,135 @@ SEXP rnng_recv(SEXP socket, SEXP block) {
 
 SEXP rnng_send_aio(SEXP socket, SEXP data, SEXP timeout) {
 
-  if (R_ExternalPtrTag(socket) != nano_SocketSymbol)
-    error_return("'socket' is not a valid Socket");
-  nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(socket);
-  const nng_duration dur = (nng_duration) Rf_asInteger(timeout);
-  const R_xlen_t dlen = XLENGTH(data);
-  nng_msg *msgp[dlen];
-  nng_aio *aiop[dlen];
+  nng_msg *msgp;
+  nng_aio *aiop;
   int xc;
+  const nng_duration dur = (nng_duration) Rf_asInteger(timeout);
 
-  for (R_xlen_t i = 0; i < dlen; i++) {
-    SEXP vec = VECTOR_ELT(data, i);
-    const R_xlen_t vlen = XLENGTH(vec);
-    void *dp = (void *) RAW(vec);
-    if ((xc = nng_msg_alloc(&msgp[i], 0))) {
-      R_xlen_t j = i;
-      while (j > 0) {
-        nng_msg_free(msgp[--j]);
-      }
-      return Rf_ScalarInteger(xc);
-    }
+  void *dp = (void *) RAW(data);
+  const R_xlen_t xlen = XLENGTH(data);
+  xc = nng_msg_alloc(&msgp, 0);
+  if (xc)
+    return Rf_ScalarInteger(xc);
+  if ((xc = nng_msg_append(msgp, dp, xlen)) ||
+      (xc = nng_aio_alloc(&aiop, NULL, NULL))) {
+    nng_msg_free(msgp);
+    return Rf_ScalarInteger(xc);
+  }
+  nng_aio_set_msg(aiop, msgp);
+  nng_aio_set_timeout(aiop, dur);
 
-    if ((xc = nng_msg_append(msgp[i], dp, vlen)) ||
-        (xc = nng_aio_alloc(&aiop[i], NULL, NULL))) {
-      R_xlen_t j = i;
-      while (j >= 0) {
-        nng_msg_free(msgp[j--]);
-      }
-      return Rf_ScalarInteger(xc);
-    }
-
-    nng_aio_set_msg(aiop[i], msgp[i]);
-    nng_aio_set_timeout(aiop[i], dur);
-    nng_send_aio(*sock, aiop[i]);
+  if (R_ExternalPtrTag(socket) == nano_SocketSymbol) {
+    nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(socket);
+    nng_send_aio(*sock, aiop);
+  } else if (R_ExternalPtrTag(socket) == nano_ContextSymbol) {
+    nng_ctx *ctxp = (nng_ctx *) R_ExternalPtrAddr(socket);
+    nng_ctx_send(*ctxp, aiop);
+  } else {
+    error_return("'socket' is not a valid Socket or Context");
   }
 
-  SEXP out = PROTECT(Rf_allocVector(INTSXP, dlen));
-  for (R_xlen_t i = 0; i < dlen; i++) {
-    nng_aio_wait(aiop[i]);
-    xc = nng_aio_result(aiop[i]);
-    if (xc) {
-      nng_msg *dmsg = nng_aio_get_msg(aiop[i]);
-      nng_msg_free(dmsg);
-    }
-    nng_aio_free(aiop[i]);
-    SET_INTEGER_ELT(out, i, xc);
-  }
+  SEXP aio = PROTECT(R_MakeExternalPtr(aiop, nano_AioSymbol, R_NilValue));
+  R_RegisterCFinalizerEx(aio, aio_finalizer, TRUE);
+  SEXP klass = PROTECT(Rf_allocVector(STRSXP, 2));
+  SET_STRING_ELT(klass, 0, Rf_mkChar("sendAio"));
+  SET_STRING_ELT(klass, 1, Rf_mkChar("nano"));
+  Rf_classgets(aio, klass);
 
-  UNPROTECT(1);
-  return out;
+  UNPROTECT(2);
+  return aio;
 
 }
 
-SEXP rnng_recv_aio(SEXP socket, SEXP n, SEXP timeout) {
+SEXP rnng_aio_get_msg(SEXP aio) {
 
-  if (R_ExternalPtrTag(socket) != nano_SocketSymbol)
-    error_return("'socket' is not a valid Socket");
-  nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(socket);
-  const R_xlen_t dlen = Rf_asInteger(n);
-  const nng_duration dur = (nng_duration) Rf_asInteger(timeout);
-  nng_aio *aiop[dlen];
-  int xc;
-
-  for (R_xlen_t i = 0; i < dlen; i++) {
-    xc = nng_aio_alloc(&aiop[i], NULL, NULL);
-    if (xc)
-      return Rf_ScalarInteger(xc);
-    nng_aio_set_timeout(aiop[i], dur);
-    nng_recv_aio(*sock, aiop[i]);
+  if (R_ExternalPtrTag(aio) != nano_AioSymbol)
+    error_return("'aio' is not a valid Aio");
+  if (R_ExternalPtrAddr(aio) == NULL)
+    error_return("'aio' is not an active Aio");
+  nng_aio *aiop = (nng_aio *) R_ExternalPtrAddr(aio);
+  nng_aio_wait(aiop);
+  int xc = nng_aio_result(aiop);
+  if (xc) {
+    nng_aio_free(aiop);
+    R_ClearExternalPtr(aio);
+    return Rf_ScalarInteger(xc);
   }
 
-  SEXP res = PROTECT(Rf_allocVector(VECSXP, dlen));
-  for (R_xlen_t i = 0; i < dlen; i++) {
-    nng_aio_wait(aiop[i]);
-    xc = nng_aio_result(aiop[i]);
-    if (xc) {
-      nng_aio_free(aiop[i]);
-      SET_VECTOR_ELT(res, i, Rf_ScalarInteger(xc));
-      continue;
-    }
-    nng_msg *msgp = nng_aio_get_msg(aiop[i]);
-    size_t sz = nng_msg_len(msgp);
-    SEXP item = PROTECT(Rf_allocVector(RAWSXP, sz));
-    SET_VECTOR_ELT(res, i, item);
-    unsigned char *rp = RAW(item);
-    memcpy(rp, nng_msg_body(msgp), sz);
-    nng_msg_free(msgp);
-    nng_aio_free(aiop[i]);
-    UNPROTECT(1);
-  }
+  nng_msg *msgp = nng_aio_get_msg(aiop);
+  size_t sz = nng_msg_len(msgp);
+  SEXP res = PROTECT(Rf_allocVector(RAWSXP, sz));
+  unsigned char *rp = RAW(res);
+  memcpy(rp, nng_msg_body(msgp), sz);
+  nng_msg_free(msgp);
+  nng_aio_free(aiop);
+  R_ClearExternalPtr(aio);
 
   UNPROTECT(1);
   return res;
+
+}
+
+SEXP rnng_aio_result(SEXP aio) {
+
+  if (R_ExternalPtrTag(aio) != nano_AioSymbol)
+    error_return("'aio' is not a valid Aio");
+  if (R_ExternalPtrAddr(aio) == NULL)
+    error_return("'aio' is not an active Aio");
+  nng_aio *aiop = (nng_aio *) R_ExternalPtrAddr(aio);
+  nng_aio_wait(aiop);
+  int xc = nng_aio_result(aiop);
+
+  nng_aio_free(aiop);
+  R_ClearExternalPtr(aio);
+  return Rf_ScalarInteger(xc);
+
+}
+
+SEXP rnng_aio_stop(SEXP aio) {
+
+  if (R_ExternalPtrTag(aio) != nano_AioSymbol)
+    error_return("'aio' is not a valid Aio");
+  if (R_ExternalPtrAddr(aio) == NULL)
+    error_return("'aio' is not an active Aio");
+  nng_aio *aiop = (nng_aio *) R_ExternalPtrAddr(aio);
+  nng_aio_stop(aiop);
+  nng_aio_free(aiop);
+  R_ClearExternalPtr(aio);
+  return R_NilValue;
+
+}
+
+SEXP rnng_recv_aio(SEXP socket, SEXP timeout) {
+
+  nng_aio *aiop;
+  int xc;
+  const nng_duration dur = (nng_duration) Rf_asInteger(timeout);
+
+  xc = nng_aio_alloc(&aiop, NULL, NULL);
+  if (xc)
+    return Rf_ScalarInteger(xc);
+  nng_aio_set_timeout(aiop, dur);
+
+  if (R_ExternalPtrTag(socket) == nano_SocketSymbol) {
+    nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(socket);
+    nng_recv_aio(*sock, aiop);
+  } else if (R_ExternalPtrTag(socket) == nano_ContextSymbol) {
+    nng_ctx *ctxp = (nng_ctx *) R_ExternalPtrAddr(socket);
+    nng_ctx_recv(*ctxp, aiop);
+  } else {
+    error_return("'socket' is not a valid Socket or Context");
+  }
+
+  SEXP aio = PROTECT(R_MakeExternalPtr(aiop, nano_AioSymbol, R_NilValue));
+  R_RegisterCFinalizerEx(aio, aio_finalizer, TRUE);
+  SEXP klass = PROTECT(Rf_allocVector(STRSXP, 2));
+  SET_STRING_ELT(klass, 0, Rf_mkChar("recvAio"));
+  SET_STRING_ELT(klass, 1, Rf_mkChar("nano"));
+  Rf_classgets(aio, klass);
+
+  UNPROTECT(2);
+  return aio;
 
 }
 
@@ -385,90 +432,63 @@ SEXP rnng_ctx_send(SEXP context, SEXP data, SEXP timeout) {
   if (R_ExternalPtrTag(context) != nano_ContextSymbol)
     error_return("'context' is not a valid Context");
   nng_ctx *ctxp = (nng_ctx *) R_ExternalPtrAddr(context);
-  const nng_duration dur = (nng_duration) Rf_asInteger(timeout);
-  const R_xlen_t dlen = XLENGTH(data);
-  nng_msg *msgp[dlen];
-  nng_aio *aiop[dlen];
+  nng_msg *msgp;
+  nng_aio *aiop;
   int xc;
+  const nng_duration dur = (nng_duration) Rf_asInteger(timeout);
 
-  for (R_xlen_t i = 0; i < dlen; i++) {
-    SEXP vec = VECTOR_ELT(data, i);
-    const R_xlen_t vlen = XLENGTH(vec);
-    void *dp = (void *) RAW(vec);
-    if ((xc = nng_msg_alloc(&msgp[i], 0))) {
-      R_xlen_t j = i;
-      while (j > 0) {
-        nng_msg_free(msgp[--j]);
-      }
-      return Rf_ScalarInteger(xc);
-    }
-    if ((xc = nng_msg_append(msgp[i], dp, vlen)) ||
-        (xc = nng_aio_alloc(&aiop[i], NULL, NULL))) {
-      R_xlen_t j = i;
-      while (j >= 0) {
-        nng_msg_free(msgp[j--]);
-      }
-      return Rf_ScalarInteger(xc);
-    }
-    nng_aio_set_msg(aiop[i], msgp[i]);
-    nng_aio_set_timeout(aiop[i], dur);
-    nng_ctx_send(*ctxp, aiop[i]);
+  void *dp = (void *) RAW(data);
+  const R_xlen_t xlen = XLENGTH(data);
+  xc = nng_msg_alloc(&msgp, 0);
+  if (xc)
+    return Rf_ScalarInteger(xc);
+  if ((xc = nng_msg_append(msgp, dp, xlen)) ||
+      (xc = nng_aio_alloc(&aiop, NULL, NULL))) {
+    nng_msg_free(msgp);
+    return Rf_ScalarInteger(xc);
   }
+  nng_aio_set_msg(aiop, msgp);
+  nng_aio_set_timeout(aiop, dur);
+  nng_ctx_send(*ctxp, aiop);
 
-  SEXP out = PROTECT(Rf_allocVector(INTSXP, dlen));
-  for (R_xlen_t i = 0; i < dlen; i++) {
-    nng_aio_wait(aiop[i]);
-    xc = nng_aio_result(aiop[i]);
-    if (xc) {
-      nng_msg *dmsg = nng_aio_get_msg(aiop[i]);
-      nng_msg_free(dmsg);
-    }
-    nng_aio_free(aiop[i]);
-    SET_INTEGER_ELT(out, i, xc);
-  }
-
-  UNPROTECT(1);
-  return out;
+  nng_aio_wait(aiop);
+  xc = nng_aio_result(aiop);
+  nng_aio_free(aiop);
+  if (xc)
+    return Rf_ScalarInteger(xc);
+  return data;
 
 }
 
-SEXP rnng_ctx_recv(SEXP context, SEXP n, SEXP timeout) {
+SEXP rnng_ctx_recv(SEXP context, SEXP timeout) {
 
   if (R_ExternalPtrTag(context) != nano_ContextSymbol)
     error_return("'context' is not a valid Context");
   nng_ctx *ctxp = (nng_ctx *) R_ExternalPtrAddr(context);
-  const R_xlen_t dlen = Rf_asInteger(n);
-  const nng_duration dur = (nng_duration) Rf_asInteger(timeout);
-  nng_aio *aiop[dlen];
+  nng_aio *aiop;
   int xc;
+  const nng_duration dur = (nng_duration) Rf_asInteger(timeout);
 
-  for (R_xlen_t i = 0; i < dlen; i++) {
-    xc = nng_aio_alloc(&aiop[i], NULL, NULL);
-    if (xc)
-      return Rf_ScalarInteger(xc);
-    nng_aio_set_timeout(aiop[i], dur);
-    nng_ctx_recv(*ctxp, aiop[i]);
+  xc = nng_aio_alloc(&aiop, NULL, NULL);
+  if (xc)
+    return Rf_ScalarInteger(xc);
+  nng_aio_set_timeout(aiop, dur);
+  nng_ctx_recv(*ctxp, aiop);
+
+  nng_aio_wait(aiop);
+  xc = nng_aio_result(aiop);
+  if (xc) {
+    nng_aio_free(aiop);
+    return Rf_ScalarInteger(xc);
   }
 
-  SEXP res = PROTECT(Rf_allocVector(VECSXP, dlen));
-  for (R_xlen_t i = 0; i < dlen; i++) {
-    nng_aio_wait(aiop[i]);
-    xc = nng_aio_result(aiop[i]);
-    if (xc) {
-      nng_aio_free(aiop[i]);
-      SET_VECTOR_ELT(res, i, Rf_ScalarInteger(xc));
-      continue;
-    }
-    nng_msg *msgp = nng_aio_get_msg(aiop[i]);
-    size_t sz = nng_msg_len(msgp);
-    SEXP item = PROTECT(Rf_allocVector(RAWSXP, sz));
-    SET_VECTOR_ELT(res, i, item);
-    unsigned char *rp = RAW(item);
-    memcpy(rp, nng_msg_body(msgp), sz);
-    nng_msg_free(msgp);
-    nng_aio_free(aiop[i]);
-    UNPROTECT(1);
-  }
+  nng_msg *msgp = nng_aio_get_msg(aiop);
+  size_t sz = nng_msg_len(msgp);
+  SEXP res = PROTECT(Rf_allocVector(RAWSXP, sz));
+  unsigned char *rp = RAW(res);
+  memcpy(rp, nng_msg_body(msgp), sz);
+  nng_msg_free(msgp);
+  nng_aio_free(aiop);
 
   UNPROTECT(1);
   return res;

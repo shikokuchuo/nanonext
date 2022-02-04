@@ -6,7 +6,6 @@
 \usage{
 recv_aio(
   socket,
-  n = 1L,
   mode = c("serial", "character", "complex", "double", "integer", "logical", "numeric",
     "raw"),
   timeout,
@@ -14,9 +13,7 @@ recv_aio(
 )
 }
 \arguments{
-\item{socket}{a Socket.}
-
-\item{n}{[default 1L] number of messages to receive asynchronously.}
+\item{socket}{a Socket or Context.}
 
 \item{mode}{[default 'serial'] mode of vector to be received - one of 'serial',
 'character', 'complex', 'double', 'integer', 'logical', 'numeric', or 'raw'.
@@ -31,42 +28,32 @@ vector (useful for verification e.g. via hashing). If FALSE, will return
 the converted data only.}
 }
 \value{
-Named list of 2 elements: 'raw' containing a list of received raw
-    vectors and 'data' containing a list of converted R objects, or else a
-    list of converted R objects if keep.raw is set to FALSE.
-
-    Note: a list of lists is always returned even when n = 1. For example, to
-    access the first raw element, use \code{$raw[[1]]} and the first data
-    element use \code{$data[[1]]}.
+A recv Aio (object of class 'recvAio' and 'nano').
 }
 \description{
-Receive any number of R objects asynchronously over a Socket, with the
-    ability to set receive timeouts.
+Receive data asynchronously over a Socket or Context.
 }
 \details{
-Async recv will block while awaiting all 'n' messages to arrive. Set
-    a timeout to ensure that the function returns under all scenarios.
-
-    In case of an error in unserialisation or data conversion, the function
-    will still return a list of received raw vectors to allow the data to be
-    recovered.
+Async receive is always non-blocking. To wait for the AIO to complete
+    and retrieve the received message, use \code{\link{aio_call}} on the
+    returned 'recvAio' object.
 }
 \examples{
 s1 <- socket("pair", listen = "inproc://nanonext")
 s2 <- socket("pair", dial = "inproc://nanonext")
 
-send_aio(s1, data.frame(a = 1, b = 2), data.frame(c = 3, d = 4), timeout = 100)
-res <- recv_aio(s2, 2L, timeout = 100)
+send_aio(s1, data.frame(a = 1, b = 2), timeout = 100)
+res <- recv_aio(s2, timeout = 100, keep.raw = FALSE)
 res
-send_aio(s1, data.frame(a = 1, b = 2), data.frame(c = 3, d = 4), timeout = 100)
-recv_aio(s2, 2L, timeout = 100, keep.raw = FALSE)
+aio_call(res)
 
-send_aio(s1, c(1.1, 2.2), c(3.3, 4.4), mode = "raw", timeout = 100)
-res <- recv_aio(s2, n = 2L, mode = "double", timeout = 100)
-res
+send_aio(s1, c(1.1, 2.2, 3.3), mode = "raw", timeout = 100)
+res <- recv_aio(s2, mode = "double", timeout = 100)
+aio_call(res)
 
-send_aio(s1, "message 1", "message 2", mode = "raw", timeout = 100)
-recv_aio(s2, n = 2L, mode = "character", timeout = 100, keep.raw = FALSE)
+send_aio(s1, "message 1", mode = "raw", timeout = 100)
+res <- recv_aio(s2, mode = "character", timeout = 100)
+aio_call(res)
 
 close(s1)
 close(s2)

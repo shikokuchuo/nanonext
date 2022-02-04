@@ -29,9 +29,14 @@
 #'
 #' @export
 #'
-send <- function(socket, data, mode = c("serial", "raw"), block = FALSE, echo = TRUE) {
+send <- function(socket,
+                 data,
+                 mode = c("serial", "raw"),
+                 block = FALSE,
+                 echo = TRUE) {
 
   mode <- match.arg(mode)
+  force(data)
   data <- switch(mode,
                  serial = serialize(object = data, connection = NULL),
                  raw = if (is.raw(data)) data else writeBin(object = data, con = raw()))
@@ -46,49 +51,45 @@ send <- function(socket, data, mode = c("serial", "raw"), block = FALSE, echo = 
 
 #' Send Async
 #'
-#' Send any number of R objects asynchronously over a Socket, with the ability
-#'     to set send timeouts.
+#' Send data asynchronously over a Socket or Context.
 #'
+#' @param socket a Socket or Context.
 #' @inheritParams send
-#' @param ... one or more R objects (if mode = 'raw', R vectors) to send
-#'     asynchronously.
 #' @param timeout in ms. If unspecified, a socket-specific default timeout will
 #'     be used.
 #'
-#' @return A vector of zeros (invisibly) on success.
+#' @return A send Aio (object of class 'sendAio' and 'nano').
 #'
-#' @details Will block if the send is in progress and has not yet completed -
-#'     certain protocol / transport combinations may limit the number of messages
-#'     that can be queued if they have yet to be received. Set a timeout to
-#'     ensure the function returns under all scenarios.
+#' @details Async send is always non-blocking. To wait for and check the result
+#'     of the send operation, use \code{\link{aio_call}} on the returned 'sendAio'
+#'     object.
 #'
 #' @examples
 #' pub <- socket("pub", dial = "inproc://nanonext")
 #'
-#' send_aio(pub, data.frame(a = 1, b = 2), data.frame(c = 3, d = 4), timeout = 100)
-#' out <- send_aio(pub, data.frame(a = 1, b = 2), data.frame(c = 3, d = 4), timeout = 100)
-#' out
+#' aio <- send_aio(pub, data.frame(a = 1, b = 2), timeout = 100)
+#' aio
+#' aio_call(aio)
 #'
-#' send_aio(pub, "message 1", "message 2", mode = "raw", timeout = 100)
-#' out <- send_aio(pub, "message 1", "message 2", mode = "raw", timeout = 100)
-#' out
+#' aio <- send_aio(pub, "message 1", mode = "raw", timeout = 100)
+#' aio
+#' aio_call(aio)
 #'
 #' close(pub)
 #'
 #' @export
 #'
-send_aio <- function(socket, ..., mode = c("serial", "raw"), timeout) {
+send_aio <- function(socket, data, mode = c("serial", "raw"), timeout) {
 
   mode <- match.arg(mode)
   if (missing(timeout)) timeout <- -2L
+  force(data)
   data <- switch(mode,
-                 serial = lapply(list(...), serialize, connection = NULL),
-                 raw = lapply(list(...), writeBin, con = raw()))
-  res <- .Call(rnng_send_aio, socket, data, timeout)
-  for (i in seq_along(res)) {
-    if (res[i]) message("[", i, "] ", res[i], " : ", nng_error(res[i]))
-  }
-  invisible(res)
+                 serial = serialize(object = data, connection = NULL),
+                 raw = if (is.raw(data)) data else writeBin(object = data, con = raw()))
+  aio <- .Call(rnng_send_aio, socket, data, timeout)
+  if (is.integer(aio)) message(aio, " : ", nng_error(aio))
+  invisible(aio)
 
 }
 
@@ -161,44 +162,34 @@ recv <- function(socket,
 
 #' Receive Async
 #'
-#' Receive any number of R objects asynchronously over a Socket, with the
-#'     ability to set receive timeouts.
+#' Receive data asynchronously over a Socket or Context.
 #'
+#' @param socket a Socket or Context.
 #' @inheritParams recv
 #' @inheritParams send_aio
-#' @param n [default 1L] number of messages to receive asynchronously.
 #'
-#' @return Named list of 2 elements: 'raw' containing a list of received raw
-#'     vectors and 'data' containing a list of converted R objects, or else a
-#'     list of converted R objects if keep.raw is set to FALSE.
+#' @return A recv Aio (object of class 'recvAio' and 'nano').
 #'
-#'     Note: a list of lists is always returned even when n = 1. For example, to
-#'     access the first raw element, use \code{$raw[[1]]} and the first data
-#'     element use \code{$data[[1]]}.
-#'
-#' @details Async recv will block while awaiting all 'n' messages to arrive. Set
-#'     a timeout to ensure that the function returns under all scenarios.
-#'
-#'     In case of an error in unserialisation or data conversion, the function
-#'     will still return a list of received raw vectors to allow the data to be
-#'     recovered.
+#' @details Async receive is always non-blocking. To wait for the AIO to complete
+#'     and retrieve the received message, use \code{\link{aio_call}} on the
+#'     returned 'recvAio' object.
 #'
 #' @examples
 #' s1 <- socket("pair", listen = "inproc://nanonext")
 #' s2 <- socket("pair", dial = "inproc://nanonext")
 #'
-#' send_aio(s1, data.frame(a = 1, b = 2), data.frame(c = 3, d = 4), timeout = 100)
-#' res <- recv_aio(s2, 2L, timeout = 100)
+#' send_aio(s1, data.frame(a = 1, b = 2), timeout = 100)
+#' res <- recv_aio(s2, timeout = 100, keep.raw = FALSE)
 #' res
-#' send_aio(s1, data.frame(a = 1, b = 2), data.frame(c = 3, d = 4), timeout = 100)
-#' recv_aio(s2, 2L, timeout = 100, keep.raw = FALSE)
+#' aio_call(res)
 #'
-#' send_aio(s1, c(1.1, 2.2), c(3.3, 4.4), mode = "raw", timeout = 100)
-#' res <- recv_aio(s2, n = 2L, mode = "double", timeout = 100)
-#' res
+#' send_aio(s1, c(1.1, 2.2, 3.3), mode = "raw", timeout = 100)
+#' res <- recv_aio(s2, mode = "double", timeout = 100)
+#' aio_call(res)
 #'
-#' send_aio(s1, "message 1", "message 2", mode = "raw", timeout = 100)
-#' recv_aio(s2, n = 2L, mode = "character", timeout = 100, keep.raw = FALSE)
+#' send_aio(s1, "message 1", mode = "raw", timeout = 100)
+#' res <- recv_aio(s2, mode = "character", timeout = 100)
+#' aio_call(res)
 #'
 #' close(s1)
 #' close(s2)
@@ -206,7 +197,6 @@ recv <- function(socket,
 #' @export
 #'
 recv_aio <- function(socket,
-                     n = 1L,
                      mode = c("serial", "character", "complex", "double",
                               "integer", "logical", "numeric", "raw"),
                      timeout,
@@ -214,19 +204,97 @@ recv_aio <- function(socket,
 
   mode <- match.arg(mode)
   if (missing(timeout)) timeout <- -2L
-  res <- .Call(rnng_recv_aio, socket, n, timeout)
-  on.exit(expr = return(res))
-  data <- vector(mode = "list", length = length(res))
-  for (i in seq_along(res)) {
-    if (is.integer(res[[i]])) message("[", i, "] ", res[[i]], " : ", nng_error(res[[i]])) else
-      data[[i]] <- switch(mode,
-                          serial = unserialize(res[[i]]),
-                          character = (r <- readBin(con = res[[i]], what = mode, n = length(res[[i]])))[r != ""],
-                          raw = res[[i]],
-                          readBin(con = res[[i]], what = mode, n = length(res[[i]])))
+  aio <- .Call(rnng_recv_aio, socket, timeout)
+  if (is.integer(aio)) {
+    message(aio, " : ", nng_error(aio))
+  } else {
+    attr(aio, "mode") <- mode
+    attr(aio, "keep.raw") <- missing(keep.raw) || isTRUE(keep.raw)
   }
-  on.exit(expr = NULL)
-  if (missing(keep.raw) || isTRUE(keep.raw)) list(raw = res, data = data) else data
+  invisible(aio)
+
+}
+
+#' Call the Result of an Asynchronous AIO Operation
+#'
+#' Retrieve the result of an asynchronous AIO operation. Will wait for the AIO
+#'     operation (blocking) if not yet complete. Once the result is retrieved,
+#'     the Aio is deallocated and further actions cannot be performed on it.
+#'
+#' @param aio An Aio (object of class 'sendAio' or 'recvAio').
+#'
+#' @return For a 'sendAio', zero on success. For a 'recvAio', either a named list
+#'     of 2 elements: 'raw' containing the received raw vector and 'data' containing
+#'     the converted R object, or else just the converted R object depending on
+#'     the parameters set.
+#'
+#' @examples
+#' s1 <- socket("pair", listen = "inproc://nanonext")
+#' s2 <- socket("pair", dial = "inproc://nanonext")
+#'
+#' status <- send_aio(s1, data.frame(a = 1, b = 2), timeout = 100)
+#' status
+#' aio_call(status)
+#'
+#' res <- recv_aio(s2, timeout = 100, keep.raw = FALSE)
+#' res
+#' aio_call(res)
+#'
+#' close(s1)
+#' close(s2)
+#'
+#' @export
+#'
+aio_call <- function(aio) {
+
+  if (inherits(aio, "recvAio")) {
+    res <- .Call(rnng_aio_get_msg, aio)
+    is.integer(res) && {
+      message(res, " : ", nng_error(res))
+      return(invisible(res))
+    }
+    on.exit(expr = return(res))
+    mode <- attr(aio, "mode")
+    data <- switch(mode,
+                   serial = unserialize(connection = res),
+                   character = (r <- readBin(con = res, what = mode, n = length(res)))[r != ""],
+                   raw = res,
+                   readBin(con = res, what = mode, n = length(res)))
+    on.exit(expr = NULL)
+    if (attr(aio, "keep.raw")) list(raw = res, data = data) else data
+
+  } else if (inherits(aio, "sendAio")) {
+    res <- .Call(rnng_aio_result, aio)
+    if (res) {
+      message(res, " : ", nng_error(res))
+      return(invisible(res))
+    }
+    res
+
+  } else {
+    stop("this function may only be used on an Aio")
+  }
+
+}
+
+#' Stop Asynchronous AIO Operation
+#'
+#' Stop an asynchronous AIO operation.
+#'
+#' @param aio An Aio (object of class 'sendAio' or 'recvAio').
+#'
+#' @return Invisible NULL.
+#'
+#' @details Stops the asynchronous I/O operation associated with 'aio' by
+#'     aborting, and then waits for it to complete or to be completely aborted.
+#'     The Aio is then deallocated and no further operations may be performed on
+#'     it.
+#'
+#' @export
+#'
+aio_stop <- function(aio) {
+
+  invisible(.Call(rnng_aio_stop, aio))
 
 }
 
@@ -297,85 +365,6 @@ recv_vec <- function(socket,
                  raw = res,
                  readBin(con = res, what = mode, n = length(res)))
 
-  if (missing(keep.raw) || isTRUE(keep.raw)) list(raw = res, data = data) else data
-
-}
-
-#' Send Vector Async
-#'
-#' DEPRECATED [Use send_aio specifying mode = 'raw'] Send any number of R vectors
-#'     asynchronously over a Socket, with the ability to set (optional) send
-#'     timeouts. Data will be sent as binary without R serialisation, hence
-#'     appropriate for interfacing with external programs.
-#'
-#' @inheritParams send_aio
-#'
-#' @return A vector of zeros (invisibly) on success.
-#'
-#' @details Will block if the send is in progress and has not yet completed -
-#'     certain protocol / transport combinations may limit the number of messages
-#'     that can be queued if they have yet to be received. Set a timeout to
-#'     ensure the function returns under all conditions.
-#'
-#' @keywords internal
-#' @export
-#'
-send_vec_aio <- function(socket, ..., timeout) {
-
-  if (missing(timeout)) timeout <- -2L
-  data <- lapply(list(...), writeBin, con = raw())
-  res <- .Call(rnng_send_aio, socket, data, timeout)
-  for (i in seq_along(res)) {
-    if (res[i]) message("[", i, "] ", res[i], " : ", nng_error(res[i]))
-  }
-  invisible(res)
-
-}
-
-#' Receive Vector Async
-#'
-#' DEPRECATED [Use recv_aio specifying mode] Receive vector data asynchronously
-#'     over a Socket (with ability to set a timeout). The counterpart to
-#'     \code{\link{send_vec_aio}}, data will be re-created from the raw vector
-#'     according to the specified mode. Can be used when interfacing with external
-#'     programs.
-#'
-#' @inheritParams recv_vec
-#' @inheritParams recv_aio
-#'
-#' @return Named list of 2 elements: 'raw' containing a list of received raw
-#'     vectors and 'data' containing a list of vectors decoded to the type 'mode',
-#'     or else a list of vectors decoded to type 'mode' if keep.raw is set to
-#'     FALSE.
-#'
-#'     Note: a list of lists is always returned even when n = 1. To access the
-#'     first raw element, for example, use \code{$raw[[1]]} and the first data
-#'     element use \code{$data[[1]]}.
-#'
-#' @details Async recv will block while awaiting all 'n' messages to arrive. Set
-#'     a timeout to ensure that the function returns under all conditions.
-#'
-#' @keywords internal
-#' @export
-#'
-recv_vec_aio <- function(socket,
-                         mode = c("character", "complex", "double", "integer",
-                                  "logical", "numeric", "raw"),
-                         n = 1L,
-                         timeout,
-                         keep.raw = TRUE) {
-
-  mode <- match.arg(mode)
-  if (missing(timeout)) timeout <- -2L
-  res <- .Call(rnng_recv_aio, socket, n, timeout)
-  data <- vector(mode = "list", length = length(res))
-  for (i in seq_along(res)) {
-    if (is.integer(res[[i]])) message("[", i, "] ", res[[i]], " : ", nng_error(res[[i]])) else
-      data[[i]] <- switch(mode,
-                          character = (r <- readBin(con = res[[i]], what = mode, n = length(res[[i]])))[r != ""],
-                          raw = res[[i]],
-                          readBin(con = res[[i]], what = mode, n = length(res[[i]])))
-  }
   if (missing(keep.raw) || isTRUE(keep.raw)) list(raw = res, data = data) else data
 
 }

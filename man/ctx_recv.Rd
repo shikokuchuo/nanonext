@@ -2,11 +2,10 @@
 % Please edit documentation in R/context.R
 \name{ctx_recv}
 \alias{ctx_recv}
-\title{Receive over Context (Async)}
+\title{Receive over Context}
 \usage{
 ctx_recv(
   context,
-  n = 1L,
   mode = c("serial", "character", "complex", "double", "integer", "logical", "numeric",
     "raw"),
   timeout,
@@ -15,8 +14,6 @@ ctx_recv(
 }
 \arguments{
 \item{context}{a Context.}
-
-\item{n}{[default 1L] number of messages to receive asynchronously.}
 
 \item{mode}{[default 'serial'] mode of vector to be received - one of 'serial',
 'character', 'complex', 'double', 'integer', 'logical', 'numeric', or 'raw'.
@@ -57,11 +54,11 @@ rep <- socket("rep", dial = "inproc://nanonext")
 
 ctxq <- context(req)
 ctxp <- context(rep)
-ctx_send(ctxq, data.frame(a = 1, b = 2), data.frame(c = 3, d = 4), timeout = 100)
-ctx_recv(ctxp, 2L, timeout = 100)
+ctx_send(ctxq, data.frame(a = 1, b = 2), timeout = 100)
+ctx_recv(ctxp, timeout = 100)
 
-ctx_send(ctxq, c(1.1, 2.2), c(3.3, 4.4), mode = "raw", timeout = 100)
-ctx_recv(ctxp, n = 2L, mode = "double", timeout = 100)
+ctx_send(ctxq, c(1.1, 2.2, 3.3), mode = "raw", timeout = 100)
+ctx_recv(ctxp, mode = "double", timeout = 100)
 
 close(req)
 close(rep)

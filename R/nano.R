@@ -97,15 +97,8 @@ nano <- function(protocol = c("pair", "bus", "push", "pull", "req", "rep",
                                                    mode = mode,
                                                    block = block,
                                                    keep.raw = keep.raw)
-  nano[["recv_aio"]] <- function(n = 1L,
-                                 mode = c("serial", "character", "complex", "double",
-                                          "integer", "logical", "numeric", "raw"),
-                                 timeout,
-                                 keep.raw = TRUE) recv_aio(socket,
-                                                           n = n,
-                                                           mode = mode,
-                                                           timeout = timeout,
-                                                           keep.raw = keep.raw)
+  nano[["recv_aio"]] <- function(timeout) recv_aio(socket,
+                                                   timeout = timeout)
   nano[["send"]] <- function(data,
                              mode = c("serial", "raw"),
                              block = FALSE,
@@ -114,10 +107,10 @@ nano <- function(protocol = c("pair", "bus", "push", "pull", "req", "rep",
                                                mode = mode,
                                                block = block,
                                                echo = echo)
-  nano[["send_aio"]] <- function(...,
+  nano[["send_aio"]] <- function(data,
                                  mode = c("serial", "raw"),
                                  timeout) send_aio(socket,
-                                                   ...,
+                                                   data = data,
                                                    mode = mode,
                                                    timeout = timeout)
   nano[["socket_close"]] <- function() close(socket)
@@ -202,6 +195,18 @@ print.nanoListener <- function(x, ...) {
       "\n - socket:", attr(x, "socket"),
       "\n - state:", attr(x, "state"),
       "\n - url:", attr(x, "url"), "\n")
+  invisible(x)
+
+}
+
+#' @export
+#'
+print.nano <- function(x, ...) {
+
+  klass <- attr(x, "class")[1L]
+  switch(klass,
+         recvAio = cat("< recvAio > - use aio_call() to retrieve message\n"),
+         sendAio = cat("< sendAio > - use aio_call() to retrieve result\n"))
   invisible(x)
 
 }
