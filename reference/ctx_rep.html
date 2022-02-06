@@ -66,11 +66,11 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">ctx_rep</span><span class="op">(</span>
   <span class="va">context</span>,
   <span class="va">execute</span>,
-  <span class="va">...</span>,
   recv_mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"serial"</span>, <span class="st">"character"</span>, <span class="st">"complex"</span>, <span class="st">"double"</span>, <span class="st">"integer"</span>, <span class="st">"logical"</span>,
     <span class="st">"numeric"</span>, <span class="st">"raw"</span><span class="op">)</span>,
   send_mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"serial"</span>, <span class="st">"raw"</span><span class="op">)</span>,
-  <span class="va">timeout</span>
+  <span class="va">timeout</span>,
+  <span class="va">...</span>
 <span class="op">)</span></code></pre></div>
     </div>
 
@@ -82,8 +82,6 @@
 <dd><p>a function which takes the received (converted) data as its
 first argument. Can be an anonymous function of the form <code>function(x) do(x)</code>.
 Additional arguments can also be passed in through '...'.</p></dd>
-<dt>...</dt>
-<dd><p>additional arguments passed to the function specified by 'execute'.</p></dd>
 <dt>recv_mode</dt>
 <dd><p>[default 'serial'] mode of vector to be received - one of 'serial',
 'character', 'complex', 'double', 'integer', 'logical', 'numeric', or 'raw'.
@@ -100,6 +98,8 @@ with external applications.</p></dd>
 be used. Note this applies to each of the receive and send legs, hence the
 total elapsed time could be up to twice this parameter plus the time to
 perform 'execute' on the received data.</p></dd>
+<dt>...</dt>
+<dd><p>additional arguments passed to the function specified by 'execute'.</p></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>
@@ -110,8 +110,9 @@ perform 'execute' on the received data.</p></dd>
     <p>Async recv will block while awaiting a message to arrive and is
     usually the desired result. Set a timeout to allow the function to return
     if no data is forthcoming.</p>
-<p>In case of an error in unserialisation or data conversion, the function
-    will return the received raw vector to allow the data to be recovered.</p>
+<p>In the event of an error in unserialisation or data conversion, or in the
+    evaluation of the function with respect to the data, a NULL byte (or
+    serialized NULL byte) will be sent in reply to signal an error to the client.</p>
     </div>
 
     <div id="ref-examples">

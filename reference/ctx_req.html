@@ -111,6 +111,8 @@ the converted data only.</p></dd>
     return in case of no response.</p>
 <p>In case of an error in unserialisation or data conversion, the function
     will return the received raw vector to allow the data to be recovered.</p>
+<p>If an error occured in the server process, a NULL byte will be received
+    (as <code>$data</code> if 'recv_mode' = 'serial', as <code>$raw</code> otherwise).</p>
     </div>
 
     <div id="ref-examples">

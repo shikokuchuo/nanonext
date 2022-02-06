@@ -73,7 +73,8 @@ For an authoritative guide please refer to the online documentation for
     transports when data must be moved within the same process. This transport
     tries hard to avoid copying data, and thus is very light-weight.</p>
 <p>[<strong>URI, inproc://</strong>] This transport uses URIs using the scheme inproc://,
-    followed by an arbitrary string of text, terminated by a NUL byte.</p>
+    followed by an arbitrary string of text, terminated by a NULL byte.
+    inproc://nanonext is a valid example URL.</p>
 <p></p><ul><li><p>Multiple URIs can be used within the same application, and they will
     not interfere with one another.</p></li>
 <li><p>Two applications may also use the same URI without interfering with
@@ -93,10 +94,14 @@ For an authoritative guide please refer to the online documentation for
 <p><em>Traditional Names</em></p>
 <p>[<strong>URI, ipc://</strong>] This transport uses URIs using the scheme ipc://,
     followed by a path name in the file system where the socket or named pipe
-    should be created.</p><ul><li><p>On Windows, all names are prefixed by \.\ pipe\ and do not reside
-    in the normal file system. On POSIX platforms, the path is taken literally,
-    and is relative to the current directory, unless it begins with /, in
-    which case it is relative to the root directory.</p></li>
+    should be created.</p><ul><li><p>On POSIX platforms, the path is taken literally, and is relative to
+    the current directory, unless it begins with /, in which case it is
+    relative to the root directory. For example, ipc://nanonext refers to the
+    name nanonext in the current directory, whereas ipc:///tmp/nanonext
+    refers to nanonext located in /tmp.</p></li>
+<li><p>On Windows, all names are prefixed by \.\ pipe\ and do not reside
+    in the normal file system - the required prefix is added automatically
+    by NNG, so you should specify a URL such as ipc://nanonext directly.</p></li>
 </ul><p><em>UNIX Aliases</em></p>
 <p>[<strong>URI, unix://</strong>] The unix:// scheme is an alias for ipc:// and can be
     used inter-changeably, but only on POSIX systems.The purpose of this scheme
@@ -107,8 +112,7 @@ For an authoritative guide please refer to the online documentation for
 <p>[<strong>URI, abstract://</strong>] On Linux, this transport also can support abstract
     sockets. Abstract sockets use a URI-encoded name after the scheme,
     which allows arbitrary values to be conveyed in the path, including
-    embedded NUL bytes. For example, the name "a\0b" would be represented as
-    abstract://a<!-- %00b. --></p>
+    embedded NULL bytes. abstract://nanonext is a valid example URL.</p>
 <p></p><ul><li><p>Abstract sockets do not have any representation in the file system,
     and are automatically freed by the system when no longer in use. Abstract
     sockets ignore socket permissions, but it is still possible to determine
