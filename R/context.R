@@ -162,6 +162,10 @@ ctx_recv <- function(context,
 #'     to the caller/client.
 #'
 #' @param context a Context.
+#' @param execute a function which takes the received (converted) data as its
+#'     first argument. Can be an anonymous function of the form \code{function(x) do(x)}.
+#'     Additional arguments can also be passed in through '...'.
+#' @param ... additional arguments passed to the function specified by 'execute'.
 #' @param send_mode [default 'serial'] whether data will be sent serialized or
 #'     as a raw vector. Use 'serial' for sending and receiving within R to ensure
 #'     perfect reproducibility. Use 'raw' for sending vectors of any type (will be
@@ -171,14 +175,10 @@ ctx_recv <- function(context,
 #'     'character', 'complex', 'double', 'integer', 'logical', 'numeric', or 'raw'.
 #'     The default 'serial' means a serialised R object, for the other modes,
 #'     the raw vector received will be converted into the respective mode.
-#' @param execute a function which takes the received (converted) data as its
-#'     first argument. Can be an anonymous function of the form \code{function(x) do(x)}.
-#'     Additional arguments can also be passed in through '...'.
 #' @param timeout in ms. If unspecified, a socket-specific default timeout will
 #'     be used. Note this applies to each of the receive and send legs, hence the
 #'     total elapsed time could be up to twice this parameter plus the time to
 #'     perform 'execute' on the received data.
-#' @param ... additional arguments passed to the function specified by 'execute'.
 #'
 #' @return Invisible NULL.
 #'
@@ -210,11 +210,11 @@ ctx_recv <- function(context,
 #' @export
 #'
 ctx_rep <- function(context,
+                    execute,
                     ...,
                     recv_mode = c("serial", "character", "complex", "double",
                                   "integer", "logical", "numeric", "raw"),
                     send_mode = c("serial", "raw"),
-                    execute,
                     timeout) {
 
   recv_mode <- match.arg(recv_mode)

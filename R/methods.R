@@ -53,6 +53,17 @@ start.nanoDialer <- function(x, async = TRUE, ...) {
 #'
 #' @return Zero (invisibly) on success.
 #'
+#' @details Dialers and Listeners are implicitly closed when the socket they are
+#'     associated with is closed.
+#'
+#'     Closing a socket associated with a context also closes the context.
+#'
+#'     When closing a socket or a context: messages that have been submitted for
+#'     sending may be flushed or delivered, depending upon the transport. Closing
+#'     the socket while data is in transmission will likely lead to loss of that
+#'     data. There is no automatic linger or flush to ensure that the socket
+#'     send buffers have completely transmitted.
+#'
 #' @name close
 #' @rdname close
 #'

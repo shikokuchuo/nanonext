@@ -6,16 +6,20 @@
 \usage{
 ctx_rep(
   context,
+  execute,
   ...,
   recv_mode = c("serial", "character", "complex", "double", "integer", "logical",
     "numeric", "raw"),
   send_mode = c("serial", "raw"),
-  execute,
   timeout
 )
 }
 \arguments{
 \item{context}{a Context.}
+
+\item{execute}{a function which takes the received (converted) data as its
+first argument. Can be an anonymous function of the form \code{function(x) do(x)}.
+Additional arguments can also be passed in through '...'.}
 
 \item{...}{additional arguments passed to the function specified by 'execute'.}
 
@@ -29,10 +33,6 @@ as a raw vector. Use 'serial' for sending and receiving within R to ensure
 perfect reproducibility. Use 'raw' for sending vectors of any type (will be
 converted to a raw byte vector for sending) - essential when interfacing
 with external applications.}
-
-\item{execute}{a function which takes the received (converted) data as its
-first argument. Can be an anonymous function of the form \code{function(x) do(x)}.
-Additional arguments can also be passed in through '...'.}
 
 \item{timeout}{in ms. If unspecified, a socket-specific default timeout will
 be used. Note this applies to each of the receive and send legs, hence the

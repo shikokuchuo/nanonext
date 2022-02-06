@@ -28,6 +28,13 @@ data generated in Python, perform analysis in R, and send results to a
 C++ program – all on the same computer or on networks spanning the
 globe.
 
+### Table of Contents
+
+1.  [Installation](#installation)
+2.  [Interfaces](#interfaces)
+3.  [Building from source](#building-from-source)
+4.  [Links](#links)
+
 ### Installation
 
 Install the latest release from CRAN:

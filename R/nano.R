@@ -97,8 +97,13 @@ nano <- function(protocol = c("pair", "bus", "push", "pull", "req", "rep",
                                                    mode = mode,
                                                    block = block,
                                                    keep.raw = keep.raw)
-  nano[["recv_aio"]] <- function(timeout) recv_aio(socket,
-                                                   timeout = timeout)
+  nano[["recv_aio"]] <- function(mode = c("serial", "character", "complex", "double",
+                                          "integer", "logical", "numeric", "raw"),
+                                 timeout,
+                                 keep.raw = TRUE) recv_aio(socket,
+                                                           mode = mode,
+                                                           timeout = timeout,
+                                                           keep.raw = keep.raw)
   nano[["send"]] <- function(data,
                              mode = c("serial", "raw"),
                              block = FALSE,

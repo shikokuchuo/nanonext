@@ -27,6 +27,13 @@ Designed for performance and reliability, the NNG library is written in C and {n
 
 Can be used for sending data across networks, but equally as an interface for code and processes to communicate with each other. Receive data generated in Python, perform analysis in R, and send results to a C++ program – all on the same computer or on networks spanning the globe.
 
+### Table of Contents
+
+1. [Installation](#installation)
+2. [Interfaces](#interfaces)
+3. [Building from source](#building-from-source)
+4. [Links](#links)
+
 ### Installation
 
 Install the latest release from CRAN:
