@@ -90,7 +90,6 @@ invisble NULL will be returned instead.</p></dd>
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">pub</span> <span class="op">&lt;-</span> <span class="fu"><a href="socket.html">socket</a></span><span class="op">(</span><span class="st">"pub"</span>, dial <span class="op">=</span> <span class="st">"inproc://nanonext"</span><span class="op">)</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> dialer started...</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="fu">send</span><span class="op">(</span><span class="va">pub</span>, <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>a <span class="op">=</span> <span class="fl">1</span>, b <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   [1] 58 0a 00 00 00 03 00 04 01 02 00 03 05 00 00 00 00 05 55 54 46 2d 38 00 00</span>
@@ -106,7 +105,6 @@ invisble NULL will be returned instead.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 33 33 33 33 33 33 24 40 33 33 33 33 33 33 34 40 cd cc cc cc cc 4c 3e 40</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="fu"><a href="close.html">close</a></span><span class="op">(</span><span class="va">pub</span><span class="op">)</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> socket closed</span>
 <span class="r-in"></span>
 </code></pre></div>
     </div>

@@ -93,7 +93,6 @@
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu"><a href="socket.html">socket</a></span><span class="op">(</span><span class="st">"req"</span>, listen <span class="op">=</span> <span class="st">"inproc://nanonext"</span><span class="op">)</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> listener started...</span>
 <span class="r-in"><span class="va">ctx</span> <span class="op">&lt;-</span> <span class="fu">context</span><span class="op">(</span><span class="va">s</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">ctx</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt; nanoContext &gt;</span>
@@ -102,12 +101,9 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - state: opened </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - protocol: req </span>
 <span class="r-in"><span class="fu"><a href="close.html">close</a></span><span class="op">(</span><span class="va">ctx</span><span class="op">)</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> context closed</span>
 <span class="r-in"><span class="fu"><a href="close.html">close</a></span><span class="op">(</span><span class="va">s</span><span class="op">)</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> socket closed</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="va">n</span> <span class="op">&lt;-</span> <span class="fu"><a href="nano.html">nano</a></span><span class="op">(</span><span class="st">"req"</span>, listen <span class="op">=</span> <span class="st">"inproc://nanonext"</span><span class="op">)</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> listener started...</span>
 <span class="r-in"><span class="va">ctx</span> <span class="op">&lt;-</span> <span class="fu">context</span><span class="op">(</span><span class="va">n</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">ctx</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt; nanoContext &gt;</span>
@@ -116,9 +112,7 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - state: opened </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - protocol: req </span>
 <span class="r-in"><span class="fu"><a href="close.html">close</a></span><span class="op">(</span><span class="va">ctx</span><span class="op">)</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> context closed</span>
 <span class="r-in"><span class="va">n</span><span class="op">$</span><span class="fu">socket_close</span><span class="op">(</span><span class="op">)</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> socket closed</span>
 <span class="r-in"></span>
 </code></pre></div>
     </div>

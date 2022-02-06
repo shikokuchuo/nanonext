@@ -65,11 +65,11 @@
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">ctx_rep</span><span class="op">(</span>
   <span class="va">context</span>,
+  <span class="va">execute</span>,
   <span class="va">...</span>,
   recv_mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"serial"</span>, <span class="st">"character"</span>, <span class="st">"complex"</span>, <span class="st">"double"</span>, <span class="st">"integer"</span>, <span class="st">"logical"</span>,
     <span class="st">"numeric"</span>, <span class="st">"raw"</span><span class="op">)</span>,
   send_mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"serial"</span>, <span class="st">"raw"</span><span class="op">)</span>,
-  <span class="va">execute</span>,
   <span class="va">timeout</span>
 <span class="op">)</span></code></pre></div>
     </div>
@@ -78,6 +78,10 @@
     <h2>Arguments</h2>
     <dl><dt>context</dt>
 <dd><p>a Context.</p></dd>
+<dt>execute</dt>
+<dd><p>a function which takes the received (converted) data as its
+first argument. Can be an anonymous function of the form <code>function(x) do(x)</code>.
+Additional arguments can also be passed in through '...'.</p></dd>
 <dt>...</dt>
 <dd><p>additional arguments passed to the function specified by 'execute'.</p></dd>
 <dt>recv_mode</dt>
@@ -91,10 +95,6 @@ as a raw vector. Use 'serial' for sending and receiving within R to ensure
 perfect reproducibility. Use 'raw' for sending vectors of any type (will be
 converted to a raw byte vector for sending) - essential when interfacing
 with external applications.</p></dd>
-<dt>execute</dt>
-<dd><p>a function which takes the received (converted) data as its
-first argument. Can be an anonymous function of the form <code>function(x) do(x)</code>.
-Additional arguments can also be passed in through '...'.</p></dd>
 <dt>timeout</dt>
 <dd><p>in ms. If unspecified, a socket-specific default timeout will
 be used. Note this applies to each of the receive and send legs, hence the
@@ -117,9 +117,7 @@ perform 'execute' on the received data.</p></dd>
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">req</span> <span class="op">&lt;-</span> <span class="fu"><a href="socket.html">socket</a></span><span class="op">(</span><span class="st">"req"</span>, listen <span class="op">=</span> <span class="st">"tcp://127.0.0.1:6546"</span><span class="op">)</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> listener started...</span>
 <span class="r-in"><span class="va">rep</span> <span class="op">&lt;-</span> <span class="fu"><a href="socket.html">socket</a></span><span class="op">(</span><span class="st">"rep"</span>, dial <span class="op">=</span> <span class="st">"tcp://127.0.0.1:6546"</span><span class="op">)</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> dialer started...</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="va">ctxq</span> <span class="op">&lt;-</span> <span class="fu"><a href="context.html">context</a></span><span class="op">(</span><span class="va">req</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">ctxp</span> <span class="op">&lt;-</span> <span class="fu"><a href="context.html">context</a></span><span class="op">(</span><span class="va">rep</span><span class="op">)</span></span>
@@ -135,9 +133,7 @@ perform 'execute' on the received data.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="fu"><a href="close.html">close</a></span><span class="op">(</span><span class="va">req</span><span class="op">)</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> socket closed</span>
 <span class="r-in"><span class="fu"><a href="close.html">close</a></span><span class="op">(</span><span class="va">rep</span><span class="op">)</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> socket closed</span>
 <span class="r-in"></span>
 </code></pre></div>
     </div>

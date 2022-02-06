@@ -87,7 +87,7 @@ the converted data only.</p></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A recv Aio (object of class 'recvAio' and 'nano').</p>
+    <p>A recv Aio (object of class 'recvAio').</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -99,9 +99,7 @@ the converted data only.</p></dd>
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">s1</span> <span class="op">&lt;-</span> <span class="fu"><a href="socket.html">socket</a></span><span class="op">(</span><span class="st">"pair"</span>, listen <span class="op">=</span> <span class="st">"inproc://nanonext"</span><span class="op">)</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> listener started...</span>
 <span class="r-in"><span class="va">s2</span> <span class="op">&lt;-</span> <span class="fu"><a href="socket.html">socket</a></span><span class="op">(</span><span class="st">"pair"</span>, dial <span class="op">=</span> <span class="st">"inproc://nanonext"</span><span class="op">)</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> dialer started...</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="fu"><a href="send_aio.html">send_aio</a></span><span class="op">(</span><span class="va">s1</span>, <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>a <span class="op">=</span> <span class="fl">1</span>, b <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>, timeout <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">recv_aio</span><span class="op">(</span><span class="va">s2</span>, timeout <span class="op">=</span> <span class="fl">100</span>, keep.raw <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
@@ -121,18 +119,16 @@ the converted data only.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - $raw for raw message</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - $data for message data</span>
 <span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="send_aio.html">send_aio</a></span><span class="op">(</span><span class="va">s1</span>, <span class="st">"message 1"</span>, mode <span class="op">=</span> <span class="st">"raw"</span>, timeout <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
+<span class="r-in"><span class="fu"><a href="send_aio.html">send_aio</a></span><span class="op">(</span><span class="va">s1</span>, <span class="st">"example message"</span>, mode <span class="op">=</span> <span class="st">"raw"</span>, timeout <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">recv_aio</span><span class="op">(</span><span class="va">s2</span>, mode <span class="op">=</span> <span class="st">"character"</span>, timeout <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu"><a href="aio_call.html">aio_call</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">res</span><span class="op">$</span><span class="va">raw</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 6d 65 73 73 61 67 65 20 31 00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 65 78 61 6d 70 6c 65 20 6d 65 73 73 61 67 65 00</span>
 <span class="r-in"><span class="va">res</span><span class="op">$</span><span class="va">data</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "message 1"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "example message"</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="fu"><a href="close.html">close</a></span><span class="op">(</span><span class="va">s1</span><span class="op">)</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> socket closed</span>
 <span class="r-in"><span class="fu"><a href="close.html">close</a></span><span class="op">(</span><span class="va">s2</span><span class="op">)</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> socket closed</span>
 <span class="r-in"></span>
 </code></pre></div>
     </div>

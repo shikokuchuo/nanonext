@@ -83,6 +83,17 @@
     <h2>Value</h2>
     <p>Zero (invisibly) on success.</p>
     </div>
+    <div id="details">
+    <h2>Details</h2>
+    <p>Dialers and Listeners are implicitly closed when the socket they are
+    associated with is closed.</p>
+<p>Closing a socket associated with a context also closes the context.</p>
+<p>When closing a socket or a context: messages that have been submitted for
+    sending may be flushed or delivered, depending upon the transport. Closing
+    the socket while data is in transmission will likely lead to loss of that
+    data. There is no automatic linger or flush to ensure that the socket
+    send buffers have completely transmitted.</p>
+    </div>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

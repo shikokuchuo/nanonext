@@ -117,7 +117,6 @@ it is not generally possible to change these once started.</p></dd>
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">nano</span> <span class="op">&lt;-</span> <span class="fu">nano</span><span class="op">(</span><span class="st">"bus"</span>, listen <span class="op">=</span> <span class="st">"inproc://nanonext"</span><span class="op">)</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> listener started...</span>
 <span class="r-in"><span class="va">nano</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt; nano object &gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - socket id: 17 </span>
@@ -140,7 +139,6 @@ it is not generally possible to change these once started.</p></dd>
 <span class="r-in"><span class="va">nano</span><span class="op">$</span><span class="fu">socket_setopt</span><span class="op">(</span><span class="st">"ms"</span>, <span class="st">"send-timeout"</span>, <span class="fl">1000</span><span class="op">)</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="va">nano</span><span class="op">$</span><span class="fu">listen</span><span class="op">(</span>url <span class="op">=</span> <span class="st">"inproc://nanonextgen"</span><span class="op">)</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> listener started...</span>
 <span class="r-in"><span class="va">nano</span><span class="op">$</span><span class="va">listener</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt; nanoListener &gt;</span>
@@ -158,7 +156,6 @@ it is not generally possible to change these once started.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"></span>
 <span class="r-in"><span class="va">nano1</span> <span class="op">&lt;-</span> <span class="fu">nano</span><span class="op">(</span><span class="st">"bus"</span>, dial <span class="op">=</span> <span class="st">"inproc://nanonext"</span><span class="op">)</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> dialer started...</span>
 <span class="r-in"><span class="va">nano</span><span class="op">$</span><span class="fu">send</span><span class="op">(</span><span class="st">"example test"</span>, mode <span class="op">=</span> <span class="st">"raw"</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 65 78 61 6d 70 6c 65 20 74 65 73 74 00</span>
 <span class="r-in"><span class="va">nano1</span><span class="op">$</span><span class="fu">recv</span><span class="op">(</span><span class="st">"character"</span><span class="op">)</span></span>
@@ -170,9 +167,7 @@ it is not generally possible to change these once started.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"></span>
 <span class="r-in"><span class="va">nano</span><span class="op">$</span><span class="fu">socket_close</span><span class="op">(</span><span class="op">)</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> socket closed</span>
 <span class="r-in"><span class="va">nano1</span><span class="op">$</span><span class="fu">socket_close</span><span class="op">(</span><span class="op">)</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> socket closed</span>
 <span class="r-in"></span>
 </code></pre></div>
     </div>

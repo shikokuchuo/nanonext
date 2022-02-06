@@ -89,9 +89,7 @@ NULL subscribes to all topics.</p></dd>
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">pub</span> <span class="op">&lt;-</span> <span class="fu"><a href="socket.html">socket</a></span><span class="op">(</span><span class="st">"pub"</span>, listen <span class="op">=</span> <span class="st">"inproc://nanonext"</span><span class="op">)</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> listener started...</span>
 <span class="r-in"><span class="va">sub</span> <span class="op">&lt;-</span> <span class="fu"><a href="socket.html">socket</a></span><span class="op">(</span><span class="st">"sub"</span>, dial <span class="op">=</span> <span class="st">"inproc://nanonext"</span><span class="op">)</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> dialer started...</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="fu">subscribe</span><span class="op">(</span><span class="va">sub</span>, <span class="st">"examples"</span><span class="op">)</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> subscribed topic: examples</span>
@@ -113,9 +111,7 @@ NULL subscribes to all topics.</p></dd>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> 8 : Try again</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="fu"><a href="close.html">close</a></span><span class="op">(</span><span class="va">pub</span><span class="op">)</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> socket closed</span>
 <span class="r-in"><span class="fu"><a href="close.html">close</a></span><span class="op">(</span><span class="va">sub</span><span class="op">)</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> socket closed</span>
 <span class="r-in"></span>
 </code></pre></div>
     </div>
