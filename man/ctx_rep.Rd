@@ -7,11 +7,11 @@
 ctx_rep(
   context,
   execute,
-  ...,
   recv_mode = c("serial", "character", "complex", "double", "integer", "logical",
     "numeric", "raw"),
   send_mode = c("serial", "raw"),
-  timeout
+  timeout,
+  ...
 )
 }
 \arguments{
@@ -20,8 +20,6 @@ ctx_rep(
 \item{execute}{a function which takes the received (converted) data as its
 first argument. Can be an anonymous function of the form \code{function(x) do(x)}.
 Additional arguments can also be passed in through '...'.}
-
-\item{...}{additional arguments passed to the function specified by 'execute'.}
 
 \item{recv_mode}{[default 'serial'] mode of vector to be received - one of 'serial',
 'character', 'complex', 'double', 'integer', 'logical', 'numeric', or 'raw'.
@@ -38,6 +36,8 @@ with external applications.}
 be used. Note this applies to each of the receive and send legs, hence the
 total elapsed time could be up to twice this parameter plus the time to
 perform 'execute' on the received data.}
+
+\item{...}{additional arguments passed to the function specified by 'execute'.}
 }
 \value{
 Invisible NULL.
@@ -52,8 +52,9 @@ Async recv will block while awaiting a message to arrive and is
     usually the desired result. Set a timeout to allow the function to return
     if no data is forthcoming.
 
-    In case of an error in unserialisation or data conversion, the function
-    will return the received raw vector to allow the data to be recovered.
+    In the event of an error in unserialisation or data conversion, or in the
+    evaluation of the function with respect to the data, a NULL byte (or
+    serialized NULL byte) will be sent in reply to signal an error to the client.
 }
 \examples{
 req <- socket("req", listen = "tcp://127.0.0.1:6546")

@@ -14,7 +14,7 @@ nng_timer(time)
 An external pointer to the thread created by this function.
 }
 \description{
-Set a timer (stopwatch). Will print a message to the console (stdout) upon
+Set a timer (stopwatch). Will print a message to the console (stderr) upon
     completion.
 }
 \details{

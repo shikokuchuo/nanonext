@@ -165,7 +165,6 @@ ctx_recv <- function(context,
 #' @param execute a function which takes the received (converted) data as its
 #'     first argument. Can be an anonymous function of the form \code{function(x) do(x)}.
 #'     Additional arguments can also be passed in through '...'.
-#' @param ... additional arguments passed to the function specified by 'execute'.
 #' @param send_mode [default 'serial'] whether data will be sent serialized or
 #'     as a raw vector. Use 'serial' for sending and receiving within R to ensure
 #'     perfect reproducibility. Use 'raw' for sending vectors of any type (will be
@@ -179,6 +178,7 @@ ctx_recv <- function(context,
 #'     be used. Note this applies to each of the receive and send legs, hence the
 #'     total elapsed time could be up to twice this parameter plus the time to
 #'     perform 'execute' on the received data.
+#' @param ... additional arguments passed to the function specified by 'execute'.
 #'
 #' @return Invisible NULL.
 #'
@@ -186,8 +186,9 @@ ctx_recv <- function(context,
 #'     usually the desired result. Set a timeout to allow the function to return
 #'     if no data is forthcoming.
 #'
-#'     In case of an error in unserialisation or data conversion, the function
-#'     will return the received raw vector to allow the data to be recovered.
+#'     In the event of an error in unserialisation or data conversion, or in the
+#'     evaluation of the function with respect to the data, a NULL byte (or
+#'     serialized NULL byte) will be sent in reply to signal an error to the client.
 #'
 #' @examples
 #' req <- socket("req", listen = "tcp://127.0.0.1:6546")
@@ -211,11 +212,11 @@ ctx_recv <- function(context,
 #'
 ctx_rep <- function(context,
                     execute,
-                    ...,
                     recv_mode = c("serial", "character", "complex", "double",
                                   "integer", "logical", "numeric", "raw"),
                     send_mode = c("serial", "raw"),
-                    timeout) {
+                    timeout,
+                    ...) {
 
   recv_mode <- match.arg(recv_mode)
   send_mode <- match.arg(send_mode)
@@ -225,14 +226,14 @@ ctx_rep <- function(context,
     message(res, " : ", nng_error(res))
     return(invisible(res))
   }
-  on.exit(expr = return(res))
+  on.exit(expr = send_aio(context, writeBin(object = "", con = raw()), mode = send_mode))
   data <- switch(recv_mode,
                  serial = unserialize(connection = res),
                  character = (r <- readBin(con = res, what = recv_mode, n = length(res)))[r != ""],
                  raw = res,
                  readBin(con = res, what = recv_mode, n = length(res)))
-  on.exit(expr = NULL)
   msg <- execute(data, ...)
+  on.exit(expr = NULL)
   ctx_send(context, data = msg, mode = send_mode, timeout = timeout, echo = FALSE)
 
 }
@@ -259,6 +260,9 @@ ctx_rep <- function(context,
 #'
 #'     In case of an error in unserialisation or data conversion, the function
 #'     will return the received raw vector to allow the data to be recovered.
+#'
+#'     If an error occured in the server process, a NULL byte will be received
+#'     (as \code{$data} if 'recv_mode' = 'serial', as \code{$raw} otherwise).
 #'
 #' @examples
 #' req <- socket("req", listen = "tcp://127.0.0.1:6546")

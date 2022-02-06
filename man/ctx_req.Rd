@@ -54,6 +54,9 @@ Async recv will block while awaiting a response from the server and
 
     In case of an error in unserialisation or data conversion, the function
     will return the received raw vector to allow the data to be recovered.
+
+    If an error occured in the server process, a NULL byte will be received
+    (as \code{$data} if 'recv_mode' = 'serial', as \code{$raw} otherwise).
 }
 \examples{
 req <- socket("req", listen = "tcp://127.0.0.1:6546")

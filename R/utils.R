@@ -47,7 +47,7 @@ nng_error <- function(error) {
 
 #' Timer Utility
 #'
-#' Set a timer (stopwatch). Will print a message to the console (stdout) upon
+#' Set a timer (stopwatch). Will print a message to the console (stderr) upon
 #'     completion.
 #'
 #' @param time time in ms. Non-integer values will be translated to integer using

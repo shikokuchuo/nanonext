@@ -122,7 +122,8 @@ NULL
 #'     tries hard to avoid copying data, and thus is very light-weight.
 #'
 #'     [\strong{URI, inproc://}] This transport uses URIs using the scheme inproc://,
-#'     followed by an arbitrary string of text, terminated by a NUL byte.
+#'     followed by an arbitrary string of text, terminated by a NULL byte.
+#'     inproc://nanonext is a valid example URL.
 #'
 #'     \itemize{
 #'     \item Multiple URIs can be used within the same application, and they will
@@ -147,10 +148,14 @@ NULL
 #'     followed by a path name in the file system where the socket or named pipe
 #'     should be created.
 #'     \itemize{
+#'     \item On POSIX platforms, the path is taken literally, and is relative to
+#'     the current directory, unless it begins with /, in which case it is
+#'     relative to the root directory. For example, ipc://nanonext refers to the
+#'     name nanonext in the current directory, whereas ipc:///tmp/nanonext
+#'     refers to nanonext located in /tmp.
 #'     \item On Windows, all names are prefixed by \\.\ pipe\ and do not reside
-#'     in the normal file system. On POSIX platforms, the path is taken literally,
-#'     and is relative to the current directory, unless it begins with /, in
-#'     which case it is relative to the root directory.
+#'     in the normal file system - the required prefix is added automatically
+#'     by NNG, so you should specify a URL such as ipc://nanonext directly.
 #'     }
 #'
 #'     \emph{UNIX Aliases}
@@ -166,8 +171,7 @@ NULL
 #'     [\strong{URI, abstract://}] On Linux, this transport also can support abstract
 #'     sockets. Abstract sockets use a URI-encoded name after the scheme,
 #'     which allows arbitrary values to be conveyed in the path, including
-#'     embedded NUL bytes. For example, the name "a\0b" would be represented as
-#'     abstract://a%00b.
+#'     embedded NULL bytes. abstract://nanonext is a valid example URL.
 #'
 #'     \itemize{
 #'     \item Abstract sockets do not have any representation in the file system,
