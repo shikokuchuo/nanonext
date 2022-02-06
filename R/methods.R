@@ -27,7 +27,7 @@ NULL
 start.nanoListener <- function(x, ...) {
 
   xc <- .Call(rnng_listener_start, x)
-  if (xc) message(xc, " : ", nng_error(xc)) else message("listener started...")
+  if (xc) message(xc, " : ", nng_error(xc))
   invisible(xc)
 
 }
@@ -39,7 +39,7 @@ start.nanoListener <- function(x, ...) {
 start.nanoDialer <- function(x, async = TRUE, ...) {
 
   xc <- .Call(rnng_dialer_start, x, async)
-  if (xc) message(xc, " : ", nng_error(xc)) else message("dialer started...")
+  if (xc) message(xc, " : ", nng_error(xc))
   invisible(xc)
 
 }
@@ -76,7 +76,7 @@ NULL
 close.nanoSocket <- function(con, ...) {
 
   xc <- .Call(rnng_close, con)
-  if (xc) message(xc, " : ", nng_error(xc)) else message("socket closed")
+  if (xc) message(xc, " : ", nng_error(xc))
   invisible(xc)
 
 }
@@ -88,7 +88,7 @@ close.nanoSocket <- function(con, ...) {
 close.nanoContext <- function(con, ...) {
 
   xc <- .Call(rnng_ctx_close, con)
-  if (xc) message(xc, " : ", nng_error(xc)) else message("context closed")
+  if (xc) message(xc, " : ", nng_error(xc))
   invisible(xc)
 
 }
@@ -100,7 +100,7 @@ close.nanoContext <- function(con, ...) {
 close.nanoDialer <- function(con, ...) {
 
   xc <- .Call(rnng_dialer_close, con)
-  if (xc) message(xc, " : ", nng_error(xc)) else message("dialer closed")
+  if (xc) message(xc, " : ", nng_error(xc))
   invisible(xc)
 
 }
@@ -112,7 +112,7 @@ close.nanoDialer <- function(con, ...) {
 close.nanoListener <- function(con, ...) {
 
   xc <- .Call(rnng_listener_close, con)
-  if (xc) message(xc, " : ", nng_error(xc)) else message("listener closed")
+  if (xc) message(xc, " : ", nng_error(xc))
   invisible(xc)
 
 }

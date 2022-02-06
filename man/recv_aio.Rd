@@ -28,7 +28,7 @@ vector (useful for verification e.g. via hashing). If FALSE, will return
 the converted data only.}
 }
 \value{
-A recv Aio (object of class 'recvAio' and 'nano').
+A recv Aio (object of class 'recvAio').
 }
 \description{
 Receive data asynchronously over a Socket or Context.
@@ -53,7 +53,7 @@ res <- recv_aio(s2, mode = "double", timeout = 100)
 aio_call(res)
 res
 
-send_aio(s1, "message 1", mode = "raw", timeout = 100)
+send_aio(s1, "example message", mode = "raw", timeout = 100)
 res <- recv_aio(s2, mode = "character", timeout = 100)
 aio_call(res)
 res$raw

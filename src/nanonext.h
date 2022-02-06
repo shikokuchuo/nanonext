@@ -66,6 +66,7 @@ extern SEXP rnng_socket_set_size(SEXP, SEXP, SEXP);
 extern SEXP rnng_socket_set_string(SEXP, SEXP, SEXP);
 extern SEXP rnng_socket_set_uint64(SEXP, SEXP, SEXP);
 extern SEXP rnng_strerror(SEXP);
+extern SEXP rnng_threaded_timer(SEXP);
 extern SEXP rnng_version(void);
 
 #endif

@@ -325,12 +325,8 @@ SEXP rnng_send_aio(SEXP socket, SEXP data, SEXP timeout) {
 
   SEXP aio = PROTECT(R_MakeExternalPtr(aiop, nano_AioSymbol, R_NilValue));
   R_RegisterCFinalizerEx(aio, aio_finalizer, TRUE);
-  SEXP klass = PROTECT(Rf_allocVector(STRSXP, 2));
-  SET_STRING_ELT(klass, 0, Rf_mkChar("sendAio"));
-  SET_STRING_ELT(klass, 1, Rf_mkChar("nano"));
-  Rf_classgets(aio, klass);
 
-  UNPROTECT(2);
+  UNPROTECT(1);
   return aio;
 
 }
@@ -417,12 +413,8 @@ SEXP rnng_recv_aio(SEXP socket, SEXP timeout) {
 
   SEXP aio = PROTECT(R_MakeExternalPtr(aiop, nano_AioSymbol, R_NilValue));
   R_RegisterCFinalizerEx(aio, aio_finalizer, TRUE);
-  SEXP klass = PROTECT(Rf_allocVector(STRSXP, 2));
-  SET_STRING_ELT(klass, 0, Rf_mkChar("recvAio"));
-  SET_STRING_ELT(klass, 1, Rf_mkChar("nano"));
-  Rf_classgets(aio, klass);
 
-  UNPROTECT(2);
+  UNPROTECT(1);
   return aio;
 
 }

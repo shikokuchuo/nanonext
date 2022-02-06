@@ -21,7 +21,7 @@ with external applications.}
 be used.}
 }
 \value{
-A send Aio (object of class 'sendAio' and 'nano').
+A send Aio (object of class 'sendAio').
 }
 \description{
 Send data asynchronously over a Socket or Context.
@@ -38,7 +38,7 @@ aio <- send_aio(pub, data.frame(a = 1, b = 2), timeout = 100)
 aio
 aio_call(aio)$result
 
-aio <- send_aio(pub, "message 1", mode = "raw", timeout = 100)
+aio <- send_aio(pub, "example message", mode = "raw", timeout = 100)
 aio_call(aio)$result
 
 close(pub)

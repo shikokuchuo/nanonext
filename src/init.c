@@ -73,6 +73,7 @@ static const R_CallMethodDef CallEntries[] = {
   {"rnng_socket_set_string", (DL_FUNC) &rnng_socket_set_string, 3},
   {"rnng_socket_set_uint64", (DL_FUNC) &rnng_socket_set_uint64, 3},
   {"rnng_strerror", (DL_FUNC) &rnng_strerror, 1},
+  {"rnng_threaded_timer", (DL_FUNC) &rnng_threaded_timer, 1},
   {"rnng_version", (DL_FUNC) &rnng_version, 0},
   {NULL, NULL, 0}
 };

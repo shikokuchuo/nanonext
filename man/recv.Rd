@@ -53,7 +53,7 @@ recv(s2, keep.raw = FALSE)
 send(s1, c(1.1, 2.2, 3.3), mode = "raw")
 res <- recv(s2, mode = "double")
 res
-send(s1, "example test", mode = "raw", echo = FALSE)
+send(s1, "example message", mode = "raw", echo = FALSE)
 recv(s2, mode = "character", keep.raw = FALSE)
 
 close(s1)

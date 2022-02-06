@@ -45,16 +45,16 @@ aio_call <- function(aio) {
 
   if (inherits(aio, "recvAio")) {
 
-    mode <- attr(aio, "callparams")[[1L]]
-    keep.raw <- attr(aio, "callparams")[[2L]]
-    res <- .Call(rnng_aio_get_msg, aio)
-    if (keep.raw) attr(aio, "raw") <- res
+    mode <- aio[["callparams"]][[1L]]
+    keep.raw <- aio[["callparams"]][[2L]]
+    res <- .Call(rnng_aio_get_msg, aio[["aio"]])
+    if (keep.raw) aio[["raw"]] <- res
     is.integer(res) && {
       message(res, " : ", nng_error(res))
       return(invisible(aio))
     }
     on.exit(expr = {
-      attr(aio, "raw") <- res
+      aio[["raw"]] <- res
       return(invisible(aio))
     })
     data <- switch(mode,
@@ -62,15 +62,14 @@ aio_call <- function(aio) {
                    character = (r <- readBin(con = res, what = mode, n = length(res)))[r != ""],
                    raw = res,
                    readBin(con = res, what = mode, n = length(res)))
-    if (is.null(data)) data <- list(NULL)
-    attr(aio, "data") <- data
+    aio[["data"]] <- data
     on.exit(expr = NULL)
     invisible(aio)
 
   } else if (inherits(aio, "sendAio")) {
 
-    res <- .Call(rnng_aio_result, aio)
-    attr(aio, "result") <- res
+    res <- .Call(rnng_aio_result, aio[["aio"]])
+    aio[["result"]] <- res
     if (res) {
       message(res, " : ", nng_error(res))
     }
@@ -99,7 +98,7 @@ aio_call <- function(aio) {
 #'
 aio_stop <- function(aio) {
 
-  invisible(.Call(rnng_aio_stop, aio))
+  invisible(.Call(rnng_aio_stop, aio[["aio"]]))
 
 }
 

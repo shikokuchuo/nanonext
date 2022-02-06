@@ -58,7 +58,7 @@ send <- function(socket,
 #' @param timeout in ms. If unspecified, a socket-specific default timeout will
 #'     be used.
 #'
-#' @return A send Aio (object of class 'sendAio' and 'nano').
+#' @return A send Aio (object of class 'sendAio').
 #'
 #' @details Async send is always non-blocking. To wait for and check the result
 #'     of the send operation, use \code{\link{aio_call}} on the returned 'sendAio'
@@ -71,7 +71,7 @@ send <- function(socket,
 #' aio
 #' aio_call(aio)$result
 #'
-#' aio <- send_aio(pub, "message 1", mode = "raw", timeout = 100)
+#' aio <- send_aio(pub, "example message", mode = "raw", timeout = 100)
 #' aio_call(aio)$result
 #'
 #' close(pub)
@@ -86,9 +86,11 @@ send_aio <- function(socket, data, mode = c("serial", "raw"), timeout) {
   data <- switch(mode,
                  serial = serialize(object = data, connection = NULL),
                  raw = if (is.raw(data)) data else writeBin(object = data, con = raw()))
+  env <- `class<-`(new.env(), "sendAio")
   aio <- .Call(rnng_send_aio, socket, data, timeout)
+  env[["aio"]] <- aio
   if (is.integer(aio)) message(aio, " : ", nng_error(aio))
-  invisible(aio)
+  invisible(env)
 
 }
 
@@ -128,7 +130,7 @@ send_aio <- function(socket, data, mode = c("serial", "raw"), timeout) {
 #' send(s1, c(1.1, 2.2, 3.3), mode = "raw")
 #' res <- recv(s2, mode = "double")
 #' res
-#' send(s1, "example test", mode = "raw", echo = FALSE)
+#' send(s1, "example message", mode = "raw", echo = FALSE)
 #' recv(s2, mode = "character", keep.raw = FALSE)
 #'
 #' close(s1)
@@ -167,7 +169,7 @@ recv <- function(socket,
 #' @inheritParams recv
 #' @inheritParams send_aio
 #'
-#' @return A recv Aio (object of class 'recvAio' and 'nano').
+#' @return A recv Aio (object of class 'recvAio').
 #'
 #' @details Async receive is always non-blocking. To wait for the AIO to complete
 #'     and retrieve the received message, use \code{\link{aio_call}} on the
@@ -188,7 +190,7 @@ recv <- function(socket,
 #' aio_call(res)
 #' res
 #'
-#' send_aio(s1, "message 1", mode = "raw", timeout = 100)
+#' send_aio(s1, "example message", mode = "raw", timeout = 100)
 #' res <- recv_aio(s2, mode = "character", timeout = 100)
 #' aio_call(res)
 #' res$raw
@@ -207,13 +209,15 @@ recv_aio <- function(socket,
 
   mode <- match.arg(mode)
   if (missing(timeout)) timeout <- -2L
+  env <- `class<-`(new.env(), "recvAio")
   aio <- .Call(rnng_recv_aio, socket, timeout)
+  env[["aio"]] <- aio
   if (is.integer(aio)) {
     message(aio, " : ", nng_error(aio))
   } else {
-    attr(aio, "callparams") <- list(mode, missing(keep.raw) || isTRUE(keep.raw))
+    env[["callparams"]] <- list(mode, missing(keep.raw) || isTRUE(keep.raw))
   }
-  aio
+  invisible(env)
 
 }
 

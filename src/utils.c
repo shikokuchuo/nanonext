@@ -3,6 +3,7 @@
 #include <nng/nng.h>
 #include <nng/supplemental/http/http.h>
 #include <nng/supplemental/tls/tls.h>
+#include <nng/supplemental/util/platform.h>
 #include "nanonext.h"
 
 SEXP rnng_strerror(SEXP error) {
@@ -30,6 +31,36 @@ SEXP rnng_version(void) {
   SET_STRING_ELT(version, 1, Rf_mkChar(tls));
   UNPROTECT(1);
   return version;
+
+}
+
+static void thread_finalizer(SEXP xptr) {
+
+  if (R_ExternalPtrAddr(xptr) == NULL)
+    return;
+  nng_thread *xp = (nng_thread *) R_ExternalPtrAddr(xptr);
+  nng_thread_destroy(xp);
+  R_ClearExternalPtr(xptr);
+
+}
+
+static void rnng_timer(void *ms) {
+
+  nng_duration *time = ms;
+  nng_msleep(*time);
+  REprintf("Timer completed\n");
+
+}
+
+SEXP rnng_threaded_timer(SEXP time) {
+
+  nng_thread *thr;
+  int *ms = INTEGER(time);
+  nng_thread_create(&thr, rnng_timer, ms);
+  SEXP xptr = PROTECT(R_MakeExternalPtr(thr, R_NilValue, R_NilValue));
+  R_RegisterCFinalizerEx(xptr, thread_finalizer, TRUE);
+  UNPROTECT(1);
+  return xptr;
 
 }
 

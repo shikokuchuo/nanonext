@@ -81,7 +81,6 @@ dial <- function(socket,
         message(res, " : ", nng_error(res))
         return(res)
       }
-      message("dialer started...")
     } else {
       res <- .Call(rnng_dialer_create, socket[["socket"]], url)
       if (is.integer(res)) {
@@ -107,7 +106,6 @@ dial <- function(socket,
         message(res, " : ", nng_error(res))
         return(res)
       }
-      message("dialer started...")
     } else {
       res <- .Call(rnng_dialer_create, socket, url)
       if (is.integer(res)) {
@@ -204,7 +202,6 @@ listen <- function(socket,
         message(res, " : ", nng_error(res))
         return(res)
       }
-      message("listener started...")
     } else {
       res <- .Call(rnng_listener_create, socket[["socket"]], url)
       if (is.integer(res)) {
@@ -230,7 +227,6 @@ listen <- function(socket,
         message(res, " : ", nng_error(res))
         return(res)
       }
-      message("listener started...")
     } else {
       res <- .Call(rnng_listener_create, socket, url)
       if (is.integer(res)) {
