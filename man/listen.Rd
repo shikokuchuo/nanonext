@@ -77,6 +77,6 @@ nano$listener
 start(nano$listener[[1]])
 nano$listener
 close(nano$listener[[1]])
-nano$socket_close()
+nano$close()
 
 }

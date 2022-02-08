@@ -7,7 +7,7 @@
 unsubscribe(socket, topic = NULL)
 }
 \arguments{
-\item{socket}{a Socket.}
+\item{socket}{a Socket using the sub protocol.}
 
 \item{topic}{[default NULL] a topic (given as a character string). The default
 NULL unsubscribes from all topics (if all topics were previously subscribed).}

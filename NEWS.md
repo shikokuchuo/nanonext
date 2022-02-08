@@ -2,17 +2,26 @@
 
 #### New Features
 
-* Implements full async I/O capabilities - `send_aio()` and `recv_aio()` now return Aio objects, for which the results may be called using `aio_call()`.
-* New `ctx_rep()` and `ctx_req()` functions implement the full logic of an RPC server/client. Designed to be run in separate processes, the server will await data and apply an arbitrary function before returning a result, whilst the client will send data to the server and await a response.
+* Implements full async I/O capabilities 
+  + `send_aio()` and `recv_aio()` now return Aio objects, for which the results may be called using `call_aio()`.
+* New `request()` and `reply()` functions implement the full logic of an RPC client/server. 
+  + Designed to be run in separate processes, the reply server will await data and apply a function before returning a result.
+  + The request client performs an async request to the server and returns immediately with an Aio.
+  + This allows processes to run concurrently on the client and server.
 * New `ncurl()` minimalistic http(s) client.
-* Allows setting the environment variable 'NANONEXT_TLS' prior to package installation to enable TLS where the system NNG library has been built with TLS support (using Mbed TLS).
+* Allows setting the environment variable 'NANONEXT_TLS' prior to package installation
+  + Enables TLS where the system NNG library has been built with TLS support (using Mbed TLS).
 * New `nng_timer()` utility as a demonstration of NNG's multithreading capabilities.
 
 #### Updates
 
-* Successful starts of dialers/listeners and successful close operations no longer print a message to stdout for less verbosity by default. The state of respective objects can always be queried by their state attribute using `$state`
-* All send and receive functions, e.g. `send()`/`recv()`, gain a revised 'mode' argument. This now permits the choice of whether to use R serialization, consolidating the functionality of the '_vec' series of functions.
+* Dialer/listener starts and close operations no longer print a message to stderr when successful for less verbosity by default.
+  + The state of respective objects can always be queried using `$state`
+* All send and receive functions, e.g. `send()`/`recv()`, gain a revised 'mode' argument. 
+  + This now permits R serialization as an option, consolidating the functionality of the '_vec' series of functions.
 * Functions 'send_vec' and 'recv_vec' are deprecated and will be removed in a future release.
+* Functions 'ctx_send' and 'ctx_recv' have been renamed `send_ctx()` and `recv_ctx()` for consistency.
+* The `$socket_close()` method of nano objects has been renamed `$close()` to better align with the functional API.
 
 # nanonext 0.1.0
 

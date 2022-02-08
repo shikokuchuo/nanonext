@@ -21,9 +21,9 @@ knitr::opts_chunk$set(
 [![R-CMD-check](https://github.com/shikokuchuo/nanonext/workflows/R-CMD-check/badge.svg)](https://github.com/shikokuchuo/nanonext/actions)
 <!-- badges: end -->
 
-R binding for NNG (Nanomsg Next Gen), a successor to ZeroMQ. NNG is a socket library providing high-performance scalability protocols, or common communication patterns, the basic building blocks for distributed systems.
+R binding for NNG (Nanomsg Next Gen), a successor to ZeroMQ. NNG is a socket library providing high-performance scalability protocols, implementing a cross-platform standard for messaging and communications. Serves as a concurrency framework that can be used for building distributed systems.
 
-Designed for performance and reliability, the NNG library is written in C and {nanonext} is a light-weight wrapper with no external package dependencies. Supported transports include inproc (intra-process), IPC (inter-process), TCP/IP (IPv4 or IPv6), and WebSocket.
+Designed for performance and reliability, the NNG library is written in C and {nanonext} is a lightweight wrapper with no external package dependencies. Supported transports include inproc (intra-process), IPC (inter-process), TCP/IP (IPv4 or IPv6), and WebSocket.
 
 Can be used for sending data across networks, but equally as an interface for code and processes to communicate with each other. Receive data generated in Python, perform analysis in R, and send results to a C++ program – all on the same computer or on networks spanning the globe.
 
@@ -31,8 +31,13 @@ Can be used for sending data across networks, but equally as an interface for co
 
 1. [Installation](#installation)
 2. [Interfaces](#interfaces)
-3. [Building from source](#building-from-source)
-4. [Links](#links)
+3. [Cross-language Exchange](#cross-language-exchange)
+4. [Async and Concurrency](#async-and-concurrency)
+5. [RPC and Distributed Computing](#rpc-and-distributed-computing)
+6. [Publisher / Subscriber Model](#publisher-subscriber-model)
+7. [ncurl Minimalist http Client](#ncurl-minimalist-http-client)
+8. [Building from source](#building-from-source)
+9. [Links](#links)
 
 ### Installation
 
@@ -104,6 +109,199 @@ Receive message using 'socket2':
 recv(socket2)
 ```
 
+[&laquo; Back to ToC](#table-of-contents)
+
+### Cross-language Exchange
+
+{nanonext} provides a fast and reliable data interface between different programming languages where NNG has a binding, including C, C++, Python, Go, Rust etc. 
+
+The following example demonstrates the exchange of numerical data between R and Python (NumPy), two of the most commonly-used languages for data science and machine learning. 
+
+Using a messaging interface provides a clean and robust approach that is light on resources and provides fewer points of failure. This is especially relevant when processing real-time data, as an example. 
+
+This approach can also serve as an interface / pipe between different processes written in the same or different languages, running on the same computer or distributed across networks, and is an enabler of modular software design as espoused by the Unix philosophy.
+
+Create socket in Python using the NNG binding 'pynng':
+
+```{python rnpy1}
+import numpy as np
+import pynng
+socket = pynng.Pair0(listen="ipc:///tmp/nanonext.socket")
+```
+
+Create nano object in R using {nanonext}, then send a vector of 'doubles', specifying mode as 'raw':
+
+```{r rnpy2}
+library(nanonext)
+n <- nano("pair", dial = "ipc:///tmp/nanonext.socket")
+n$send(c(1.1, 2.2, 3.3, 4.4, 5.5), mode = "raw")
+```
+
+Receive in Python as a NumPy array of 'floats', and send back to R:
+
+```{python rnpy3}
+raw = socket.recv()
+array = np.frombuffer(raw)
+print(array)
+
+msg = array.tobytes()
+socket.send(msg)
+```
+
+Receive in R, specifying the receive mode as 'double':
+
+```{r rnpy4}
+n$recv(mode = "double")
+```
+
+[&laquo; Back to ToC](#table-of-contents)
+
+### Async and Concurrency
+
+{nanonext} implements true async send and receive, leveraging NNG as a massively-scalable concurrency framework.
+
+`send_aio()` and `recv_aio()` functions return immediately but perform their operations async. Their results can be called using `call_aio()` when required.
+
+```{r async}
+library(nanonext)
+s1 <- socket("pair", listen = "inproc://nano")
+s2 <- socket("pair", dial = "inproc://nano")
+
+```
+
+For a 'sendAio' object, calling the result causes it to be stored in the AIO as `$result`. 0 denotes a successful send.
+
+```{r async2}
+
+res <- send_aio(s1, data.frame(a = 1, b = 2))
+res
+call_aio(res)
+res
+res$result
+
+```
+
+For a 'recvAio' object, calling the message causes it to be stored in the AIO as `$raw` and/or `$data` as the case may be.
+
+```{r async3}
+
+msg <- recv_aio(s2)
+msg
+call_aio(msg)
+msg
+msg$data
+
+```
+
+The values can also be accessed directly from the call as per the example below:
+
+```{r async4}
+
+call_aio(msg)$data
+
+close(s1)
+close(s2)
+
+```
+
+[&laquo; Back to ToC](#table-of-contents)
+
+### RPC and Distributed Computing
+
+{nanonext} implements remote procedure calls (RPC) using NNG's req/rep protocol to provide a basis for distributed computing. 
+
+Can be used to perform computationally-expensive calculations or I/O-bound operations such as writing large amounts of data to disk in a separate 'server' process running concurrently.
+
+Server process: `reply()` will wait for a message and apply a function, in this case `rnorm()`, before sending back the result.
+
+```{r rpcserver, eval=FALSE}
+
+library(nanonext)
+rep <- socket("rep", listen = "tcp://127.0.0.1:6546")
+ctxp <- context(rep)
+reply(ctxp, execute = rnorm, send_mode = "raw") 
+
+```
+
+Client process: `request()` performs an async send and receive request and returns immediately with a `recvAio` object.
+
+```{r rpcclient}
+library(nanonext)
+req <- socket("req", dial = "tcp://127.0.0.1:6546")
+ctxq <- context(req)
+aio <- request(ctxq, data = 1e6, recv_mode = "double", keep.raw = FALSE)
+```
+
+At this point, the client can run additional code concurrent with the server processing the request. 
+```{r rpcclient2}
+# do more...
+```
+
+When the result of the server calculation is required (or, as the case may be, an exit code confirming that the server operation has completed), the `recvAio` may be called using `call_aio()`. 
+
+The return value from the server request is then retrieved and stored in the Aio as `$data`.
+
+```{r rpcclient3}
+
+call_aio(aio)
+
+aio
+str(aio$data)
+
+```
+
+[&laquo; Back to ToC](#table-of-contents)
+
+### Publisher Subscriber Model
+
+{nanonext} fully implements NNG's pub/sub protocol as per the below example. 
+
+This example uses the new R4.1 pipe for clarity of code, although this is of course not required.
+
+```{r pub}
+
+pub <- socket("pub", listen = "inproc://nanobroadcast")
+sub <- socket("sub", dial = "inproc://nanobroadcast")
+
+sub |> subscribe(topic = "examples")
+pub |> send(c("examples", "this is an example"), mode = "raw", echo = FALSE)
+sub |> recv(mode = "character", keep.raw = FALSE)
+
+pub |> send(c("other", "this other topic will not be received"), mode = "raw", echo = FALSE)
+sub |> recv(mode = "character", keep.raw = FALSE)
+
+# specify NULL to subscribe to ALL topics
+sub |> subscribe(topic = NULL)
+pub |> send(c("newTopic", "this is a new topic"), mode = "raw", echo = FALSE)
+sub |> recv("character", keep.raw = FALSE)
+
+sub |> unsubscribe(topic = NULL)
+pub |> send(c("newTopic", "this topic will now not be received"), mode = "raw", echo = FALSE)
+sub |> recv("character", keep.raw = FALSE)
+
+# however the topics explicitly subscribed to are still received
+pub |> send(c("examples", "this example will still be received"), mode = "raw", echo = FALSE)
+sub |> recv(mode = "character", keep.raw = FALSE)
+
+close(pub)
+close(sub)
+
+```
+
+[&laquo; Back to ToC](#table-of-contents)
+
+### ncurl Minimalist http Client
+
+`ncurl()` is a minimalistic http(s) client. It takes only one argument, the URL. It can follow redirects.
+
+```{r ncurl}
+
+ncurl("http://httpbin.org/headers")
+
+```
+
+[&laquo; Back to ToC](#table-of-contents)
+
 ### Building from source
 
 #### Linux / Mac / Solaris
@@ -132,3 +330,5 @@ Package website: <https://shikokuchuo.net/nanonext/><br />
 
 NNG website: <https://nng.nanomsg.org/><br />
 NNG documentation: <https://nng.nanomsg.org/man/tip/><br />
+
+[&laquo; Back to ToC](#table-of-contents)

@@ -64,7 +64,7 @@
 #' start(nano$dialer[[1]])
 #' nano$dialer
 #' close(nano$dialer[[1]])
-#' nano$socket_close()
+#' nano$close()
 #'
 #' @export
 #'
@@ -76,23 +76,23 @@ dial <- function(socket,
   if (is.environment(socket)) {
 
     if (missing(autostart) || isTRUE(autostart)) {
-      res <- .Call(rnng_dial, socket[["socket"]], url)
+      res <- .Call(rnng_dial, .subset2(socket, "socket"), url)
       if (is.integer(res)) {
         message(res, " : ", nng_error(res))
         return(res)
       }
     } else {
-      res <- .Call(rnng_dialer_create, socket[["socket"]], url)
+      res <- .Call(rnng_dialer_create, .subset2(socket, "socket"), url)
       if (is.integer(res)) {
         message(res, " : ", nng_error(res))
         return(res)
       }
     }
-    socket[["dialer"]] <- c(socket[["dialer"]], res)
+    socket[["dialer"]] <- c(.subset2(socket, "dialer"), res)
     socket[["dialer_setopt"]] <- function(type = c("bool", "int", "ms", "size",
                                                  "string", "uint64"),
                                           opt,
-                                          value) invisible(lapply(socket[["dialer"]],
+                                          value) invisible(lapply(.subset2(socket, "dialer"),
                                                                   setopt,
                                                                   type = type,
                                                                   opt = opt,
@@ -185,7 +185,7 @@ dial <- function(socket,
 #' start(nano$listener[[1]])
 #' nano$listener
 #' close(nano$listener[[1]])
-#' nano$socket_close()
+#' nano$close()
 #'
 #' @export
 #'
@@ -197,23 +197,23 @@ listen <- function(socket,
   if (is.environment(socket)) {
 
     if (missing(autostart) || isTRUE(autostart)) {
-      res <- .Call(rnng_listen, socket[["socket"]], url)
+      res <- .Call(rnng_listen, .subset2(socket, "socket"), url)
       if (is.integer(res)) {
         message(res, " : ", nng_error(res))
         return(res)
       }
     } else {
-      res <- .Call(rnng_listener_create, socket[["socket"]], url)
+      res <- .Call(rnng_listener_create, .subset2(socket, "socket"), url)
       if (is.integer(res)) {
         message(res, " : ", nng_error(res))
         return(res)
       }
     }
-    socket[["listener"]] <- c(socket[["listener"]], res)
+    socket[["listener"]] <- c(.subset2(socket, "listener"), res)
     socket[["listener_setopt"]] <- function(type = c("bool", "int", "ms", "size",
                                                    "string", "uint64"),
                                             opt,
-                                            value) invisible(lapply(socket[["listener"]],
+                                            value) invisible(lapply(.subset2(socket, "listener"),
                                                                     setopt,
                                                                     type = type,
                                                                     opt = opt,

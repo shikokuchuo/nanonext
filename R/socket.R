@@ -80,7 +80,7 @@ socket <- function(protocol = c("pair", "bus", "push", "pull", "req", "rep",
 #' For a socket using the sub protocol in a publisher/subscriber pattern. Set a
 #'     topic to subscribe to.
 #'
-#' @param socket a Socket.
+#' @param socket a Socket using the sub protocol.
 #' @param topic [default NULL] a topic (given as a character string). The default
 #'     NULL subscribes to all topics.
 #'
@@ -125,7 +125,7 @@ subscribe <- function(socket, topic = NULL) {
 #' For a socket using the sub protocol in a publisher/subscriber pattern. Remove
 #'     a topic from the subscription list.
 #'
-#' @param socket a Socket.
+#' @param socket a Socket using the sub protocol.
 #' @param topic [default NULL] a topic (given as a character string). The default
 #'     NULL unsubscribes from all topics (if all topics were previously subscribed).
 #'

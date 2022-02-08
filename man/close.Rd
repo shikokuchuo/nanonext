@@ -28,7 +28,11 @@ Zero (invisibly) on success.
 Close Connection on a Socket, Context, Dialer or Listener.
 }
 \details{
-Dialers and Listeners are implicitly closed when the socket they are
+Closing an object explicitly frees its resources. An object can also
+    be removed directly in which case its resources are freed when the object
+    is garbage collected.
+
+    Dialers and Listeners are implicitly closed when the socket they are
     associated with is closed.
 
     Closing a socket associated with a context also closes the context.

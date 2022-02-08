@@ -74,7 +74,7 @@ nano1 <- nano("bus", dial = "inproc://nanonext")
 nano$send("example test", mode = "raw")
 nano1$recv("character")
 
-nano$socket_close()
-nano1$socket_close()
+nano$close()
+nano1$close()
 
 }

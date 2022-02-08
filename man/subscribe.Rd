@@ -7,7 +7,7 @@
 subscribe(socket, topic = NULL)
 }
 \arguments{
-\item{socket}{a Socket.}
+\item{socket}{a Socket using the sub protocol.}
 
 \item{topic}{[default NULL] a topic (given as a character string). The default
 NULL subscribes to all topics.}

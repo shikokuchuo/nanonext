@@ -27,19 +27,22 @@ A send Aio (object of class 'sendAio').
 Send data asynchronously over a Socket or Context.
 }
 \details{
-Async send is always non-blocking. To wait for and check the result
-    of the send operation, use \code{\link{aio_call}} on the returned 'sendAio'
-    object.
+Async send is always non-blocking and returns immediately.
+
+    To wait for and check the result of the send operation, use
+    \code{\link{call_aio}} on the returned 'sendAio' object.
+
+    Alternatively, to stop the async operation, use \code{\link{stop_aio}}.
 }
 \examples{
 pub <- socket("pub", dial = "inproc://nanonext")
 
 aio <- send_aio(pub, data.frame(a = 1, b = 2), timeout = 100)
 aio
-aio_call(aio)$result
+call_aio(aio)$result
 
 aio <- send_aio(pub, "example message", mode = "raw", timeout = 100)
-aio_call(aio)$result
+call_aio(aio)$result
 
 close(pub)
 

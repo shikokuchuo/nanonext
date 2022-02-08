@@ -34,9 +34,12 @@ A recv Aio (object of class 'recvAio').
 Receive data asynchronously over a Socket or Context.
 }
 \details{
-Async receive is always non-blocking. To wait for the AIO to complete
-    and retrieve the received message, use \code{\link{aio_call}} on the
-    returned 'recvAio' object.
+Async receive is always non-blocking and returns immediately.
+
+    To wait for the AIO to complete and retrieve the received message,
+    use \code{\link{call_aio}} on the returned 'recvAio' object.
+
+    Alternatively, to stop the async operation, use \code{\link{stop_aio}}.
 }
 \examples{
 s1 <- socket("pair", listen = "inproc://nanonext")
@@ -45,17 +48,17 @@ s2 <- socket("pair", dial = "inproc://nanonext")
 send_aio(s1, data.frame(a = 1, b = 2), timeout = 100)
 res <- recv_aio(s2, timeout = 100, keep.raw = FALSE)
 res
-aio_call(res)
+call_aio(res)
 res
 
 send_aio(s1, c(1.1, 2.2, 3.3), mode = "raw", timeout = 100)
 res <- recv_aio(s2, mode = "double", timeout = 100)
-aio_call(res)
+call_aio(res)
 res
 
 send_aio(s1, "example message", mode = "raw", timeout = 100)
 res <- recv_aio(s2, mode = "character", timeout = 100)
-aio_call(res)
+call_aio(res)
 res$raw
 res$data
 

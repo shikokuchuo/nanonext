@@ -44,19 +44,20 @@ static void thread_finalizer(SEXP xptr) {
 
 }
 
-static void rnng_timer(void *ms) {
+static void rnng_timer(void *arg) {
 
-  nng_duration *time = ms;
-  nng_msleep(*time);
-  REprintf("Timer completed\n");
+  SEXP time = PROTECT(arg);
+  const int tm = INTEGER(time)[0];
+  nng_msleep(tm);
+  UNPROTECT(1);
+  REprintf("Timer completed after %d ms\n", tm);
 
 }
 
 SEXP rnng_threaded_timer(SEXP time) {
 
   nng_thread *thr;
-  int *ms = INTEGER(time);
-  nng_thread_create(&thr, rnng_timer, ms);
+  nng_thread_create(&thr, rnng_timer, time);
   SEXP xptr = PROTECT(R_MakeExternalPtr(thr, R_NilValue, R_NilValue));
   R_RegisterCFinalizerEx(xptr, thread_finalizer, TRUE);
   UNPROTECT(1);

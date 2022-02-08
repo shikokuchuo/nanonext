@@ -76,6 +76,6 @@ nano$dialer
 start(nano$dialer[[1]])
 nano$dialer
 close(nano$dialer[[1]])
-nano$socket_close()
+nano$close()
 
 }
