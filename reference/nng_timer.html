@@ -67,7 +67,7 @@
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>time</dt>
-<dd><p>time in ms. Non-integer values will be translated to integer using
+<dd><p>time in ms. Non-integer values are translated to integer using
 <code><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer()</a></code>.</p></dd>
 </dl></div>
     <div id="value">
@@ -79,8 +79,8 @@
     <p>The return value of this function should not normally be assigned as
     this preserves the thread instead of it being automatically reaped during
     garbage collection.</p>
-<p>As reaping the thread waits until the timer has completed, a
-    possible side effect is blocking garbage collection until this has happened
+<p>As reaping the thread waits until the timer has completed, a possible
+    side effect is blocking garbage collection until this has happened
     (not guaranteed, as garbage collection may happen on other objects first).
     If this is undesirable, assign the external pointer to an object and then
     remove it after completion.</p>

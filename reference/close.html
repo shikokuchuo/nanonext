@@ -85,7 +85,10 @@
     </div>
     <div id="details">
     <h2>Details</h2>
-    <p>Dialers and Listeners are implicitly closed when the socket they are
+    <p>Closing an object explicitly frees its resources. An object can also
+    be removed directly in which case its resources are freed when the object
+    is garbage collected.</p>
+<p>Dialers and Listeners are implicitly closed when the socket they are
     associated with is closed.</p>
 <p>Closing a socket associated with a context also closes the context.</p>
 <p>When closing a socket or a context: messages that have been submitted for

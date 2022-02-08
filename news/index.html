@@ -57,18 +57,33 @@
 <h2 class="page-header" data-toc-text="0.1.0.9000" id="nanonext-0109000-under-development">nanonext 0.1.0.9000 (under development)<a class="anchor" aria-label="anchor" href="#nanonext-0109000-under-development"></a></h2>
 <div class="section level5">
 <h5 id="new-features-0-1-0-9000">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-1-0-9000"></a></h5>
-<ul><li>Implements full async I/O capabilities - <code><a href="../reference/send_aio.html">send_aio()</a></code> and <code><a href="../reference/recv_aio.html">recv_aio()</a></code> now return Aio objects, for which the results may be called using <code><a href="../reference/aio_call.html">aio_call()</a></code>.</li>
-<li>New <code><a href="../reference/ctx_rep.html">ctx_rep()</a></code> and <code><a href="../reference/ctx_req.html">ctx_req()</a></code> functions implement the full logic of an RPC server/client. Designed to be run in separate processes, the server will await data and apply an arbitrary function before returning a result, whilst the client will send data to the server and await a response.</li>
+<ul><li>Implements full async I/O capabilities
+<ul><li>
+<code><a href="../reference/send_aio.html">send_aio()</a></code> and <code><a href="../reference/recv_aio.html">recv_aio()</a></code> now return Aio objects, for which the results may be called using <code><a href="../reference/call_aio.html">call_aio()</a></code>.</li>
+</ul></li>
+<li>New <code><a href="../reference/request.html">request()</a></code> and <code><a href="../reference/reply.html">reply()</a></code> functions implement the full logic of an RPC client/server.
+<ul><li>Designed to be run in separate processes, the reply server will await data and apply a function before returning a result.</li>
+<li>The request client performs an async request to the server and returns immediately with an Aio.</li>
+<li>This allows processes to run concurrently on the client and server.</li>
+</ul></li>
 <li>New <code><a href="../reference/ncurl.html">ncurl()</a></code> minimalistic http(s) client.</li>
-<li>Allows setting the environment variable ‘NANONEXT_TLS’ prior to package installation to enable TLS where the system NNG library has been built with TLS support (using Mbed TLS).</li>
+<li>Allows setting the environment variable ‘NANONEXT_TLS’ prior to package installation
+<ul><li>Enables TLS where the system NNG library has been built with TLS support (using Mbed TLS).</li>
+</ul></li>
 <li>New <code><a href="../reference/nng_timer.html">nng_timer()</a></code> utility as a demonstration of NNG’s multithreading capabilities.</li>
 </ul></div>
 <div class="section level5">
 <h5 id="updates-0-1-0-9000">Updates<a class="anchor" aria-label="anchor" href="#updates-0-1-0-9000"></a></h5>
-<ul><li>Successful starts of dialers/listeners and successful close operations no longer print a message to stdout for less verbosity by default. The state of respective objects can always be queried by their state attribute using <code>$state</code>
+<ul><li>Dialer/listener starts and close operations no longer print a message to stderr when successful for less verbosity by default.
+<ul><li>The state of respective objects can always be queried using <code>$state</code>
 </li>
-<li>All send and receive functions, e.g. <code><a href="../reference/send.html">send()</a></code>/<code><a href="../reference/recv.html">recv()</a></code>, gain a revised ‘mode’ argument. This now permits the choice of whether to use R serialization, consolidating the functionality of the ’_vec’ series of functions.</li>
+</ul></li>
+<li>All send and receive functions, e.g. <code><a href="../reference/send.html">send()</a></code>/<code><a href="../reference/recv.html">recv()</a></code>, gain a revised ‘mode’ argument.
+<ul><li>This now permits R serialization as an option, consolidating the functionality of the ’_vec’ series of functions.</li>
+</ul></li>
 <li>Functions ‘send_vec’ and ‘recv_vec’ are deprecated and will be removed in a future release.</li>
+<li>Functions ‘ctx_send’ and ‘ctx_recv’ have been renamed <code><a href="../reference/send_ctx.html">send_ctx()</a></code> and <code><a href="../reference/recv_ctx.html">recv_ctx()</a></code> for consistency.</li>
+<li>The <code>$socket_close()</code> method of nano objects has been renamed <code>$close()</code> to better align with the functional API.</li>
 </ul></div>
 </div>
     <div class="section level2">

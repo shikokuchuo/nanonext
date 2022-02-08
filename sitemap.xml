@@ -16,28 +16,13 @@
     <loc>https://shikokuchuo.net/nanonext/news/index.html</loc>
   </url>
   <url>
-    <loc>https://shikokuchuo.net/nanonext/reference/aio_call.html</loc>
-  </url>
-  <url>
-    <loc>https://shikokuchuo.net/nanonext/reference/aio_stop.html</loc>
+    <loc>https://shikokuchuo.net/nanonext/reference/call_aio.html</loc>
   </url>
   <url>
     <loc>https://shikokuchuo.net/nanonext/reference/close.html</loc>
   </url>
   <url>
     <loc>https://shikokuchuo.net/nanonext/reference/context.html</loc>
-  </url>
-  <url>
-    <loc>https://shikokuchuo.net/nanonext/reference/ctx_recv.html</loc>
-  </url>
-  <url>
-    <loc>https://shikokuchuo.net/nanonext/reference/ctx_rep.html</loc>
-  </url>
-  <url>
-    <loc>https://shikokuchuo.net/nanonext/reference/ctx_req.html</loc>
-  </url>
-  <url>
-    <loc>https://shikokuchuo.net/nanonext/reference/ctx_send.html</loc>
   </url>
   <url>
     <loc>https://shikokuchuo.net/nanonext/reference/dial.html</loc>
@@ -79,13 +64,25 @@
     <loc>https://shikokuchuo.net/nanonext/reference/recv_aio.html</loc>
   </url>
   <url>
+    <loc>https://shikokuchuo.net/nanonext/reference/recv_ctx.html</loc>
+  </url>
+  <url>
     <loc>https://shikokuchuo.net/nanonext/reference/recv_vec.html</loc>
+  </url>
+  <url>
+    <loc>https://shikokuchuo.net/nanonext/reference/reply.html</loc>
+  </url>
+  <url>
+    <loc>https://shikokuchuo.net/nanonext/reference/request.html</loc>
   </url>
   <url>
     <loc>https://shikokuchuo.net/nanonext/reference/send.html</loc>
   </url>
   <url>
     <loc>https://shikokuchuo.net/nanonext/reference/send_aio.html</loc>
+  </url>
+  <url>
+    <loc>https://shikokuchuo.net/nanonext/reference/send_ctx.html</loc>
   </url>
   <url>
     <loc>https://shikokuchuo.net/nanonext/reference/send_vec.html</loc>
@@ -98,6 +95,9 @@
   </url>
   <url>
     <loc>https://shikokuchuo.net/nanonext/reference/start.html</loc>
+  </url>
+  <url>
+    <loc>https://shikokuchuo.net/nanonext/reference/stop_aio.html</loc>
   </url>
   <url>
     <loc>https://shikokuchuo.net/nanonext/reference/subscribe.html</loc>
