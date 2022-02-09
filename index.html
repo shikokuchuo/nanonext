@@ -89,7 +89,7 @@
 <!-- badges: start -->
 
 <p>R binding for NNG (Nanomsg Next Gen), a successor to ZeroMQ. NNG is a socket library providing high-performance scalability protocols, implementing a cross-platform standard for messaging and communications. Serves as a concurrency framework that can be used for building distributed systems.</p>
-<p>Designed for performance and reliability, the NNG library is written in C and {nanonext} is a lightweight wrapper with no external package dependencies. Supported transports include inproc (intra-process), IPC (inter-process), TCP/IP (IPv4 or IPv6), and WebSocket.</p>
+<p>Designed for performance and reliability, the NNG library is written in C and {nanonext} is a lightweight wrapper depending on no other packages. Supported transports include inproc (intra-process), IPC (inter-process), TCP/IP (IPv4 or IPv6), and WebSocket. The inproc transport uses zero-copy where possible for a much faster solution than alternatives.</p>
 <p>Can be used for sending data across networks, but equally as an interface for code and processes to communicate with each other. Receive data generated in Python, perform analysis in R, and send results to a C++ program – all on the same computer or on networks spanning the globe.</p>
 <div class="section level3">
 <h3 id="table-of-contents">Table of Contents<a class="anchor" aria-label="anchor" href="#table-of-contents"></a>
@@ -181,7 +181,7 @@
 </h3>
 <p>{nanonext} provides a fast and reliable data interface between different programming languages where NNG has a binding, including C, C++, Python, Go, Rust etc.</p>
 <p>The following example demonstrates the exchange of numerical data between R and Python (NumPy), two of the most commonly-used languages for data science and machine learning.</p>
-<p>Using a messaging interface provides a clean and robust approach that is light on resources and provides fewer points of failure. This is especially relevant when processing real-time data, as an example.</p>
+<p>Using a messaging interface provides a clean and robust approach which is light on resources and offers limited and identifiable points of failure. This is especially relevant when processing real-time data, as an example.</p>
 <p>This approach can also serve as an interface / pipe between different processes written in the same or different languages, running on the same computer or distributed across networks, and is an enabler of modular software design as espoused by the Unix philosophy.</p>
 <p>Create socket in Python using the NNG binding ‘pynng’:</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -221,7 +221,7 @@
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://shikokuchuo.net/nanonext/">nanonext</a></span><span class="op">)</span>
 <span class="va">s1</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/socket.html">socket</a></span><span class="op">(</span><span class="st">"pair"</span>, listen <span class="op">=</span> <span class="st">"inproc://nano"</span><span class="op">)</span>
 <span class="va">s2</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/socket.html">socket</a></span><span class="op">(</span><span class="st">"pair"</span>, dial <span class="op">=</span> <span class="st">"inproc://nano"</span><span class="op">)</span></code></pre></div>
-<p>For a ‘sendAio’ object, calling the result causes it to be stored in the AIO as <code>$result</code>. 0 denotes a successful send.</p>
+<p>For a ‘sendAio’ object, calling the result causes it to be stored in the AIO as <code>$result</code>. An exit code of 0 denotes a successful send.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/send_aio.html">send_aio</a></span><span class="op">(</span><span class="va">s1</span>, <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>a <span class="op">=</span> <span class="fl">1</span>, b <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span>
 <span class="va">res</span>
@@ -273,11 +273,11 @@
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://shikokuchuo.net/nanonext/">nanonext</a></span><span class="op">)</span>
 <span class="va">req</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/socket.html">socket</a></span><span class="op">(</span><span class="st">"req"</span>, dial <span class="op">=</span> <span class="st">"tcp://127.0.0.1:6546"</span><span class="op">)</span>
 <span class="va">ctxq</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/context.html">context</a></span><span class="op">(</span><span class="va">req</span><span class="op">)</span>
-<span class="va">aio</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/request.html">request</a></span><span class="op">(</span><span class="va">ctxq</span>, data <span class="op">=</span> <span class="fl">1e6</span>, recv_mode <span class="op">=</span> <span class="st">"double"</span>, keep.raw <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+<span class="va">aio</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/request.html">request</a></span><span class="op">(</span><span class="va">ctxq</span>, data <span class="op">=</span> <span class="fl">1e8</span>, recv_mode <span class="op">=</span> <span class="st">"double"</span>, keep.raw <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
 <p>At this point, the client can run additional code concurrent with the server processing the request.</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># do more...</span></code></pre></div>
-<p>When the result of the server calculation is required (or, as the case may be, an exit code confirming that the server operation has completed), the <code>recvAio</code> may be called using <code><a href="reference/call_aio.html">call_aio()</a></code>.</p>
+<p>When the result of the server calculation is required, the <code>recvAio</code> may be called using <code><a href="reference/call_aio.html">call_aio()</a></code>.</p>
 <p>The return value from the server request is then retrieved and stored in the Aio as <code>$data</code>.</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="reference/call_aio.html">call_aio</a></span><span class="op">(</span><span class="va">aio</span><span class="op">)</span>
@@ -286,7 +286,9 @@
 <span class="co">#&gt; &lt; recvAio &gt;</span>
 <span class="co">#&gt;  - $data for message data</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">aio</span><span class="op">$</span><span class="va">data</span><span class="op">)</span>
-<span class="co">#&gt;  num [1:1000000] -1.014 -0.8599 -1.7137 1.9008 0.0125 ...</span></code></pre></div>
+<span class="co">#&gt;  num [1:100000000] -1.104 1.34 0.442 -0.738 0.66 ...</span></code></pre></div>
+<p>In this example the calculation is returned, but other operations may reside entirely on the server side, for example writing data to disk.</p>
+<p>In such a case, using <code><a href="reference/call_aio.html">call_aio()</a></code> confirms that the operation has completed (or it will wait for completion) and calls the return value of the function, which may typically be NULL or an exit code.</p>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
 <div class="section level3">
@@ -340,11 +342,11 @@
 <span class="co">#&gt;   [1] 7b 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73</span>
 <span class="co">#&gt;  [26] 74 22 3a 20 22 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22</span>
 <span class="co">#&gt;  [51] 58 2d 41 6d 7a 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31</span>
-<span class="co">#&gt;  [76] 2d 36 32 30 32 35 35 39 30 2d 34 65 37 31 61 37 65 37 37 30 63 65 31 64 36</span>
-<span class="co">#&gt; [101] 64 30 61 36 61 62 37 39 39 22 0a 20 20 7d 0a 7d 0a</span>
+<span class="co">#&gt;  [76] 2d 36 32 30 34 30 34 66 65 2d 30 62 39 31 61 34 61 63 32 61 36 62 31 36 34</span>
+<span class="co">#&gt; [101] 31 36 61 30 32 38 30 30 63 22 0a 20 20 7d 0a 7d 0a</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $data</span>
-<span class="co">#&gt; [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-62025590-4e71a7e770ce1d6d0a6ab799\"\n  }\n}\n"</span></code></pre></div>
+<span class="co">#&gt; [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-620404fe-0b91a4ac2a6b16416a02800c\"\n  }\n}\n"</span></code></pre></div>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
 <div class="section level3">
