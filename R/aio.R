@@ -62,6 +62,8 @@ call_aio <- function(aio) {
       }
       on.exit(expr = {
         aio[["raw"]] <- res
+        rm("aio", envir = aio)
+        rm("callparams", envir = aio)
         return(invisible(aio))
       })
       data <- switch(mode,

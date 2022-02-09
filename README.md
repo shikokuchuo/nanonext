@@ -19,9 +19,11 @@ Serves as a concurrency framework that can be used for building
 distributed systems.
 
 Designed for performance and reliability, the NNG library is written in
-C and {nanonext} is a lightweight wrapper with no external package
-dependencies. Supported transports include inproc (intra-process), IPC
-(inter-process), TCP/IP (IPv4 or IPv6), and WebSocket.
+C and {nanonext} is a lightweight wrapper depending on no other
+packages. Supported transports include inproc (intra-process), IPC
+(inter-process), TCP/IP (IPv4 or IPv6), and WebSocket. The inproc
+transport uses zero-copy where possible for a much faster solution than
+alternatives.
 
 Can be used for sending data across networks, but equally as an
 interface for code and processes to communicate with each other. Receive
@@ -150,9 +152,10 @@ The following example demonstrates the exchange of numerical data
 between R and Python (NumPy), two of the most commonly-used languages
 for data science and machine learning.
 
-Using a messaging interface provides a clean and robust approach that is
-light on resources and provides fewer points of failure. This is
-especially relevant when processing real-time data, as an example.
+Using a messaging interface provides a clean and robust approach which
+is light on resources and offers limited and identifiable points of
+failure. This is especially relevant when processing real-time data, as
+an example.
 
 This approach can also serve as an interface / pipe between different
 processes written in the same or different languages, running on the
@@ -219,7 +222,7 @@ s2 <- socket("pair", dial = "inproc://nano")
 ```
 
 For a ‘sendAio’ object, calling the result causes it to be stored in the
-AIO as `$result`. 0 denotes a successful send.
+AIO as `$result`. An exit code of 0 denotes a successful send.
 
 ``` r
 res <- send_aio(s1, data.frame(a = 1, b = 2))
@@ -292,7 +295,7 @@ and returns immediately with a `recvAio` object.
 library(nanonext)
 req <- socket("req", dial = "tcp://127.0.0.1:6546")
 ctxq <- context(req)
-aio <- request(ctxq, data = 1e6, recv_mode = "double", keep.raw = FALSE)
+aio <- request(ctxq, data = 1e8, recv_mode = "double", keep.raw = FALSE)
 ```
 
 At this point, the client can run additional code concurrent with the
@@ -302,9 +305,8 @@ server processing the request.
 # do more...
 ```
 
-When the result of the server calculation is required (or, as the case
-may be, an exit code confirming that the server operation has
-completed), the `recvAio` may be called using `call_aio()`.
+When the result of the server calculation is required, the `recvAio` may
+be called using `call_aio()`.
 
 The return value from the server request is then retrieved and stored in
 the Aio as `$data`.
@@ -316,8 +318,15 @@ aio
 #> < recvAio >
 #>  - $data for message data
 str(aio$data)
-#>  num [1:1000000] -1.014 -0.8599 -1.7137 1.9008 0.0125 ...
+#>  num [1:100000000] -1.104 1.34 0.442 -0.738 0.66 ...
 ```
+
+In this example the calculation is returned, but other operations may
+reside entirely on the server side, for example writing data to disk.
+
+In such a case, using `call_aio()` confirms that the operation has
+completed (or it will wait for completion) and calls the return value of
+the function, which may typically be NULL or an exit code.
 
 [« Back to ToC](#table-of-contents)
 
@@ -378,11 +387,11 @@ ncurl("http://httpbin.org/headers")
 #>   [1] 7b 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73
 #>  [26] 74 22 3a 20 22 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22
 #>  [51] 58 2d 41 6d 7a 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31
-#>  [76] 2d 36 32 30 32 35 35 39 30 2d 34 65 37 31 61 37 65 37 37 30 63 65 31 64 36
-#> [101] 64 30 61 36 61 62 37 39 39 22 0a 20 20 7d 0a 7d 0a
+#>  [76] 2d 36 32 30 34 30 34 66 65 2d 30 62 39 31 61 34 61 63 32 61 36 62 31 36 34
+#> [101] 31 36 61 30 32 38 30 30 63 22 0a 20 20 7d 0a 7d 0a
 #> 
 #> $data
-#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-62025590-4e71a7e770ce1d6d0a6ab799\"\n  }\n}\n"
+#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-620404fe-0b91a4ac2a6b16416a02800c\"\n  }\n}\n"
 ```
 
 [« Back to ToC](#table-of-contents)

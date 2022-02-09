@@ -69,7 +69,12 @@ nng_error <- function(error) {
 #'
 nng_timer <- function(time) {
 
-  invisible(.Call(rnng_threaded_timer, as.integer(time)))
+  if (is.numeric(time) && time >= 0) {
+    time <- as.integer(time)
+  } else {
+    stop("a numeric value >= 0 is required")
+  }
+  invisible(.Call(rnng_threaded_timer, time))
 
 }
 

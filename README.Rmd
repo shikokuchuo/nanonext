@@ -23,7 +23,7 @@ knitr::opts_chunk$set(
 
 R binding for NNG (Nanomsg Next Gen), a successor to ZeroMQ. NNG is a socket library providing high-performance scalability protocols, implementing a cross-platform standard for messaging and communications. Serves as a concurrency framework that can be used for building distributed systems.
 
-Designed for performance and reliability, the NNG library is written in C and {nanonext} is a lightweight wrapper with no external package dependencies. Supported transports include inproc (intra-process), IPC (inter-process), TCP/IP (IPv4 or IPv6), and WebSocket.
+Designed for performance and reliability, the NNG library is written in C and {nanonext} is a lightweight wrapper depending on no other packages. Supported transports include inproc (intra-process), IPC (inter-process), TCP/IP (IPv4 or IPv6), and WebSocket. The inproc transport uses zero-copy where possible for a much faster solution than alternatives.
 
 Can be used for sending data across networks, but equally as an interface for code and processes to communicate with each other. Receive data generated in Python, perform analysis in R, and send results to a C++ program – all on the same computer or on networks spanning the globe.
 
@@ -117,7 +117,7 @@ recv(socket2)
 
 The following example demonstrates the exchange of numerical data between R and Python (NumPy), two of the most commonly-used languages for data science and machine learning. 
 
-Using a messaging interface provides a clean and robust approach that is light on resources and provides fewer points of failure. This is especially relevant when processing real-time data, as an example. 
+Using a messaging interface provides a clean and robust approach which is light on resources and offers limited and identifiable points of failure. This is especially relevant when processing real-time data, as an example. 
 
 This approach can also serve as an interface / pipe between different processes written in the same or different languages, running on the same computer or distributed across networks, and is an enabler of modular software design as espoused by the Unix philosophy.
 
@@ -169,7 +169,7 @@ s2 <- socket("pair", dial = "inproc://nano")
 
 ```
 
-For a 'sendAio' object, calling the result causes it to be stored in the AIO as `$result`. 0 denotes a successful send.
+For a 'sendAio' object, calling the result causes it to be stored in the AIO as `$result`. An exit code of 0 denotes a successful send.
 
 ```{r async2}
 
@@ -226,10 +226,12 @@ reply(ctxp, execute = rnorm, send_mode = "raw")
 Client process: `request()` performs an async send and receive request and returns immediately with a `recvAio` object.
 
 ```{r rpcclient}
+
 library(nanonext)
 req <- socket("req", dial = "tcp://127.0.0.1:6546")
 ctxq <- context(req)
-aio <- request(ctxq, data = 1e6, recv_mode = "double", keep.raw = FALSE)
+aio <- request(ctxq, data = 1e8, recv_mode = "double", keep.raw = FALSE)
+
 ```
 
 At this point, the client can run additional code concurrent with the server processing the request. 
@@ -237,7 +239,7 @@ At this point, the client can run additional code concurrent with the server pro
 # do more...
 ```
 
-When the result of the server calculation is required (or, as the case may be, an exit code confirming that the server operation has completed), the `recvAio` may be called using `call_aio()`. 
+When the result of the server calculation is required, the `recvAio` may be called using `call_aio()`.
 
 The return value from the server request is then retrieved and stored in the Aio as `$data`.
 
@@ -249,6 +251,10 @@ aio
 str(aio$data)
 
 ```
+
+In this example the calculation is returned, but other operations may reside entirely on the server side, for example writing data to disk.
+
+In such a case, using `call_aio()` confirms that the operation has completed (or it will wait for completion) and calls the return value of the function, which may typically be NULL or an exit code.
 
 [&laquo; Back to ToC](#table-of-contents)
 

@@ -2,7 +2,7 @@
 % Please edit documentation in R/context.R
 \name{request}
 \alias{request}
-\title{Request over Context (Client for Req/Rep Protocol)}
+\title{Request over Context (RPC Client for Req/Rep Protocol)}
 \usage{
 request(
   context,
@@ -31,8 +31,7 @@ The default 'serial' means a serialised R object, for the other modes,
 the raw vector received will be converted into the respective mode.}
 
 \item{timeout}{in ms. If unspecified, a socket-specific default timeout will
-be used. Note this applies to each of the send and receive legs, hence the
-total elapsed time could be up to twice this parameter.}
+be used. Note that this applies to receiving the result.}
 
 \item{keep.raw}{[default TRUE] logical flag whether to keep the received raw
 vector (useful for verification e.g. via hashing). If FALSE, will return
@@ -54,8 +53,10 @@ Sending the request and receiving the result are both performed async,
     without blocking the client. Use \code{\link{call_aio}} on the 'recvAio'
     to call the result when required.
 
-    If an error occured in the server process, a NULL byte will be received
-    (as \code{$data} if 'recv_mode' = 'serial', as \code{$raw} otherwise).
+    If an error occured in the server process, a nul byte \code{00} will be
+    received (as \code{$data} if 'recv_mode' = 'serial', as \code{$raw}
+    otherwise). This allows an error to be easily distinguished from a NULL
+    return value.
 }
 \examples{
 req <- socket("req", listen = "tcp://127.0.0.1:6546")

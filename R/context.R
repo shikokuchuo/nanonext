@@ -156,7 +156,7 @@ recv_ctx <- function(context,
 
 }
 
-#' Reply over Context (Server for Req/Rep Protocol)
+#' Reply over Context (RPC Server for Req/Rep Protocol)
 #'
 #' Implements an executor/server for the rep node of the req/rep protocol. Awaits
 #'     data, applies an arbitrary specified function, and returns the result
@@ -176,9 +176,10 @@ recv_ctx <- function(context,
 #'     The default 'serial' means a serialised R object, for the other modes,
 #'     the raw vector received will be converted into the respective mode.
 #' @param timeout in ms. If unspecified, a socket-specific default timeout will
-#'     be used. Note this applies to each of the receive and send legs, hence the
-#'     total elapsed time could be up to twice this parameter plus the time to
-#'     perform 'execute' on the received data.
+#'     be used. Note that this applies to receiving the request. The total elapsed
+#'     time would also include the time for performing 'execute' on the received
+#'     data. The timeout then also applies to sending the result (in the event
+#'     that the requestor has become unavailable since sending the request).
 #' @param ... additional arguments passed to the function specified by 'execute'.
 #'
 #' @return Invisible NULL.
@@ -187,11 +188,10 @@ recv_ctx <- function(context,
 #'     the desired behaviour. Set a timeout to allow the function to return
 #'     if no data is forthcoming.
 #'
-#'     In the event of an error in unserialisation or conversion of the
-#'     received message, in the evaluation of the function with respect to the
-#'     data, or in the serialization or conversion of the message to be sent,
-#'     a NULL byte (or serialized NULL byte) will be sent in reply to signal an
-#'     error to the client.
+#'     In the event of an error in either processing the messages or in evaluation
+#'     of the function with respect to the data, a nul byte \code{00} (or serialized
+#'     nul byte) will be sent in reply to the client to signal an error. This makes
+#'     it easy to distigush an error from a NULL return value.
 #'
 #' @examples
 #' req <- socket("req", listen = "tcp://127.0.0.1:6546")
@@ -229,7 +229,7 @@ reply <- function(context,
     message(res, " : ", nng_error(res))
     return(invisible(res))
   }
-  on.exit(expr = send_aio(context, writeBin(object = "", con = raw()), mode = send_mode))
+  on.exit(expr = send_aio(context, as.raw(0L), mode = send_mode))
   data <- switch(recv_mode,
                  serial = unserialize(connection = res),
                  character = (r <- readBin(con = res, what = recv_mode, n = length(res)))[r != ""],
@@ -249,7 +249,7 @@ reply <- function(context,
 
 }
 
-#' Request over Context (Client for Req/Rep Protocol)
+#' Request over Context (RPC Client for Req/Rep Protocol)
 #'
 #' Implements a caller/client for the req node of the req/rep protocol. Sends
 #'     data to the rep node (executor/server) and returns an Aio, which can be
@@ -259,8 +259,7 @@ reply <- function(context,
 #' @inheritParams recv
 #' @param data an R object (if send_mode = 'raw', an R vector).
 #' @param timeout in ms. If unspecified, a socket-specific default timeout will
-#'     be used. Note this applies to each of the send and receive legs, hence the
-#'     total elapsed time could be up to twice this parameter.
+#'     be used. Note that this applies to receiving the result.
 #'
 #' @return A recv Aio (object of class 'recvAio').
 #'
@@ -271,8 +270,10 @@ reply <- function(context,
 #'     without blocking the client. Use \code{\link{call_aio}} on the 'recvAio'
 #'     to call the result when required.
 #'
-#'     If an error occured in the server process, a NULL byte will be received
-#'     (as \code{$data} if 'recv_mode' = 'serial', as \code{$raw} otherwise).
+#'     If an error occured in the server process, a nul byte \code{00} will be
+#'     received (as \code{$data} if 'recv_mode' = 'serial', as \code{$raw}
+#'     otherwise). This allows an error to be easily distinguished from a NULL
+#'     return value.
 #'
 #' @examples
 #' req <- socket("req", listen = "tcp://127.0.0.1:6546")

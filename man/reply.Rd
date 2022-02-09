@@ -2,7 +2,7 @@
 % Please edit documentation in R/context.R
 \name{reply}
 \alias{reply}
-\title{Reply over Context (Server for Req/Rep Protocol)}
+\title{Reply over Context (RPC Server for Req/Rep Protocol)}
 \usage{
 reply(
   context,
@@ -33,9 +33,10 @@ converted to a raw byte vector for sending) - essential when interfacing
 with external applications.}
 
 \item{timeout}{in ms. If unspecified, a socket-specific default timeout will
-be used. Note this applies to each of the receive and send legs, hence the
-total elapsed time could be up to twice this parameter plus the time to
-perform 'execute' on the received data.}
+be used. Note that this applies to receiving the request. The total elapsed
+time would also include the time for performing 'execute' on the received
+data. The timeout then also applies to sending the result (in the event
+that the requestor has become unavailable since sending the request).}
 
 \item{...}{additional arguments passed to the function specified by 'execute'.}
 }
@@ -52,11 +53,10 @@ Receive will block while awaiting a message to arrive and is usually
     the desired behaviour. Set a timeout to allow the function to return
     if no data is forthcoming.
 
-    In the event of an error in unserialisation or conversion of the
-    received message, in the evaluation of the function with respect to the
-    data, or in the serialization or conversion of the message to be sent,
-    a NULL byte (or serialized NULL byte) will be sent in reply to signal an
-    error to the client.
+    In the event of an error in either processing the messages or in evaluation
+    of the function with respect to the data, a nul byte \code{00} (or serialized
+    nul byte) will be sent in reply to the client to signal an error. This makes
+    it easy to distigush an error from a NULL return value.
 }
 \examples{
 req <- socket("req", listen = "tcp://127.0.0.1:6546")

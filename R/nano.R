@@ -68,8 +68,10 @@ nano <- function(protocol = c("pair", "bus", "push", "pull", "req", "rep",
       dial(nano, url = dial, autostart = TRUE)
     } else {
       dial(nano, url = dial, autostart = FALSE)
-      nano[["dialer_start"]] <- function(async = TRUE) start(.subset2(nano, "dialer")[[1L]],
-                                                             async = async)
+      nano[["dialer_start"]] <- function(async = TRUE) {
+        rm("dialer_start", envir = nano)
+        start(.subset2(nano, "dialer")[[1L]], async = async)
+      }
     }
   }
 
@@ -78,7 +80,10 @@ nano <- function(protocol = c("pair", "bus", "push", "pull", "req", "rep",
       listen(nano, url = listen, autostart = TRUE)
     } else {
       listen(nano, url = listen, autostart = FALSE)
-      nano[["listener_start"]] <- function() start(.subset2(nano, "listener")[[1L]])
+      nano[["listener_start"]] <- function() {
+        rm("listener_start", envir = nano)
+        start(.subset2(nano, "listener")[[1L]])
+      }
     }
   }
 
