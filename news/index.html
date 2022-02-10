@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.0</span>
       </span>
     </div>
 
@@ -54,30 +54,26 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.1.0.9000" id="nanonext-0109000-under-development">nanonext 0.1.0.9000 (under development)<a class="anchor" aria-label="anchor" href="#nanonext-0109000-under-development"></a></h2>
+<h2 class="page-header" data-toc-text="0.2.0" id="nanonext-020">nanonext 0.2.0<a class="anchor" aria-label="anchor" href="#nanonext-020"></a></h2>
 <div class="section level5">
-<h5 id="new-features-0-1-0-9000">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-1-0-9000"></a></h5>
+<h5 id="new-features-0-2-0">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-2-0"></a></h5>
 <ul><li>Implements full async I/O capabilities
 <ul><li>
 <code><a href="../reference/send_aio.html">send_aio()</a></code> and <code><a href="../reference/recv_aio.html">recv_aio()</a></code> now return Aio objects, for which the results may be called using <code><a href="../reference/call_aio.html">call_aio()</a></code>.</li>
 </ul></li>
-<li>New <code><a href="../reference/request.html">request()</a></code> and <code><a href="../reference/reply.html">reply()</a></code> functions implement the full logic of an RPC client/server.
+<li>New <code><a href="../reference/request.html">request()</a></code> and <code><a href="../reference/reply.html">reply()</a></code> functions implement the full logic of an RPC client/server, allowing processes to run concurrently on the client and server.
 <ul><li>Designed to be run in separate processes, the reply server will await data and apply a function before returning a result.</li>
 <li>The request client performs an async request to the server and returns immediately with an Aio.</li>
-<li>This allows processes to run concurrently on the client and server.</li>
 </ul></li>
 <li>New <code><a href="../reference/ncurl.html">ncurl()</a></code> minimalistic http(s) client.</li>
+<li>New <code><a href="../reference/nng_timer.html">nng_timer()</a></code> utility as a demonstration of NNG’s multithreading capabilities.</li>
 <li>Allows setting the environment variable ‘NANONEXT_TLS’ prior to package installation
 <ul><li>Enables TLS where the system NNG library has been built with TLS support (using Mbed TLS).</li>
 </ul></li>
-<li>New <code><a href="../reference/nng_timer.html">nng_timer()</a></code> utility as a demonstration of NNG’s multithreading capabilities.</li>
 </ul></div>
 <div class="section level5">
-<h5 id="updates-0-1-0-9000">Updates<a class="anchor" aria-label="anchor" href="#updates-0-1-0-9000"></a></h5>
-<ul><li>Dialer/listener starts and close operations no longer print a message to stderr when successful for less verbosity by default.
-<ul><li>The state of respective objects can always be queried using <code>$state</code>
-</li>
-</ul></li>
+<h5 id="updates-0-2-0">Updates<a class="anchor" aria-label="anchor" href="#updates-0-2-0"></a></h5>
+<ul><li>Dialer/listener starts and close operations no longer print a message to stderr when successful for less verbosity by default.</li>
 <li>All send and receive functions, e.g. <code><a href="../reference/send.html">send()</a></code>/<code><a href="../reference/recv.html">recv()</a></code>, gain a revised ‘mode’ argument.
 <ul><li>This now permits R serialization as an option, consolidating the functionality of the ’_vec’ series of functions.</li>
 </ul></li>
