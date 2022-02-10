@@ -16,20 +16,30 @@ R binding for NNG (Nanomsg Next Gen), a successor to ZeroMQ. NNG is a
 socket library providing high-performance scalability protocols,
 implementing a cross-platform standard for messaging and communications.
 Serves as a concurrency framework that can be used for building
-distributed systems.
+distributed applications.
 
 Designed for performance and reliability, the NNG library is written in
 C and {nanonext} is a lightweight wrapper depending on no other
-packages. Supported transports include inproc (intra-process), IPC
-(inter-process), TCP/IP (IPv4 or IPv6), and WebSocket. The inproc
-transport uses zero-copy where possible for a much faster solution than
-alternatives.
+packages. Provides the interface for code and processes to communicate
+with each other - receive data generated in Python, perform analysis in
+R, and send results to a C++ program – all on the same computer or on
+networks spanning the globe.
 
-Can be used for sending data across networks, but equally as an
-interface for code and processes to communicate with each other. Receive
-data generated in Python, perform analysis in R, and send results to a
-C++ program – all on the same computer or on networks spanning the
-globe.
+Implemented scalability protocols:
+
+-   Bus (routing)
+-   Pair (two-way radio)
+-   Pipeline (one-way pipe)
+-   Publisher/Subscriber (topics & broadcast)
+-   Request/Reply (I ask, you answer)
+-   Survey (everyone votes)
+
+Implemented transports:
+
+-   inproc (intra-process)
+-   IPC (inter-process)
+-   TCP/IP (IPv4 or IPv6)
+-   WebSocket
 
 ### Table of Contents
 
@@ -70,6 +80,8 @@ Dialer/Listener. Methods such as `$send()` or `$recv()` can then be
 accessed directly from the object.
 
 *Example using Request/Reply (REQ/REP) protocol with inproc transport:*
+<br /> (The inproc transport uses zero-copy where possible for a much
+faster solution than alternatives)
 
 Create nano objects:
 
@@ -145,8 +157,8 @@ recv(socket2)
 ### Cross-language Exchange
 
 {nanonext} provides a fast and reliable data interface between different
-programming languages where NNG has a binding, including C, C++, Python,
-Go, Rust etc.
+programming languages where NNG has a binding, including C, C++, Java,
+Python, Go, Rust etc.
 
 The following example demonstrates the exchange of numerical data
 between R and Python (NumPy), two of the most commonly-used languages
@@ -238,7 +250,7 @@ res$result
 ```
 
 For a ‘recvAio’ object, calling the message causes it to be stored in
-the AIO as `$raw` and/or `$data` as the case may be.
+the AIO as `$raw` (if kept) and `$data`.
 
 ``` r
 msg <- recv_aio(s2)
@@ -279,7 +291,7 @@ I/O-bound operations such as writing large amounts of data to disk in a
 separate ‘server’ process running concurrently.
 
 Server process: `reply()` will wait for a message and apply a function,
-in this case `rnorm()`, before sending back the result.
+in this case `rnorm()`, before sending back the result
 
 ``` r
 library(nanonext)
@@ -318,7 +330,7 @@ aio
 #> < recvAio >
 #>  - $data for message data
 str(aio$data)
-#>  num [1:100000000] -1.104 1.34 0.442 -0.738 0.66 ...
+#>  num [1:100000000] -0.69 -1.535 -0.463 0.012 0.768 ...
 ```
 
 In this example the calculation is returned, but other operations may
@@ -387,11 +399,11 @@ ncurl("http://httpbin.org/headers")
 #>   [1] 7b 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73
 #>  [26] 74 22 3a 20 22 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22
 #>  [51] 58 2d 41 6d 7a 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31
-#>  [76] 2d 36 32 30 34 30 34 66 65 2d 30 62 39 31 61 34 61 63 32 61 36 62 31 36 34
-#> [101] 31 36 61 30 32 38 30 30 63 22 0a 20 20 7d 0a 7d 0a
+#>  [76] 2d 36 32 30 34 63 34 63 34 2d 32 30 34 38 64 39 38 64 34 36 36 32 34 61 39
+#> [101] 64 33 63 32 37 33 33 36 34 22 0a 20 20 7d 0a 7d 0a
 #> 
 #> $data
-#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-620404fe-0b91a4ac2a6b16416a02800c\"\n  }\n}\n"
+#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6204c4c4-2048d98d46624a9d3c273364\"\n  }\n}\n"
 ```
 
 [« Back to ToC](#table-of-contents)

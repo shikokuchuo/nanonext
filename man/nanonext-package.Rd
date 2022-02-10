@@ -4,13 +4,13 @@
 \encoding{UTF-8}
 \name{nanonext-package}
 \alias{nanonext-package}
-\alias{nanonext}
 \title{nanonext: NNG (Nanomsg Next Gen) Lightweight Messaging Library}
 \description{
 R binding for NNG (Nanomsg Next Gen), a successor to ZeroMQ. NNG is a socket
     library providing high-performance scalability protocols, implementing a
     cross-platform standard for messaging and communications. Serves as a
-    concurrency framework that can be used for building distributed systems.
+    concurrency framework that can be used for building distributed
+    applications.
 }
 \section{Usage notes}{
 

@@ -1,22 +1,20 @@
-# nanonext 0.1.0.9000 (under development)
+# nanonext 0.2.0
 
 #### New Features
 
 * Implements full async I/O capabilities 
   + `send_aio()` and `recv_aio()` now return Aio objects, for which the results may be called using `call_aio()`.
-* New `request()` and `reply()` functions implement the full logic of an RPC client/server. 
+* New `request()` and `reply()` functions implement the full logic of an RPC client/server, allowing processes to run concurrently on the client and server.
   + Designed to be run in separate processes, the reply server will await data and apply a function before returning a result.
   + The request client performs an async request to the server and returns immediately with an Aio.
-  + This allows processes to run concurrently on the client and server.
 * New `ncurl()` minimalistic http(s) client.
+* New `nng_timer()` utility as a demonstration of NNG's multithreading capabilities.
 * Allows setting the environment variable 'NANONEXT_TLS' prior to package installation
   + Enables TLS where the system NNG library has been built with TLS support (using Mbed TLS).
-* New `nng_timer()` utility as a demonstration of NNG's multithreading capabilities.
 
 #### Updates
 
 * Dialer/listener starts and close operations no longer print a message to stderr when successful for less verbosity by default.
-  + The state of respective objects can always be queried using `$state`
 * All send and receive functions, e.g. `send()`/`recv()`, gain a revised 'mode' argument. 
   + This now permits R serialization as an option, consolidating the functionality of the '_vec' series of functions.
 * Functions 'send_vec' and 'recv_vec' are deprecated and will be removed in a future release.
