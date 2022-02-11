@@ -44,7 +44,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.0.9000</span>
       </span>
     </div>
 
@@ -301,7 +301,7 @@
 <span class="co">#&gt; &lt; recvAio &gt;</span>
 <span class="co">#&gt;  - $data for message data</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">aio</span><span class="op">$</span><span class="va">data</span><span class="op">)</span>
-<span class="co">#&gt;  num [1:100000000] -0.69 -1.535 -0.463 0.012 0.768 ...</span></code></pre></div>
+<span class="co">#&gt;  num [1:100000000] 0.3676 0.9002 -0.3977 0.7023 -0.0496 ...</span></code></pre></div>
 <p>In this example the calculation is returned, but other operations may reside entirely on the server side, for example writing data to disk.</p>
 <p>In such a case, using <code><a href="reference/call_aio.html">call_aio()</a></code> confirms that the operation has completed (or it will wait for completion) and calls the return value of the function, which may typically be NULL or an exit code.</p>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
@@ -357,11 +357,11 @@
 <span class="co">#&gt;   [1] 7b 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73</span>
 <span class="co">#&gt;  [26] 74 22 3a 20 22 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22</span>
 <span class="co">#&gt;  [51] 58 2d 41 6d 7a 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31</span>
-<span class="co">#&gt;  [76] 2d 36 32 30 34 63 34 63 34 2d 32 30 34 38 64 39 38 64 34 36 36 32 34 61 39</span>
-<span class="co">#&gt; [101] 64 33 63 32 37 33 33 36 34 22 0a 20 20 7d 0a 7d 0a</span>
+<span class="co">#&gt;  [76] 2d 36 32 30 36 39 32 38 34 2d 35 61 36 34 33 33 32 33 35 37 38 39 31 61 38</span>
+<span class="co">#&gt; [101] 39 33 36 38 64 37 36 37 61 22 0a 20 20 7d 0a 7d 0a</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $data</span>
-<span class="co">#&gt; [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6204c4c4-2048d98d46624a9d3c273364\"\n  }\n}\n"</span></code></pre></div>
+<span class="co">#&gt; [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-62069284-5a64332357891a89368d767a\"\n  }\n}\n"</span></code></pre></div>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
 <div class="section level3">
@@ -384,6 +384,7 @@
 </ul>
 <p>A system installation of ‘libnng’ in the standard filesystem locations will be detected and used if possible.</p>
 <p>Otherwise, a release version of ‘libnng’ will be downloaded and built from source automatically during package installation (note: this requires ‘cmake’).</p>
+<p>If your system installation of NNG was built with TLS support (using Mbed TLS), please set the environment variable ‘NANONEXT_TLS’ e.g. by <code>Sys.setenv(NANONEXT_TLS=1)</code> before attempting to install the package. This will ensure the correct linker flags are set for a successful install.</p>
 </div>
 <div class="section level4">
 <h4 id="windows">Windows<a class="anchor" aria-label="anchor" href="#windows"></a>
