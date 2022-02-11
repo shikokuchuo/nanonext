@@ -330,7 +330,7 @@ aio
 #> < recvAio >
 #>  - $data for message data
 str(aio$data)
-#>  num [1:100000000] -0.69 -1.535 -0.463 0.012 0.768 ...
+#>  num [1:100000000] 0.3676 0.9002 -0.3977 0.7023 -0.0496 ...
 ```
 
 In this example the calculation is returned, but other operations may
@@ -399,11 +399,11 @@ ncurl("http://httpbin.org/headers")
 #>   [1] 7b 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73
 #>  [26] 74 22 3a 20 22 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22
 #>  [51] 58 2d 41 6d 7a 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31
-#>  [76] 2d 36 32 30 34 63 34 63 34 2d 32 30 34 38 64 39 38 64 34 36 36 32 34 61 39
-#> [101] 64 33 63 32 37 33 33 36 34 22 0a 20 20 7d 0a 7d 0a
+#>  [76] 2d 36 32 30 36 39 32 38 34 2d 35 61 36 34 33 33 32 33 35 37 38 39 31 61 38
+#> [101] 39 33 36 38 64 37 36 37 61 22 0a 20 20 7d 0a 7d 0a
 #> 
 #> $data
-#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6204c4c4-2048d98d46624a9d3c273364\"\n  }\n}\n"
+#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-62069284-5a64332357891a89368d767a\"\n  }\n}\n"
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -428,6 +428,12 @@ will be detected and used if possible.
 Otherwise, a release version of ‘libnng’ will be downloaded and built
 from source automatically during package installation (note: this
 requires ‘cmake’).
+
+If your system installation of NNG was built with TLS support (using
+Mbed TLS), please set the environment variable ‘NANONEXT_TLS’ e.g. by
+`Sys.setenv(NANONEXT_TLS=1)` before attempting to install the package.
+This will ensure the correct linker flags are set for a successful
+install.
 
 #### Windows
 
