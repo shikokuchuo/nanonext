@@ -70,13 +70,13 @@ For an authoritative guide please refer to the online documentation for
 
 <p>The inproc transport provides communication support between sockets
     within the same process. This may be used as an alternative to slower
-    transports when data must be moved within the same process. This transport
-    tries hard to avoid copying data, and thus is very light-weight.</p>
-<p>[<strong>URI, inproc://</strong>] This transport uses URIs using the scheme inproc://,
-    followed by an arbitrary string of text, terminated by a NULL byte.
-    inproc://nanonext is a valid example URL.</p>
-<p></p><ul><li><p>Multiple URIs can be used within the same application, and they will
-    not interfere with one another.</p></li>
+    transports when data must be moved within the same process. This
+    transport tries hard to avoid copying data, and thus is very light-weight.</p>
+<p>[<strong>URI, inproc://</strong>] This transport uses URIs using the scheme
+    inproc://, followed by an arbitrary string of text, terminated by a NUL
+    byte. inproc://nanonext is a valid example URL.</p>
+<p></p><ul><li><p>Multiple URIs can be used within the same application, and they
+    will not interfere with one another.</p></li>
 <li><p>Two applications may also use the same URI without interfering with
     each other, and they will be unable to communicate with each other using
     that URI.</p></li>
@@ -109,10 +109,10 @@ For an authoritative guide please refer to the online documentation for
     at which time it will be necessary to discriminate between the Named Pipes
     and the AF_UNIX based transports.</p>
 <p><em>Abstract Names</em></p>
-<p>[<strong>URI, abstract://</strong>] On Linux, this transport also can support abstract
-    sockets. Abstract sockets use a URI-encoded name after the scheme,
-    which allows arbitrary values to be conveyed in the path, including
-    embedded NULL bytes. abstract://nanonext is a valid example URL.</p>
+<p>[<strong>URI, abstract://</strong>] On Linux, this transport also can support
+    abstract sockets. Abstract sockets use a URI-encoded name after the
+    scheme, which allows arbitrary values to be conveyed in the path,
+    including embedded NUL bytes. abstract://nanonext is a valid example URL.</p>
 <p></p><ul><li><p>Abstract sockets do not have any representation in the file system,
     and are automatically freed by the system when no longer in use. Abstract
     sockets ignore socket permissions, but it is still possible to determine

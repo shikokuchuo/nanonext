@@ -67,9 +67,6 @@
     <loc>https://shikokuchuo.net/nanonext/reference/recv_ctx.html</loc>
   </url>
   <url>
-    <loc>https://shikokuchuo.net/nanonext/reference/recv_vec.html</loc>
-  </url>
-  <url>
     <loc>https://shikokuchuo.net/nanonext/reference/reply.html</loc>
   </url>
   <url>
@@ -83,9 +80,6 @@
   </url>
   <url>
     <loc>https://shikokuchuo.net/nanonext/reference/send_ctx.html</loc>
-  </url>
-  <url>
-    <loc>https://shikokuchuo.net/nanonext/reference/send_vec.html</loc>
   </url>
   <url>
     <loc>https://shikokuchuo.net/nanonext/reference/setopt.html</loc>
