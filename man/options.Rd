@@ -26,16 +26,15 @@ Options that can be set on Sockets, Contexts, Dialers or Listeners.
 
       \item{'reconnect-time-max' [type 'ms']}
 
-      {This is the maximum amount of time
-      (milliseconds) to wait before attempting to establish a connection
-      after a previous attempt has failed. If this is non-zero, then the time
-      between successive connection attempts will start at the value of
-      'reconnect-time-min', and grow exponentially, until it reaches this
-      value. If this value is zero, then no exponential back-off between
-      connection attempts is done, and each attempt will wait the time
-      specified by 'reconnect-time-min'. This can be set on a socket, but it
-      can also be overridden on an individual dialer. The option is
-      irrelevant for listeners.}
+      {This is the maximum amount of time (milliseconds) to wait before
+      attempting to establish a connection after a previous attempt has
+      failed. If this is non-zero, then the time between successive
+      connection attempts will start at the value of 'reconnect-time-min',
+      and grow exponentially, until it reaches this value. If this value is
+      zero, then no exponential back-off between connection attempts is done,
+      and each attempt will wait the time specified by 'reconnect-time-min'.
+      This can be set on a socket, but it can also be overridden on an
+      individual dialer. The option is irrelevant for listeners.}
 
     \item{'recv-size-max' [type 'size']}
 
@@ -47,8 +46,8 @@ Options that can be set on Sockets, Contexts, Dialers or Listeners.
       can claim to want to send an extraordinarily large message, without
       sending any data. This option can be set for the socket, but may be
       overridden for on a per-dialer or per-listener basis.
-      NOTE: Applications on hostile networks should set this to a non-zero v
-      alue to prevent denial-of-service attacks.
+      NOTE: Applications on hostile networks should set this to a non-zero
+      value to prevent denial-of-service attacks.
       NOTE: Some transports may have further message size restrictions.}
 
     \item{'recv-buffer' [type 'int']}
@@ -123,9 +122,9 @@ Options that can be set on Sockets, Contexts, Dialers or Listeners.
       \item{'sub:prefnew' [type 'bool']}
 
       {(Subscribe protocol) This option specifies the behavior of the
-      subscriber when the queue is full. When true (the default), the
+      subscriber when the queue is full. When TRUE (the default), the
       subscriber will make room in the queue by removing the oldest message.
-      When false, the subscriber will reject messages if the message queue
+      When FALSE, the subscriber will reject messages if the message queue
       does not have room.}
 
     \item{'surveyor:survey-time' [type 'ms']}
@@ -156,10 +155,10 @@ Options that can be set on Sockets, Contexts, Dialers or Listeners.
       \item{'tcp-nodelay' [type 'bool']}
 
       {(TCP transport) This option is used to disable (or enable) the use of
-      Nagle's algorithm for TCP connections. When true (the default),
+      Nagle's algorithm for TCP connections. When TRUE (the default),
       messages are sent immediately by the underlying TCP stream without
-      waiting to gather more data. When false, Nagle’s algorithm is enabled,
-      and the TCP stream may wait briefly in attempt to coalesce messages.
+      waiting to gather more data. When FALSE, Nagle’s algorithm is enabled,
+      and the TCP stream may wait briefly in an attempt to coalesce messages.
       Nagle’s algorithm is useful on low-bandwidth connections to reduce
       overhead, but it comes at a cost to latency. When used on a dialer or
       a listener, the value affects how newly created connections will be
@@ -168,7 +167,7 @@ Options that can be set on Sockets, Contexts, Dialers or Listeners.
       \item{'tcp-keepalive' [type 'bool']}
 
       {(TCP transport) This option is used to enable the sending of keep-alive
-      messages on the underlying TCP stream. This option is false by default.
+      messages on the underlying TCP stream. This option is FALSE by default.
       When enabled, if no messages are seen for a period of time, then a zero
       length TCP message is sent with the ACK flag set in an attempt to tickle
       some traffic from the peer. If none is still seen (after some
@@ -178,7 +177,7 @@ Options that can be set on Sockets, Contexts, Dialers or Listeners.
       configured. This option has two purposes. First, it can be used to
       detect dead peers on an otherwise quiescent network. Second, it can be
       used to keep connection table entries in NAT and other middleware from
-      being expiring due to lack of activity.}
+      expiring due to lack of activity.}
 
       \item{'ws:request-headers' [type 'string']}
 

@@ -261,7 +261,7 @@ SEXP rnng_send(SEXP socket, SEXP data, SEXP block) {
   const Rboolean blk = Rf_asLogical(block);
   int flags = blk == 1 ? 0 : 2u;
   const R_xlen_t dlen = XLENGTH(data);
-  void *dp = (void *) RAW(data);
+  unsigned char *dp = RAW(data);
   int xc = nng_send(*sock, dp, dlen, flags);
   if (xc)
     return Rf_ScalarInteger(xc);
@@ -429,7 +429,7 @@ SEXP rnng_ctx_send(SEXP context, SEXP data, SEXP timeout) {
   int xc;
   const nng_duration dur = (nng_duration) Rf_asInteger(timeout);
 
-  void *dp = (void *) RAW(data);
+  unsigned char *dp = RAW(data);
   const R_xlen_t xlen = XLENGTH(data);
   xc = nng_msg_alloc(&msgp, 0);
   if (xc)

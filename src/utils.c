@@ -67,7 +67,7 @@ SEXP rnng_threaded_timer(SEXP time) {
 
 /* ncurl - minimalistic http client ----------------------------------------- */
 
-SEXP rnng_ncurl(SEXP http) {
+SEXP rnng_ncurl(SEXP http, SEXP args) {
 
   nng_url *url;
   nng_http_client *client;
@@ -93,6 +93,21 @@ SEXP rnng_ncurl(SEXP http) {
     nng_http_client_free(client);
     nng_url_free(url);
     return Rf_ScalarInteger(xc);
+  }
+  if (args != R_NilValue) {
+    const char *method = CHAR(STRING_ELT(VECTOR_ELT(args, 0), 0));
+    const char *ctype = CHAR(STRING_ELT(VECTOR_ELT(args, 1), 0));
+    const SEXP data = VECTOR_ELT(args, 2);
+    unsigned char *dp = RAW(data);
+    const R_xlen_t dlen = XLENGTH(data) - 1;
+    if ((xc = nng_http_req_set_method(req, method)) ||
+        (xc = nng_http_req_set_header(req, "Content-Type", ctype)) ||
+        (xc = nng_http_req_set_data(req, dp, dlen))) {
+      nng_http_req_free(req);
+      nng_http_client_free(client);
+      nng_url_free(url);
+      return Rf_ScalarInteger(xc);
+    }
   }
   if ((xc = nng_http_res_alloc(&res))) {
     nng_http_req_free(req);

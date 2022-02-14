@@ -164,8 +164,8 @@ The following example demonstrates the exchange of numerical data
 between R and Python (NumPy), two of the most commonly-used languages
 for data science and machine learning.
 
-Using a messaging interface provides a clean and robust approach which
-is light on resources and offers limited and identifiable points of
+Using a messaging interface provides a clean and robust approach that is
+light on resources and offers limited and identifiable points of
 failure. This is especially relevant when processing real-time data, as
 an example.
 
@@ -330,7 +330,7 @@ aio
 #> < recvAio >
 #>  - $data for message data
 str(aio$data)
-#>  num [1:100000000] 0.3676 0.9002 -0.3977 0.7023 -0.0496 ...
+#>  num [1:100000000] -0.862 -2.043 -0.106 -1.294 -0.548 ...
 ```
 
 In this example the calculation is returned, but other operations may
@@ -390,8 +390,8 @@ close(sub)
 
 ### ncurl Minimalist http Client
 
-`ncurl()` is a minimalistic http(s) client. It takes only one argument,
-the URL. It can follow redirects.
+`ncurl()` is a minimalistic http(s) client. In normal use, it takes only
+one argument, the URL. It can follow redirects.
 
 ``` r
 ncurl("http://httpbin.org/headers")
@@ -399,12 +399,14 @@ ncurl("http://httpbin.org/headers")
 #>   [1] 7b 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73
 #>  [26] 74 22 3a 20 22 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22
 #>  [51] 58 2d 41 6d 7a 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31
-#>  [76] 2d 36 32 30 36 39 32 38 34 2d 35 61 36 34 33 33 32 33 35 37 38 39 31 61 38
-#> [101] 39 33 36 38 64 37 36 37 61 22 0a 20 20 7d 0a 7d 0a
+#>  [76] 2d 36 32 30 39 36 31 62 66 2d 36 65 37 37 33 36 32 65 36 37 65 37 37 34 66
+#> [101] 33 35 36 66 36 35 30 33 39 22 0a 20 20 7d 0a 7d 0a
 #> 
 #> $data
-#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-62069284-5a64332357891a89368d767a\"\n  }\n}\n"
+#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-620961bf-6e77362e67e774f356f65039\"\n  }\n}\n"
 ```
+
+For advanced use, supports additional HTTP methods such as POST or PUT.
 
 [« Back to ToC](#table-of-contents)
 

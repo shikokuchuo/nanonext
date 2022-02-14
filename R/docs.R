@@ -91,8 +91,8 @@
 #'     not obliged to reply). The survey itself is a timed event, so that
 #'     responses received after the survey has finished are discarded.
 #'
-#'     [protocol, surveyor] The surveyor protocol is one half of a survey pattern.
-#'     This socket may be used to send messages (surveys), and then to
+#'     [protocol, surveyor] The surveyor protocol is one half of a survey
+#'     pattern. This socket may be used to send messages (surveys), and then to
 #'     receive replies. A reply can only be received after sending a survey.
 #'     A surveyor can normally expect to receive at most one reply from each
 #'     responder. (Messages can be duplicated in some topologies, so there is no
@@ -118,16 +118,16 @@ NULL
 #'
 #'     The inproc transport provides communication support between sockets
 #'     within the same process. This may be used as an alternative to slower
-#'     transports when data must be moved within the same process. This transport
-#'     tries hard to avoid copying data, and thus is very light-weight.
+#'     transports when data must be moved within the same process. This
+#'     transport tries hard to avoid copying data, and thus is very light-weight.
 #'
-#'     [\strong{URI, inproc://}] This transport uses URIs using the scheme inproc://,
-#'     followed by an arbitrary string of text, terminated by a NULL byte.
-#'     inproc://nanonext is a valid example URL.
+#'     [\strong{URI, inproc://}] This transport uses URIs using the scheme
+#'     inproc://, followed by an arbitrary string of text, terminated by a NUL
+#'     byte. inproc://nanonext is a valid example URL.
 #'
 #'     \itemize{
-#'     \item Multiple URIs can be used within the same application, and they will
-#'     not interfere with one another.
+#'     \item Multiple URIs can be used within the same application, and they
+#'     will not interfere with one another.
 #'
 #'     \item Two applications may also use the same URI without interfering with
 #'     each other, and they will be unable to communicate with each other using
@@ -168,10 +168,10 @@ NULL
 #'
 #'     \emph{Abstract Names}
 #'
-#'     [\strong{URI, abstract://}] On Linux, this transport also can support abstract
-#'     sockets. Abstract sockets use a URI-encoded name after the scheme,
-#'     which allows arbitrary values to be conveyed in the path, including
-#'     embedded NULL bytes. abstract://nanonext is a valid example URL.
+#'     [\strong{URI, abstract://}] On Linux, this transport also can support
+#'     abstract sockets. Abstract sockets use a URI-encoded name after the
+#'     scheme, which allows arbitrary values to be conveyed in the path,
+#'     including embedded NUL bytes. abstract://nanonext is a valid example URL.
 #'
 #'     \itemize{
 #'     \item Abstract sockets do not have any representation in the file system,
@@ -290,16 +290,15 @@ NULL
 #'
 #'       \item{'reconnect-time-max' [type 'ms']}
 #'
-#'       {This is the maximum amount of time
-#'       (milliseconds) to wait before attempting to establish a connection
-#'       after a previous attempt has failed. If this is non-zero, then the time
-#'       between successive connection attempts will start at the value of
-#'       'reconnect-time-min', and grow exponentially, until it reaches this
-#'       value. If this value is zero, then no exponential back-off between
-#'       connection attempts is done, and each attempt will wait the time
-#'       specified by 'reconnect-time-min'. This can be set on a socket, but it
-#'       can also be overridden on an individual dialer. The option is
-#'       irrelevant for listeners.}
+#'       {This is the maximum amount of time (milliseconds) to wait before
+#'       attempting to establish a connection after a previous attempt has
+#'       failed. If this is non-zero, then the time between successive
+#'       connection attempts will start at the value of 'reconnect-time-min',
+#'       and grow exponentially, until it reaches this value. If this value is
+#'       zero, then no exponential back-off between connection attempts is done,
+#'       and each attempt will wait the time specified by 'reconnect-time-min'.
+#'       This can be set on a socket, but it can also be overridden on an
+#'       individual dialer. The option is irrelevant for listeners.}
 #'
 #'     \item{'recv-size-max' [type 'size']}
 #'
@@ -311,8 +310,8 @@ NULL
 #'       can claim to want to send an extraordinarily large message, without
 #'       sending any data. This option can be set for the socket, but may be
 #'       overridden for on a per-dialer or per-listener basis.
-#'       NOTE: Applications on hostile networks should set this to a non-zero v
-#'       alue to prevent denial-of-service attacks.
+#'       NOTE: Applications on hostile networks should set this to a non-zero
+#'       value to prevent denial-of-service attacks.
 #'       NOTE: Some transports may have further message size restrictions.}
 #'
 #'     \item{'recv-buffer' [type 'int']}
@@ -385,9 +384,9 @@ NULL
 #'       \item{'sub:prefnew' [type 'bool']}
 #'
 #'       {(Subscribe protocol) This option specifies the behavior of the
-#'       subscriber when the queue is full. When true (the default), the
+#'       subscriber when the queue is full. When TRUE (the default), the
 #'       subscriber will make room in the queue by removing the oldest message.
-#'       When false, the subscriber will reject messages if the message queue
+#'       When FALSE, the subscriber will reject messages if the message queue
 #'       does not have room.}
 #'
 #'     \item{'surveyor:survey-time' [type 'ms']}
@@ -416,10 +415,10 @@ NULL
 #'       \item{'tcp-nodelay' [type 'bool']}
 #'
 #'       {(TCP transport) This option is used to disable (or enable) the use of
-#'       Nagle's algorithm for TCP connections. When true (the default),
+#'       Nagle's algorithm for TCP connections. When TRUE (the default),
 #'       messages are sent immediately by the underlying TCP stream without
-#'       waiting to gather more data. When false, Nagle’s algorithm is enabled,
-#'       and the TCP stream may wait briefly in attempt to coalesce messages.
+#'       waiting to gather more data. When FALSE, Nagle’s algorithm is enabled,
+#'       and the TCP stream may wait briefly in an attempt to coalesce messages.
 #'       Nagle’s algorithm is useful on low-bandwidth connections to reduce
 #'       overhead, but it comes at a cost to latency. When used on a dialer or
 #'       a listener, the value affects how newly created connections will be
@@ -428,7 +427,7 @@ NULL
 #'       \item{'tcp-keepalive' [type 'bool']}
 #'
 #'       {(TCP transport) This option is used to enable the sending of keep-alive
-#'       messages on the underlying TCP stream. This option is false by default.
+#'       messages on the underlying TCP stream. This option is FALSE by default.
 #'       When enabled, if no messages are seen for a period of time, then a zero
 #'       length TCP message is sent with the ACK flag set in an attempt to tickle
 #'       some traffic from the peer. If none is still seen (after some
@@ -438,7 +437,7 @@ NULL
 #'       configured. This option has two purposes. First, it can be used to
 #'       detect dead peers on an otherwise quiescent network. Second, it can be
 #'       used to keep connection table entries in NAT and other middleware from
-#'       being expiring due to lack of activity.}
+#'       expiring due to lack of activity.}
 #'
 #'       \item{'ws:request-headers' [type 'string']}
 #'

@@ -104,8 +104,8 @@ Protocols implemented by \{nanonext\}.
     not obliged to reply). The survey itself is a timed event, so that
     responses received after the survey has finished are discarded.
 
-    [protocol, surveyor] The surveyor protocol is one half of a survey pattern.
-    This socket may be used to send messages (surveys), and then to
+    [protocol, surveyor] The surveyor protocol is one half of a survey
+    pattern. This socket may be used to send messages (surveys), and then to
     receive replies. A reply can only be received after sending a survey.
     A surveyor can normally expect to receive at most one reply from each
     responder. (Messages can be duplicated in some topologies, so there is no

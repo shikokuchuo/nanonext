@@ -80,41 +80,56 @@ nng_timer <- function(time) {
 
 #' ncurl
 #'
-#' nano cURL - a minimalistic http(s) client.
+#' nano cURL - a minimalist http(s) client.
 #'
-#' @param http the URL/address of the resource to retrieve.
+#' @param http the URL address.
+#' @param ... (optional) additional arguments, see 'methods' section below.
 #'
 #' @return Named list of 2 elements:
 #'     \itemize{
-#'     \item{\code{$raw}} {- a raw vector of the received resource (may be saved
-#'     to a file using \code{\link{writeBin}} to re-create the original)}
-#'     \item{\code{$data}} {- the raw vector converted to a character string (if
-#'     the served content was a recognised text format), allowing further parsing
-#'     within R as html, json, xml etc., or NULL otherwise (if the content was a
-#'     binary file etc.)}
+#'     \item{\code{$raw}} {- raw vector of the received resource (use
+#'     \code{\link{writeBin}} to save to a file).}
+#'     \item{\code{$data}} {- converted character string (if a recognised text
+#'     format), or NULL otherwise. Other tools can be used to further parse this
+#'     as html, json, xml etc. if required.}
+#'     }
+#'
+#' @section Methods:
+#'
+#'     Additional arguments may be passed in using '...' for HTTP methods other
+#'     than GET.
+#'     \itemize{
+#'     \item{Parsed as follows: [method], [content-type], [data]}
+#'     \item{Example: "POST", "text/plain", "hello world"}
+#'     \item{All 3 arguments must be supplied, and will be ignored otherwise, as
+#'     will extra arguments}
 #'     }
 #'
 #' @section Redirects:
 #'
-#'     In interactive sessions, will prompt upon receiving a redirect location
-#'     whether to follow or not (default: yes). In non-interactive sessions,
-#'     redirects are never followed.
+#'     In interactive sessions: will prompt upon receiving a redirect location
+#'     whether to follow or not (default: yes).
+#'
+#'     In non-interactive sessions: redirects are never followed.
 #'
 #' @section TLS Support:
 #'
-#'     Connecting to secure https sites is supported if your version of the NNG
-#'     library was built with TLS support (using Mbed TLS) and the environment
-#'     variable 'NANONEXT_TLS' was set when installing the package e.g. by
-#'     \code{Sys.setenv(NANONEXT_TLS=1)}. Note: not applicable for Windows systems.
+#'     Connecting to secure https sites is supported if \code{\link{nng_version}}
+#'     shows 'TLS supported'.
 #'
 #' @examples
 #' ncurl("http://httpbin.org/headers")
+#' ncurl("http://httpbin.org/post", "POST", "text-plain", "hello world")
 #'
 #' @export
 #'
-ncurl <- function(http) {
+ncurl <- function(http, ...) {
 
-  res <- .Call(rnng_ncurl, http)
+  dots <- list(...)
+  args <- if (length(dots) >= 3L) {
+    list(dots[[1L]], dots[[2L]], writeBin(object = dots[[3L]], con = raw()))
+  }
+  res <- .Call(rnng_ncurl, http, args)
   missing(res) && return(invisible())
   if (is.integer(res)) {
     message(res, " : ", nng_error(res))

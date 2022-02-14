@@ -14,16 +14,16 @@ Transports supported by \{nanonext\}.
 
     The inproc transport provides communication support between sockets
     within the same process. This may be used as an alternative to slower
-    transports when data must be moved within the same process. This transport
-    tries hard to avoid copying data, and thus is very light-weight.
+    transports when data must be moved within the same process. This
+    transport tries hard to avoid copying data, and thus is very light-weight.
 
-    [\strong{URI, inproc://}] This transport uses URIs using the scheme inproc://,
-    followed by an arbitrary string of text, terminated by a NULL byte.
-    inproc://nanonext is a valid example URL.
+    [\strong{URI, inproc://}] This transport uses URIs using the scheme
+    inproc://, followed by an arbitrary string of text, terminated by a NUL
+    byte. inproc://nanonext is a valid example URL.
 
     \itemize{
-    \item Multiple URIs can be used within the same application, and they will
-    not interfere with one another.
+    \item Multiple URIs can be used within the same application, and they
+    will not interfere with one another.
 
     \item Two applications may also use the same URI without interfering with
     each other, and they will be unable to communicate with each other using
@@ -66,10 +66,10 @@ Transports supported by \{nanonext\}.
 
     \emph{Abstract Names}
 
-    [\strong{URI, abstract://}] On Linux, this transport also can support abstract
-    sockets. Abstract sockets use a URI-encoded name after the scheme,
-    which allows arbitrary values to be conveyed in the path, including
-    embedded NULL bytes. abstract://nanonext is a valid example URL.
+    [\strong{URI, abstract://}] On Linux, this transport also can support
+    abstract sockets. Abstract sockets use a URI-encoded name after the
+    scheme, which allows arbitrary values to be conveyed in the path,
+    including embedded NUL bytes. abstract://nanonext is a valid example URL.
 
     \itemize{
     \item Abstract sockets do not have any representation in the file system,

@@ -1,5 +1,13 @@
 # nanonext 0.2.0.9000 (development)
 
+#### New Features
+
+* `ncurl()` adds a '...' argument. Support for HTTP methods other than GET.
+
+#### Updates
+
+* Deprecated functions 'send_vec' and 'recv_vec' removed.
+
 # nanonext 0.2.0
 
 #### New Features
