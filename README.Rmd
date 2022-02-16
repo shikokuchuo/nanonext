@@ -219,6 +219,8 @@ close(s2)
 
 ```
 
+As an example of possible applications, the {mirai} package <https://shikokuchuo.net/mirai/> (available on CRAN) uses {nanonext} as the back-end to provide asynchronous execution of arbitrary R code.
+
 [&laquo; Back to ToC](#table-of-contents)
 
 ### RPC and Distributed Computing

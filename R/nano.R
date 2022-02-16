@@ -215,7 +215,7 @@ print.recvAio <- function(x, ...) {
 
   cat("< recvAio >\n")
   if (length(.subset2(x, "aio"))) {
-    cat(": use call_aio() to retrieve message\n")
+    cat(" ~ use call_aio() to retrieve message\n")
   } else {
     if (length(.subset2(x, "raw")))
       cat(" - $raw for raw message\n")
@@ -232,7 +232,7 @@ print.sendAio <- function(x, ...) {
 
   cat("< sendAio >\n")
   if (length(.subset2(x, "aio"))) {
-    cat(": use call_aio() to retrieve result\n")
+    cat(" ~ use call_aio() to retrieve result\n")
   } else {
     cat(" - $result for send result\n")
   }

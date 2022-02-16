@@ -240,7 +240,7 @@ AIO as `$result`. An exit code of 0 denotes a successful send.
 res <- send_aio(s1, data.frame(a = 1, b = 2))
 res
 #> < sendAio >
-#> : use call_aio() to retrieve result
+#>  ~ use call_aio() to retrieve result
 call_aio(res)
 res
 #> < sendAio >
@@ -256,7 +256,7 @@ the AIO as `$raw` (if kept) and `$data`.
 msg <- recv_aio(s2)
 msg
 #> < recvAio >
-#> : use call_aio() to retrieve message
+#>  ~ use call_aio() to retrieve message
 call_aio(msg)
 msg
 #> < recvAio >
@@ -278,6 +278,10 @@ call_aio(msg)$data
 close(s1)
 close(s2)
 ```
+
+As an example of possible applications, the {mirai} package
+<https://shikokuchuo.net/mirai/> (available on CRAN) uses {nanonext} as
+the back-end to provide asynchronous execution of arbitrary R code.
 
 [« Back to ToC](#table-of-contents)
 
@@ -330,7 +334,7 @@ aio
 #> < recvAio >
 #>  - $data for message data
 str(aio$data)
-#>  num [1:100000000] -0.862 -2.043 -0.106 -1.294 -0.548 ...
+#>  num [1:100000000] 0.0712 -0.628 -0.5554 0.3309 1.1441 ...
 ```
 
 In this example the calculation is returned, but other operations may
@@ -399,11 +403,11 @@ ncurl("http://httpbin.org/headers")
 #>   [1] 7b 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73
 #>  [26] 74 22 3a 20 22 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22
 #>  [51] 58 2d 41 6d 7a 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31
-#>  [76] 2d 36 32 30 39 36 31 62 66 2d 36 65 37 37 33 36 32 65 36 37 65 37 37 34 66
-#> [101] 33 35 36 66 36 35 30 33 39 22 0a 20 20 7d 0a 7d 0a
+#>  [76] 2d 36 32 30 62 39 31 32 38 2d 34 61 32 63 63 32 62 34 37 62 35 34 63 32 31
+#> [101] 33 37 38 32 38 30 33 34 61 22 0a 20 20 7d 0a 7d 0a
 #> 
 #> $data
-#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-620961bf-6e77362e67e774f356f65039\"\n  }\n}\n"
+#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-620b9128-4a2cc2b47b54c2137828034a\"\n  }\n}\n"
 ```
 
 For advanced use, supports additional HTTP methods such as POST or PUT.
