@@ -152,14 +152,14 @@ peek_aio <- function(aio) {
   out <- capture.output({
     res <- .Call(rnng_aio_peek, .subset2(aio, "aio"))
     Sys.sleep(0.001)
-  }, type = "message")
+  })
   if (identical(out, character(0))) {
-    aio[["peekreqs"]] <- c(aio[["peekreqs"]], res)
-    message("Aio peek result: unresolved")
+    attr(aio[["aio"]], "peekreqs") <- c(attr(aio[["aio"]], "peekreqs"), res)
+    message("NULL : Aio unresolved")
     invisible()
   } else {
-    message("Aio peek result: ", out)
-    invisible(out)
+    message(out, " : ", nng_error(rv <- as.integer(out)))
+    invisible(rv)
   }
 
 }

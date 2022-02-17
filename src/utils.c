@@ -74,7 +74,7 @@ static void peek(void *arg) {
   nng_time end = nng_clock();
   int elapsed = end - start;
   if (elapsed <= 1)
-    REprintf("%d\n", xc);
+    Rprintf("%d\n", xc);
 
 }
 
