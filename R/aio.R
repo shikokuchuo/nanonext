@@ -115,3 +115,52 @@ stop_aio <- function(aio) {
 
 }
 
+#' Peek at an Asynchronous AIO Operation
+#'
+#' [Experimental] Query the result of an asynchronous AIO operation and return
+#'     immediately (without waiting for its completion).
+#'
+#' @param aio An Aio (object of class 'sendAio' or 'recvAio').
+#'
+#' @return (Invisibly) the integer exit code of the aysnc operation, or NULL if
+#'     undefined as the operation has not yet completed. A message of the result
+#'     will also be printed to the console.
+#'
+#'     An external pointer to the thread created by this function will be attached
+#'     to the Aio if the result is undefined (as the peek request will remain
+#'     active in such a case until Aio completion).
+#'
+#' @details This function has the tag [experimental], which indicates that it
+#'     remains under development. Please note that the final implementation is
+#'     likely to differ from the current version.
+#'
+#' @examples
+#' s1 <- socket("pair", listen = "inproc://nanonext")
+#' s2 <- socket("pair", dial = "inproc://nanonext")
+#'
+#' res <- send_aio(s1, data.frame(a = 1, b = 2), timeout = 100)
+#' peek_aio(res)
+#' call_aio(res)$result
+#'
+#' close(s1)
+#' close(s2)
+#'
+#' @export
+#'
+peek_aio <- function(aio) {
+
+  out <- capture.output({
+    res <- .Call(rnng_aio_peek, .subset2(aio, "aio"))
+    Sys.sleep(0.001)
+  }, type = "message")
+  if (identical(out, character(0))) {
+    aio[["peekreqs"]] <- c(aio[["peekreqs"]], res)
+    message("Aio peek result: unresolved")
+    invisible()
+  } else {
+    message("Aio peek result: ", out)
+    invisible(out)
+  }
+
+}
+

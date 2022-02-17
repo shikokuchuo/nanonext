@@ -114,7 +114,7 @@
 #'     (\href{https://orcid.org/0000-0002-0750-061X}{ORCID})
 #'
 #' @importFrom stats start
-#' @importFrom utils .DollarNames
+#' @importFrom utils capture.output .DollarNames
 #' @useDynLib nanonext, .registration = TRUE
 #'
 #' @docType package

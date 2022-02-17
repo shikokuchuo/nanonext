@@ -27,6 +27,7 @@ static void RegisterSymbols(void) {
 
 static const R_CallMethodDef CallEntries[] = {
   {"rnng_aio_get_msg", (DL_FUNC) &rnng_aio_get_msg, 1},
+  {"rnng_aio_peek", (DL_FUNC) &rnng_aio_peek, 1},
   {"rnng_aio_result", (DL_FUNC) &rnng_aio_result, 1},
   {"rnng_aio_stop", (DL_FUNC) &rnng_aio_stop, 1},
   {"rnng_close", (DL_FUNC) &rnng_close, 1},

@@ -46,7 +46,7 @@ static void thread_finalizer(SEXP xptr) {
 
 static void rnng_timer(void *arg) {
 
-  SEXP time = PROTECT(arg);
+  SEXP time = PROTECT((SEXP) arg);
   const int tm = INTEGER(time)[0];
   nng_msleep(tm);
   UNPROTECT(1);
@@ -58,6 +58,35 @@ SEXP rnng_threaded_timer(SEXP time) {
 
   nng_thread *thr;
   nng_thread_create(&thr, rnng_timer, time);
+  SEXP xptr = PROTECT(R_MakeExternalPtr(thr, R_NilValue, R_NilValue));
+  R_RegisterCFinalizerEx(xptr, thread_finalizer, TRUE);
+  UNPROTECT(1);
+  return xptr;
+
+}
+
+static void peek(void *arg) {
+
+  nng_aio *aiop = (nng_aio *) (arg);
+  nng_time start = nng_clock();
+  nng_aio_wait(aiop);
+  int xc = nng_aio_result(aiop);
+  nng_time end = nng_clock();
+  int elapsed = end - start;
+  if (elapsed <= 1)
+    REprintf("%d\n", xc);
+
+}
+
+SEXP rnng_aio_peek(SEXP aio) {
+
+  if (R_ExternalPtrTag(aio) != nano_AioSymbol)
+    error_return("'aio' is not a valid Aio");
+  if (R_ExternalPtrAddr(aio) == NULL)
+    error_return("'aio' is not an active Aio");
+  nng_aio *aiop = (nng_aio *) R_ExternalPtrAddr(aio);
+  nng_thread *thr;
+  nng_thread_create(&thr, peek, aiop);
   SEXP xptr = PROTECT(R_MakeExternalPtr(thr, R_NilValue, R_NilValue));
   R_RegisterCFinalizerEx(xptr, thread_finalizer, TRUE);
   UNPROTECT(1);

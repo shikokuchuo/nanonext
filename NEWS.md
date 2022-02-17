@@ -2,6 +2,7 @@
 
 #### New Features
 
+* New `peek_aio()` offers a non-blocking method of querying the result of an AIO, without waiting for its completion.
 * `ncurl()` adds a '...' argument. Support for HTTP methods other than GET.
 
 #### Updates
