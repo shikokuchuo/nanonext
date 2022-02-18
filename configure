@@ -9,6 +9,9 @@ PKG_LIBS="-lnng"
 if [ "$NANONEXT_TLS" ]; then
   PKG_LIBS="$PKG_LIBS -lmbedtls -lmbedx509 -lmbedcrypto"
 fi
+if [ "$NANONEXT_ARM" ]; then
+  PKG_LIBS="$PKG_LIBS -latomic"
+fi
 PKG_CFLAGS=""
 LIB_VER="1.5.2"
 SYS_LIB=0

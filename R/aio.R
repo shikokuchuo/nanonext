@@ -121,10 +121,11 @@ stop_aio <- function(aio) {
 #'     immediately (without waiting for its completion).
 #'
 #' @param aio An Aio (object of class 'sendAio' or 'recvAio').
+#' @param quietly [default FALSE] whether to output a message of the result,
+#'     including a human-readable translation, to the console.
 #'
 #' @return (Invisibly) the integer exit code of the aysnc operation, or NULL if
-#'     undefined as the operation has not yet completed. A message of the result
-#'     will also be printed to the console.
+#'     undefined as the operation has not yet completed.
 #'
 #'     An external pointer to the thread created by this function will be attached
 #'     to the Aio if the result is undefined (as the peek request will remain
@@ -147,7 +148,7 @@ stop_aio <- function(aio) {
 #'
 #' @export
 #'
-peek_aio <- function(aio) {
+peek_aio <- function(aio, quietly = FALSE) {
 
   out <- capture.output({
     res <- .Call(rnng_aio_peek, .subset2(aio, "aio"))
@@ -155,10 +156,11 @@ peek_aio <- function(aio) {
   })
   if (identical(out, character(0))) {
     attr(aio[["aio"]], "peekreqs") <- c(attr(aio[["aio"]], "peekreqs"), res)
-    message("NULL : Aio unresolved")
+    if (missing(quietly) || !isTRUE(quietly)) message("NULL : Aio unresolved")
     invisible()
   } else {
-    message(out, " : ", nng_error(rv <- as.integer(out)))
+    rv <- as.integer(out)
+    if (missing(quietly) || !isTRUE(quietly)) message(out, " : ", nng_error(rv))
     invisible(rv)
   }
 

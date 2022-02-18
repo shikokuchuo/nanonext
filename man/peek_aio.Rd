@@ -4,15 +4,17 @@
 \alias{peek_aio}
 \title{Peek at an Asynchronous AIO Operation}
 \usage{
-peek_aio(aio)
+peek_aio(aio, quietly = FALSE)
 }
 \arguments{
 \item{aio}{An Aio (object of class 'sendAio' or 'recvAio').}
+
+\item{quietly}{[default FALSE] whether to output a message of the result,
+including a human-readable translation, to the console.}
 }
 \value{
 (Invisibly) the integer exit code of the aysnc operation, or NULL if
-    undefined as the operation has not yet completed. A message of the result
-    will also be printed to the console.
+    undefined as the operation has not yet completed.
 
     An external pointer to the thread created by this function will be attached
     to the Aio if the result is undefined (as the peek request will remain
