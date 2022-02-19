@@ -344,11 +344,18 @@ A system installation of 'libnng' in the standard filesystem locations will be d
 
 Otherwise, a release version of 'libnng' will be downloaded and built from source automatically during package installation (note: this requires 'cmake').
 
-If your system installation of NNG was built with TLS support (using Mbed TLS), please set the environment variable 'NANONEXT_TLS' e.g. by `Sys.setenv(NANONEXT_TLS=1)` before attempting to install the package. This will ensure the correct linker flags are set for a successful install.
-
 #### Windows
 
 Pre-built libraries (for i386 / x64 / x64-UCRT) are automatically downloaded during the package installation process.
+
+#### TLS Support
+
+If your system installation of NNG was built with TLS support (using Mbed TLS), please set the environment variable `Sys.setenv(NANONEXT_TLS=1)` before attempting to install the package. This will ensure the correct linker flags are set for a successful install.
+
+#### Certain ARM architectures
+
+If package installation initially fails with an error message of `unable to load shared object:[ ] undefined symbol: __atomic_fetch_sub_8` or similar, please set the environment variable
+`Sys.setenv(NANONEXT_ARM=1)` and then proceed with installation again.
 
 ### Links
 

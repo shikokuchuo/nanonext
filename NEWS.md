@@ -7,6 +7,8 @@
 
 #### Updates
 
+* Allows setting the environment variable 'NANONEXT_ARM' prior to package installation
+  + Fixes installation issues on certain ARM architectures
 * Deprecated functions 'send_vec' and 'recv_vec' removed.
 
 # nanonext 0.2.0

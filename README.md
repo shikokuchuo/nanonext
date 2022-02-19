@@ -334,7 +334,7 @@ aio
 #> < recvAio >
 #>  - $data for message data
 str(aio$data)
-#>  num [1:100000000] 0.0712 -0.628 -0.5554 0.3309 1.1441 ...
+#>  num [1:100000000] 0.439 0.836 -1.376 1.205 -0.354 ...
 ```
 
 In this example the calculation is returned, but other operations may
@@ -403,11 +403,11 @@ ncurl("http://httpbin.org/headers")
 #>   [1] 7b 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73
 #>  [26] 74 22 3a 20 22 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22
 #>  [51] 58 2d 41 6d 7a 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31
-#>  [76] 2d 36 32 30 62 39 31 32 38 2d 34 61 32 63 63 32 62 34 37 62 35 34 63 32 31
-#> [101] 33 37 38 32 38 30 33 34 61 22 0a 20 20 7d 0a 7d 0a
+#>  [76] 2d 36 32 31 31 30 37 38 36 2d 30 63 63 65 30 36 63 36 31 63 62 34 65 30 33
+#> [101] 63 30 61 32 63 32 66 39 31 22 0a 20 20 7d 0a 7d 0a
 #> 
 #> $data
-#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-620b9128-4a2cc2b47b54c2137828034a\"\n  }\n}\n"
+#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-62110786-0cce06c61cb4e03c0a2c2f91\"\n  }\n}\n"
 ```
 
 For advanced use, supports additional HTTP methods such as POST or PUT.
@@ -435,16 +435,25 @@ Otherwise, a release version of ‘libnng’ will be downloaded and built
 from source automatically during package installation (note: this
 requires ‘cmake’).
 
-If your system installation of NNG was built with TLS support (using
-Mbed TLS), please set the environment variable ‘NANONEXT_TLS’ e.g. by
-`Sys.setenv(NANONEXT_TLS=1)` before attempting to install the package.
-This will ensure the correct linker flags are set for a successful
-install.
-
 #### Windows
 
 Pre-built libraries (for i386 / x64 / x64-UCRT) are automatically
 downloaded during the package installation process.
+
+#### TLS Support
+
+If your system installation of NNG was built with TLS support (using
+Mbed TLS), please set the environment variable
+`Sys.setenv(NANONEXT_TLS=1)` before attempting to install the package.
+This will ensure the correct linker flags are set for a successful
+install.
+
+#### Certain ARM architectures
+
+If package installation initially fails with an error message of
+`unable to load shared object:[ ] undefined symbol: __atomic_fetch_sub_8`
+or similar, please set the environment variable
+`Sys.setenv(NANONEXT_ARM=1)` and then proceed with installation again.
 
 ### Links
 
