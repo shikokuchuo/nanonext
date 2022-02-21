@@ -18,7 +18,7 @@ you wish to set configuration options on the dialer as it is not
 generally possible to change these once started.}
 }
 \value{
-Invisible NULL on success. A new Dialer (object of class 'nanoDialer'
+Zero (invisibly) on success. A new Dialer (object of class 'nanoDialer'
     and 'nano') is created and bound to the Socket.
 }
 \description{

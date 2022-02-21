@@ -12,7 +12,7 @@
 #'     you wish to set configuration options on the dialer as it is not
 #'     generally possible to change these once started.
 #'
-#' @return Invisible NULL on success. A new Dialer (object of class 'nanoDialer'
+#' @return Zero (invisibly) on success. A new Dialer (object of class 'nanoDialer'
 #'     and 'nano') is created and bound to the Socket.
 #'
 #' @details To view all Dialers bound to a socket use \code{$dialer} on the
@@ -116,7 +116,7 @@ dial <- function(socket,
     attr(socket, "dialer") <- c(attr(socket, "dialer"), res)
   }
 
-  invisible()
+  invisible(0L)
 
 }
 
@@ -132,7 +132,7 @@ dial <- function(socket,
 #'     if you wish to set configuration options on the listener as it is not
 #'     generally possible to change these once started.
 #'
-#' @return Invisible NULL on success. A new Listener (object of class
+#' @return Zero (invisibly) on success. A new Listener (object of class
 #'     'nanoListener' and 'nano') is created and bound to the Socket or nano object.
 #'
 #' @details  To view all Listeners bound to a socket use \code{$listener} on the
@@ -237,7 +237,7 @@ listen <- function(socket,
     attr(socket, "listener") <- c(attr(socket, "listener"), res)
   }
 
-  invisible()
+  invisible(0L)
 
 }
 

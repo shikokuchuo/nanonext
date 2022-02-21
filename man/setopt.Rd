@@ -58,7 +58,7 @@ See \link{options}.}
 Zero (invisibly) on success.
 }
 \description{
-Set an option for a Socket, Context, Dialer or Listener.
+Set \link{options} on a Socket, Context, Dialer or Listener.
 }
 \details{
 Note: once a dialer or listener has started, it is not generally

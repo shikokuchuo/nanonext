@@ -182,7 +182,7 @@ recv_ctx <- function(context,
 #'     that the requestor has become unavailable since sending the request).
 #' @param ... additional arguments passed to the function specified by 'execute'.
 #'
-#' @return Invisible NULL.
+#' @return Zero (invisibly) on success.
 #'
 #' @details Receive will block while awaiting a message to arrive and is usually
 #'     the desired behaviour. Set a timeout to allow the function to return

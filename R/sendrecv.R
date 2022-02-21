@@ -14,8 +14,8 @@
 #' @param block [default FALSE] logical flag whether to block until successful
 #'     or return immediately even if unsuccessful (e.g. no connection available).
 #' @param echo [default TRUE] logical flag whether to return the raw vector of
-#'     sent data. Set to FALSE for performance-critical applications where
-#'     invisble NULL will be returned instead.
+#'     sent data. Set to FALSE for performance-critical applications where zero
+#'     will be returned (invisibly) instead.
 #'
 #' @return Raw vector of sent data, or zero (invisibly) if 'echo' is set to FALSE.
 #'

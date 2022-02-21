@@ -130,8 +130,8 @@ Options that can be set on Sockets, Contexts, Dialers or Listeners.
     \item{'surveyor:survey-time' [type 'ms']}
 
       {(Surveyor protocol) Duration of surveys. When a new survey is started,
-      a timer of this duration is also started. Any responses arriving this
-      time will be discarded. Attempts to receive after the timer expires
+      a timer of this duration is also started. Any responses arriving after
+      this time will be discarded. Attempts to receive after the timer expires
       with no other surveys started will result in an 'incorrect state' error.
       Attempts to receive when this timer expires will result in a 'timed
       out' error.}

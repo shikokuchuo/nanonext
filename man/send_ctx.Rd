@@ -21,8 +21,8 @@ with external applications.}
 be used.}
 
 \item{echo}{[default TRUE] logical flag whether to return the raw vector of
-sent data. Set to FALSE for performance-critical applications where
-invisble NULL will be returned instead.}
+sent data. Set to FALSE for performance-critical applications where zero
+will be returned (invisibly) instead.}
 }
 \value{
 Raw vector of sent data, or zero (invisibly) if 'echo' is set to FALSE.

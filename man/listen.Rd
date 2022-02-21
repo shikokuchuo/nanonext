@@ -18,7 +18,7 @@ if you wish to set configuration options on the listener as it is not
 generally possible to change these once started.}
 }
 \value{
-Invisible NULL on success. A new Listener (object of class
+Zero (invisibly) on success. A new Listener (object of class
     'nanoListener' and 'nano') is created and bound to the Socket or nano object.
 }
 \description{

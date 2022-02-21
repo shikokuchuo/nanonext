@@ -2,7 +2,7 @@
 
 #' Set Option on Socket, Context, Dialer or Listener
 #'
-#' Set an option for a Socket, Context, Dialer or Listener.
+#' Set \link{options} on a Socket, Context, Dialer or Listener.
 #'
 #' @param object a Socket, Context, Listener or Dialer.
 #' @param type [default 'bool'] type of option - either 'bool', 'int', 'ms'

@@ -43,9 +43,11 @@ invisible(is.list(raio[["callparams"]]) || stop())
 suppressMessages(n$send_aio(c(1.1, 2.2), mode = "raw", timeout = 500))
 invisible(suppressMessages(n1$recv_aio(timeout = 500)))
 
-suppressMessages(n$dial(url = "inproc://two", autostart = TRUE))
+xc <- suppressMessages(n$dial(url = "inproc://two", autostart = TRUE))
+invisible(is.integer(xc) || stop())
 invisible(inherits(n$dialer[[1L]], "nanoDialer") || stop())
-suppressMessages(n$listen(url = "inproc://three"))
+xc <- suppressMessages(n$listen(url = "inproc://three"))
+invisible(is.integer(xc) || stop())
 invisible(inherits(n$listener[[2L]], "nanoListener") || stop())
 
 ctx <- context(n$socket)

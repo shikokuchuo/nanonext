@@ -41,7 +41,7 @@ that the requestor has become unavailable since sending the request).}
 \item{...}{additional arguments passed to the function specified by 'execute'.}
 }
 \value{
-Invisible NULL.
+Zero (invisibly) on success.
 }
 \description{
 Implements an executor/server for the rep node of the req/rep protocol. Awaits
