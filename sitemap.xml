@@ -46,13 +46,10 @@
     <loc>https://shikokuchuo.net/nanonext/reference/nng_error.html</loc>
   </url>
   <url>
-    <loc>https://shikokuchuo.net/nanonext/reference/nng_timer.html</loc>
-  </url>
-  <url>
     <loc>https://shikokuchuo.net/nanonext/reference/nng_version.html</loc>
   </url>
   <url>
-    <loc>https://shikokuchuo.net/nanonext/reference/options.html</loc>
+    <loc>https://shikokuchuo.net/nanonext/reference/opts.html</loc>
   </url>
   <url>
     <loc>https://shikokuchuo.net/nanonext/reference/protocols.html</loc>
@@ -95,6 +92,9 @@
   </url>
   <url>
     <loc>https://shikokuchuo.net/nanonext/reference/subscribe.html</loc>
+  </url>
+  <url>
+    <loc>https://shikokuchuo.net/nanonext/reference/survey.html</loc>
   </url>
   <url>
     <loc>https://shikokuchuo.net/nanonext/reference/transports.html</loc>

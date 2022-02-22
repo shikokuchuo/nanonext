@@ -60,6 +60,8 @@
 <ul><li>
 <code><a href="../reference/call_aio.html">call_aio()</a></code> gains the argument ‘block’, offering a non-blocking method of calling an AIO, without waiting for its completion if it is yet to resolve.</li>
 <li>
+<code><a href="../reference/survey.html">survey()</a></code> added as a convenience function for surveyor/respondent patterns.</li>
+<li>
 <code><a href="../reference/ncurl.html">ncurl()</a></code> adds a ‘…’ argument. Support for HTTP methods other than GET.</li>
 </ul></div>
 <div class="section level5">
@@ -69,6 +71,8 @@
 <li>Allows setting the environment variable ‘NANONEXT_ARM’ prior to package installation
 <ul><li>Fixes installation issues on certain ARM architectures</li>
 </ul></li>
+<li>Options documentation entry renamed to <code>opts</code> to avoid clash with base R ‘options’.</li>
+<li>Removes experimental <code>nng_timer()</code> utility as a non-essential function.</li>
 <li>Deprecated functions ‘send_vec’ and ‘recv_vec’ removed.</li>
 </ul></div>
 </div>
@@ -85,7 +89,7 @@
 <li>The request client performs an async request to the server and returns immediately with an Aio.</li>
 </ul></li>
 <li>New <code><a href="../reference/ncurl.html">ncurl()</a></code> minimalistic http(s) client.</li>
-<li>New <code><a href="../reference/nng_timer.html">nng_timer()</a></code> utility as a demonstration of NNG’s multithreading capabilities.</li>
+<li>New <code>nng_timer()</code> utility as a demonstration of NNG’s multithreading capabilities.</li>
 <li>Allows setting the environment variable ‘NANONEXT_TLS’ prior to package installation
 <ul><li>Enables TLS where the system NNG library has been built with TLS support (using Mbed TLS).</li>
 </ul></li>
