@@ -200,7 +200,7 @@ unsubscribe <- function(socket, topic = NULL) {
 #' sur <- socket("surveyor", listen = "inproc://nanonext")
 #' res <- socket("respondent", dial = "inproc://nanonext")
 #'
-#' survey(sur, 1000)
+#' survey_time(sur, 1000)
 #' send(sur, "reply to this survey")
 #' aio <- recv_aio(sur)
 #'
@@ -214,7 +214,7 @@ unsubscribe <- function(socket, topic = NULL) {
 #'
 #' @export
 #'
-survey <- function(socket, time) {
+survey_time <- function(socket, time) {
 
   setopt(socket, type = "ms", opt = "surveyor:survey-time", value = time)
 

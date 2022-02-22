@@ -57,6 +57,7 @@ Receive will block while awaiting a message to arrive and is usually
     of the function with respect to the data, a nul byte \code{00} (or serialized
     nul byte) will be sent in reply to the client to signal an error. This makes
     it easy to distigush an error from a NULL return value.
+    \code{\link{is_nul_byte}} can be used to test for a nul byte.
 }
 \examples{
 req <- socket("req", listen = "tcp://127.0.0.1:6546")

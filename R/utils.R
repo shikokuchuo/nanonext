@@ -45,6 +45,30 @@ nng_error <- function(error) {
 
 }
 
+#' Is Nul Byte
+#'
+#' Is the object a nul byte.
+#'
+#' @param x an object.
+#'
+#' @return Logical value TRUE or FALSE.
+#'
+#' @examples
+#' is_nul_byte(as.raw(0L))
+#' is_nul_byte(writeBin("", raw()))
+#'
+#' is_nul_byte(0L)
+#' is_nul_byte(NULL)
+#' is_nul_byte(NA)
+#'
+#' @export
+#'
+is_nul_byte <- function(x) {
+
+  identical(x, as.raw(0L))
+
+}
+
 #' ncurl
 #'
 #' nano cURL - a minimalist http(s) client.

@@ -56,7 +56,7 @@ Sending the request and receiving the result are both performed async,
     If an error occured in the server process, a nul byte \code{00} will be
     received (as \code{$data} if 'recv_mode' = 'serial', as \code{$raw}
     otherwise). This allows an error to be easily distinguished from a NULL
-    return value.
+    return value. \code{\link{is_nul_byte}} can be used to test for a nul byte.
 }
 \examples{
 req <- socket("req", listen = "tcp://127.0.0.1:6546")

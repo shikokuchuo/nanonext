@@ -192,6 +192,7 @@ recv_ctx <- function(context,
 #'     of the function with respect to the data, a nul byte \code{00} (or serialized
 #'     nul byte) will be sent in reply to the client to signal an error. This makes
 #'     it easy to distigush an error from a NULL return value.
+#'     \code{\link{is_nul_byte}} can be used to test for a nul byte.
 #'
 #' @examples
 #' req <- socket("req", listen = "tcp://127.0.0.1:6546")
@@ -273,7 +274,7 @@ reply <- function(context,
 #'     If an error occured in the server process, a nul byte \code{00} will be
 #'     received (as \code{$data} if 'recv_mode' = 'serial', as \code{$raw}
 #'     otherwise). This allows an error to be easily distinguished from a NULL
-#'     return value.
+#'     return value. \code{\link{is_nul_byte}} can be used to test for a nul byte.
 #'
 #' @examples
 #' req <- socket("req", listen = "tcp://127.0.0.1:6546")
