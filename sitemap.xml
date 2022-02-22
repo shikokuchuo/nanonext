@@ -31,6 +31,9 @@
     <loc>https://shikokuchuo.net/nanonext/reference/index.html</loc>
   </url>
   <url>
+    <loc>https://shikokuchuo.net/nanonext/reference/is_nul_byte.html</loc>
+  </url>
+  <url>
     <loc>https://shikokuchuo.net/nanonext/reference/listen.html</loc>
   </url>
   <url>
@@ -94,7 +97,7 @@
     <loc>https://shikokuchuo.net/nanonext/reference/subscribe.html</loc>
   </url>
   <url>
-    <loc>https://shikokuchuo.net/nanonext/reference/survey.html</loc>
+    <loc>https://shikokuchuo.net/nanonext/reference/survey_time.html</loc>
   </url>
   <url>
     <loc>https://shikokuchuo.net/nanonext/reference/transports.html</loc>
