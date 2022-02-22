@@ -2,12 +2,15 @@
 
 #' Call the Result of an Asynchronous AIO Operation
 #'
-#' Retrieve the result of an asynchronous AIO operation. Will wait for the AIO
-#'     operation to complete (blocking) if this is still in progress.
+#' Retrieve the result of an asynchronous AIO operation. Optionally wait for the
+#'     AIO operation to complete if this is still in progress.
 #'
 #' @param aio An Aio (object of class 'sendAio' or 'recvAio').
+#' @param block [default TRUE] whether to wait for completion of the AIO
+#'     operation (blocking) or return immediately. [experimental]
 #'
-#' @return The passed Aio object (invisibly).
+#' @return The passed Aio object (invisibly), or NULL if non-blocking and the
+#'     Aio has yet to resolve.
 #'
 #' @details To access the values directly, use for example on a sendAio 'x':
 #'     \code{call_aio(x)$result}.
@@ -25,6 +28,21 @@
 #'
 #'     Once the result is retrieved, the Aio is deallocated and only the result
 #'     is stored in the Aio object.
+#'
+#' @section Non-blocking:
+#'
+#'     To query whether Aio \code{x} has resolved, test if \code{call_aio(x, block = FALSE)}
+#'     returns NULL. When the Aio resolves, the Aio itself will be returned
+#'     (invisibly) instead of NULL. The data may then be extracted from the Aio
+#'     using \code{$result}, \code{$raw} or \code{$data} as the case may be.
+#'
+#'     It is not advisable to try to extract the data in one step in the
+#'     non-blocking case as NULL$result is also NULL, hence it would be impossible
+#'     to distinguish between an unresolved Aio and a NULL return value.
+#'
+#'     This argument has the tag [experimental], which indicates that it remains
+#'     under development. Please note that the final implementation may differ
+#'     from the current version.
 #'
 #' @examples
 #' s1 <- socket("pair", listen = "inproc://nanonext")
@@ -46,10 +64,20 @@
 #'
 #' @export
 #'
-call_aio <- function(aio) {
+call_aio <- function(aio, block = TRUE) {
 
   if (length(.subset2(aio, "aio"))) {
 
+    if (!missing(block) && !isTRUE(block)) {
+      out <- capture.output({
+        res <- .Call(rnng_aio_peek, .subset2(aio, "aio"))
+        Sys.sleep(0.001)
+      })
+      identical(out, character(0)) && {
+        attr(aio[["aio"]], "peekreqs") <- c(attr(aio[["aio"]], "peekreqs"), res)
+        return()
+      }
+    }
     if (inherits(aio, "recvAio")) {
 
       mode <- .subset2(aio, "callparams")[[1L]]
@@ -75,7 +103,6 @@ call_aio <- function(aio) {
       on.exit(expr = NULL)
       rm("aio", envir = aio)
       rm("callparams", envir = aio)
-      invisible(aio)
 
     } else if (inherits(aio, "sendAio")) {
       res <- .Call(rnng_aio_result, .subset2(aio, "aio"))
@@ -89,7 +116,9 @@ call_aio <- function(aio) {
     invisible(aio)
 
   } else {
+
     invisible(aio)
+
   }
 
 }
@@ -112,57 +141,6 @@ call_aio <- function(aio) {
 stop_aio <- function(aio) {
 
   invisible(.Call(rnng_aio_stop, .subset2(aio, "aio")))
-
-}
-
-#' Peek at an Asynchronous AIO Operation
-#'
-#' [Experimental] Query the result of an asynchronous AIO operation and return
-#'     immediately (without waiting for its completion).
-#'
-#' @param aio An Aio (object of class 'sendAio' or 'recvAio').
-#' @param quietly [default FALSE] whether to output a message of the result,
-#'     including a human-readable translation, to the console.
-#'
-#' @return (Invisibly) the integer exit code of the aysnc operation, or NULL if
-#'     undefined as the operation has not yet completed.
-#'
-#'     An external pointer to the thread created by this function will be attached
-#'     to the Aio if the result is undefined (as the peek request will remain
-#'     active in such a case until Aio completion).
-#'
-#' @details This function has the tag [experimental], which indicates that it
-#'     remains under development. Please note that the final implementation is
-#'     likely to differ from the current version.
-#'
-#' @examples
-#' s1 <- socket("pair", listen = "inproc://nanonext")
-#' s2 <- socket("pair", dial = "inproc://nanonext")
-#'
-#' res <- send_aio(s1, data.frame(a = 1, b = 2), timeout = 100)
-#' peek_aio(res)
-#' call_aio(res)$result
-#'
-#' close(s1)
-#' close(s2)
-#'
-#' @export
-#'
-peek_aio <- function(aio, quietly = FALSE) {
-
-  out <- capture.output({
-    res <- .Call(rnng_aio_peek, .subset2(aio, "aio"))
-    Sys.sleep(0.001)
-  })
-  if (identical(out, character(0))) {
-    attr(aio[["aio"]], "peekreqs") <- c(attr(aio[["aio"]], "peekreqs"), res)
-    if (missing(quietly) || !isTRUE(quietly)) message("NULL : Aio unresolved")
-    invisible()
-  } else {
-    rv <- as.integer(out)
-    if (missing(quietly) || !isTRUE(quietly)) message(out, " : ", nng_error(rv))
-    invisible(rv)
-  }
 
 }
 

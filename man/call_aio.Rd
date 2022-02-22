@@ -4,17 +4,21 @@
 \alias{call_aio}
 \title{Call the Result of an Asynchronous AIO Operation}
 \usage{
-call_aio(aio)
+call_aio(aio, block = TRUE)
 }
 \arguments{
 \item{aio}{An Aio (object of class 'sendAio' or 'recvAio').}
+
+\item{block}{[default TRUE] whether to wait for completion of the AIO
+operation (blocking) or return immediately. [experimental]}
 }
 \value{
-The passed Aio object (invisibly).
+The passed Aio object (invisibly), or NULL if non-blocking and the
+    Aio has yet to resolve.
 }
 \description{
-Retrieve the result of an asynchronous AIO operation. Will wait for the AIO
-    operation to complete (blocking) if this is still in progress.
+Retrieve the result of an asynchronous AIO operation. Optionally wait for the
+    AIO operation to complete if this is still in progress.
 }
 \details{
 To access the values directly, use for example on a sendAio 'x':
@@ -34,6 +38,23 @@ To access the values directly, use for example on a sendAio 'x':
     Once the result is retrieved, the Aio is deallocated and only the result
     is stored in the Aio object.
 }
+\section{Non-blocking}{
+
+
+    To query whether Aio \code{x} has resolved, test if \code{call_aio(x, block = FALSE)}
+    returns NULL. When the Aio resolves, the Aio itself will be returned
+    (invisibly) instead of NULL. The data may then be extracted from the Aio
+    using \code{$result}, \code{$raw} or \code{$data} as the case may be.
+
+    It is not advisable to try to extract the data in one step in the
+    non-blocking case as NULL$result is also NULL, hence it would be impossible
+    to distinguish between an unresolved Aio and a NULL return value.
+
+    This argument has the tag [experimental], which indicates that it remains
+    under development. Please note that the final implementation may differ
+    from the current version.
+}
+
 \examples{
 s1 <- socket("pair", listen = "inproc://nanonext")
 s2 <- socket("pair", dial = "inproc://nanonext")

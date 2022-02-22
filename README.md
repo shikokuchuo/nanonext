@@ -164,10 +164,9 @@ The following example demonstrates the exchange of numerical data
 between R and Python (NumPy), two of the most commonly-used languages
 for data science and machine learning.
 
-Using a messaging interface provides a clean and robust approach that is
-light on resources and offers limited and identifiable points of
-failure. This is especially relevant when processing real-time data, as
-an example.
+Using a messaging interface provides a clean and robust approach, light
+on resources with limited and identifiable points of failure. This is
+especially relevant when processing real-time data, as an example.
 
 This approach can also serve as an interface / pipe between different
 processes written in the same or different languages, running on the
@@ -334,7 +333,7 @@ aio
 #> < recvAio >
 #>  - $data for message data
 str(aio$data)
-#>  num [1:100000000] 0.439 0.836 -1.376 1.205 -0.354 ...
+#>  num [1:100000000] -0.123 -0.79 -0.694 -0.84 -1.527 ...
 ```
 
 In this example the calculation is returned, but other operations may
@@ -403,11 +402,11 @@ ncurl("http://httpbin.org/headers")
 #>   [1] 7b 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73
 #>  [26] 74 22 3a 20 22 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22
 #>  [51] 58 2d 41 6d 7a 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31
-#>  [76] 2d 36 32 31 31 30 37 38 36 2d 30 63 63 65 30 36 63 36 31 63 62 34 65 30 33
-#> [101] 63 30 61 32 63 32 66 39 31 22 0a 20 20 7d 0a 7d 0a
+#>  [76] 2d 36 32 31 34 61 61 62 34 2d 37 66 66 39 38 64 34 62 30 36 62 62 39 38 38
+#> [101] 65 31 36 30 33 36 66 39 66 22 0a 20 20 7d 0a 7d 0a
 #> 
 #> $data
-#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-62110786-0cce06c61cb4e03c0a2c2f91\"\n  }\n}\n"
+#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6214aab4-7ff98d4b06bb988e16036f9f\"\n  }\n}\n"
 ```
 
 For advanced use, supports additional HTTP methods such as POST or PUT.
