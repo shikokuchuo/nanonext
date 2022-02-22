@@ -114,6 +114,7 @@ Protocols implemented by \{nanonext\}.
     [protocol, respondent] The respondent protocol is one half of a survey
     pattern. This socket may be used to receive messages, and then to send
     replies. A reply can only be sent after receiving a survey, and generally
-    the reply will be sent to surveyor from whom the last survey was received.
+    the reply will be sent to the surveyor from whom the last survey was
+    received.
 }
 

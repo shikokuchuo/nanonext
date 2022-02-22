@@ -3,6 +3,7 @@
 #### New Features
 
 * `call_aio()` gains the argument 'block', offering a non-blocking method of calling an AIO, without waiting for its completion if it is yet to resolve.
+* `survey()` added as a convenience function for surveyor/respondent patterns.
 * `ncurl()` adds a '...' argument. Support for HTTP methods other than GET.
 
 #### Updates
@@ -10,6 +11,8 @@
 * `listen()` and `dial()` now return (invisible) zero rather than NULL upon success to better align with similar functions.
 * Allows setting the environment variable 'NANONEXT_ARM' prior to package installation
   + Fixes installation issues on certain ARM architectures
+* Options documentation entry renamed to `opts` to avoid clash with base R 'options'.
+* Removes experimental `nng_timer()` utility as a non-essential function.
 * Deprecated functions 'send_vec' and 'recv_vec' removed.
 
 # nanonext 0.2.0

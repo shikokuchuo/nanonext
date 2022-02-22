@@ -50,7 +50,7 @@ setopt(
 (duration), 'size', 'string' or 'uint64'.}
 
 \item{opt}{name of option, e.g. 'reconnect-time-min', as a character string.
-See \link{options}.}
+See \link{opts}.}
 
 \item{value}{value of option.}
 }
@@ -58,7 +58,7 @@ See \link{options}.}
 Zero (invisibly) on success.
 }
 \description{
-Set \link{options} on a Socket, Context, Dialer or Listener.
+Set \link{opts} on a Socket, Context, Dialer or Listener.
 }
 \details{
 Note: once a dialer or listener has started, it is not generally

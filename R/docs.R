@@ -101,7 +101,8 @@
 #'     [protocol, respondent] The respondent protocol is one half of a survey
 #'     pattern. This socket may be used to receive messages, and then to send
 #'     replies. A reply can only be sent after receiving a survey, and generally
-#'     the reply will be sent to surveyor from whom the last survey was received.
+#'     the reply will be sent to the surveyor from whom the last survey was
+#'     received.
 #'
 #' @name protocols
 NULL
@@ -267,7 +268,7 @@ NULL
 #' @name transports
 NULL
 
-#' Options [Documentation]
+#' Opts [Documentation]
 #'
 #' @description Options that can be set on Sockets, Contexts, Dialers or Listeners.
 #'
@@ -455,6 +456,6 @@ NULL
 #'
 #'     }
 #'
-#' @name options
+#' @name opts
 NULL
 

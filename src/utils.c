@@ -44,27 +44,6 @@ static void thread_finalizer(SEXP xptr) {
 
 }
 
-static void rnng_timer(void *arg) {
-
-  SEXP time = PROTECT((SEXP) arg);
-  const int tm = INTEGER(time)[0];
-  nng_msleep(tm);
-  UNPROTECT(1);
-  REprintf("Timer completed after %d ms\n", tm);
-
-}
-
-SEXP rnng_threaded_timer(SEXP time) {
-
-  nng_thread *thr;
-  nng_thread_create(&thr, rnng_timer, time);
-  SEXP xptr = PROTECT(R_MakeExternalPtr(thr, R_NilValue, R_NilValue));
-  R_RegisterCFinalizerEx(xptr, thread_finalizer, TRUE);
-  UNPROTECT(1);
-  return xptr;
-
-}
-
 static void peek(void *arg) {
 
   nng_aio *aiop = (nng_aio *) (arg);
@@ -94,7 +73,7 @@ SEXP rnng_aio_peek(SEXP aio) {
 
 }
 
-/* ncurl - minimalistic http client ----------------------------------------- */
+/* ncurl - minimalist http client ------------------------------------------- */
 
 SEXP rnng_ncurl(SEXP http, SEXP args) {
 

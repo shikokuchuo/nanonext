@@ -29,7 +29,7 @@ Note that if the topic was not previously subscribed to then an
     recognised by the receiving party.}
     \item{send a vector that separates the topic from the rest of the message
     e.g. \code{send(socket, c("topic", "message"), mode = "raw")} - this
-    ensures that topic ends with the required null byte for it to be
+    ensures that topic ends with the required nul byte for it to be
     recognised.}
     }
 }

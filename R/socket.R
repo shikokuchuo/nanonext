@@ -92,7 +92,7 @@ socket <- function(protocol = c("pair", "bus", "push", "pull", "req", "rep",
 #'     recognised by the receiving party.}
 #'     \item{send a vector that separates the topic from the rest of the message
 #'     e.g. \code{send(socket, c("topic", "message"), mode = "raw")} - this
-#'     ensures that topic ends with the required null byte for it to be
+#'     ensures that topic ends with the required nul byte for it to be
 #'     recognised.}
 #'     }
 #'
@@ -140,7 +140,7 @@ subscribe <- function(socket, topic = NULL) {
 #'     recognised by the receiving party.}
 #'     \item{send a vector that separates the topic from the rest of the message
 #'     e.g. \code{send(socket, c("topic", "message"), mode = "raw")} - this
-#'     ensures that topic ends with the required null byte for it to be
+#'     ensures that topic ends with the required nul byte for it to be
 #'     recognised.}
 #'     }
 #'
@@ -166,6 +166,57 @@ unsubscribe <- function(socket, topic = NULL) {
   if (xc) message(xc, " : ", nng_error(xc)) else message("unsubscribed topic: ",
                                                          if (is.null(topic)) "ALL" else topic)
   invisible(xc)
+
+}
+
+#' Set Survey Time
+#'
+#' For a socket using the surveyor protocol in a surveyor/respondent pattern.
+#'     Set a survey timeout in ms (remains valid for all subsequent surveys).
+#'     Messages received by the surveyor after the timer has ended are discarded.
+#'
+#' @param socket a Socket or Context using the surveyor protocol.
+#' @param time the survey timeout in ms.
+#'
+#' @return Zero (invisibly) on success.
+#'
+#' @details This is a convenience function that wraps \code{\link{setopt}} with
+#'     the correct parameters.
+#'
+#'     After using this function, to start a new survey, the surveyor must:
+#'     \itemize{
+#'     \item{send a message using any of the send functions.}
+#'     \item{switch to receiving responses.}
+#'     }
+#'
+#'     To respond to a survey, the respondent must:
+#'     \itemize{
+#'     \item{receive the survey message.}
+#'     \item{send a reply \emph{using an AIO send function} before the survey
+#'     has timed out (a reply can only be sent after receiving a survey).}
+#'     }
+#'
+#' @examples
+#' sur <- socket("surveyor", listen = "inproc://nanonext")
+#' res <- socket("respondent", dial = "inproc://nanonext")
+#'
+#' survey(sur, 1000)
+#' send(sur, "reply to this survey")
+#' aio <- recv_aio(sur)
+#'
+#' recv(res)
+#' send_aio(res, "replied")
+#'
+#' call_aio(aio)$data
+#'
+#' close(sur)
+#' close(res)
+#'
+#' @export
+#'
+survey <- function(socket, time) {
+
+  setopt(socket, type = "ms", opt = "surveyor:survey-time", value = time)
 
 }
 

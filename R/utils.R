@@ -45,39 +45,6 @@ nng_error <- function(error) {
 
 }
 
-#' Timer Utility
-#'
-#' Set a timer (stopwatch). Will print a message to the console (stderr) upon
-#'     completion.
-#'
-#' @param time time in ms. Non-integer values are translated to integer using
-#'     \code{as.integer()}.
-#'
-#' @return An external pointer to the thread created by this function.
-#'
-#' @details The return value of this function should not normally be assigned as
-#'     this preserves the thread instead of it being automatically reaped during
-#'     garbage collection.
-#'
-#'     As reaping the thread waits until the timer has completed, a possible
-#'     side effect is blocking garbage collection until this has happened
-#'     (not guaranteed, as garbage collection may happen on other objects first).
-#'     If this is undesirable, assign the external pointer to an object and then
-#'     remove it after completion.
-#'
-#' @export
-#'
-nng_timer <- function(time) {
-
-  if (is.numeric(time) && time >= 0) {
-    time <- as.integer(time)
-  } else {
-    stop("a numeric value >= 0 is required")
-  }
-  invisible(.Call(rnng_threaded_timer, time))
-
-}
-
 #' ncurl
 #'
 #' nano cURL - a minimalist http(s) client.
