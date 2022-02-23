@@ -55,7 +55,8 @@ nng_error <- function(error) {
 #'
 #' @examples
 #' is_nul_byte(as.raw(0L))
-#' is_nul_byte(writeBin("", raw()))
+#' is_nul_byte(raw(length = 1L))
+#' is_nul_byte(writeBin("", con = raw()))
 #'
 #' is_nul_byte(0L)
 #' is_nul_byte(NULL)

@@ -442,7 +442,7 @@ NULL
 #'
 #'       \item{'ws:request-headers' [type 'string']}
 #'
-#'       {(WebSocket transport) Concentation of multiple lines terminated by
+#'       {(WebSocket transport) Concatenation of multiple lines terminated by
 #'       CRLF sequences, that can be used to add further headers to the HTTP
 #'       request sent when connecting. This option can be set on dialers, and
 #'       must be done before the transport is started.}

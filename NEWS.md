@@ -1,4 +1,4 @@
-# nanonext 0.2.0.9000 (development)
+# nanonext 0.2.0.9001 (development)
 
 #### New Features
 
@@ -12,6 +12,7 @@
 * `listen()` and `dial()` now return (invisible) zero rather than NULL upon success to better align with similar functions.
 * Allows setting the environment variable 'NANONEXT_ARM' prior to package installation
   + Fixes installation issues on certain ARM architectures
+* More streamlined NNG build process eliminating unused options.
 * Options documentation entry renamed to `opts` to avoid clash with base R 'options'.
 * Removes experimental `nng_timer()` utility as a non-essential function.
 * Deprecated functions 'send_vec' and 'recv_vec' removed.

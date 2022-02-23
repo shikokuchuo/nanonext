@@ -159,7 +159,7 @@ recv <- function(socket,
                  character = (r <- readBin(con = res, what = mode, n = length(res)))[r != ""],
                  raw = res,
                  readBin(con = res, what = mode, n = length(res)))
-  on.exit(expr = NULL)
+  on.exit()
   if (missing(keep.raw) || isTRUE(keep.raw)) list(raw = res, data = data) else data
 
 }

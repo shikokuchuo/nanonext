@@ -59,7 +59,7 @@ else
   if [ $? -ne 0 ]; then
     export PATH=$PATH:/Applications/CMake.app/Contents/bin
   fi
-  cmake -DCMAKE_C_FLAGS="${CMAKE_C_FLAGS} -fPIC" -DNNG_TESTS=0 ..
+  cmake -DCMAKE_C_FLAGS="${CMAKE_C_FLAGS} -fPIC" -DNNG_ELIDE_DEPRECATED=1 -DNNG_TESTS=0 -DNNG_TOOLS=0 ..
   make
   cd ../..
   mkdir lib
@@ -112,7 +112,7 @@ if [ $? -ne 0 ]; then
     if [ $? -ne 0 ]; then
       export PATH=$PATH:/Applications/CMake.app/Contents/bin
     fi
-    cmake -DCMAKE_C_FLAGS="${CMAKE_C_FLAGS} -fPIC" -DNNG_TESTS=0 ..
+    cmake -DCMAKE_C_FLAGS="${CMAKE_C_FLAGS} -fPIC" -DNNG_ELIDE_DEPRECATED=1 -DNNG_TESTS=0 -DNNG_TOOLS=0 ..
     make
     cd ../..
     mkdir lib

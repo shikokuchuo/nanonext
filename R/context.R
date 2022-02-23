@@ -151,7 +151,7 @@ recv_ctx <- function(context,
                  character = (r <- readBin(con = res, what = mode, n = length(res)))[r != ""],
                  raw = res,
                  readBin(con = res, what = mode, n = length(res)))
-  on.exit(expr = NULL)
+  on.exit()
   if (missing(keep.raw) || isTRUE(keep.raw)) list(raw = res, data = data) else data
 
 }
@@ -240,7 +240,7 @@ reply <- function(context,
   data <- switch(send_mode,
                  serial = serialize(object = data, connection = NULL),
                  raw = if (is.raw(data)) data else writeBin(object = data, con = raw()))
-  on.exit(expr = NULL)
+  on.exit()
   res <- .Call(rnng_ctx_send, context, data, timeout)
   is.integer(res) && {
     message(res, " : ", nng_error(res))

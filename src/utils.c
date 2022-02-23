@@ -50,8 +50,7 @@ static void peek(void *arg) {
   nng_time start = nng_clock();
   nng_aio_wait(aiop);
   int xc = nng_aio_result(aiop);
-  nng_time end = nng_clock();
-  int elapsed = end - start;
+  nng_time elapsed = nng_clock() - start;
   if (elapsed <= 1)
     Rprintf("%d\n", xc);
 
