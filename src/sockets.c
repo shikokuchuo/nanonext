@@ -50,8 +50,10 @@ SEXP rnng_protocol_open(SEXP protocol) {
   else if (!strcmp(pro, "respondent"))
     xc = nng_respondent0_open(sock);
 
-  if (xc)
+  if (xc) {
+    R_Free(sock);
     return Rf_ScalarInteger(xc);
+  }
 
   SEXP socket = PROTECT(R_MakeExternalPtr(sock, nano_SocketSymbol, R_NilValue));
   R_RegisterCFinalizerEx(socket, socket_finalizer, TRUE);

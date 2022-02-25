@@ -69,23 +69,9 @@ call_aio <- function(aio, block = TRUE) {
   if (length(.subset2(aio, "aio"))) {
 
     if (!missing(block) && !isTRUE(block)) {
-      rnng <- NULL
-      file <- textConnection("rnng", open = "w", local = TRUE)
-      sink(file, type = "output", split = FALSE)
-      on.exit(expr = {
-        sink(type = "output", split = FALSE)
-        close(file)
-      })
-      res <- .Call(rnng_aio_peek, .subset2(aio, "aio"))
-      Sys.sleep(0.001)
-      on.exit()
-      sink(type = "output", split = FALSE)
-      close(file)
-      identical(rnng, character(0L)) && {
-        attr(aio[["aio"]], "peekreqs") <- c(attr(aio[["aio"]], "peekreqs"), res)
-        return()
-      }
+      .Call(rnng_aio_check, .subset2(aio, "aio")) || return()
     }
+
     if (inherits(aio, "recvAio")) {
 
       mode <- .subset2(aio, "callparams")[[1L]]
@@ -121,13 +107,9 @@ call_aio <- function(aio, block = TRUE) {
       }
     }
 
-    invisible(aio)
-
-  } else {
-
-    invisible(aio)
-
   }
+
+  invisible(aio)
 
 }
 

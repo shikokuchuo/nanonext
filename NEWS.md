@@ -2,7 +2,7 @@
 
 #### New Features
 
-* `call_aio()` gains the argument 'block', offering a non-blocking method of calling an AIO, without waiting for its completion if it is yet to resolve.
+* `call_aio()` gains the argument 'block', offering a non-blocking method of calling an AIO, without waiting for completion if it is yet to resolve.
 * `survey_time()` added as a convenience function for surveyor/respondent patterns.
 * `is_nul_byte()` added as a helper function for request/reply setups.
 * `ncurl()` adds a '...' argument. Support for HTTP methods other than GET.

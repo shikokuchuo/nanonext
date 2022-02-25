@@ -89,11 +89,14 @@ send_aio <- function(socket, data, mode = c("serial", "raw"), timeout) {
   data <- switch(mode,
                  serial = serialize(object = data, connection = NULL),
                  raw = if (is.raw(data)) data else writeBin(object = data, con = raw()))
+  res <- .Call(rnng_send_aio, socket, data, timeout)
+  is.integer(res) && {
+    message(res, " : ", nng_error(res))
+    return(invisible(res))
+  }
   env <- `class<-`(new.env(), "sendAio")
-  aio <- .Call(rnng_send_aio, socket, data, timeout)
-  env[["aio"]] <- aio
-  if (is.integer(aio)) message(aio, " : ", nng_error(aio))
-  invisible(env)
+  env[["aio"]] <- res
+  env
 
 }
 
@@ -215,14 +218,14 @@ recv_aio <- function(socket,
 
   mode <- match.arg(mode)
   if (missing(timeout)) timeout <- -2L
-  aio <- .Call(rnng_recv_aio, socket, timeout)
-  env <- `class<-`(new.env(), "recvAio")
-  env[["aio"]] <- aio
-  if (is.integer(aio)) {
-    message(aio, " : ", nng_error(aio))
-  } else {
-    env[["callparams"]] <- list(mode, missing(keep.raw) || isTRUE(keep.raw))
+  res <- .Call(rnng_recv_aio, socket, timeout)
+  is.integer(res) && {
+    message(res, " : ", nng_error(res))
+    return(invisible(res))
   }
+  env <- `class<-`(new.env(), "recvAio")
+  env[["aio"]] <- res
+  env[["callparams"]] <- list(mode, missing(keep.raw) || isTRUE(keep.raw))
   env
 
 }
