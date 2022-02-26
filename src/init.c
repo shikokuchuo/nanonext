@@ -26,10 +26,11 @@ static void RegisterSymbols(void) {
 }
 
 static const R_CallMethodDef CallEntries[] = {
-  {"rnng_aio_check", (DL_FUNC) &rnng_aio_check, 1},
   {"rnng_aio_get_msg", (DL_FUNC) &rnng_aio_get_msg, 1},
   {"rnng_aio_result", (DL_FUNC) &rnng_aio_result, 1},
   {"rnng_aio_stop", (DL_FUNC) &rnng_aio_stop, 1},
+  {"rnng_aio_wait_get_msg", (DL_FUNC) &rnng_aio_wait_get_msg, 1},
+  {"rnng_aio_wait_result", (DL_FUNC) &rnng_aio_wait_result, 1},
   {"rnng_close", (DL_FUNC) &rnng_close, 1},
   {"rnng_ctx_close", (DL_FUNC) &rnng_ctx_close, 1},
   {"rnng_ctx_open", (DL_FUNC) &rnng_ctx_open, 1},

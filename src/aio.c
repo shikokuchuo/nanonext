@@ -171,29 +171,49 @@ SEXP rnng_send_aio(SEXP socket, SEXP data, SEXP timeout) {
 
 }
 
-SEXP rnng_aio_check(SEXP aio) {
-
-  if (R_ExternalPtrTag(aio) != nano_AioSymbol)
-    error_return("'aio' is not a valid Aio");
-  if (R_ExternalPtrAddr(aio) == NULL)
-    error_return("'aio' is not an active Aio");
-  int res;
-  int_mtx *mutex = (int_mtx *) R_ExternalPtrAddr(Rf_getAttrib(aio, nano_StateSymbol));
-  nng_mtx_lock(mutex->mtx);
-  res = mutex->state;
-  nng_mtx_unlock(mutex->mtx);
-
-  return Rf_ScalarInteger(res);
-}
-
 SEXP rnng_aio_get_msg(SEXP aio) {
 
   if (R_ExternalPtrTag(aio) != nano_AioSymbol)
     error_return("'aio' is not a valid Aio");
   if (R_ExternalPtrAddr(aio) == NULL)
     error_return("'aio' is not an active Aio");
-  nng_aio *aiop = (nng_aio *) R_ExternalPtrAddr(aio);
 
+  nng_aio *aiop = (nng_aio *) R_ExternalPtrAddr(aio);
+  int_mtx *mutex = (int_mtx *) R_ExternalPtrAddr(Rf_getAttrib(aio, nano_StateSymbol));
+  nng_mtx_lock(mutex->mtx);
+  int resolv = mutex->state;
+  nng_mtx_unlock(mutex->mtx);
+  if (!resolv)
+    return R_MissingArg;
+
+  int xc = nng_aio_result(aiop);
+  if (xc) {
+    nng_aio_free(aiop);
+    R_ClearExternalPtr(aio);
+    return Rf_ScalarInteger(xc);
+  }
+  nng_msg *msgp = nng_aio_get_msg(aiop);
+  size_t sz = nng_msg_len(msgp);
+  SEXP res = PROTECT(Rf_allocVector(RAWSXP, sz));
+  unsigned char *rp = RAW(res);
+  memcpy(rp, nng_msg_body(msgp), sz);
+  nng_msg_free(msgp);
+  nng_aio_free(aiop);
+  R_ClearExternalPtr(aio);
+
+  UNPROTECT(1);
+  return res;
+
+}
+
+SEXP rnng_aio_wait_get_msg(SEXP aio) {
+
+  if (R_ExternalPtrTag(aio) != nano_AioSymbol)
+    error_return("'aio' is not a valid Aio");
+  if (R_ExternalPtrAddr(aio) == NULL)
+    error_return("'aio' is not an active Aio");
+
+  nng_aio *aiop = (nng_aio *) R_ExternalPtrAddr(aio);
   nng_aio_wait(aiop);
   int xc = nng_aio_result(aiop);
   if (xc) {
@@ -221,6 +241,30 @@ SEXP rnng_aio_result(SEXP aio) {
     error_return("'aio' is not a valid Aio");
   if (R_ExternalPtrAddr(aio) == NULL)
     error_return("'aio' is not an active Aio");
+
+  nng_aio *aiop = (nng_aio *) R_ExternalPtrAddr(aio);
+  int_mtx *mutex = (int_mtx *) R_ExternalPtrAddr(Rf_getAttrib(aio, nano_StateSymbol));
+  nng_mtx_lock(mutex->mtx);
+  int resolv = mutex->state;
+  nng_mtx_unlock(mutex->mtx);
+  if (!resolv)
+    return R_MissingArg;
+
+  int xc = nng_aio_result(aiop);
+
+  nng_aio_free(aiop);
+  R_ClearExternalPtr(aio);
+  return Rf_ScalarInteger(xc);
+
+}
+
+SEXP rnng_aio_wait_result(SEXP aio) {
+
+  if (R_ExternalPtrTag(aio) != nano_AioSymbol)
+    error_return("'aio' is not a valid Aio");
+  if (R_ExternalPtrAddr(aio) == NULL)
+    error_return("'aio' is not an active Aio");
+
   nng_aio *aiop = (nng_aio *) R_ExternalPtrAddr(aio);
   nng_aio_wait(aiop);
   int xc = nng_aio_result(aiop);
@@ -237,8 +281,10 @@ SEXP rnng_aio_stop(SEXP aio) {
     error_return("'aio' is not a valid Aio");
   if (R_ExternalPtrAddr(aio) == NULL)
     error_return("'aio' is not an active Aio");
+
   nng_aio *aiop = (nng_aio *) R_ExternalPtrAddr(aio);
   nng_aio_stop(aiop);
+
   nng_aio_free(aiop);
   R_ClearExternalPtr(aio);
   return R_NilValue;

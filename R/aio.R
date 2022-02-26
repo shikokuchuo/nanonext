@@ -7,7 +7,7 @@
 #'
 #' @param aio An Aio (object of class 'sendAio' or 'recvAio').
 #' @param block [default TRUE] whether to wait for completion of the AIO
-#'     operation (blocking) or return immediately. [experimental]
+#'     operation (blocking) or return immediately.
 #'
 #' @return The passed Aio object (invisibly), or NULL if non-blocking and the
 #'     Aio has yet to resolve.
@@ -36,13 +36,11 @@
 #'     (invisibly) instead of NULL. The data may then be extracted from the Aio
 #'     using \code{$result}, \code{$raw} or \code{$data} as the case may be.
 #'
-#'     It is not advisable to try to extract the data in one step in the
-#'     non-blocking case as NULL$result is also NULL, hence it would be impossible
-#'     to distinguish between an unresolved Aio and a NULL return value.
-#'
-#'     This argument has the tag [experimental], which indicates that it remains
-#'     under development. Please note that the final implementation may differ
-#'     from the current version.
+#'     It is not advisable to try to extract the data from a 'recvAio' in one
+#'     step using something like \code{call_aio(x)$data} in the non-blocking case.
+#'     This is as \code{call_aio()} will return NULL if the Aio is unresolved and
+#'     \code{NULL$data} is also \code{NULL}, hence it would be impossible to
+#'     distinguish between an unresolved Aio and a NULL return value.
 #'
 #' @examples
 #' s1 <- socket("pair", listen = "inproc://nanonext")
@@ -68,15 +66,16 @@ call_aio <- function(aio, block = TRUE) {
 
   if (length(.subset2(aio, "aio"))) {
 
-    if (!missing(block) && !isTRUE(block)) {
-      .Call(rnng_aio_check, .subset2(aio, "aio")) || return()
-    }
-
     if (inherits(aio, "recvAio")) {
 
+      if (!missing(block) && !isTRUE(block)) {
+        res <- .Call(rnng_aio_get_msg, .subset2(aio, "aio"))
+        missing(res) && return()
+      } else {
+        res <- .Call(rnng_aio_wait_get_msg, .subset2(aio, "aio"))
+      }
       mode <- .subset2(aio, "callparams")[[1L]]
       keep.raw <- .subset2(aio, "callparams")[[2L]]
-      res <- .Call(rnng_aio_get_msg, .subset2(aio, "aio"))
       if (keep.raw) aio[["raw"]] <- res
       is.integer(res) && {
         message(res, " : ", nng_error(res))
@@ -99,7 +98,13 @@ call_aio <- function(aio, block = TRUE) {
       rm("callparams", envir = aio)
 
     } else if (inherits(aio, "sendAio")) {
-      res <- .Call(rnng_aio_result, .subset2(aio, "aio"))
+
+      if (!missing(block) && !isTRUE(block)) {
+        res <- .Call(rnng_aio_result, .subset2(aio, "aio"))
+        missing(res) && return()
+      } else {
+        res <- .Call(rnng_aio_wait_result, .subset2(aio, "aio"))
+      }
       aio[["result"]] <- res
       rm("aio", envir = aio)
       if (res) {

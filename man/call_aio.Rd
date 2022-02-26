@@ -10,7 +10,7 @@ call_aio(aio, block = TRUE)
 \item{aio}{An Aio (object of class 'sendAio' or 'recvAio').}
 
 \item{block}{[default TRUE] whether to wait for completion of the AIO
-operation (blocking) or return immediately. [experimental]}
+operation (blocking) or return immediately.}
 }
 \value{
 The passed Aio object (invisibly), or NULL if non-blocking and the
@@ -46,13 +46,11 @@ To access the values directly, use for example on a sendAio 'x':
     (invisibly) instead of NULL. The data may then be extracted from the Aio
     using \code{$result}, \code{$raw} or \code{$data} as the case may be.
 
-    It is not advisable to try to extract the data in one step in the
-    non-blocking case as NULL$result is also NULL, hence it would be impossible
-    to distinguish between an unresolved Aio and a NULL return value.
-
-    This argument has the tag [experimental], which indicates that it remains
-    under development. Please note that the final implementation may differ
-    from the current version.
+    It is not advisable to try to extract the data from a 'recvAio' in one
+    step using something like \code{call_aio(x)$data} in the non-blocking case.
+    This is as \code{call_aio()} will return NULL if the Aio is unresolved and
+    \code{NULL$data} is also \code{NULL}, hence it would be impossible to
+    distinguish between an unresolved Aio and a NULL return value.
 }
 
 \examples{

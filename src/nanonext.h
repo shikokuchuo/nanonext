@@ -19,10 +19,11 @@ extern SEXP nano_UrlSymbol;
 extern SEXP nano_AioSymbol;
 
 /* define functions */
-extern SEXP rnng_aio_check(SEXP);
 extern SEXP rnng_aio_get_msg(SEXP);
 extern SEXP rnng_aio_result(SEXP);
 extern SEXP rnng_aio_stop(SEXP);
+extern SEXP rnng_aio_wait_get_msg(SEXP);
+extern SEXP rnng_aio_wait_result(SEXP);
 extern SEXP rnng_close(SEXP);
 extern SEXP rnng_ctx_close(SEXP);
 extern SEXP rnng_ctx_open(SEXP);
