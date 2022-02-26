@@ -306,13 +306,8 @@ SEXP rnng_ctx_send(SEXP context, SEXP data, SEXP timeout) {
   xc = nng_msg_alloc(&msgp, 0);
   if (xc)
     return Rf_ScalarInteger(xc);
-  xc = nng_msg_append(msgp, dp, xlen);
-  if (xc) {
-    nng_msg_free(msgp);
-    return Rf_ScalarInteger(xc);
-  }
-  xc = nng_aio_alloc(&aiop, NULL, NULL);
-  if (xc) {
+  if ((xc = nng_msg_append(msgp, dp, xlen)) ||
+      (xc = nng_aio_alloc(&aiop, NULL, NULL))) {
     nng_msg_free(msgp);
     return Rf_ScalarInteger(xc);
   }

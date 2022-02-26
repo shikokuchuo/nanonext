@@ -21,22 +21,22 @@ Retrieve the result of an asynchronous AIO operation. Optionally wait for the
     AIO operation to complete if this is still in progress.
 }
 \details{
-To access the values directly, use for example on a sendAio 'x':
-    \code{call_aio(x)$result}.
+For a 'recvAio', the received raw vector will be attached in \code{$raw}
+    (unless 'keep.raw' was set to FALSE when receiving), and the converted R
+    object in \code{$data}.
 
     For a 'sendAio', the send result will be attached to the Aio in \code{$result}.
     This will be zero on success.
 
-    For a 'recvAio', the received raw vector will be attached in \code{$raw}
-    (unless 'keep.raw' was set to FALSE when receiving), and the converted R
-    object in \code{$data}.
+    To access the values directly, use for example on a sendAio 'x':
+    \code{call_aio(x)$result}.
 
     For a 'recvAio', in case of an error in unserialisation or data conversion,
     the received raw vector will always be saved in \code{$raw} to allow the
     data to be recovered.
 
-    Once the result is retrieved, the Aio is deallocated and only the result
-    is stored in the Aio object.
+    Once the result has been successfully retrieved, the Aio is deallocated
+    and only the result is stored in the Aio object.
 }
 \section{Non-blocking}{
 

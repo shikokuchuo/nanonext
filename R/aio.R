@@ -12,22 +12,22 @@
 #' @return The passed Aio object (invisibly), or NULL if non-blocking and the
 #'     Aio has yet to resolve.
 #'
-#' @details To access the values directly, use for example on a sendAio 'x':
-#'     \code{call_aio(x)$result}.
+#' @details For a 'recvAio', the received raw vector will be attached in \code{$raw}
+#'     (unless 'keep.raw' was set to FALSE when receiving), and the converted R
+#'     object in \code{$data}.
 #'
 #'     For a 'sendAio', the send result will be attached to the Aio in \code{$result}.
 #'     This will be zero on success.
 #'
-#'     For a 'recvAio', the received raw vector will be attached in \code{$raw}
-#'     (unless 'keep.raw' was set to FALSE when receiving), and the converted R
-#'     object in \code{$data}.
+#'     To access the values directly, use for example on a sendAio 'x':
+#'     \code{call_aio(x)$result}.
 #'
 #'     For a 'recvAio', in case of an error in unserialisation or data conversion,
 #'     the received raw vector will always be saved in \code{$raw} to allow the
 #'     data to be recovered.
 #'
-#'     Once the result is retrieved, the Aio is deallocated and only the result
-#'     is stored in the Aio object.
+#'     Once the result has been successfully retrieved, the Aio is deallocated
+#'     and only the result is stored in the Aio object.
 #'
 #' @section Non-blocking:
 #'
@@ -68,11 +68,11 @@ call_aio <- function(aio, block = TRUE) {
 
     if (inherits(aio, "recvAio")) {
 
-      if (!missing(block) && !isTRUE(block)) {
+      if (missing(block) || isTRUE(block)) {
+        res <- .Call(rnng_aio_wait_get_msg, .subset2(aio, "aio"))
+      } else {
         res <- .Call(rnng_aio_get_msg, .subset2(aio, "aio"))
         missing(res) && return()
-      } else {
-        res <- .Call(rnng_aio_wait_get_msg, .subset2(aio, "aio"))
       }
       mode <- .subset2(aio, "callparams")[[1L]]
       keep.raw <- .subset2(aio, "callparams")[[2L]]
@@ -99,11 +99,11 @@ call_aio <- function(aio, block = TRUE) {
 
     } else if (inherits(aio, "sendAio")) {
 
-      if (!missing(block) && !isTRUE(block)) {
+      if (missing(block) || isTRUE(block)) {
+        res <- .Call(rnng_aio_wait_result, .subset2(aio, "aio"))
+      } else {
         res <- .Call(rnng_aio_result, .subset2(aio, "aio"))
         missing(res) && return()
-      } else {
-        res <- .Call(rnng_aio_wait_result, .subset2(aio, "aio"))
       }
       aio[["result"]] <- res
       rm("aio", envir = aio)

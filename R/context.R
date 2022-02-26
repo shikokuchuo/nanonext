@@ -313,14 +313,14 @@ request <- function(context,
     message(res, " : ", nng_error(res))
     return(invisible(res))
   }
-  aio <- .Call(rnng_recv_aio, context, timeout)
-  env <- `class<-`(new.env(), "recvAio")
-  env[["aio"]] <- aio
-  if (is.integer(aio)) {
-    message(aio, " : ", nng_error(aio))
-  } else {
-    env[["callparams"]] <- list(recv_mode, missing(keep.raw) || isTRUE(keep.raw))
+  res <- .Call(rnng_recv_aio, context, timeout)
+  is.integer(res) && {
+    message(res, " : ", nng_error(res))
+    return(invisible(res))
   }
+  env <- `class<-`(new.env(), "recvAio")
+  env[["aio"]] <- res
+  env[["callparams"]] <- list(recv_mode, missing(keep.raw) || isTRUE(keep.raw))
   env
 
 }

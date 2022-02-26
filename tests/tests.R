@@ -37,9 +37,11 @@ suppressMessages(n1$send("test", mode = "raw", block = FALSE, echo = FALSE))
 invisible(suppressMessages(n$recv("character", block = FALSE)))
 saio <- suppressMessages(n$send_aio(data.frame(), timeout = 500))
 invisible(!is.null(saio[["aio"]]) || stop())
+invisible(suppressMessages(call_aio(saio, block = FALSE)))
 raio <- suppressMessages(n1$recv_aio(timeout = 500))
 invisible(!is.null(raio[["aio"]]) || stop())
 invisible(is.list(raio[["callparams"]]) || stop())
+invisible(suppressMessages(call_aio(raio, block = FALSE)))
 suppressMessages(n$send_aio(c(1.1, 2.2), mode = "raw", timeout = 500))
 invisible(suppressMessages(n1$recv_aio(timeout = 500)))
 
@@ -90,4 +92,5 @@ invisible(close(sock) == 0L || stop())
 
 invisible(is.character(ver <- nng_version()) && length(ver) == 2L || stop())
 invisible(is.character(nng_error(0L)) || stop())
+invisible(is_nul_byte(as.raw(0L)) && !is_nul_byte(NULL) || stop())
 
