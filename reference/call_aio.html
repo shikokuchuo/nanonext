@@ -79,18 +79,18 @@ operation (blocking) or return immediately.</p></dd>
     </div>
     <div id="details">
     <h2>Details</h2>
-    <p>To access the values directly, use for example on a sendAio 'x':
-    <code>call_aio(x)$result</code>.</p>
-<p>For a 'sendAio', the send result will be attached to the Aio in <code>$result</code>.
-    This will be zero on success.</p>
-<p>For a 'recvAio', the received raw vector will be attached in <code>$raw</code>
+    <p>For a 'recvAio', the received raw vector will be attached in <code>$raw</code>
     (unless 'keep.raw' was set to FALSE when receiving), and the converted R
     object in <code>$data</code>.</p>
+<p>For a 'sendAio', the send result will be attached to the Aio in <code>$result</code>.
+    This will be zero on success.</p>
+<p>To access the values directly, use for example on a sendAio 'x':
+    <code>call_aio(x)$result</code>.</p>
 <p>For a 'recvAio', in case of an error in unserialisation or data conversion,
     the received raw vector will always be saved in <code>$raw</code> to allow the
     data to be recovered.</p>
-<p>Once the result is retrieved, the Aio is deallocated and only the result
-    is stored in the Aio object.</p>
+<p>Once the result has been successfully retrieved, the Aio is deallocated
+    and only the result is stored in the Aio object.</p>
     </div>
     <div id="non-blocking">
     <h2>Non-blocking</h2>
