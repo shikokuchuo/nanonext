@@ -70,7 +70,7 @@
 <dd><p>An Aio (object of class 'sendAio' or 'recvAio').</p></dd>
 <dt>block</dt>
 <dd><p>[default TRUE] whether to wait for completion of the AIO
-operation (blocking) or return immediately. [experimental]</p></dd>
+operation (blocking) or return immediately.</p></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>
@@ -101,12 +101,11 @@ operation (blocking) or return immediately. [experimental]</p></dd>
     returns NULL. When the Aio resolves, the Aio itself will be returned
     (invisibly) instead of NULL. The data may then be extracted from the Aio
     using <code>$result</code>, <code>$raw</code> or <code>$data</code> as the case may be.</p>
-<p>It is not advisable to try to extract the data in one step in the
-    non-blocking case as NULL$result is also NULL, hence it would be impossible
-    to distinguish between an unresolved Aio and a NULL return value.</p>
-<p>This argument has the tag [experimental], which indicates that it remains
-    under development. Please note that the final implementation may differ
-    from the current version.</p>
+<p>It is not advisable to try to extract the data from a 'recvAio' in one
+    step using something like <code>call_aio(x)$data</code> in the non-blocking case.
+    This is as <code>call_aio()</code> will return NULL if the Aio is unresolved and
+    <code>NULL$data</code> is also <code>NULL</code>, hence it would be impossible to
+    distinguish between an unresolved Aio and a NULL return value.</p>
     </div>
 
     <div id="ref-examples">
