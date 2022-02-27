@@ -64,54 +64,52 @@
 #'
 call_aio <- function(aio, block = TRUE) {
 
-  if (length(.subset2(aio, "aio"))) {
+  is.null(.subset2(aio, "aio")) && return(invisible(aio))
 
-    if (inherits(aio, "recvAio")) {
+  if (inherits(aio, "recvAio")) {
 
-      if (missing(block) || isTRUE(block)) {
-        res <- .Call(rnng_aio_wait_get_msg, .subset2(aio, "aio"))
-      } else {
-        res <- .Call(rnng_aio_get_msg, .subset2(aio, "aio"))
-        missing(res) && return()
-      }
-      mode <- .subset2(aio, "callparams")[[1L]]
-      keep.raw <- .subset2(aio, "callparams")[[2L]]
-      if (keep.raw) aio[["raw"]] <- res
-      is.integer(res) && {
-        message(res, " : ", nng_error(res))
-        return(invisible(aio))
-      }
-      on.exit(expr = {
-        aio[["raw"]] <- res
-        rm("aio", envir = aio)
-        rm("callparams", envir = aio)
-        return(invisible(aio))
-      })
-      data <- switch(mode,
-                     serial = unserialize(connection = res),
-                     character = (r <- readBin(con = res, what = mode, n = length(res)))[r != ""],
-                     raw = res,
-                     readBin(con = res, what = mode, n = length(res)))
-      aio[["data"]] <- data
-      on.exit()
+    if (missing(block) || isTRUE(block)) {
+      res <- .Call(rnng_aio_wait_get_msg, .subset2(aio, "aio"))
+    } else {
+      res <- .Call(rnng_aio_get_msg, .subset2(aio, "aio"))
+      missing(res) && return()
+    }
+    mode <- .subset2(aio, "callparams")[[1L]]
+    keep.raw <- .subset2(aio, "callparams")[[2L]]
+    if (keep.raw) aio[["raw"]] <- res
+    is.integer(res) && {
+      message(res, " : ", nng_error(res))
+      return(invisible(aio))
+    }
+    on.exit(expr = {
+      aio[["raw"]] <- res
       rm("aio", envir = aio)
       rm("callparams", envir = aio)
+      return(invisible(aio))
+    })
+    data <- switch(mode,
+                   serial = unserialize(connection = res),
+                   character = (r <- readBin(con = res, what = mode, n = length(res)))[r != ""],
+                   raw = res,
+                   readBin(con = res, what = mode, n = length(res)))
+    aio[["data"]] <- data
+    on.exit()
+    rm("aio", envir = aio)
+    rm("callparams", envir = aio)
 
-    } else if (inherits(aio, "sendAio")) {
+  } else if (inherits(aio, "sendAio")) {
 
-      if (missing(block) || isTRUE(block)) {
-        res <- .Call(rnng_aio_wait_result, .subset2(aio, "aio"))
-      } else {
-        res <- .Call(rnng_aio_result, .subset2(aio, "aio"))
-        missing(res) && return()
-      }
-      aio[["result"]] <- res
-      rm("aio", envir = aio)
-      if (res) {
-        message(res, " : ", nng_error(res))
-      }
+    if (missing(block) || isTRUE(block)) {
+      res <- .Call(rnng_aio_wait_result, .subset2(aio, "aio"))
+    } else {
+      res <- .Call(rnng_aio_result, .subset2(aio, "aio"))
+      missing(res) && return()
     }
-
+    aio[["result"]] <- res
+    rm("aio", envir = aio)
+    if (res) {
+      message(res, " : ", nng_error(res))
+    }
   }
 
   invisible(aio)

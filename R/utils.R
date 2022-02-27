@@ -70,6 +70,15 @@ is_nul_byte <- function(x) {
 
 }
 
+#' @export
+#'
+.mirai_scm <- function() {
+
+  identical(parent.env(parent.env(parent.frame())), environment(eval_mirai)) || return()
+  .Call(rnng_scm)
+
+}
+
 #' ncurl
 #'
 #' nano cURL - a minimalist http(s) client.

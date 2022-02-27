@@ -152,6 +152,7 @@ recv_ctx <- function(context,
                  raw = res,
                  readBin(con = res, what = mode, n = length(res)))
   on.exit()
+  missing(data) && return(.Call(rnng_scm))
   if (missing(keep.raw) || isTRUE(keep.raw)) list(raw = res, data = data) else data
 
 }

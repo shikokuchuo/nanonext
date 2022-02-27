@@ -122,3 +122,4 @@
 #'
 NULL
 
+utils::globalVariables("eval_mirai")

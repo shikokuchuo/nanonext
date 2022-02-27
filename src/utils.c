@@ -33,6 +33,10 @@ SEXP rnng_version(void) {
 
 }
 
+SEXP rnng_scm() {
+  return R_MissingArg;
+}
+
 /* ncurl - minimalist http client ------------------------------------------- */
 
 SEXP rnng_ncurl(SEXP http, SEXP args) {
