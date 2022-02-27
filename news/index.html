@@ -68,7 +68,8 @@
 </ul></div>
 <div class="section level5">
 <h5 id="updates-0-2-0-9002">Updates<a class="anchor" aria-label="anchor" href="#updates-0-2-0-9002"></a></h5>
-<ul><li>
+<ul><li>Common format for NNG errors now starts with a timestamp for easier logging.</li>
+<li>
 <code><a href="../reference/listen.html">listen()</a></code> and <code><a href="../reference/dial.html">dial()</a></code> now return (invisible) zero rather than NULL upon success to better align with similar functions.</li>
 <li>Allows setting the environment variable ‘NANONEXT_ARM’ prior to package installation
 <ul><li>Fixes installation issues on certain ARM architectures</li>
