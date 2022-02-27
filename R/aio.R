@@ -78,7 +78,7 @@ call_aio <- function(aio, block = TRUE) {
     keep.raw <- .subset2(aio, "callparams")[[2L]]
     if (keep.raw) aio[["raw"]] <- res
     is.integer(res) && {
-      message(res, " : ", nng_error(res))
+      message(Sys.time(), " | ", res, " : ", nng_error(res))
       return(invisible(aio))
     }
     on.exit(expr = {
@@ -107,9 +107,8 @@ call_aio <- function(aio, block = TRUE) {
     }
     aio[["result"]] <- res
     rm("aio", envir = aio)
-    if (res) {
-      message(res, " : ", nng_error(res))
-    }
+    if (res) message(Sys.time(), " | ", res, " : ", nng_error(res))
+
   }
 
   invisible(aio)

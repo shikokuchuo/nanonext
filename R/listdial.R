@@ -78,13 +78,13 @@ dial <- function(socket,
     if (missing(autostart) || isTRUE(autostart)) {
       res <- .Call(rnng_dial, .subset2(socket, "socket"), url)
       if (is.integer(res)) {
-        message(res, " : ", nng_error(res))
+        message(Sys.time(), " | ", res, " : ", nng_error(res))
         return(res)
       }
     } else {
       res <- .Call(rnng_dialer_create, .subset2(socket, "socket"), url)
       if (is.integer(res)) {
-        message(res, " : ", nng_error(res))
+        message(Sys.time(), " | ", res, " : ", nng_error(res))
         return(res)
       }
     }
@@ -103,13 +103,13 @@ dial <- function(socket,
     if (missing(autostart) || isTRUE(autostart)) {
       res <- .Call(rnng_dial, socket, url)
       if (is.integer(res)) {
-        message(res, " : ", nng_error(res))
+        message(Sys.time(), " | ", res, " : ", nng_error(res))
         return(res)
       }
     } else {
       res <- .Call(rnng_dialer_create, socket, url)
       if (is.integer(res)) {
-        message(res, " : ", nng_error(res))
+        message(Sys.time(), " | ", res, " : ", nng_error(res))
         return(res)
       }
     }
@@ -199,13 +199,13 @@ listen <- function(socket,
     if (missing(autostart) || isTRUE(autostart)) {
       res <- .Call(rnng_listen, .subset2(socket, "socket"), url)
       if (is.integer(res)) {
-        message(res, " : ", nng_error(res))
+        message(Sys.time(), " | ", res, " : ", nng_error(res))
         return(res)
       }
     } else {
       res <- .Call(rnng_listener_create, .subset2(socket, "socket"), url)
       if (is.integer(res)) {
-        message(res, " : ", nng_error(res))
+        message(Sys.time(), " | ", res, " : ", nng_error(res))
         return(res)
       }
     }
@@ -224,13 +224,13 @@ listen <- function(socket,
     if (missing(autostart) || isTRUE(autostart)) {
       res <- .Call(rnng_listen, socket, url)
       if (is.integer(res)) {
-        message(res, " : ", nng_error(res))
+        message(Sys.time(), " | ", res, " : ", nng_error(res))
         return(res)
       }
     } else {
       res <- .Call(rnng_listener_create, socket, url)
       if (is.integer(res)) {
-        message(res, " : ", nng_error(res))
+        message(Sys.time(), " | ", res, " : ", nng_error(res))
         return(res)
       }
     }

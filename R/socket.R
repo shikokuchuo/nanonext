@@ -64,7 +64,7 @@ socket <- function(protocol = c("pair", "bus", "push", "pull", "req", "rep",
 
   protocol <- match.arg(protocol)
   res <- .Call(rnng_protocol_open, protocol)
-  if (is.integer(res)) message(res, " : ", nng_error(res))
+  if (is.integer(res)) message(Sys.time(), " | ", res, " : ", nng_error(res))
   if (!missing(dial)) {
     dial(res, url = dial, autostart = autostart)
   }
@@ -114,8 +114,11 @@ socket <- function(protocol = c("pair", "bus", "push", "pull", "req", "rep",
 subscribe <- function(socket, topic = NULL) {
 
   xc <- .Call(rnng_socket_set_string, socket, "sub:subscribe" , topic)
-  if (xc) message(xc, " : ", nng_error(xc)) else message("subscribed topic: ",
-                                                         if (is.null(topic)) "ALL" else topic)
+  if (xc) {
+    message(Sys.time(), " | ", xc, " : ", nng_error(xc))
+  } else {
+    cat("subscribed topic: ", if (is.null(topic)) "ALL" else topic)
+  }
   invisible(xc)
 
 }
@@ -163,8 +166,11 @@ subscribe <- function(socket, topic = NULL) {
 unsubscribe <- function(socket, topic = NULL) {
 
   xc <- .Call(rnng_socket_set_string, socket, "sub:unsubscribe" , topic)
-  if (xc) message(xc, " : ", nng_error(xc)) else message("unsubscribed topic: ",
-                                                         if (is.null(topic)) "ALL" else topic)
+  if (xc) {
+    message(Sys.time(), " | ", xc, " : ", nng_error(xc))
+  } else {
+    cat("unsubscribed topic: ", if (is.null(topic)) "ALL" else topic)
+  }
   invisible(xc)
 
 }

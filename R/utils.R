@@ -133,7 +133,7 @@ ncurl <- function(http, ...) {
   res <- .Call(rnng_ncurl, http, args)
   missing(res) && return(invisible())
   if (is.integer(res)) {
-    message(res, " : ", nng_error(res))
+    message(Sys.time(), " | ", res, " : ", nng_error(res))
     return(invisible(res))
   } else if (is.character(res)) {
     continue <- if (interactive()) readline(paste0("Follow redirect to <", res, ">? [Y/n] ")) else "n"

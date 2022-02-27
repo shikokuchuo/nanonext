@@ -42,7 +42,7 @@ send <- function(socket,
                  raw = if (is.raw(data)) data else writeBin(object = data, con = raw()))
   res <- .Call(rnng_send, socket, data, block)
   is.integer(res) && {
-    message(res, " : ", nng_error(res))
+    message(Sys.time(), " | ", res, " : ", nng_error(res))
     return(invisible(res))
   }
   if (missing(echo) || isTRUE(echo)) res else invisible(0L)
@@ -91,7 +91,7 @@ send_aio <- function(socket, data, mode = c("serial", "raw"), timeout) {
                  raw = if (is.raw(data)) data else writeBin(object = data, con = raw()))
   res <- .Call(rnng_send_aio, socket, data, timeout)
   is.integer(res) && {
-    message(res, " : ", nng_error(res))
+    message(Sys.time(), " | ", res, " : ", nng_error(res))
     return(invisible(res))
   }
   env <- `class<-`(new.env(), "sendAio")
@@ -153,7 +153,7 @@ recv <- function(socket,
   mode <- match.arg(mode)
   res <- .Call(rnng_recv, socket, block)
   is.integer(res) && {
-    message(res, " : ", nng_error(res))
+    message(Sys.time(), " | ", res, " : ", nng_error(res))
     return(invisible(res))
   }
   on.exit(expr = return(res))
@@ -220,7 +220,7 @@ recv_aio <- function(socket,
   if (missing(timeout)) timeout <- -2L
   res <- .Call(rnng_recv_aio, socket, timeout)
   is.integer(res) && {
-    message(res, " : ", nng_error(res))
+    message(Sys.time(), " | ", res, " : ", nng_error(res))
     return(invisible(res))
   }
   env <- `class<-`(new.env(), "recvAio")
