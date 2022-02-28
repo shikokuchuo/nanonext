@@ -82,14 +82,14 @@ dial <- function(socket,
       res <- .Call(rnng_dial, .subset2(socket, "socket"), url)
       if (is.integer(res)) {
         message(Sys.time(), " [ ", res, " ] ", nng_error(res))
-        return(res)
+        return(invisible(res))
       }
       if (!missing(quietly) && !isTRUE(quietly)) cat(format.POSIXct(Sys.time()), "[ dialer start ]", url)
     } else {
       res <- .Call(rnng_dialer_create, .subset2(socket, "socket"), url)
       if (is.integer(res)) {
         message(Sys.time(), " [ ", res, " ] ", nng_error(res))
-        return(res)
+        return(invisible(res))
       }
     }
     socket[["dialer"]] <- c(.subset2(socket, "dialer"), res)
@@ -108,14 +108,14 @@ dial <- function(socket,
       res <- .Call(rnng_dial, socket, url)
       if (is.integer(res)) {
         message(Sys.time(), " [ ", res, " ] ", nng_error(res))
-        return(res)
+        return(invisible(res))
       }
       if (!missing(quietly) && !isTRUE(quietly)) cat(format.POSIXct(Sys.time()), "[ dialer start ]", url)
     } else {
       res <- .Call(rnng_dialer_create, socket, url)
       if (is.integer(res)) {
         message(Sys.time(), " [ ", res, " ] ", nng_error(res))
-        return(res)
+        return(invisible(res))
       }
     }
     attr(socket, "dialer") <- c(attr(socket, "dialer"), res)
@@ -206,14 +206,14 @@ listen <- function(socket,
       res <- .Call(rnng_listen, .subset2(socket, "socket"), url)
       if (is.integer(res)) {
         message(Sys.time(), " [ ", res, " ] ", nng_error(res))
-        return(res)
+        return(invisible(res))
       }
       if (!missing(quietly) && !isTRUE(quietly)) cat(format.POSIXct(Sys.time()), "[ listener start ]", url)
     } else {
       res <- .Call(rnng_listener_create, .subset2(socket, "socket"), url)
       if (is.integer(res)) {
         message(Sys.time(), " [ ", res, " ] ", nng_error(res))
-        return(res)
+        return(invisible(res))
       }
     }
     socket[["listener"]] <- c(.subset2(socket, "listener"), res)
@@ -232,14 +232,14 @@ listen <- function(socket,
       res <- .Call(rnng_listen, socket, url)
       if (is.integer(res)) {
         message(Sys.time(), " [ ", res, " ] ", nng_error(res))
-        return(res)
+        return(invisible(res))
       }
       if (!missing(quietly) && !isTRUE(quietly)) cat(format.POSIXct(Sys.time()), "[ listener start ]", url)
     } else {
       res <- .Call(rnng_listener_create, socket, url)
       if (is.integer(res)) {
         message(Sys.time(), " [ ", res, " ] ", nng_error(res))
-        return(res)
+        return(invisible(res))
       }
     }
     attr(socket, "listener") <- c(attr(socket, "listener"), res)

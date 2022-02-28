@@ -36,11 +36,10 @@
 #'     (invisibly) instead of NULL. The data may then be extracted from the Aio
 #'     using \code{$result}, \code{$raw} or \code{$data} as the case may be.
 #'
-#'     It is not advisable to try to extract the data from a 'recvAio' in one
-#'     step using something like \code{call_aio(x)$data} in the non-blocking case.
+#'     It is not advisable to use, for example, \code{call_aio(x, block = FALSE)$data}.
 #'     This is as \code{call_aio()} will return NULL if the Aio is unresolved and
 #'     \code{NULL$data} is also \code{NULL}, hence it would be impossible to
-#'     distinguish between an unresolved Aio and a NULL return value.
+#'     distinguish between an unresolved Aio and a NULL return value in this case.
 #'
 #' @examples
 #' s1 <- socket("pair", listen = "inproc://nanonext")
