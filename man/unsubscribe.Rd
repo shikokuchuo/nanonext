@@ -4,13 +4,16 @@
 \alias{unsubscribe}
 \title{Unsubscribe Topic}
 \usage{
-unsubscribe(socket, topic = NULL)
+unsubscribe(socket, topic = NULL, quietly = TRUE)
 }
 \arguments{
 \item{socket}{a Socket using the sub protocol.}
 
 \item{topic}{[default NULL] a topic (given as a character string). The default
 NULL unsubscribes from all topics (if all topics were previously subscribed).}
+
+\item{quietly}{[default TRUE] if FALSE, confirmation of a successful unsubscribe
+request is printed to the console (stdout), useful for logging purposes.}
 }
 \value{
 Zero (invisibly) on success.

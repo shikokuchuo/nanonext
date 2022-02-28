@@ -4,7 +4,7 @@
 \alias{dial}
 \title{Dial an Address from a Socket}
 \usage{
-dial(socket, url = "inproc://nanonext", autostart = TRUE)
+dial(socket, url = "inproc://nanonext", autostart = TRUE, quietly = TRUE)
 }
 \arguments{
 \item{socket}{a Socket or nano object.}
@@ -16,6 +16,9 @@ transport and address as a character string e.g. 'inproc://anyvalue' or
 \item{autostart}{[default TRUE] whether to start the dialer. Set to FALSE if
 you wish to set configuration options on the dialer as it is not
 generally possible to change these once started.}
+
+\item{quietly}{[default TRUE] if FALSE, confirmation of a successful start is
+printed to the console (stdout), useful for logging purposes.}
 }
 \value{
 Zero (invisibly) on success. A new Dialer (object of class 'nanoDialer'

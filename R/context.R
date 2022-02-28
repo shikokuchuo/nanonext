@@ -7,6 +7,9 @@
 #'     and listeners, while still benefiting from separate state tracking.
 #'
 #' @param socket a Socket or nano object.
+#' @param quietly [default TRUE] if FALSE, confirmation that the context has been
+#'     successfully opened is printed to the console (stdout), useful for logging
+#'     purposes.
 #'
 #' @return A new Context (object of class 'nanoContext' and 'nano').
 #'
@@ -41,11 +44,16 @@
 #'
 #' @export
 #'
-context <- function(socket) {
+context <- function(socket, quietly = TRUE) {
 
   if (is.environment(socket)) socket <- .subset2(socket, "socket")
   res <- .Call(rnng_ctx_open, socket)
-  if (is.integer(res)) message(Sys.time(), " | ", res, " : ", nng_error(res))
+  if (is.integer(res)) {
+    message(Sys.time(), " [ ", res, " ] ", nng_error(res))
+  } else if (!missing(quietly) && !isTRUE(quietly)) {
+    cat(format.POSIXct(Sys.time()), "[ context open ] id:",
+        attr(res, "id"), "| socket:", attr(res, "socket"))
+  }
   res
 
 }
@@ -90,7 +98,7 @@ send_ctx <- function(context, data, mode = c("serial", "raw"), timeout, echo = T
                  raw = if (is.raw(data)) data else writeBin(object = data, con = raw()))
   res <- .Call(rnng_ctx_send, context, data, timeout)
   is.integer(res) && {
-    message(Sys.time(), " | ", res, " : ", nng_error(res))
+    message(Sys.time(), " [ ", res, " ] ", nng_error(res))
     return(invisible(res))
   }
   if (missing(echo) || isTRUE(echo)) res else invisible(0L)
@@ -142,7 +150,7 @@ recv_ctx <- function(context,
   if (missing(timeout)) timeout <- -2L
   res <- .Call(rnng_ctx_recv, context, timeout)
   is.integer(res) && {
-    message(Sys.time(), " | ", res, " : ", nng_error(res))
+    message(Sys.time(), " [ ", res, " ] ", nng_error(res))
     return(invisible(res))
   }
   on.exit(expr = return(res))
@@ -228,7 +236,7 @@ reply <- function(context,
   if (missing(timeout)) timeout <- -2L
   res <- .Call(rnng_ctx_recv, context, timeout)
   is.integer(res) && {
-    message(Sys.time(), " | ", res, " : ", nng_error(res))
+    message(Sys.time(), " [ ", res, " ] ", nng_error(res))
     return(invisible(res))
   }
   on.exit(expr = send_aio(context, as.raw(0L), mode = send_mode))
@@ -244,7 +252,7 @@ reply <- function(context,
   on.exit()
   res <- .Call(rnng_ctx_send, context, data, timeout)
   is.integer(res) && {
-    message(Sys.time(), " | ", res, " : ", nng_error(res))
+    message(Sys.time(), " [ ", res, " ] ", nng_error(res))
     return(invisible(res))
   }
   invisible(0L)
@@ -311,12 +319,12 @@ request <- function(context,
                  raw = if (is.raw(data)) data else writeBin(object = data, con = raw()))
   res <- .Call(rnng_send_aio, context, data, -2L)
   is.integer(res) && {
-    message(Sys.time(), " | ", res, " : ", nng_error(res))
+    message(Sys.time(), " [ ", res, " ] ", nng_error(res))
     return(invisible(res))
   }
   res <- .Call(rnng_recv_aio, context, timeout)
   is.integer(res) && {
-    message(Sys.time(), " | ", res, " : ", nng_error(res))
+    message(Sys.time(), " [ ", res, " ] ", nng_error(res))
     return(invisible(res))
   }
   env <- `class<-`(new.env(), "recvAio")

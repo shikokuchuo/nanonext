@@ -6,12 +6,16 @@
 \alias{start.nanoDialer}
 \title{Start Listener/Dialer}
 \usage{
-\method{start}{nanoListener}(x, ...)
+\method{start}{nanoListener}(x, quietly = TRUE, ...)
 
-\method{start}{nanoDialer}(x, async = TRUE, ...)
+\method{start}{nanoDialer}(x, async = TRUE, quietly = TRUE, ...)
 }
 \arguments{
 \item{x}{a Listener or Dialer.}
+
+\item{quietly}{[default TRUE] if FALSE, confirmation of successful socket
+creation and dialer or listener start is printed to the console (stdout),
+useful for logging purposes.}
 
 \item{...}{not used.}
 

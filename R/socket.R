@@ -17,6 +17,9 @@
 #' @param autostart [default TRUE] whether to start the dialer/listener. Set to
 #'     FALSE if you wish to set configuration options on the dialer/listener as
 #'     it is not generally possible to change these once started.
+#' @param quietly [default TRUE] if FALSE, confirmation that the socket has been
+#'     successfully opened is printed to the console (stdout), useful for logging
+#'     purposes.
 #'
 #' @return A Socket (object of class 'nanoSocket' and 'nano').
 #'
@@ -60,11 +63,17 @@ socket <- function(protocol = c("pair", "bus", "push", "pull", "req", "rep",
                                 "pub", "sub", "surveyor", "respondent"),
                    dial = NULL,
                    listen = NULL,
-                   autostart = TRUE) {
+                   autostart = TRUE,
+                   quietly = TRUE) {
 
   protocol <- match.arg(protocol)
   res <- .Call(rnng_protocol_open, protocol)
-  if (is.integer(res)) message(Sys.time(), " | ", res, " : ", nng_error(res))
+  if (is.integer(res)) {
+    message(Sys.time(), " [ ", res, " ] ", nng_error(res))
+  } else if (!missing(quietly) && !isTRUE(quietly)) {
+    cat(format.POSIXct(Sys.time()), "[ socket open ] id:",
+        attr(res, "id"), "| protocol:", attr(res, "protocol"))
+  }
   if (!missing(dial)) {
     dial(res, url = dial, autostart = autostart)
   }
@@ -83,6 +92,8 @@ socket <- function(protocol = c("pair", "bus", "push", "pull", "req", "rep",
 #' @param socket a Socket using the sub protocol.
 #' @param topic [default NULL] a topic (given as a character string). The default
 #'     NULL subscribes to all topics.
+#' @param quietly [default TRUE] if FALSE, confirmation of a successful subscribe
+#'     request is printed to the console (stdout), useful for logging purposes.
 #'
 #' @return Zero (invisibly) on success.
 #'
@@ -111,13 +122,13 @@ socket <- function(protocol = c("pair", "bus", "push", "pull", "req", "rep",
 #'
 #' @export
 #'
-subscribe <- function(socket, topic = NULL) {
+subscribe <- function(socket, topic = NULL, quietly = TRUE) {
 
   xc <- .Call(rnng_socket_set_string, socket, "sub:subscribe" , topic)
   if (xc) {
-    message(Sys.time(), " | ", xc, " : ", nng_error(xc))
-  } else {
-    cat("subscribed topic: ", if (is.null(topic)) "ALL" else topic)
+    message(Sys.time(), " [ ", xc, " ] ", nng_error(xc))
+  } else if (!missing(quietly) && !isTRUE(quietly)) {
+    cat("subscribed topic:", if (is.null(topic)) "ALL" else topic)
   }
   invisible(xc)
 
@@ -131,6 +142,8 @@ subscribe <- function(socket, topic = NULL) {
 #' @param socket a Socket using the sub protocol.
 #' @param topic [default NULL] a topic (given as a character string). The default
 #'     NULL unsubscribes from all topics (if all topics were previously subscribed).
+#' @param quietly [default TRUE] if FALSE, confirmation of a successful unsubscribe
+#'     request is printed to the console (stdout), useful for logging purposes.
 #'
 #' @return Zero (invisibly) on success.
 #'
@@ -163,13 +176,13 @@ subscribe <- function(socket, topic = NULL) {
 #'
 #' @export
 #'
-unsubscribe <- function(socket, topic = NULL) {
+unsubscribe <- function(socket, topic = NULL, quietly = TRUE) {
 
   xc <- .Call(rnng_socket_set_string, socket, "sub:unsubscribe" , topic)
   if (xc) {
-    message(Sys.time(), " | ", xc, " : ", nng_error(xc))
-  } else {
-    cat("unsubscribed topic: ", if (is.null(topic)) "ALL" else topic)
+    message(Sys.time(), " [ ", xc, " ] ", nng_error(xc))
+  } else if (!missing(quietly) && !isTRUE(quietly)) {
+    cat("unsubscribed topic:", if (is.null(topic)) "ALL" else topic)
   }
   invisible(xc)
 

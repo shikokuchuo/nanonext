@@ -6,6 +6,9 @@
 #'     Dialer/Listener.
 #'
 #' @inheritParams socket
+#' @param quietly [default TRUE] if FALSE, confirmation of successful socket
+#'     creation and dialer or listener start is printed to the console (stdout),
+#'     useful for logging purposes.
 #'
 #' @return An nano object of class 'nanoObject'.
 #'
@@ -55,47 +58,48 @@ nano <- function(protocol = c("pair", "bus", "push", "pull", "req", "rep",
                               "pub", "sub", "surveyor", "respondent"),
                  dial = NULL,
                  listen = NULL,
-                 autostart = TRUE) {
+                 autostart = TRUE,
+                 quietly = TRUE) {
 
   protocol <- match.arg(protocol)
 
   nano <- `class<-`(new.env(), "nanoObject")
-  socket <- socket(protocol)
+  socket <- socket(protocol, quietly = quietly)
   makeActiveBinding("socket", function(x) socket, nano)
 
   if (!missing(dial)) {
-    if(isTRUE(autostart)) {
-      dial(nano, url = dial, autostart = TRUE)
-    } else {
-      dial(nano, url = dial, autostart = FALSE)
-      nano[["dialer_start"]] <- function(async = TRUE) {
+    dial(nano, url = dial, autostart = autostart, quietly = quietly)
+    if(!isTRUE(autostart)) {
+      nano[["dialer_start"]] <- function(async = TRUE, quietly = TRUE) {
         rm("dialer_start", envir = nano)
-        start(.subset2(nano, "dialer")[[1L]], async = async)
+        start(.subset2(nano, "dialer")[[1L]], async = async, quietly = quietly)
       }
     }
   }
 
   if (!missing(listen)) {
-    if(isTRUE(autostart)) {
-      listen(nano, url = listen, autostart = TRUE)
-    } else {
-      listen(nano, url = listen, autostart = FALSE)
-      nano[["listener_start"]] <- function() {
+    listen(nano, url = listen, autostart = autostart, quietly = quietly)
+    if(!isTRUE(autostart)) {
+      nano[["listener_start"]] <- function(quietly = TRUE) {
         rm("listener_start", envir = nano)
-        start(.subset2(nano, "listener")[[1L]])
+        start(.subset2(nano, "listener")[[1L]], quietly = quietly)
       }
     }
   }
 
-  nano[["close"]] <- function() close(socket)
+  nano[["close"]] <- function(quietly = TRUE) close(socket, quietly = quietly)
   nano[["dial"]] <- function(url = "inproc://nanonext",
-                             autostart = TRUE) dial(nano,
-                                                    url = url,
-                                                    autostart = autostart)
+                             autostart = TRUE,
+                             quietly = TRUE) dial(nano,
+                                                   url = url,
+                                                   autostart = autostart,
+                                                   quietly = quietly)
   nano[["listen"]] <- function(url = "inproc://nanonext",
-                               autostart = TRUE) listen(nano,
-                                                        url = url,
-                                                        autostart = autostart)
+                               autostart = TRUE,
+                               quietly = TRUE) listen(nano,
+                                                       url = url,
+                                                       autostart = autostart,
+                                                       quietly = quietly)
   nano[["recv"]] <- function(mode = c("serial", "character", "complex", "double",
                                       "integer", "logical", "numeric", "raw"),
                              block = FALSE,

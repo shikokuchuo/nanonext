@@ -9,6 +9,7 @@
 
 #### Updates
 
+* 'quietly' argument added to functions that create or destroy objects. Set to FALSE to enable printing of informational messages for logging purposes.
 * Common format for NNG errors now starts with a timestamp for easier logging.
 * `listen()` and `dial()` now return (invisible) zero rather than NULL upon success to better align with similar functions.
 * Allows setting the environment variable 'NANONEXT_ARM' prior to package installation

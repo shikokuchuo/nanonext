@@ -11,6 +11,7 @@
 #'     failures somewhat more difficult.  If FALSE, failure, such as if the
 #'     connection is refused, will be returned immediately, and no further
 #'     action will be taken.
+#' @inheritParams nano
 #' @param ... not used.
 #'
 #' @return Zero (invisibly) on success.
@@ -24,10 +25,14 @@ NULL
 #' @method start nanoListener
 #' @export
 #'
-start.nanoListener <- function(x, ...) {
+start.nanoListener <- function(x, quietly = TRUE, ...) {
 
   xc <- .Call(rnng_listener_start, x)
-  if (xc) message(Sys.time(), " | ", xc, " : ", nng_error(xc))
+  if (xc) {
+    message(Sys.time(), " [ ", xc, " ] ", nng_error(xc))
+  } else if (!missing(quietly) && !isTRUE(quietly)) {
+    cat(format.POSIXct(Sys.time()), "[ listener start ]", attr(x, "url"))
+  }
   invisible(xc)
 
 }
@@ -36,10 +41,14 @@ start.nanoListener <- function(x, ...) {
 #' @method start nanoDialer
 #' @export
 #'
-start.nanoDialer <- function(x, async = TRUE, ...) {
+start.nanoDialer <- function(x, async = TRUE, quietly = TRUE, ...) {
 
   xc <- .Call(rnng_dialer_start, x, async)
-  if (xc) message(Sys.time(), " | ", xc, " : ", nng_error(xc))
+  if (xc) {
+    message(Sys.time(), " [ ", xc, " ] ", nng_error(xc))
+  } else if (!missing(quietly) && !isTRUE(quietly)) {
+    cat(format.POSIXct(Sys.time()), "[ dialer start ]", attr(x, "url"))
+  }
   invisible(xc)
 
 }
@@ -49,6 +58,9 @@ start.nanoDialer <- function(x, async = TRUE, ...) {
 #' Close Connection on a Socket, Context, Dialer or Listener.
 #'
 #' @param con a Socket, Context, Dialer or Listener.
+#' @param quietly [default TRUE] if FALSE, confirmation that the object has been
+#'     successfully closed is printed to the console (stdout), useful for logging
+#'     purposes.
 #' @param ... not used.
 #'
 #' @return Zero (invisibly) on success.
@@ -77,10 +89,15 @@ NULL
 #' @method close nanoSocket
 #' @export
 #'
-close.nanoSocket <- function(con, ...) {
+close.nanoSocket <- function(con, quietly = TRUE, ...) {
 
   xc <- .Call(rnng_close, con)
-  if (xc) message(Sys.time(), " | ", xc, " : ", nng_error(xc))
+  if (xc) {
+    message(Sys.time(), " [ ", xc, " ] ", nng_error(xc))
+  } else if (!missing(quietly) && !isTRUE(quietly)) {
+    cat(format.POSIXct(Sys.time()), "[ socket close ] id:",
+        attr(con, "id"), "| protocol:", attr(con, "protocol"))
+  }
   invisible(xc)
 
 }
@@ -89,10 +106,15 @@ close.nanoSocket <- function(con, ...) {
 #' @method close nanoContext
 #' @export
 #'
-close.nanoContext <- function(con, ...) {
+close.nanoContext <- function(con, quietly = TRUE, ...) {
 
   xc <- .Call(rnng_ctx_close, con)
-  if (xc) message(Sys.time(), " | ", xc, " : ", nng_error(xc))
+  if (xc) {
+    message(Sys.time(), " [ ", xc, " ] ", nng_error(xc))
+  } else if (!missing(quietly) && !isTRUE(quietly)) {
+    cat(format.POSIXct(Sys.time()), "[ context close ] id:",
+        attr(con, "id"), "| socket:", attr(con, "socket"))
+  }
   invisible(xc)
 
 }
@@ -101,10 +123,15 @@ close.nanoContext <- function(con, ...) {
 #' @method close nanoDialer
 #' @export
 #'
-close.nanoDialer <- function(con, ...) {
+close.nanoDialer <- function(con, quietly = TRUE, ...) {
 
   xc <- .Call(rnng_dialer_close, con)
-  if (xc) message(Sys.time(), " | ", xc, " : ", nng_error(xc))
+  if (xc) {
+    message(Sys.time(), " [ ", xc, " ] ", nng_error(xc))
+  } else if (!missing(quietly) && !isTRUE(quietly)) {
+    cat(format.POSIXct(Sys.time()), "[ dialer close ]", attr(con, "url"))
+  }
+
   invisible(xc)
 
 }
@@ -113,10 +140,15 @@ close.nanoDialer <- function(con, ...) {
 #' @method close nanoListener
 #' @export
 #'
-close.nanoListener <- function(con, ...) {
+close.nanoListener <- function(con, quietly = TRUE, ...) {
 
   xc <- .Call(rnng_listener_close, con)
-  if (xc) message(Sys.time(), " | ", xc, " : ", nng_error(xc))
+  if (xc) {
+    message(Sys.time(), " [ ", xc, " ] ", nng_error(xc))
+  } else if (!missing(quietly) && !isTRUE(quietly)) {
+    cat(format.POSIXct(Sys.time()), "[ listener close ]", attr(con, "url"))
+  }
+
   invisible(xc)
 
 }

@@ -4,13 +4,16 @@
 \alias{subscribe}
 \title{Subscribe Topic}
 \usage{
-subscribe(socket, topic = NULL)
+subscribe(socket, topic = NULL, quietly = TRUE)
 }
 \arguments{
 \item{socket}{a Socket using the sub protocol.}
 
 \item{topic}{[default NULL] a topic (given as a character string). The default
 NULL subscribes to all topics.}
+
+\item{quietly}{[default TRUE] if FALSE, confirmation of a successful subscribe
+request is printed to the console (stdout), useful for logging purposes.}
 }
 \value{
 Zero (invisibly) on success.

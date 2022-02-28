@@ -11,6 +11,8 @@
 #' @param autostart [default TRUE] whether to start the dialer. Set to FALSE if
 #'     you wish to set configuration options on the dialer as it is not
 #'     generally possible to change these once started.
+#' @param quietly [default TRUE] if FALSE, confirmation of a successful start is
+#'     printed to the console (stdout), useful for logging purposes.
 #'
 #' @return Zero (invisibly) on success. A new Dialer (object of class 'nanoDialer'
 #'     and 'nano') is created and bound to the Socket.
@@ -70,7 +72,8 @@
 #'
 dial <- function(socket,
                  url = "inproc://nanonext",
-                 autostart = TRUE) {
+                 autostart = TRUE,
+                 quietly = TRUE) {
 
   is.character(url) || stop("'url' should be a character string")
   if (is.environment(socket)) {
@@ -78,13 +81,14 @@ dial <- function(socket,
     if (missing(autostart) || isTRUE(autostart)) {
       res <- .Call(rnng_dial, .subset2(socket, "socket"), url)
       if (is.integer(res)) {
-        message(Sys.time(), " | ", res, " : ", nng_error(res))
+        message(Sys.time(), " [ ", res, " ] ", nng_error(res))
         return(res)
       }
+      if (!missing(quietly) && !isTRUE(quietly)) cat(format.POSIXct(Sys.time()), "[ dialer start ]", url)
     } else {
       res <- .Call(rnng_dialer_create, .subset2(socket, "socket"), url)
       if (is.integer(res)) {
-        message(Sys.time(), " | ", res, " : ", nng_error(res))
+        message(Sys.time(), " [ ", res, " ] ", nng_error(res))
         return(res)
       }
     }
@@ -103,13 +107,14 @@ dial <- function(socket,
     if (missing(autostart) || isTRUE(autostart)) {
       res <- .Call(rnng_dial, socket, url)
       if (is.integer(res)) {
-        message(Sys.time(), " | ", res, " : ", nng_error(res))
+        message(Sys.time(), " [ ", res, " ] ", nng_error(res))
         return(res)
       }
+      if (!missing(quietly) && !isTRUE(quietly)) cat(format.POSIXct(Sys.time()), "[ dialer start ]", url)
     } else {
       res <- .Call(rnng_dialer_create, socket, url)
       if (is.integer(res)) {
-        message(Sys.time(), " | ", res, " : ", nng_error(res))
+        message(Sys.time(), " [ ", res, " ] ", nng_error(res))
         return(res)
       }
     }
@@ -124,7 +129,7 @@ dial <- function(socket,
 #'
 #' Creates a new Listener and binds it to a Socket.
 #'
-#' @param socket a Socket or nano object.
+#' @inheritParams dial
 #' @param url [default 'inproc://nanonext'] a URL to dial or listen at, specifying
 #'     the transport and address as a character string e.g. 'inproc://anyvalue'
 #'     or 'tcp://127.0.0.1:5555' (see \link{transports}).
@@ -191,7 +196,8 @@ dial <- function(socket,
 #'
 listen <- function(socket,
                    url = "inproc://nanonext",
-                   autostart = TRUE) {
+                   autostart = TRUE,
+                   quietly = TRUE) {
 
   is.character(url) || stop("'url' should be a character string")
   if (is.environment(socket)) {
@@ -199,13 +205,14 @@ listen <- function(socket,
     if (missing(autostart) || isTRUE(autostart)) {
       res <- .Call(rnng_listen, .subset2(socket, "socket"), url)
       if (is.integer(res)) {
-        message(Sys.time(), " | ", res, " : ", nng_error(res))
+        message(Sys.time(), " [ ", res, " ] ", nng_error(res))
         return(res)
       }
+      if (!missing(quietly) && !isTRUE(quietly)) cat(format.POSIXct(Sys.time()), "[ listener start ]", url)
     } else {
       res <- .Call(rnng_listener_create, .subset2(socket, "socket"), url)
       if (is.integer(res)) {
-        message(Sys.time(), " | ", res, " : ", nng_error(res))
+        message(Sys.time(), " [ ", res, " ] ", nng_error(res))
         return(res)
       }
     }
@@ -224,13 +231,14 @@ listen <- function(socket,
     if (missing(autostart) || isTRUE(autostart)) {
       res <- .Call(rnng_listen, socket, url)
       if (is.integer(res)) {
-        message(Sys.time(), " | ", res, " : ", nng_error(res))
+        message(Sys.time(), " [ ", res, " ] ", nng_error(res))
         return(res)
       }
+      if (!missing(quietly) && !isTRUE(quietly)) cat(format.POSIXct(Sys.time()), "[ listener start ]", url)
     } else {
       res <- .Call(rnng_listener_create, socket, url)
       if (is.integer(res)) {
-        message(Sys.time(), " | ", res, " : ", nng_error(res))
+        message(Sys.time(), " [ ", res, " ] ", nng_error(res))
         return(res)
       }
     }
