@@ -66,7 +66,8 @@
     <span class="st">"respondent"</span><span class="op">)</span>,
   dial <span class="op">=</span> <span class="cn">NULL</span>,
   listen <span class="op">=</span> <span class="cn">NULL</span>,
-  autostart <span class="op">=</span> <span class="cn">TRUE</span>
+  autostart <span class="op">=</span> <span class="cn">TRUE</span>,
+  quietly <span class="op">=</span> <span class="cn">TRUE</span>
 <span class="op">)</span></code></pre></div>
     </div>
 
@@ -88,6 +89,10 @@ address as a character string e.g. 'inproc://anyvalue' or
 <dd><p>[default TRUE] whether to start the dialer/listener. Set to
 FALSE if you wish to set configuration options on the dialer/listener as
 it is not generally possible to change these once started.</p></dd>
+<dt>quietly</dt>
+<dd><p>[default TRUE] if FALSE, confirmation of successful socket
+creation and dialer or listener start is printed to the console (stdout),
+useful for logging purposes.</p></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>
