@@ -291,3 +291,10 @@ SEXP rnng_aio_stop(SEXP aio) {
 
 }
 
+SEXP rnng_aio_unresolv() {
+  SEXP res = PROTECT(Rf_ScalarLogical(NA_LOGICAL));
+  Rf_classgets(res, Rf_mkString("unresolvedValue"));
+  UNPROTECT(1);
+  return res;
+}
+

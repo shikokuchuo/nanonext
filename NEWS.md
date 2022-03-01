@@ -1,15 +1,16 @@
-# nanonext 0.2.0.9002 (development)
+# nanonext 0.2.0.9003 (development)
 
 #### New Features
 
-* `call_aio()` gains the argument 'block', offering a non-blocking method of calling an AIO, without waiting for completion if it is yet to resolve.
-* `survey_time()` added as a convenience function for surveyor/respondent patterns.
+* Aio fields `$result` for a 'sendAio', `$raw` and `$data` for a 'recvAio' may be queried directly, returning their values or else an NA 'unresolved value' if the Aio operation is yet to complete.
+* `is_resolved()` added as an auxiliary function to query whether an Aio has resolved in a non-blocking fashion.
 * `is_nul_byte()` added as a helper function for request/reply setups.
+* `survey_time()` added as a convenience function for surveyor/respondent patterns.
 * `ncurl()` adds a '...' argument. Support for HTTP methods other than GET.
 
 #### Updates
 
-* 'quietly' argument added to functions that create or destroy objects. Set to FALSE to enable printing of informational messages for logging purposes.
+* Argument 'quietly' added to functions that create or destroy objects. Set to FALSE to enable printing of informational messages for logging purposes.
 * Common format for NNG errors now starts with a timestamp for easier logging.
 * `listen()` and `dial()` now return (invisible) zero rather than NULL upon success to better align with similar functions.
 * Allows setting the environment variable 'NANONEXT_ARM' prior to package installation

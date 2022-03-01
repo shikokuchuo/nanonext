@@ -217,15 +217,7 @@ print.nanoListener <- function(x, ...) {
 #'
 print.recvAio <- function(x, ...) {
 
-  cat("< recvAio >\n")
-  if (length(.subset2(x, "aio"))) {
-    cat(" ~ use call_aio() to retrieve message\n")
-  } else {
-    if (length(.subset2(x, "raw")))
-      cat(" - $raw for raw message\n")
-    if (length(.subset2(x, "data")))
-      cat(" - $data for message data\n")
-  }
+  cat("< recvAio >\n - $raw for raw message\n - $data for message data\n")
   invisible(x)
 
 }
@@ -234,12 +226,7 @@ print.recvAio <- function(x, ...) {
 #'
 print.sendAio <- function(x, ...) {
 
-  cat("< sendAio >\n")
-  if (length(.subset2(x, "aio"))) {
-    cat(" ~ use call_aio() to retrieve result\n")
-  } else {
-    cat(" - $result for send result\n")
-  }
+  cat("< sendAio >\n - $result for send result\n")
   invisible(x)
 
 }
@@ -273,6 +260,15 @@ print.sendAio <- function(x, ...) {
 .DollarNames.nano <- function(x, pattern = "") {
 
   grep(pattern, names(attributes(x)), value = TRUE, fixed = TRUE)
+
+}
+
+#' @export
+#'
+print.unresolvedValue <- function(x, ...) {
+
+  cat("< unresolved value >\n")
+  invisible(x)
 
 }
 

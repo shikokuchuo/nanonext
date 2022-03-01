@@ -4,21 +4,17 @@
 \alias{call_aio}
 \title{Call the Result of an Asynchronous AIO Operation}
 \usage{
-call_aio(aio, block = TRUE)
+call_aio(aio)
 }
 \arguments{
 \item{aio}{An Aio (object of class 'sendAio' or 'recvAio').}
-
-\item{block}{[default TRUE] whether to wait for completion of the AIO
-operation (blocking) or return immediately.}
 }
 \value{
-The passed Aio object (invisibly), or NULL if non-blocking and the
-    Aio has yet to resolve.
+The passed Aio object (invisibly).
 }
 \description{
-Retrieve the result of an asynchronous AIO operation. Optionally wait for the
-    AIO operation to complete if this is still in progress.
+Retrieve the result of an asynchronous AIO operation, waiting for the AIO
+    operation to complete if still in progress.
 }
 \details{
 For a 'recvAio', the received raw vector will be attached in \code{$raw}
@@ -32,7 +28,7 @@ For a 'recvAio', the received raw vector will be attached in \code{$raw}
     \code{call_aio(x)$result}.
 
     For a 'recvAio', in case of an error in unserialisation or data conversion,
-    the received raw vector will always be saved in \code{$raw} to allow the
+    the received raw vector will be stored in \code{$data} to allow for the
     data to be recovered.
 
     Once the result has been successfully retrieved, the Aio is deallocated
@@ -41,15 +37,13 @@ For a 'recvAio', the received raw vector will be attached in \code{$raw}
 \section{Non-blocking}{
 
 
-    To query whether Aio \code{x} has resolved, test if \code{call_aio(x, block = FALSE)}
-    returns NULL. When the Aio resolves, the Aio itself will be returned
-    (invisibly) instead of NULL. The data may then be extracted from the Aio
-    using \code{$result}, \code{$raw} or \code{$data} as the case may be.
+    To query the value of an Aio without potentially waiting for the Aio
+    operation to complete, call the values directly at \code{$result} for a 'sendAio', and
+    \code{$raw} or \code{$data} for a 'recvAio'.
 
-    It is not advisable to use, for example, \code{call_aio(x, block = FALSE)$data}.
-    This is as \code{call_aio()} will return NULL if the Aio is unresolved and
-    \code{NULL$data} is also \code{NULL}, hence it would be impossible to
-    distinguish between an unresolved Aio and a NULL return value in this case.
+    If the Aio operation is yet to complete, the result will be an
+    'unresolved value', which is a logical NA. Once complete, the resolved
+    value will be returned instead.
 }
 
 \examples{
@@ -59,13 +53,11 @@ s2 <- socket("pair", dial = "inproc://nanonext")
 res <- send_aio(s1, data.frame(a = 1, b = 2), timeout = 100)
 res
 call_aio(res)
-res
 res$result
 
 res <- recv_aio(s2, timeout = 100)
 res
 call_aio(res)$data
-res
 
 close(s1)
 close(s2)

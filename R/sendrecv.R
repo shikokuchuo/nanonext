@@ -89,14 +89,23 @@ send_aio <- function(socket, data, mode = c("serial", "raw"), timeout) {
   data <- switch(mode,
                  serial = serialize(object = data, connection = NULL),
                  raw = if (is.raw(data)) data else writeBin(object = data, con = raw()))
-  res <- .Call(rnng_send_aio, socket, data, timeout)
-  is.integer(res) && {
-    message(Sys.time(), " [ ", res, " ] ", nng_error(res))
-    return(invisible(res))
+  aio <- .Call(rnng_send_aio, socket, data, timeout)
+  is.integer(aio) && {
+    message(Sys.time(), " [ ", aio, " ] ", nng_error(aio))
+    return(invisible(aio))
   }
   env <- `class<-`(new.env(), "sendAio")
-  env[["aio"]] <- res
-  env
+  result <- resolv <- NULL
+  makeActiveBinding(sym = "result", fun = function(x) {
+    if (is.null(resolv)) {
+      result <- .Call(rnng_aio_result, aio)
+      missing(result) && return(.Call(rnng_aio_unresolv))
+      result <<- result
+      resolv <<- 0L
+    }
+    result
+  }, env = env)
+  `[[<-`(env, "aio", aio)
 
 }
 
@@ -217,16 +226,71 @@ recv_aio <- function(socket,
                      keep.raw = TRUE) {
 
   mode <- match.arg(mode)
+  keep.raw <- missing(keep.raw) || isTRUE(keep.raw)
   if (missing(timeout)) timeout <- -2L
-  res <- .Call(rnng_recv_aio, socket, timeout)
-  is.integer(res) && {
-    message(Sys.time(), " [ ", res, " ] ", nng_error(res))
-    return(invisible(res))
+  aio <- .Call(rnng_recv_aio, socket, timeout)
+  is.integer(aio) && {
+    message(Sys.time(), " [ ", aio, " ] ", nng_error(aio))
+    return(invisible(aio))
   }
   env <- `class<-`(new.env(), "recvAio")
-  env[["aio"]] <- res
-  env[["callparams"]] <- list(mode, missing(keep.raw) || isTRUE(keep.raw))
-  env
+  `[[<-`(env, "callparams", list(mode, keep.raw))
+  data <- raw <- resolv <- NULL
+  if (keep.raw) {
+    makeActiveBinding(sym = "raw", fun = function(x) {
+      if (is.null(resolv)) {
+        res <- .Call(rnng_aio_get_msg, aio)
+        missing(res) && return(.Call(rnng_aio_unresolv))
+        is.integer(res) && {
+          res <<- raw <<- resolv <<- res
+          message(Sys.time(), " [ ", res, " ] ", nng_error(res))
+          return(invisible(res))
+        }
+        on.exit(expr = {
+          raw <<- res
+          resolv <<- 0L
+          return(res)
+        })
+        data <- switch(mode,
+                       serial = unserialize(connection = res),
+                       character = (r <- readBin(con = res, what = mode, n = length(res)))[r != ""],
+                       raw = res,
+                       readBin(con = res, what = mode, n = length(res)))
+        on.exit()
+        raw <<- res
+        data <<- data
+        resolv <<- 0L
+      }
+      raw
+    }, env = env)
+  }
+  makeActiveBinding(sym = "data", fun = function(x) {
+    if (is.null(resolv)) {
+      res <- .Call(rnng_aio_get_msg, aio)
+      missing(res) && return(.Call(rnng_aio_unresolv))
+      is.integer(res) && {
+        res <<- raw <<- resolv <<- res
+        message(Sys.time(), " [ ", res, " ] ", nng_error(res))
+        return(invisible(res))
+      }
+      on.exit(expr = {
+        data <<- res
+        resolv <<- 0L
+        return(res)
+      })
+      data <- switch(mode,
+                     serial = unserialize(connection = res),
+                     character = (r <- readBin(con = res, what = mode, n = length(res)))[r != ""],
+                     raw = res,
+                     readBin(con = res, what = mode, n = length(res)))
+      on.exit()
+      if (keep.raw) raw <<- res
+      data <<- data
+      resolv <<- 0L
+    }
+    data
+  }, env = env)
+  `[[<-`(env, "aio", aio)
 
 }
 

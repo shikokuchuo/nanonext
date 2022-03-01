@@ -74,7 +74,7 @@ is_nul_byte <- function(x) {
 #'
 .mirai_scm <- function() {
 
-  identical(parent.env(parent.env(parent.frame())), environment(eval_mirai)) || return()
+  identical(parent.env(parent.env(parent.frame())), getNamespace("mirai")) || return()
   .Call(rnng_scm)
 
 }

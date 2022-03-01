@@ -349,10 +349,10 @@ NULL
 #'
 #'     \item{'socket-name' [type 'string']}
 #'
-#'       {This the socket name. By default this is a string corresponding to the
-#'       value of the socket. The string must fit within 64-bytes, including the
-#'       terminating NUL byte. The value is intended for application use, and is
-#'       not used for anything in the library itself.}
+#'       {This is the socket name. By default this is a string corresponding to
+#'       the value of the socket. The string must fit within 64-bytes, including
+#'       the terminating NUL byte. The value is intended for application use,
+#'       and is not used for anything in the library itself.}
 #'
 #'     }
 #'

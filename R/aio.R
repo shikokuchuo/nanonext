@@ -2,15 +2,12 @@
 
 #' Call the Result of an Asynchronous AIO Operation
 #'
-#' Retrieve the result of an asynchronous AIO operation. Optionally wait for the
-#'     AIO operation to complete if this is still in progress.
+#' Retrieve the result of an asynchronous AIO operation, waiting for the AIO
+#'     operation to complete if still in progress.
 #'
 #' @param aio An Aio (object of class 'sendAio' or 'recvAio').
-#' @param block [default TRUE] whether to wait for completion of the AIO
-#'     operation (blocking) or return immediately.
 #'
-#' @return The passed Aio object (invisibly), or NULL if non-blocking and the
-#'     Aio has yet to resolve.
+#' @return The passed Aio object (invisibly).
 #'
 #' @details For a 'recvAio', the received raw vector will be attached in \code{$raw}
 #'     (unless 'keep.raw' was set to FALSE when receiving), and the converted R
@@ -23,7 +20,7 @@
 #'     \code{call_aio(x)$result}.
 #'
 #'     For a 'recvAio', in case of an error in unserialisation or data conversion,
-#'     the received raw vector will always be saved in \code{$raw} to allow the
+#'     the received raw vector will be stored in \code{$data} to allow for the
 #'     data to be recovered.
 #'
 #'     Once the result has been successfully retrieved, the Aio is deallocated
@@ -31,15 +28,13 @@
 #'
 #' @section Non-blocking:
 #'
-#'     To query whether Aio \code{x} has resolved, test if \code{call_aio(x, block = FALSE)}
-#'     returns NULL. When the Aio resolves, the Aio itself will be returned
-#'     (invisibly) instead of NULL. The data may then be extracted from the Aio
-#'     using \code{$result}, \code{$raw} or \code{$data} as the case may be.
+#'     To query the value of an Aio without potentially waiting for the Aio
+#'     operation to complete, call the values directly at \code{$result} for a 'sendAio', and
+#'     \code{$raw} or \code{$data} for a 'recvAio'.
 #'
-#'     It is not advisable to use, for example, \code{call_aio(x, block = FALSE)$data}.
-#'     This is as \code{call_aio()} will return NULL if the Aio is unresolved and
-#'     \code{NULL$data} is also \code{NULL}, hence it would be impossible to
-#'     distinguish between an unresolved Aio and a NULL return value in this case.
+#'     If the Aio operation is yet to complete, the result will be an
+#'     'unresolved value', which is a logical NA. Once complete, the resolved
+#'     value will be returned instead.
 #'
 #' @examples
 #' s1 <- socket("pair", listen = "inproc://nanonext")
@@ -48,40 +43,40 @@
 #' res <- send_aio(s1, data.frame(a = 1, b = 2), timeout = 100)
 #' res
 #' call_aio(res)
-#' res
 #' res$result
 #'
 #' res <- recv_aio(s2, timeout = 100)
 #' res
 #' call_aio(res)$data
-#' res
 #'
 #' close(s1)
 #' close(s2)
 #'
 #' @export
 #'
-call_aio <- function(aio, block = TRUE) {
+call_aio <- function(aio) {
 
   is.null(.subset2(aio, "aio")) && return(invisible(aio))
 
   if (inherits(aio, "recvAio")) {
 
-    if (missing(block) || isTRUE(block)) {
-      res <- .Call(rnng_aio_wait_get_msg, .subset2(aio, "aio"))
-    } else {
-      res <- .Call(rnng_aio_get_msg, .subset2(aio, "aio"))
-      missing(res) && return()
-    }
+    res <- .Call(rnng_aio_wait_get_msg, .subset2(aio, "aio"))
     mode <- .subset2(aio, "callparams")[[1L]]
     keep.raw <- .subset2(aio, "callparams")[[2L]]
-    if (keep.raw) aio[["raw"]] <- res
     is.integer(res) && {
+      if (keep.raw) {
+        rm("raw", envir = aio)
+        `[[<-`(aio, "raw", res)
+      }
+      rm("data", envir = aio)
+      `[[<-`(aio, "data", res)
       message(Sys.time(), " [ ", res, " ] ", nng_error(res))
       return(invisible(aio))
     }
     on.exit(expr = {
-      aio[["raw"]] <- res
+      if (keep.raw) rm("raw", envir = aio)
+      rm("data", envir = aio)
+      `[[<-`(aio, "data", res)
       rm("aio", envir = aio)
       rm("callparams", envir = aio)
       return(invisible(aio))
@@ -91,22 +86,23 @@ call_aio <- function(aio, block = TRUE) {
                    character = (r <- readBin(con = res, what = mode, n = length(res)))[r != ""],
                    raw = res,
                    readBin(con = res, what = mode, n = length(res)))
-    aio[["data"]] <- data
     on.exit()
+    if (keep.raw) {
+      rm("raw", envir = aio)
+      `[[<-`(aio, "raw", res)
+    }
+    rm("data", envir = aio)
+    `[[<-`(aio, "data", data)
     rm("aio", envir = aio)
     rm("callparams", envir = aio)
 
   } else if (inherits(aio, "sendAio")) {
 
-    if (missing(block) || isTRUE(block)) {
-      res <- .Call(rnng_aio_wait_result, .subset2(aio, "aio"))
-    } else {
-      res <- .Call(rnng_aio_result, .subset2(aio, "aio"))
-      missing(res) && return()
-    }
-    aio[["result"]] <- res
+    res <- .Call(rnng_aio_wait_result, .subset2(aio, "aio"))
+    rm("result", envir = aio)
+    `[[<-`(aio, "result", res)
     rm("aio", envir = aio)
-    if (res) message(Sys.time(), " | ", res, " : ", nng_error(res))
+    if (res) message(Sys.time(), " [ ", res, " ] ", nng_error(res))
 
   }
 
@@ -132,6 +128,43 @@ call_aio <- function(aio, block = TRUE) {
 stop_aio <- function(aio) {
 
   invisible(.Call(rnng_aio_stop, .subset2(aio, "aio")))
+
+}
+
+#' Is Resolved (Asynchronous AIO Operation)
+#'
+#' Query whether an Aio has resolved. This function is non-blocking unlike
+#'     \code{\link{call_aio}} which waits for completion.
+#'
+#' @param aio An Aio (object of class 'sendAio' or 'recvAio').
+#'
+#' @return Logical TRUE or FALSE. NA if 'aio' is not a 'sendAio' or 'recvAio'.
+#'
+#' @details Querying resolution will potentially cause the state of the Aio to
+#'     update.
+#'
+#' @examples
+#' s1 <- socket("pair", listen = "inproc://nanonext")
+#' aio <- send_aio(s1, "test", timeout = 100)
+#' is_resolved(aio)
+#'
+#' s2 <- socket("pair", dial = "inproc://nanonext")
+#' is_resolved(aio)
+#'
+#' close(s1)
+#' close(s2)
+#'
+#' @export
+#'
+is_resolved <- function(aio) {
+
+  if (inherits(aio, "recvAio")) {
+    !inherits(aio$data, "unresolvedValue")
+  } else if (inherits(aio, "sendAio")) {
+    !inherits(aio$result, "unresolvedValue")
+  } else {
+    NA
+  }
 
 }
 
