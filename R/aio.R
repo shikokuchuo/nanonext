@@ -133,15 +133,18 @@ stop_aio <- function(aio) {
 
 #' Is Resolved (Asynchronous AIO Operation)
 #'
-#' Query whether an Aio has resolved. This function is non-blocking unlike
-#'     \code{\link{call_aio}} which waits for completion.
+#' Query whether an Aio or Aio value has resolved. This function is non-blocking
+#'     unlike \code{\link{call_aio}} which waits for completion.
 #'
-#' @param aio An Aio (object of class 'sendAio' or 'recvAio').
+#' @param aio An Aio (object of class 'sendAio' or 'recvAio'), or Aio value
+#'     stored in \code{$result}, \code{$raw} or \code{$data} as the case may be.
 #'
-#' @return Logical TRUE or FALSE. NA if 'aio' is not a 'sendAio' or 'recvAio'.
+#' @return Logical TRUE or FALSE.
 #'
-#' @details Querying resolution will potentially cause the state of the Aio to
-#'     update.
+#' @details Returns FALSE only for unresolved nanonext Aios or Aio values; returns
+#'     TRUE in all other cases and for all other objects.
+#'
+#'     Note: querying resolution may cause a previously unresolved Aio to resolve.
 #'
 #' @examples
 #' s1 <- socket("pair", listen = "inproc://nanonext")
@@ -159,11 +162,13 @@ stop_aio <- function(aio) {
 is_resolved <- function(aio) {
 
   if (inherits(aio, "recvAio")) {
-    !inherits(aio$data, "unresolvedValue")
+    !inherits(.subset2(aio, "data"), "unresolvedValue")
   } else if (inherits(aio, "sendAio")) {
-    !inherits(aio$result, "unresolvedValue")
+    !inherits(.subset2(aio, "result"), "unresolvedValue")
+  } else if (inherits(aio, "unresolvedValue")) {
+    FALSE
   } else {
-    NA
+    TRUE
   }
 
 }
