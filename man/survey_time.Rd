@@ -4,12 +4,15 @@
 \alias{survey_time}
 \title{Set Survey Time}
 \usage{
-survey_time(socket, time)
+survey_time(socket, time, quietly = TRUE)
 }
 \arguments{
 \item{socket}{a Socket or Context using the surveyor protocol.}
 
 \item{time}{the survey timeout in ms.}
+
+\item{quietly}{[default TRUE] if FALSE, confirmation of the setting is printed
+to the console (stdout) if successful, useful for logging purposes.}
 }
 \value{
 Zero (invisibly) on success.

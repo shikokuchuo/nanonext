@@ -51,8 +51,8 @@ context <- function(socket, quietly = TRUE) {
   if (is.integer(res)) {
     message(Sys.time(), " [ ", res, " ] ", nng_error(res))
   } else if (!missing(quietly) && !isTRUE(quietly)) {
-    cat(format.POSIXct(Sys.time()), "[ context open ] id:",
-        attr(res, "id"), "| socket:", attr(res, "socket"))
+    cat(format.POSIXct(Sys.time()), "[ ctxt open ] id:",
+        attr(res, "id"), "| sock:", attr(res, "socket"), "\n")
   }
   res
 

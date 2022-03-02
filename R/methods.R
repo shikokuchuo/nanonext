@@ -31,7 +31,8 @@ start.nanoListener <- function(x, quietly = TRUE, ...) {
   if (xc) {
     message(Sys.time(), " [ ", xc, " ] ", nng_error(xc))
   } else if (!missing(quietly) && !isTRUE(quietly)) {
-    cat(format.POSIXct(Sys.time()), "[ listener start ]", attr(x, "url"))
+    cat(format.POSIXct(Sys.time()), "[ list start ] sock:",
+        attr(x, "socket"), "| url:", attr(x, "url"), "\n")
   }
   invisible(xc)
 
@@ -47,7 +48,8 @@ start.nanoDialer <- function(x, async = TRUE, quietly = TRUE, ...) {
   if (xc) {
     message(Sys.time(), " [ ", xc, " ] ", nng_error(xc))
   } else if (!missing(quietly) && !isTRUE(quietly)) {
-    cat(format.POSIXct(Sys.time()), "[ dialer start ]", attr(x, "url"))
+    cat(format.POSIXct(Sys.time()), "[ dial start ] sock:",
+        attr(x, "socket"), "| url:", attr(x, "url"), "\n")
   }
   invisible(xc)
 
@@ -95,8 +97,8 @@ close.nanoSocket <- function(con, quietly = TRUE, ...) {
   if (xc) {
     message(Sys.time(), " [ ", xc, " ] ", nng_error(xc))
   } else if (!missing(quietly) && !isTRUE(quietly)) {
-    cat(format.POSIXct(Sys.time()), "[ socket close ] id:",
-        attr(con, "id"), "| protocol:", attr(con, "protocol"))
+    cat(format.POSIXct(Sys.time()), "[ sock close ] id:",
+        attr(con, "id"), "| protocol:", attr(con, "protocol"), "\n")
   }
   invisible(xc)
 
@@ -112,8 +114,8 @@ close.nanoContext <- function(con, quietly = TRUE, ...) {
   if (xc) {
     message(Sys.time(), " [ ", xc, " ] ", nng_error(xc))
   } else if (!missing(quietly) && !isTRUE(quietly)) {
-    cat(format.POSIXct(Sys.time()), "[ context close ] id:",
-        attr(con, "id"), "| socket:", attr(con, "socket"))
+    cat(format.POSIXct(Sys.time()), "[ ctxt close ] id:",
+        attr(con, "id"), "| sock:", attr(con, "socket"), "\n")
   }
   invisible(xc)
 
@@ -129,7 +131,8 @@ close.nanoDialer <- function(con, quietly = TRUE, ...) {
   if (xc) {
     message(Sys.time(), " [ ", xc, " ] ", nng_error(xc))
   } else if (!missing(quietly) && !isTRUE(quietly)) {
-    cat(format.POSIXct(Sys.time()), "[ dialer close ]", attr(con, "url"))
+    cat(format.POSIXct(Sys.time()), "[ dial start ] sock:",
+        attr(con, "socket"), "| url:", attr(con, "url"), "\n")
   }
 
   invisible(xc)
@@ -146,7 +149,8 @@ close.nanoListener <- function(con, quietly = TRUE, ...) {
   if (xc) {
     message(Sys.time(), " [ ", xc, " ] ", nng_error(xc))
   } else if (!missing(quietly) && !isTRUE(quietly)) {
-    cat(format.POSIXct(Sys.time()), "[ listener close ]", attr(con, "url"))
+    cat(format.POSIXct(Sys.time()), "[ list close ] sock:",
+        attr(con, "socket"), "| url:", attr(con, "url"), "\n")
   }
 
   invisible(xc)
