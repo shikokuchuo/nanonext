@@ -31,7 +31,7 @@ start.nanoListener <- function(x, ...) {
     message(Sys.time(), " [ ", xc, " ] ", nng_error(xc))
   } else if (logging()) {
     cat(format.POSIXct(Sys.time()), "[ list start ] sock:",
-        attr(x, "socket"), "| url:", attr(x, "url"), "\n")
+        attr(x, "socket"), "| url:", attr(x, "url"), "\n", file = stdout())
   }
   invisible(xc)
 
@@ -48,7 +48,7 @@ start.nanoDialer <- function(x, async = TRUE, ...) {
     message(Sys.time(), " [ ", xc, " ] ", nng_error(xc))
   } else if (logging()) {
     cat(format.POSIXct(Sys.time()), "[ dial start ] sock:",
-        attr(x, "socket"), "| url:", attr(x, "url"), "\n")
+        attr(x, "socket"), "| url:", attr(x, "url"), "\n", file = stdout())
   }
   invisible(xc)
 
@@ -94,7 +94,7 @@ close.nanoSocket <- function(con, ...) {
     message(Sys.time(), " [ ", xc, " ] ", nng_error(xc))
   } else if (logging()) {
     cat(format.POSIXct(Sys.time()), "[ sock close ] id:",
-        attr(con, "id"), "| protocol:", attr(con, "protocol"), "\n")
+        attr(con, "id"), "| protocol:", attr(con, "protocol"), "\n", file = stdout())
   }
   invisible(xc)
 
@@ -111,7 +111,7 @@ close.nanoContext <- function(con, ...) {
     message(Sys.time(), " [ ", xc, " ] ", nng_error(xc))
   } else if (logging()) {
     cat(format.POSIXct(Sys.time()), "[ ctxt close ] id:",
-        attr(con, "id"), "| sock:", attr(con, "socket"), "\n")
+        attr(con, "id"), "| sock:", attr(con, "socket"), "\n", file = stdout())
   }
   invisible(xc)
 
@@ -128,7 +128,7 @@ close.nanoDialer <- function(con, ...) {
     message(Sys.time(), " [ ", xc, " ] ", nng_error(xc))
   } else if (logging()) {
     cat(format.POSIXct(Sys.time()), "[ dial start ] sock:",
-        attr(con, "socket"), "| url:", attr(con, "url"), "\n")
+        attr(con, "socket"), "| url:", attr(con, "url"), "\n", file = stdout())
   }
 
   invisible(xc)
@@ -146,7 +146,7 @@ close.nanoListener <- function(con, ...) {
     message(Sys.time(), " [ ", xc, " ] ", nng_error(xc))
   } else if (logging()) {
     cat(format.POSIXct(Sys.time()), "[ list close ] sock:",
-        attr(con, "socket"), "| url:", attr(con, "url"), "\n")
+        attr(con, "socket"), "| url:", attr(con, "url"), "\n", file = stdout())
   }
 
   invisible(xc)

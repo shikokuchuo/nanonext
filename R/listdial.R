@@ -83,7 +83,7 @@ dial <- function(socket,
       }
       if (logging()) {
         cat(format.POSIXct(Sys.time()), "[ dial start ] sock:",
-            attr(res, "socket"), "| url:", url, "\n")
+            attr(res, "socket"), "| url:", url, "\n", file = stdout())
       }
     } else {
       res <- .Call(rnng_dialer_create, .subset2(socket, "socket"), url)
@@ -112,7 +112,7 @@ dial <- function(socket,
       }
       if (logging()) {
         cat(format.POSIXct(Sys.time()), "[ dial start ] sock:",
-            attr(res, "socket"), "| url:", url, "\n")
+            attr(res, "socket"), "| url:", url, "\n", file = stdout())
       }
     } else {
       res <- .Call(rnng_dialer_create, socket, url)
@@ -212,7 +212,7 @@ listen <- function(socket,
       }
       if (logging()) {
         cat(format.POSIXct(Sys.time()), "[ list start ] sock:",
-            attr(res, "socket"), "| url:", url, "\n")
+            attr(res, "socket"), "| url:", url, "\n", file = stdout())
       }
     } else {
       res <- .Call(rnng_listener_create, .subset2(socket, "socket"), url)
@@ -241,7 +241,7 @@ listen <- function(socket,
       }
       if (logging()) {
         cat(format.POSIXct(Sys.time()), "[ list start ] sock:",
-            attr(res, "socket"), "| url:", url, "\n")
+            attr(res, "socket"), "| url:", url, "\n", file = stdout())
       }
     } else {
       res <- .Call(rnng_listener_create, socket, url)

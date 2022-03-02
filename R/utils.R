@@ -109,7 +109,8 @@ logging <- function(level) {
     cache <<- switch(level,
                      error = 0L,
                      info = 1L)
-    cat(format.POSIXct(Sys.time()), "[ logging level ] set to:", level, "\n")
+    cat(format.POSIXct(Sys.time()), "[ log level ] set to:", level,
+        "\n", file = stdout())
 
   }
 

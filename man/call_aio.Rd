@@ -38,8 +38,8 @@ For a 'recvAio', the received raw vector will be attached in \code{$raw}
 
 
     To query the value of an Aio without potentially waiting for the Aio
-    operation to complete, call the values directly at \code{$result} for a 'sendAio', and
-    \code{$raw} or \code{$data} for a 'recvAio'.
+    operation to complete, access the values directly at \code{$result} for a
+    'sendAio', and \code{$raw} or \code{$data} for a 'recvAio'.
 
     If the Aio operation is yet to complete, the result will be an
     'unresolved value', which is a logical NA. Once complete, the resolved

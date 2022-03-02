@@ -68,7 +68,7 @@ socket <- function(protocol = c("pair", "bus", "push", "pull", "req", "rep",
     message(Sys.time(), " [ ", res, " ] ", nng_error(res))
   } else if (logging()) {
     cat(format.POSIXct(Sys.time()), "[ sock open ] id:",
-        attr(res, "id"), "| protocol:", attr(res, "protocol"), "\n")
+        attr(res, "id"), "| protocol:", attr(res, "protocol"), "\n", file = stdout())
   }
   if (!missing(dial)) {
     dial(res, url = dial, autostart = autostart)
@@ -123,7 +123,7 @@ subscribe <- function(socket, topic = NULL) {
     message(Sys.time(), " [ ", xc, " ] ", nng_error(xc))
   } else if (logging()) {
     cat(format.POSIXct(Sys.time()), "[ subscribe ] sock:", attr(socket, "id"),
-        "| topic:", if (is.null(topic)) "ALL" else topic, "\n")
+        "| topic:", if (is.null(topic)) "ALL" else topic, "\n", file = stdout())
   }
   invisible(xc)
 
@@ -176,7 +176,7 @@ unsubscribe <- function(socket, topic = NULL) {
     message(Sys.time(), " [ ", xc, " ] ", nng_error(xc))
   } else if (logging()) {
     cat(format.POSIXct(Sys.time()), "[ unsubscribe ] sock:", attr(socket, "id"),
-        "| topic:", if (is.null(topic)) "ALL" else topic, "\n")
+        "| topic:", if (is.null(topic)) "ALL" else topic, "\n", file = stdout())
   }
   invisible(xc)
 
@@ -232,7 +232,7 @@ survey_time <- function(socket, time) {
   res <- setopt(socket, type = "ms", opt = "surveyor:survey-time", value = time)
   if (logging()) {
     cat(format.POSIXct(Sys.time()), "[ survey ] sock:", attr(socket, "id"),
-        "| set time:", time, "\n")
+        "| set time:", time, "\n", file = stdout())
   }
 
 }

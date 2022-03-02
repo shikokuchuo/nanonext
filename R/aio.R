@@ -29,8 +29,8 @@
 #' @section Non-blocking:
 #'
 #'     To query the value of an Aio without potentially waiting for the Aio
-#'     operation to complete, call the values directly at \code{$result} for a 'sendAio', and
-#'     \code{$raw} or \code{$data} for a 'recvAio'.
+#'     operation to complete, access the values directly at \code{$result} for a
+#'     'sendAio', and \code{$raw} or \code{$data} for a 'recvAio'.
 #'
 #'     If the Aio operation is yet to complete, the result will be an
 #'     'unresolved value', which is a logical NA. Once complete, the resolved
@@ -131,9 +131,9 @@ stop_aio <- function(aio) {
 
 }
 
-#' Is Resolved (Asynchronous AIO Operation)
+#' Query if an Aio is Unresolved
 #'
-#' Query whether an Aio or Aio value has resolved. This function is non-blocking
+#' Query whether an Aio or Aio value is unresolved. This function is non-blocking
 #'     unlike \code{\link{call_aio}} which waits for completion.
 #'
 #' @param aio An Aio (object of class 'sendAio' or 'recvAio'), or Aio value
@@ -141,35 +141,34 @@ stop_aio <- function(aio) {
 #'
 #' @return Logical TRUE or FALSE.
 #'
-#' @details Returns FALSE only for unresolved nanonext Aios or Aio values; returns
-#'     TRUE in all other cases and for all other objects.
+#' @details Returns TRUE for unresolved nanonext Aios or Aio values; returns
+#'     FALSE in all other cases and for all other objects.
 #'
 #'     Note: querying resolution may cause a previously unresolved Aio to resolve.
 #'
 #' @examples
 #' s1 <- socket("pair", listen = "inproc://nanonext")
 #' aio <- send_aio(s1, "test", timeout = 100)
-#' is_resolved(aio)
 #'
-#' s2 <- socket("pair", dial = "inproc://nanonext")
-#' is_resolved(aio)
+#' while (unresolved(aio)) {
+#'   print(unresolved(aio))
+#'   s2 <- socket("pair", dial = "inproc://nanonext")
+#'   Sys.sleep(0.01)
+#' }
+#'
+#' unresolved(aio)
 #'
 #' close(s1)
 #' close(s2)
 #'
 #' @export
 #'
-is_resolved <- function(aio) {
+unresolved <- function(aio) {
 
-  if (inherits(aio, "recvAio")) {
-    !inherits(.subset2(aio, "data"), "unresolvedValue")
-  } else if (inherits(aio, "sendAio")) {
-    !inherits(.subset2(aio, "result"), "unresolvedValue")
-  } else if (inherits(aio, "unresolvedValue")) {
-    FALSE
-  } else {
-    TRUE
-  }
+  {inherits(aio, "unresolvedValue") ||
+      inherits(aio, "recvAio") && inherits(.subset2(aio, "data"), "unresolvedValue") ||
+      inherits(aio, "sendAio") && inherits(.subset2(aio, "result"), "unresolvedValue")} &&
+    return(TRUE)
 
 }
 
