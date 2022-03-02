@@ -122,3 +122,9 @@
 #'
 NULL
 
+.onLoad <- function(libname, pkgname) {
+  logging <- logging()
+  logging <<- logging
+  invisible()
+}
+

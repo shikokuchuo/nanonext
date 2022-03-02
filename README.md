@@ -328,7 +328,7 @@ aio
 #>  - $raw for raw message
 #>  - $data for message data
 str(aio$data)
-#>  num [1:100000000] -0.9199 1.2476 -0.3885 -1.3692 -0.0557 ...
+#>  num [1:100000000] -0.771 -0.379 -0.377 -1.401 -1.579 ...
 ```
 
 In this example the calculation is returned, but other operations may
@@ -359,20 +359,18 @@ sub |> recv(mode = "character", keep.raw = FALSE)
 
 pub |> send(c("other", "this other topic will not be received"), mode = "raw", echo = FALSE)
 sub |> recv(mode = "character", keep.raw = FALSE)
-#> 2022-03-02 15:43:48 [ 8 ] Try again
+#> 2022-03-02 17:01:22 [ 8 ] Try again
 
 # specify NULL to subscribe to ALL topics
-sub |> subscribe(topic = NULL, quietly = FALSE)
-#> 2022-03-02 15:43:48 [ subscribe ] sock: 10 | topic: ALL
+sub |> subscribe(topic = NULL)
 pub |> send(c("newTopic", "this is a new topic"), mode = "raw", echo = FALSE)
 sub |> recv("character", keep.raw = FALSE)
 #> [1] "newTopic"            "this is a new topic"
 
-sub |> unsubscribe(topic = NULL, quietly = FALSE)
-#> 2022-03-02 15:43:48 [ unsubscribe ] sock: 10 | topic: ALL
+sub |> unsubscribe(topic = NULL)
 pub |> send(c("newTopic", "this topic will now not be received"), mode = "raw", echo = FALSE)
 sub |> recv("character", keep.raw = FALSE)
-#> 2022-03-02 15:43:48 [ 8 ] Try again
+#> 2022-03-02 17:01:22 [ 8 ] Try again
 
 # however the topics explicitly subscribed to are still received
 pub |> send(c("examples", "this example will still be received"), mode = "raw", echo = FALSE)
@@ -396,11 +394,11 @@ ncurl("http://httpbin.org/headers")
 #>   [1] 7b 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73
 #>  [26] 74 22 3a 20 22 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22
 #>  [51] 58 2d 41 6d 7a 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31
-#>  [76] 2d 36 32 31 66 39 30 62 34 2d 32 33 32 38 30 62 34 66 32 61 34 62 31 62 65
-#> [101] 32 32 30 32 63 39 33 35 35 22 0a 20 20 7d 0a 7d 0a
+#>  [76] 2d 36 32 31 66 61 32 65 33 2d 37 66 31 34 35 62 63 64 31 65 34 34 36 34 61
+#> [101] 66 36 62 61 62 63 63 33 64 22 0a 20 20 7d 0a 7d 0a
 #> 
 #> $data
-#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-621f90b4-23280b4f2a4b1be2202c9355\"\n  }\n}\n"
+#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-621fa2e3-7f145bcd1e4464af6babcc3d\"\n  }\n}\n"
 ```
 
 For advanced use, supports additional HTTP methods such as POST or PUT.

@@ -79,6 +79,42 @@ is_nul_byte <- function(x) {
 
 }
 
+#' Logging Level
+#'
+#' Set the logging level of nanonext.
+#'
+#' @param level specify a logging level - either 'error' (default) which sends
+#'     all NNG errors to stderr or 'info' which also sends informational events
+#'     such as socket open, listener/dialer start, socket close etc. to stdout.
+#'
+#' @return Invisible NULL, or if 'level' is not specified, the integer code of
+#'     the logging level.
+#'
+#' @examples
+#' logging(level = "info")
+#' sock <- socket("respondent", dial = "inproc://nanolog")
+#' logging(level = "error")
+#' close(sock)
+#'
+#' @export
+#'
+logging <- function(level) {
+
+  cache <- 0L
+
+  logging <- function(level = c("error", "info")) {
+
+    missing(level) && return(cache)
+    level <- match.arg(level)
+    cache <<- switch(level,
+                     error = 0L,
+                     info = 1L)
+    cat(format.POSIXct(Sys.time()), "[ logging level ] set to:", level, "\n")
+
+  }
+
+}
+
 #' ncurl
 #'
 #' nano cURL - a minimalist http(s) client.

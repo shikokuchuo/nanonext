@@ -292,11 +292,11 @@ pub |> send(c("other", "this other topic will not be received"), mode = "raw", e
 sub |> recv(mode = "character", keep.raw = FALSE)
 
 # specify NULL to subscribe to ALL topics
-sub |> subscribe(topic = NULL, quietly = FALSE)
+sub |> subscribe(topic = NULL)
 pub |> send(c("newTopic", "this is a new topic"), mode = "raw", echo = FALSE)
 sub |> recv("character", keep.raw = FALSE)
 
-sub |> unsubscribe(topic = NULL, quietly = FALSE)
+sub |> unsubscribe(topic = NULL)
 pub |> send(c("newTopic", "this topic will now not be received"), mode = "raw", echo = FALSE)
 sub |> recv("character", keep.raw = FALSE)
 

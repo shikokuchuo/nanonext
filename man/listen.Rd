@@ -4,7 +4,7 @@
 \alias{listen}
 \title{Listen to an Address from a Socket}
 \usage{
-listen(socket, url = "inproc://nanonext", autostart = TRUE, quietly = TRUE)
+listen(socket, url = "inproc://nanonext", autostart = TRUE)
 }
 \arguments{
 \item{socket}{a Socket or nano object.}
@@ -16,9 +16,6 @@ or 'tcp://127.0.0.1:5555' (see \link{transports}).}
 \item{autostart}{[default TRUE] whether to start the listener. Set to FALSE
 if you wish to set configuration options on the listener as it is not
 generally possible to change these once started.}
-
-\item{quietly}{[default TRUE] if FALSE, confirmation of a successful start is
-printed to the console (stdout), useful for logging purposes.}
 }
 \value{
 Zero (invisibly) on success. A new Listener (object of class

@@ -11,8 +11,6 @@
 #' @param autostart [default TRUE] whether to start the dialer. Set to FALSE if
 #'     you wish to set configuration options on the dialer as it is not
 #'     generally possible to change these once started.
-#' @param quietly [default TRUE] if FALSE, confirmation of a successful start is
-#'     printed to the console (stdout), useful for logging purposes.
 #'
 #' @return Zero (invisibly) on success. A new Dialer (object of class 'nanoDialer'
 #'     and 'nano') is created and bound to the Socket.
@@ -72,8 +70,7 @@
 #'
 dial <- function(socket,
                  url = "inproc://nanonext",
-                 autostart = TRUE,
-                 quietly = TRUE) {
+                 autostart = TRUE) {
 
   is.character(url) || stop("'url' should be a character string")
   if (is.environment(socket)) {
@@ -84,7 +81,7 @@ dial <- function(socket,
         message(Sys.time(), " [ ", res, " ] ", nng_error(res))
         return(invisible(res))
       }
-      if (!missing(quietly) && !isTRUE(quietly)) {
+      if (logging()) {
         cat(format.POSIXct(Sys.time()), "[ dial start ] sock:",
             attr(res, "socket"), "| url:", url, "\n")
       }
@@ -113,7 +110,7 @@ dial <- function(socket,
         message(Sys.time(), " [ ", res, " ] ", nng_error(res))
         return(invisible(res))
       }
-      if (!missing(quietly) && !isTRUE(quietly)) {
+      if (logging()) {
         cat(format.POSIXct(Sys.time()), "[ dial start ] sock:",
             attr(res, "socket"), "| url:", url, "\n")
       }
@@ -135,7 +132,7 @@ dial <- function(socket,
 #'
 #' Creates a new Listener and binds it to a Socket.
 #'
-#' @inheritParams dial
+#' @param socket a Socket or nano object.
 #' @param url [default 'inproc://nanonext'] a URL to dial or listen at, specifying
 #'     the transport and address as a character string e.g. 'inproc://anyvalue'
 #'     or 'tcp://127.0.0.1:5555' (see \link{transports}).
@@ -202,8 +199,7 @@ dial <- function(socket,
 #'
 listen <- function(socket,
                    url = "inproc://nanonext",
-                   autostart = TRUE,
-                   quietly = TRUE) {
+                   autostart = TRUE) {
 
   is.character(url) || stop("'url' should be a character string")
   if (is.environment(socket)) {
@@ -214,7 +210,7 @@ listen <- function(socket,
         message(Sys.time(), " [ ", res, " ] ", nng_error(res))
         return(invisible(res))
       }
-      if (!missing(quietly) && !isTRUE(quietly)) {
+      if (logging()) {
         cat(format.POSIXct(Sys.time()), "[ list start ] sock:",
             attr(res, "socket"), "| url:", url, "\n")
       }
@@ -243,7 +239,7 @@ listen <- function(socket,
         message(Sys.time(), " [ ", res, " ] ", nng_error(res))
         return(invisible(res))
       }
-      if (!missing(quietly) && !isTRUE(quietly)) {
+      if (logging()) {
         cat(format.POSIXct(Sys.time()), "[ list start ] sock:",
             attr(res, "socket"), "| url:", url, "\n")
       }

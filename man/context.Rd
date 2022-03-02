@@ -4,14 +4,10 @@
 \alias{context}
 \title{Open Context}
 \usage{
-context(socket, quietly = TRUE)
+context(socket)
 }
 \arguments{
 \item{socket}{a Socket or nano object.}
-
-\item{quietly}{[default TRUE] if FALSE, confirmation that the context has been
-successfully opened is printed to the console (stdout), useful for logging
-purposes.}
 }
 \value{
 A new Context (object of class 'nanoContext' and 'nano').

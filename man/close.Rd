@@ -8,20 +8,16 @@
 \alias{close.nanoListener}
 \title{Close Connection}
 \usage{
-\method{close}{nanoSocket}(con, quietly = TRUE, ...)
+\method{close}{nanoSocket}(con, ...)
 
-\method{close}{nanoContext}(con, quietly = TRUE, ...)
+\method{close}{nanoContext}(con, ...)
 
-\method{close}{nanoDialer}(con, quietly = TRUE, ...)
+\method{close}{nanoDialer}(con, ...)
 
-\method{close}{nanoListener}(con, quietly = TRUE, ...)
+\method{close}{nanoListener}(con, ...)
 }
 \arguments{
 \item{con}{a Socket, Context, Dialer or Listener.}
-
-\item{quietly}{[default TRUE] if FALSE, confirmation that the object has been
-successfully closed is printed to the console (stdout), useful for logging
-purposes.}
 
 \item{...}{not used.}
 }

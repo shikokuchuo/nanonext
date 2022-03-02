@@ -9,8 +9,7 @@ socket(
     "respondent"),
   dial = NULL,
   listen = NULL,
-  autostart = TRUE,
-  quietly = TRUE
+  autostart = TRUE
 )
 }
 \arguments{
@@ -29,10 +28,6 @@ address as a character string e.g. 'inproc://anyvalue' or
 \item{autostart}{[default TRUE] whether to start the dialer/listener. Set to
 FALSE if you wish to set configuration options on the dialer/listener as
 it is not generally possible to change these once started.}
-
-\item{quietly}{[default TRUE] if FALSE, confirmation that the socket has been
-successfully opened is printed to the console (stdout), useful for logging
-purposes.}
 }
 \value{
 A Socket (object of class 'nanoSocket' and 'nano').

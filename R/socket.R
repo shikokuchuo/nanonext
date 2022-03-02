@@ -17,9 +17,6 @@
 #' @param autostart [default TRUE] whether to start the dialer/listener. Set to
 #'     FALSE if you wish to set configuration options on the dialer/listener as
 #'     it is not generally possible to change these once started.
-#' @param quietly [default TRUE] if FALSE, confirmation that the socket has been
-#'     successfully opened is printed to the console (stdout), useful for logging
-#'     purposes.
 #'
 #' @return A Socket (object of class 'nanoSocket' and 'nano').
 #'
@@ -63,22 +60,21 @@ socket <- function(protocol = c("pair", "bus", "push", "pull", "req", "rep",
                                 "pub", "sub", "surveyor", "respondent"),
                    dial = NULL,
                    listen = NULL,
-                   autostart = TRUE,
-                   quietly = TRUE) {
+                   autostart = TRUE) {
 
   protocol <- match.arg(protocol)
   res <- .Call(rnng_protocol_open, protocol)
   if (is.integer(res)) {
     message(Sys.time(), " [ ", res, " ] ", nng_error(res))
-  } else if (!missing(quietly) && !isTRUE(quietly)) {
+  } else if (logging()) {
     cat(format.POSIXct(Sys.time()), "[ sock open ] id:",
         attr(res, "id"), "| protocol:", attr(res, "protocol"), "\n")
   }
   if (!missing(dial)) {
-    dial(res, url = dial, autostart = autostart, quietly = quietly)
+    dial(res, url = dial, autostart = autostart)
   }
   if (!missing(listen)) {
-    listen(res, url = listen, autostart = autostart, quietly = quietly)
+    listen(res, url = listen, autostart = autostart)
   }
   res
 
@@ -92,8 +88,6 @@ socket <- function(protocol = c("pair", "bus", "push", "pull", "req", "rep",
 #' @param socket a Socket using the sub protocol.
 #' @param topic [default NULL] a topic (given as a character string). The default
 #'     NULL subscribes to all topics.
-#' @param quietly [default TRUE] if FALSE, confirmation of a successful subscribe
-#'     request is printed to the console (stdout), useful for logging purposes.
 #'
 #' @return Zero (invisibly) on success.
 #'
@@ -122,12 +116,12 @@ socket <- function(protocol = c("pair", "bus", "push", "pull", "req", "rep",
 #'
 #' @export
 #'
-subscribe <- function(socket, topic = NULL, quietly = TRUE) {
+subscribe <- function(socket, topic = NULL) {
 
   xc <- .Call(rnng_socket_set_string, socket, "sub:subscribe" , topic)
   if (xc) {
     message(Sys.time(), " [ ", xc, " ] ", nng_error(xc))
-  } else if (!missing(quietly) && !isTRUE(quietly)) {
+  } else if (logging()) {
     cat(format.POSIXct(Sys.time()), "[ subscribe ] sock:", attr(socket, "id"),
         "| topic:", if (is.null(topic)) "ALL" else topic, "\n")
   }
@@ -143,8 +137,6 @@ subscribe <- function(socket, topic = NULL, quietly = TRUE) {
 #' @param socket a Socket using the sub protocol.
 #' @param topic [default NULL] a topic (given as a character string). The default
 #'     NULL unsubscribes from all topics (if all topics were previously subscribed).
-#' @param quietly [default TRUE] if FALSE, confirmation of a successful unsubscribe
-#'     request is printed to the console (stdout), useful for logging purposes.
 #'
 #' @return Zero (invisibly) on success.
 #'
@@ -177,12 +169,12 @@ subscribe <- function(socket, topic = NULL, quietly = TRUE) {
 #'
 #' @export
 #'
-unsubscribe <- function(socket, topic = NULL, quietly = TRUE) {
+unsubscribe <- function(socket, topic = NULL) {
 
   xc <- .Call(rnng_socket_set_string, socket, "sub:unsubscribe" , topic)
   if (xc) {
     message(Sys.time(), " [ ", xc, " ] ", nng_error(xc))
-  } else if (!missing(quietly) && !isTRUE(quietly)) {
+  } else if (logging()) {
     cat(format.POSIXct(Sys.time()), "[ unsubscribe ] sock:", attr(socket, "id"),
         "| topic:", if (is.null(topic)) "ALL" else topic, "\n")
   }
@@ -198,8 +190,6 @@ unsubscribe <- function(socket, topic = NULL, quietly = TRUE) {
 #'
 #' @param socket a Socket or Context using the surveyor protocol.
 #' @param time the survey timeout in ms.
-#' @param quietly [default TRUE] if FALSE, confirmation of the setting is printed
-#'     to the console (stdout) if successful, useful for logging purposes.
 #'
 #' @return Zero (invisibly) on success.
 #'
@@ -237,10 +227,10 @@ unsubscribe <- function(socket, topic = NULL, quietly = TRUE) {
 #'
 #' @export
 #'
-survey_time <- function(socket, time, quietly = TRUE) {
+survey_time <- function(socket, time) {
 
   res <- setopt(socket, type = "ms", opt = "surveyor:survey-time", value = time)
-  if (!res && !missing(quietly) && !isTRUE(quietly)) {
+  if (logging()) {
     cat(format.POSIXct(Sys.time()), "[ survey ] sock:", attr(socket, "id"),
         "| set time:", time, "\n")
   }

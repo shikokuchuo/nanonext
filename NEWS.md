@@ -6,12 +6,12 @@
 * `is_resolved()` added as an auxiliary function to query whether an Aio has resolved in a non-blocking fashion.
 * `is_nul_byte()` added as a helper function for request/reply setups.
 * `survey_time()` added as a convenience function for surveyor/respondent patterns.
+* `logging()` function to specify a global package logging level - currently supports 'error' and 'info'.
 * `ncurl()` adds a '...' argument. Support for HTTP methods other than GET.
 
 #### Updates
 
-* Argument 'quietly' added to functions that create or destroy objects. Set to FALSE to enable printing of informational messages for logging purposes.
-* Common format for NNG errors now starts with a timestamp for easier logging.
+* Common format for NNG errors and informational events now starts with a timestamp for easier logging.
 * `listen()` and `dial()` now return (invisible) zero rather than NULL upon success to better align with similar functions.
 * Allows setting the environment variable 'NANONEXT_ARM' prior to package installation
   + Fixes installation issues on certain ARM architectures

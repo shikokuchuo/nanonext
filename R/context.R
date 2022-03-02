@@ -7,9 +7,6 @@
 #'     and listeners, while still benefiting from separate state tracking.
 #'
 #' @param socket a Socket or nano object.
-#' @param quietly [default TRUE] if FALSE, confirmation that the context has been
-#'     successfully opened is printed to the console (stdout), useful for logging
-#'     purposes.
 #'
 #' @return A new Context (object of class 'nanoContext' and 'nano').
 #'
@@ -44,15 +41,12 @@
 #'
 #' @export
 #'
-context <- function(socket, quietly = TRUE) {
+context <- function(socket) {
 
   if (is.environment(socket)) socket <- .subset2(socket, "socket")
   res <- .Call(rnng_ctx_open, socket)
   if (is.integer(res)) {
     message(Sys.time(), " [ ", res, " ] ", nng_error(res))
-  } else if (!missing(quietly) && !isTRUE(quietly)) {
-    cat(format.POSIXct(Sys.time()), "[ ctxt open ] id:",
-        attr(res, "id"), "| sock:", attr(res, "socket"), "\n")
   }
   res
 
