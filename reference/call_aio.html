@@ -18,7 +18,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.0.9003</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.0.9004</span>
       </span>
     </div>
 
@@ -94,8 +94,8 @@
 
 
 <p>To query the value of an Aio without potentially waiting for the Aio
-    operation to complete, call the values directly at <code>$result</code> for a 'sendAio', and
-    <code>$raw</code> or <code>$data</code> for a 'recvAio'.</p>
+    operation to complete, access the values directly at <code>$result</code> for a
+    'sendAio', and <code>$raw</code> or <code>$data</code> for a 'recvAio'.</p>
 <p>If the Aio operation is yet to complete, the result will be an
     'unresolved value', which is a logical NA. Once complete, the resolved
     value will be returned instead.</p>

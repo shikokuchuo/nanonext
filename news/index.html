@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.0.9003</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.0.9004</span>
       </span>
     </div>
 
@@ -54,12 +54,12 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.2.0.9003" id="nanonext-0209003-development">nanonext 0.2.0.9003 (development)<a class="anchor" aria-label="anchor" href="#nanonext-0209003-development"></a></h2>
+<h2 class="page-header" data-toc-text="0.2.0.9004" id="nanonext-0209004-development">nanonext 0.2.0.9004 (development)<a class="anchor" aria-label="anchor" href="#nanonext-0209004-development"></a></h2>
 <div class="section level5">
-<h5 id="new-features-0-2-0-9003">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-2-0-9003"></a></h5>
+<h5 id="new-features-0-2-0-9004">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-2-0-9004"></a></h5>
 <ul><li>Aio fields <code>$result</code> for a ‘sendAio’, <code>$raw</code> and <code>$data</code> for a ‘recvAio’ may be queried directly, returning their values or else an NA ‘unresolved value’ if the Aio operation is yet to complete.</li>
 <li>
-<code><a href="../reference/is_resolved.html">is_resolved()</a></code> added as an auxiliary function to query whether an Aio has resolved in a non-blocking fashion.</li>
+<code><a href="../reference/unresolved.html">unresolved()</a></code> added as an auxiliary function to query whether an Aio is still unresolved in a non-blocking fashion.</li>
 <li>
 <code><a href="../reference/is_nul_byte.html">is_nul_byte()</a></code> added as a helper function for request/reply setups.</li>
 <li>
@@ -70,7 +70,7 @@
 <code><a href="../reference/ncurl.html">ncurl()</a></code> adds a ‘…’ argument. Support for HTTP methods other than GET.</li>
 </ul></div>
 <div class="section level5">
-<h5 id="updates-0-2-0-9003">Updates<a class="anchor" aria-label="anchor" href="#updates-0-2-0-9003"></a></h5>
+<h5 id="updates-0-2-0-9004">Updates<a class="anchor" aria-label="anchor" href="#updates-0-2-0-9004"></a></h5>
 <ul><li>Common format for NNG errors and informational events now starts with a timestamp for easier logging.</li>
 <li>
 <code><a href="../reference/listen.html">listen()</a></code> and <code><a href="../reference/dial.html">dial()</a></code> now return (invisible) zero rather than NULL upon success to better align with similar functions.</li>
