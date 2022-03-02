@@ -60,20 +60,16 @@
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S3 method for nanoListener</span>
-<span class="fu">start</span><span class="op">(</span><span class="va">x</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span>
+<span class="fu">start</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span>
 
 <span class="co"># S3 method for nanoDialer</span>
-<span class="fu">start</span><span class="op">(</span><span class="va">x</span>, async <span class="op">=</span> <span class="cn">TRUE</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
+<span class="fu">start</span><span class="op">(</span><span class="va">x</span>, async <span class="op">=</span> <span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>x</dt>
 <dd><p>a Listener or Dialer.</p></dd>
-<dt>quietly</dt>
-<dd><p>[default TRUE] if FALSE, confirmation of successful socket
-creation and dialer or listener start is printed to the console (stdout),
-useful for logging purposes.</p></dd>
 <dt>...</dt>
 <dd><p>not used.</p></dd>
 <dt>async</dt>

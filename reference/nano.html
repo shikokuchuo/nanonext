@@ -66,8 +66,7 @@
     <span class="st">"respondent"</span><span class="op">)</span>,
   dial <span class="op">=</span> <span class="cn">NULL</span>,
   listen <span class="op">=</span> <span class="cn">NULL</span>,
-  autostart <span class="op">=</span> <span class="cn">TRUE</span>,
-  quietly <span class="op">=</span> <span class="cn">TRUE</span>
+  autostart <span class="op">=</span> <span class="cn">TRUE</span>
 <span class="op">)</span></code></pre></div>
     </div>
 
@@ -89,10 +88,6 @@ address as a character string e.g. 'inproc://anyvalue' or
 <dd><p>[default TRUE] whether to start the dialer/listener. Set to
 FALSE if you wish to set configuration options on the dialer/listener as
 it is not generally possible to change these once started.</p></dd>
-<dt>quietly</dt>
-<dd><p>[default TRUE] if FALSE, confirmation of successful socket
-creation and dialer or listener start is printed to the console (stdout),
-useful for logging purposes.</p></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>
@@ -124,20 +119,20 @@ useful for logging purposes.</p></dd>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">nano</span> <span class="op">&lt;-</span> <span class="fu">nano</span><span class="op">(</span><span class="st">"bus"</span>, listen <span class="op">=</span> <span class="st">"inproc://nanonext"</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">nano</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt; nano object &gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - socket id: 11 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - socket id: 12 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - state: opened </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - protocol: bus </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - listener:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     inproc://nanonext</span>
 <span class="r-in"><span class="va">nano</span><span class="op">$</span><span class="va">socket</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt; nanoSocket &gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - id: 11 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - id: 12 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - state: opened </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - protocol: bus </span>
 <span class="r-in"><span class="va">nano</span><span class="op">$</span><span class="va">listener</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt; nanoListener &gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - id: 7 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - socket: 11 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - socket: 12 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - state: started </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - url: inproc://nanonext </span>
 <span class="r-in"></span>
@@ -148,14 +143,14 @@ useful for logging purposes.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt; nanoListener &gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - id: 7 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - socket: 11 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - socket: 12 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - state: started </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - url: inproc://nanonext </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[2]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt; nanoListener &gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - id: 8 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - socket: 11 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - socket: 12 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - state: started </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - url: inproc://nanonextgen </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>

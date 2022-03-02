@@ -65,12 +65,13 @@
 <li>
 <code><a href="../reference/survey_time.html">survey_time()</a></code> added as a convenience function for surveyor/respondent patterns.</li>
 <li>
+<code><a href="../reference/logging.html">logging()</a></code> function to specify a global package logging level - currently supports ‘error’ and ‘info’.</li>
+<li>
 <code><a href="../reference/ncurl.html">ncurl()</a></code> adds a ‘…’ argument. Support for HTTP methods other than GET.</li>
 </ul></div>
 <div class="section level5">
 <h5 id="updates-0-2-0-9003">Updates<a class="anchor" aria-label="anchor" href="#updates-0-2-0-9003"></a></h5>
-<ul><li>Argument ‘quietly’ added to functions that create or destroy objects. Set to FALSE to enable printing of informational messages for logging purposes.</li>
-<li>Common format for NNG errors now starts with a timestamp for easier logging.</li>
+<ul><li>Common format for NNG errors and informational events now starts with a timestamp for easier logging.</li>
 <li>
 <code><a href="../reference/listen.html">listen()</a></code> and <code><a href="../reference/dial.html">dial()</a></code> now return (invisible) zero rather than NULL upon success to better align with similar functions.</li>
 <li>Allows setting the environment variable ‘NANONEXT_ARM’ prior to package installation
