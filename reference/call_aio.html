@@ -115,12 +115,12 @@
 <span class="r-in"><span class="va">res</span><span class="op">$</span><span class="va">result</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
 <span class="r-in"></span>
-<span class="r-in"><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="recv_aio.html">recv_aio</a></span><span class="op">(</span><span class="va">s2</span>, timeout <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">res</span></span>
+<span class="r-in"><span class="va">msg</span> <span class="op">&lt;-</span> <span class="fu"><a href="recv_aio.html">recv_aio</a></span><span class="op">(</span><span class="va">s2</span>, timeout <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">msg</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt; recvAio &gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - $raw for raw message</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - $data for message data</span>
-<span class="r-in"><span class="fu">call_aio</span><span class="op">(</span><span class="va">res</span><span class="op">)</span><span class="op">$</span><span class="va">data</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - $raw for raw message</span>
+<span class="r-in"><span class="fu">call_aio</span><span class="op">(</span><span class="va">msg</span><span class="op">)</span><span class="op">$</span><span class="va">data</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   a b</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1 1 2</span>
 <span class="r-in"></span>
