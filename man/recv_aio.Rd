@@ -48,13 +48,13 @@ s2 <- socket("pair", dial = "inproc://nanonext")
 send_aio(s1, data.frame(a = 1, b = 2), timeout = 100)
 res <- recv_aio(s2, timeout = 100, keep.raw = FALSE)
 res
-call_aio(res)
-res
+res$data
 
 send_aio(s1, c(1.1, 2.2, 3.3), mode = "raw", timeout = 100)
 res <- recv_aio(s2, mode = "double", timeout = 100)
-call_aio(res)
 res
+res$raw
+res$data
 
 send_aio(s1, "example message", mode = "raw", timeout = 100)
 res <- recv_aio(s2, mode = "character", timeout = 100)

@@ -46,9 +46,9 @@
 #' call_aio(res)
 #' res$result
 #'
-#' res <- recv_aio(s2, timeout = 100)
-#' res
-#' call_aio(res)$data
+#' msg <- recv_aio(s2, timeout = 100)
+#' msg
+#' call_aio(msg)$data
 #'
 #' close(s1)
 #' close(s2)
@@ -62,8 +62,8 @@ call_aio <- function(aio) {
   if (inherits(aio, "recvAio")) {
 
     res <- .Call(rnng_aio_wait_get_msg, .subset2(aio, "aio"))
-    mode <- .subset2(aio, "callparams")[[1L]]
-    keep.raw <- .subset2(aio, "callparams")[[2L]]
+    mode <- .subset2(aio, "mode")
+    keep.raw <- .subset2(aio, "keep.raw")
     is.integer(res) && {
       if (keep.raw) {
         rm("raw", envir = aio)
@@ -79,7 +79,6 @@ call_aio <- function(aio) {
       rm("data", envir = aio)
       `[[<-`(aio, "data", res)
       rm("aio", envir = aio)
-      rm("callparams", envir = aio)
       return(invisible(aio))
     })
     data <- switch(mode,
@@ -95,7 +94,6 @@ call_aio <- function(aio) {
     rm("data", envir = aio)
     `[[<-`(aio, "data", data)
     rm("aio", envir = aio)
-    rm("callparams", envir = aio)
 
   } else if (inherits(aio, "sendAio")) {
 

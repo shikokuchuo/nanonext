@@ -49,9 +49,10 @@ Implemented transports:
 4. [Async and Concurrency](#async-and-concurrency)
 5. [RPC and Distributed Computing](#rpc-and-distributed-computing)
 6. [Publisher / Subscriber Model](#publisher-subscriber-model)
-7. [ncurl Minimalist http Client](#ncurl-minimalist-http-client)
-8. [Building from source](#building-from-source)
-9. [Links](#links)
+7. [Surveyor / Repondent Model](#surveyor-respondent-model)
+8. [ncurl Minimalist http Client](#ncurl-minimalist-http-client)
+9. [Building from source](#building-from-source)
+10. [Links](#links)
 
 ### Installation
 
@@ -275,18 +276,21 @@ In such a case, using `call_aio()` confirms that the operation has completed (or
 
 ### Publisher Subscriber Model
 
-{nanonext} fully implements NNG's pub/sub protocol as per the below example. 
+{nanonext} fully implements NNG's pub/sub protocol as per the below example.
 
 The built-in logging levels are also demonstrated here. NNG errors are always output to stderr and operation is otherwise silent by default. To enable key information events to be sent to stdout, use `logging(level = "info")`. 
 
 The log level can also be set externally in production environments via an environment variable `NANONEXT_LOG`.
 
 ```{r pub}
+
+# set logging level to include information events ------------------------------
 logging(level = "info")
 
 pub <- socket("pub", listen = "inproc://nanobroadcast")
 sub <- socket("sub", dial = "inproc://nanobroadcast")
 
+# subscribing to a specific topic 'examples' -----------------------------------
 sub |> subscribe(topic = "examples")
 pub |> send(c("examples", "this is an example"), mode = "raw", echo = FALSE)
 sub |> recv(mode = "character", keep.raw = FALSE)
@@ -294,7 +298,7 @@ sub |> recv(mode = "character", keep.raw = FALSE)
 pub |> send(c("other", "this other topic will not be received"), mode = "raw", echo = FALSE)
 sub |> recv(mode = "character", keep.raw = FALSE)
 
-# specify NULL to subscribe to ALL topics
+# specify NULL to subscribe to ALL topics --------------------------------------
 sub |> subscribe(topic = NULL)
 pub |> send(c("newTopic", "this is a new topic"), mode = "raw", echo = FALSE)
 sub |> recv("character", keep.raw = FALSE)
@@ -303,12 +307,56 @@ sub |> unsubscribe(topic = NULL)
 pub |> send(c("newTopic", "this topic will now not be received"), mode = "raw", echo = FALSE)
 sub |> recv("character", keep.raw = FALSE)
 
-# however the topics explicitly subscribed to are still received
+# however the topics explicitly subscribed to are still received ---------------
 pub |> send(c("examples", "this example will still be received"), mode = "raw", echo = FALSE)
 sub |> recv(mode = "character", keep.raw = FALSE)
 
+# set logging level back to the default of errors only -------------------------
+logging(level = "error")
+
 close(pub)
 close(sub)
+
+```
+
+[&laquo; Back to ToC](#table-of-contents)
+
+### Surveyor Respondent Model
+
+This type of topology is useful for applications such as service discovery.
+
+```{r survey}
+
+sur <- socket("surveyor", listen = "inproc://nanoservice")
+res1 <- socket("respondent", dial = "inproc://nanoservice")
+res2 <- socket("respondent", dial = "inproc://nanoservice")
+
+# sur sets a survey timeout, applying to this and subsequent surveys -----------
+sur |> survey_time(500)
+
+# sur sends a message and then requests 2 async receives -----------------------
+sur |> send("service check", echo = FALSE)
+aio1 <- sur |> recv_aio()
+aio2 <- sur |> recv_aio()
+
+# res1 receives the message and replies using an aio send function -------------
+res1 |> recv(keep.raw = FALSE)
+res1 |> send_aio("res1")
+
+# res2 receives the message but fails to reply ---------------------------------
+res2 |> recv(keep.raw = FALSE)
+
+# checking the aio - only the first will have resolved -------------------------
+aio1$data
+aio2$data
+
+# after the survey expires, the second resolves into a timeout error -----------
+Sys.sleep(0.5)
+aio2$data
+
+close(sur)
+close(res1)
+close(res2)
 
 ```
 

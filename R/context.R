@@ -324,7 +324,8 @@ request <- function(context,
     return(invisible(aio))
   }
   env <- `class<-`(new.env(), "recvAio")
-  `[[<-`(env, "callparams", list(recv_mode, keep.raw))
+  `[[<-`(env, "mode", recv_mode)
+  `[[<-`(env, "keep.raw", keep.raw)
   data <- raw <- resolv <- NULL
   if (keep.raw) {
     makeActiveBinding(sym = "raw", fun = function(x) {

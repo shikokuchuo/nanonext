@@ -216,7 +216,8 @@ print.nanoListener <- function(x, ...) {
 #'
 print.recvAio <- function(x, ...) {
 
-  cat("< recvAio >\n - $raw for raw message\n - $data for message data\n", file = stdout())
+  cat("< recvAio >\n - $data for message data\n",
+      if (.subset2(x, "keep.raw")) "- $raw for raw message\n", file = stdout())
   invisible(x)
 
 }
@@ -259,6 +260,22 @@ print.sendAio <- function(x, ...) {
 .DollarNames.nano <- function(x, pattern = "") {
 
   grep(pattern, names(attributes(x)), value = TRUE, fixed = TRUE)
+
+}
+
+#' @export
+#'
+.DollarNames.recvAio <- function(x, pattern = "") {
+
+  grep(pattern, c("data", if (.subset2(x, "keep.raw")) "raw"), value = TRUE, fixed = TRUE)
+
+}
+
+#' @export
+#'
+.DollarNames.sendAio <- function(x, pattern = "") {
+
+  grep(pattern, "result", value = TRUE, fixed = TRUE)
 
 }
 

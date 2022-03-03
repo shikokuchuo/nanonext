@@ -56,9 +56,9 @@ res
 call_aio(res)
 res$result
 
-res <- recv_aio(s2, timeout = 100)
-res
-call_aio(res)$data
+msg <- recv_aio(s2, timeout = 100)
+msg
+call_aio(msg)$data
 
 close(s1)
 close(s2)
