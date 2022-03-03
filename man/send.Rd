@@ -9,7 +9,7 @@ send(socket, data, mode = c("serial", "raw"), block = FALSE, echo = TRUE)
 \arguments{
 \item{socket}{a Socket.}
 
-\item{data}{an R object (if mode = 'raw', an R vector).}
+\item{data}{an object (if mode = 'raw', a vector).}
 
 \item{mode}{[default 'serial'] whether data will be sent serialized or as a
 raw vector. Use 'serial' for sending and receiving within R to ensure

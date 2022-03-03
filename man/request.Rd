@@ -17,7 +17,7 @@ request(
 \arguments{
 \item{context}{a Context.}
 
-\item{data}{an R object (if send_mode = 'raw', an R vector).}
+\item{data}{an object (if send_mode = 'raw', a vector).}
 
 \item{send_mode}{[default 'serial'] whether data will be sent serialized or
 as a raw vector. Use 'serial' for sending and receiving within R to ensure

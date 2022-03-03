@@ -34,16 +34,17 @@ For a 'recvAio', the received raw vector will be attached in \code{$raw}
     Once the result has been successfully retrieved, the Aio is deallocated
     and only the result is stored in the Aio object.
 }
-\section{Non-blocking}{
+\section{Alternatively}{
 
 
-    To query the value of an Aio without potentially waiting for the Aio
-    operation to complete, access the values directly at \code{$result} for a
-    'sendAio', and \code{$raw} or \code{$data} for a 'recvAio'.
+    Aio values may be accessed directly at \code{$result} for a 'sendAio',
+    and \code{$raw} or \code{$data} for a 'recvAio'. If the Aio operation is
+    yet to complete, a logical NA 'unresolved value' will be returned. Once
+    completed, the resolved value will be returned instead.
 
-    If the Aio operation is yet to complete, the result will be an
-    'unresolved value', which is a logical NA. Once complete, the resolved
-    value will be returned instead.
+    \code{\link{unresolved}} may also be used, which returns TRUE only if an
+    Aio or Aio value has yet to resolve and FALSE otherwise. This is suitable
+    for use in control flow statements such as \code{while} or \code{if}.
 }
 
 \examples{

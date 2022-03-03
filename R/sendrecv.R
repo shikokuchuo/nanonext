@@ -5,7 +5,7 @@
 #' Send data over a Socket.
 #'
 #' @param socket a Socket.
-#' @param data an R object (if mode = 'raw', an R vector).
+#' @param data an object (if mode = 'raw', a vector).
 #' @param mode [default 'serial'] whether data will be sent serialized or as a
 #'     raw vector. Use 'serial' for sending and receiving within R to ensure
 #'     perfect reproducibility. Use 'raw' for sending vectors of any type (will be

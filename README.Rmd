@@ -277,9 +277,12 @@ In such a case, using `call_aio()` confirms that the operation has completed (or
 
 {nanonext} fully implements NNG's pub/sub protocol as per the below example. 
 
-This example uses the new R4.1 pipe for clarity of code, although this is of course not required.
+The built-in logging levels are also demonstrated here. NNG errors are always output to stderr and operation is otherwise silent by default. To enable key information events to be sent to stdout, use `logging(level = "info")`. 
+
+The log level can also be set externally in production environments via an environment variable `NANONEXT_LOG`.
 
 ```{r pub}
+logging(level = "info")
 
 pub <- socket("pub", listen = "inproc://nanobroadcast")
 sub <- socket("sub", dial = "inproc://nanobroadcast")

@@ -104,6 +104,7 @@ socket <- function(protocol = c("pair", "bus", "push", "pull", "req", "rep",
 #' @examples
 #' pub <- socket("pub", listen = "inproc://nanonext")
 #' sub <- socket("sub", dial = "inproc://nanonext")
+#' logging(level = "info")
 #'
 #' subscribe(sub, "examples")
 #' send(pub, c("examples", "this is an example"), mode = "raw")
@@ -111,6 +112,7 @@ socket <- function(protocol = c("pair", "bus", "push", "pull", "req", "rep",
 #' send(pub, c("other", "this other topic will not be received"), mode = "raw")
 #' recv(sub, "character")
 #'
+#' logging(level = "error")
 #' close(pub)
 #' close(sub)
 #'
@@ -156,6 +158,7 @@ subscribe <- function(socket, topic = NULL) {
 #' @examples
 #' pub <- socket("pub", listen = "inproc://nanonext")
 #' sub <- socket("sub", dial = "inproc://nanonext")
+#' logging(level = "info")
 #'
 #' subscribe(sub, NULL)
 #' send(pub, c("examples", "this is an example"), mode = "raw")
@@ -164,6 +167,7 @@ subscribe <- function(socket, topic = NULL) {
 #' send(pub, c("examples", "this example will not be received"), mode = "raw")
 #' recv(sub, "character")
 #'
+#' logging(level = "error")
 #' close(pub)
 #' close(sub)
 #'
@@ -193,10 +197,7 @@ unsubscribe <- function(socket, topic = NULL) {
 #'
 #' @return Zero (invisibly) on success.
 #'
-#' @details This is a convenience function that wraps \code{\link{setopt}} with
-#'     the correct parameters.
-#'
-#'     After using this function, to start a new survey, the surveyor must:
+#' @details After using this function, to start a new survey, the surveyor must:
 #'     \itemize{
 #'     \item{send a message using any of the send functions.}
 #'     \item{switch to receiving responses.}
@@ -212,16 +213,18 @@ unsubscribe <- function(socket, topic = NULL) {
 #' @examples
 #' sur <- socket("surveyor", listen = "inproc://nanonext")
 #' res <- socket("respondent", dial = "inproc://nanonext")
+#' logging(level = "info")
 #'
 #' survey_time(sur, 1000)
 #' send(sur, "reply to this survey")
 #' aio <- recv_aio(sur)
 #'
 #' recv(res)
-#' send_aio(res, "replied")
+#' s <- send_aio(res, "replied")
 #'
 #' call_aio(aio)$data
 #'
+#' logging(level = "error")
 #' close(sur)
 #' close(res)
 #'
@@ -229,11 +232,14 @@ unsubscribe <- function(socket, topic = NULL) {
 #'
 survey_time <- function(socket, time) {
 
-  res <- setopt(socket, type = "ms", opt = "surveyor:survey-time", value = time)
-  if (logging()) {
+  xc <- .Call(rnng_socket_set_ms, socket, "surveyor:survey-time", time)
+  if (xc) {
+    message(Sys.time(), " [ ", xc, " ] ", nng_error(xc))
+  } else if (logging()) {
     cat(format.POSIXct(Sys.time()), "[ survey ] sock:", attr(socket, "id"),
         "| set time:", time, "\n", file = stdout())
   }
+  invisible(xc)
 
 }
 

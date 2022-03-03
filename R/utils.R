@@ -83,12 +83,23 @@ is_nul_byte <- function(x) {
 #'
 #' Set the logging level of nanonext.
 #'
-#' @param level specify a logging level - either 'error' (default) which sends
-#'     all NNG errors to stderr or 'info' which also sends informational events
-#'     such as socket open, listener/dialer start, socket close etc. to stdout.
+#' @param level specify a logging level
+#'     \itemize{
+#'     \item{'prev'} {which continues with the previous logging level}
+#'     \item{'check'} {which checks the value of environment variable 'NANONEXT_LOG'}
+#'     \item{'error'} {which sends all NNG errors to stderr}
+#'     \item{'info'} {which in addition sends key informational events such as
+#'     socket open etc. to stdout.}
+#'     }
 #'
 #' @return Invisible NULL, or if 'level' is not specified, the integer code of
-#'     the logging level.
+#'     the logging level. A confirmation is printed to the console (stdout) if
+#'     the logging level has changed.
+#'
+#' @details The environment variable 'NANONEXT_LOG' is checked automatically on
+#'     package load and then cached for optimal performance. It is also checked
+#'     each time \code{logging(level = "check")} is called. If the variable is
+#'     set incorrectly, the default level of 'error' is used instead.
 #'
 #' @examples
 #' logging(level = "info")
@@ -100,17 +111,24 @@ is_nul_byte <- function(x) {
 #'
 logging <- function(level) {
 
-  cache <- 0L
+  cache <- switch(tolower(Sys.getenv("NANONEXT_LOG")),
+                  info = 1L,
+                  0L)
 
-  logging <- function(level = c("error", "info")) {
+  logging <- function(level = c("prev", "check", "error", "info")) {
 
     missing(level) && return(cache)
     level <- match.arg(level)
+    original <- cache
     cache <<- switch(level,
+                     check = switch(tolower(Sys.getenv("NANONEXT_LOG")),
+                                    info = 1L,
+                                    0L),
                      error = 0L,
-                     info = 1L)
-    cat(format.POSIXct(Sys.time()), "[ log level ] set to:", level,
-        "\n", file = stdout())
+                     info = 1L,
+                     prev = original)
+    if (cache != original) cat(format.POSIXct(Sys.time()), "[ log level ] set to:",
+                               if (cache) "info\n" else "error\n", file = stdout())
 
   }
 

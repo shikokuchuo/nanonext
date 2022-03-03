@@ -20,10 +20,7 @@ For a socket using the surveyor protocol in a surveyor/respondent pattern.
     Messages received by the surveyor after the timer has ended are discarded.
 }
 \details{
-This is a convenience function that wraps \code{\link{setopt}} with
-    the correct parameters.
-
-    After using this function, to start a new survey, the surveyor must:
+After using this function, to start a new survey, the surveyor must:
     \itemize{
     \item{send a message using any of the send functions.}
     \item{switch to receiving responses.}
@@ -39,16 +36,18 @@ This is a convenience function that wraps \code{\link{setopt}} with
 \examples{
 sur <- socket("surveyor", listen = "inproc://nanonext")
 res <- socket("respondent", dial = "inproc://nanonext")
+logging(level = "info")
 
 survey_time(sur, 1000)
 send(sur, "reply to this survey")
 aio <- recv_aio(sur)
 
 recv(res)
-send_aio(res, "replied")
+s <- send_aio(res, "replied")
 
 call_aio(aio)$data
 
+logging(level = "error")
 close(sur)
 close(res)
 

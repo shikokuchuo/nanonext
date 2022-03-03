@@ -107,12 +107,7 @@ close.nanoSocket <- function(con, ...) {
 close.nanoContext <- function(con, ...) {
 
   xc <- .Call(rnng_ctx_close, con)
-  if (xc) {
-    message(Sys.time(), " [ ", xc, " ] ", nng_error(xc))
-  } else if (logging()) {
-    cat(format.POSIXct(Sys.time()), "[ ctxt close ] id:",
-        attr(con, "id"), "| sock:", attr(con, "socket"), "\n", file = stdout())
-  }
+  if (xc) message(Sys.time(), " [ ", xc, " ] ", nng_error(xc))
   invisible(xc)
 
 }

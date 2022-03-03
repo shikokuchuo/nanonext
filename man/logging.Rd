@@ -4,19 +4,31 @@
 \alias{logging}
 \title{Logging Level}
 \usage{
-logging(level = c("error", "info"))
+logging(level = c("prev", "check", "error", "info"))
 }
 \arguments{
-\item{level}{specify a logging level - either 'error' (default) which sends
-all NNG errors to stderr or 'info' which also sends informational events
-such as socket open, listener/dialer start, socket close etc. to stdout.}
+\item{level}{specify a logging level
+\itemize{
+\item{'prev'} {which continues with the previous logging level}
+\item{'check'} {which checks the value of environment variable 'NANONEXT_LOG'}
+\item{'error'} {which sends all NNG errors to stderr}
+\item{'info'} {which in addition sends key informational events such as
+socket open etc. to stdout.}
+}}
 }
 \value{
 Invisible NULL, or if 'level' is not specified, the integer code of
-    the logging level.
+    the logging level. A confirmation is printed to the console (stdout) if
+    the logging level has changed.
 }
 \description{
 Set the logging level of nanonext.
+}
+\details{
+The environment variable 'NANONEXT_LOG' is checked automatically on
+    package load and then cached for optimal performance. It is also checked
+    each time \code{logging(level = "check")} is called. If the variable is
+    set incorrectly, the default level of 'error' is used instead.
 }
 \examples{
 logging(level = "info")

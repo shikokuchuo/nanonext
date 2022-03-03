@@ -2,11 +2,11 @@
 
 #### New Features
 
-* Aio fields `$result` for a 'sendAio', `$raw` and `$data` for a 'recvAio' may be queried directly, returning their values or else an NA 'unresolved value' if the Aio operation is yet to complete.
-* `unresolved()` added as an auxiliary function to query whether an Aio is still unresolved in a non-blocking fashion.
+* Aio values `$result`, `$raw` or `$data` now resolve without requiring `call_aio()`. Access the values directly and an NA 'unresolved value' will be returned if the Aio operation is yet to complete.
+* `unresolved()` added as an auxiliary function to query whether an Aio is unresolved, for use in control flow statements.
 * `is_nul_byte()` added as a helper function for request/reply setups.
 * `survey_time()` added as a convenience function for surveyor/respondent patterns.
-* `logging()` function to specify a global package logging level - currently supports 'error' and 'info'.
+* `logging()` function to specify a global package logging level - 'error' or 'info'. Automatically polls the environment variable 'NANONEXT_LOG' on package load and then each time `logging(level = "check")` is called, allowing this to be set externally.
 * `ncurl()` adds a '...' argument. Support for HTTP methods other than GET.
 
 #### Updates

@@ -261,7 +261,7 @@ reply <- function(context,
 #'
 #' @inheritParams reply
 #' @inheritParams recv
-#' @param data an R object (if send_mode = 'raw', an R vector).
+#' @param data an object (if send_mode = 'raw', a vector).
 #' @param timeout in ms. If unspecified, a socket-specific default timeout will
 #'     be used. Note that this applies to receiving the result.
 #'

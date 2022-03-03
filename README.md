@@ -328,7 +328,7 @@ aio
 #>  - $raw for raw message
 #>  - $data for message data
 str(aio$data)
-#>  num [1:100000000] -0.771 -0.379 -0.377 -1.401 -1.579 ...
+#>  num [1:100000000] 0.837 1.301 2.225 1.43 -1.543 ...
 ```
 
 In this example the calculation is returned, but other operations may
@@ -345,32 +345,47 @@ the function, which may typically be NULL or an exit code.
 {nanonext} fully implements NNG’s pub/sub protocol as per the below
 example.
 
-This example uses the new R4.1 pipe for clarity of code, although this
-is of course not required.
+The built-in logging levels are also demonstrated here. NNG errors are
+always output to stderr and operation is otherwise silent by default. To
+enable key information events to be sent to stdout, use
+`logging(level = "info")`.
+
+The log level can also be set externally in production environments via
+an environment variable `NANONEXT_LOG`.
 
 ``` r
+logging(level = "info")
+#> 2022-03-03 10:51:39 [ log level ] set to: info
+
 pub <- socket("pub", listen = "inproc://nanobroadcast")
+#> 2022-03-03 10:51:39 [ sock open ] id: 9 | protocol: pub 
+#> 2022-03-03 10:51:39 [ list start ] sock: 9 | url: inproc://nanobroadcast
 sub <- socket("sub", dial = "inproc://nanobroadcast")
+#> 2022-03-03 10:51:39 [ sock open ] id: 10 | protocol: sub 
+#> 2022-03-03 10:51:39 [ dial start ] sock: 10 | url: inproc://nanobroadcast
 
 sub |> subscribe(topic = "examples")
+#> 2022-03-03 10:51:39 [ subscribe ] sock: 10 | topic: examples
 pub |> send(c("examples", "this is an example"), mode = "raw", echo = FALSE)
 sub |> recv(mode = "character", keep.raw = FALSE)
 #> [1] "examples"           "this is an example"
 
 pub |> send(c("other", "this other topic will not be received"), mode = "raw", echo = FALSE)
 sub |> recv(mode = "character", keep.raw = FALSE)
-#> 2022-03-02 17:01:22 [ 8 ] Try again
+#> 2022-03-03 10:51:39 [ 8 ] Try again
 
 # specify NULL to subscribe to ALL topics
 sub |> subscribe(topic = NULL)
+#> 2022-03-03 10:51:39 [ subscribe ] sock: 10 | topic: ALL
 pub |> send(c("newTopic", "this is a new topic"), mode = "raw", echo = FALSE)
 sub |> recv("character", keep.raw = FALSE)
 #> [1] "newTopic"            "this is a new topic"
 
 sub |> unsubscribe(topic = NULL)
+#> 2022-03-03 10:51:39 [ unsubscribe ] sock: 10 | topic: ALL
 pub |> send(c("newTopic", "this topic will now not be received"), mode = "raw", echo = FALSE)
 sub |> recv("character", keep.raw = FALSE)
-#> 2022-03-02 17:01:22 [ 8 ] Try again
+#> 2022-03-03 10:51:39 [ 8 ] Try again
 
 # however the topics explicitly subscribed to are still received
 pub |> send(c("examples", "this example will still be received"), mode = "raw", echo = FALSE)
@@ -378,7 +393,9 @@ sub |> recv(mode = "character", keep.raw = FALSE)
 #> [1] "examples"                            "this example will still be received"
 
 close(pub)
+#> 2022-03-03 10:51:39 [ sock close ] id: 9 | protocol: pub
 close(sub)
+#> 2022-03-03 10:51:39 [ sock close ] id: 10 | protocol: sub
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -394,11 +411,11 @@ ncurl("http://httpbin.org/headers")
 #>   [1] 7b 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73
 #>  [26] 74 22 3a 20 22 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22
 #>  [51] 58 2d 41 6d 7a 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31
-#>  [76] 2d 36 32 31 66 61 32 65 33 2d 37 66 31 34 35 62 63 64 31 65 34 34 36 34 61
-#> [101] 66 36 62 61 62 63 63 33 64 22 0a 20 20 7d 0a 7d 0a
+#>  [76] 2d 36 32 32 30 39 64 62 62 2d 34 61 61 66 66 65 31 37 32 61 64 64 35 39 35
+#> [101] 35 37 33 31 62 35 34 30 30 22 0a 20 20 7d 0a 7d 0a
 #> 
 #> $data
-#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-621fa2e3-7f145bcd1e4464af6babcc3d\"\n  }\n}\n"
+#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-62209dbb-4aaffe172add5955731b5400\"\n  }\n}\n"
 ```
 
 For advanced use, supports additional HTTP methods such as POST or PUT.

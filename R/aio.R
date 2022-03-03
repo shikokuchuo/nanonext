@@ -26,15 +26,16 @@
 #'     Once the result has been successfully retrieved, the Aio is deallocated
 #'     and only the result is stored in the Aio object.
 #'
-#' @section Non-blocking:
+#' @section Alternatively:
 #'
-#'     To query the value of an Aio without potentially waiting for the Aio
-#'     operation to complete, access the values directly at \code{$result} for a
-#'     'sendAio', and \code{$raw} or \code{$data} for a 'recvAio'.
+#'     Aio values may be accessed directly at \code{$result} for a 'sendAio',
+#'     and \code{$raw} or \code{$data} for a 'recvAio'. If the Aio operation is
+#'     yet to complete, a logical NA 'unresolved value' will be returned. Once
+#'     completed, the resolved value will be returned instead.
 #'
-#'     If the Aio operation is yet to complete, the result will be an
-#'     'unresolved value', which is a logical NA. Once complete, the resolved
-#'     value will be returned instead.
+#'     \code{\link{unresolved}} may also be used, which returns TRUE only if an
+#'     Aio or Aio value has yet to resolve and FALSE otherwise. This is suitable
+#'     for use in control flow statements such as \code{while} or \code{if}.
 #'
 #' @examples
 #' s1 <- socket("pair", listen = "inproc://nanonext")
@@ -133,16 +134,16 @@ stop_aio <- function(aio) {
 
 #' Query if an Aio is Unresolved
 #'
-#' Query whether an Aio or Aio value is unresolved. This function is non-blocking
-#'     unlike \code{\link{call_aio}} which waits for completion.
+#' Query whether an Aio or Aio value remains unresolved. Unlike
+#'     \code{\link{call_aio}}, this function does not wait for completion.
 #'
 #' @param aio An Aio (object of class 'sendAio' or 'recvAio'), or Aio value
 #'     stored in \code{$result}, \code{$raw} or \code{$data} as the case may be.
 #'
 #' @return Logical TRUE or FALSE.
 #'
-#' @details Returns TRUE for unresolved nanonext Aios or Aio values; returns
-#'     FALSE in all other cases and for all other objects.
+#' @details Returns TRUE for unresolved Aios or Aio values, FALSE otherwise.
+#'     Suitable for use in control flow statements such as \code{while} or \code{if}.
 #'
 #'     Note: querying resolution may cause a previously unresolved Aio to resolve.
 #'

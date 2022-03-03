@@ -14,12 +14,12 @@ stored in \code{$result}, \code{$raw} or \code{$data} as the case may be.}
 Logical TRUE or FALSE.
 }
 \description{
-Query whether an Aio or Aio value is unresolved. This function is non-blocking
-    unlike \code{\link{call_aio}} which waits for completion.
+Query whether an Aio or Aio value remains unresolved. Unlike
+    \code{\link{call_aio}}, this function does not wait for completion.
 }
 \details{
-Returns TRUE for unresolved nanonext Aios or Aio values; returns
-    FALSE in all other cases and for all other objects.
+Returns TRUE for unresolved Aios or Aio values, FALSE otherwise.
+    Suitable for use in control flow statements such as \code{while} or \code{if}.
 
     Note: querying resolution may cause a previously unresolved Aio to resolve.
 }
