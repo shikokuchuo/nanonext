@@ -57,15 +57,15 @@
 <h2 class="page-header" data-toc-text="0.2.0.9004" id="nanonext-0209004-development">nanonext 0.2.0.9004 (development)<a class="anchor" aria-label="anchor" href="#nanonext-0209004-development"></a></h2>
 <div class="section level5">
 <h5 id="new-features-0-2-0-9004">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-2-0-9004"></a></h5>
-<ul><li>Aio fields <code>$result</code> for a ‘sendAio’, <code>$raw</code> and <code>$data</code> for a ‘recvAio’ may be queried directly, returning their values or else an NA ‘unresolved value’ if the Aio operation is yet to complete.</li>
+<ul><li>Aio values <code>$result</code>, <code>$raw</code> or <code>$data</code> now resolve without requiring <code><a href="../reference/call_aio.html">call_aio()</a></code>. Access the values directly and an NA ‘unresolved value’ will be returned if the Aio operation is yet to complete.</li>
 <li>
-<code><a href="../reference/unresolved.html">unresolved()</a></code> added as an auxiliary function to query whether an Aio is still unresolved in a non-blocking fashion.</li>
+<code><a href="../reference/unresolved.html">unresolved()</a></code> added as an auxiliary function to query whether an Aio is unresolved, for use in control flow statements.</li>
 <li>
 <code><a href="../reference/is_nul_byte.html">is_nul_byte()</a></code> added as a helper function for request/reply setups.</li>
 <li>
 <code><a href="../reference/survey_time.html">survey_time()</a></code> added as a convenience function for surveyor/respondent patterns.</li>
 <li>
-<code><a href="../reference/logging.html">logging()</a></code> function to specify a global package logging level - currently supports ‘error’ and ‘info’.</li>
+<code><a href="../reference/logging.html">logging()</a></code> function to specify a global package logging level - ‘error’ or ‘info’. Automatically polls the environment variable ‘NANONEXT_LOG’ on package load and then each time <code>logging(level = "check")</code> is called, allowing this to be set externally.</li>
 <li>
 <code><a href="../reference/ncurl.html">ncurl()</a></code> adds a ‘…’ argument. Support for HTTP methods other than GET.</li>
 </ul></div>

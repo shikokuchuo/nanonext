@@ -59,31 +59,42 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">logging</span><span class="op">(</span>level <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"error"</span>, <span class="st">"info"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">logging</span><span class="op">(</span>level <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"prev"</span>, <span class="st">"check"</span>, <span class="st">"error"</span>, <span class="st">"info"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>level</dt>
-<dd><p>specify a logging level - either 'error' (default) which sends
-all NNG errors to stderr or 'info' which also sends informational events
-such as socket open, listener/dialer start, socket close etc. to stdout.</p></dd>
+<dd><p>specify a logging level</p><ul><li><p>'prev' which continues with the previous logging level</p></li>
+<li><p>'check' which checks the value of environment variable 'NANONEXT_LOG'</p></li>
+<li><p>'error' which sends all NNG errors to stderr</p></li>
+<li><p>'info' which in addition sends key informational events such as
+socket open etc. to stdout.</p></li>
+</ul></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>
     <p>Invisible NULL, or if 'level' is not specified, the integer code of
-    the logging level.</p>
+    the logging level. A confirmation is printed to the console (stdout) if
+    the logging level has changed.</p>
+    </div>
+    <div id="details">
+    <h2>Details</h2>
+    <p>The environment variable 'NANONEXT_LOG' is checked automatically on
+    package load and then cached for optimal performance. It is also checked
+    each time <code>logging(level = "check")</code> is called. If the variable is
+    set incorrectly, the default level of 'error' is used instead.</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu">logging</span><span class="op">(</span>level <span class="op">=</span> <span class="st">"info"</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2022-03-02 19:58:06 [ log level ] set to: info </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2022-03-03 11:14:47 [ log level ] set to: info</span>
 <span class="r-in"><span class="va">sock</span> <span class="op">&lt;-</span> <span class="fu"><a href="socket.html">socket</a></span><span class="op">(</span><span class="st">"respondent"</span>, dial <span class="op">=</span> <span class="st">"inproc://nanolog"</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2022-03-02 19:58:06 [ sock open ] id: 9 | protocol: respondent </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2022-03-02 19:58:06 [ dial start ] sock: 9 | url: inproc://nanolog </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2022-03-03 11:14:47 [ sock open ] id: 9 | protocol: respondent </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2022-03-03 11:14:47 [ dial start ] sock: 9 | url: inproc://nanolog </span>
 <span class="r-in"><span class="fu">logging</span><span class="op">(</span>level <span class="op">=</span> <span class="st">"error"</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2022-03-02 19:58:06 [ log level ] set to: error </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2022-03-03 11:14:47 [ log level ] set to: error</span>
 <span class="r-in"><span class="fu"><a href="close.html">close</a></span><span class="op">(</span><span class="va">sock</span><span class="op">)</span></span>
 <span class="r-in"></span>
 </code></pre></div>

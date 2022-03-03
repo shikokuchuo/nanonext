@@ -88,17 +88,18 @@
 <p>Once the result has been successfully retrieved, the Aio is deallocated
     and only the result is stored in the Aio object.</p>
     </div>
-    <div id="non-blocking">
-    <h2>Non-blocking</h2>
+    <div id="alternatively">
+    <h2>Alternatively</h2>
     
 
 
-<p>To query the value of an Aio without potentially waiting for the Aio
-    operation to complete, access the values directly at <code>$result</code> for a
-    'sendAio', and <code>$raw</code> or <code>$data</code> for a 'recvAio'.</p>
-<p>If the Aio operation is yet to complete, the result will be an
-    'unresolved value', which is a logical NA. Once complete, the resolved
-    value will be returned instead.</p>
+<p>Aio values may be accessed directly at <code>$result</code> for a 'sendAio',
+    and <code>$raw</code> or <code>$data</code> for a 'recvAio'. If the Aio operation is
+    yet to complete, a logical NA 'unresolved value' will be returned. Once
+    completed, the resolved value will be returned instead.</p>
+<p><code><a href="unresolved.html">unresolved</a></code> may also be used, which returns TRUE only if an
+    Aio or Aio value has yet to resolve and FALSE otherwise. This is suitable
+    for use in control flow statements such as <code>while</code> or <code>if</code>.</p>
     </div>
 
     <div id="ref-examples">
