@@ -179,8 +179,7 @@ SEXP rnng_aio_get_msg(SEXP aio) {
     error_return("'aio' is not an active Aio");
 
   nng_aio *aiop = (nng_aio *) R_ExternalPtrAddr(aio);
-  SEXP state = Rf_getAttrib(aio, nano_StateSymbol);
-  int_mtx *mutex = (int_mtx *) R_ExternalPtrAddr(state);
+  int_mtx *mutex = (int_mtx *) R_ExternalPtrAddr(Rf_getAttrib(aio, nano_StateSymbol));
   nng_mtx_lock(mutex->mtx);
   int resolv = mutex->state;
   nng_mtx_unlock(mutex->mtx);
@@ -191,9 +190,7 @@ SEXP rnng_aio_get_msg(SEXP aio) {
   if (xc) {
     nng_aio_free(aiop);
     R_ClearExternalPtr(aio);
-    nng_mtx_free(mutex->mtx);
-    R_Free(mutex);
-    R_ClearExternalPtr(state);
+    Rf_setAttrib(aio, nano_StateSymbol, R_NilValue);
     return Rf_ScalarInteger(xc);
   }
   nng_msg *msgp = nng_aio_get_msg(aiop);
@@ -204,9 +201,7 @@ SEXP rnng_aio_get_msg(SEXP aio) {
   nng_msg_free(msgp);
   nng_aio_free(aiop);
   R_ClearExternalPtr(aio);
-  nng_mtx_free(mutex->mtx);
-  R_Free(mutex);
-  R_ClearExternalPtr(state);
+  Rf_setAttrib(aio, nano_StateSymbol, R_NilValue);
 
   UNPROTECT(1);
   return res;
@@ -221,8 +216,7 @@ SEXP rnng_aio_result(SEXP aio) {
     error_return("'aio' is not an active Aio");
 
   nng_aio *aiop = (nng_aio *) R_ExternalPtrAddr(aio);
-  SEXP state = Rf_getAttrib(aio, nano_StateSymbol);
-  int_mtx *mutex = (int_mtx *) R_ExternalPtrAddr(state);
+  int_mtx *mutex = (int_mtx *) R_ExternalPtrAddr(Rf_getAttrib(aio, nano_StateSymbol));
   nng_mtx_lock(mutex->mtx);
   int resolv = mutex->state;
   nng_mtx_unlock(mutex->mtx);
@@ -233,9 +227,7 @@ SEXP rnng_aio_result(SEXP aio) {
 
   nng_aio_free(aiop);
   R_ClearExternalPtr(aio);
-  nng_mtx_free(mutex->mtx);
-  R_Free(mutex);
-  R_ClearExternalPtr(state);
+  Rf_setAttrib(aio, nano_StateSymbol, R_NilValue);
 
   return Rf_ScalarInteger(xc);
 
@@ -266,12 +258,7 @@ SEXP rnng_aio_stop(SEXP aio) {
 
   nng_aio_free(aiop);
   R_ClearExternalPtr(aio);
-
-  SEXP state = Rf_getAttrib(aio, nano_StateSymbol);
-  int_mtx *mutex = (int_mtx *) R_ExternalPtrAddr(state);
-  nng_mtx_free(mutex->mtx);
-  R_Free(mutex);
-  R_ClearExternalPtr(state);
+  Rf_setAttrib(aio, nano_StateSymbol, R_NilValue);
 
   return R_NilValue;
 

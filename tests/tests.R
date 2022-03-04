@@ -92,4 +92,5 @@ invisible(close(sock) == 0L || stop())
 invisible(is.character(ver <- nng_version()) && length(ver) == 2L || stop())
 invisible(is.character(nng_error(0L)) || stop())
 invisible(is_nul_byte(as.raw(0L)) && !is_nul_byte(NULL) || stop())
+invisible(!is_error_value(1L) || stop())
 

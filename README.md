@@ -224,8 +224,7 @@ n$recv(mode = "double")
 massively-scalable concurrency framework.
 
 `send_aio()` and `recv_aio()` functions return immediately but perform
-their operations async. Their results can be called using `call_aio()`
-when required.
+their operations async.
 
 ``` r
 library(nanonext)
@@ -233,49 +232,81 @@ s1 <- socket("pair", listen = "inproc://nano")
 s2 <- socket("pair", dial = "inproc://nano")
 ```
 
-For a ‘sendAio’ object, calling the result causes it to be stored in the
-AIO as `$result`. An exit code of 0 denotes a successful send.
+For a ‘sendAio’ object, the result is stored at `$result`. An exit code
+of 0 denotes a successful send.
+
+-   send is successful as long as the message has been accepted by the
+    socket for sending
+-   the message may be buffered within the system
+-   for acknowledgement of receipt, an RPC setup is required (see next
+    section)
 
 ``` r
 res <- send_aio(s1, data.frame(a = 1, b = 2))
-call_aio(res)
-res
-#> < sendAio >
-#>  - $result for send result
 res$result
 #> [1] 0
 ```
 
-For a ‘recvAio’ object, calling the message causes it to be stored in
-the AIO as `$raw` (if kept) and `$data`.
+For a ‘recvAio’ object, the message is stored at `$data`, and the raw
+message at `$raw` (if kept).
 
 ``` r
 msg <- recv_aio(s2)
-call_aio(msg)
-msg
-#> < recvAio >
-#>  - $data for message data
-#>  - $raw for raw message
 msg$data
 #>   a b
 #> 1 1 2
+msg$raw
+#>   [1] 58 0a 00 00 00 03 00 04 01 02 00 03 05 00 00 00 00 05 55 54 46 2d 38 00 00
+#>  [26] 03 13 00 00 00 02 00 00 00 0e 00 00 00 01 3f f0 00 00 00 00 00 00 00 00 00
+#>  [51] 0e 00 00 00 01 40 00 00 00 00 00 00 00 00 00 04 02 00 00 00 01 00 04 00 09
+#>  [76] 00 00 00 05 6e 61 6d 65 73 00 00 00 10 00 00 00 02 00 04 00 09 00 00 00 01
+#> [101] 61 00 04 00 09 00 00 00 01 62 00 00 04 02 00 00 00 01 00 04 00 09 00 00 00
+#> [126] 05 63 6c 61 73 73 00 00 00 10 00 00 00 01 00 04 00 09 00 00 00 0a 64 61 74
+#> [151] 61 2e 66 72 61 6d 65 00 00 04 02 00 00 00 01 00 04 00 09 00 00 00 09 72 6f
+#> [176] 77 2e 6e 61 6d 65 73 00 00 00 0d 00 00 00 02 80 00 00 00 ff ff ff ff 00 00
+#> [201] 00 fe
 ```
 
-The values can also be accessed directly from the call as per the
-example below:
+If the async operation is yet to complete, a logical NA ‘unresolved
+value’ will be returned. In the below example an async receive is
+requested, but no mesages are waiting (yet to be sent).
 
 ``` r
+msg <- recv_aio(s2)
+msg$data
+#> < unresolved value >
+```
+
+For use in control flow statements, `unresolved` can be used. Note that
+calling this function queries for resolution itself and may cause a
+previously unresolved Aio to resolve.
+
+``` r
+#  unresolved() already queries for resolution so no need for it again within the while clause
+
+while (unresolved(msg)) {
+  # do stuff here before checking resolution again
+  send_aio(s1, "resolved")
+}
+
+msg$data
+#> [1] "resolved"
+```
+
+The values may also be called explicitly using `call_aio()`. This will
+wait for completion of the Aio (blocking).
+
+``` r
+# will wait for completion then return the resolved Aio
+call_aio(msg)
+
+# to access the resolved value directly (waiting if required)
 call_aio(msg)$data
-#>   a b
-#> 1 1 2
+#> [1] "resolved"
 
 close(s1)
 close(s2)
 ```
-
-As an example of possible applications, the {mirai} package
-<https://shikokuchuo.net/mirai/> (available on CRAN) uses {nanonext} as
-the back-end to provide asynchronous execution of arbitrary R code.
 
 [« Back to ToC](#table-of-contents)
 
@@ -328,7 +359,7 @@ aio
 #> < recvAio >
 #>  - $data for message data
 str(aio$data)
-#>  num [1:100000000] -1.211 -0.218 0.105 -0.608 0.256 ...
+#>  num [1:100000000] -0.5969 0.269 0.0237 -1.1824 1.806 ...
 ```
 
 In this example the calculation is returned, but other operations may
@@ -337,6 +368,10 @@ reside entirely on the server side, for example writing data to disk.
 In such a case, using `call_aio()` confirms that the operation has
 completed (or it will wait for completion) and calls the return value of
 the function, which may typically be NULL or an exit code.
+
+The {mirai} package <https://shikokuchuo.net/mirai/> (available on CRAN)
+uses {nanonext} as the back-end to provide asynchronous execution of
+arbitrary R code using the RPC model.
 
 [« Back to ToC](#table-of-contents)
 
@@ -356,38 +391,38 @@ an environment variable `NANONEXT_LOG`.
 ``` r
 # set logging level to include information events ------------------------------
 logging(level = "info")
-#> 2022-03-03 23:42:57 [ log level ] set to: info
+#> 2022-03-04 09:57:23 [ log level ] set to: info
 
 pub <- socket("pub", listen = "inproc://nanobroadcast")
-#> 2022-03-03 23:42:57 [ sock open ] id: 9 | protocol: pub 
-#> 2022-03-03 23:42:57 [ list start ] sock: 9 | url: inproc://nanobroadcast
+#> 2022-03-04 09:57:23 [ sock open ] id: 9 | protocol: pub 
+#> 2022-03-04 09:57:23 [ list start ] sock: 9 | url: inproc://nanobroadcast
 sub <- socket("sub", dial = "inproc://nanobroadcast")
-#> 2022-03-03 23:42:57 [ sock open ] id: 10 | protocol: sub 
-#> 2022-03-03 23:42:57 [ dial start ] sock: 10 | url: inproc://nanobroadcast
+#> 2022-03-04 09:57:23 [ sock open ] id: 10 | protocol: sub 
+#> 2022-03-04 09:57:23 [ dial start ] sock: 10 | url: inproc://nanobroadcast
 
 # subscribing to a specific topic 'examples' -----------------------------------
 sub |> subscribe(topic = "examples")
-#> 2022-03-03 23:42:57 [ subscribe ] sock: 10 | topic: examples
+#> 2022-03-04 09:57:23 [ subscribe ] sock: 10 | topic: examples
 pub |> send(c("examples", "this is an example"), mode = "raw", echo = FALSE)
 sub |> recv(mode = "character", keep.raw = FALSE)
 #> [1] "examples"           "this is an example"
 
 pub |> send(c("other", "this other topic will not be received"), mode = "raw", echo = FALSE)
 sub |> recv(mode = "character", keep.raw = FALSE)
-#> 2022-03-03 23:42:57 [ 8 ] Try again
+#> 2022-03-04 09:57:23 [ 8 ] Try again
 
 # specify NULL to subscribe to ALL topics --------------------------------------
 sub |> subscribe(topic = NULL)
-#> 2022-03-03 23:42:57 [ subscribe ] sock: 10 | topic: ALL
+#> 2022-03-04 09:57:23 [ subscribe ] sock: 10 | topic: ALL
 pub |> send(c("newTopic", "this is a new topic"), mode = "raw", echo = FALSE)
 sub |> recv("character", keep.raw = FALSE)
 #> [1] "newTopic"            "this is a new topic"
 
 sub |> unsubscribe(topic = NULL)
-#> 2022-03-03 23:42:57 [ unsubscribe ] sock: 10 | topic: ALL
+#> 2022-03-04 09:57:23 [ unsubscribe ] sock: 10 | topic: ALL
 pub |> send(c("newTopic", "this topic will now not be received"), mode = "raw", echo = FALSE)
 sub |> recv("character", keep.raw = FALSE)
-#> 2022-03-03 23:42:57 [ 8 ] Try again
+#> 2022-03-04 09:57:23 [ 8 ] Try again
 
 # however the topics explicitly subscribed to are still received ---------------
 pub |> send(c("examples", "this example will still be received"), mode = "raw", echo = FALSE)
@@ -396,7 +431,7 @@ sub |> recv(mode = "character", keep.raw = FALSE)
 
 # set logging level back to the default of errors only -------------------------
 logging(level = "error")
-#> 2022-03-03 23:42:57 [ log level ] set to: error
+#> 2022-03-04 09:57:23 [ log level ] set to: error
 
 close(pub)
 close(sub)
@@ -447,7 +482,7 @@ aio2$data
 # after the survey expires, the second resolves into a timeout error -----------
 Sys.sleep(0.5)
 aio2$data
-#> 2022-03-03 23:42:57 [ 5 ] Timed out
+#> 2022-03-04 09:57:24 [ 5 ] Timed out
 #> 'errorValue' int 5
 
 close(sur)
@@ -468,11 +503,11 @@ ncurl("http://httpbin.org/headers")
 #>   [1] 7b 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73
 #>  [26] 74 22 3a 20 22 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22
 #>  [51] 58 2d 41 6d 7a 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31
-#>  [76] 2d 36 32 32 31 35 32 38 31 2d 37 65 32 32 39 65 31 62 36 65 30 31 62 63 38
-#> [101] 33 36 31 37 61 61 64 31 64 22 0a 20 20 7d 0a 7d 0a
+#>  [76] 2d 36 32 32 31 65 32 38 34 2d 32 30 63 63 63 36 35 30 35 31 37 35 36 37 37
+#> [101] 61 30 37 30 31 63 64 36 30 22 0a 20 20 7d 0a 7d 0a
 #> 
 #> $data
-#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-62215281-7e229e1b6e01bc83617aad1d\"\n  }\n}\n"
+#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6221e284-20ccc6505175677a0701cd60\"\n  }\n}\n"
 ```
 
 For advanced use, supports additional HTTP methods such as POST or PUT.

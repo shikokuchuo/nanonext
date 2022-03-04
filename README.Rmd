@@ -176,7 +176,7 @@ n$recv(mode = "double")
 
 {nanonext} implements true async send and receive, leveraging NNG as a massively-scalable concurrency framework.
 
-`send_aio()` and `recv_aio()` functions return immediately but perform their operations async. Their results can be called using `call_aio()` when required.
+`send_aio()` and `recv_aio()` functions return immediately but perform their operations async.
 
 ```{r async}
 library(nanonext)
@@ -185,40 +185,66 @@ s2 <- socket("pair", dial = "inproc://nano")
 
 ```
 
-For a 'sendAio' object, calling the result causes it to be stored in the AIO as `$result`. An exit code of 0 denotes a successful send.
+For a 'sendAio' object, the result is stored at `$result`. An exit code of 0 denotes a successful send.
+
+- send is successful as long as the message has been accepted by the socket for sending
+- the message may be buffered within the system
+- for acknowledgement of receipt, an RPC setup is required (see next section)
 
 ```{r async2}
 
 res <- send_aio(s1, data.frame(a = 1, b = 2))
-call_aio(res)
-res
 res$result
 
 ```
 
-For a 'recvAio' object, calling the message causes it to be stored in the AIO as `$raw` (if kept) and `$data`.
+For a 'recvAio' object, the message is stored at `$data`, and the raw message at `$raw` (if kept).
 
 ```{r async3}
 
 msg <- recv_aio(s2)
-call_aio(msg)
-msg
+msg$data
+msg$raw
+
+```
+
+If the async operation is yet to complete, a logical NA 'unresolved value' will be returned. In the below example an async receive is requested, but no mesages are waiting (yet to be sent).
+
+```{r async4}
+
+msg <- recv_aio(s2)
 msg$data
 
 ```
 
-The values can also be accessed directly from the call as per the example below:
+For use in control flow statements, `unresolved` can be used. Note that calling this function queries for resolution itself and may cause a previously unresolved Aio to resolve.
 
-```{r async4}
+```{r async5}
 
+#  unresolved() already queries for resolution so no need for it again within the while clause
+
+while (unresolved(msg)) {
+  # do stuff here before checking resolution again
+  send_aio(s1, "resolved")
+}
+
+msg$data
+```
+
+The values may also be called explicitly using `call_aio()`. This will wait for completion of the Aio (blocking).
+
+```{r async6}
+
+# will wait for completion then return the resolved Aio
+call_aio(msg)
+
+# to access the resolved value directly (waiting if required)
 call_aio(msg)$data
 
 close(s1)
 close(s2)
 
 ```
-
-As an example of possible applications, the {mirai} package <https://shikokuchuo.net/mirai/> (available on CRAN) uses {nanonext} as the back-end to provide asynchronous execution of arbitrary R code.
 
 [&laquo; Back to ToC](#table-of-contents)
 
@@ -271,6 +297,8 @@ str(aio$data)
 In this example the calculation is returned, but other operations may reside entirely on the server side, for example writing data to disk.
 
 In such a case, using `call_aio()` confirms that the operation has completed (or it will wait for completion) and calls the return value of the function, which may typically be NULL or an exit code.
+
+The {mirai} package <https://shikokuchuo.net/mirai/> (available on CRAN) uses {nanonext} as the back-end to provide asynchronous execution of arbitrary R code using the RPC model.
 
 [&laquo; Back to ToC](#table-of-contents)
 
