@@ -323,7 +323,9 @@ close(sub)
 
 ### Surveyor Respondent Model
 
-This type of topology is useful for applications such as service discovery.
+This type of pattern is useful for applications such as service discovery.
+
+A surveyor sends a survey, which is broadcast to all peer respondents. The respondents then have a chance to reply (but are not obliged to). The survey itself is a timed event, such that responses received after the timeout are discarded.
 
 ```{r survey}
 

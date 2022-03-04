@@ -145,7 +145,7 @@ recv_ctx <- function(context,
   res <- .Call(rnng_ctx_recv, context, timeout)
   is.integer(res) && {
     message(Sys.time(), " [ ", res, " ] ", nng_error(res))
-    return(invisible(res))
+    return(invisible(`class<-`(res, "errorValue")))
   }
   on.exit(expr = return(res))
   data <- switch(mode,
@@ -231,7 +231,7 @@ reply <- function(context,
   res <- .Call(rnng_ctx_recv, context, timeout)
   is.integer(res) && {
     message(Sys.time(), " [ ", res, " ] ", nng_error(res))
-    return(invisible(res))
+    return(invisible(`class<-`(res, "errorValue")))
   }
   on.exit(expr = send_aio(context, as.raw(0L), mode = send_mode))
   data <- switch(recv_mode,
@@ -321,11 +321,9 @@ request <- function(context,
   aio <- .Call(rnng_recv_aio, context, timeout)
   is.integer(aio) && {
     message(Sys.time(), " [ ", aio, " ] ", nng_error(aio))
-    return(invisible(aio))
+    return(invisible(`class<-`(aio, "errorValue")))
   }
   env <- `class<-`(new.env(), "recvAio")
-  `[[<-`(env, "mode", recv_mode)
-  `[[<-`(env, "keep.raw", keep.raw)
   data <- raw <- resolv <- NULL
   if (keep.raw) {
     makeActiveBinding(sym = "raw", fun = function(x) {
@@ -333,9 +331,9 @@ request <- function(context,
         res <- .Call(rnng_aio_get_msg, aio)
         missing(res) && return(.Call(rnng_aio_unresolv))
         is.integer(res) && {
-          res <<- raw <<- resolv <<- res
+          data <<- raw <<- resolv <<- `class<-`(res, "errorValue")
           message(Sys.time(), " [ ", res, " ] ", nng_error(res))
-          return(invisible(res))
+          return(invisible(resolv))
         }
         on.exit(expr = {
           raw <<- res
@@ -360,9 +358,9 @@ request <- function(context,
       res <- .Call(rnng_aio_get_msg, aio)
       missing(res) && return(.Call(rnng_aio_unresolv))
       is.integer(res) && {
-        res <<- raw <<- resolv <<- res
+        data <<- raw <<- resolv <<- `class<-`(res, "errorValue")
         message(Sys.time(), " [ ", res, " ] ", nng_error(res))
-        return(invisible(res))
+        return(invisible(resolv))
       }
       on.exit(expr = {
         data <<- res
@@ -381,6 +379,7 @@ request <- function(context,
     }
     data
   }, env = env)
+  `[[<-`(env, "keep.raw", keep.raw)
   `[[<-`(env, "aio", aio)
 
 }

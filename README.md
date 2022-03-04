@@ -328,7 +328,7 @@ aio
 #> < recvAio >
 #>  - $data for message data
 str(aio$data)
-#>  num [1:100000000] -2.12 -0.152 -0.485 1.971 0.061 ...
+#>  num [1:100000000] -1.211 -0.218 0.105 -0.608 0.256 ...
 ```
 
 In this example the calculation is returned, but other operations may
@@ -356,38 +356,38 @@ an environment variable `NANONEXT_LOG`.
 ``` r
 # set logging level to include information events ------------------------------
 logging(level = "info")
-#> 2022-03-03 16:31:20 [ log level ] set to: info
+#> 2022-03-03 23:42:57 [ log level ] set to: info
 
 pub <- socket("pub", listen = "inproc://nanobroadcast")
-#> 2022-03-03 16:31:20 [ sock open ] id: 9 | protocol: pub 
-#> 2022-03-03 16:31:20 [ list start ] sock: 9 | url: inproc://nanobroadcast
+#> 2022-03-03 23:42:57 [ sock open ] id: 9 | protocol: pub 
+#> 2022-03-03 23:42:57 [ list start ] sock: 9 | url: inproc://nanobroadcast
 sub <- socket("sub", dial = "inproc://nanobroadcast")
-#> 2022-03-03 16:31:20 [ sock open ] id: 10 | protocol: sub 
-#> 2022-03-03 16:31:20 [ dial start ] sock: 10 | url: inproc://nanobroadcast
+#> 2022-03-03 23:42:57 [ sock open ] id: 10 | protocol: sub 
+#> 2022-03-03 23:42:57 [ dial start ] sock: 10 | url: inproc://nanobroadcast
 
 # subscribing to a specific topic 'examples' -----------------------------------
 sub |> subscribe(topic = "examples")
-#> 2022-03-03 16:31:20 [ subscribe ] sock: 10 | topic: examples
+#> 2022-03-03 23:42:57 [ subscribe ] sock: 10 | topic: examples
 pub |> send(c("examples", "this is an example"), mode = "raw", echo = FALSE)
 sub |> recv(mode = "character", keep.raw = FALSE)
 #> [1] "examples"           "this is an example"
 
 pub |> send(c("other", "this other topic will not be received"), mode = "raw", echo = FALSE)
 sub |> recv(mode = "character", keep.raw = FALSE)
-#> 2022-03-03 16:31:20 [ 8 ] Try again
+#> 2022-03-03 23:42:57 [ 8 ] Try again
 
 # specify NULL to subscribe to ALL topics --------------------------------------
 sub |> subscribe(topic = NULL)
-#> 2022-03-03 16:31:20 [ subscribe ] sock: 10 | topic: ALL
+#> 2022-03-03 23:42:57 [ subscribe ] sock: 10 | topic: ALL
 pub |> send(c("newTopic", "this is a new topic"), mode = "raw", echo = FALSE)
 sub |> recv("character", keep.raw = FALSE)
 #> [1] "newTopic"            "this is a new topic"
 
 sub |> unsubscribe(topic = NULL)
-#> 2022-03-03 16:31:20 [ unsubscribe ] sock: 10 | topic: ALL
+#> 2022-03-03 23:42:57 [ unsubscribe ] sock: 10 | topic: ALL
 pub |> send(c("newTopic", "this topic will now not be received"), mode = "raw", echo = FALSE)
 sub |> recv("character", keep.raw = FALSE)
-#> 2022-03-03 16:31:20 [ 8 ] Try again
+#> 2022-03-03 23:42:57 [ 8 ] Try again
 
 # however the topics explicitly subscribed to are still received ---------------
 pub |> send(c("examples", "this example will still be received"), mode = "raw", echo = FALSE)
@@ -396,7 +396,7 @@ sub |> recv(mode = "character", keep.raw = FALSE)
 
 # set logging level back to the default of errors only -------------------------
 logging(level = "error")
-#> 2022-03-03 16:31:20 [ log level ] set to: error
+#> 2022-03-03 23:42:57 [ log level ] set to: error
 
 close(pub)
 close(sub)
@@ -406,8 +406,13 @@ close(sub)
 
 ### Surveyor Respondent Model
 
-This type of topology is useful for applications such as service
+This type of pattern is useful for applications such as service
 discovery.
+
+A surveyor sends a survey, which is broadcast to all peer respondents.
+The respondents then have a chance to reply (but are not obliged to).
+The survey itself is a timed event, such that responses received after
+the timeout are discarded.
 
 ``` r
 sur <- socket("surveyor", listen = "inproc://nanoservice")
@@ -442,8 +447,8 @@ aio2$data
 # after the survey expires, the second resolves into a timeout error -----------
 Sys.sleep(0.5)
 aio2$data
-#> 2022-03-03 16:31:21 [ 5 ] Timed out
-#> [1] 5
+#> 2022-03-03 23:42:57 [ 5 ] Timed out
+#> 'errorValue' int 5
 
 close(sur)
 close(res1)
@@ -463,11 +468,11 @@ ncurl("http://httpbin.org/headers")
 #>   [1] 7b 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73
 #>  [26] 74 22 3a 20 22 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22
 #>  [51] 58 2d 41 6d 7a 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31
-#>  [76] 2d 36 32 32 30 65 64 35 39 2d 32 31 64 36 39 31 30 32 31 32 62 30 63 39 34
-#> [101] 64 30 65 61 36 32 63 31 30 22 0a 20 20 7d 0a 7d 0a
+#>  [76] 2d 36 32 32 31 35 32 38 31 2d 37 65 32 32 39 65 31 62 36 65 30 31 62 63 38
+#> [101] 33 36 31 37 61 61 64 31 64 22 0a 20 20 7d 0a 7d 0a
 #> 
 #> $data
-#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6220ed59-21d6910212b0c94d0ea62c10\"\n  }\n}\n"
+#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-62215281-7e229e1b6e01bc83617aad1d\"\n  }\n}\n"
 ```
 
 For advanced use, supports additional HTTP methods such as POST or PUT.

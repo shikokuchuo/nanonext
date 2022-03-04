@@ -95,13 +95,13 @@ send_aio <- function(socket, data, mode = c("serial", "raw"), timeout) {
     return(invisible(aio))
   }
   env <- `class<-`(new.env(), "sendAio")
-  result <- resolv <- NULL
+  result <- NULL
   makeActiveBinding(sym = "result", fun = function(x) {
-    if (is.null(resolv)) {
-      result <- .Call(rnng_aio_result, aio)
-      missing(result) && return(.Call(rnng_aio_unresolv))
-      result <<- result
-      resolv <<- 0L
+    if (is.null(result)) {
+      res <- .Call(rnng_aio_result, aio)
+      missing(res) && return(.Call(rnng_aio_unresolv))
+      if (res) message(Sys.time(), " [ ", res, " ] ", nng_error(res))
+      result <<- res
     }
     result
   }, env = env)
@@ -163,7 +163,7 @@ recv <- function(socket,
   res <- .Call(rnng_recv, socket, block)
   is.integer(res) && {
     message(Sys.time(), " [ ", res, " ] ", nng_error(res))
-    return(invisible(res))
+    return(invisible(`class<-`(res, "errorValue")))
   }
   on.exit(expr = return(res))
   data <- switch(mode,
@@ -231,11 +231,9 @@ recv_aio <- function(socket,
   aio <- .Call(rnng_recv_aio, socket, timeout)
   is.integer(aio) && {
     message(Sys.time(), " [ ", aio, " ] ", nng_error(aio))
-    return(invisible(aio))
+    return(invisible(`class<-`(aio, "errorValue")))
   }
   env <- `class<-`(new.env(), "recvAio")
-  `[[<-`(env, "mode", mode)
-  `[[<-`(env, "keep.raw", keep.raw)
   data <- raw <- resolv <- NULL
   if (keep.raw) {
     makeActiveBinding(sym = "raw", fun = function(x) {
@@ -243,9 +241,9 @@ recv_aio <- function(socket,
         res <- .Call(rnng_aio_get_msg, aio)
         missing(res) && return(.Call(rnng_aio_unresolv))
         is.integer(res) && {
-          res <<- raw <<- resolv <<- res
+          data <<- raw <<- resolv <<- `class<-`(res, "errorValue")
           message(Sys.time(), " [ ", res, " ] ", nng_error(res))
-          return(invisible(res))
+          return(invisible(resolv))
         }
         on.exit(expr = {
           raw <<- res
@@ -270,9 +268,9 @@ recv_aio <- function(socket,
       res <- .Call(rnng_aio_get_msg, aio)
       missing(res) && return(.Call(rnng_aio_unresolv))
       is.integer(res) && {
-        res <<- raw <<- resolv <<- res
+        data <<- raw <<- resolv <<- `class<-`(res, "errorValue")
         message(Sys.time(), " [ ", res, " ] ", nng_error(res))
-        return(invisible(res))
+        return(invisible(resolv))
       }
       on.exit(expr = {
         data <<- res
@@ -291,6 +289,7 @@ recv_aio <- function(socket,
     }
     data
   }, env = env)
+  `[[<-`(env, "keep.raw", keep.raw)
   `[[<-`(env, "aio", aio)
 
 }

@@ -288,3 +288,12 @@ print.unresolvedValue <- function(x, ...) {
 
 }
 
+#' @export
+#'
+print.errorValue <- function(x, ...) {
+
+  cat("'errorValue' int", x, "\n", file = stdout())
+  invisible(x)
+
+}
+
