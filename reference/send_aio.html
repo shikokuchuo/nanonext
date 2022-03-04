@@ -85,6 +85,8 @@ be used.</p></dd>
     <div id="details">
     <h2>Details</h2>
     <p>Async send is always non-blocking and returns immediately.</p>
+<p>The send result is available at <code>$result</code>, which will return an
+    'unresolved' logical NA if the async operation is yet to complete.</p>
 <p>To wait for and check the result of the send operation, use
     <code><a href="call_aio.html">call_aio</a></code> on the returned 'sendAio' object.</p>
 <p>Alternatively, to stop the async operation, use <code><a href="stop_aio.html">stop_aio</a></code>.</p>

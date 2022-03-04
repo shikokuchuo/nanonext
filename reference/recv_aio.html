@@ -92,8 +92,11 @@ the converted data only.</p></dd>
     <div id="details">
     <h2>Details</h2>
     <p>Async receive is always non-blocking and returns immediately.</p>
-<p>To wait for the AIO to complete and retrieve the received message,
-    use <code><a href="call_aio.html">call_aio</a></code> on the returned 'recvAio' object.</p>
+<p>The received message is available at <code>$data</code>, and the raw message at
+    <code>$raw</code> (if kept). An 'unresolved' logical NA will be returned if the
+    async operation is yet to complete.</p>
+<p>To wait for the async operation to complete and retrieve the received
+    message, use <code><a href="call_aio.html">call_aio</a></code> on the returned 'recvAio' object.</p>
 <p>Alternatively, to stop the async operation, use <code><a href="stop_aio.html">stop_aio</a></code>.</p>
     </div>
 

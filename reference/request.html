@@ -106,10 +106,12 @@ the converted data only.</p></dd>
     <div id="details">
     <h2>Details</h2>
     <p>Sending the request and receiving the result are both performed async,
-    hence the function will return immediately with a 'recvAio' object.</p>
+    hence the function will return immediately with a 'recvAio' object. Access
+    the return value at <code>$data</code>.</p>
 <p>This is designed so that the process on the server can run concurrently
-    without blocking the client. Use <code><a href="call_aio.html">call_aio</a></code> on the 'recvAio'
-    to call the result when required.</p>
+    without blocking the client.</p>
+<p>Optionally use <code><a href="call_aio.html">call_aio</a></code> on the 'recvAio' to call (and wait
+    for) the result.</p>
 <p>If an error occured in the server process, a nul byte <code>00</code> will be
     received (as <code>$data</code> if 'recv_mode' = 'serial', as <code>$raw</code>
     otherwise). This allows an error to be easily distinguished from a NULL
@@ -126,10 +128,10 @@ the converted data only.</p></dd>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># works if req and rep are running in parallel in different processes</span></span>
 <span class="r-in"><span class="fu"><a href="reply.html">reply</a></span><span class="op">(</span><span class="va">ctxp</span>, execute <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="va">x</span> <span class="op">+</span> <span class="fl">1</span>, timeout <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 2022-03-04 10:04:41 [ 5 ] Timed out</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 2022-03-04 10:49:12 [ 5 ] Timed out</span>
 <span class="r-in"><span class="va">aio</span> <span class="op">&lt;-</span> <span class="fu">request</span><span class="op">(</span><span class="va">ctxq</span>, data <span class="op">=</span> <span class="fl">2022</span>, timeout <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu"><a href="call_aio.html">call_aio</a></span><span class="op">(</span><span class="va">aio</span><span class="op">)</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 2022-03-04 10:04:41 [ 5 ] Timed out</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 2022-03-04 10:49:12 [ 5 ] Timed out</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="fu"><a href="close.html">close</a></span><span class="op">(</span><span class="va">req</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu"><a href="close.html">close</a></span><span class="op">(</span><span class="va">rep</span><span class="op">)</span></span>
