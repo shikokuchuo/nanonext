@@ -15,8 +15,8 @@ badge](https://shikokuchuo.r-universe.dev/badges/nanonext?color=3f72af)](https:/
 R binding for NNG (Nanomsg Next Gen), a successor to ZeroMQ. NNG is a
 socket library providing high-performance scalability protocols,
 implementing a cross-platform standard for messaging and communications.
-Serves as a concurrency framework that can be used for building
-distributed applications.
+Leveraging asynchronous execution, serves as a concurrency framework for
+building distributed applications.
 
 Designed for performance and reliability, the NNG library is written in
 C and {nanonext} is a lightweight wrapper depending on no other
@@ -221,7 +221,7 @@ n$recv(mode = "double")
 ### Async and Concurrency
 
 {nanonext} implements true async send and receive, leveraging NNG as a
-massively-scalable concurrency framework.
+massively-scaleable concurrency framework.
 
 `send_aio()` and `recv_aio()` functions return immediately but perform
 their operations async.
@@ -232,19 +232,19 @@ s1 <- socket("pair", listen = "inproc://nano")
 s2 <- socket("pair", dial = "inproc://nano")
 ```
 
-For a ‘sendAio’ object, the result is stored at `$result`. An exit code
-of 0 denotes a successful send.
-
--   send is successful as long as the message has been accepted by the
-    socket for sending
--   the message may be buffered within the system
--   for acknowledgement of receipt, an RPC setup is required (see next
-    section)
+For a ‘sendAio’ object, the result is stored at `$result`.
 
 ``` r
 res <- send_aio(s1, data.frame(a = 1, b = 2))
+res
+#> < sendAio >
+#>  - $result for send result
 res$result
 #> [1] 0
+
+# an exit code of 0 denotes a successful send
+# note: the send is successful as long as the message has been accepted by the socket for sending
+# the message itself may still be buffered within the system
 ```
 
 For a ‘recvAio’ object, the message is stored at `$data`, and the raw
@@ -252,6 +252,10 @@ message at `$raw` (if kept).
 
 ``` r
 msg <- recv_aio(s2)
+msg
+#> < recvAio >
+#>  - $data for message data
+#>  - $raw for raw message
 msg$data
 #>   a b
 #> 1 1 2
@@ -268,26 +272,28 @@ msg$raw
 ```
 
 If the async operation is yet to complete, an ‘unresolved’ logical NA
-will be returned. In the below example an async receive is requested,
-but no mesages are waiting (yet to be sent).
+value will be returned.
 
 ``` r
+# an async receive is requested, but no mesages are waiting (yet to be sent)
+
 msg <- recv_aio(s2)
 msg$data
 #> < unresolved: logi NA >
 ```
 
-For use in control flow statements, `unresolved` can be used. Note that
-calling this function queries for resolution itself and may cause a
-previously unresolved Aio to resolve.
+Auxiliary function `unresolved()` can be used in control flow
+statements.
 
 ``` r
-#  unresolved() already queries for resolution so no need for it again within the while clause
+# unresolved() queries for resolution itself so no need to use it again within the while clause
 
 while (unresolved(msg)) {
-  # do stuff here before checking resolution again
+  # do stuff before checking resolution again
   send_aio(s1, "resolved")
+  cat("unresolved")
 }
+#> unresolved
 
 msg$data
 #> [1] "resolved"
@@ -320,7 +326,7 @@ I/O-bound operations such as writing large amounts of data to disk in a
 separate ‘server’ process running concurrently.
 
 Server process: `reply()` will wait for a message and apply a function,
-in this case `rnorm()`, before sending back the result
+in this case `rnorm()`, before sending back the result.
 
 ``` r
 library(nanonext)
@@ -359,15 +365,19 @@ aio
 #> < recvAio >
 #>  - $data for message data
 str(aio$data)
-#>  num [1:100000000] -0.0699 -0.0702 -0.7121 0.3036 0.1215 ...
+#>  num [1:100000000] 1.061 0.522 -0.601 -0.63 -0.587 ...
 ```
+
+As `call_aio()` is blocking and will wait for completion, an alternative
+is to query `aio$data` directly. This will return an ‘unresolved’
+logical NA value if the calculation is yet to complete.
 
 In this example the calculation is returned, but other operations may
 reside entirely on the server side, for example writing data to disk.
 
-In such a case, using `call_aio()` confirms that the operation has
-completed (or it will wait for completion) and calls the return value of
-the function, which may typically be NULL or an exit code.
+In such a case, calling or querying the value confirms that the
+operation has completed, and provides the return value of the function,
+which may typically be NULL or an exit code.
 
 The {mirai} package <https://shikokuchuo.net/mirai/> (available on CRAN)
 uses {nanonext} as the back-end to provide asynchronous execution of
@@ -391,38 +401,38 @@ an environment variable `NANONEXT_LOG`.
 ``` r
 # set logging level to include information events ------------------------------
 logging(level = "info")
-#> 2022-03-04 10:37:55 [ log level ] set to: info
+#> 2022-03-04 14:57:58 [ log level ] set to: info
 
 pub <- socket("pub", listen = "inproc://nanobroadcast")
-#> 2022-03-04 10:37:55 [ sock open ] id: 9 | protocol: pub 
-#> 2022-03-04 10:37:55 [ list start ] sock: 9 | url: inproc://nanobroadcast
+#> 2022-03-04 14:57:58 [ sock open ] id: 9 | protocol: pub 
+#> 2022-03-04 14:57:58 [ list start ] sock: 9 | url: inproc://nanobroadcast
 sub <- socket("sub", dial = "inproc://nanobroadcast")
-#> 2022-03-04 10:37:55 [ sock open ] id: 10 | protocol: sub 
-#> 2022-03-04 10:37:55 [ dial start ] sock: 10 | url: inproc://nanobroadcast
+#> 2022-03-04 14:57:58 [ sock open ] id: 10 | protocol: sub 
+#> 2022-03-04 14:57:58 [ dial start ] sock: 10 | url: inproc://nanobroadcast
 
 # subscribing to a specific topic 'examples' -----------------------------------
 sub |> subscribe(topic = "examples")
-#> 2022-03-04 10:37:55 [ subscribe ] sock: 10 | topic: examples
+#> 2022-03-04 14:57:58 [ subscribe ] sock: 10 | topic: examples
 pub |> send(c("examples", "this is an example"), mode = "raw", echo = FALSE)
 sub |> recv(mode = "character", keep.raw = FALSE)
 #> [1] "examples"           "this is an example"
 
 pub |> send(c("other", "this other topic will not be received"), mode = "raw", echo = FALSE)
 sub |> recv(mode = "character", keep.raw = FALSE)
-#> 2022-03-04 10:37:55 [ 8 ] Try again
+#> 2022-03-04 14:57:58 [ 8 ] Try again
 
 # specify NULL to subscribe to ALL topics --------------------------------------
 sub |> subscribe(topic = NULL)
-#> 2022-03-04 10:37:55 [ subscribe ] sock: 10 | topic: ALL
+#> 2022-03-04 14:57:58 [ subscribe ] sock: 10 | topic: ALL
 pub |> send(c("newTopic", "this is a new topic"), mode = "raw", echo = FALSE)
 sub |> recv("character", keep.raw = FALSE)
 #> [1] "newTopic"            "this is a new topic"
 
 sub |> unsubscribe(topic = NULL)
-#> 2022-03-04 10:37:55 [ unsubscribe ] sock: 10 | topic: ALL
+#> 2022-03-04 14:57:58 [ unsubscribe ] sock: 10 | topic: ALL
 pub |> send(c("newTopic", "this topic will now not be received"), mode = "raw", echo = FALSE)
 sub |> recv("character", keep.raw = FALSE)
-#> 2022-03-04 10:37:55 [ 8 ] Try again
+#> 2022-03-04 14:57:58 [ 8 ] Try again
 
 # however the topics explicitly subscribed to are still received ---------------
 pub |> send(c("examples", "this example will still be received"), mode = "raw", echo = FALSE)
@@ -431,7 +441,7 @@ sub |> recv(mode = "character", keep.raw = FALSE)
 
 # set logging level back to the default of errors only -------------------------
 logging(level = "error")
-#> 2022-03-04 10:37:55 [ log level ] set to: error
+#> 2022-03-04 14:57:58 [ log level ] set to: error
 
 close(pub)
 close(sub)
@@ -445,9 +455,9 @@ This type of pattern is useful for applications such as service
 discovery.
 
 A surveyor sends a survey, which is broadcast to all peer respondents.
-The respondents then have a chance to reply (but are not obliged to).
-The survey itself is a timed event, such that responses received after
-the timeout are discarded.
+Respondents are then able to reply, but are not obliged to. The survey
+itself is a timed event, and responses received after the timeout are
+discarded.
 
 ``` r
 sur <- socket("surveyor", listen = "inproc://nanoservice")
@@ -482,13 +492,18 @@ aio2$data
 # after the survey expires, the second resolves into a timeout error -----------
 Sys.sleep(0.5)
 aio2$data
-#> 2022-03-04 10:37:55 [ 5 ] Timed out
+#> 2022-03-04 14:57:59 [ 5 ] Timed out
 #> 'errorValue' int 5
 
 close(sur)
 close(res1)
 close(res2)
 ```
+
+Above it can be seen that the final value resolves into a timeout, which
+is an integer 5 classed as ‘errorValue’. All receive functions class
+integer error codes as ‘errorValue’ to be easily distinguishable from
+integer message values.
 
 [« Back to ToC](#table-of-contents)
 
@@ -503,11 +518,11 @@ ncurl("http://httpbin.org/headers")
 #>   [1] 7b 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73
 #>  [26] 74 22 3a 20 22 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22
 #>  [51] 58 2d 41 6d 7a 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31
-#>  [76] 2d 36 32 32 31 65 63 30 33 2d 34 32 36 65 34 32 37 64 35 62 37 32 63 36 39
-#> [101] 35 31 34 31 61 31 64 32 34 22 0a 20 20 7d 0a 7d 0a
+#>  [76] 2d 36 32 32 32 32 38 66 37 2d 33 33 61 61 39 66 63 64 33 32 63 38 35 36 32
+#> [101] 61 33 65 35 32 32 64 65 35 22 0a 20 20 7d 0a 7d 0a
 #> 
 #> $data
-#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6221ec03-426e427d5b72c695141a1d24\"\n  }\n}\n"
+#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-622228f7-33aa9fcd32c8562a3e522de5\"\n  }\n}\n"
 ```
 
 For advanced use, supports additional HTTP methods such as POST or PUT.

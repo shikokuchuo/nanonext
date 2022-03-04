@@ -21,7 +21,7 @@ knitr::opts_chunk$set(
 [![R-CMD-check](https://github.com/shikokuchuo/nanonext/workflows/R-CMD-check/badge.svg)](https://github.com/shikokuchuo/nanonext/actions)
 <!-- badges: end -->
 
-R binding for NNG (Nanomsg Next Gen), a successor to ZeroMQ. NNG is a socket library providing high-performance scalability protocols, implementing a cross-platform standard for messaging and communications. Serves as a concurrency framework that can be used for building distributed applications.
+R binding for NNG (Nanomsg Next Gen), a successor to ZeroMQ. NNG is a socket library providing high-performance scalability protocols, implementing a cross-platform standard for messaging and communications. Leveraging asynchronous execution, serves as a concurrency framework for building distributed applications.
 
 Designed for performance and reliability, the NNG library is written in C and {nanonext} is a lightweight wrapper depending on no other packages. Provides the interface for code and processes to communicate with each other - receive data generated in Python, perform analysis in R, and send results to a C++ program – all on the same computer or on networks spanning the globe.
 
@@ -174,7 +174,7 @@ n$recv(mode = "double")
 
 ### Async and Concurrency
 
-{nanonext} implements true async send and receive, leveraging NNG as a massively-scalable concurrency framework.
+{nanonext} implements true async send and receive, leveraging NNG as a massively-scaleable concurrency framework.
 
 `send_aio()` and `recv_aio()` functions return immediately but perform their operations async.
 
@@ -185,16 +185,17 @@ s2 <- socket("pair", dial = "inproc://nano")
 
 ```
 
-For a 'sendAio' object, the result is stored at `$result`. An exit code of 0 denotes a successful send.
-
-- send is successful as long as the message has been accepted by the socket for sending
-- the message may be buffered within the system
-- for acknowledgement of receipt, an RPC setup is required (see next section)
+For a 'sendAio' object, the result is stored at `$result`.
 
 ```{r async2}
 
 res <- send_aio(s1, data.frame(a = 1, b = 2))
+res
 res$result
+
+# an exit code of 0 denotes a successful send
+# note: the send is successful as long as the message has been accepted by the socket for sending
+# the message itself may still be buffered within the system
 
 ```
 
@@ -203,29 +204,33 @@ For a 'recvAio' object, the message is stored at `$data`, and the raw message at
 ```{r async3}
 
 msg <- recv_aio(s2)
+msg
 msg$data
 msg$raw
 
 ```
 
-If the async operation is yet to complete, an 'unresolved' logical NA will be returned. In the below example an async receive is requested, but no mesages are waiting (yet to be sent).
+If the async operation is yet to complete, an 'unresolved' logical NA value will be returned. 
 
 ```{r async4}
+
+# an async receive is requested, but no mesages are waiting (yet to be sent)
 
 msg <- recv_aio(s2)
 msg$data
 
 ```
 
-For use in control flow statements, `unresolved` can be used. Note that calling this function queries for resolution itself and may cause a previously unresolved Aio to resolve.
+Auxiliary function `unresolved()` can be used in control flow statements.
 
 ```{r async5}
 
-#  unresolved() already queries for resolution so no need for it again within the while clause
+# unresolved() queries for resolution itself so no need to use it again within the while clause
 
 while (unresolved(msg)) {
-  # do stuff here before checking resolution again
+  # do stuff before checking resolution again
   send_aio(s1, "resolved")
+  cat("unresolved")
 }
 
 msg$data
@@ -254,7 +259,7 @@ close(s2)
 
 Can be used to perform computationally-expensive calculations or I/O-bound operations such as writing large amounts of data to disk in a separate 'server' process running concurrently.
 
-Server process: `reply()` will wait for a message and apply a function, in this case `rnorm()`, before sending back the result
+Server process: `reply()` will wait for a message and apply a function, in this case `rnorm()`, before sending back the result.
 
 ```{r rpcserver, eval=FALSE}
 
@@ -294,9 +299,11 @@ str(aio$data)
 
 ```
 
+As `call_aio()` is blocking and will wait for completion, an alternative is to query `aio$data` directly. This will return an 'unresolved' logical NA value if the calculation is yet to complete.
+
 In this example the calculation is returned, but other operations may reside entirely on the server side, for example writing data to disk.
 
-In such a case, using `call_aio()` confirms that the operation has completed (or it will wait for completion) and calls the return value of the function, which may typically be NULL or an exit code.
+In such a case, calling or querying the value confirms that the operation has completed, and provides the return value of the function, which may typically be NULL or an exit code.
 
 The {mirai} package <https://shikokuchuo.net/mirai/> (available on CRAN) uses {nanonext} as the back-end to provide asynchronous execution of arbitrary R code using the RPC model.
 
@@ -353,7 +360,7 @@ close(sub)
 
 This type of pattern is useful for applications such as service discovery.
 
-A surveyor sends a survey, which is broadcast to all peer respondents. The respondents then have a chance to reply (but are not obliged to). The survey itself is a timed event, such that responses received after the timeout are discarded.
+A surveyor sends a survey, which is broadcast to all peer respondents. Respondents are then able to reply, but are not obliged to. The survey itself is a timed event, and responses received after the timeout are discarded.
 
 ```{r survey}
 
@@ -389,6 +396,8 @@ close(res1)
 close(res2)
 
 ```
+
+Above it can be seen that the final value resolves into a timeout, which is an integer 5 classed as 'errorValue'. All receive functions class integer error codes as 'errorValue' to be easily distinguishable from integer message values.
 
 [&laquo; Back to ToC](#table-of-contents)
 
