@@ -319,13 +319,11 @@ The log level can also be set externally in production environments via an envir
 
 ```{r pub}
 
-# set logging level to include information events ------------------------------
 logging(level = "info")
 
 pub <- socket("pub", listen = "inproc://nanobroadcast")
 sub <- socket("sub", dial = "inproc://nanobroadcast")
 
-# subscribing to a specific topic 'examples' -----------------------------------
 sub |> subscribe(topic = "examples")
 pub |> send(c("examples", "this is an example"), mode = "raw", echo = FALSE)
 sub |> recv(mode = "character", keep.raw = FALSE)
@@ -333,7 +331,7 @@ sub |> recv(mode = "character", keep.raw = FALSE)
 pub |> send(c("other", "this other topic will not be received"), mode = "raw", echo = FALSE)
 sub |> recv(mode = "character", keep.raw = FALSE)
 
-# specify NULL to subscribe to ALL topics --------------------------------------
+# specify NULL to subscribe to ALL topics
 sub |> subscribe(topic = NULL)
 pub |> send(c("newTopic", "this is a new topic"), mode = "raw", echo = FALSE)
 sub |> recv("character", keep.raw = FALSE)
@@ -342,11 +340,11 @@ sub |> unsubscribe(topic = NULL)
 pub |> send(c("newTopic", "this topic will now not be received"), mode = "raw", echo = FALSE)
 sub |> recv("character", keep.raw = FALSE)
 
-# however the topics explicitly subscribed to are still received ---------------
+# however the topics explicitly subscribed to are still received
 pub |> send(c("examples", "this example will still be received"), mode = "raw", echo = FALSE)
 sub |> recv(mode = "character", keep.raw = FALSE)
 
-# set logging level back to the default of errors only -------------------------
+# set logging level back to the default of errors only
 logging(level = "error")
 
 close(pub)
@@ -368,26 +366,26 @@ sur <- socket("surveyor", listen = "inproc://nanoservice")
 res1 <- socket("respondent", dial = "inproc://nanoservice")
 res2 <- socket("respondent", dial = "inproc://nanoservice")
 
-# sur sets a survey timeout, applying to this and subsequent surveys -----------
+# sur sets a survey timeout, applying to this and subsequent surveys
 sur |> survey_time(500)
 
-# sur sends a message and then requests 2 async receives -----------------------
+# sur sends a message and then requests 2 async receives
 sur |> send("service check", echo = FALSE)
 aio1 <- sur |> recv_aio()
 aio2 <- sur |> recv_aio()
 
-# res1 receives the message and replies using an aio send function -------------
+# res1 receives the message and replies using an aio send function
 res1 |> recv(keep.raw = FALSE)
 res1 |> send_aio("res1")
 
-# res2 receives the message but fails to reply ---------------------------------
+# res2 receives the message but fails to reply
 res2 |> recv(keep.raw = FALSE)
 
-# checking the aio - only the first will have resolved -------------------------
+# checking the aio - only the first will have resolved
 aio1$data
 aio2$data
 
-# after the survey expires, the second resolves into a timeout error -----------
+# after the survey expires, the second resolves into a timeout error
 Sys.sleep(0.5)
 aio2$data
 

@@ -365,7 +365,7 @@ aio
 #> < recvAio >
 #>  - $data for message data
 str(aio$data)
-#>  num [1:100000000] 1.061 0.522 -0.601 -0.63 -0.587 ...
+#>  num [1:100000000] 1.0964 0.2245 -0.0617 -1.2121 -0.2527 ...
 ```
 
 As `call_aio()` is blocking and will wait for completion, an alternative
@@ -399,49 +399,47 @@ The log level can also be set externally in production environments via
 an environment variable `NANONEXT_LOG`.
 
 ``` r
-# set logging level to include information events ------------------------------
 logging(level = "info")
-#> 2022-03-04 14:57:58 [ log level ] set to: info
+#> 2022-03-04 23:52:52 [ log level ] set to: info
 
 pub <- socket("pub", listen = "inproc://nanobroadcast")
-#> 2022-03-04 14:57:58 [ sock open ] id: 9 | protocol: pub 
-#> 2022-03-04 14:57:58 [ list start ] sock: 9 | url: inproc://nanobroadcast
+#> 2022-03-04 23:52:52 [ sock open ] id: 9 | protocol: pub 
+#> 2022-03-04 23:52:52 [ list start ] sock: 9 | url: inproc://nanobroadcast
 sub <- socket("sub", dial = "inproc://nanobroadcast")
-#> 2022-03-04 14:57:58 [ sock open ] id: 10 | protocol: sub 
-#> 2022-03-04 14:57:58 [ dial start ] sock: 10 | url: inproc://nanobroadcast
+#> 2022-03-04 23:52:52 [ sock open ] id: 10 | protocol: sub 
+#> 2022-03-04 23:52:52 [ dial start ] sock: 10 | url: inproc://nanobroadcast
 
-# subscribing to a specific topic 'examples' -----------------------------------
 sub |> subscribe(topic = "examples")
-#> 2022-03-04 14:57:58 [ subscribe ] sock: 10 | topic: examples
+#> 2022-03-04 23:52:52 [ subscribe ] sock: 10 | topic: examples
 pub |> send(c("examples", "this is an example"), mode = "raw", echo = FALSE)
 sub |> recv(mode = "character", keep.raw = FALSE)
 #> [1] "examples"           "this is an example"
 
 pub |> send(c("other", "this other topic will not be received"), mode = "raw", echo = FALSE)
 sub |> recv(mode = "character", keep.raw = FALSE)
-#> 2022-03-04 14:57:58 [ 8 ] Try again
+#> 2022-03-04 23:52:52 [ 8 ] Try again
 
-# specify NULL to subscribe to ALL topics --------------------------------------
+# specify NULL to subscribe to ALL topics
 sub |> subscribe(topic = NULL)
-#> 2022-03-04 14:57:58 [ subscribe ] sock: 10 | topic: ALL
+#> 2022-03-04 23:52:52 [ subscribe ] sock: 10 | topic: ALL
 pub |> send(c("newTopic", "this is a new topic"), mode = "raw", echo = FALSE)
 sub |> recv("character", keep.raw = FALSE)
 #> [1] "newTopic"            "this is a new topic"
 
 sub |> unsubscribe(topic = NULL)
-#> 2022-03-04 14:57:58 [ unsubscribe ] sock: 10 | topic: ALL
+#> 2022-03-04 23:52:52 [ unsubscribe ] sock: 10 | topic: ALL
 pub |> send(c("newTopic", "this topic will now not be received"), mode = "raw", echo = FALSE)
 sub |> recv("character", keep.raw = FALSE)
-#> 2022-03-04 14:57:58 [ 8 ] Try again
+#> 2022-03-04 23:52:52 [ 8 ] Try again
 
-# however the topics explicitly subscribed to are still received ---------------
+# however the topics explicitly subscribed to are still received
 pub |> send(c("examples", "this example will still be received"), mode = "raw", echo = FALSE)
 sub |> recv(mode = "character", keep.raw = FALSE)
 #> [1] "examples"                            "this example will still be received"
 
-# set logging level back to the default of errors only -------------------------
+# set logging level back to the default of errors only
 logging(level = "error")
-#> 2022-03-04 14:57:58 [ log level ] set to: error
+#> 2022-03-04 23:52:52 [ log level ] set to: error
 
 close(pub)
 close(sub)
@@ -464,35 +462,35 @@ sur <- socket("surveyor", listen = "inproc://nanoservice")
 res1 <- socket("respondent", dial = "inproc://nanoservice")
 res2 <- socket("respondent", dial = "inproc://nanoservice")
 
-# sur sets a survey timeout, applying to this and subsequent surveys -----------
+# sur sets a survey timeout, applying to this and subsequent surveys
 sur |> survey_time(500)
 
-# sur sends a message and then requests 2 async receives -----------------------
+# sur sends a message and then requests 2 async receives
 sur |> send("service check", echo = FALSE)
 aio1 <- sur |> recv_aio()
 aio2 <- sur |> recv_aio()
 
-# res1 receives the message and replies using an aio send function -------------
+# res1 receives the message and replies using an aio send function
 res1 |> recv(keep.raw = FALSE)
 #> [1] "service check"
 res1 |> send_aio("res1")
 #> < sendAio >
 #>  - $result for send result
 
-# res2 receives the message but fails to reply ---------------------------------
+# res2 receives the message but fails to reply
 res2 |> recv(keep.raw = FALSE)
 #> [1] "service check"
 
-# checking the aio - only the first will have resolved -------------------------
+# checking the aio - only the first will have resolved
 aio1$data
 #> [1] "res1"
 aio2$data
 #> < unresolved: logi NA >
 
-# after the survey expires, the second resolves into a timeout error -----------
+# after the survey expires, the second resolves into a timeout error
 Sys.sleep(0.5)
 aio2$data
-#> 2022-03-04 14:57:59 [ 5 ] Timed out
+#> 2022-03-04 23:52:53 [ 5 ] Timed out
 #> 'errorValue' int 5
 
 close(sur)
@@ -518,11 +516,11 @@ ncurl("http://httpbin.org/headers")
 #>   [1] 7b 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73
 #>  [26] 74 22 3a 20 22 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22
 #>  [51] 58 2d 41 6d 7a 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31
-#>  [76] 2d 36 32 32 32 32 38 66 37 2d 33 33 61 61 39 66 63 64 33 32 63 38 35 36 32
-#> [101] 61 33 65 35 32 32 64 65 35 22 0a 20 20 7d 0a 7d 0a
+#>  [76] 2d 36 32 32 32 61 36 35 35 2d 33 31 31 32 32 33 61 39 35 35 37 35 62 36 31
+#> [101] 39 33 66 36 61 63 63 65 64 22 0a 20 20 7d 0a 7d 0a
 #> 
 #> $data
-#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-622228f7-33aa9fcd32c8562a3e522de5\"\n  }\n}\n"
+#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6222a655-311223a95575b6193f6acced\"\n  }\n}\n"
 ```
 
 For advanced use, supports additional HTTP methods such as POST or PUT.
