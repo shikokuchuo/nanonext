@@ -47,11 +47,14 @@ Implements a caller/client for the req node of the req/rep protocol. Sends
 }
 \details{
 Sending the request and receiving the result are both performed async,
-    hence the function will return immediately with a 'recvAio' object.
+    hence the function will return immediately with a 'recvAio' object. Access
+    the return value at \code{$data}.
 
     This is designed so that the process on the server can run concurrently
-    without blocking the client. Use \code{\link{call_aio}} on the 'recvAio'
-    to call the result when required.
+    without blocking the client.
+
+    Optionally use \code{\link{call_aio}} on the 'recvAio' to call (and wait
+    for) the result.
 
     If an error occured in the server process, a nul byte \code{00} will be
     received (as \code{$data} if 'recv_mode' = 'serial', as \code{$raw}

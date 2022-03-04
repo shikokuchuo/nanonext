@@ -62,6 +62,9 @@ send <- function(socket,
 #'
 #' @details Async send is always non-blocking and returns immediately.
 #'
+#'     The send result is available at \code{$result}, which will return an
+#'     'unresolved' logical NA if the async operation is yet to complete.
+#'
 #'     To wait for and check the result of the send operation, use
 #'     \code{\link{call_aio}} on the returned 'sendAio' object.
 #'
@@ -188,8 +191,12 @@ recv <- function(socket,
 #'
 #' @details Async receive is always non-blocking and returns immediately.
 #'
-#'     To wait for the AIO to complete and retrieve the received message,
-#'     use \code{\link{call_aio}} on the returned 'recvAio' object.
+#'     The received message is available at \code{$data}, and the raw message at
+#'     \code{$raw} (if kept). An 'unresolved' logical NA will be returned if the
+#'     async operation is yet to complete.
+#'
+#'     To wait for the async operation to complete and retrieve the received
+#'     message, use \code{\link{call_aio}} on the returned 'recvAio' object.
 #'
 #'     Alternatively, to stop the async operation, use \code{\link{stop_aio}}.
 #'

@@ -39,7 +39,7 @@ For a 'recvAio', the received raw vector will be attached in \code{$raw}
 
     Aio values may be accessed directly at \code{$result} for a 'sendAio',
     and \code{$raw} or \code{$data} for a 'recvAio'. If the Aio operation is
-    yet to complete, a logical NA 'unresolved value' will be returned. Once
+    yet to complete, an 'unresolved' logical NA will be returned. Once
     completed, the resolved value will be returned instead.
 
     \code{\link{unresolved}} may also be used, which returns TRUE only if an

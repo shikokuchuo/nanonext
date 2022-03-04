@@ -28,7 +28,8 @@ s1 <- socket("pair", listen = "inproc://nanonext")
 aio <- send_aio(s1, "test", timeout = 100)
 
 while (unresolved(aio)) {
-  print(unresolved(aio))
+  # do stuff here before checking resolution again
+  cat("unresolved")
   s2 <- socket("pair", dial = "inproc://nanonext")
   Sys.sleep(0.01)
 }

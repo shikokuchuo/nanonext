@@ -283,7 +283,7 @@ print.sendAio <- function(x, ...) {
 #'
 print.unresolvedValue <- function(x, ...) {
 
-  cat("< unresolved value >\n", file = stdout())
+  cat("< unresolved: logi NA >\n", file = stdout())
   invisible(x)
 
 }

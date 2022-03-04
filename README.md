@@ -267,14 +267,14 @@ msg$raw
 #> [201] 00 fe
 ```
 
-If the async operation is yet to complete, a logical NA ‘unresolved
-value’ will be returned. In the below example an async receive is
-requested, but no mesages are waiting (yet to be sent).
+If the async operation is yet to complete, an ‘unresolved’ logical NA
+will be returned. In the below example an async receive is requested,
+but no mesages are waiting (yet to be sent).
 
 ``` r
 msg <- recv_aio(s2)
 msg$data
-#> < unresolved value >
+#> < unresolved: logi NA >
 ```
 
 For use in control flow statements, `unresolved` can be used. Note that
@@ -359,7 +359,7 @@ aio
 #> < recvAio >
 #>  - $data for message data
 str(aio$data)
-#>  num [1:100000000] -0.5969 0.269 0.0237 -1.1824 1.806 ...
+#>  num [1:100000000] -0.0699 -0.0702 -0.7121 0.3036 0.1215 ...
 ```
 
 In this example the calculation is returned, but other operations may
@@ -391,38 +391,38 @@ an environment variable `NANONEXT_LOG`.
 ``` r
 # set logging level to include information events ------------------------------
 logging(level = "info")
-#> 2022-03-04 09:57:23 [ log level ] set to: info
+#> 2022-03-04 10:37:55 [ log level ] set to: info
 
 pub <- socket("pub", listen = "inproc://nanobroadcast")
-#> 2022-03-04 09:57:23 [ sock open ] id: 9 | protocol: pub 
-#> 2022-03-04 09:57:23 [ list start ] sock: 9 | url: inproc://nanobroadcast
+#> 2022-03-04 10:37:55 [ sock open ] id: 9 | protocol: pub 
+#> 2022-03-04 10:37:55 [ list start ] sock: 9 | url: inproc://nanobroadcast
 sub <- socket("sub", dial = "inproc://nanobroadcast")
-#> 2022-03-04 09:57:23 [ sock open ] id: 10 | protocol: sub 
-#> 2022-03-04 09:57:23 [ dial start ] sock: 10 | url: inproc://nanobroadcast
+#> 2022-03-04 10:37:55 [ sock open ] id: 10 | protocol: sub 
+#> 2022-03-04 10:37:55 [ dial start ] sock: 10 | url: inproc://nanobroadcast
 
 # subscribing to a specific topic 'examples' -----------------------------------
 sub |> subscribe(topic = "examples")
-#> 2022-03-04 09:57:23 [ subscribe ] sock: 10 | topic: examples
+#> 2022-03-04 10:37:55 [ subscribe ] sock: 10 | topic: examples
 pub |> send(c("examples", "this is an example"), mode = "raw", echo = FALSE)
 sub |> recv(mode = "character", keep.raw = FALSE)
 #> [1] "examples"           "this is an example"
 
 pub |> send(c("other", "this other topic will not be received"), mode = "raw", echo = FALSE)
 sub |> recv(mode = "character", keep.raw = FALSE)
-#> 2022-03-04 09:57:23 [ 8 ] Try again
+#> 2022-03-04 10:37:55 [ 8 ] Try again
 
 # specify NULL to subscribe to ALL topics --------------------------------------
 sub |> subscribe(topic = NULL)
-#> 2022-03-04 09:57:23 [ subscribe ] sock: 10 | topic: ALL
+#> 2022-03-04 10:37:55 [ subscribe ] sock: 10 | topic: ALL
 pub |> send(c("newTopic", "this is a new topic"), mode = "raw", echo = FALSE)
 sub |> recv("character", keep.raw = FALSE)
 #> [1] "newTopic"            "this is a new topic"
 
 sub |> unsubscribe(topic = NULL)
-#> 2022-03-04 09:57:23 [ unsubscribe ] sock: 10 | topic: ALL
+#> 2022-03-04 10:37:55 [ unsubscribe ] sock: 10 | topic: ALL
 pub |> send(c("newTopic", "this topic will now not be received"), mode = "raw", echo = FALSE)
 sub |> recv("character", keep.raw = FALSE)
-#> 2022-03-04 09:57:23 [ 8 ] Try again
+#> 2022-03-04 10:37:55 [ 8 ] Try again
 
 # however the topics explicitly subscribed to are still received ---------------
 pub |> send(c("examples", "this example will still be received"), mode = "raw", echo = FALSE)
@@ -431,7 +431,7 @@ sub |> recv(mode = "character", keep.raw = FALSE)
 
 # set logging level back to the default of errors only -------------------------
 logging(level = "error")
-#> 2022-03-04 09:57:23 [ log level ] set to: error
+#> 2022-03-04 10:37:55 [ log level ] set to: error
 
 close(pub)
 close(sub)
@@ -477,12 +477,12 @@ res2 |> recv(keep.raw = FALSE)
 aio1$data
 #> [1] "res1"
 aio2$data
-#> < unresolved value >
+#> < unresolved: logi NA >
 
 # after the survey expires, the second resolves into a timeout error -----------
 Sys.sleep(0.5)
 aio2$data
-#> 2022-03-04 09:57:24 [ 5 ] Timed out
+#> 2022-03-04 10:37:55 [ 5 ] Timed out
 #> 'errorValue' int 5
 
 close(sur)
@@ -503,11 +503,11 @@ ncurl("http://httpbin.org/headers")
 #>   [1] 7b 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73
 #>  [26] 74 22 3a 20 22 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22
 #>  [51] 58 2d 41 6d 7a 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31
-#>  [76] 2d 36 32 32 31 65 32 38 34 2d 32 30 63 63 63 36 35 30 35 31 37 35 36 37 37
-#> [101] 61 30 37 30 31 63 64 36 30 22 0a 20 20 7d 0a 7d 0a
+#>  [76] 2d 36 32 32 31 65 63 30 33 2d 34 32 36 65 34 32 37 64 35 62 37 32 63 36 39
+#> [101] 35 31 34 31 61 31 64 32 34 22 0a 20 20 7d 0a 7d 0a
 #> 
 #> $data
-#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6221e284-20ccc6505175677a0701cd60\"\n  }\n}\n"
+#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6221ec03-426e427d5b72c695141a1d24\"\n  }\n}\n"
 ```
 
 For advanced use, supports additional HTTP methods such as POST or PUT.

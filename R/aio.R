@@ -30,7 +30,7 @@
 #'
 #'     Aio values may be accessed directly at \code{$result} for a 'sendAio',
 #'     and \code{$raw} or \code{$data} for a 'recvAio'. If the Aio operation is
-#'     yet to complete, a logical NA 'unresolved value' will be returned. Once
+#'     yet to complete, an 'unresolved' logical NA will be returned. Once
 #'     completed, the resolved value will be returned instead.
 #'
 #'     \code{\link{unresolved}} may also be used, which returns TRUE only if an
@@ -108,7 +108,8 @@ stop_aio <- function(aio) {
 #' aio <- send_aio(s1, "test", timeout = 100)
 #'
 #' while (unresolved(aio)) {
-#'   print(unresolved(aio))
+#'   # do stuff here before checking resolution again
+#'   cat("unresolved")
 #'   s2 <- socket("pair", dial = "inproc://nanonext")
 #'   Sys.sleep(0.01)
 #' }

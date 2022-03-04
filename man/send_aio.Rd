@@ -29,6 +29,9 @@ Send data asynchronously over a Socket or Context.
 \details{
 Async send is always non-blocking and returns immediately.
 
+    The send result is available at \code{$result}, which will return an
+    'unresolved' logical NA if the async operation is yet to complete.
+
     To wait for and check the result of the send operation, use
     \code{\link{call_aio}} on the returned 'sendAio' object.
 

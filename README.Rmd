@@ -208,7 +208,7 @@ msg$raw
 
 ```
 
-If the async operation is yet to complete, a logical NA 'unresolved value' will be returned. In the below example an async receive is requested, but no mesages are waiting (yet to be sent).
+If the async operation is yet to complete, an 'unresolved' logical NA will be returned. In the below example an async receive is requested, but no mesages are waiting (yet to be sent).
 
 ```{r async4}
 
