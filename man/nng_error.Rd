@@ -4,18 +4,18 @@
 \alias{nng_error}
 \title{Translate Error Codes}
 \usage{
-nng_error(error)
+nng_error(xc)
 }
 \arguments{
-\item{error}{integer exit code to translate.}
+\item{xc}{integer exit code to translate.}
 }
 \value{
 A character vector.
 }
 \description{
-Translate integer exit code to human readable form. All functions in the
-    nanonext package will return an integer exit code on error rather than
-    the expected return value.
+Translate integer exit code to human readable form. All package functions
+    return an integer exit code on error rather than the expected return
+    value.
 }
 \examples{
 nng_error(1L)

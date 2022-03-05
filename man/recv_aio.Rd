@@ -49,22 +49,22 @@ Async receive is always non-blocking and returns immediately.
 s1 <- socket("pair", listen = "inproc://nanonext")
 s2 <- socket("pair", dial = "inproc://nanonext")
 
-send_aio(s1, data.frame(a = 1, b = 2), timeout = 100)
-res <- recv_aio(s2, timeout = 100, keep.raw = FALSE)
-res
-res$data
+res <- send_aio(s1, data.frame(a = 1, b = 2), timeout = 100)
+msg <- recv_aio(s2, timeout = 100, keep.raw = FALSE)
+msg
+msg$data
 
-send_aio(s1, c(1.1, 2.2, 3.3), mode = "raw", timeout = 100)
-res <- recv_aio(s2, mode = "double", timeout = 100)
-res
-res$raw
-res$data
+res <- send_aio(s1, c(1.1, 2.2, 3.3), mode = "raw", timeout = 100)
+msg <- recv_aio(s2, mode = "double", timeout = 100)
+msg
+msg$raw
+msg$data
 
-send_aio(s1, "example message", mode = "raw", timeout = 100)
-res <- recv_aio(s2, mode = "character", timeout = 100)
-call_aio(res)
-res$raw
-res$data
+res <- send_aio(s1, "example message", mode = "raw", timeout = 100)
+msg <- recv_aio(s2, mode = "character", timeout = 100)
+call_aio(msg)
+msg$raw
+msg$data
 
 close(s1)
 close(s2)

@@ -18,19 +18,15 @@
 #'
 #' @export
 #'
-nng_version <- function() {
-
-  .Call(rnng_version)
-
-}
+nng_version <- function() .Call(rnng_version)
 
 #' Translate Error Codes
 #'
-#' Translate integer exit code to human readable form. All functions in the
-#'     nanonext package will return an integer exit code on error rather than
-#'     the expected return value.
+#' Translate integer exit code to human readable form. All package functions
+#'     return an integer exit code on error rather than the expected return
+#'     value.
 #'
-#' @param error integer exit code to translate.
+#' @param xc integer exit code to translate.
 #'
 #' @return A character vector.
 #'
@@ -39,10 +35,16 @@ nng_version <- function() {
 #'
 #' @export
 #'
-nng_error <- function(error) {
+nng_error <- function(xc) .Call(rnng_strerror, as.integer(xc))
 
-  .Call(rnng_strerror, error)
+logerror <- function(xc) {
+  message(sprintf("%s [ %d ] %s",
+                  format.POSIXct(Sys.time()), xc, .Call(rnng_strerror, xc)))
+}
 
+loginfo <- function(evt, pkey, pval, skey, sval) {
+  cat(sprintf("%s [ %s ] %s: %d | %s: %s\n",
+              format.POSIXct(Sys.time()), evt, pkey, pval, skey, sval), file = stdout())
 }
 
 #' Is Nul Byte
@@ -141,8 +143,9 @@ logging <- function(level) {
                      error = 0L,
                      info = 1L,
                      prev = original)
-    if (cache != original) cat(format.POSIXct(Sys.time()), "[ log level ] set to:",
-                               if (cache) "info\n" else "error\n", file = stdout())
+    if (cache != original) cat(sprintf("%s [ %s ] %s: %s\n",
+                                       format.POSIXct(Sys.time()), "log level", "set to",
+                                       if (cache) "info" else "error"),  file = stdout())
 
   }
 
@@ -202,10 +205,10 @@ ncurl <- function(http, ...) {
   res <- .Call(rnng_ncurl, http, args)
   missing(res) && return(invisible())
   if (is.integer(res)) {
-    message(Sys.time(), " [ ", res, " ] ", nng_error(res))
+    logerror(res)
     return(invisible(res))
   } else if (is.character(res)) {
-    continue <- if (interactive()) readline(paste0("Follow redirect to <", res, ">? [Y/n] ")) else "n"
+    continue <- if (interactive()) readline(sprintf("Follow redirect to <%s>? [Y/n] ", res)) else "n"
     continue %in% c("n", "N", "no", "NO") && return(invisible(res))
     return(ncurl(res))
   }

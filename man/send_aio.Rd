@@ -40,12 +40,12 @@ Async send is always non-blocking and returns immediately.
 \examples{
 pub <- socket("pub", dial = "inproc://nanonext")
 
-aio <- send_aio(pub, data.frame(a = 1, b = 2), timeout = 100)
-aio
-call_aio(aio)$result
+res <- send_aio(pub, data.frame(a = 1, b = 2), timeout = 100)
+res
+res$result
 
-aio <- send_aio(pub, "example message", mode = "raw", timeout = 100)
-call_aio(aio)$result
+res <- send_aio(pub, "example message", mode = "raw", timeout = 100)
+call_aio(res)$result
 
 close(pub)
 

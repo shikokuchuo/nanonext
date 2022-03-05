@@ -37,12 +37,10 @@ send <- function(socket,
 
   mode <- match.arg(mode)
   force(data)
-  data <- switch(mode,
-                 serial = serialize(object = data, connection = NULL),
-                 raw = if (is.raw(data)) data else writeBin(object = data, con = raw()))
+  data <- encode(data = data, mode = mode)
   res <- .Call(rnng_send, socket, data, block)
   is.integer(res) && {
-    message(Sys.time(), " [ ", res, " ] ", nng_error(res))
+    logerror(res)
     return(invisible(res))
   }
   if (missing(echo) || isTRUE(echo)) res else invisible(0L)
@@ -73,12 +71,12 @@ send <- function(socket,
 #' @examples
 #' pub <- socket("pub", dial = "inproc://nanonext")
 #'
-#' aio <- send_aio(pub, data.frame(a = 1, b = 2), timeout = 100)
-#' aio
-#' call_aio(aio)$result
+#' res <- send_aio(pub, data.frame(a = 1, b = 2), timeout = 100)
+#' res
+#' res$result
 #'
-#' aio <- send_aio(pub, "example message", mode = "raw", timeout = 100)
-#' call_aio(aio)$result
+#' res <- send_aio(pub, "example message", mode = "raw", timeout = 100)
+#' call_aio(res)$result
 #'
 #' close(pub)
 #'
@@ -89,12 +87,10 @@ send_aio <- function(socket, data, mode = c("serial", "raw"), timeout) {
   mode <- match.arg(mode)
   if (missing(timeout)) timeout <- -2L
   force(data)
-  data <- switch(mode,
-                 serial = serialize(object = data, connection = NULL),
-                 raw = if (is.raw(data)) data else writeBin(object = data, con = raw()))
+  data <- encode(data = data, mode = mode)
   aio <- .Call(rnng_send_aio, socket, data, timeout)
   is.integer(aio) && {
-    message(Sys.time(), " [ ", aio, " ] ", nng_error(aio))
+    logerror(aio)
     return(invisible(aio))
   }
   env <- `class<-`(new.env(), "sendAio")
@@ -103,7 +99,7 @@ send_aio <- function(socket, data, mode = c("serial", "raw"), timeout) {
     if (is.null(result)) {
       res <- .Call(rnng_aio_result, aio)
       missing(res) && return(.Call(rnng_aio_unresolv))
-      if (res) message(Sys.time(), " [ ", res, " ] ", nng_error(res))
+      if (res) logerror(res)
       result <<- res
     }
     result
@@ -165,15 +161,11 @@ recv <- function(socket,
   mode <- match.arg(mode)
   res <- .Call(rnng_recv, socket, block)
   is.integer(res) && {
-    message(Sys.time(), " [ ", res, " ] ", nng_error(res))
+    logerror(res)
     return(invisible(`class<-`(res, "errorValue")))
   }
   on.exit(expr = return(res))
-  data <- switch(mode,
-                 serial = unserialize(connection = res),
-                 character = (r <- readBin(con = res, what = mode, n = length(res)))[r != ""],
-                 raw = res,
-                 readBin(con = res, what = mode, n = length(res)))
+  data <- decode(con = res, mode = mode)
   on.exit()
   if (missing(keep.raw) || isTRUE(keep.raw)) list(raw = res, data = data) else data
 
@@ -204,22 +196,22 @@ recv <- function(socket,
 #' s1 <- socket("pair", listen = "inproc://nanonext")
 #' s2 <- socket("pair", dial = "inproc://nanonext")
 #'
-#' send_aio(s1, data.frame(a = 1, b = 2), timeout = 100)
-#' res <- recv_aio(s2, timeout = 100, keep.raw = FALSE)
-#' res
-#' res$data
+#' res <- send_aio(s1, data.frame(a = 1, b = 2), timeout = 100)
+#' msg <- recv_aio(s2, timeout = 100, keep.raw = FALSE)
+#' msg
+#' msg$data
 #'
-#' send_aio(s1, c(1.1, 2.2, 3.3), mode = "raw", timeout = 100)
-#' res <- recv_aio(s2, mode = "double", timeout = 100)
-#' res
-#' res$raw
-#' res$data
+#' res <- send_aio(s1, c(1.1, 2.2, 3.3), mode = "raw", timeout = 100)
+#' msg <- recv_aio(s2, mode = "double", timeout = 100)
+#' msg
+#' msg$raw
+#' msg$data
 #'
-#' send_aio(s1, "example message", mode = "raw", timeout = 100)
-#' res <- recv_aio(s2, mode = "character", timeout = 100)
-#' call_aio(res)
-#' res$raw
-#' res$data
+#' res <- send_aio(s1, "example message", mode = "raw", timeout = 100)
+#' msg <- recv_aio(s2, mode = "character", timeout = 100)
+#' call_aio(msg)
+#' msg$raw
+#' msg$data
 #'
 #' close(s1)
 #' close(s2)
@@ -237,7 +229,7 @@ recv_aio <- function(socket,
   if (missing(timeout)) timeout <- -2L
   aio <- .Call(rnng_recv_aio, socket, timeout)
   is.integer(aio) && {
-    message(Sys.time(), " [ ", aio, " ] ", nng_error(aio))
+    logerror(aio)
     return(invisible(`class<-`(aio, "errorValue")))
   }
   env <- `class<-`(new.env(), "recvAio")
@@ -249,7 +241,7 @@ recv_aio <- function(socket,
         missing(res) && return(.Call(rnng_aio_unresolv))
         is.integer(res) && {
           data <<- raw <<- resolv <<- `class<-`(res, "errorValue")
-          message(Sys.time(), " [ ", res, " ] ", nng_error(res))
+          logerror(res)
           return(invisible(resolv))
         }
         on.exit(expr = {
@@ -257,11 +249,7 @@ recv_aio <- function(socket,
           resolv <<- 0L
           return(res)
         })
-        data <- switch(mode,
-                       serial = unserialize(connection = res),
-                       character = (r <- readBin(con = res, what = mode, n = length(res)))[r != ""],
-                       raw = res,
-                       readBin(con = res, what = mode, n = length(res)))
+        data <- decode(con = res, mode = mode)
         on.exit()
         raw <<- res
         data <<- data
@@ -276,7 +264,7 @@ recv_aio <- function(socket,
       missing(res) && return(.Call(rnng_aio_unresolv))
       is.integer(res) && {
         data <<- raw <<- resolv <<- `class<-`(res, "errorValue")
-        message(Sys.time(), " [ ", res, " ] ", nng_error(res))
+        logerror(res)
         return(invisible(resolv))
       }
       on.exit(expr = {
@@ -284,11 +272,7 @@ recv_aio <- function(socket,
         resolv <<- 0L
         return(res)
       })
-      data <- switch(mode,
-                     serial = unserialize(connection = res),
-                     character = (r <- readBin(con = res, what = mode, n = length(res)))[r != ""],
-                     raw = res,
-                     readBin(con = res, what = mode, n = length(res)))
+      data <- decode(con = res, mode = mode)
       on.exit()
       if (keep.raw) raw <<- res
       data <<- data
@@ -299,5 +283,19 @@ recv_aio <- function(socket,
   `[[<-`(env, "keep.raw", keep.raw)
   `[[<-`(env, "aio", aio)
 
+}
+
+encode <- function(data, mode) {
+  switch(mode,
+         serial = serialize(object = data, connection = NULL),
+         raw = if (is.raw(data)) data else writeBin(object = data, con = raw()))
+}
+
+decode <- function(con, mode) {
+  switch(mode,
+         serial = unserialize(connection = con),
+         character = (r <- readBin(con = con, what = mode, n = length(con)))[r != ""],
+         raw = con,
+         readBin(con = con, what = mode, n = length(con)))
 }
 

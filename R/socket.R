@@ -65,10 +65,10 @@ socket <- function(protocol = c("pair", "bus", "push", "pull", "req", "rep",
   protocol <- match.arg(protocol)
   res <- .Call(rnng_protocol_open, protocol)
   if (is.integer(res)) {
-    message(Sys.time(), " [ ", res, " ] ", nng_error(res))
+    logerror(res)
   } else if (logging()) {
-    cat(format.POSIXct(Sys.time()), "[ sock open ] id:",
-        attr(res, "id"), "| protocol:", attr(res, "protocol"), "\n", file = stdout())
+    loginfo(evt = "sock open", pkey = "id", pval = attr(res, "id"),
+            skey = "protocol", sval = attr(res, "protocol"))
   }
   if (!missing(dial)) {
     dial(res, url = dial, autostart = autostart)
@@ -122,10 +122,10 @@ subscribe <- function(socket, topic = NULL) {
 
   xc <- .Call(rnng_socket_set_string, socket, "sub:subscribe" , topic)
   if (xc) {
-    message(Sys.time(), " [ ", xc, " ] ", nng_error(xc))
+    logerror(xc)
   } else if (logging()) {
-    cat(format.POSIXct(Sys.time()), "[ subscribe ] sock:", attr(socket, "id"),
-        "| topic:", if (is.null(topic)) "ALL" else topic, "\n", file = stdout())
+    loginfo(evt = "subscribe", pkey = "sock", pval = attr(socket, "id"),
+            skey = "topic", sval = if (is.null(topic)) "ALL" else topic)
   }
   invisible(xc)
 
@@ -177,10 +177,10 @@ unsubscribe <- function(socket, topic = NULL) {
 
   xc <- .Call(rnng_socket_set_string, socket, "sub:unsubscribe" , topic)
   if (xc) {
-    message(Sys.time(), " [ ", xc, " ] ", nng_error(xc))
+    logerror(xc)
   } else if (logging()) {
-    cat(format.POSIXct(Sys.time()), "[ unsubscribe ] sock:", attr(socket, "id"),
-        "| topic:", if (is.null(topic)) "ALL" else topic, "\n", file = stdout())
+    loginfo(evt = "unsubscribe", pkey = "sock", pval = attr(socket, "id"),
+            skey = "topic", sval = if (is.null(topic)) "ALL" else topic)
   }
   invisible(xc)
 
@@ -234,10 +234,10 @@ survey_time <- function(socket, time) {
 
   xc <- .Call(rnng_socket_set_ms, socket, "surveyor:survey-time", time)
   if (xc) {
-    message(Sys.time(), " [ ", xc, " ] ", nng_error(xc))
+    logerror(xc)
   } else if (logging()) {
-    cat(format.POSIXct(Sys.time()), "[ survey ] sock:", attr(socket, "id"),
-        "| set time:", time, "\n", file = stdout())
+    loginfo(evt = "survey", pkey = "sock", pval = attr(socket, "id"),
+            skey = "set time", sval = as.character(time))
   }
   invisible(xc)
 

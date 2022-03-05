@@ -16,7 +16,7 @@ R binding for NNG (Nanomsg Next Gen), a successor to ZeroMQ. NNG is a
 socket library providing high-performance scalability protocols,
 implementing a cross-platform standard for messaging and communications.
 Serves as a concurrency framework for building distributed applications,
-utilising ‘Aio’ objects which return an unresolved value whilst its
+utilising ‘Aio’ objects which return an unresolved value whilst an
 asynchronous operation is ongoing, automatically resolving to a final
 value once complete.
 
@@ -370,8 +370,8 @@ call_aio(aio)
 aio
 #> < recvAio >
 #>  - $data for message data
-str(aio$data)
-#>  num [1:100000000] -0.0948 0.4204 0.031 1.9219 -0.23 ...
+aio$data |> str()
+#>  num [1:100000000] -1.273 -0.196 -1.701 0.82 1.226 ...
 ```
 
 As `call_aio()` is blocking and will wait for completion, an alternative
@@ -406,37 +406,37 @@ an environment variable `NANONEXT_LOG`.
 
 ``` r
 logging(level = "info")
-#> 2022-03-05 14:09:43 [ log level ] set to: info
+#> 2022-03-05 18:12:59 [ log level ] set to: info
 
 pub <- socket("pub", listen = "inproc://nanobroadcast")
-#> 2022-03-05 14:09:43 [ sock open ] id: 9 | protocol: pub 
-#> 2022-03-05 14:09:43 [ list start ] sock: 9 | url: inproc://nanobroadcast
+#> 2022-03-05 18:12:59 [ sock open ] id: 9 | protocol: pub
+#> 2022-03-05 18:12:59 [ list start ] sock: 9 | url: inproc://nanobroadcast
 sub <- socket("sub", dial = "inproc://nanobroadcast")
-#> 2022-03-05 14:09:43 [ sock open ] id: 10 | protocol: sub 
-#> 2022-03-05 14:09:43 [ dial start ] sock: 10 | url: inproc://nanobroadcast
+#> 2022-03-05 18:12:59 [ sock open ] id: 10 | protocol: sub
+#> 2022-03-05 18:12:59 [ dial start ] sock: 10 | url: inproc://nanobroadcast
 
 sub |> subscribe(topic = "examples")
-#> 2022-03-05 14:09:43 [ subscribe ] sock: 10 | topic: examples
+#> 2022-03-05 18:12:59 [ subscribe ] sock: 10 | topic: examples
 pub |> send(c("examples", "this is an example"), mode = "raw", echo = FALSE)
 sub |> recv(mode = "character", keep.raw = FALSE)
 #> [1] "examples"           "this is an example"
 
 pub |> send(c("other", "this other topic will not be received"), mode = "raw", echo = FALSE)
 sub |> recv(mode = "character", keep.raw = FALSE)
-#> 2022-03-05 14:09:43 [ 8 ] Try again
+#> 2022-03-05 18:12:59 [ 8 ] Try again
 
 # specify NULL to subscribe to ALL topics
 sub |> subscribe(topic = NULL)
-#> 2022-03-05 14:09:43 [ subscribe ] sock: 10 | topic: ALL
+#> 2022-03-05 18:12:59 [ subscribe ] sock: 10 | topic: ALL
 pub |> send(c("newTopic", "this is a new topic"), mode = "raw", echo = FALSE)
 sub |> recv("character", keep.raw = FALSE)
 #> [1] "newTopic"            "this is a new topic"
 
 sub |> unsubscribe(topic = NULL)
-#> 2022-03-05 14:09:43 [ unsubscribe ] sock: 10 | topic: ALL
+#> 2022-03-05 18:12:59 [ unsubscribe ] sock: 10 | topic: ALL
 pub |> send(c("newTopic", "this topic will now not be received"), mode = "raw", echo = FALSE)
 sub |> recv("character", keep.raw = FALSE)
-#> 2022-03-05 14:09:43 [ 8 ] Try again
+#> 2022-03-05 18:12:59 [ 8 ] Try again
 
 # however the topics explicitly subscribed to are still received
 pub |> send(c("examples", "this example will still be received"), mode = "raw", echo = FALSE)
@@ -445,7 +445,7 @@ sub |> recv(mode = "character", keep.raw = FALSE)
 
 # set logging level back to the default of errors only
 logging(level = "error")
-#> 2022-03-05 14:09:43 [ log level ] set to: error
+#> 2022-03-05 18:12:59 [ log level ] set to: error
 
 close(pub)
 close(sub)
@@ -496,7 +496,7 @@ aio2$data
 # after the survey expires, the second resolves into a timeout error
 Sys.sleep(0.5)
 aio2$data
-#> 2022-03-05 14:09:44 [ 5 ] Timed out
+#> 2022-03-05 18:13:00 [ 5 ] Timed out
 #> 'errorValue' int 5
 
 close(sur)
@@ -522,11 +522,11 @@ ncurl("http://httpbin.org/headers")
 #>   [1] 7b 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73
 #>  [26] 74 22 3a 20 22 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22
 #>  [51] 58 2d 41 6d 7a 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31
-#>  [76] 2d 36 32 32 33 36 66 32 38 2d 31 62 61 30 35 65 31 63 36 34 66 63 63 63 31
-#> [101] 39 34 65 32 37 33 62 62 38 22 0a 20 20 7d 0a 7d 0a
+#>  [76] 2d 36 32 32 33 61 38 32 63 2d 34 31 36 31 62 61 61 65 30 35 35 64 34 34 33
+#> [101] 65 36 38 31 39 62 30 38 64 22 0a 20 20 7d 0a 7d 0a
 #> 
 #> $data
-#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-62236f28-1ba05e1c64fccc194e273bb8\"\n  }\n}\n"
+#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6223a82c-4161baae055d443e6819b08d\"\n  }\n}\n"
 ```
 
 For advanced use, supports additional HTTP methods such as POST or PUT.

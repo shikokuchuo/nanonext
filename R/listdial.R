@@ -78,17 +78,15 @@ dial <- function(socket,
     if (missing(autostart) || isTRUE(autostart)) {
       res <- .Call(rnng_dial, .subset2(socket, "socket"), url)
       if (is.integer(res)) {
-        message(Sys.time(), " [ ", res, " ] ", nng_error(res))
+        logerror(res)
         return(invisible(res))
       }
-      if (logging()) {
-        cat(format.POSIXct(Sys.time()), "[ dial start ] sock:",
-            attr(res, "socket"), "| url:", url, "\n", file = stdout())
-      }
+      if (logging()) loginfo(evt = "dial start", pkey = "sock", pval = attr(res, "socket"),
+                             skey = "url", sval = url)
     } else {
       res <- .Call(rnng_dialer_create, .subset2(socket, "socket"), url)
       if (is.integer(res)) {
-        message(Sys.time(), " [ ", res, " ] ", nng_error(res))
+        logerror(res)
         return(invisible(res))
       }
     }
@@ -107,17 +105,15 @@ dial <- function(socket,
     if (missing(autostart) || isTRUE(autostart)) {
       res <- .Call(rnng_dial, socket, url)
       if (is.integer(res)) {
-        message(Sys.time(), " [ ", res, " ] ", nng_error(res))
+        logerror(res)
         return(invisible(res))
       }
-      if (logging()) {
-        cat(format.POSIXct(Sys.time()), "[ dial start ] sock:",
-            attr(res, "socket"), "| url:", url, "\n", file = stdout())
-      }
+      if (logging()) loginfo(evt = "dial start", pkey = "sock", pval = attr(res, "socket"),
+                             skey = "url", sval = url)
     } else {
       res <- .Call(rnng_dialer_create, socket, url)
       if (is.integer(res)) {
-        message(Sys.time(), " [ ", res, " ] ", nng_error(res))
+        logerror(res)
         return(invisible(res))
       }
     }
@@ -207,17 +203,15 @@ listen <- function(socket,
     if (missing(autostart) || isTRUE(autostart)) {
       res <- .Call(rnng_listen, .subset2(socket, "socket"), url)
       if (is.integer(res)) {
-        message(Sys.time(), " [ ", res, " ] ", nng_error(res))
+        logerror(res)
         return(invisible(res))
       }
-      if (logging()) {
-        cat(format.POSIXct(Sys.time()), "[ list start ] sock:",
-            attr(res, "socket"), "| url:", url, "\n", file = stdout())
-      }
+      if (logging()) loginfo(evt = "list start", pkey = "sock", pval = attr(res, "socket"),
+                             skey = "url", sval = url)
     } else {
       res <- .Call(rnng_listener_create, .subset2(socket, "socket"), url)
       if (is.integer(res)) {
-        message(Sys.time(), " [ ", res, " ] ", nng_error(res))
+        logerror(res)
         return(invisible(res))
       }
     }
@@ -236,17 +230,15 @@ listen <- function(socket,
     if (missing(autostart) || isTRUE(autostart)) {
       res <- .Call(rnng_listen, socket, url)
       if (is.integer(res)) {
-        message(Sys.time(), " [ ", res, " ] ", nng_error(res))
+        logerror(res)
         return(invisible(res))
       }
-      if (logging()) {
-        cat(format.POSIXct(Sys.time()), "[ list start ] sock:",
-            attr(res, "socket"), "| url:", url, "\n", file = stdout())
-      }
+      if (logging()) loginfo(evt = "list start", pkey = "sock", pval = attr(res, "socket"),
+                             skey = "url", sval = url)
     } else {
       res <- .Call(rnng_listener_create, socket, url)
       if (is.integer(res)) {
-        message(Sys.time(), " [ ", res, " ] ", nng_error(res))
+        logerror(res)
         return(invisible(res))
       }
     }
