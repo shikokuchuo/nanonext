@@ -21,7 +21,7 @@ knitr::opts_chunk$set(
 [![R-CMD-check](https://github.com/shikokuchuo/nanonext/workflows/R-CMD-check/badge.svg)](https://github.com/shikokuchuo/nanonext/actions)
 <!-- badges: end -->
 
-R binding for NNG (Nanomsg Next Gen), a successor to ZeroMQ. NNG is a socket library providing high-performance scalability protocols, implementing a cross-platform standard for messaging and communications. Leveraging asynchronous execution, serves as a concurrency framework for building distributed applications.
+R binding for NNG (Nanomsg Next Gen), a successor to ZeroMQ. NNG is a socket library providing high-performance scalability protocols, implementing a cross-platform standard for messaging and communications. Serves as a concurrency framework for building distributed applications, utilising 'Aio' objects which return an unresolved value whilst its asynchronous operation is ongoing, automatically resolving to a final value once complete.
 
 Designed for performance and reliability, the NNG library is written in C and {nanonext} is a lightweight wrapper depending on no other packages. Provides the interface for code and processes to communicate with each other - receive data generated in Python, perform analysis in R, and send results to a C++ program – all on the same computer or on networks spanning the globe.
 
@@ -176,12 +176,23 @@ n$recv(mode = "double")
 
 {nanonext} implements true async send and receive, leveraging NNG as a massively-scaleable concurrency framework.
 
-`send_aio()` and `recv_aio()` functions return immediately but perform their operations async.
-
 ```{r async}
 library(nanonext)
 s1 <- socket("pair", listen = "inproc://nano")
 s2 <- socket("pair", dial = "inproc://nano")
+
+```
+
+`send_aio()` and `recv_aio()` functions return immediately with an 'Aio' object, but perform their operations async.
+
+An 'Aio' object returns an unresolved value whilst its asynchronous operation is ongoing, automatically resolving to a final value once complete.
+
+```{r async4}
+
+# an async receive is requested, but no mesages are waiting (yet to be sent)
+msg <- recv_aio(s2)
+msg
+msg$data
 
 ```
 
@@ -203,36 +214,26 @@ For a 'recvAio' object, the message is stored at `$data`, and the raw message at
 
 ```{r async3}
 
-msg <- recv_aio(s2)
-msg
+# now that a message has been sent, the 'recvAio' automatically resolves
 msg$data
 msg$raw
 
 ```
 
-If the async operation is yet to complete, an 'unresolved' logical NA value will be returned. 
-
-```{r async4}
-
-# an async receive is requested, but no mesages are waiting (yet to be sent)
-
-msg <- recv_aio(s2)
-msg$data
-
-```
-
-Auxiliary function `unresolved()` can be used in control flow statements.
+Auxiliary function `unresolved()` may be used in control flow statements to perform actions which depend on resolution of the Aio, both before and after. This means there is no need to actually wait (block) for an Aio to resolve, as the example below demonstrates.
 
 ```{r async5}
 
-# unresolved() queries for resolution itself so no need to use it again within the while clause
+msg <- recv_aio(s2)
 
+# unresolved() queries for resolution itself so no need to use it again within the while clause
 while (unresolved(msg)) {
   # do stuff before checking resolution again
   send_aio(s1, "resolved")
   cat("unresolved")
 }
 
+# perform actions which depend on the Aio value outside the while loop
 msg$data
 ```
 
@@ -282,6 +283,7 @@ aio <- request(ctxq, data = 1e8, recv_mode = "double", keep.raw = FALSE)
 ```
 
 At this point, the client can run additional code concurrent with the server processing the request. 
+
 ```{r rpcclient2}
 # do more...
 ```
