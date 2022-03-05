@@ -6,9 +6,8 @@
 #'     library providing high-performance scalability protocols, implementing a
 #'     cross-platform standard for messaging and communications. Serves as a
 #'     concurrency framework for building distributed applications, utilising
-#'     'Aio' objects which return an unresolved value whilst an asynchronous
-#'     operation is ongoing, automatically resolving to a final value once
-#'     complete.
+#'     'Aio' objects which automatically resolve upon completion of asynchronous
+#'     operations.
 #'
 #' @section Usage notes:
 #'
