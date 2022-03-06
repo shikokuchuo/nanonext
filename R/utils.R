@@ -217,3 +217,66 @@ ncurl <- function(http, ...) {
 
 }
 
+#' Deferred Evaluation Pipe
+#'
+#' Pipe a possibly unresolved value forward into a function. [experimental]
+#'
+#' @param x a value that is possibly an 'unresolvedValue'.
+#' @param f a function that accepts 'x' as its first argument.
+#'
+#' @return The evaluated result, or if x is an 'unresolvedValue', an
+#'     'unresolvedExpr' encapsulating the eventual evaluation result. Query its
+#'     \code{$data} field for resolution.
+#'
+#' @details Supports stringing together a series of piped expressions (as per
+#'     the below example).
+#'
+#'     This function is marked [experimental], which means it is currently
+#'     under development. Please note that the final implementation is likely to
+#'     differ from the current version.
+#'
+#' @examples
+#' if (interactive()) {
+#' # Only run examples in interactive R sessions
+#'
+#' s1 <- socket("pair", listen = "inproc://nanonext")
+#' s2 <- socket("pair", dial = "inproc://nanonext")
+#'
+#' msg <- recv_aio(s2)
+#' b <- msg$data %>>% c(2, 3) %>>% as.character()
+#' b
+#' res <- send_aio(s1, 1)
+#' b$data
+#'
+#' close(s1)
+#' close(s2)
+#' }
+#'
+#' @export
+#'
+`%>>%` <- function(x, f) {
+  if (unresolved(x)) {
+    mc <- match.call()
+    data <- NULL
+    env <- `class<-`(new.env(), c("unresolvedExpr", "unresolvedValue"))
+    makeActiveBinding(sym = "data", fun = function(x) {
+      if (is.null(data)) data <- eval(mc, envir = parent.frame(), enclos = baseenv())
+      data
+    }, env = env)
+    env
+  } else {
+    x <- substitute(x)
+    y <- substitute(f)
+    f <- y[[1L]]
+    y[[1L]] <- NULL
+    eval(as.call(c(f, x, y)), envir = parent.frame(2L), enclos = baseenv())
+  }
+}
+
+#' @export
+#'
+print.unresolvedExpr <- function(x, ...) {
+  cat("< unresolvedExpr >\n - $data for evaluated expression\n", file = stdout())
+  invisible(x)
+}
+
