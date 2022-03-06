@@ -74,9 +74,9 @@ socket open etc. to stdout.</p></li>
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>Invisible NULL, or if 'level' is not specified, the integer code of
-    the logging level. A confirmation is printed to the console (stdout) if
-    the logging level has changed.</p>
+    <p>Invisible NULL. A confirmation is printed to the console (stdout) if
+    the logging level has changed. If the function is called with no arguments,
+    the integer code of the logging level is returned instead.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -89,12 +89,12 @@ socket open etc. to stdout.</p></li>
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu">logging</span><span class="op">(</span>level <span class="op">=</span> <span class="st">"info"</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2022-03-05 20:19:48 [ log level ] set to: info</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2022-03-06 17:14:31 [ log level ] set to: info</span>
 <span class="r-in"><span class="va">sock</span> <span class="op">&lt;-</span> <span class="fu"><a href="socket.html">socket</a></span><span class="op">(</span><span class="st">"respondent"</span>, dial <span class="op">=</span> <span class="st">"inproc://nanolog"</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2022-03-05 20:19:48 [ sock open ] id: 9 | protocol: respondent</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2022-03-05 20:19:48 [ dial start ] sock: 9 | url: inproc://nanolog</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2022-03-06 17:14:31 [ sock open ] id: 9 | protocol: respondent</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2022-03-06 17:14:31 [ dial start ] sock: 9 | url: inproc://nanolog</span>
 <span class="r-in"><span class="fu">logging</span><span class="op">(</span>level <span class="op">=</span> <span class="st">"error"</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2022-03-05 20:19:48 [ log level ] set to: error</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2022-03-06 17:14:31 [ log level ] set to: error</span>
 <span class="r-in"><span class="fu"><a href="close.html">close</a></span><span class="op">(</span><span class="va">sock</span><span class="op">)</span></span>
 <span class="r-in"></span>
 </code></pre></div>

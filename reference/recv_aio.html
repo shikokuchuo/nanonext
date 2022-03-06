@@ -87,17 +87,25 @@ the converted data only.</p></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A recv Aio (object of class 'recvAio').</p>
+    <p>A 'recvAio' (object of class 'recvAio').</p>
     </div>
     <div id="details">
     <h2>Details</h2>
-    <p>Async receive is always non-blocking and returns immediately.</p>
-<p>The received message is available at <code>$data</code>, and the raw message at
-    <code>$raw</code> (if kept). An 'unresolved' logical NA will be returned if the
-    async operation is yet to complete.</p>
+    <p>Async receive is always non-blocking and returns a 'recvAio'
+    immediately.</p>
+<p>For a 'recvAio', the received message is available at <code>$data</code>, and
+    the raw message at <code>$raw</code> (if kept). An 'unresolved' logical NA is
+    returned if the async operation is yet to complete.</p>
 <p>To wait for the async operation to complete and retrieve the received
     message, use <code><a href="call_aio.html">call_aio</a></code> on the returned 'recvAio' object.</p>
 <p>Alternatively, to stop the async operation, use <code><a href="stop_aio.html">stop_aio</a></code>.</p>
+<p>In case of an error, an integer 'errorValue' is returned (to be
+    distiguishable from an integer message value). This can be verified using
+    <code><a href="is_error_value.html">is_error_value</a></code>.</p>
+<p>If the raw data was successfully received but an error occurred in
+    unserialisation or data conversion (for example if the incorrect mode was
+    specified), the received raw vector will be stored at <code>$data</code> to
+    allow for the data to be recovered.</p>
     </div>
 
     <div id="ref-examples">

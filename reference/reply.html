@@ -104,7 +104,7 @@ that the requestor has become unavailable since sending the request).</p></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>Zero (invisibly) on success.</p>
+    <p>Invisibly, an integer exit code (zero on success).</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -113,9 +113,9 @@ that the requestor has become unavailable since sending the request).</p></dd>
     if no data is forthcoming.</p>
 <p>In the event of an error in either processing the messages or in evaluation
     of the function with respect to the data, a nul byte <code>00</code> (or serialized
-    nul byte) will be sent in reply to the client to signal an error. This makes
-    it easy to distigush an error from a NULL return value.
-    <code><a href="is_nul_byte.html">is_nul_byte</a></code> can be used to test for a nul byte.</p>
+    nul byte) will be sent in reply to the client to signal an error. This is
+    to be distinguishable from a possible return value. <code><a href="is_nul_byte.html">is_nul_byte</a></code>
+    can be used to test for a nul byte.</p>
     </div>
 
     <div id="ref-examples">
