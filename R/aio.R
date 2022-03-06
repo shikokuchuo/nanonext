@@ -1,37 +1,37 @@
 # nanonext - Core Functions - Aio Functions ------------------------------------
 
-#' Call the Result of an Asynchronous AIO Operation
+#' Call the Value of an Asynchronous AIO Operation
 #'
-#' Retrieve the result of an asynchronous AIO operation, waiting for the AIO
+#' Retrieve the value of an asynchronous AIO operation, waiting for the AIO
 #'     operation to complete if still in progress.
 #'
 #' @param aio An Aio (object of class 'sendAio' or 'recvAio').
 #'
 #' @return The passed Aio object (invisibly).
 #'
-#' @details For a 'recvAio', the received raw vector will be attached in \code{$raw}
+#' @details For a 'recvAio', the received raw vector may be retrieved at \code{$raw}
 #'     (unless 'keep.raw' was set to FALSE when receiving), and the converted R
-#'     object in \code{$data}.
+#'     object at \code{$data}.
 #'
-#'     For a 'sendAio', the send result will be attached to the Aio in \code{$result}.
-#'     This will be zero on success.
+#'     For a 'sendAio', the send result may be retrieved at \code{$result}. This
+#'     will be zero on success, or else an integer error code.
 #'
-#'     To access the values directly, use for example on a sendAio 'x':
-#'     \code{call_aio(x)$result}.
+#'     To access the values directly, use for example on a 'recvAio' \code{x}:
+#'     \code{call_aio(x)$data}.
 #'
-#'     For a 'recvAio', in case of an error in unserialisation or data conversion,
-#'     the received raw vector will be stored in \code{$data} to allow for the
-#'     data to be recovered.
+#'     For a 'recvAio', in case of an error in unserialisation or data conversion
+#'     (for example if the incorrect mode was specified), the received raw vector
+#'     will be stored at \code{$data} to allow for the data to be recovered.
 #'
-#'     Once the result has been successfully retrieved, the Aio is deallocated
-#'     and only the result is stored in the Aio object.
+#'     Once the value has been successfully retrieved, the Aio is deallocated
+#'     and only the value is stored in the Aio object.
 #'
 #' @section Alternatively:
 #'
 #'     Aio values may be accessed directly at \code{$result} for a 'sendAio',
 #'     and \code{$raw} or \code{$data} for a 'recvAio'. If the Aio operation is
 #'     yet to complete, an 'unresolved' logical NA will be returned. Once
-#'     completed, the resolved value will be returned instead.
+#'     complete, the resolved value will be returned instead.
 #'
 #'     \code{\link{unresolved}} may also be used, which returns TRUE only if an
 #'     Aio or Aio value has yet to resolve and FALSE otherwise. This is suitable

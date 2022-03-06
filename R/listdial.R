@@ -12,8 +12,9 @@
 #'     you wish to set configuration options on the dialer as it is not
 #'     generally possible to change these once started.
 #'
-#' @return Zero (invisibly) on success. A new Dialer (object of class 'nanoDialer'
-#'     and 'nano') is created and bound to the Socket.
+#' @return Invisibly, an integer exit code (zero on success). A new Dialer
+#'     (object of class 'nanoDialer' and 'nano') is created and bound to the
+#'     Socket or nano object if successful.
 #'
 #' @details To view all Dialers bound to a socket use \code{$dialer} on the
 #'     socket, which returns a list of Dialer objects. To access any individual
@@ -136,8 +137,9 @@ dial <- function(socket,
 #'     if you wish to set configuration options on the listener as it is not
 #'     generally possible to change these once started.
 #'
-#' @return Zero (invisibly) on success. A new Listener (object of class
-#'     'nanoListener' and 'nano') is created and bound to the Socket or nano object.
+#' @return Invisibly, an integer exit code (zero on success). A new Listener
+#'     (object of class 'nanoListener' and 'nano') is created and bound to the
+#'     Socket or nano object if successful.
 #'
 #' @details  To view all Listeners bound to a socket use \code{$listener} on the
 #'     socket, which returns a list of Listener objects. To access any individual

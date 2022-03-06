@@ -21,16 +21,19 @@ with external applications.}
 be used.}
 }
 \value{
-A send Aio (object of class 'sendAio').
+A 'sendAio' (object of class 'sendAio').
 }
 \description{
 Send data asynchronously over a Socket or Context.
 }
 \details{
-Async send is always non-blocking and returns immediately.
+Async send is always non-blocking and returns a 'sendAio'
+    immediately.
 
-    The send result is available at \code{$result}, which will return an
-    'unresolved' logical NA if the async operation is yet to complete.
+    For a 'sendAio', the send result is available at \code{$result}. An
+    'unresolved' logical NA is returned if the async operation is yet to
+    complete, The resolved value will be zero on success, or else an integer
+    error code.
 
     To wait for and check the result of the send operation, use
     \code{\link{call_aio}} on the returned 'sendAio' object.

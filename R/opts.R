@@ -11,7 +11,7 @@
 #'     See \link{opts}.
 #' @param value value of option.
 #'
-#' @return Zero (invisibly) on success.
+#' @return Invisibly, an integer exit code (zero on success).
 #'
 #' @details Note: once a dialer or listener has started, it is not generally
 #'     possible to change its configuration. Hence create the dialer or listener

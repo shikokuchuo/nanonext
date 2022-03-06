@@ -89,7 +89,7 @@ socket <- function(protocol = c("pair", "bus", "push", "pull", "req", "rep",
 #' @param topic [default NULL] a topic (given as a character string). The default
 #'     NULL subscribes to all topics.
 #'
-#' @return Zero (invisibly) on success.
+#' @return Invisibly, an integer exit code (zero on success).
 #'
 #' @details To use pub/sub the publisher must:
 #'     \itemize{
@@ -140,7 +140,7 @@ subscribe <- function(socket, topic = NULL) {
 #' @param topic [default NULL] a topic (given as a character string). The default
 #'     NULL unsubscribes from all topics (if all topics were previously subscribed).
 #'
-#' @return Zero (invisibly) on success.
+#' @return Invisibly, an integer exit code (zero on success).
 #'
 #' @details Note that if the topic was not previously subscribed to then an
 #'     'entry not found' error will result.
@@ -195,7 +195,7 @@ unsubscribe <- function(socket, topic = NULL) {
 #' @param socket a Socket or Context using the surveyor protocol.
 #' @param time the survey timeout in ms.
 #'
-#' @return Zero (invisibly) on success.
+#' @return Invisibly, an integer exit code (zero on success).
 #'
 #' @details After using this function, to start a new survey, the surveyor must:
 #'     \itemize{

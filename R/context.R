@@ -58,7 +58,8 @@ context <- function(socket) {
 #' @inheritParams send
 #' @inheritParams send_aio
 #'
-#' @return Raw vector of sent data, or zero (invisibly) if 'echo' is set to FALSE.
+#' @return Raw vector of sent data, or (invisibly) an integer exit code (zero on
+#'     success) if 'echo' is set to FALSE.
 #'
 #' @details Will block if the send is in progress and has not yet completed -
 #'     certain protocol / transport combinations may limit the number of messages
@@ -104,14 +105,20 @@ send_ctx <- function(context, data, mode = c("serial", "raw"), timeout, echo = T
 #' @inheritParams send_aio
 #'
 #' @return Named list of 2 elements: 'raw' containing the received raw vector
-#'     and 'data' containing the converted R object, or else the converted R
-#'     object if 'keep.raw' is set to FALSE.
+#'     and 'data' containing the converted object, or else the converted object
+#'     if 'keep.raw' is set to FALSE.
 #'
 #' @details Will block while awaiting the receive operation to complete.
 #'     Set a timeout to ensure that the function returns under all scenarios.
 #'
-#'     In case of an error in unserialisation or data conversion, the function
-#'     will still return the received raw vector to allow the data to be recovered.
+#'     In case of an error, an integer 'errorValue' is returned (to be
+#'     distiguishable from an integer message value). This can be verified using
+#'     \code{\link{is_error_value}}.
+#'
+#'     If the raw data was successfully received but an error occurred in
+#'     unserialisation or data conversion (for example if the incorrect mode was
+#'     specified), the received raw vector will always be returned to allow for
+#'     the data to be recovered.
 #'
 #' @examples
 #' req <- socket("req", listen = "inproc://nanonext")
@@ -177,7 +184,7 @@ recv_ctx <- function(context,
 #'     that the requestor has become unavailable since sending the request).
 #' @param ... additional arguments passed to the function specified by 'execute'.
 #'
-#' @return Zero (invisibly) on success.
+#' @return Invisibly, an integer exit code (zero on success).
 #'
 #' @details Receive will block while awaiting a message to arrive and is usually
 #'     the desired behaviour. Set a timeout to allow the function to return
@@ -185,9 +192,9 @@ recv_ctx <- function(context,
 #'
 #'     In the event of an error in either processing the messages or in evaluation
 #'     of the function with respect to the data, a nul byte \code{00} (or serialized
-#'     nul byte) will be sent in reply to the client to signal an error. This makes
-#'     it easy to distigush an error from a NULL return value.
-#'     \code{\link{is_nul_byte}} can be used to test for a nul byte.
+#'     nul byte) will be sent in reply to the client to signal an error. This is
+#'     to be distinguishable from a possible return value. \code{\link{is_nul_byte}}
+#'     can be used to test for a nul byte.
 #'
 #' @examples
 #' req <- socket("req", listen = "tcp://127.0.0.1:6546")
@@ -251,7 +258,7 @@ reply <- function(context,
 #' @param timeout in ms. If unspecified, a socket-specific default timeout will
 #'     be used. Note that this applies to receiving the result.
 #'
-#' @return A recv Aio (object of class 'recvAio').
+#' @return A 'recvAio' (object of class 'recvAio').
 #'
 #' @details Sending the request and receiving the result are both performed async,
 #'     hence the function will return immediately with a 'recvAio' object. Access

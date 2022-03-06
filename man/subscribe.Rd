@@ -13,7 +13,7 @@ subscribe(socket, topic = NULL)
 NULL subscribes to all topics.}
 }
 \value{
-Zero (invisibly) on success.
+Invisibly, an integer exit code (zero on success).
 }
 \description{
 For a socket using the sub protocol in a publisher/subscriber pattern. Set a

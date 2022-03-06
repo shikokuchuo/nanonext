@@ -41,7 +41,7 @@ that the requestor has become unavailable since sending the request).}
 \item{...}{additional arguments passed to the function specified by 'execute'.}
 }
 \value{
-Zero (invisibly) on success.
+Invisibly, an integer exit code (zero on success).
 }
 \description{
 Implements an executor/server for the rep node of the req/rep protocol. Awaits
@@ -55,9 +55,9 @@ Receive will block while awaiting a message to arrive and is usually
 
     In the event of an error in either processing the messages or in evaluation
     of the function with respect to the data, a nul byte \code{00} (or serialized
-    nul byte) will be sent in reply to the client to signal an error. This makes
-    it easy to distigush an error from a NULL return value.
-    \code{\link{is_nul_byte}} can be used to test for a nul byte.
+    nul byte) will be sent in reply to the client to signal an error. This is
+    to be distinguishable from a possible return value. \code{\link{is_nul_byte}}
+    can be used to test for a nul byte.
 }
 \examples{
 req <- socket("req", listen = "tcp://127.0.0.1:6546")

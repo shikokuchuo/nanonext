@@ -13,7 +13,7 @@ unsubscribe(socket, topic = NULL)
 NULL unsubscribes from all topics (if all topics were previously subscribed).}
 }
 \value{
-Zero (invisibly) on success.
+Invisibly, an integer exit code (zero on success).
 }
 \description{
 For a socket using the sub protocol in a publisher/subscriber pattern. Remove

@@ -13,7 +13,7 @@
 #'     action will be taken.
 #' @param ... not used.
 #'
-#' @return Zero (invisibly) on success.
+#' @return Invisibly, an integer exit code (zero on success).
 #'
 #' @name start
 #' @rdname start
@@ -61,7 +61,7 @@ start.nanoDialer <- function(x, async = TRUE, ...) {
 #' @param con a Socket, Context, Dialer or Listener.
 #' @param ... not used.
 #'
-#' @return Zero (invisibly) on success.
+#' @return Invisibly, an integer exit code (zero on success).
 #'
 #' @details Closing an object explicitly frees its resources. An object can also
 #'     be removed directly in which case its resources are freed when the object

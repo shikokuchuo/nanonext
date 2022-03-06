@@ -12,7 +12,7 @@ survey_time(socket, time)
 \item{time}{the survey timeout in ms.}
 }
 \value{
-Zero (invisibly) on success.
+Invisibly, an integer exit code (zero on success).
 }
 \description{
 For a socket using the surveyor protocol in a surveyor/respondent pattern.

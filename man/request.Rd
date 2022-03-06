@@ -38,7 +38,7 @@ vector (useful for verification e.g. via hashing). If FALSE, will return
 the converted data only.}
 }
 \value{
-A recv Aio (object of class 'recvAio').
+A 'recvAio' (object of class 'recvAio').
 }
 \description{
 Implements a caller/client for the req node of the req/rep protocol. Sends

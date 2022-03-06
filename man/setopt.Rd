@@ -55,7 +55,7 @@ See \link{opts}.}
 \item{value}{value of option.}
 }
 \value{
-Zero (invisibly) on success.
+Invisibly, an integer exit code (zero on success).
 }
 \description{
 Set \link{opts} on a Socket, Context, Dialer or Listener.

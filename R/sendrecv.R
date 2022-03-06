@@ -17,7 +17,8 @@
 #'     sent data. Set to FALSE for performance-critical applications where zero
 #'     will be returned (invisibly) instead.
 #'
-#' @return Raw vector of sent data, or zero (invisibly) if 'echo' is set to FALSE.
+#' @return Raw vector of sent data, or (invisibly) an integer exit code (zero on
+#'     success) if 'echo' is set to FALSE.
 #'
 #' @examples
 #' pub <- socket("pub", dial = "inproc://nanonext")
@@ -56,12 +57,15 @@ send <- function(socket,
 #' @param timeout in ms. If unspecified, a socket-specific default timeout will
 #'     be used.
 #'
-#' @return A send Aio (object of class 'sendAio').
+#' @return A 'sendAio' (object of class 'sendAio').
 #'
-#' @details Async send is always non-blocking and returns immediately.
+#' @details Async send is always non-blocking and returns a 'sendAio'
+#'     immediately.
 #'
-#'     The send result is available at \code{$result}, which will return an
-#'     'unresolved' logical NA if the async operation is yet to complete.
+#'     For a 'sendAio', the send result is available at \code{$result}. An
+#'     'unresolved' logical NA is returned if the async operation is yet to
+#'     complete, The resolved value will be zero on success, or else an integer
+#'     error code.
 #'
 #'     To wait for and check the result of the send operation, use
 #'     \code{\link{call_aio}} on the returned 'sendAio' object.
@@ -124,12 +128,17 @@ send_aio <- function(socket, data, mode = c("serial", "raw"), timeout) {
 #'     the converted data only.
 #'
 #' @return Named list of 2 elements: 'raw' containing the received raw vector
-#'     and 'data' containing the converted R object, or else the converted R
-#'     object if 'keep.raw' is set to FALSE.
+#'     and 'data' containing the converted object, or else the converted object
+#'     if 'keep.raw' is set to FALSE.
 #'
-#' @details In case of an error in unserialisation or data conversion, the
-#'     function will still return the received raw vector to allow the data to
-#'     be recovered.
+#' @details In case of an error, an integer 'errorValue' is returned (to be
+#'     distiguishable from an integer message value). This can be verified using
+#'     \code{\link{is_error_value}}.
+#'
+#'     If the raw data was successfully received but an error occurred in
+#'     unserialisation or data conversion (for example if the incorrect mode was
+#'     specified), the received raw vector will always be returned to allow for
+#'     the data to be recovered.
 #'
 #' @examples
 #' s1 <- socket("bus", listen = "inproc://nanonext")
@@ -179,18 +188,28 @@ recv <- function(socket,
 #' @inheritParams recv
 #' @inheritParams send_aio
 #'
-#' @return A recv Aio (object of class 'recvAio').
+#' @return A 'recvAio' (object of class 'recvAio').
 #'
-#' @details Async receive is always non-blocking and returns immediately.
+#' @details Async receive is always non-blocking and returns a 'recvAio'
+#'     immediately.
 #'
-#'     The received message is available at \code{$data}, and the raw message at
-#'     \code{$raw} (if kept). An 'unresolved' logical NA will be returned if the
-#'     async operation is yet to complete.
+#'     For a 'recvAio', the received message is available at \code{$data}, and
+#'     the raw message at \code{$raw} (if kept). An 'unresolved' logical NA is
+#'     returned if the async operation is yet to complete.
 #'
 #'     To wait for the async operation to complete and retrieve the received
 #'     message, use \code{\link{call_aio}} on the returned 'recvAio' object.
 #'
 #'     Alternatively, to stop the async operation, use \code{\link{stop_aio}}.
+#'
+#'     In case of an error, an integer 'errorValue' is returned (to be
+#'     distiguishable from an integer message value). This can be verified using
+#'     \code{\link{is_error_value}}.
+#'
+#'     If the raw data was successfully received but an error occurred in
+#'     unserialisation or data conversion (for example if the incorrect mode was
+#'     specified), the received raw vector will be stored at \code{$data} to
+#'     allow for the data to be recovered.
 #'
 #' @examples
 #' s1 <- socket("pair", listen = "inproc://nanonext")

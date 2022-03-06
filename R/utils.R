@@ -108,9 +108,9 @@ is_error_value <- function(x) inherits(x, "errorValue")
 #'     socket open etc. to stdout.}
 #'     }
 #'
-#' @return Invisible NULL, or if 'level' is not specified, the integer code of
-#'     the logging level. A confirmation is printed to the console (stdout) if
-#'     the logging level has changed.
+#' @return Invisible NULL. A confirmation is printed to the console (stdout) if
+#'     the logging level has changed. If the function is called with no arguments,
+#'     the integer code of the logging level is returned instead.
 #'
 #' @details The environment variable 'NANONEXT_LOG' is checked automatically on
 #'     package load and then cached for optimal performance. It is also checked

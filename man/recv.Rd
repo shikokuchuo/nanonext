@@ -29,16 +29,21 @@ the converted data only.}
 }
 \value{
 Named list of 2 elements: 'raw' containing the received raw vector
-    and 'data' containing the converted R object, or else the converted R
-    object if 'keep.raw' is set to FALSE.
+    and 'data' containing the converted object, or else the converted object
+    if 'keep.raw' is set to FALSE.
 }
 \description{
 Receive data over a Socket.
 }
 \details{
-In case of an error in unserialisation or data conversion, the
-    function will still return the received raw vector to allow the data to
-    be recovered.
+In case of an error, an integer 'errorValue' is returned (to be
+    distiguishable from an integer message value). This can be verified using
+    \code{\link{is_error_value}}.
+
+    If the raw data was successfully received but an error occurred in
+    unserialisation or data conversion (for example if the incorrect mode was
+    specified), the received raw vector will always be returned to allow for
+    the data to be recovered.
 }
 \examples{
 s1 <- socket("bus", listen = "inproc://nanonext")

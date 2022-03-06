@@ -17,9 +17,9 @@ socket open etc. to stdout.}
 }}
 }
 \value{
-Invisible NULL, or if 'level' is not specified, the integer code of
-    the logging level. A confirmation is printed to the console (stdout) if
-    the logging level has changed.
+Invisible NULL. A confirmation is printed to the console (stdout) if
+    the logging level has changed. If the function is called with no arguments,
+    the integer code of the logging level is returned instead.
 }
 \description{
 Set the logging level of nanonext.

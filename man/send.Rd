@@ -25,7 +25,8 @@ sent data. Set to FALSE for performance-critical applications where zero
 will be returned (invisibly) instead.}
 }
 \value{
-Raw vector of sent data, or zero (invisibly) if 'echo' is set to FALSE.
+Raw vector of sent data, or (invisibly) an integer exit code (zero on
+    success) if 'echo' is set to FALSE.
 }
 \description{
 Send data over a Socket.

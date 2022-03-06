@@ -28,22 +28,32 @@ vector (useful for verification e.g. via hashing). If FALSE, will return
 the converted data only.}
 }
 \value{
-A recv Aio (object of class 'recvAio').
+A 'recvAio' (object of class 'recvAio').
 }
 \description{
 Receive data asynchronously over a Socket or Context.
 }
 \details{
-Async receive is always non-blocking and returns immediately.
+Async receive is always non-blocking and returns a 'recvAio'
+    immediately.
 
-    The received message is available at \code{$data}, and the raw message at
-    \code{$raw} (if kept). An 'unresolved' logical NA will be returned if the
-    async operation is yet to complete.
+    For a 'recvAio', the received message is available at \code{$data}, and
+    the raw message at \code{$raw} (if kept). An 'unresolved' logical NA is
+    returned if the async operation is yet to complete.
 
     To wait for the async operation to complete and retrieve the received
     message, use \code{\link{call_aio}} on the returned 'recvAio' object.
 
     Alternatively, to stop the async operation, use \code{\link{stop_aio}}.
+
+    In case of an error, an integer 'errorValue' is returned (to be
+    distiguishable from an integer message value). This can be verified using
+    \code{\link{is_error_value}}.
+
+    If the raw data was successfully received but an error occurred in
+    unserialisation or data conversion (for example if the incorrect mode was
+    specified), the received raw vector will be stored at \code{$data} to
+    allow for the data to be recovered.
 }
 \examples{
 s1 <- socket("pair", listen = "inproc://nanonext")
