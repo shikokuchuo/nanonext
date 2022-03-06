@@ -219,7 +219,7 @@ ncurl <- function(http, ...) {
 
 #' Deferred Evaluation Pipe
 #'
-#' Pipe a possibly unresolved value forward into a function. [experimental]
+#' Pipe a possibly unresolved value forward into a function.
 #'
 #' @param x a value that is possibly an 'unresolvedValue'.
 #' @param f a function that accepts 'x' as its first argument.
@@ -234,6 +234,14 @@ ncurl <- function(http, ...) {
 #'     This function is marked [experimental], which means it is currently
 #'     under development. Please note that the final implementation is likely to
 #'     differ from the current version.
+#'
+#' @section Usage:
+#'
+#'     \code{x \%>>\% f} is equivalent to \code{f(x)}
+#'
+#'     \code{x \%>>\% f()} is equivalent to \code{f(x)}
+#'
+#'     \code{x \%>>\% f(y)} is equivalent to \code{f(x, y)}
 #'
 #' @examples
 #' if (interactive()) {
@@ -267,9 +275,13 @@ ncurl <- function(http, ...) {
   } else {
     x <- substitute(x)
     y <- substitute(f)
-    f <- y[[1L]]
-    y[[1L]] <- NULL
-    eval(as.call(c(f, x, y)), envir = parent.frame(2L), enclos = baseenv())
+    if (is.symbol(y)) {
+      eval(as.call(c(y, x)), envir = parent.frame(2L), enclos = baseenv())
+    } else {
+      f <- y[[1L]]
+      y[[1L]] <- NULL
+      eval(as.call(c(f, x, y)), envir = parent.frame(2L), enclos = baseenv())
+    }
   }
 }
 

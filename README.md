@@ -48,12 +48,13 @@ Implemented transports:
 2.  [Interfaces](#interfaces)
 3.  [Cross-language Exchange](#cross-language-exchange)
 4.  [Async and Concurrency](#async-and-concurrency)
-5.  [RPC and Distributed Computing](#rpc-and-distributed-computing)
-6.  [Publisher / Subscriber Model](#publisher-subscriber-model)
-7.  [Surveyor / Repondent Model](#surveyor-respondent-model)
-8.  [ncurl Minimalist http Client](#ncurl-minimalist-http-client)
-9.  [Building from source](#building-from-source)
-10. [Links](#links)
+5.  [Deferred Evaluation Pipe](#deferred-evaluation-pipe)
+6.  [RPC and Distributed Computing](#rpc-and-distributed-computing)
+7.  [Publisher / Subscriber Model](#publisher-subscriber-model)
+8.  [Surveyor / Repondent Model](#surveyor-respondent-model)
+9.  [ncurl Minimalist http Client](#ncurl-minimalist-http-client)
+10. [Building from source](#building-from-source)
+11. [Links](#links)
 
 ### Installation
 
@@ -225,7 +226,6 @@ n$recv(mode = "double")
 massively-scaleable concurrency framework.
 
 ``` r
-library(nanonext)
 s1 <- socket("pair", listen = "inproc://nano")
 s2 <- socket("pair", dial = "inproc://nano")
 ```
@@ -321,6 +321,52 @@ close(s2)
 
 [« Back to ToC](#table-of-contents)
 
+### Deferred Evaluation Pipe
+
+{nanonext} implements a deferred evaluation pipe `%>>%` for working with
+potentially unresolved values.
+
+Simply pipe the value forward into a function or series of functions and
+it either evaluates or returns an ‘unresolvedExpr’, where the result may
+be accessed at `$data`. This will also return an ‘unresolvedExpr’
+recursively by design whilst unresolved. However `$data` resolves to the
+evaluated expression when the original value does.
+
+It is possible to use `unresolved()` around the `$data` field to test
+for resolution, as in the example below.
+
+The pipe operator semantics are similar to R’s base pipe `|>`:
+
+`x %>>% f` is equivalent to `f(x)` <br /> `x %>>% f()` is equivalent to
+`f(x)` <br /> `x %>>% f(y)` is equivalent to `f(x, y)`
+
+``` r
+s1 <- socket("pair", listen = "inproc://cecicestunepipe")
+s2 <- socket("pair", dial = "inproc://cecicestunepipe")
+
+# request an aysnc receive with no messages waiting
+msg <- recv_aio(s2)
+
+res <- msg$data %>>% c(2, 3) %>>% as.character()
+res
+#> < unresolvedExpr >
+#>  - $data for evaluated expression
+unresolved(res$data)
+#> [1] TRUE
+
+# sending a message causes both 'msg' and 'res' to resolve
+s <- send_aio(s1, 1)
+unresolved(res$data)
+#> [1] FALSE
+res$data
+#> [1] "1" "2" "3"
+
+close(s1)
+close(s2)
+```
+
+[« Back to ToC](#table-of-contents)
+
 ### RPC and Distributed Computing
 
 {nanonext} implements remote procedure calls (RPC) using NNG’s req/rep
@@ -370,7 +416,7 @@ aio
 #> < recvAio >
 #>  - $data for message data
 aio$data |> str()
-#>  num [1:100000000] 1.231 -2.553 1.338 0.882 0.158 ...
+#>  num [1:100000000] 0.112 -0.331 -0.798 -1.467 0.692 ...
 ```
 
 As `call_aio()` is blocking and will wait for completion, an alternative
@@ -405,37 +451,37 @@ an environment variable `NANONEXT_LOG`.
 
 ``` r
 logging(level = "info")
-#> 2022-03-05 20:14:17 [ log level ] set to: info
+#> 2022-03-06 22:41:13 [ log level ] set to: info
 
 pub <- socket("pub", listen = "inproc://nanobroadcast")
-#> 2022-03-05 20:14:17 [ sock open ] id: 9 | protocol: pub
-#> 2022-03-05 20:14:17 [ list start ] sock: 9 | url: inproc://nanobroadcast
+#> 2022-03-06 22:41:13 [ sock open ] id: 11 | protocol: pub
+#> 2022-03-06 22:41:13 [ list start ] sock: 11 | url: inproc://nanobroadcast
 sub <- socket("sub", dial = "inproc://nanobroadcast")
-#> 2022-03-05 20:14:17 [ sock open ] id: 10 | protocol: sub
-#> 2022-03-05 20:14:17 [ dial start ] sock: 10 | url: inproc://nanobroadcast
+#> 2022-03-06 22:41:13 [ sock open ] id: 12 | protocol: sub
+#> 2022-03-06 22:41:13 [ dial start ] sock: 12 | url: inproc://nanobroadcast
 
 sub |> subscribe(topic = "examples")
-#> 2022-03-05 20:14:17 [ subscribe ] sock: 10 | topic: examples
+#> 2022-03-06 22:41:13 [ subscribe ] sock: 12 | topic: examples
 pub |> send(c("examples", "this is an example"), mode = "raw", echo = FALSE)
 sub |> recv(mode = "character", keep.raw = FALSE)
 #> [1] "examples"           "this is an example"
 
 pub |> send(c("other", "this other topic will not be received"), mode = "raw", echo = FALSE)
 sub |> recv(mode = "character", keep.raw = FALSE)
-#> 2022-03-05 20:14:17 [ 8 ] Try again
+#> 2022-03-06 22:41:13 [ 8 ] Try again
 
 # specify NULL to subscribe to ALL topics
 sub |> subscribe(topic = NULL)
-#> 2022-03-05 20:14:17 [ subscribe ] sock: 10 | topic: ALL
+#> 2022-03-06 22:41:13 [ subscribe ] sock: 12 | topic: ALL
 pub |> send(c("newTopic", "this is a new topic"), mode = "raw", echo = FALSE)
 sub |> recv("character", keep.raw = FALSE)
 #> [1] "newTopic"            "this is a new topic"
 
 sub |> unsubscribe(topic = NULL)
-#> 2022-03-05 20:14:17 [ unsubscribe ] sock: 10 | topic: ALL
+#> 2022-03-06 22:41:13 [ unsubscribe ] sock: 12 | topic: ALL
 pub |> send(c("newTopic", "this topic will now not be received"), mode = "raw", echo = FALSE)
 sub |> recv("character", keep.raw = FALSE)
-#> 2022-03-05 20:14:17 [ 8 ] Try again
+#> 2022-03-06 22:41:13 [ 8 ] Try again
 
 # however the topics explicitly subscribed to are still received
 pub |> send(c("examples", "this example will still be received"), mode = "raw", echo = FALSE)
@@ -444,7 +490,7 @@ sub |> recv(mode = "character", keep.raw = FALSE)
 
 # set logging level back to the default of errors only
 logging(level = "error")
-#> 2022-03-05 20:14:17 [ log level ] set to: error
+#> 2022-03-06 22:41:13 [ log level ] set to: error
 
 close(pub)
 close(sub)
@@ -495,7 +541,7 @@ aio2$data
 # after the survey expires, the second resolves into a timeout error
 Sys.sleep(0.5)
 aio2$data
-#> 2022-03-05 20:14:18 [ 5 ] Timed out
+#> 2022-03-06 22:41:13 [ 5 ] Timed out
 #> 'errorValue' int 5
 
 close(sur)
@@ -521,11 +567,11 @@ ncurl("http://httpbin.org/headers")
 #>   [1] 7b 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73
 #>  [26] 74 22 3a 20 22 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22
 #>  [51] 58 2d 41 6d 7a 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31
-#>  [76] 2d 36 32 32 33 63 34 39 61 2d 33 32 62 31 31 63 66 37 36 61 31 61 62 33 61
-#> [101] 63 36 62 36 30 30 61 36 33 22 0a 20 20 7d 0a 7d 0a
+#>  [76] 2d 36 32 32 35 33 38 38 61 2d 37 65 30 39 65 64 33 35 33 63 38 30 37 61 30
+#> [101] 34 37 37 37 65 36 65 32 62 22 0a 20 20 7d 0a 7d 0a
 #> 
 #> $data
-#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6223c49a-32b11cf76a1ab3ac6b600a63\"\n  }\n}\n"
+#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6225388a-7e09ed353c807a04777e6e2b\"\n  }\n}\n"
 ```
 
 For advanced use, supports additional HTTP methods such as POST or PUT.

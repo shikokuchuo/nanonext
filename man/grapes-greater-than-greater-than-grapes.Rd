@@ -17,7 +17,7 @@ The evaluated result, or if x is an 'unresolvedValue', an
     \code{$data} field for resolution.
 }
 \description{
-Pipe a possibly unresolved value forward into a function. [experimental]
+Pipe a possibly unresolved value forward into a function.
 }
 \details{
 Supports stringing together a series of piped expressions (as per
@@ -27,6 +27,16 @@ Supports stringing together a series of piped expressions (as per
     under development. Please note that the final implementation is likely to
     differ from the current version.
 }
+\section{Usage}{
+
+
+    \code{x \%>>\% f} is equivalent to \code{f(x)}
+
+    \code{x \%>>\% f()} is equivalent to \code{f(x)}
+
+    \code{x \%>>\% f(y)} is equivalent to \code{f(x, y)}
+}
+
 \examples{
 if (interactive()) {
 # Only run examples in interactive R sessions

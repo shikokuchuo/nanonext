@@ -47,12 +47,13 @@ Implemented transports:
 2. [Interfaces](#interfaces)
 3. [Cross-language Exchange](#cross-language-exchange)
 4. [Async and Concurrency](#async-and-concurrency)
-5. [RPC and Distributed Computing](#rpc-and-distributed-computing)
-6. [Publisher / Subscriber Model](#publisher-subscriber-model)
-7. [Surveyor / Repondent Model](#surveyor-respondent-model)
-8. [ncurl Minimalist http Client](#ncurl-minimalist-http-client)
-9. [Building from source](#building-from-source)
-10. [Links](#links)
+5. [Deferred Evaluation Pipe](#deferred-evaluation-pipe)
+6. [RPC and Distributed Computing](#rpc-and-distributed-computing)
+7. [Publisher / Subscriber Model](#publisher-subscriber-model)
+8. [Surveyor / Repondent Model](#surveyor-respondent-model)
+9. [ncurl Minimalist http Client](#ncurl-minimalist-http-client)
+10. [Building from source](#building-from-source)
+11. [Links](#links)
 
 ### Installation
 
@@ -177,7 +178,7 @@ n$recv(mode = "double")
 {nanonext} implements true async send and receive, leveraging NNG as a massively-scaleable concurrency framework.
 
 ```{r async}
-library(nanonext)
+
 s1 <- socket("pair", listen = "inproc://nano")
 s2 <- socket("pair", dial = "inproc://nano")
 
@@ -239,13 +240,51 @@ msg$data
 
 The values may also be called explicitly using `call_aio()`. This will wait for completion of the Aio (blocking).
 
-```{r async6}
+```{r async7}
 
 # will wait for completion then return the resolved Aio
 call_aio(msg)
 
 # to access the resolved value directly (waiting if required)
 call_aio(msg)$data
+
+close(s1)
+close(s2)
+
+```
+
+[&laquo; Back to ToC](#table-of-contents)
+
+### Deferred Evaluation Pipe
+
+{nanonext} implements a deferred evaluation pipe `%>>%` for working with potentially unresolved values.
+
+Simply pipe the value forward into a function or series of functions and it either evaluates or returns an 'unresolvedExpr', where the result may be accessed at `$data`. This will also return an 'unresolvedExpr' recursively by design whilst unresolved. However `$data` resolves to the evaluated expression when the original value does. 
+
+It is possible to use `unresolved()` around the `$data` field to test for resolution, as in the example below.
+
+The pipe operator semantics are similar to R's base pipe `|>`:
+
+`x %>>% f` is equivalent to `f(x)` <br />
+`x %>>% f()` is equivalent to `f(x)` <br />
+`x %>>% f(y)` is equivalent to `f(x, y)`
+
+```{r async6}
+
+s1 <- socket("pair", listen = "inproc://cecicestunepipe")
+s2 <- socket("pair", dial = "inproc://cecicestunepipe")
+
+# request an aysnc receive with no messages waiting
+msg <- recv_aio(s2)
+
+res <- msg$data %>>% c(2, 3) %>>% as.character()
+res
+unresolved(res$data)
+
+# sending a message causes both 'msg' and 'res' to resolve
+s <- send_aio(s1, 1)
+unresolved(res$data)
+res$data
 
 close(s1)
 close(s2)
