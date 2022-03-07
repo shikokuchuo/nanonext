@@ -13,15 +13,22 @@ x \%>>\% f
 }
 \value{
 The evaluated result, or if x is an 'unresolvedValue', an
-    'unresolvedExpr' encapsulating the eventual evaluation result. Query its
-    \code{$data} field for resolution.
+    'unresolvedExpr'.
 }
 \description{
 Pipe a possibly unresolved value forward into a function.
 }
 \details{
-Supports stringing together a series of piped expressions (as per
+An 'unresolvedExpr' encapsulates the eventual evaluation result.
+    Query its \code{$data} element for resolution. Once resolved, the object
+    will change to a 'resolvedExpr' and the evaluated result will be accessible
+    at \code{$data}.
+
+    Supports stringing together a series of piped expressions (as per
     the below example).
+
+    \code{\link{unresolved}} may be used on an 'unresolvedExpr' or its
+    \code{$data} element to test for resolution.
 
     This function is marked [experimental], which means it is currently
     under development. Please note that the final implementation is likely to

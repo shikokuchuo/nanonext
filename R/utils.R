@@ -225,11 +225,18 @@ ncurl <- function(http, ...) {
 #' @param f a function that accepts 'x' as its first argument.
 #'
 #' @return The evaluated result, or if x is an 'unresolvedValue', an
-#'     'unresolvedExpr' encapsulating the eventual evaluation result. Query its
-#'     \code{$data} field for resolution.
+#'     'unresolvedExpr'.
 #'
-#' @details Supports stringing together a series of piped expressions (as per
+#' @details An 'unresolvedExpr' encapsulates the eventual evaluation result.
+#'     Query its \code{$data} element for resolution. Once resolved, the object
+#'     will change to a 'resolvedExpr' and the evaluated result will be accessible
+#'     at \code{$data}.
+#'
+#'     Supports stringing together a series of piped expressions (as per
 #'     the below example).
+#'
+#'     \code{\link{unresolved}} may be used on an 'unresolvedExpr' or its
+#'     \code{$data} element to test for resolution.
 #'
 #'     This function is marked [experimental], which means it is currently
 #'     under development. Please note that the final implementation is likely to
@@ -269,6 +276,7 @@ ncurl <- function(http, ...) {
     env <- `class<-`(new.env(), c("unresolvedExpr", "unresolvedValue"))
     makeActiveBinding(sym = "data", fun = function(x) {
       if (is.null(data)) data <- eval(mc, envir = parent.frame(), enclos = baseenv())
+      if (!inherits(data, "unresolvedExpr")) `class<-`(env, "resolvedExpr")
       data
     }, env = env)
     env
@@ -288,7 +296,16 @@ ncurl <- function(http, ...) {
 #' @export
 #'
 print.unresolvedExpr <- function(x, ...) {
-  cat("< unresolvedExpr >\n - $data for evaluated expression\n", file = stdout())
+  cat("< unresolvedExpr >\n - $data to query resolution\n", file = stdout())
   invisible(x)
 }
+
+#' @export
+#'
+print.resolvedExpr <- function(x, ...) {
+  cat("< resolvedExpr >\n - $data for evaluated expression\n", file = stdout())
+  invisible(x)
+}
+
+
 

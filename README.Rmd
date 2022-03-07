@@ -259,9 +259,11 @@ close(s2)
 
 {nanonext} implements a deferred evaluation pipe `%>>%` for working with potentially unresolved values.
 
-Simply pipe the value forward into a function or series of functions and it either evaluates or returns an 'unresolvedExpr', where the result may be accessed at `$data`. This will also return an 'unresolvedExpr' recursively by design whilst unresolved. However `$data` resolves to the evaluated expression when the original value does. 
+Simply pipe the value forward into a function or series of functions and it either evaluates or returns an 'unresolvedExpr'.
 
-It is possible to use `unresolved()` around the `$data` field to test for resolution, as in the example below.
+The result may be queried at `$data`, which will return another 'unresolvedExpr' recursively (by design) whilst unresolved. However when the original value resolves, the 'unresolvedExpr' will resolve into a 'resolvedExpr' and the evaluated expression may then be accessed at \code{$data}. 
+
+It is possible to use `unresolved()` around a 'unresolvedExpr' or its `$data` field to test for resolution, as in the example below.
 
 The pipe operator semantics are similar to R's base pipe `|>`:
 
@@ -283,7 +285,8 @@ unresolved(res$data)
 
 # sending a message causes both 'msg' and 'res' to resolve
 s <- send_aio(s1, 1)
-unresolved(res$data)
+unresolved(res)
+res
 res$data
 
 close(s1)
