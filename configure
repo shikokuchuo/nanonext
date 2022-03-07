@@ -7,6 +7,7 @@
 PKG_TEST_HEADER="<nng/nng.h>"
 PKG_LIBS="-lnng"
 if [ "$NANONEXT_TLS" ]; then
+  echo "trying with TLS support"
   PKG_LIBS="$PKG_LIBS -lmbedtls -lmbedx509 -lmbedcrypto"
 fi
 if [ "$NANONEXT_ARM" ]; then
@@ -18,37 +19,53 @@ SYS_LIB=0
 
 # Check for custom locations
 if [ "$INCLUDE_DIR" ] || [ "$LIB_DIR" ]; then
-  echo "Found INCLUDE_DIR and/or LIB_DIR!"
+  echo "found INCLUDE_DIR and/or LIB_DIR..."
   PKG_CFLAGS="-I$INCLUDE_DIR $PKG_CFLAGS"
   PKG_LIBS="-L$LIB_DIR $PKG_LIBS"
 
 elif [ -d "$HOME/vcpkg/installed/x64-linux/include/nng" ]; then
-  echo "Found libnng vcpkg installation..."
+  echo "found libnng vcpkg installation..."
   PKG_CFLAGS="-I$HOME/vcpkg/installed/x64-linux/include $PKG_CFLAGS"
   PKG_LIBS="-L$HOME/vcpkg/installed/x64-linux/lib $PKG_LIBS"
+  if [ -d "$HOME/vcpkg/installed/x64-linux/include/mbedtls" ]; then
+    echo "found mbedtls vcpkg installation... using TLS support"
+    PKG_LIBS="$PKG_LIBS -lmbedtls -lmbedx509 -lmbedcrypto"
+  fi
   SYS_LIB=1
 
 elif [ -d "/usr/local/include/nng" ]; then
-  echo "Found libnng system installation..."
+  echo "found system libnng installation..."
   PKG_CFLAGS="-I/usr/local/include $PKG_CFLAGS"
   PKG_LIBS="-L/usr/local/lib $PKG_LIBS"
+  if [ -d "/usr/local/include/mbedtls" ]; then
+    echo "found system mbedtls installation... using TLS support"
+    PKG_LIBS="$PKG_LIBS -lmbedtls -lmbedx509 -lmbedcrypto"
+  fi
   SYS_LIB=1
 
 elif [ -d "/usr/include/nng" ]; then
-  echo "Found libnng system installation..."
+  echo "found system libnng installation..."
   PKG_CFLAGS="-I/usr/include $PKG_CFLAGS"
   PKG_LIBS="-L/usr/lib $PKG_LIBS"
+  if [ -d "/usr/include/mbedtls" ]; then
+    echo "found system mbedtls installation... using TLS support"
+    PKG_LIBS="$PKG_LIBS -lmbedtls -lmbedx509 -lmbedcrypto"
+  fi
   SYS_LIB=1
 
 elif [ -d "/usr/local/opt/nng" ]; then
-  echo "Found libnng Homebrew installation..."
+  echo "found libnng Homebrew installation..."
   PKG_CFLAGS="-I/usr/local/opt/nng/include $PKG_CFLAGS"
   PKG_LIBS="-L/usr/local/opt/nng/lib $PKG_LIBS"
+  if [ -d "/usr/local/opt/mbedtls" ]; then
+    echo "found mbedtls Homebrew installation... using TLS support"
+    PKG_LIBS="$PKG_LIBS -lmbedtls -lmbedx509 -lmbedcrypto"
+  fi
   SYS_LIB=1
 
 else
-  echo "Prior system libnng installation not found"
-  echo "Preparing to download and build library from source..."
+  echo "prior system libnng installation not found"
+  echo "preparing to download and build library from source..."
   curl -L https://github.com/nanomsg/nng/archive/refs/tags/v$LIB_VER.tar.gz -o nng.tar.gz
   gzip -dc nng.tar.gz | tar -xf -
   rm -f nng.tar.gz

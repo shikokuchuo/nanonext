@@ -261,9 +261,9 @@ close(s2)
 
 Simply pipe the value forward into a function or series of functions and it either evaluates or returns an 'unresolvedExpr'.
 
-The result may be queried at `$data`, which will return another 'unresolvedExpr' recursively (by design) whilst unresolved. However when the original value resolves, the 'unresolvedExpr' will resolve into a 'resolvedExpr' and the evaluated expression may then be accessed at \code{$data}. 
+The result may be queried at `$data`, which will return another 'unresolvedExpr' whilst unresolved. However when the original value resolves, the 'unresolvedExpr' will simultaneously resolve into a 'resolvedExpr', for which the evaluated result will be available at `$data`. 
 
-It is possible to use `unresolved()` around a 'unresolvedExpr' or its `$data` field to test for resolution, as in the example below.
+It is possible to use `unresolved()` around a 'unresolvedExpr' or its `$data` element to test for resolution, as in the example below.
 
 The pipe operator semantics are similar to R's base pipe `|>`:
 
@@ -480,7 +480,9 @@ Pre-built libraries (for i386 / x64 / x64-UCRT) are automatically downloaded dur
 
 #### TLS Support
 
-If your system installation of NNG was built with TLS support (using Mbed TLS), please set the environment variable `Sys.setenv(NANONEXT_TLS=1)` before attempting to install the package. This will ensure the correct linker flags are set for a successful install.
+If a system installation of 'libnng' and 'libmbedtls' development headers are both detected in the same location, it is assumed that NNG was built with TLS support (using Mbed TLS) and the appropriate options are set to ensure a successful install.
+
+If your system installation of NNG was built with TLS support (using Mbed TLS) but detection of 'libmbedtls' failed (possibly as it was installed in another location), you may also set the environment variable `Sys.setenv(NANONEXT_TLS=1)` before installing the package to ensure that the appropriate options are set.
 
 #### Certain ARM architectures
 

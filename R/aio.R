@@ -123,7 +123,7 @@ stop_aio <- function(aio) {
 #'
 unresolved <- function(aio) {
 
-  {inherits(aio, "unresolvedExpr") && inherits(.subset2(aio, "data"), "unresolvedValue") ||
+  {inherits(aio, "unresolvedExpr") && inherits(.subset2(aio, "data"), "unresolvedExpr") ||
       inherits(aio, "unresolvedValue") ||
       inherits(aio, "recvAio") && inherits(.subset2(aio, "data"), "unresolvedValue") ||
       inherits(aio, "sendAio") && inherits(.subset2(aio, "result"), "unresolvedValue")} &&

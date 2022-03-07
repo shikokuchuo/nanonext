@@ -18,6 +18,7 @@
 * Common format for NNG errors and informational events now starts with a timestamp for easier logging.
 * Allows setting the environment variable 'NANONEXT_ARM' prior to package installation
   + Fixes installation issues on certain ARM architectures
+* Package installation using a system 'libnng' now automatically detects 'libmbedtls', removing the need to manually set 'NANONEXT_TLS' in this case.
 * More streamlined NNG build process eliminating unused options.
 * Removes experimental `nng_timer()` utility as a non-essential function.
 * Deprecated functions 'send_vec' and 'recv_vec' removed.
