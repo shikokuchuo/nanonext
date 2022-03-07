@@ -91,10 +91,10 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">sur</span> <span class="op">&lt;-</span> <span class="fu"><a href="socket.html">socket</a></span><span class="op">(</span><span class="st">"surveyor"</span>, listen <span class="op">=</span> <span class="st">"inproc://nanonext"</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="socket.html">socket</a></span><span class="op">(</span><span class="st">"respondent"</span>, dial <span class="op">=</span> <span class="st">"inproc://nanonext"</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu"><a href="logging.html">logging</a></span><span class="op">(</span>level <span class="op">=</span> <span class="st">"info"</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2022-03-07 00:38:50 [ log level ] set to: info</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2022-03-07 22:20:27 [ log level ] set to: info</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="fu">survey_time</span><span class="op">(</span><span class="va">sur</span>, <span class="fl">1000</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2022-03-07 00:38:50 [ survey ] sock: 33 | set time: 1000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2022-03-07 22:20:27 [ survey ] sock: 33 | set time: 1000</span>
 <span class="r-in"><span class="fu"><a href="send.html">send</a></span><span class="op">(</span><span class="va">sur</span>, <span class="st">"reply to this survey"</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 58 0a 00 00 00 03 00 04 01 02 00 03 05 00 00 00 00 05 55 54 46 2d 38 00 00</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [26] 00 10 00 00 00 01 00 04 00 09 00 00 00 14 72 65 70 6c 79 20 74 6f 20 74 68</span>
@@ -116,7 +116,7 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "replied"</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="fu"><a href="logging.html">logging</a></span><span class="op">(</span>level <span class="op">=</span> <span class="st">"error"</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2022-03-07 00:38:50 [ log level ] set to: error</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2022-03-07 22:20:27 [ log level ] set to: error</span>
 <span class="r-in"><span class="fu"><a href="close.html">close</a></span><span class="op">(</span><span class="va">sur</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu"><a href="close.html">close</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span>
 <span class="r-in"></span>

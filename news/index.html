@@ -80,6 +80,7 @@
 <li>Allows setting the environment variable ‘NANONEXT_ARM’ prior to package installation
 <ul><li>Fixes installation issues on certain ARM architectures</li>
 </ul></li>
+<li>Package installation using a system ‘libnng’ now automatically detects ‘libmbedtls’, removing the need to manually set ‘NANONEXT_TLS’ in this case.</li>
 <li>More streamlined NNG build process eliminating unused options.</li>
 <li>Removes experimental <code>nng_timer()</code> utility as a non-essential function.</li>
 <li>Deprecated functions ‘send_vec’ and ‘recv_vec’ removed.</li>

@@ -91,10 +91,10 @@ NULL subscribes to all topics.</p></dd>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">pub</span> <span class="op">&lt;-</span> <span class="fu"><a href="socket.html">socket</a></span><span class="op">(</span><span class="st">"pub"</span>, listen <span class="op">=</span> <span class="st">"inproc://nanonext"</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">sub</span> <span class="op">&lt;-</span> <span class="fu"><a href="socket.html">socket</a></span><span class="op">(</span><span class="st">"sub"</span>, dial <span class="op">=</span> <span class="st">"inproc://nanonext"</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu"><a href="logging.html">logging</a></span><span class="op">(</span>level <span class="op">=</span> <span class="st">"info"</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2022-03-07 00:38:50 [ log level ] set to: info</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2022-03-07 22:20:27 [ log level ] set to: info</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="fu">subscribe</span><span class="op">(</span><span class="va">sub</span>, <span class="st">"examples"</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2022-03-07 00:38:50 [ subscribe ] sock: 32 | topic: examples</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2022-03-07 22:20:27 [ subscribe ] sock: 32 | topic: examples</span>
 <span class="r-in"><span class="fu"><a href="send.html">send</a></span><span class="op">(</span><span class="va">pub</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"examples"</span>, <span class="st">"this is an example"</span><span class="op">)</span>, mode <span class="op">=</span> <span class="st">"raw"</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 65 78 61 6d 70 6c 65 73 00 74 68 69 73 20 69 73 20 61 6e 20 65 78 61 6d 70</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [26] 6c 65 00</span>
@@ -110,10 +110,10 @@ NULL subscribes to all topics.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 6f 74 68 65 72 00 74 68 69 73 20 6f 74 68 65 72 20 74 6f 70 69 63 20 77 69</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [26] 6c 6c 20 6e 6f 74 20 62 65 20 72 65 63 65 69 76 65 64 00</span>
 <span class="r-in"><span class="fu"><a href="recv.html">recv</a></span><span class="op">(</span><span class="va">sub</span>, <span class="st">"character"</span><span class="op">)</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 2022-03-07 00:38:50 [ 8 ] Try again</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 2022-03-07 22:20:27 [ 8 ] Try again</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="fu"><a href="logging.html">logging</a></span><span class="op">(</span>level <span class="op">=</span> <span class="st">"error"</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2022-03-07 00:38:50 [ log level ] set to: error</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2022-03-07 22:20:27 [ log level ] set to: error</span>
 <span class="r-in"><span class="fu"><a href="close.html">close</a></span><span class="op">(</span><span class="va">pub</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu"><a href="close.html">close</a></span><span class="op">(</span><span class="va">sub</span><span class="op">)</span></span>
 <span class="r-in"></span>

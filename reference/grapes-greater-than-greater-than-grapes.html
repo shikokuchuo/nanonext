@@ -50,7 +50,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Deferred Evaluation Pipe</h1>
-    <small class="dont-index">Source: <a href="https://github.com/shikokuchuo/nanonext/blob/HEAD/R/utils.R" class="external-link"><code>R/utils.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/shikokuchuo/nanonext/blob/HEAD/R/pipe.R" class="external-link"><code>R/pipe.R</code></a></small>
     <div class="hidden name"><code>grapes-greater-than-greater-than-grapes.Rd</code></div>
     </div>
 
@@ -78,7 +78,7 @@
     <h2>Details</h2>
     <p>An 'unresolvedExpr' encapsulates the eventual evaluation result.
     Query its <code>$data</code> element for resolution. Once resolved, the object
-    will change to a 'resolvedExpr' and the evaluated result will be accessible
+    changes into a 'resolvedExpr' and the evaluated result will be available
     at <code>$data</code>.</p>
 <p>Supports stringing together a series of piped expressions (as per
     the below example).</p>
@@ -93,9 +93,12 @@
     
 
 
+<p>Usage is similar to R's native <code>|&gt;</code> pipe.</p>
 <p><code>x %&gt;&gt;% f</code> is equivalent to <code>f(x)</code></p>
 <p><code>x %&gt;&gt;% f()</code> is equivalent to <code>f(x)</code></p>
 <p><code>x %&gt;&gt;% f(y)</code> is equivalent to <code>f(x, y)</code></p>
+<p>Please note that other usage is not supported and it is not a drop-in
+    replacement for magrittr's <code>%&gt;%</code> pipe.</p>
     </div>
 
     <div id="ref-examples">
