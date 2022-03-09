@@ -148,7 +148,7 @@
 `%~%` <- function(x, expr) {
   call <- substitute(expr)
   if (unresolved(x)) while (unresolved(x <- x$data)) {
-    eval(call, envir = parent.frame(2L), enclos = baseenv())
+    eval(call, envir = parent.frame(), enclos = baseenv())
   }
   x
 }
