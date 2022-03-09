@@ -47,14 +47,12 @@ Implemented transports:
 2. [Interfaces](#interfaces)
 3. [Cross-language Exchange](#cross-language-exchange)
 4. [Async and Concurrency](#async-and-concurrency)
-5. [Deferred Evaluation Pipe](#deferred-evaluation-pipe)
-6. [Meanwhile (Concurrency) Pipe](#meanwhile-concurrency-pipe)
-7. [RPC and Distributed Computing](#rpc-and-distributed-computing)
-8. [Publisher / Subscriber Model](#publisher-subscriber-model)
-9. [Surveyor / Repondent Model](#surveyor-respondent-model)
-10. [ncurl Minimalist http Client](#ncurl-minimalist-http-client)
-11. [Building from source](#building-from-source)
-12. [Links](#links)
+5. [RPC and Distributed Computing](#rpc-and-distributed-computing)
+6. [Publisher / Subscriber Model](#publisher-subscriber-model)
+7. [Surveyor / Repondent Model](#surveyor-respondent-model)
+8. [ncurl Minimalist http Client](#ncurl-minimalist-http-client)
+9. [Building from source](#building-from-source)
+10. [Links](#links)
 
 ### Installation
 
@@ -248,84 +246,6 @@ call_aio(msg)
 
 # to access the resolved value directly (waiting if required)
 call_aio(msg)$data
-
-close(s1)
-close(s2)
-
-```
-
-[&laquo; Back to ToC](#table-of-contents)
-
-### Deferred Evaluation Pipe
-
-{nanonext} implements a deferred evaluation pipe `%>>%` for working with potentially unresolved values.
-
-Simply pipe the value forward into a function or series of functions and it either evaluates or returns an 'unresolvedExpr'.
-
-The result may be queried at `$data`, which will return another 'unresolvedExpr' whilst unresolved. However when the original value resolves, the 'unresolvedExpr' will simultaneously resolve into a 'resolvedExpr', for which the evaluated result will be available at `$data`. 
-
-It is possible to use `unresolved()` around a 'unresolvedExpr' or its `$data` element to test for resolution, as in the example below.
-
-The pipe operator semantics are similar to R's base pipe `|>`:
-
-`x %>>% f` is equivalent to `f(x)` <br />
-`x %>>% f()` is equivalent to `f(x)` <br />
-`x %>>% f(y)` is equivalent to `f(x, y)`
-
-```{r pipe1}
-
-s1 <- socket("pair", listen = "inproc://dep")
-s2 <- socket("pair", dial = "inproc://dep")
-
-# request an aysnc receive with no messages waiting
-msg <- recv_aio(s2)
-
-res <- msg$data %>>% c(2, 3) %>>% as.character()
-res
-unresolved(res$data)
-
-# sending a message causes both 'msg' and 'res' to resolve
-s <- send_aio(s1, 1)
-unresolved(res)
-res
-res$data
-
-close(s1)
-close(s2)
-
-```
-
-[&laquo; Back to ToC](#table-of-contents)
-
-### Meanwhile (Concurrency) Pipe
-
-The deferred evaluation pipe sequence may be terminated with a meanwhile (or concurrency) pipe `%~%` which:
-
-(i) provides certainty of the return value, which will always be the evaluated result rather than a 'resolvedExpr'
-
-(ii) makes it convenient to write concurrent code which runs whilst the expression is resolving
-
-`x %~% expr`
-
-is equivalent to the following expression, finally returning x:
-
-`if (unresolved(x)) while (unresolved(x <- x$data)) {expr}; x`
-
-Use it in the following way:
-
-```{r pipe2}
-
-s1 <- socket("pair", listen = "inproc://meanwhile")
-s2 <- socket("pair", dial = "inproc://meanwhile")
-
-n <- 1L
-rec <- recv_aio(s2)
-a <- rec$data %>>% identical(data.frame()) %~% {
-  if (n == 5) send_aio(s1, data.frame())
-  cat("unresolved", n, "\n")
-  n <- n + 1
-}
-a
 
 close(s1)
 close(s2)
