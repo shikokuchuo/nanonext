@@ -13,7 +13,8 @@ x \%>>\% f
 }
 \value{
 The evaluated result, or if x is an 'unresolvedValue', an
-    'unresolvedExpr'.
+    'unresolvedExpr'. To provide certainty of return value, use together with
+    a meanwhile (concurrency) pipe \code{\link{\%~\%}}.
 }
 \description{
 Pipe a possibly unresolved value forward into a function.
@@ -29,10 +30,6 @@ An 'unresolvedExpr' encapsulates the eventual evaluation result.
 
     \code{\link{unresolved}} may be used on an 'unresolvedExpr' or its
     \code{$data} element to test for resolution.
-
-    This function is marked [experimental], which means it is currently
-    under development. Please note that the final implementation is likely to
-    differ from the current version.
 }
 \section{Usage}{
 
@@ -61,6 +58,16 @@ b <- msg$data \%>>\% c(2, 3) \%>>\% as.character()
 b
 res <- send_aio(s1, 1)
 b$data
+
+# use with a meanwhile (concurrency) pipe
+n <- 0L
+rec <- recv_aio(s2)
+a <- rec$data \%>>\% identical(data.frame()) \%~\% {
+  if (n == 100) send_aio(s1, data.frame())
+  cat("unresolved", n, "\n")
+  n <- n + 1
+}
+a
 
 close(s1)
 close(s2)

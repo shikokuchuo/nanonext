@@ -49,12 +49,13 @@ Implemented transports:
 3.  [Cross-language Exchange](#cross-language-exchange)
 4.  [Async and Concurrency](#async-and-concurrency)
 5.  [Deferred Evaluation Pipe](#deferred-evaluation-pipe)
-6.  [RPC and Distributed Computing](#rpc-and-distributed-computing)
-7.  [Publisher / Subscriber Model](#publisher-subscriber-model)
-8.  [Surveyor / Repondent Model](#surveyor-respondent-model)
-9.  [ncurl Minimalist http Client](#ncurl-minimalist-http-client)
-10. [Building from source](#building-from-source)
-11. [Links](#links)
+6.  [Meanwhile (Concurrency) Pipe](#meanwhile-concurrency-pipe)
+7.  [RPC and Distributed Computing](#rpc-and-distributed-computing)
+8.  [Publisher / Subscriber Model](#publisher-subscriber-model)
+9.  [Surveyor / Repondent Model](#surveyor-respondent-model)
+10. [ncurl Minimalist http Client](#ncurl-minimalist-http-client)
+11. [Building from source](#building-from-source)
+12. [Links](#links)
 
 ### Installation
 
@@ -344,8 +345,8 @@ The pipe operator semantics are similar to R’s base pipe `|>`:
 `f(x)` <br /> `x %>>% f(y)` is equivalent to `f(x, y)`
 
 ``` r
-s1 <- socket("pair", listen = "inproc://cecicestunepipe")
-s2 <- socket("pair", dial = "inproc://cecicestunepipe")
+s1 <- socket("pair", listen = "inproc://dep")
+s2 <- socket("pair", dial = "inproc://dep")
 
 # request an aysnc receive with no messages waiting
 msg <- recv_aio(s2)
@@ -365,6 +366,50 @@ res
 #> < resolvedExpr: $data >
 res$data
 #> [1] "1" "2" "3"
+
+close(s1)
+close(s2)
+```
+
+[« Back to ToC](#table-of-contents)
+
+### Meanwhile (Concurrency) Pipe
+
+The deferred evaluation pipe sequence may be terminated with a meanwhile
+(or concurrency) pipe `%~%` which:
+
+1)  provides certainty of the return value, which will always be the
+    evaluated result rather than a ‘resolvedExpr’
+
+2)  makes it convenient to write concurrent code which runs whilst the
+    expression is resolving
+
+`x %~% expr`
+
+is equivalent to the following expression, finally returning x:
+
+`if (unresolved(x)) while (unresolved(x <- x$data)) {expr}; x`
+
+Use it in the following way:
+
+``` r
+s1 <- socket("pair", listen = "inproc://meanwhile")
+s2 <- socket("pair", dial = "inproc://meanwhile")
+
+n <- 1L
+rec <- recv_aio(s2)
+a <- rec$data %>>% identical(data.frame()) %~% {
+  if (n == 5) send_aio(s1, data.frame())
+  cat("unresolved", n, "\n")
+  n <- n + 1
+}
+#> unresolved 1 
+#> unresolved 2 
+#> unresolved 3 
+#> unresolved 4 
+#> unresolved 5
+a
+#> [1] TRUE
 
 close(s1)
 close(s2)
@@ -421,7 +466,7 @@ aio
 #> < recvAio >
 #>  - $data for message data
 aio$data |> str()
-#>  num [1:100000000] -0.82 0.147 1.761 0.425 0.182 ...
+#>  num [1:100000000] 0.925 -0.323 1.47 -1.237 -0.555 ...
 ```
 
 As `call_aio()` is blocking and will wait for completion, an alternative
@@ -456,37 +501,37 @@ an environment variable `NANONEXT_LOG`.
 
 ``` r
 logging(level = "info")
-#> 2022-03-07 22:11:21 [ log level ] set to: info
+#> 2022-03-09 09:28:33 [ log level ] set to: info
 
 pub <- socket("pub", listen = "inproc://nanobroadcast")
-#> 2022-03-07 22:11:21 [ sock open ] id: 11 | protocol: pub
-#> 2022-03-07 22:11:21 [ list start ] sock: 11 | url: inproc://nanobroadcast
+#> 2022-03-09 09:28:33 [ sock open ] id: 13 | protocol: pub
+#> 2022-03-09 09:28:33 [ list start ] sock: 13 | url: inproc://nanobroadcast
 sub <- socket("sub", dial = "inproc://nanobroadcast")
-#> 2022-03-07 22:11:21 [ sock open ] id: 12 | protocol: sub
-#> 2022-03-07 22:11:21 [ dial start ] sock: 12 | url: inproc://nanobroadcast
+#> 2022-03-09 09:28:33 [ sock open ] id: 14 | protocol: sub
+#> 2022-03-09 09:28:33 [ dial start ] sock: 14 | url: inproc://nanobroadcast
 
 sub |> subscribe(topic = "examples")
-#> 2022-03-07 22:11:21 [ subscribe ] sock: 12 | topic: examples
+#> 2022-03-09 09:28:33 [ subscribe ] sock: 14 | topic: examples
 pub |> send(c("examples", "this is an example"), mode = "raw", echo = FALSE)
 sub |> recv(mode = "character", keep.raw = FALSE)
 #> [1] "examples"           "this is an example"
 
 pub |> send(c("other", "this other topic will not be received"), mode = "raw", echo = FALSE)
 sub |> recv(mode = "character", keep.raw = FALSE)
-#> 2022-03-07 22:11:21 [ 8 ] Try again
+#> 2022-03-09 09:28:33 [ 8 ] Try again
 
 # specify NULL to subscribe to ALL topics
 sub |> subscribe(topic = NULL)
-#> 2022-03-07 22:11:21 [ subscribe ] sock: 12 | topic: ALL
+#> 2022-03-09 09:28:33 [ subscribe ] sock: 14 | topic: ALL
 pub |> send(c("newTopic", "this is a new topic"), mode = "raw", echo = FALSE)
 sub |> recv("character", keep.raw = FALSE)
 #> [1] "newTopic"            "this is a new topic"
 
 sub |> unsubscribe(topic = NULL)
-#> 2022-03-07 22:11:21 [ unsubscribe ] sock: 12 | topic: ALL
+#> 2022-03-09 09:28:33 [ unsubscribe ] sock: 14 | topic: ALL
 pub |> send(c("newTopic", "this topic will now not be received"), mode = "raw", echo = FALSE)
 sub |> recv("character", keep.raw = FALSE)
-#> 2022-03-07 22:11:21 [ 8 ] Try again
+#> 2022-03-09 09:28:33 [ 8 ] Try again
 
 # however the topics explicitly subscribed to are still received
 pub |> send(c("examples", "this example will still be received"), mode = "raw", echo = FALSE)
@@ -495,7 +540,7 @@ sub |> recv(mode = "character", keep.raw = FALSE)
 
 # set logging level back to the default of errors only
 logging(level = "error")
-#> 2022-03-07 22:11:21 [ log level ] set to: error
+#> 2022-03-09 09:28:33 [ log level ] set to: error
 
 close(pub)
 close(sub)
@@ -546,7 +591,7 @@ aio2$data
 # after the survey expires, the second resolves into a timeout error
 Sys.sleep(0.5)
 aio2$data
-#> 2022-03-07 22:11:22 [ 5 ] Timed out
+#> 2022-03-09 09:28:34 [ 5 ] Timed out
 #> 'errorValue' int 5
 
 close(sur)
@@ -572,11 +617,11 @@ ncurl("http://httpbin.org/headers")
 #>   [1] 7b 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73
 #>  [26] 74 22 3a 20 22 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22
 #>  [51] 58 2d 41 6d 7a 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31
-#>  [76] 2d 36 32 32 36 38 33 30 61 2d 33 61 62 32 30 31 39 64 35 34 64 33 66 63 66
-#> [101] 30 32 37 30 39 66 62 62 32 22 0a 20 20 7d 0a 7d 0a
+#>  [76] 2d 36 32 32 38 37 33 34 32 2d 31 62 36 66 35 31 39 39 30 62 65 33 61 64 38
+#> [101] 36 36 66 61 32 37 34 61 30 22 0a 20 20 7d 0a 7d 0a
 #> 
 #> $data
-#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6226830a-3ab2019d54d3fcf02709fbb2\"\n  }\n}\n"
+#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-62287342-1b6f51990be3ad866fa274a0\"\n  }\n}\n"
 ```
 
 For advanced use, supports additional HTTP methods such as POST or PUT.
