@@ -4,16 +4,16 @@
 \alias{logging}
 \title{Logging Level}
 \usage{
-logging(level = c("prev", "check", "error", "info"))
+logging(level = c("keep", "check", "error", "info"))
 }
 \arguments{
 \item{level}{specify a logging level
 \itemize{
-\item{'prev'} {which continues with the previous logging level}
+\item{'keep'} {which keeps the current logging level}
 \item{'check'} {which checks the value of environment variable 'NANONEXT_LOG'}
 \item{'error'} {which sends all NNG errors to stderr}
 \item{'info'} {which in addition sends key informational events such as
-socket open etc. to stdout.}
+socket open etc. to stdout}
 }}
 }
 \value{

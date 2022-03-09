@@ -101,11 +101,11 @@ is_error_value <- function(x) inherits(x, "errorValue")
 #'
 #' @param level specify a logging level
 #'     \itemize{
-#'     \item{'prev'} {which continues with the previous logging level}
+#'     \item{'keep'} {which keeps the current logging level}
 #'     \item{'check'} {which checks the value of environment variable 'NANONEXT_LOG'}
 #'     \item{'error'} {which sends all NNG errors to stderr}
 #'     \item{'info'} {which in addition sends key informational events such as
-#'     socket open etc. to stdout.}
+#'     socket open etc. to stdout}
 #'     }
 #'
 #' @return Invisible NULL. A confirmation is printed to the console (stdout) if
@@ -131,7 +131,7 @@ logging <- function(level) {
                   info = 1L,
                   0L)
 
-  logging <- function(level = c("prev", "check", "error", "info")) {
+  logging <- function(level = c("keep", "check", "error", "info")) {
 
     missing(level) && return(cache)
     level <- match.arg(level)
@@ -142,7 +142,7 @@ logging <- function(level) {
                                     0L),
                      error = 0L,
                      info = 1L,
-                     prev = original)
+                     keep = original)
     if (cache != original) cat(sprintf("%s [ %s ] %s: %s\n",
                                        format.POSIXct(Sys.time()), "log level", "set to",
                                        if (cache) "info" else "error"),  file = stdout())
