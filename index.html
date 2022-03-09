@@ -247,7 +247,7 @@
 <span class="co">#&gt;  - $data for message data</span>
 <span class="co">#&gt;  - $raw for raw message</span>
 <span class="va">msg</span><span class="op">$</span><span class="va">data</span>
-<span class="co">#&gt; &lt; unresolved: logi NA &gt;</span></code></pre></div>
+<span class="co">#&gt; 'unresolved' logi NA</span></code></pre></div>
 <p>For a ‘sendAio’ object, the result is stored at <code>$result</code>.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/send_aio.html">send_aio</a></span><span class="op">(</span><span class="va">s1</span>, <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>a <span class="op">=</span> <span class="fl">1</span>, b <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span>
@@ -280,7 +280,7 @@
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">msg</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/recv_aio.html">recv_aio</a></span><span class="op">(</span><span class="va">s2</span><span class="op">)</span>
 
-<span class="co"># unresolved() queries for resolution itself so no need to use it again within the while clause</span>
+<span class="co"># unresolved() queries for resolution itself so no need to use it again within the while loop</span>
 <span class="kw">while</span> <span class="op">(</span><span class="fu"><a href="reference/unresolved.html">unresolved</a></span><span class="op">(</span><span class="va">msg</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
   <span class="co"># do stuff before checking resolution again</span>
   <span class="fu"><a href="reference/send_aio.html">send_aio</a></span><span class="op">(</span><span class="va">s1</span>, <span class="st">"resolved"</span><span class="op">)</span>
@@ -333,7 +333,7 @@
 <span class="co">#&gt; &lt; recvAio &gt;</span>
 <span class="co">#&gt;  - $data for message data</span>
 <span class="va">aio</span><span class="op">$</span><span class="va">data</span> |&gt; <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt;  num [1:100000000] 0.0464 1.2575 1.8635 0.9356 -0.9033 ...</span></code></pre></div>
+<span class="co">#&gt;  num [1:100000000] -1.195 0.322 -0.96 -0.25 -1.281 ...</span></code></pre></div>
 <p>As <code><a href="reference/call_aio.html">call_aio()</a></code> is blocking and will wait for completion, an alternative is to query <code>aio$data</code> directly. This will return an ‘unresolved’ logical NA value if the calculation is yet to complete.</p>
 <p>In this example the calculation is returned, but other operations may reside entirely on the server side, for example writing data to disk.</p>
 <p>In such a case, calling or querying the value confirms that the operation has completed, and provides the return value of the function, which may typically be NULL or an exit code.</p>
@@ -348,37 +348,37 @@
 <p>The log level can also be set externally in production environments via an environment variable <code>NANONEXT_LOG</code>.</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="reference/logging.html">logging</a></span><span class="op">(</span>level <span class="op">=</span> <span class="st">"info"</span><span class="op">)</span>
-<span class="co">#&gt; 2022-03-09 18:36:44 [ log level ] set to: info</span>
+<span class="co">#&gt; 2022-03-09 19:58:51 [ log level ] set to: info</span>
 
 <span class="va">pub</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/socket.html">socket</a></span><span class="op">(</span><span class="st">"pub"</span>, listen <span class="op">=</span> <span class="st">"inproc://nanobroadcast"</span><span class="op">)</span>
-<span class="co">#&gt; 2022-03-09 18:36:44 [ sock open ] id: 9 | protocol: pub</span>
-<span class="co">#&gt; 2022-03-09 18:36:44 [ list start ] sock: 9 | url: inproc://nanobroadcast</span>
+<span class="co">#&gt; 2022-03-09 19:58:51 [ sock open ] id: 9 | protocol: pub</span>
+<span class="co">#&gt; 2022-03-09 19:58:51 [ list start ] sock: 9 | url: inproc://nanobroadcast</span>
 <span class="va">sub</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/socket.html">socket</a></span><span class="op">(</span><span class="st">"sub"</span>, dial <span class="op">=</span> <span class="st">"inproc://nanobroadcast"</span><span class="op">)</span>
-<span class="co">#&gt; 2022-03-09 18:36:44 [ sock open ] id: 10 | protocol: sub</span>
-<span class="co">#&gt; 2022-03-09 18:36:44 [ dial start ] sock: 10 | url: inproc://nanobroadcast</span>
+<span class="co">#&gt; 2022-03-09 19:58:51 [ sock open ] id: 10 | protocol: sub</span>
+<span class="co">#&gt; 2022-03-09 19:58:51 [ dial start ] sock: 10 | url: inproc://nanobroadcast</span>
 
 <span class="va">sub</span> |&gt; <span class="fu"><a href="reference/subscribe.html">subscribe</a></span><span class="op">(</span>topic <span class="op">=</span> <span class="st">"examples"</span><span class="op">)</span>
-<span class="co">#&gt; 2022-03-09 18:36:44 [ subscribe ] sock: 10 | topic: examples</span>
+<span class="co">#&gt; 2022-03-09 19:58:51 [ subscribe ] sock: 10 | topic: examples</span>
 <span class="va">pub</span> |&gt; <span class="fu"><a href="reference/send.html">send</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"examples"</span>, <span class="st">"this is an example"</span><span class="op">)</span>, mode <span class="op">=</span> <span class="st">"raw"</span>, echo <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
 <span class="va">sub</span> |&gt; <span class="fu"><a href="reference/recv.html">recv</a></span><span class="op">(</span>mode <span class="op">=</span> <span class="st">"character"</span>, keep.raw <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
 <span class="co">#&gt; [1] "examples"           "this is an example"</span>
 
 <span class="va">pub</span> |&gt; <span class="fu"><a href="reference/send.html">send</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"other"</span>, <span class="st">"this other topic will not be received"</span><span class="op">)</span>, mode <span class="op">=</span> <span class="st">"raw"</span>, echo <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
 <span class="va">sub</span> |&gt; <span class="fu"><a href="reference/recv.html">recv</a></span><span class="op">(</span>mode <span class="op">=</span> <span class="st">"character"</span>, keep.raw <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-<span class="co">#&gt; 2022-03-09 18:36:44 [ 8 ] Try again</span>
+<span class="co">#&gt; 2022-03-09 19:58:51 [ 8 ] Try again</span>
 
 <span class="co"># specify NULL to subscribe to ALL topics</span>
 <span class="va">sub</span> |&gt; <span class="fu"><a href="reference/subscribe.html">subscribe</a></span><span class="op">(</span>topic <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span>
-<span class="co">#&gt; 2022-03-09 18:36:44 [ subscribe ] sock: 10 | topic: ALL</span>
+<span class="co">#&gt; 2022-03-09 19:58:51 [ subscribe ] sock: 10 | topic: ALL</span>
 <span class="va">pub</span> |&gt; <span class="fu"><a href="reference/send.html">send</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"newTopic"</span>, <span class="st">"this is a new topic"</span><span class="op">)</span>, mode <span class="op">=</span> <span class="st">"raw"</span>, echo <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
 <span class="va">sub</span> |&gt; <span class="fu"><a href="reference/recv.html">recv</a></span><span class="op">(</span><span class="st">"character"</span>, keep.raw <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
 <span class="co">#&gt; [1] "newTopic"            "this is a new topic"</span>
 
 <span class="va">sub</span> |&gt; <span class="fu"><a href="reference/unsubscribe.html">unsubscribe</a></span><span class="op">(</span>topic <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span>
-<span class="co">#&gt; 2022-03-09 18:36:44 [ unsubscribe ] sock: 10 | topic: ALL</span>
+<span class="co">#&gt; 2022-03-09 19:58:51 [ unsubscribe ] sock: 10 | topic: ALL</span>
 <span class="va">pub</span> |&gt; <span class="fu"><a href="reference/send.html">send</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"newTopic"</span>, <span class="st">"this topic will now not be received"</span><span class="op">)</span>, mode <span class="op">=</span> <span class="st">"raw"</span>, echo <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
 <span class="va">sub</span> |&gt; <span class="fu"><a href="reference/recv.html">recv</a></span><span class="op">(</span><span class="st">"character"</span>, keep.raw <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-<span class="co">#&gt; 2022-03-09 18:36:44 [ 8 ] Try again</span>
+<span class="co">#&gt; 2022-03-09 19:58:51 [ 8 ] Try again</span>
 
 <span class="co"># however the topics explicitly subscribed to are still received</span>
 <span class="va">pub</span> |&gt; <span class="fu"><a href="reference/send.html">send</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"examples"</span>, <span class="st">"this example will still be received"</span><span class="op">)</span>, mode <span class="op">=</span> <span class="st">"raw"</span>, echo <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
@@ -387,7 +387,7 @@
 
 <span class="co"># set logging level back to the default of errors only</span>
 <span class="fu"><a href="reference/logging.html">logging</a></span><span class="op">(</span>level <span class="op">=</span> <span class="st">"error"</span><span class="op">)</span>
-<span class="co">#&gt; 2022-03-09 18:36:44 [ log level ] set to: error</span>
+<span class="co">#&gt; 2022-03-09 19:58:51 [ log level ] set to: error</span>
 
 <span class="fu"><a href="reference/close.html">close</a></span><span class="op">(</span><span class="va">pub</span><span class="op">)</span>
 <span class="fu"><a href="reference/close.html">close</a></span><span class="op">(</span><span class="va">sub</span><span class="op">)</span></code></pre></div>
@@ -426,12 +426,12 @@
 <span class="va">aio1</span><span class="op">$</span><span class="va">data</span>
 <span class="co">#&gt; [1] "res1"</span>
 <span class="va">aio2</span><span class="op">$</span><span class="va">data</span>
-<span class="co">#&gt; &lt; unresolved: logi NA &gt;</span>
+<span class="co">#&gt; 'unresolved' logi NA</span>
 
 <span class="co"># after the survey expires, the second resolves into a timeout error</span>
 <span class="fu"><a href="https://rdrr.io/r/base/Sys.sleep.html" class="external-link">Sys.sleep</a></span><span class="op">(</span><span class="fl">0.5</span><span class="op">)</span>
 <span class="va">aio2</span><span class="op">$</span><span class="va">data</span>
-<span class="co">#&gt; 2022-03-09 18:36:44 [ 5 ] Timed out</span>
+<span class="co">#&gt; 2022-03-09 19:58:52 [ 5 ] Timed out</span>
 <span class="co">#&gt; 'errorValue' int 5</span>
 
 <span class="fu"><a href="reference/close.html">close</a></span><span class="op">(</span><span class="va">sur</span><span class="op">)</span>
@@ -450,11 +450,11 @@
 <span class="co">#&gt;   [1] 7b 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73</span>
 <span class="co">#&gt;  [26] 74 22 3a 20 22 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22</span>
 <span class="co">#&gt;  [51] 58 2d 41 6d 7a 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31</span>
-<span class="co">#&gt;  [76] 2d 36 32 32 38 66 33 62 64 2d 31 66 33 39 30 32 33 35 37 65 61 31 38 34 61</span>
-<span class="co">#&gt; [101] 35 33 32 30 62 30 38 64 38 22 0a 20 20 7d 0a 7d 0a</span>
+<span class="co">#&gt;  [76] 2d 36 32 32 39 30 36 66 63 2d 31 63 66 62 33 33 61 30 31 62 30 37 65 30 61</span>
+<span class="co">#&gt; [101] 38 33 30 66 37 39 63 39 39 22 0a 20 20 7d 0a 7d 0a</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $data</span>
-<span class="co">#&gt; [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6228f3bd-1f3902357ea184a5320b08d8\"\n  }\n}\n"</span></code></pre></div>
+<span class="co">#&gt; [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-622906fc-1cfb33a01b07e0a830f79c99\"\n  }\n}\n"</span></code></pre></div>
 <p>For advanced use, supports additional HTTP methods such as POST or PUT.</p>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
