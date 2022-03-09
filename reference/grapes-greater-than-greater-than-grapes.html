@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.0.9006</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.0.9007</span>
       </span>
     </div>
 
@@ -72,7 +72,8 @@
     <div id="value">
     <h2>Value</h2>
     <p>The evaluated result, or if x is an 'unresolvedValue', an
-    'unresolvedExpr'.</p>
+    'unresolvedExpr'. To provide certainty of return value, use together with
+    a meanwhile (concurrency) pipe <code><a href="grapes-twiddle-grapes.html">%~%</a></code>.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -84,9 +85,6 @@
     the below example).</p>
 <p><code><a href="unresolved.html">unresolved</a></code> may be used on an 'unresolvedExpr' or its
     <code>$data</code> element to test for resolution.</p>
-<p>This function is marked [experimental], which means it is currently
-    under development. Please note that the final implementation is likely to
-    differ from the current version.</p>
     </div>
     <div id="usage">
     <h2>Usage</h2>
@@ -114,6 +112,16 @@
 <span class="r-in"><span class="va">b</span></span>
 <span class="r-in"><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="send_aio.html">send_aio</a></span><span class="op">(</span><span class="va">s1</span>, <span class="fl">1</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">b</span><span class="op">$</span><span class="va">data</span></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="co"># use with a meanwhile (concurrency) pipe</span></span>
+<span class="r-in"><span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">0L</span></span>
+<span class="r-in"><span class="va">rec</span> <span class="op">&lt;-</span> <span class="fu"><a href="recv_aio.html">recv_aio</a></span><span class="op">(</span><span class="va">s2</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">a</span> <span class="op">&lt;-</span> <span class="va">rec</span><span class="op">$</span><span class="va">data</span> <span class="op">%&gt;&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/base/identical.html" class="external-link">identical</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="grapes-twiddle-grapes.html">%~%</a></span> <span class="op">{</span></span>
+<span class="r-in">  <span class="kw">if</span> <span class="op">(</span><span class="va">n</span> <span class="op">==</span> <span class="fl">100</span><span class="op">)</span> <span class="fu"><a href="send_aio.html">send_aio</a></span><span class="op">(</span><span class="va">s1</span>, <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in">  <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"unresolved"</span>, <span class="va">n</span>, <span class="st">"\n"</span><span class="op">)</span></span>
+<span class="r-in">  <span class="va">n</span> <span class="op">&lt;-</span> <span class="va">n</span> <span class="op">+</span> <span class="fl">1</span></span>
+<span class="r-in"><span class="op">}</span></span>
+<span class="r-in"><span class="va">a</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="fu"><a href="close.html">close</a></span><span class="op">(</span><span class="va">s1</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu"><a href="close.html">close</a></span><span class="op">(</span><span class="va">s2</span><span class="op">)</span></span>
