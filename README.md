@@ -244,7 +244,7 @@ msg
 #>  - $data for message data
 #>  - $raw for raw message
 msg$data
-#> < unresolved: logi NA >
+#> 'unresolved' logi NA
 ```
 
 For a ‘sendAio’ object, the result is stored at `$result`.
@@ -290,7 +290,7 @@ Aio to resolve, as the example below demonstrates.
 ``` r
 msg <- recv_aio(s2)
 
-# unresolved() queries for resolution itself so no need to use it again within the while clause
+# unresolved() queries for resolution itself so no need to use it again within the while loop
 while (unresolved(msg)) {
   # do stuff before checking resolution again
   send_aio(s1, "resolved")
@@ -369,7 +369,7 @@ aio
 #> < recvAio >
 #>  - $data for message data
 aio$data |> str()
-#>  num [1:100000000] 0.0464 1.2575 1.8635 0.9356 -0.9033 ...
+#>  num [1:100000000] -1.195 0.322 -0.96 -0.25 -1.281 ...
 ```
 
 As `call_aio()` is blocking and will wait for completion, an alternative
@@ -404,37 +404,37 @@ an environment variable `NANONEXT_LOG`.
 
 ``` r
 logging(level = "info")
-#> 2022-03-09 18:36:44 [ log level ] set to: info
+#> 2022-03-09 19:58:51 [ log level ] set to: info
 
 pub <- socket("pub", listen = "inproc://nanobroadcast")
-#> 2022-03-09 18:36:44 [ sock open ] id: 9 | protocol: pub
-#> 2022-03-09 18:36:44 [ list start ] sock: 9 | url: inproc://nanobroadcast
+#> 2022-03-09 19:58:51 [ sock open ] id: 9 | protocol: pub
+#> 2022-03-09 19:58:51 [ list start ] sock: 9 | url: inproc://nanobroadcast
 sub <- socket("sub", dial = "inproc://nanobroadcast")
-#> 2022-03-09 18:36:44 [ sock open ] id: 10 | protocol: sub
-#> 2022-03-09 18:36:44 [ dial start ] sock: 10 | url: inproc://nanobroadcast
+#> 2022-03-09 19:58:51 [ sock open ] id: 10 | protocol: sub
+#> 2022-03-09 19:58:51 [ dial start ] sock: 10 | url: inproc://nanobroadcast
 
 sub |> subscribe(topic = "examples")
-#> 2022-03-09 18:36:44 [ subscribe ] sock: 10 | topic: examples
+#> 2022-03-09 19:58:51 [ subscribe ] sock: 10 | topic: examples
 pub |> send(c("examples", "this is an example"), mode = "raw", echo = FALSE)
 sub |> recv(mode = "character", keep.raw = FALSE)
 #> [1] "examples"           "this is an example"
 
 pub |> send(c("other", "this other topic will not be received"), mode = "raw", echo = FALSE)
 sub |> recv(mode = "character", keep.raw = FALSE)
-#> 2022-03-09 18:36:44 [ 8 ] Try again
+#> 2022-03-09 19:58:51 [ 8 ] Try again
 
 # specify NULL to subscribe to ALL topics
 sub |> subscribe(topic = NULL)
-#> 2022-03-09 18:36:44 [ subscribe ] sock: 10 | topic: ALL
+#> 2022-03-09 19:58:51 [ subscribe ] sock: 10 | topic: ALL
 pub |> send(c("newTopic", "this is a new topic"), mode = "raw", echo = FALSE)
 sub |> recv("character", keep.raw = FALSE)
 #> [1] "newTopic"            "this is a new topic"
 
 sub |> unsubscribe(topic = NULL)
-#> 2022-03-09 18:36:44 [ unsubscribe ] sock: 10 | topic: ALL
+#> 2022-03-09 19:58:51 [ unsubscribe ] sock: 10 | topic: ALL
 pub |> send(c("newTopic", "this topic will now not be received"), mode = "raw", echo = FALSE)
 sub |> recv("character", keep.raw = FALSE)
-#> 2022-03-09 18:36:44 [ 8 ] Try again
+#> 2022-03-09 19:58:51 [ 8 ] Try again
 
 # however the topics explicitly subscribed to are still received
 pub |> send(c("examples", "this example will still be received"), mode = "raw", echo = FALSE)
@@ -443,7 +443,7 @@ sub |> recv(mode = "character", keep.raw = FALSE)
 
 # set logging level back to the default of errors only
 logging(level = "error")
-#> 2022-03-09 18:36:44 [ log level ] set to: error
+#> 2022-03-09 19:58:51 [ log level ] set to: error
 
 close(pub)
 close(sub)
@@ -489,12 +489,12 @@ res2 |> recv(keep.raw = FALSE)
 aio1$data
 #> [1] "res1"
 aio2$data
-#> < unresolved: logi NA >
+#> 'unresolved' logi NA
 
 # after the survey expires, the second resolves into a timeout error
 Sys.sleep(0.5)
 aio2$data
-#> 2022-03-09 18:36:44 [ 5 ] Timed out
+#> 2022-03-09 19:58:52 [ 5 ] Timed out
 #> 'errorValue' int 5
 
 close(sur)
@@ -520,11 +520,11 @@ ncurl("http://httpbin.org/headers")
 #>   [1] 7b 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73
 #>  [26] 74 22 3a 20 22 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22
 #>  [51] 58 2d 41 6d 7a 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31
-#>  [76] 2d 36 32 32 38 66 33 62 64 2d 31 66 33 39 30 32 33 35 37 65 61 31 38 34 61
-#> [101] 35 33 32 30 62 30 38 64 38 22 0a 20 20 7d 0a 7d 0a
+#>  [76] 2d 36 32 32 39 30 36 66 63 2d 31 63 66 62 33 33 61 30 31 62 30 37 65 30 61
+#> [101] 38 33 30 66 37 39 63 39 39 22 0a 20 20 7d 0a 7d 0a
 #> 
 #> $data
-#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6228f3bd-1f3902357ea184a5320b08d8\"\n  }\n}\n"
+#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-622906fc-1cfb33a01b07e0a830f79c99\"\n  }\n}\n"
 ```
 
 For advanced use, supports additional HTTP methods such as POST or PUT.

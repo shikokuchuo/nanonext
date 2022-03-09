@@ -226,7 +226,7 @@ Auxiliary function `unresolved()` may be used in control flow statements to perf
 
 msg <- recv_aio(s2)
 
-# unresolved() queries for resolution itself so no need to use it again within the while clause
+# unresolved() queries for resolution itself so no need to use it again within the while loop
 while (unresolved(msg)) {
   # do stuff before checking resolution again
   send_aio(s1, "resolved")
