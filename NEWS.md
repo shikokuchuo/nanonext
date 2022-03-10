@@ -1,4 +1,4 @@
-# nanonext 0.2.0.9008 (development)
+# nanonext 0.3.0
 
 #### New Features
 
