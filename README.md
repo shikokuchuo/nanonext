@@ -237,7 +237,7 @@ operation is ongoing, automatically resolving to a final value once
 complete.
 
 ``` r
-# an async receive is requested, but no mesages are waiting (yet to be sent)
+# an async receive is requested, but no messages are waiting (yet to be sent)
 msg <- recv_aio(s2)
 msg
 #> < recvAio >
@@ -369,7 +369,7 @@ aio
 #> < recvAio >
 #>  - $data for message data
 aio$data |> str()
-#>  num [1:100000000] -2.0235 -1.8686 0.7019 0.0643 -1.2512 ...
+#>  num [1:100000000] 1.2018 -0.7006 0.7083 0.8669 -0.0424 ...
 ```
 
 As `call_aio()` is blocking and will wait for completion, an alternative
@@ -404,37 +404,37 @@ an environment variable `NANONEXT_LOG`.
 
 ``` r
 logging(level = "info")
-#> 2022-03-10 07:36:02 [ log level ] set to: info
+#> 2022-03-13 14:30:05 [ log level ] set to: info
 
 pub <- socket("pub", listen = "inproc://nanobroadcast")
-#> 2022-03-10 07:36:02 [ sock open ] id: 9 | protocol: pub
-#> 2022-03-10 07:36:02 [ list start ] sock: 9 | url: inproc://nanobroadcast
+#> 2022-03-13 14:30:05 [ sock open ] id: 9 | protocol: pub
+#> 2022-03-13 14:30:05 [ list start ] sock: 9 | url: inproc://nanobroadcast
 sub <- socket("sub", dial = "inproc://nanobroadcast")
-#> 2022-03-10 07:36:02 [ sock open ] id: 10 | protocol: sub
-#> 2022-03-10 07:36:02 [ dial start ] sock: 10 | url: inproc://nanobroadcast
+#> 2022-03-13 14:30:05 [ sock open ] id: 10 | protocol: sub
+#> 2022-03-13 14:30:05 [ dial start ] sock: 10 | url: inproc://nanobroadcast
 
 sub |> subscribe(topic = "examples")
-#> 2022-03-10 07:36:02 [ subscribe ] sock: 10 | topic: examples
+#> 2022-03-13 14:30:05 [ subscribe ] sock: 10 | topic: examples
 pub |> send(c("examples", "this is an example"), mode = "raw", echo = FALSE)
 sub |> recv(mode = "character", keep.raw = FALSE)
 #> [1] "examples"           "this is an example"
 
 pub |> send(c("other", "this other topic will not be received"), mode = "raw", echo = FALSE)
 sub |> recv(mode = "character", keep.raw = FALSE)
-#> 2022-03-10 07:36:02 [ 8 ] Try again
+#> 2022-03-13 14:30:05 [ 8 ] Try again
 
 # specify NULL to subscribe to ALL topics
 sub |> subscribe(topic = NULL)
-#> 2022-03-10 07:36:02 [ subscribe ] sock: 10 | topic: ALL
+#> 2022-03-13 14:30:05 [ subscribe ] sock: 10 | topic: ALL
 pub |> send(c("newTopic", "this is a new topic"), mode = "raw", echo = FALSE)
 sub |> recv("character", keep.raw = FALSE)
 #> [1] "newTopic"            "this is a new topic"
 
 sub |> unsubscribe(topic = NULL)
-#> 2022-03-10 07:36:02 [ unsubscribe ] sock: 10 | topic: ALL
+#> 2022-03-13 14:30:05 [ unsubscribe ] sock: 10 | topic: ALL
 pub |> send(c("newTopic", "this topic will now not be received"), mode = "raw", echo = FALSE)
 sub |> recv("character", keep.raw = FALSE)
-#> 2022-03-10 07:36:02 [ 8 ] Try again
+#> 2022-03-13 14:30:05 [ 8 ] Try again
 
 # however the topics explicitly subscribed to are still received
 pub |> send(c("examples", "this example will still be received"), mode = "raw", echo = FALSE)
@@ -443,7 +443,7 @@ sub |> recv(mode = "character", keep.raw = FALSE)
 
 # set logging level back to the default of errors only
 logging(level = "error")
-#> 2022-03-10 07:36:02 [ log level ] set to: error
+#> 2022-03-13 14:30:05 [ log level ] set to: error
 
 close(pub)
 close(sub)
@@ -494,7 +494,7 @@ aio2$data
 # after the survey expires, the second resolves into a timeout error
 Sys.sleep(0.5)
 aio2$data
-#> 2022-03-10 07:36:03 [ 5 ] Timed out
+#> 2022-03-13 14:30:06 [ 5 ] Timed out
 #> 'errorValue' int 5
 
 close(sur)
@@ -520,11 +520,11 @@ ncurl("http://httpbin.org/headers")
 #>   [1] 7b 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73
 #>  [26] 74 22 3a 20 22 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22
 #>  [51] 58 2d 41 6d 7a 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31
-#>  [76] 2d 36 32 32 39 61 61 36 33 2d 33 34 39 63 37 35 30 30 31 65 65 39 36 39 64
-#> [101] 32 31 30 37 39 62 31 64 66 22 0a 20 20 7d 0a 7d 0a
+#>  [76] 2d 36 32 32 64 66 66 65 65 2d 34 61 31 35 64 31 35 63 35 64 37 63 35 64 34
+#> [101] 34 35 38 64 36 63 64 31 38 22 0a 20 20 7d 0a 7d 0a
 #> 
 #> $data
-#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6229aa63-349c75001ee969d21079b1df\"\n  }\n}\n"
+#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-622dffee-4a15d15c5d7c5d4458d6cd18\"\n  }\n}\n"
 ```
 
 For advanced use, supports additional HTTP methods such as POST or PUT.

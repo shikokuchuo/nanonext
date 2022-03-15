@@ -1,5 +1,9 @@
 # nanonext 0.3.0.9000 (development)
 
+#### New Features
+
+* New `stream()`, `stream_recv()` and `stream_send()` functions expose low-level byte stream functionality in the NNG library. This is a separate interface for communicating with non-NNG endpoints [currently experimental and subject to change].
+
 # nanonext 0.3.0
 
 #### New Features

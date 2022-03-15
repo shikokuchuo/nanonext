@@ -8,21 +8,25 @@
 #include <Rinternals.h>
 
 /* define internal symbols */
+extern SEXP nano_AioSymbol;
 extern SEXP nano_ContextSymbol;
 extern SEXP nano_DialerSymbol;
 extern SEXP nano_IdSymbol;
+extern SEXP nano_IovSymbol;
 extern SEXP nano_ListenerSymbol;
 extern SEXP nano_ProtocolSymbol;
 extern SEXP nano_SocketSymbol;
 extern SEXP nano_StateSymbol;
+extern SEXP nano_StreamSymbol;
+extern SEXP nano_TextframesSymbol;
 extern SEXP nano_UrlSymbol;
-extern SEXP nano_AioSymbol;
 
 /* define functions */
 extern SEXP rnng_aio_call(SEXP);
 extern SEXP rnng_aio_get_msg(SEXP);
 extern SEXP rnng_aio_result(SEXP);
 extern SEXP rnng_aio_stop(SEXP);
+extern SEXP rnng_aio_stream_recv(SEXP);
 extern SEXP rnng_aio_unresolv(void);
 extern SEXP rnng_close(SEXP);
 extern SEXP rnng_ctx_close(SEXP);
@@ -68,6 +72,11 @@ extern SEXP rnng_socket_set_ms(SEXP, SEXP, SEXP);
 extern SEXP rnng_socket_set_size(SEXP, SEXP, SEXP);
 extern SEXP rnng_socket_set_string(SEXP, SEXP, SEXP);
 extern SEXP rnng_socket_set_uint64(SEXP, SEXP, SEXP);
+extern SEXP rnng_stream_close(SEXP);
+extern SEXP rnng_stream_dial(SEXP, SEXP);
+extern SEXP rnng_stream_listen(SEXP, SEXP);
+extern SEXP rnng_stream_recv(SEXP, SEXP);
+extern SEXP rnng_stream_send(SEXP, SEXP);
 extern SEXP rnng_strerror(SEXP);
 extern SEXP rnng_version(void);
 

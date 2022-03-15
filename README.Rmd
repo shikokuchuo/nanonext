@@ -189,7 +189,7 @@ An 'Aio' object returns an unresolved value whilst its asynchronous operation is
 
 ```{r async4}
 
-# an async receive is requested, but no mesages are waiting (yet to be sent)
+# an async receive is requested, but no messages are waiting (yet to be sent)
 msg <- recv_aio(s2)
 msg
 msg$data

@@ -2,7 +2,8 @@
 
 #' Open Socket
 #'
-#' Open a Socket implementing 'protocol', and optionally dial or listen at an
+#' Open a Socket implementing 'protocol', and optionally dial (establish an
+#'     outgoing connection) or listen (accept an incoming connection) at an
 #'     address.
 #'
 #' @param protocol [default 'pair'] choose protocol - 'pair', 'bus', 'push',
@@ -24,7 +25,7 @@
 #'     using protocol-specific functions, as a given socket implements precisely
 #'     one protocol.
 #'
-#'     Each socket can be used to send and receive messages (if the protocol
+#'     Each socket may be used to send and receive messages (if the protocol
 #'     supports it, and implements the appropriate protocol semantics). For
 #'     example, sub sockets automatically filter incoming messages to discard
 #'     those for topics that have not been subscribed.
@@ -37,7 +38,7 @@
 #'
 #' @section Protocols:
 #'
-#'     The following communications patterns are implemented:
+#'     The following Scalability Protocols (communication patterns) are implemented:
 #'     \itemize{
 #'     \item{Pair (two-way radio) - protocol: 'pair'}
 #'     \item{Bus (routing) - protocol: 'bus'}
@@ -64,9 +65,11 @@ socket <- function(protocol = c("pair", "bus", "push", "pull", "req", "rep",
 
   protocol <- match.arg(protocol)
   res <- .Call(rnng_protocol_open, protocol)
-  if (is.integer(res)) {
+  is.integer(res) && {
     logerror(res)
-  } else if (logging()) {
+    return(invisible(res))
+  }
+  if (logging()) {
     loginfo(evt = "sock open", pkey = "id", pval = attr(res, "id"),
             skey = "protocol", sval = attr(res, "protocol"))
   }

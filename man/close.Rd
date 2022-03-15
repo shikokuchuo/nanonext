@@ -6,6 +6,7 @@
 \alias{close.nanoContext}
 \alias{close.nanoDialer}
 \alias{close.nanoListener}
+\alias{close.nanoStream}
 \title{Close Connection}
 \usage{
 \method{close}{nanoSocket}(con, ...)
@@ -15,6 +16,8 @@
 \method{close}{nanoDialer}(con, ...)
 
 \method{close}{nanoListener}(con, ...)
+
+\method{close}{nanoStream}(con, ...)
 }
 \arguments{
 \item{con}{a Socket, Context, Dialer or Listener.}

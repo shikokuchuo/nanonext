@@ -78,7 +78,7 @@ dial <- function(socket,
 
     if (missing(autostart) || isTRUE(autostart)) {
       res <- .Call(rnng_dial, .subset2(socket, "socket"), url)
-      if (is.integer(res)) {
+      is.integer(res) && {
         logerror(res)
         return(invisible(res))
       }
@@ -86,7 +86,7 @@ dial <- function(socket,
                              skey = "url", sval = url)
     } else {
       res <- .Call(rnng_dialer_create, .subset2(socket, "socket"), url)
-      if (is.integer(res)) {
+      is.integer(res) && {
         logerror(res)
         return(invisible(res))
       }
@@ -105,7 +105,7 @@ dial <- function(socket,
 
     if (missing(autostart) || isTRUE(autostart)) {
       res <- .Call(rnng_dial, socket, url)
-      if (is.integer(res)) {
+      is.integer(res) && {
         logerror(res)
         return(invisible(res))
       }
@@ -113,7 +113,7 @@ dial <- function(socket,
                              skey = "url", sval = url)
     } else {
       res <- .Call(rnng_dialer_create, socket, url)
-      if (is.integer(res)) {
+      is.integer(res) && {
         logerror(res)
         return(invisible(res))
       }
@@ -204,7 +204,7 @@ listen <- function(socket,
 
     if (missing(autostart) || isTRUE(autostart)) {
       res <- .Call(rnng_listen, .subset2(socket, "socket"), url)
-      if (is.integer(res)) {
+      is.integer(res) && {
         logerror(res)
         return(invisible(res))
       }
@@ -212,7 +212,7 @@ listen <- function(socket,
                              skey = "url", sval = url)
     } else {
       res <- .Call(rnng_listener_create, .subset2(socket, "socket"), url)
-      if (is.integer(res)) {
+      is.integer(res) && {
         logerror(res)
         return(invisible(res))
       }
@@ -231,7 +231,7 @@ listen <- function(socket,
 
     if (missing(autostart) || isTRUE(autostart)) {
       res <- .Call(rnng_listen, socket, url)
-      if (is.integer(res)) {
+      is.integer(res) && {
         logerror(res)
         return(invisible(res))
       }
@@ -239,7 +239,7 @@ listen <- function(socket,
                              skey = "url", sval = url)
     } else {
       res <- .Call(rnng_listener_create, socket, url)
-      if (is.integer(res)) {
+      is.integer(res) && {
         logerror(res)
         return(invisible(res))
       }

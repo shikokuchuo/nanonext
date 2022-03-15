@@ -45,7 +45,10 @@ context <- function(socket) {
 
   if (is.environment(socket)) socket <- .subset2(socket, "socket")
   res <- .Call(rnng_ctx_open, socket)
-  if (is.integer(res)) logerror(res)
+  is.integer(res) && {
+    logerror(res)
+    return(invisible(res))
+  }
   res
 
 }
@@ -318,50 +321,53 @@ request <- function(context,
     return(invisible(`class<-`(aio, "errorValue")))
   }
   env <- `class<-`(new.env(), "recvAio")
-  data <- raw <- resolv <- NULL
+  data <- raw <- NULL
+  unresolv <- TRUE
   if (keep.raw) {
     makeActiveBinding(sym = "raw", fun = function(x) {
-      if (is.null(resolv)) {
+      if (unresolv) {
         res <- .Call(rnng_aio_get_msg, aio)
         missing(res) && return(.Call(rnng_aio_unresolv))
         is.integer(res) && {
-          data <<- raw <<- resolv <<- `class<-`(res, "errorValue")
+          data <<- raw <<- `class<-`(res, "errorValue")
+          unresolv <<- FALSE
           logerror(res)
-          return(invisible(resolv))
+          return(invisible(data))
         }
         on.exit(expr = {
           raw <<- res
-          resolv <<- 0L
+          unresolv <<- FALSE
           return(res)
         })
         data <- decode(con = res, mode = recv_mode)
         on.exit()
         raw <<- res
         data <<- data
-        resolv <<- 0L
+        unresolv <<- FALSE
       }
       raw
     }, env = env)
   }
   makeActiveBinding(sym = "data", fun = function(x) {
-    if (is.null(resolv)) {
+    if (unresolv) {
       res <- .Call(rnng_aio_get_msg, aio)
       missing(res) && return(.Call(rnng_aio_unresolv))
       is.integer(res) && {
-        data <<- raw <<- resolv <<- `class<-`(res, "errorValue")
+        data <<- raw <<- `class<-`(res, "errorValue")
+        unresolv <<- FALSE
         logerror(res)
-        return(invisible(resolv))
+        return(invisible(data))
       }
       on.exit(expr = {
         data <<- res
-        resolv <<- 0L
+        unresolv <<- FALSE
         return(res)
       })
       data <- decode(con = res, mode = recv_mode)
       on.exit()
       if (keep.raw) raw <<- res
       data <<- data
-      resolv <<- 0L
+      unresolv <<- FALSE
     }
     data
   }, env = env)

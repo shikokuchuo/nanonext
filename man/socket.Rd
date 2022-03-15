@@ -33,7 +33,8 @@ it is not generally possible to change these once started.}
 A Socket (object of class 'nanoSocket' and 'nano').
 }
 \description{
-Open a Socket implementing 'protocol', and optionally dial or listen at an
+Open a Socket implementing 'protocol', and optionally dial (establish an
+    outgoing connection) or listen (accept an incoming connection) at an
     address.
 }
 \details{
@@ -41,7 +42,7 @@ NNG presents a socket view of networking. The sockets are constructed
     using protocol-specific functions, as a given socket implements precisely
     one protocol.
 
-    Each socket can be used to send and receive messages (if the protocol
+    Each socket may be used to send and receive messages (if the protocol
     supports it, and implements the appropriate protocol semantics). For
     example, sub sockets automatically filter incoming messages to discard
     those for topics that have not been subscribed.
@@ -55,7 +56,7 @@ NNG presents a socket view of networking. The sockets are constructed
 \section{Protocols}{
 
 
-    The following communications patterns are implemented:
+    The following Scalability Protocols (communication patterns) are implemented:
     \itemize{
     \item{Pair (two-way radio) - protocol: 'pair'}
     \item{Bus (routing) - protocol: 'bus'}

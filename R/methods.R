@@ -148,3 +148,18 @@ close.nanoListener <- function(con, ...) {
 
 }
 
+#' @rdname close
+#' @method close nanoStream
+#' @export
+#'
+close.nanoStream <- function(con, ...) {
+
+  pkey <- if (is.null(attr(con, "dialer"))) "list" else "dial"
+  sval <- attr(con, "url")
+  xc <- .Call(rnng_stream_close, con)
+  if (logging()) loginfo(evt = "stream close", pkey = pkey, pval = 1,
+                         skey = "url", sval = sval)
+  invisible(xc)
+
+}
+

@@ -3,26 +3,32 @@
 #include "nanonext.h"
 #include <R_ext/Visibility.h>
 
+SEXP nano_AioSymbol;
 SEXP nano_ContextSymbol;
 SEXP nano_DialerSymbol;
 SEXP nano_IdSymbol;
+SEXP nano_IovSymbol;
 SEXP nano_ListenerSymbol;
 SEXP nano_ProtocolSymbol;
 SEXP nano_SocketSymbol;
 SEXP nano_StateSymbol;
+SEXP nano_StreamSymbol;
+SEXP nano_TextframesSymbol;
 SEXP nano_UrlSymbol;
-SEXP nano_AioSymbol;
 
 static void RegisterSymbols(void) {
+  nano_AioSymbol = Rf_install("aio");
   nano_ContextSymbol = Rf_install("context");
   nano_DialerSymbol = Rf_install("dialer");
   nano_IdSymbol = Rf_install("id");
+  nano_IovSymbol = Rf_install("iov");
   nano_ListenerSymbol = Rf_install("listener");
   nano_ProtocolSymbol = Rf_install("protocol");
   nano_SocketSymbol = Rf_install("socket");
   nano_StateSymbol = Rf_install("state");
+  nano_StreamSymbol = Rf_install("stream");
+  nano_TextframesSymbol = Rf_install("textframes");
   nano_UrlSymbol = Rf_install("url");
-  nano_AioSymbol = Rf_install("aio");
 }
 
 static const R_CallMethodDef CallEntries[] = {
@@ -30,6 +36,7 @@ static const R_CallMethodDef CallEntries[] = {
   {"rnng_aio_get_msg", (DL_FUNC) &rnng_aio_get_msg, 1},
   {"rnng_aio_result", (DL_FUNC) &rnng_aio_result, 1},
   {"rnng_aio_stop", (DL_FUNC) &rnng_aio_stop, 1},
+  {"rnng_aio_stream_recv", (DL_FUNC) &rnng_aio_stream_recv, 1},
   {"rnng_aio_unresolv", (DL_FUNC) &rnng_aio_unresolv, 0},
   {"rnng_close", (DL_FUNC) &rnng_close, 1},
   {"rnng_ctx_close", (DL_FUNC) &rnng_ctx_close, 1},
@@ -75,6 +82,11 @@ static const R_CallMethodDef CallEntries[] = {
   {"rnng_socket_set_size", (DL_FUNC) &rnng_socket_set_size, 3},
   {"rnng_socket_set_string", (DL_FUNC) &rnng_socket_set_string, 3},
   {"rnng_socket_set_uint64", (DL_FUNC) &rnng_socket_set_uint64, 3},
+  {"rnng_stream_close", (DL_FUNC) &rnng_stream_close, 1},
+  {"rnng_stream_dial", (DL_FUNC) &rnng_stream_dial, 2},
+  {"rnng_stream_listen", (DL_FUNC) &rnng_stream_listen, 2},
+  {"rnng_stream_recv", (DL_FUNC) &rnng_stream_recv, 2},
+  {"rnng_stream_send", (DL_FUNC) &rnng_stream_send, 2},
   {"rnng_strerror", (DL_FUNC) &rnng_strerror, 1},
   {"rnng_version", (DL_FUNC) &rnng_version, 0},
   {NULL, NULL, 0}

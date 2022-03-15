@@ -214,6 +214,18 @@ print.nanoListener <- function(x, ...) {
 
 #' @export
 #'
+print.nanoStream <- function(x, ...) {
+
+  cat("< nanoStream >\n - type:",
+      if (is.null(attr(x, "dialer"))) "listener" else "dialer",
+      "\n - url:", attr(x, "url"),
+      "\n - textframes:", attr(x, "textframes"), "\n", file = stdout())
+  invisible(x)
+
+}
+
+#' @export
+#'
 print.recvAio <- function(x, ...) {
 
   cat("< recvAio >\n - $data for message data\n",
@@ -241,7 +253,7 @@ print.sendAio <- function(x, ...) {
 
 #' @export
 #'
-`[.nanoSocket` <- function(x, i, exact = FALSE) {
+`[.nano` <- function(x, i, exact = FALSE) {
 
   attr(x, deparse(substitute(i)), exact = exact)
 
@@ -253,6 +265,24 @@ print.sendAio <- function(x, ...) {
 
   attr(x, name, exact = FALSE)
 
+}
+
+#' @export
+#'
+`$<-.nanoObject` <- function(x, name, value) {
+  x
+}
+
+#' @export
+#'
+`$<-.recvAio` <- function(x, name, value) {
+  x
+}
+
+#' @export
+#'
+`$<-.sendAio` <- function(x, name, value) {
+  x
 }
 
 #' @export
