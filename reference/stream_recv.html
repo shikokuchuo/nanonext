@@ -65,7 +65,8 @@
   <span class="va">stream</span>,
   mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"character"</span>, <span class="st">"complex"</span>, <span class="st">"double"</span>, <span class="st">"integer"</span>, <span class="st">"logical"</span>, <span class="st">"numeric"</span>, <span class="st">"raw"</span><span class="op">)</span>,
   keep.raw <span class="op">=</span> <span class="cn">TRUE</span>,
-  bytes <span class="op">=</span> <span class="fl">10000</span>
+  bytes <span class="op">=</span> <span class="fl">10000</span>,
+  <span class="va">timeout</span>
 <span class="op">)</span></code></pre></div>
     </div>
 
@@ -84,6 +85,8 @@ the converted data only.</p></dd>
 <dt>bytes</dt>
 <dd><p>[default 10000] the maximum number of bytes to receive. Can be an
 over-estimate, but note that a buffer of this size is reserved.</p></dd>
+<dt>timeout</dt>
+<dd><p>(optional) in milliseconds.</p></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>
