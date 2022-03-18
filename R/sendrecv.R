@@ -302,8 +302,7 @@ recv_aio <- function(socket,
     }
     data
   }, env = env)
-  `[[<-`(env, "keep.raw", keep.raw)
-  `[[<-`(env, "aio", aio)
+  `[[<-`(`[[<-`(env, "keep.raw", keep.raw), "aio", aio)
 
 }
 

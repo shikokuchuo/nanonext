@@ -71,6 +71,7 @@ stream <- function(dial = NULL, listen = NULL, textframes = FALSE) {
 #'
 #' @param stream a Stream.
 #' @param data a vector.
+#' @param timeout (optional) in milliseconds.
 #'
 #' @return A 'sendAio' (object of class 'sendAio').
 #'
@@ -89,11 +90,12 @@ stream <- function(dial = NULL, listen = NULL, textframes = FALSE) {
 #'
 #' @export
 #'
-stream_send <- function(stream, data) {
+stream_send <- function(stream, data, timeout) {
 
   force(data)
   data <- encode(data = data, mode = "raw")
-  aio <- .Call(rnng_stream_send, stream, data)
+  if (missing(timeout) || !is.numeric(timeout)) timeout <- NULL
+  aio <- .Call(rnng_stream_send, stream, data, timeout)
   is.integer(aio) && {
     logerror(aio)
     return(invisible(aio))
@@ -125,6 +127,7 @@ stream_send <- function(stream, data) {
 #' @param bytes [default 10000] the maximum number of bytes to receive. Can be an
 #'     over-estimate, but note that a buffer of this size is reserved.
 #' @inheritParams recv
+#' @inheritParams stream_send
 #'
 #' @return A 'recvAio' (object of class 'recvAio').
 #'
@@ -155,11 +158,13 @@ stream_recv <- function(stream,
                         mode = c("character", "complex", "double", "integer",
                                  "logical", "numeric", "raw"),
                         keep.raw = TRUE,
-                        bytes = 10000) {
+                        bytes = 10000,
+                        timeout) {
 
   mode <- match.arg(mode)
   keep.raw <- missing(keep.raw) || isTRUE(keep.raw)
-  aio <- .Call(rnng_stream_recv, stream, bytes)
+  if (missing(timeout) || !is.numeric(timeout)) timeout <- NULL
+  aio <- .Call(rnng_stream_recv, stream, bytes, timeout)
   is.integer(aio) && {
     logerror(aio)
     return(invisible(`class<-`(aio, "errorValue")))
@@ -215,8 +220,7 @@ stream_recv <- function(stream,
     }
     data
   }, env = env)
-  `[[<-`(env, "keep.raw", keep.raw)
-  `[[<-`(env, "aio", aio)
+  `[[<-`(`[[<-`(env, "keep.raw", keep.raw), "aio", aio)
 
 }
 

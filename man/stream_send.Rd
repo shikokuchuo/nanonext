@@ -4,12 +4,14 @@
 \alias{stream_send}
 \title{Send via Stream}
 \usage{
-stream_send(stream, data)
+stream_send(stream, data, timeout)
 }
 \arguments{
 \item{stream}{a Stream.}
 
 \item{data}{a vector.}
+
+\item{timeout}{(optional) in milliseconds.}
 }
 \value{
 A 'sendAio' (object of class 'sendAio').

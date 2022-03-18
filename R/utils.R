@@ -192,7 +192,7 @@ logging <- function(level) {
 #'
 #' @examples
 #' ncurl("http://httpbin.org/get")
-#' ncurl("http://httpbin.org/post", "POST", "text-plain", "hello world")
+#' ncurl("http://httpbin.org/post", "POST", "text/plain", "hello world")
 #'
 #' @export
 #'

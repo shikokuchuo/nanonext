@@ -511,7 +511,7 @@ SEXP rnng_stream_listen(SEXP url, SEXP textframes) {
 
 }
 
-SEXP rnng_stream_send(SEXP stream, SEXP data) {
+SEXP rnng_stream_send(SEXP stream, SEXP data, SEXP timeout) {
 
   if (R_ExternalPtrTag(stream) != nano_StreamSymbol)
     error_return("'stream' is not a valid stream");
@@ -553,6 +553,11 @@ SEXP rnng_stream_send(SEXP stream, SEXP data) {
     return Rf_ScalarInteger(xc);
   }
 
+  if (timeout != R_NilValue) {
+    const nng_duration dur = (nng_duration) Rf_asInteger(timeout);
+    nng_aio_set_timeout(aiop, dur);
+  }
+
   nng_stream_send(sp, aiop);
 
   SEXP aio = PROTECT(R_MakeExternalPtr(aiop, nano_AioSymbol, R_NilValue));
@@ -566,7 +571,7 @@ SEXP rnng_stream_send(SEXP stream, SEXP data) {
 
 }
 
-SEXP rnng_stream_recv(SEXP stream, SEXP bytes) {
+SEXP rnng_stream_recv(SEXP stream, SEXP bytes, SEXP timeout) {
 
   if (R_ExternalPtrTag(stream) != nano_StreamSymbol)
     error_return("'stream' is not a valid stream");
@@ -574,7 +579,7 @@ SEXP rnng_stream_recv(SEXP stream, SEXP bytes) {
     error_return("'stream' is not an active stream");
 
   nng_stream *sp = (nng_stream *) R_ExternalPtrAddr(stream);
-  const size_t xlen = Rf_asInteger(bytes);
+  const size_t xlen = Rf_asInteger(bytes) + 1;
   int xc;
   nng_iov iov;
   nng_aio *aiop;
@@ -604,6 +609,11 @@ SEXP rnng_stream_recv(SEXP stream, SEXP bytes) {
     nng_mtx_free(mutex->mtx);
     R_Free(mutex);
     return Rf_ScalarInteger(xc);
+  }
+
+  if (timeout != R_NilValue) {
+    const nng_duration dur = (nng_duration) Rf_asInteger(timeout);
+    nng_aio_set_timeout(aiop, dur);
   }
 
   nng_stream_recv(sp, aiop);

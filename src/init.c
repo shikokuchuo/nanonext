@@ -85,8 +85,8 @@ static const R_CallMethodDef CallEntries[] = {
   {"rnng_stream_close", (DL_FUNC) &rnng_stream_close, 1},
   {"rnng_stream_dial", (DL_FUNC) &rnng_stream_dial, 2},
   {"rnng_stream_listen", (DL_FUNC) &rnng_stream_listen, 2},
-  {"rnng_stream_recv", (DL_FUNC) &rnng_stream_recv, 2},
-  {"rnng_stream_send", (DL_FUNC) &rnng_stream_send, 2},
+  {"rnng_stream_recv", (DL_FUNC) &rnng_stream_recv, 3},
+  {"rnng_stream_send", (DL_FUNC) &rnng_stream_send, 3},
   {"rnng_strerror", (DL_FUNC) &rnng_strerror, 1},
   {"rnng_version", (DL_FUNC) &rnng_version, 0},
   {NULL, NULL, 0}

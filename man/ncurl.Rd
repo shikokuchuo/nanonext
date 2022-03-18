@@ -55,6 +55,6 @@ nano cURL - a minimalist http(s) client.
 
 \examples{
 ncurl("http://httpbin.org/get")
-ncurl("http://httpbin.org/post", "POST", "text-plain", "hello world")
+ncurl("http://httpbin.org/post", "POST", "text/plain", "hello world")
 
 }

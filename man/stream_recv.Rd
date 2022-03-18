@@ -8,7 +8,8 @@ stream_recv(
   stream,
   mode = c("character", "complex", "double", "integer", "logical", "numeric", "raw"),
   keep.raw = TRUE,
-  bytes = 10000
+  bytes = 10000,
+  timeout
 )
 }
 \arguments{
@@ -24,6 +25,8 @@ the converted data only.}
 
 \item{bytes}{[default 10000] the maximum number of bytes to receive. Can be an
 over-estimate, but note that a buffer of this size is reserved.}
+
+\item{timeout}{(optional) in milliseconds.}
 }
 \value{
 A 'recvAio' (object of class 'recvAio').
