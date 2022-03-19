@@ -519,6 +519,7 @@ SEXP rnng_stream_send(SEXP stream, SEXP data, SEXP timeout) {
     error_return("'stream' is not an active stream");
 
   nng_stream *sp = (nng_stream *) R_ExternalPtrAddr(stream);
+  const nng_duration dur = (nng_duration) Rf_asInteger(timeout);
   unsigned char *dp = RAW(data);
   const R_xlen_t xlen = XLENGTH(data);
   int xc;
@@ -553,11 +554,7 @@ SEXP rnng_stream_send(SEXP stream, SEXP data, SEXP timeout) {
     return Rf_ScalarInteger(xc);
   }
 
-  if (timeout != R_NilValue) {
-    const nng_duration dur = (nng_duration) Rf_asInteger(timeout);
-    nng_aio_set_timeout(aiop, dur);
-  }
-
+  nng_aio_set_timeout(aiop, dur);
   nng_stream_send(sp, aiop);
 
   SEXP aio = PROTECT(R_MakeExternalPtr(aiop, nano_AioSymbol, R_NilValue));
@@ -579,6 +576,7 @@ SEXP rnng_stream_recv(SEXP stream, SEXP bytes, SEXP timeout) {
     error_return("'stream' is not an active stream");
 
   nng_stream *sp = (nng_stream *) R_ExternalPtrAddr(stream);
+  const nng_duration dur = (nng_duration) Rf_asInteger(timeout);
   const size_t xlen = Rf_asInteger(bytes) + 1;
   int xc;
   nng_iov iov;
@@ -611,11 +609,7 @@ SEXP rnng_stream_recv(SEXP stream, SEXP bytes, SEXP timeout) {
     return Rf_ScalarInteger(xc);
   }
 
-  if (timeout != R_NilValue) {
-    const nng_duration dur = (nng_duration) Rf_asInteger(timeout);
-    nng_aio_set_timeout(aiop, dur);
-  }
-
+  nng_aio_set_timeout(aiop, dur);
   nng_stream_recv(sp, aiop);
 
   SEXP aio = PROTECT(R_MakeExternalPtr(aiop, nano_AioSymbol, R_NilValue));

@@ -94,7 +94,7 @@ stream_send <- function(stream, data, timeout) {
 
   force(data)
   data <- encode(data = data, mode = "raw")
-  if (missing(timeout) || !is.numeric(timeout)) timeout <- NULL
+  if (missing(timeout)) timeout <- -2L
   aio <- .Call(rnng_stream_send, stream, data, timeout)
   is.integer(aio) && {
     logerror(aio)
@@ -163,7 +163,7 @@ stream_recv <- function(stream,
 
   mode <- match.arg(mode)
   keep.raw <- missing(keep.raw) || isTRUE(keep.raw)
-  if (missing(timeout) || !is.numeric(timeout)) timeout <- NULL
+  if (missing(timeout)) timeout <- -2L
   aio <- .Call(rnng_stream_recv, stream, bytes, timeout)
   is.integer(aio) && {
     logerror(aio)
