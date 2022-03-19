@@ -89,12 +89,12 @@ socket open etc. to stdout</p></li>
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu">logging</span><span class="op">(</span>level <span class="op">=</span> <span class="st">"info"</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2022-03-18 22:46:56 [ log level ] set to: info</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2022-03-19 18:06:26 [ log level ] set to: info</span>
 <span class="r-in"><span class="va">sock</span> <span class="op">&lt;-</span> <span class="fu"><a href="socket.html">socket</a></span><span class="op">(</span><span class="st">"respondent"</span>, dial <span class="op">=</span> <span class="st">"inproc://nanolog"</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2022-03-18 22:46:56 [ sock open ] id: 9 | protocol: respondent</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2022-03-18 22:46:56 [ dial start ] sock: 9 | url: inproc://nanolog</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2022-03-19 18:06:26 [ sock open ] id: 9 | protocol: respondent</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2022-03-19 18:06:26 [ dial start ] sock: 9 | url: inproc://nanolog</span>
 <span class="r-in"><span class="fu">logging</span><span class="op">(</span>level <span class="op">=</span> <span class="st">"error"</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2022-03-18 22:46:56 [ log level ] set to: error</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2022-03-19 18:06:26 [ log level ] set to: error</span>
 <span class="r-in"><span class="fu"><a href="close.html">close</a></span><span class="op">(</span><span class="va">sock</span><span class="op">)</span></span>
 <span class="r-in"></span>
 </code></pre></div>
