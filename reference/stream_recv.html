@@ -90,25 +90,22 @@ over-estimate, but note that a buffer of this size is reserved.</p></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A 'recvAio' (object of class 'recvAio').</p>
+    <p>Named list of 2 elements: 'raw' containing the received raw vector
+    and 'data' containing the converted object, or else the converted object
+    if 'keep.raw' is set to FALSE.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
-    <p>Receiving a byte stream is asynchronous and non-blocking, returning
-    a 'recvAio' immediately.</p>
-<p>For a 'recvAio', the received message is available at <code>$data</code>, and
-    the raw message at <code>$raw</code> (if kept). An 'unresolved' logical NA is
-    returned if the async operation is yet to complete.</p>
-<p>To wait for the async operation to complete and retrieve the received
-    message, use <code><a href="call_aio.html">call_aio</a></code> on the returned 'recvAio' object.</p>
-<p>Alternatively, to stop the async operation, use <code><a href="stop_aio.html">stop_aio</a></code>.</p>
+    <p>Receivng a byte stream synchronously will block while awaiting the
+    receive operation to complete. Set a timeout to ensure that the function
+    returns under all scenarios.</p>
 <p>In case of an error, an integer 'errorValue' is returned (to be
     distiguishable from an integer message value). This can be verified using
     <code><a href="is_error_value.html">is_error_value</a></code>.</p>
-<p>If the raw data was successfully received but an error occurred in
-    data conversion (for example if the incorrect mode was specified), the
-    received raw vector will be stored at <code>$data</code> to allow for the data
-    to be recovered.</p>
+<p>If the raw data was successfully received but an error occurred in data
+    conversion (for example if the incorrect mode was specified), the
+    received raw vector will always be returned to allow for the data to be
+    recovered.</p>
     </div>
 
   </div>

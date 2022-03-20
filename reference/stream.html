@@ -91,6 +91,9 @@ enables sending and receiving of TEXT frames (ignored otherwise).</p></dd>
     <p>A Stream is used for raw byte stream connections. Byte streams are
     reliable in that data will not be delivered out of order, or with portions
     missing.</p>
+<p>Use only stream-specific functions with a Stream: <code><a href="stream_send.html">stream_send</a></code>,
+    <code><a href="stream_recv.html">stream_recv</a></code> and their asynchronous counterparts
+    <code><a href="stream_send_aio.html">stream_send_aio</a></code> and <code><a href="stream_recv_aio.html">stream_recv_aio</a></code>.</p>
 <p>Only specify one of 'dial' or 'listen'. If both are specified, 'listen'
     will be ignored.</p>
 <p>TLS is automatically configured for dialing a secure websocket address

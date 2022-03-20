@@ -106,7 +106,13 @@
     <loc>https://shikokuchuo.net/nanonext/reference/stream_recv.html</loc>
   </url>
   <url>
+    <loc>https://shikokuchuo.net/nanonext/reference/stream_recv_aio.html</loc>
+  </url>
+  <url>
     <loc>https://shikokuchuo.net/nanonext/reference/stream_send.html</loc>
+  </url>
+  <url>
+    <loc>https://shikokuchuo.net/nanonext/reference/stream_send_aio.html</loc>
   </url>
   <url>
     <loc>https://shikokuchuo.net/nanonext/reference/subscribe.html</loc>
