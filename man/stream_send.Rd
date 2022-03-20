@@ -4,7 +4,7 @@
 \alias{stream_send}
 \title{Send via Stream}
 \usage{
-stream_send(stream, data, timeout)
+stream_send(stream, data, timeout, echo = TRUE)
 }
 \arguments{
 \item{stream}{a Stream.}
@@ -12,25 +12,21 @@ stream_send(stream, data, timeout)
 \item{data}{a vector.}
 
 \item{timeout}{(optional) in milliseconds.}
+
+\item{echo}{[default TRUE] logical flag whether to return the raw vector of
+sent data. Set to FALSE for performance-critical applications where zero
+will be returned (invisibly) instead.}
 }
 \value{
-A 'sendAio' (object of class 'sendAio').
+Raw vector of sent data, or (invisibly) an integer exit code (zero on
+    success) if 'echo' is set to FALSE.
 }
 \description{
 Send data over a byte stream. This is a low-level interface intended for
     communicating with non-NNG endpoints [experimental].
 }
 \details{
-Sending a byte stream is non-blocking and returns a 'sendAio'
-    immediately.
-
-    For a 'sendAio', the send result is available at \code{$result}. An
-    'unresolved' logical NA is returned if the async operation is yet to
-    complete, The resolved value will be zero on success, or else an integer
-    error code.
-
-    To wait for and check the result of the send operation, use
-    \code{\link{call_aio}} on the returned 'sendAio' object.
-
-    Alternatively, to stop the async operation, use \code{\link{stop_aio}}.
+Sending a byte stream synchronously will block if the send is in
+    progress and has not yet completed. Set a timeout to ensure the function
+    returns under all scenarios.
 }

@@ -22,6 +22,10 @@
 #'     reliable in that data will not be delivered out of order, or with portions
 #'     missing.
 #'
+#'     Use only stream-specific functions with a Stream: \code{\link{stream_send}},
+#'     \code{\link{stream_recv}} and their asynchronous counterparts
+#'     \code{\link{stream_send_aio}} and \code{\link{stream_recv_aio}}.
+#'
 #'     Only specify one of 'dial' or 'listen'. If both are specified, 'listen'
 #'     will be ignored.
 #'
@@ -72,11 +76,42 @@ stream <- function(dial = NULL, listen = NULL, textframes = FALSE) {
 #' @param stream a Stream.
 #' @param data a vector.
 #' @param timeout (optional) in milliseconds.
+#' @inheritParams send
+#'
+#' @return Raw vector of sent data, or (invisibly) an integer exit code (zero on
+#'     success) if 'echo' is set to FALSE.
+#'
+#' @details Sending a byte stream synchronously will block if the send is in
+#'     progress and has not yet completed. Set a timeout to ensure the function
+#'     returns under all scenarios.
+#'
+#' @export
+#'
+stream_send <- function(stream, data, timeout, echo = TRUE) {
+
+  force(data)
+  data <- encode(data = data, mode = "raw")
+  if (missing(timeout)) timeout <- -2L
+  res <- .Call(rnng_stream_send, stream, data, timeout)
+  is.integer(res) && {
+    logerror(res)
+    return(invisible(res))
+  }
+  if (missing(echo) || isTRUE(echo)) res else invisible(0L)
+
+}
+
+#' Send via Stream (Async)
+#'
+#' Send data asynchronously over a byte stream. This is a low-level interface
+#'     intended for communicating with non-NNG endpoints [experimental].
+#'
+#' @inheritParams stream_send
 #'
 #' @return A 'sendAio' (object of class 'sendAio').
 #'
-#' @details Sending a byte stream is non-blocking and returns a 'sendAio'
-#'     immediately.
+#' @details Sending a byte stream asynchronously is non-blocking and returns
+#'     a 'sendAio' immediately.
 #'
 #'     For a 'sendAio', the send result is available at \code{$result}. An
 #'     'unresolved' logical NA is returned if the async operation is yet to
@@ -90,12 +125,12 @@ stream <- function(dial = NULL, listen = NULL, textframes = FALSE) {
 #'
 #' @export
 #'
-stream_send <- function(stream, data, timeout) {
+stream_send_aio <- function(stream, data, timeout) {
 
   force(data)
   data <- encode(data = data, mode = "raw")
   if (missing(timeout)) timeout <- -2L
-  aio <- .Call(rnng_stream_send, stream, data, timeout)
+  aio <- .Call(rnng_stream_send_aio, stream, data, timeout)
   is.integer(aio) && {
     logerror(aio)
     return(invisible(aio))
@@ -129,9 +164,56 @@ stream_send <- function(stream, data, timeout) {
 #' @inheritParams recv
 #' @inheritParams stream_send
 #'
+#' @return Named list of 2 elements: 'raw' containing the received raw vector
+#'     and 'data' containing the converted object, or else the converted object
+#'     if 'keep.raw' is set to FALSE.
+#'
+#' @details Receivng a byte stream synchronously will block while awaiting the
+#'     receive operation to complete. Set a timeout to ensure that the function
+#'     returns under all scenarios.
+#'
+#'     In case of an error, an integer 'errorValue' is returned (to be
+#'     distiguishable from an integer message value). This can be verified using
+#'     \code{\link{is_error_value}}.
+#'
+#'     If the raw data was successfully received but an error occurred in data
+#'     conversion (for example if the incorrect mode was specified), the
+#'     received raw vector will always be returned to allow for the data to be
+#'     recovered.
+#'
+#' @export
+#'
+stream_recv <- function(stream,
+                        mode = c("character", "complex", "double", "integer",
+                                 "logical", "numeric", "raw"),
+                        keep.raw = TRUE,
+                        bytes = 10000,
+                        timeout) {
+
+  mode <- match.arg(mode)
+  if (missing(timeout)) timeout <- -2L
+  res <- .Call(rnng_stream_recv, stream, bytes, timeout)
+  is.integer(res) && {
+    logerror(res)
+    return(invisible(`class<-`(res, "errorValue")))
+  }
+  on.exit(expr = return(res))
+  data <- decode(con = res, mode = mode)
+  on.exit()
+  if (missing(keep.raw) || isTRUE(keep.raw)) list(raw = res, data = data) else data
+
+}
+
+#' Receive via Stream (Async)
+#'
+#' Receive data over a byte stream asynchronously. This is a low-level interface
+#'     intended for communicating with non-NNG endpoints [experimental].
+#'
+#' @inheritParams stream_recv
+#'
 #' @return A 'recvAio' (object of class 'recvAio').
 #'
-#' @details Receiving a byte stream is asynchronous and non-blocking, returning
+#' @details Receiving a byte stream asynchronously is non-blocking and returns
 #'     a 'recvAio' immediately.
 #'
 #'     For a 'recvAio', the received message is available at \code{$data}, and
@@ -154,17 +236,17 @@ stream_send <- function(stream, data, timeout) {
 #'
 #' @export
 #'
-stream_recv <- function(stream,
-                        mode = c("character", "complex", "double", "integer",
-                                 "logical", "numeric", "raw"),
-                        keep.raw = TRUE,
-                        bytes = 10000,
-                        timeout) {
+stream_recv_aio <- function(stream,
+                            mode = c("character", "complex", "double", "integer",
+                                     "logical", "numeric", "raw"),
+                            keep.raw = TRUE,
+                            bytes = 10000,
+                            timeout) {
 
   mode <- match.arg(mode)
   keep.raw <- missing(keep.raw) || isTRUE(keep.raw)
   if (missing(timeout)) timeout <- -2L
-  aio <- .Call(rnng_stream_recv, stream, bytes, timeout)
+  aio <- .Call(rnng_stream_recv_aio, stream, bytes, timeout)
   is.integer(aio) && {
     logerror(aio)
     return(invisible(`class<-`(aio, "errorValue")))

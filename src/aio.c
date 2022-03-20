@@ -525,6 +525,49 @@ SEXP rnng_stream_send(SEXP stream, SEXP data, SEXP timeout) {
   int xc;
   nng_iov iov;
   nng_aio *aiop;
+
+  const int frames = LOGICAL(Rf_getAttrib(stream, nano_TextframesSymbol))[0];
+
+  iov.iov_len = frames == 1 ? xlen - 1 : xlen;
+  iov.iov_buf = dp;
+
+  xc = nng_aio_alloc(&aiop, NULL, NULL);
+  if (xc)
+    return Rf_ScalarInteger(xc);
+
+  xc = nng_aio_set_iov(aiop, 1, &iov);
+  if (xc) {
+    nng_aio_free(aiop);
+    return Rf_ScalarInteger(xc);
+  }
+
+  nng_aio_set_timeout(aiop, dur);
+  nng_stream_send(sp, aiop);
+
+  nng_aio_wait(aiop);
+  xc = nng_aio_result(aiop);
+  nng_aio_free(aiop);
+
+  if (xc)
+    return Rf_ScalarInteger(xc);
+  return data;
+
+}
+
+SEXP rnng_stream_send_aio(SEXP stream, SEXP data, SEXP timeout) {
+
+  if (R_ExternalPtrTag(stream) != nano_StreamSymbol)
+    error_return("'stream' is not a valid stream");
+  if (R_ExternalPtrAddr(stream) == NULL)
+    error_return("'stream' is not an active stream");
+
+  nng_stream *sp = (nng_stream *) R_ExternalPtrAddr(stream);
+  const nng_duration dur = (nng_duration) Rf_asInteger(timeout);
+  unsigned char *dp = RAW(data);
+  const R_xlen_t xlen = XLENGTH(data);
+  int xc;
+  nng_iov iov;
+  nng_aio *aiop;
   int_mtx *mutex;
 
   const int frames = LOGICAL(Rf_getAttrib(stream, nano_TextframesSymbol))[0];
@@ -569,6 +612,56 @@ SEXP rnng_stream_send(SEXP stream, SEXP data, SEXP timeout) {
 }
 
 SEXP rnng_stream_recv(SEXP stream, SEXP bytes, SEXP timeout) {
+
+  if (R_ExternalPtrTag(stream) != nano_StreamSymbol)
+    error_return("'stream' is not a valid stream");
+  if (R_ExternalPtrAddr(stream) == NULL)
+    error_return("'stream' is not an active stream");
+
+  nng_stream *sp = (nng_stream *) R_ExternalPtrAddr(stream);
+  const nng_duration dur = (nng_duration) Rf_asInteger(timeout);
+  const size_t xlen = Rf_asInteger(bytes) + 1;
+  int xc;
+  nng_iov iov;
+  nng_aio *aiop;
+
+  unsigned char *data = R_Calloc(xlen, unsigned char);
+  iov.iov_len = xlen;
+  iov.iov_buf = data;
+
+  xc = nng_aio_alloc(&aiop, NULL, NULL);
+  if (xc)
+    return Rf_ScalarInteger(xc);
+
+  xc = nng_aio_set_iov(aiop, 1, &iov);
+  if (xc) {
+    nng_aio_free(aiop);
+    return Rf_ScalarInteger(xc);
+  }
+
+  nng_aio_set_timeout(aiop, dur);
+  nng_stream_recv(sp, aiop);
+
+  nng_aio_wait(aiop);
+  xc = nng_aio_result(aiop);
+  if (xc) {
+    nng_aio_free(aiop);
+    return Rf_ScalarInteger(xc);
+  }
+
+  size_t sz = nng_aio_count(aiop);
+  SEXP res = PROTECT(Rf_allocVector(RAWSXP, sz));
+  unsigned char *rp = RAW(res);
+  memcpy(rp, iov.iov_buf, sz);
+  nng_aio_free(aiop);
+  R_Free(data);
+
+  UNPROTECT(1);
+  return res;
+
+}
+
+SEXP rnng_stream_recv_aio(SEXP stream, SEXP bytes, SEXP timeout) {
 
   if (R_ExternalPtrTag(stream) != nano_StreamSymbol)
     error_return("'stream' is not a valid stream");

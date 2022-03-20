@@ -76,7 +76,9 @@ extern SEXP rnng_stream_close(SEXP);
 extern SEXP rnng_stream_dial(SEXP, SEXP);
 extern SEXP rnng_stream_listen(SEXP, SEXP);
 extern SEXP rnng_stream_recv(SEXP, SEXP, SEXP);
+extern SEXP rnng_stream_recv_aio(SEXP, SEXP, SEXP);
 extern SEXP rnng_stream_send(SEXP, SEXP, SEXP);
+extern SEXP rnng_stream_send_aio(SEXP, SEXP, SEXP);
 extern SEXP rnng_strerror(SEXP);
 extern SEXP rnng_version(void);
 

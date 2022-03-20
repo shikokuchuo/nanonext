@@ -99,12 +99,14 @@ send_aio <- function(socket, data, mode = c("serial", "raw"), timeout) {
   }
   env <- `class<-`(new.env(), "sendAio")
   result <- NULL
+  unresolv <- TRUE
   makeActiveBinding(sym = "result", fun = function(x) {
-    if (is.null(result)) {
+    if (unresolv) {
       res <- .Call(rnng_aio_result, aio)
       missing(res) && return(.Call(rnng_aio_unresolv))
       if (res) logerror(res)
       result <<- res
+      unresolv <<- FALSE
     }
     result
   }, env = env)
