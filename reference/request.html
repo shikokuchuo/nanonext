@@ -128,10 +128,10 @@ the converted data only.</p></dd>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># works if req and rep are running in parallel in different processes</span></span>
 <span class="r-in"><span class="fu"><a href="reply.html">reply</a></span><span class="op">(</span><span class="va">ctxp</span>, execute <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="va">x</span> <span class="op">+</span> <span class="fl">1</span>, timeout <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 2022-03-20 16:14:32 [ 5 ] Timed out</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 2022-03-22 20:40:51 [ 5 ] Timed out</span>
 <span class="r-in"><span class="va">aio</span> <span class="op">&lt;-</span> <span class="fu">request</span><span class="op">(</span><span class="va">ctxq</span>, data <span class="op">=</span> <span class="fl">2022</span>, timeout <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu"><a href="call_aio.html">call_aio</a></span><span class="op">(</span><span class="va">aio</span><span class="op">)</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 2022-03-20 16:14:32 [ 5 ] Timed out</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 2022-03-22 20:40:51 [ 5 ] Timed out</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="fu"><a href="close.html">close</a></span><span class="op">(</span><span class="va">req</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu"><a href="close.html">close</a></span><span class="op">(</span><span class="va">rep</span><span class="op">)</span></span>
