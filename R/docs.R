@@ -156,16 +156,16 @@ NULL
 #'     refers to nanonext located in /tmp.
 #'     \item On Windows, all names are prefixed by \\.\ pipe\ and do not reside
 #'     in the normal file system - the required prefix is added automatically
-#'     by NNG, so you should specify a URL such as ipc://nanonext directly.
+#'     by NNG, so a URL of the form ipc://nanonext is fine.
 #'     }
 #'
 #'     \emph{UNIX Aliases}
 #'
-#'     [\strong{URI, unix://}] The unix:// scheme is an alias for ipc:// and can be
-#'     used inter-changeably, but only on POSIX systems.The purpose of this scheme
-#'     is to support a future transport making use of AF_UNIX on Windows systems,
-#'     at which time it will be necessary to discriminate between the Named Pipes
-#'     and the AF_UNIX based transports.
+#'     [\strong{URI, unix://}] The unix:// scheme is an alias for ipc:// and can
+#'     be used inter-changeably, but only on POSIX systems. The purpose of this
+#'     scheme is to support a future transport making use of AF_UNIX on Windows
+#'     systems, at which time it will be necessary to discriminate between the
+#'     Named Pipes and the AF_UNIX based transports.
 #'
 #'     \emph{Abstract Names}
 #'

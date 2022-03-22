@@ -85,16 +85,6 @@ is_nul_byte <- function(x) identical(x, as.raw(0L))
 #'
 is_error_value <- function(x) inherits(x, "errorValue")
 
-#' @export
-#'
-.mirai_scm <- function() {
-
-  identical(parent.env(parent.env(parent.frame())), getNamespace("mirai")) ||
-    stop("this function is for package internal use only")
-  .Call(rnng_scm)
-
-}
-
 #' Logging Level
 #'
 #' Set the logging level of nanonext.
