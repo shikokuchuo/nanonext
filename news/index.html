@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0.9001</span>
       </span>
     </div>
 
@@ -54,12 +54,17 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.3.0.9000" id="nanonext-0309000-development">nanonext 0.3.0.9000 (development)<a class="anchor" aria-label="anchor" href="#nanonext-0309000-development"></a></h2>
+<h2 class="page-header" data-toc-text="0.3.0.9001" id="nanonext-0309001-development">nanonext 0.3.0.9001 (development)<a class="anchor" aria-label="anchor" href="#nanonext-0309001-development"></a></h2>
 <div class="section level5">
-<h5 id="new-features-0-3-0-9000">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-3-0-9000"></a></h5>
-<ul><li>New ‘stream’ interface exposes low-level byte stream functionality in the NNG library. This is intended for communicating with non-NNG endpoints [currently experimental and subject to change].
-<ul><li>Functions include <code><a href="../reference/stream.html">stream()</a></code>, <code><a href="../reference/stream_send.html">stream_send()</a></code>, <code><a href="../reference/stream_recv.html">stream_recv()</a></code>, <code><a href="../reference/stream_send_aio.html">stream_send_aio()</a></code> and <code><a href="../reference/stream_recv_aio.html">stream_recv_aio()</a></code>.</li>
-</ul></li>
+<h5 id="new-features-0-3-0-9001">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-3-0-9001"></a></h5>
+<ul><li>New ‘stream’ interface exposes low-level byte stream functionality in the NNG library, intended for communicating with non-NNG endpoints, including but not limited to websocket servers.</li>
+</ul></div>
+<div class="section level5">
+<h5 id="updates-0-3-0-9001">Updates<a class="anchor" aria-label="anchor" href="#updates-0-3-0-9001"></a></h5>
+<ul><li>Unified synchronous <code><a href="../reference/send.html">send()</a></code> and <code><a href="../reference/recv.html">recv()</a></code> functions, and their async counterparts <code><a href="../reference/send_aio.html">send_aio()</a></code> and <code><a href="../reference/recv_aio.html">recv_aio()</a></code>, are now S3 generics and can be used across Sockets, Contexts as well as Streams.</li>
+<li>A timeout can now be specified directly using the ‘block’ argument for synchronous sends over a Context/Stream.</li>
+<li>
+<code><a href="../reference/send_ctx.html">send_ctx()</a></code> and <code><a href="../reference/recv_ctx.html">recv_ctx()</a></code> are deprecated and will be removed in a future package version - the methods for <code><a href="../reference/send.html">send()</a></code> and <code><a href="../reference/recv.html">recv()</a></code> should be used instead.</li>
 </ul></div>
 </div>
     <div class="section level2">
