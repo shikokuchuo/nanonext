@@ -86,17 +86,10 @@ static void iov_finalizer(SEXP xptr) {
 
 SEXP rnng_recv_aio(SEXP socket, SEXP timeout) {
 
-  int typ = 0;
-  if (R_ExternalPtrTag(socket) == nano_SocketSymbol) {
-    typ = 1;
-  } else if (R_ExternalPtrTag(socket) == nano_ContextSymbol) {
-    typ = 2;
-  } else {
-    error_return("'socket' is not a valid Socket or Context");
-  }
+  if (R_ExternalPtrTag(socket) != nano_SocketSymbol)
+    error_return("'socket' is not a valid Socket");
 
-  nng_socket *sock;
-  nng_ctx *ctxp;
+  nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(socket);
   nng_aio *aiop;
   int xc;
   const nng_duration dur = (nng_duration) Rf_asInteger(timeout);
@@ -115,16 +108,46 @@ SEXP rnng_recv_aio(SEXP socket, SEXP timeout) {
   }
   nng_aio_set_timeout(aiop, dur);
 
-  switch (typ) {
-  case 1:
-    sock = (nng_socket *) R_ExternalPtrAddr(socket);
-    nng_recv_aio(*sock, aiop);
-    break;
-  case 2:
-    ctxp = (nng_ctx *) R_ExternalPtrAddr(socket);
-    nng_ctx_recv(*ctxp, aiop);
-    break;
+  nng_recv_aio(*sock, aiop);
+
+  SEXP aio = PROTECT(R_MakeExternalPtr(aiop, nano_AioSymbol, R_NilValue));
+  R_RegisterCFinalizerEx(aio, aio_finalizer, TRUE);
+
+  SEXP mtx = PROTECT(R_MakeExternalPtr(mutex, nano_StateSymbol, R_NilValue));
+  R_RegisterCFinalizerEx(mtx, mtx_finalizer, TRUE);
+
+  Rf_setAttrib(aio, nano_StateSymbol, mtx);
+
+  UNPROTECT(2);
+  return aio;
+
+}
+
+SEXP rnng_ctx_recv_aio(SEXP context, SEXP timeout) {
+
+  if (R_ExternalPtrTag(context) != nano_ContextSymbol)
+    error_return("'context' is not a valid Context");
+
+  nng_ctx *ctxp = (nng_ctx *) R_ExternalPtrAddr(context);
+  nng_aio *aiop;
+  int xc;
+  const nng_duration dur = (nng_duration) Rf_asInteger(timeout);
+
+  int_mtx *mutex = R_Calloc(1, int_mtx);
+  xc = nng_mtx_alloc(&mutex->mtx);
+  if (xc) {
+    R_Free(mutex);
+    return Rf_ScalarInteger(xc);
   }
+  xc = nng_aio_alloc(&aiop, write_completion, mutex);
+  if (xc) {
+    nng_mtx_free(mutex->mtx);
+    R_Free(mutex);
+    return Rf_ScalarInteger(xc);
+  }
+  nng_aio_set_timeout(aiop, dur);
+
+  nng_ctx_recv(*ctxp, aiop);
 
   SEXP aio = PROTECT(R_MakeExternalPtr(aiop, nano_AioSymbol, R_NilValue));
   R_RegisterCFinalizerEx(aio, aio_finalizer, TRUE);
@@ -143,17 +166,10 @@ SEXP rnng_recv_aio(SEXP socket, SEXP timeout) {
 
 SEXP rnng_send_aio(SEXP socket, SEXP data, SEXP timeout) {
 
-  int typ = 0;
-  if (R_ExternalPtrTag(socket) == nano_SocketSymbol) {
-    typ = 1;
-  } else if (R_ExternalPtrTag(socket) == nano_ContextSymbol) {
-    typ = 2;
-  } else {
-    error_return("'socket' is not a valid Socket or Context");
-  }
+  if (R_ExternalPtrTag(socket) != nano_SocketSymbol)
+    error_return("'socket' is not a valid Socket");
 
-  nng_socket *sock;
-  nng_ctx *ctxp;
+  nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(socket);
   int_mtx *mutex;
   nng_msg *msgp;
   nng_aio *aiop;
@@ -188,16 +204,62 @@ SEXP rnng_send_aio(SEXP socket, SEXP data, SEXP timeout) {
   nng_aio_set_msg(aiop, msgp);
   nng_aio_set_timeout(aiop, dur);
 
-  switch (typ) {
-  case 1:
-    sock = (nng_socket *) R_ExternalPtrAddr(socket);
-    nng_send_aio(*sock, aiop);
-    break;
-  case 2:
-    ctxp = (nng_ctx *) R_ExternalPtrAddr(socket);
-    nng_ctx_send(*ctxp, aiop);
-    break;
+  nng_send_aio(*sock, aiop);
+
+  SEXP aio = PROTECT(R_MakeExternalPtr(aiop, nano_AioSymbol, R_NilValue));
+  R_RegisterCFinalizerEx(aio, aio_finalizer, TRUE);
+
+  SEXP mtx = PROTECT(R_MakeExternalPtr(mutex, nano_StateSymbol, R_NilValue));
+  R_RegisterCFinalizerEx(mtx, mtx_finalizer, TRUE);
+
+  Rf_setAttrib(aio, nano_StateSymbol, mtx);
+
+  UNPROTECT(2);
+  return aio;
+
+}
+
+SEXP rnng_ctx_send_aio(SEXP context, SEXP data, SEXP timeout) {
+
+  if (R_ExternalPtrTag(context) != nano_ContextSymbol)
+    error_return("'context' is not a valid Context");
+
+  nng_ctx *ctxp = (nng_ctx *) R_ExternalPtrAddr(context);
+  int_mtx *mutex;
+  nng_msg *msgp;
+  nng_aio *aiop;
+  int xc;
+
+  const nng_duration dur = (nng_duration) Rf_asInteger(timeout);
+  unsigned char *dp = RAW(data);
+  const R_xlen_t xlen = XLENGTH(data);
+
+  xc = nng_msg_alloc(&msgp, 0);
+  if (xc)
+    return Rf_ScalarInteger(xc);
+  xc = nng_msg_append(msgp, dp, xlen);
+  if (xc) {
+    nng_msg_free(msgp);
+    return Rf_ScalarInteger(xc);
   }
+  mutex = R_Calloc(1, int_mtx);
+  xc = nng_mtx_alloc(&mutex->mtx);
+  if (xc) {
+    R_Free(mutex);
+    nng_msg_free(msgp);
+    return Rf_ScalarInteger(xc);
+  }
+  xc = nng_aio_alloc(&aiop, write_completion, mutex);
+  if (xc) {
+    nng_mtx_free(mutex->mtx);
+    R_Free(mutex);
+    nng_msg_free(msgp);
+    return Rf_ScalarInteger(xc);
+  }
+  nng_aio_set_msg(aiop, msgp);
+  nng_aio_set_timeout(aiop, dur);
+
+  nng_ctx_send(*ctxp, aiop);
 
   SEXP aio = PROTECT(R_MakeExternalPtr(aiop, nano_AioSymbol, R_NilValue));
   R_RegisterCFinalizerEx(aio, aio_finalizer, TRUE);
@@ -305,7 +367,7 @@ SEXP rnng_aio_stop(SEXP aio) {
 
 }
 
-SEXP rnng_aio_unresolv() {
+SEXP rnng_aio_unresolv(void) {
   SEXP res = PROTECT(Rf_ScalarLogical(NA_LOGICAL));
   Rf_classgets(res, Rf_mkString("unresolvedValue"));
   UNPROTECT(1);

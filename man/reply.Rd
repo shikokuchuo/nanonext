@@ -66,13 +66,13 @@ rep <- socket("rep", dial = "tcp://127.0.0.1:6546")
 ctxq <- context(req)
 ctxp <- context(rep)
 
-send_ctx(ctxq, 2022, timeout = 100, echo = FALSE)
+send(ctxq, 2022, block = 100, echo = FALSE)
 reply(ctxp, execute = function(x) x + 1, send_mode = "raw", timeout = 100)
-recv_ctx(ctxq, mode = "double", timeout = 100, keep.raw = FALSE)
+recv(ctxq, mode = "double", block = 100, keep.raw = FALSE)
 
-send_ctx(ctxq, 100, mode = "raw", timeout = 100, echo = FALSE)
+send(ctxq, 100, mode = "raw", block = 100, echo = FALSE)
 reply(ctxp, recv_mode = "double", execute = log, base = 10, timeout = 100)
-recv_ctx(ctxq, timeout = 100, keep.raw = FALSE)
+recv(ctxq, block = 100, keep.raw = FALSE)
 
 close(req)
 close(rep)

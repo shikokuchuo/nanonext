@@ -25,18 +25,14 @@ A Stream (object of class 'nanoStream' and 'nano').
 Open a Stream by either dialing (establishing an outgoing connection) or
     listening (accepting an incoming connection) at an address. This is a
     low-level interface intended for communicating with non-NNG
-    endpoints [experimental].
+    endpoints.
 }
 \details{
 A Stream is used for raw byte stream connections. Byte streams are
     reliable in that data will not be delivered out of order, or with portions
     missing.
 
-    Use only stream-specific functions with a Stream: \code{\link{stream_send}},
-    \code{\link{stream_recv}} and their asynchronous counterparts
-    \code{\link{stream_send_aio}} and \code{\link{stream_recv_aio}}.
-
-    Only specify one of 'dial' or 'listen'. If both are specified, 'listen'
+    Specify only one of 'dial' or 'listen'. If both are specified, 'listen'
     will be ignored.
 
     TLS is automatically configured for dialing a secure websocket address

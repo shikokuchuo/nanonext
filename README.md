@@ -51,9 +51,10 @@ Implemented transports:
 5.  [RPC and Distributed Computing](#rpc-and-distributed-computing)
 6.  [Publisher / Subscriber Model](#publisher-subscriber-model)
 7.  [Surveyor / Repondent Model](#surveyor-respondent-model)
-8.  [ncurl Minimalist http Client](#ncurl-minimalist-http-client)
-9.  [Building from source](#building-from-source)
-10. [Links](#links)
+8.  [ncurl: Minimalist http Client](#ncurl-minimalist-http-client)
+9.  [stream: Websocket Client](#stream-websocket-client)
+10. [Building from source](#building-from-source)
+11. [Links](#links)
 
 ### Installation
 
@@ -97,7 +98,7 @@ Send message from ‘nano1’:
 
 ``` r
 nano1$send("hello world!")
-#>  [1] 58 0a 00 00 00 03 00 04 01 02 00 03 05 00 00 00 00 05 55 54 46 2d 38 00 00
+#>  [1] 58 0a 00 00 00 03 00 04 01 03 00 03 05 00 00 00 00 05 55 54 46 2d 38 00 00
 #> [26] 00 10 00 00 00 01 00 04 00 09 00 00 00 0c 68 65 6c 6c 6f 20 77 6f 72 6c 64
 #> [51] 21
 ```
@@ -107,7 +108,7 @@ Receive message using ‘nano2’:
 ``` r
 nano2$recv()
 #> $raw
-#>  [1] 58 0a 00 00 00 03 00 04 01 02 00 03 05 00 00 00 00 05 55 54 46 2d 38 00 00
+#>  [1] 58 0a 00 00 00 03 00 04 01 03 00 03 05 00 00 00 00 05 55 54 46 2d 38 00 00
 #> [26] 00 10 00 00 00 01 00 04 00 09 00 00 00 0c 68 65 6c 6c 6f 20 77 6f 72 6c 64
 #> [51] 21
 #> 
@@ -136,7 +137,7 @@ Send message from ‘socket1’:
 
 ``` r
 send(socket1, "hello world!")
-#>  [1] 58 0a 00 00 00 03 00 04 01 02 00 03 05 00 00 00 00 05 55 54 46 2d 38 00 00
+#>  [1] 58 0a 00 00 00 03 00 04 01 03 00 03 05 00 00 00 00 05 55 54 46 2d 38 00 00
 #> [26] 00 10 00 00 00 01 00 04 00 09 00 00 00 0c 68 65 6c 6c 6f 20 77 6f 72 6c 64
 #> [51] 21
 ```
@@ -146,7 +147,7 @@ Receive message using ‘socket2’:
 ``` r
 recv(socket2)
 #> $raw
-#>  [1] 58 0a 00 00 00 03 00 04 01 02 00 03 05 00 00 00 00 05 55 54 46 2d 38 00 00
+#>  [1] 58 0a 00 00 00 03 00 04 01 03 00 03 05 00 00 00 00 05 55 54 46 2d 38 00 00
 #> [26] 00 10 00 00 00 01 00 04 00 09 00 00 00 0c 68 65 6c 6c 6f 20 77 6f 72 6c 64
 #> [51] 21
 #> 
@@ -271,7 +272,7 @@ msg$data
 #>   a b
 #> 1 1 2
 msg$raw
-#>   [1] 58 0a 00 00 00 03 00 04 01 02 00 03 05 00 00 00 00 05 55 54 46 2d 38 00 00
+#>   [1] 58 0a 00 00 00 03 00 04 01 03 00 03 05 00 00 00 00 05 55 54 46 2d 38 00 00
 #>  [26] 03 13 00 00 00 02 00 00 00 0e 00 00 00 01 3f f0 00 00 00 00 00 00 00 00 00
 #>  [51] 0e 00 00 00 01 40 00 00 00 00 00 00 00 00 00 04 02 00 00 00 01 00 04 00 09
 #>  [76] 00 00 00 05 6e 61 6d 65 73 00 00 00 10 00 00 00 02 00 04 00 09 00 00 00 01
@@ -369,7 +370,7 @@ aio
 #> < recvAio >
 #>  - $data for message data
 aio$data |> str()
-#>  num [1:100000000] 1.2018 -0.7006 0.7083 0.8669 -0.0424 ...
+#>  num [1:100000000] -0.0012 -1.2404 1.1994 1.2642 -0.2507 ...
 ```
 
 As `call_aio()` is blocking and will wait for completion, an alternative
@@ -404,37 +405,37 @@ an environment variable `NANONEXT_LOG`.
 
 ``` r
 logging(level = "info")
-#> 2022-03-13 14:30:05 [ log level ] set to: info
+#> 2022-03-27 15:31:07 [ log level ] set to: info
 
 pub <- socket("pub", listen = "inproc://nanobroadcast")
-#> 2022-03-13 14:30:05 [ sock open ] id: 9 | protocol: pub
-#> 2022-03-13 14:30:05 [ list start ] sock: 9 | url: inproc://nanobroadcast
+#> 2022-03-27 15:31:07 [ sock open ] id: 9 | protocol: pub
+#> 2022-03-27 15:31:07 [ list start ] sock: 9 | url: inproc://nanobroadcast
 sub <- socket("sub", dial = "inproc://nanobroadcast")
-#> 2022-03-13 14:30:05 [ sock open ] id: 10 | protocol: sub
-#> 2022-03-13 14:30:05 [ dial start ] sock: 10 | url: inproc://nanobroadcast
+#> 2022-03-27 15:31:07 [ sock open ] id: 10 | protocol: sub
+#> 2022-03-27 15:31:07 [ dial start ] sock: 10 | url: inproc://nanobroadcast
 
 sub |> subscribe(topic = "examples")
-#> 2022-03-13 14:30:05 [ subscribe ] sock: 10 | topic: examples
+#> 2022-03-27 15:31:07 [ subscribe ] sock: 10 | topic: examples
 pub |> send(c("examples", "this is an example"), mode = "raw", echo = FALSE)
 sub |> recv(mode = "character", keep.raw = FALSE)
 #> [1] "examples"           "this is an example"
 
 pub |> send(c("other", "this other topic will not be received"), mode = "raw", echo = FALSE)
 sub |> recv(mode = "character", keep.raw = FALSE)
-#> 2022-03-13 14:30:05 [ 8 ] Try again
+#> 2022-03-27 15:31:07 [ 8 ] Try again
 
 # specify NULL to subscribe to ALL topics
 sub |> subscribe(topic = NULL)
-#> 2022-03-13 14:30:05 [ subscribe ] sock: 10 | topic: ALL
+#> 2022-03-27 15:31:07 [ subscribe ] sock: 10 | topic: ALL
 pub |> send(c("newTopic", "this is a new topic"), mode = "raw", echo = FALSE)
 sub |> recv("character", keep.raw = FALSE)
 #> [1] "newTopic"            "this is a new topic"
 
 sub |> unsubscribe(topic = NULL)
-#> 2022-03-13 14:30:05 [ unsubscribe ] sock: 10 | topic: ALL
+#> 2022-03-27 15:31:07 [ unsubscribe ] sock: 10 | topic: ALL
 pub |> send(c("newTopic", "this topic will now not be received"), mode = "raw", echo = FALSE)
 sub |> recv("character", keep.raw = FALSE)
-#> 2022-03-13 14:30:05 [ 8 ] Try again
+#> 2022-03-27 15:31:07 [ 8 ] Try again
 
 # however the topics explicitly subscribed to are still received
 pub |> send(c("examples", "this example will still be received"), mode = "raw", echo = FALSE)
@@ -443,7 +444,7 @@ sub |> recv(mode = "character", keep.raw = FALSE)
 
 # set logging level back to the default of errors only
 logging(level = "error")
-#> 2022-03-13 14:30:05 [ log level ] set to: error
+#> 2022-03-27 15:31:07 [ log level ] set to: error
 
 close(pub)
 close(sub)
@@ -494,7 +495,7 @@ aio2$data
 # after the survey expires, the second resolves into a timeout error
 Sys.sleep(0.5)
 aio2$data
-#> 2022-03-13 14:30:06 [ 5 ] Timed out
+#> 2022-03-27 15:31:07 [ 5 ] Timed out
 #> 'errorValue' int 5
 
 close(sur)
@@ -509,7 +510,7 @@ integer message values.
 
 [« Back to ToC](#table-of-contents)
 
-### ncurl Minimalist http Client
+### ncurl: Minimalist http Client
 
 `ncurl()` is a minimalistic http(s) client. In normal use, it takes only
 one argument, the URL. It can follow redirects.
@@ -520,14 +521,44 @@ ncurl("http://httpbin.org/headers")
 #>   [1] 7b 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73
 #>  [26] 74 22 3a 20 22 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22
 #>  [51] 58 2d 41 6d 7a 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31
-#>  [76] 2d 36 32 32 64 66 66 65 65 2d 34 61 31 35 64 31 35 63 35 64 37 63 35 64 34
-#> [101] 34 35 38 64 36 63 64 31 38 22 0a 20 20 7d 0a 7d 0a
+#>  [76] 2d 36 32 34 30 37 35 32 63 2d 30 63 61 34 34 63 64 31 30 33 64 62 31 61 61
+#> [101] 38 30 66 32 31 62 62 62 38 22 0a 20 20 7d 0a 7d 0a
 #> 
 #> $data
-#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-622dffee-4a15d15c5d7c5d4458d6cd18\"\n  }\n}\n"
+#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6240752c-0ca44cd103db1aa80f21bbb8\"\n  }\n}\n"
 ```
 
 For advanced use, supports additional HTTP methods such as POST or PUT.
+In this respect, it may be used as a performant and lightweight method
+for making requests to REST APIs.
+
+[« Back to ToC](#table-of-contents)
+
+### stream: Websocket Client
+
+`stream()` exposes NNG’s low-level byte stream interface for
+communicating with raw sockets. This may be used for connecting to
+arbitrary non-NNG endpoints.
+
+``` r
+s <- stream(dial = "wss://socketsbay.com/wss/v2/2/demo/", textframes = TRUE)
+s
+#> < nanoStream >
+#>  - type: dialer 
+#>  - url: wss://socketsbay.com/wss/v2/2/demo/ 
+#>  - textframes: TRUE
+```
+
+The stream interface is especially useful for communicating with
+websocket servers. Where TLS is enabled in the NNG library, connecting
+to secure websockets is configured automatically. Here, the argument
+`textframes = TRUE` can be specified where the websocket server uses
+text rather than binary frames.
+
+The same API as found in the rest of the package is available:
+synchronous `send`/`recv`, as well as their asynchronous counterparts
+`send_aio`/`recv_aio`. This affords an extraordinary amount of
+flexibility in ingesting and processing streaming data.
 
 [« Back to ToC](#table-of-contents)
 

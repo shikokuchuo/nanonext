@@ -55,7 +55,7 @@ context <- function(socket) {
 
 #' Send over Context
 #'
-#' Send data over a Context.
+#' Send data over a Context [Deprecated].
 #'
 #' @param context a Context.
 #' @inheritParams send
@@ -69,19 +69,7 @@ context <- function(socket) {
 #'     that can be queued if they have yet to be received. Set a timeout to
 #'     ensure the function returns under all scenarios.
 #'
-#' @examples
-#' req <- socket("req", listen = "inproc://nanonext")
-#' rep <- socket("rep", dial = "inproc://nanonext")
-#'
-#' ctx <- context(req)
-#' send_ctx(ctx, data.frame(a = 1, b = 2), timeout = 100)
-#'
-#' msg <- recv_aio(rep, timeout = 100)
-#' send_ctx(ctx, c(1.1, 2.2, 3.3), mode = "raw", timeout = 100)
-#'
-#' close(req)
-#' close(rep)
-#'
+#' @keywords internal
 #' @export
 #'
 send_ctx <- function(context, data, mode = c("serial", "raw"), timeout, echo = TRUE) {
@@ -101,7 +89,7 @@ send_ctx <- function(context, data, mode = c("serial", "raw"), timeout, echo = T
 
 #' Receive over Context
 #'
-#' Receive data over a Context.
+#' Receive data over a Context [Deprecated].
 #'
 #' @param context a Context.
 #' @inheritParams recv
@@ -123,21 +111,7 @@ send_ctx <- function(context, data, mode = c("serial", "raw"), timeout, echo = T
 #'     specified), the received raw vector will always be returned to allow for
 #'     the data to be recovered.
 #'
-#' @examples
-#' req <- socket("req", listen = "inproc://nanonext")
-#' rep <- socket("rep", dial = "inproc://nanonext")
-#'
-#' ctxq <- context(req)
-#' ctxp <- context(rep)
-#' send_ctx(ctxq, data.frame(a = 1, b = 2), timeout = 100)
-#' recv_ctx(ctxp, timeout = 100)
-#'
-#' send_ctx(ctxq, c(1.1, 2.2, 3.3), mode = "raw", timeout = 100)
-#' recv_ctx(ctxp, mode = "double", timeout = 100)
-#'
-#' close(req)
-#' close(rep)
-#'
+#' @keywords internal
 #' @export
 #'
 recv_ctx <- function(context,
@@ -206,13 +180,13 @@ recv_ctx <- function(context,
 #' ctxq <- context(req)
 #' ctxp <- context(rep)
 #'
-#' send_ctx(ctxq, 2022, timeout = 100, echo = FALSE)
+#' send(ctxq, 2022, block = 100, echo = FALSE)
 #' reply(ctxp, execute = function(x) x + 1, send_mode = "raw", timeout = 100)
-#' recv_ctx(ctxq, mode = "double", timeout = 100, keep.raw = FALSE)
+#' recv(ctxq, mode = "double", block = 100, keep.raw = FALSE)
 #'
-#' send_ctx(ctxq, 100, mode = "raw", timeout = 100, echo = FALSE)
+#' send(ctxq, 100, mode = "raw", block = 100, echo = FALSE)
 #' reply(ctxp, recv_mode = "double", execute = log, base = 10, timeout = 100)
-#' recv_ctx(ctxq, timeout = 100, keep.raw = FALSE)
+#' recv(ctxq, block = 100, keep.raw = FALSE)
 #'
 #' close(req)
 #' close(rep)
@@ -309,13 +283,13 @@ request <- function(context,
   if (missing(timeout)) timeout <- -2L
   force(data)
   data <- encode(data = data, mode = send_mode)
-  res <- .Call(rnng_send_aio, context, data, -2L)
+  res <- .Call(rnng_ctx_send_aio, context, data, -2L)
   is.integer(res) && {
     logerror(res)
     return(invisible(res))
   }
 
-  aio <- .Call(rnng_recv_aio, context, timeout)
+  aio <- .Call(rnng_ctx_recv_aio, context, timeout)
   is.integer(aio) && {
     logerror(aio)
     return(invisible(`class<-`(aio, "errorValue")))

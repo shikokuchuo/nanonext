@@ -1,9 +1,14 @@
-# nanonext 0.3.0.9000 (development)
+# nanonext 0.3.0.9001 (development)
 
 #### New Features
 
-* New 'stream' interface exposes low-level byte stream functionality in the NNG library. This is intended for communicating with non-NNG endpoints [currently experimental and subject to change].
-  + Functions include `stream()`, `stream_send()`, `stream_recv()`, `stream_send_aio()` and `stream_recv_aio()`. 
+* New 'stream' interface exposes low-level byte stream functionality in the NNG library, intended for communicating with non-NNG endpoints, including but not limited to websocket servers.
+  
+#### Updates
+
+* Unified synchronous `send()` and `recv()` functions, and their async counterparts `send_aio()` and `recv_aio()`, are now S3 generics and can be used across Sockets, Contexts as well as Streams.
+* A timeout can now be specified directly using the 'block' argument for synchronous sends over a Context/Stream.
+* `send_ctx()` and `recv_ctx()` are deprecated and will be removed in a future package version - the methods for `send()` and `recv()` should be used instead.
 
 # nanonext 0.3.0
 

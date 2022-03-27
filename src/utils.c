@@ -33,7 +33,7 @@ SEXP rnng_version(void) {
 
 }
 
-SEXP rnng_scm() {
+SEXP rnng_scm(void) {
   return R_MissingArg;
 }
 

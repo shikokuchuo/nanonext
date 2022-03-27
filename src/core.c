@@ -256,7 +256,7 @@ SEXP rnng_listener_close(SEXP listener) {
 SEXP rnng_send(SEXP socket, SEXP data, SEXP block) {
 
   if (R_ExternalPtrTag(socket) != nano_SocketSymbol)
-    error_return("'socket' is not a valid Socket or Context");
+    error_return("'socket' is not a valid Socket");
   nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(socket);
   const Rboolean blk = Rf_asLogical(block);
   int flags = blk == 1 ? 0 : 2u;

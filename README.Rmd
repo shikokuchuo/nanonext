@@ -50,9 +50,10 @@ Implemented transports:
 5. [RPC and Distributed Computing](#rpc-and-distributed-computing)
 6. [Publisher / Subscriber Model](#publisher-subscriber-model)
 7. [Surveyor / Repondent Model](#surveyor-respondent-model)
-8. [ncurl Minimalist http Client](#ncurl-minimalist-http-client)
-9. [Building from source](#building-from-source)
-10. [Links](#links)
+8. [ncurl: Minimalist http Client](#ncurl-minimalist-http-client)
+9. [stream: Websocket Client](#stream-websocket-client)
+10. [Building from source](#building-from-source)
+11. [Links](#links)
 
 ### Installation
 
@@ -401,7 +402,7 @@ Above it can be seen that the final value resolves into a timeout, which is an i
 
 [&laquo; Back to ToC](#table-of-contents)
 
-### ncurl Minimalist http Client
+### ncurl: Minimalist http Client
 
 `ncurl()` is a minimalistic http(s) client. In normal use, it takes only one argument, the URL. It can follow redirects.
 
@@ -411,7 +412,24 @@ ncurl("http://httpbin.org/headers")
 
 ```
 
-For advanced use, supports additional HTTP methods such as POST or PUT.
+For advanced use, supports additional HTTP methods such as POST or PUT. In this respect, it may be used as a performant and lightweight method for making requests to REST APIs.
+
+[&laquo; Back to ToC](#table-of-contents)
+
+### stream: Websocket Client
+
+`stream()` exposes NNG's low-level byte stream interface for communicating with raw sockets. This may be used for connecting to arbitrary non-NNG endpoints.
+
+```{r stream}
+
+s <- stream(dial = "wss://socketsbay.com/wss/v2/2/demo/", textframes = TRUE)
+s
+
+```
+
+The stream interface is especially useful for communicating with websocket servers. Where TLS is enabled in the NNG library, connecting to secure websockets is configured automatically. Here, the argument `textframes = TRUE` can be specified where the websocket server uses text rather than binary frames.
+
+The same API as found in the rest of the package is available: synchronous `send`/`recv`, as well as their asynchronous counterparts `send_aio`/`recv_aio`. This affords an extraordinary amount of flexibility in ingesting and processing streaming data.
 
 [&laquo; Back to ToC](#table-of-contents)
 

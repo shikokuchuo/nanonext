@@ -11,25 +11,25 @@ send_ctx(context, data, mode = c("serial", "raw"), timeout, echo = TRUE)
 
 \item{data}{an object (if mode = 'raw', a vector).}
 
-\item{mode}{[default 'serial'] whether data will be sent serialized or as a
-raw vector. Use 'serial' for sending and receiving within R to ensure
-perfect reproducibility. Use 'raw' for sending vectors of any type (will be
-converted to a raw byte vector for sending) - essential when interfacing
-with external applications.}
+\item{mode}{whether data will be sent serialized or as a raw vector. Specify
+'serial' for sending and receiving objects within R for perfect
+reproducibility. Specify 'raw' for sending vectors of any type (converted
+to a raw byte vector for sending) - essential when interfacing with
+external applications. For Streams, 'raw' is the only choice and any other
+value is ignored.}
 
-\item{timeout}{in ms. If unspecified, a socket-specific default timeout will
-be used.}
+\item{timeout}{(optional) integer value in milliseconds. If unspecified, a
+socket-specific default timeout will be used.}
 
 \item{echo}{[default TRUE] logical flag whether to return the raw vector of
-sent data. Set to FALSE for performance-critical applications where zero
-will be returned (invisibly) instead.}
+sent data. Set to FALSE for performance-critical applications.}
 }
 \value{
 Raw vector of sent data, or (invisibly) an integer exit code (zero on
     success) if 'echo' is set to FALSE.
 }
 \description{
-Send data over a Context.
+Send data over a Context [Deprecated].
 }
 \details{
 Will block if the send is in progress and has not yet completed -
@@ -37,17 +37,4 @@ Will block if the send is in progress and has not yet completed -
     that can be queued if they have yet to be received. Set a timeout to
     ensure the function returns under all scenarios.
 }
-\examples{
-req <- socket("req", listen = "inproc://nanonext")
-rep <- socket("rep", dial = "inproc://nanonext")
-
-ctx <- context(req)
-send_ctx(ctx, data.frame(a = 1, b = 2), timeout = 100)
-
-msg <- recv_aio(rep, timeout = 100)
-send_ctx(ctx, c(1.1, 2.2, 3.3), mode = "raw", timeout = 100)
-
-close(req)
-close(rep)
-
-}
+\keyword{internal}

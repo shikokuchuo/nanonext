@@ -37,16 +37,6 @@ nng_version <- function() .Call(rnng_version)
 #'
 nng_error <- function(xc) .Call(rnng_strerror, as.integer(xc))
 
-logerror <- function(xc) {
-  message(sprintf("%s [ %d ] %s",
-                  format.POSIXct(Sys.time()), xc, .Call(rnng_strerror, xc)))
-}
-
-loginfo <- function(evt, pkey, pval, skey, sval) {
-  cat(sprintf("%s [ %s ] %s: %d | %s: %s\n",
-              format.POSIXct(Sys.time()), evt, pkey, pval, skey, sval), file = stdout())
-}
-
 #' Is Nul Byte
 #'
 #' Is the object a nul byte.
@@ -141,69 +131,29 @@ logging <- function(level) {
 
 }
 
-#' ncurl
-#'
-#' nano cURL - a minimalist http(s) client.
-#'
-#' @param http the URL address.
-#' @param ... (optional) additional arguments, see 'methods' section below.
-#'
-#' @return Named list of 2 elements:
-#'     \itemize{
-#'     \item{\code{$raw}} {- raw vector of the received resource (use
-#'     \code{\link{writeBin}} to save to a file).}
-#'     \item{\code{$data}} {- converted character string (if a recognised text
-#'     format), or NULL otherwise. Other tools can be used to further parse this
-#'     as html, json, xml etc. if required.}
-#'     }
-#'
-#' @section Methods:
-#'
-#'     Additional arguments may be passed in using '...' for HTTP methods other
-#'     than GET.
-#'     \itemize{
-#'     \item{Parsed as follows: [method], [content-type], [data]}
-#'     \item{Example: "POST", "text/plain", "hello world"}
-#'     \item{All 3 arguments must be supplied, and will be ignored otherwise, as
-#'     will extra arguments}
-#'     }
-#'
-#' @section Redirects:
-#'
-#'     In interactive sessions: will prompt upon receiving a redirect location
-#'     whether to follow or not (default: yes).
-#'
-#'     In non-interactive sessions: redirects are never followed.
-#'
-#' @section TLS Support:
-#'
-#'     Connecting to secure https sites is supported if \code{\link{nng_version}}
-#'     shows 'TLS supported'.
-#'
-#' @examples
-#' ncurl("http://httpbin.org/get")
-#' ncurl("http://httpbin.org/post", "POST", "text/plain", "hello world")
-#'
-#' @export
-#'
-ncurl <- function(http, ...) {
+# nanonext - Non-exported functions --------------------------------------------
 
-  dots <- list(...)
-  args <- if (length(dots) >= 3L) {
-    list(dots[[1L]], dots[[2L]], writeBin(object = dots[[3L]], con = raw()))
-  }
-  res <- .Call(rnng_ncurl, http, args)
-  missing(res) && return(invisible())
-  if (is.integer(res)) {
-    logerror(res)
-    return(invisible(res))
-  } else if (is.character(res)) {
-    continue <- if (interactive()) readline(sprintf("Follow redirect to <%s>? [Y/n] ", res)) else "n"
-    continue %in% c("n", "N", "no", "NO") && return(invisible(res))
-    return(ncurl(res))
-  }
-  data <- tryCatch(rawToChar(res), error = function(e) NULL)
-  list(raw = res, data = data)
+encode <- function(data, mode) {
+  switch(mode,
+         serial = serialize(object = data, connection = NULL),
+         raw = if (is.raw(data)) data else writeBin(object = data, con = raw()))
+}
 
+decode <- function(con, mode) {
+  switch(mode,
+         serial = unserialize(connection = con),
+         character = (r <- readBin(con = con, what = mode, n = length(con)))[r != ""],
+         raw = con,
+         readBin(con = con, what = mode, n = length(con)))
+}
+
+logerror <- function(xc) {
+  message(sprintf("%s [ %d ] %s",
+                  format.POSIXct(Sys.time()), xc, .Call(rnng_strerror, xc)))
+}
+
+loginfo <- function(evt, pkey, pval, skey, sval) {
+  cat(sprintf("%s [ %s ] %s: %d | %s: %s\n",
+              format.POSIXct(Sys.time()), evt, pkey, pval, skey, sval), file = stdout())
 }
 

@@ -2,35 +2,59 @@
 % Please edit documentation in R/sendrecv.R
 \name{send}
 \alias{send}
+\alias{send.nanoSocket}
+\alias{send.nanoContext}
+\alias{send.nanoStream}
 \title{Send}
 \usage{
-send(socket, data, mode = c("serial", "raw"), block = FALSE, echo = TRUE)
+send(con, data, mode, block, echo)
+
+\method{send}{nanoSocket}(con, data, mode = c("serial", "raw"), block = FALSE, echo = TRUE)
+
+\method{send}{nanoContext}(con, data, mode = c("serial", "raw"), block = TRUE, echo = TRUE)
+
+\method{send}{nanoStream}(con, data, mode = "raw", block = TRUE, echo = TRUE)
 }
 \arguments{
-\item{socket}{a Socket.}
+\item{con}{a Socket, Context or Stream.}
 
 \item{data}{an object (if mode = 'raw', a vector).}
 
-\item{mode}{[default 'serial'] whether data will be sent serialized or as a
-raw vector. Use 'serial' for sending and receiving within R to ensure
-perfect reproducibility. Use 'raw' for sending vectors of any type (will be
-converted to a raw byte vector for sending) - essential when interfacing
-with external applications.}
+\item{mode}{whether data will be sent serialized or as a raw vector. Specify
+'serial' for sending and receiving objects within R for perfect
+reproducibility. Specify 'raw' for sending vectors of any type (converted
+to a raw byte vector for sending) - essential when interfacing with
+external applications. For Streams, 'raw' is the only choice and any other
+value is ignored.}
 
-\item{block}{[default FALSE] logical flag whether to block until successful
-or return immediately even if unsuccessful (e.g. no connection available).}
+\item{block}{<Sockets> [default FALSE] logical flag whether to block until
+successful or return immediately (e.g. if no connection is available).
+<Contexts and Streams> [default TRUE] optionally an integer maximum time
+to block in milliseconds, after which the operation will time out.}
 
 \item{echo}{[default TRUE] logical flag whether to return the raw vector of
-sent data. Set to FALSE for performance-critical applications where zero
-will be returned (invisibly) instead.}
+sent data. Set to FALSE for performance-critical applications.}
 }
 \value{
 Raw vector of sent data, or (invisibly) an integer exit code (zero on
     success) if 'echo' is set to FALSE.
 }
 \description{
-Send data over a Socket.
+Send data over a connection (Socket, Context or Stream).
 }
+\section{Contexts}{
+ Will block if the send is in progress and has not yet
+    completed - certain protocol / transport combinations may limit the
+    number of messages that can be queued if they have yet to be received.
+    Set a timeout to ensure the function returns under all scenarios.
+}
+
+\section{Streams}{
+ Sending a byte stream synchronously will block if the send
+    is in progress and has not yet completed. Set a timeout to ensure the
+    function returns under all scenarios.
+}
+
 \examples{
 pub <- socket("pub", dial = "inproc://nanonext")
 
@@ -38,5 +62,17 @@ send(pub, data.frame(a = 1, b = 2))
 send(pub, c(10.1, 20.2, 30.3), mode = "raw")
 
 close(pub)
+
+req <- socket("req", listen = "inproc://nanonext")
+rep <- socket("rep", dial = "inproc://nanonext")
+
+ctx <- context(req)
+send(ctx, data.frame(a = 1, b = 2), block = 100)
+
+msg <- recv_aio(rep, timeout = 100)
+send(ctx, c(1.1, 2.2, 3.3), mode = "raw", block = 100)
+
+close(req)
+close(rep)
 
 }

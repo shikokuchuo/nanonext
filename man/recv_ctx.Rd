@@ -15,13 +15,16 @@ recv_ctx(
 \arguments{
 \item{context}{a Context.}
 
-\item{mode}{[default 'serial'] mode of vector to be received - one of 'serial',
-'character', 'complex', 'double', 'integer', 'logical', 'numeric', or 'raw'.
-The default 'serial' means a serialised R object, for the other modes,
-the raw vector received will be converted into the respective mode.}
+\item{mode}{<Sockets and Contexts> [default 'serial'] mode of vector to be
+received - one of 'serial', 'character', 'complex', 'double', 'integer',
+'logical', 'numeric', or 'raw'. The default 'serial' means a serialised
+R object, for the other modes, the raw vector received will be converted
+into the respective mode.
+<Streams> [default 'character'] note that 'serial' is not an option for
+Streams.}
 
-\item{timeout}{in ms. If unspecified, a socket-specific default timeout will
-be used.}
+\item{timeout}{(optional) integer value in milliseconds. If unspecified, a
+socket-specific default timeout will be used.}
 
 \item{keep.raw}{[default TRUE] logical flag whether to keep the received raw
 vector (useful for verification e.g. via hashing). If FALSE, will return
@@ -33,7 +36,7 @@ Named list of 2 elements: 'raw' containing the received raw vector
     if 'keep.raw' is set to FALSE.
 }
 \description{
-Receive data over a Context.
+Receive data over a Context [Deprecated].
 }
 \details{
 Will block while awaiting the receive operation to complete.
@@ -48,19 +51,4 @@ Will block while awaiting the receive operation to complete.
     specified), the received raw vector will always be returned to allow for
     the data to be recovered.
 }
-\examples{
-req <- socket("req", listen = "inproc://nanonext")
-rep <- socket("rep", dial = "inproc://nanonext")
-
-ctxq <- context(req)
-ctxp <- context(rep)
-send_ctx(ctxq, data.frame(a = 1, b = 2), timeout = 100)
-recv_ctx(ctxp, timeout = 100)
-
-send_ctx(ctxq, c(1.1, 2.2, 3.3), mode = "raw", timeout = 100)
-recv_ctx(ctxp, mode = "double", timeout = 100)
-
-close(req)
-close(rep)
-
-}
+\keyword{internal}
