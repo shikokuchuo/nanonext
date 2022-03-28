@@ -334,7 +334,7 @@
 <span class="co">#&gt; &lt; recvAio &gt;</span>
 <span class="co">#&gt;  - $data for message data</span>
 <span class="va">aio</span><span class="op">$</span><span class="va">data</span> |&gt; <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt;  num [1:100000000] -0.0012 -1.2404 1.1994 1.2642 -0.2507 ...</span></code></pre></div>
+<span class="co">#&gt;  num [1:100000000] -0.736 -1.684 0.223 0.326 1.103 ...</span></code></pre></div>
 <p>As <code><a href="reference/call_aio.html">call_aio()</a></code> is blocking and will wait for completion, an alternative is to query <code>aio$data</code> directly. This will return an ‘unresolved’ logical NA value if the calculation is yet to complete.</p>
 <p>In this example the calculation is returned, but other operations may reside entirely on the server side, for example writing data to disk.</p>
 <p>In such a case, calling or querying the value confirms that the operation has completed, and provides the return value of the function, which may typically be NULL or an exit code.</p>
@@ -349,37 +349,37 @@
 <p>The log level can also be set externally in production environments via an environment variable <code>NANONEXT_LOG</code>.</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="reference/logging.html">logging</a></span><span class="op">(</span>level <span class="op">=</span> <span class="st">"info"</span><span class="op">)</span>
-<span class="co">#&gt; 2022-03-27 15:31:07 [ log level ] set to: info</span>
+<span class="co">#&gt; 2022-03-29 00:05:47 [ log level ] set to: info</span>
 
 <span class="va">pub</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/socket.html">socket</a></span><span class="op">(</span><span class="st">"pub"</span>, listen <span class="op">=</span> <span class="st">"inproc://nanobroadcast"</span><span class="op">)</span>
-<span class="co">#&gt; 2022-03-27 15:31:07 [ sock open ] id: 9 | protocol: pub</span>
-<span class="co">#&gt; 2022-03-27 15:31:07 [ list start ] sock: 9 | url: inproc://nanobroadcast</span>
+<span class="co">#&gt; 2022-03-29 00:05:47 [ sock open ] id: 9 | protocol: pub</span>
+<span class="co">#&gt; 2022-03-29 00:05:47 [ list start ] sock: 9 | url: inproc://nanobroadcast</span>
 <span class="va">sub</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/socket.html">socket</a></span><span class="op">(</span><span class="st">"sub"</span>, dial <span class="op">=</span> <span class="st">"inproc://nanobroadcast"</span><span class="op">)</span>
-<span class="co">#&gt; 2022-03-27 15:31:07 [ sock open ] id: 10 | protocol: sub</span>
-<span class="co">#&gt; 2022-03-27 15:31:07 [ dial start ] sock: 10 | url: inproc://nanobroadcast</span>
+<span class="co">#&gt; 2022-03-29 00:05:47 [ sock open ] id: 10 | protocol: sub</span>
+<span class="co">#&gt; 2022-03-29 00:05:47 [ dial start ] sock: 10 | url: inproc://nanobroadcast</span>
 
 <span class="va">sub</span> |&gt; <span class="fu"><a href="reference/subscribe.html">subscribe</a></span><span class="op">(</span>topic <span class="op">=</span> <span class="st">"examples"</span><span class="op">)</span>
-<span class="co">#&gt; 2022-03-27 15:31:07 [ subscribe ] sock: 10 | topic: examples</span>
+<span class="co">#&gt; 2022-03-29 00:05:47 [ subscribe ] sock: 10 | topic: examples</span>
 <span class="va">pub</span> |&gt; <span class="fu"><a href="reference/send.html">send</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"examples"</span>, <span class="st">"this is an example"</span><span class="op">)</span>, mode <span class="op">=</span> <span class="st">"raw"</span>, echo <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
 <span class="va">sub</span> |&gt; <span class="fu"><a href="reference/recv.html">recv</a></span><span class="op">(</span>mode <span class="op">=</span> <span class="st">"character"</span>, keep.raw <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
 <span class="co">#&gt; [1] "examples"           "this is an example"</span>
 
 <span class="va">pub</span> |&gt; <span class="fu"><a href="reference/send.html">send</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"other"</span>, <span class="st">"this other topic will not be received"</span><span class="op">)</span>, mode <span class="op">=</span> <span class="st">"raw"</span>, echo <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
 <span class="va">sub</span> |&gt; <span class="fu"><a href="reference/recv.html">recv</a></span><span class="op">(</span>mode <span class="op">=</span> <span class="st">"character"</span>, keep.raw <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-<span class="co">#&gt; 2022-03-27 15:31:07 [ 8 ] Try again</span>
+<span class="co">#&gt; 2022-03-29 00:05:47 [ 8 ] Try again</span>
 
 <span class="co"># specify NULL to subscribe to ALL topics</span>
 <span class="va">sub</span> |&gt; <span class="fu"><a href="reference/subscribe.html">subscribe</a></span><span class="op">(</span>topic <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span>
-<span class="co">#&gt; 2022-03-27 15:31:07 [ subscribe ] sock: 10 | topic: ALL</span>
+<span class="co">#&gt; 2022-03-29 00:05:47 [ subscribe ] sock: 10 | topic: ALL</span>
 <span class="va">pub</span> |&gt; <span class="fu"><a href="reference/send.html">send</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"newTopic"</span>, <span class="st">"this is a new topic"</span><span class="op">)</span>, mode <span class="op">=</span> <span class="st">"raw"</span>, echo <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
 <span class="va">sub</span> |&gt; <span class="fu"><a href="reference/recv.html">recv</a></span><span class="op">(</span><span class="st">"character"</span>, keep.raw <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
 <span class="co">#&gt; [1] "newTopic"            "this is a new topic"</span>
 
 <span class="va">sub</span> |&gt; <span class="fu"><a href="reference/unsubscribe.html">unsubscribe</a></span><span class="op">(</span>topic <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span>
-<span class="co">#&gt; 2022-03-27 15:31:07 [ unsubscribe ] sock: 10 | topic: ALL</span>
+<span class="co">#&gt; 2022-03-29 00:05:47 [ unsubscribe ] sock: 10 | topic: ALL</span>
 <span class="va">pub</span> |&gt; <span class="fu"><a href="reference/send.html">send</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"newTopic"</span>, <span class="st">"this topic will now not be received"</span><span class="op">)</span>, mode <span class="op">=</span> <span class="st">"raw"</span>, echo <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
 <span class="va">sub</span> |&gt; <span class="fu"><a href="reference/recv.html">recv</a></span><span class="op">(</span><span class="st">"character"</span>, keep.raw <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-<span class="co">#&gt; 2022-03-27 15:31:07 [ 8 ] Try again</span>
+<span class="co">#&gt; 2022-03-29 00:05:47 [ 8 ] Try again</span>
 
 <span class="co"># however the topics explicitly subscribed to are still received</span>
 <span class="va">pub</span> |&gt; <span class="fu"><a href="reference/send.html">send</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"examples"</span>, <span class="st">"this example will still be received"</span><span class="op">)</span>, mode <span class="op">=</span> <span class="st">"raw"</span>, echo <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
@@ -388,7 +388,7 @@
 
 <span class="co"># set logging level back to the default of errors only</span>
 <span class="fu"><a href="reference/logging.html">logging</a></span><span class="op">(</span>level <span class="op">=</span> <span class="st">"error"</span><span class="op">)</span>
-<span class="co">#&gt; 2022-03-27 15:31:07 [ log level ] set to: error</span>
+<span class="co">#&gt; 2022-03-29 00:05:47 [ log level ] set to: error</span>
 
 <span class="fu"><a href="reference/close.html">close</a></span><span class="op">(</span><span class="va">pub</span><span class="op">)</span>
 <span class="fu"><a href="reference/close.html">close</a></span><span class="op">(</span><span class="va">sub</span><span class="op">)</span></code></pre></div>
@@ -432,7 +432,7 @@
 <span class="co"># after the survey expires, the second resolves into a timeout error</span>
 <span class="fu"><a href="https://rdrr.io/r/base/Sys.sleep.html" class="external-link">Sys.sleep</a></span><span class="op">(</span><span class="fl">0.5</span><span class="op">)</span>
 <span class="va">aio2</span><span class="op">$</span><span class="va">data</span>
-<span class="co">#&gt; 2022-03-27 15:31:07 [ 5 ] Timed out</span>
+<span class="co">#&gt; 2022-03-29 00:05:48 [ 5 ] Timed out</span>
 <span class="co">#&gt; 'errorValue' int 5</span>
 
 <span class="fu"><a href="reference/close.html">close</a></span><span class="op">(</span><span class="va">sur</span><span class="op">)</span>
@@ -444,34 +444,41 @@
 <div class="section level3">
 <h3 id="ncurl-minimalist-http-client">ncurl: Minimalist http Client<a class="anchor" aria-label="anchor" href="#ncurl-minimalist-http-client"></a>
 </h3>
-<p><code><a href="reference/ncurl.html">ncurl()</a></code> is a minimalistic http(s) client. In normal use, it takes only one argument, the URL. It can follow redirects.</p>
+<p><code><a href="reference/ncurl.html">ncurl()</a></code> is a minimalist http(s) client. In normal use, it takes only one argument, the URL. It can follow redirects.</p>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="reference/ncurl.html">ncurl</a></span><span class="op">(</span><span class="st">"http://httpbin.org/headers"</span><span class="op">)</span>
 <span class="co">#&gt; $raw</span>
 <span class="co">#&gt;   [1] 7b 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73</span>
 <span class="co">#&gt;  [26] 74 22 3a 20 22 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22</span>
 <span class="co">#&gt;  [51] 58 2d 41 6d 7a 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31</span>
-<span class="co">#&gt;  [76] 2d 36 32 34 30 37 35 32 63 2d 30 63 61 34 34 63 64 31 30 33 64 62 31 61 61</span>
-<span class="co">#&gt; [101] 38 30 66 32 31 62 62 62 38 22 0a 20 20 7d 0a 7d 0a</span>
+<span class="co">#&gt;  [76] 2d 36 32 34 32 33 66 34 63 2d 35 31 38 62 62 65 38 66 34 31 65 31 37 37 39</span>
+<span class="co">#&gt; [101] 63 34 32 34 61 35 61 62 33 22 0a 20 20 7d 0a 7d 0a</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $data</span>
-<span class="co">#&gt; [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6240752c-0ca44cd103db1aa80f21bbb8\"\n  }\n}\n"</span></code></pre></div>
-<p>For advanced use, supports additional HTTP methods such as POST or PUT. In this respect, it may be used as a performant and lightweight method for making requests to REST APIs.</p>
+<span class="co">#&gt; [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-62423f4c-518bbe8f41e1779c424a5ab3\"\n  }\n}\n"</span></code></pre></div>
+<p>For advanced use, supports additional HTTP methods such as POST or PUT.</p>
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ncurl.html">ncurl</a></span><span class="op">(</span><span class="st">"http://httpbin.org/post"</span>, <span class="st">"POST"</span>, <span class="st">"application/json"</span>, <span class="st">"Bearer APIKEY"</span>, <span class="st">'{"key": "value"}'</span><span class="op">)</span>
+<span class="va">res</span><span class="op">$</span><span class="va">data</span>
+<span class="co">#&gt; [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-62423f4c-4de27fd3765f72b51e01d918\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"78.145.225.121\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"</span></code></pre></div>
+<p>In this respect, it may be used as a performant and lightweight method for making requests to REST APIs.</p>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
 <div class="section level3">
 <h3 id="stream-websocket-client">stream: Websocket Client<a class="anchor" aria-label="anchor" href="#stream-websocket-client"></a>
 </h3>
 <p><code><a href="reference/stream.html">stream()</a></code> exposes NNG’s low-level byte stream interface for communicating with raw sockets. This may be used for connecting to arbitrary non-NNG endpoints.</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/stream.html">stream</a></span><span class="op">(</span>dial <span class="op">=</span> <span class="st">"wss://socketsbay.com/wss/v2/2/demo/"</span>, textframes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 <span class="va">s</span>
 <span class="co">#&gt; &lt; nanoStream &gt;</span>
 <span class="co">#&gt;  - type: dialer </span>
 <span class="co">#&gt;  - url: wss://socketsbay.com/wss/v2/2/demo/ </span>
-<span class="co">#&gt;  - textframes: TRUE</span></code></pre></div>
-<p>The stream interface is especially useful for communicating with websocket servers. Where TLS is enabled in the NNG library, connecting to secure websockets is configured automatically. Here, the argument <code>textframes = TRUE</code> can be specified where the websocket server uses text rather than binary frames.</p>
-<p>The same API as found in the rest of the package is available: synchronous <code>send</code>/<code>recv</code>, as well as their asynchronous counterparts <code>send_aio</code>/<code>recv_aio</code>. This affords an extraordinary amount of flexibility in ingesting and processing streaming data.</p>
+<span class="co">#&gt;  - textframes: TRUE</span>
+<span class="va">s</span> |&gt; <span class="fu"><a href="reference/send.html">send</a></span><span class="op">(</span><span class="st">"hello world"</span><span class="op">)</span>
+<span class="co">#&gt;  [1] 68 65 6c 6c 6f 20 77 6f 72 6c 64 00</span></code></pre></div>
+<p>The stream interface can be used to communicate with websocket servers. Where TLS is enabled in the NNG library, connecting to secure websockets is configured automatically. Here, the argument <code>textframes = TRUE</code> can be specified where the websocket server uses text rather than binary frames.</p>
+<p>The same API for Sockets can equally be used on Streams: <code><a href="reference/send.html">send()</a></code> and <code><a href="reference/recv.html">recv()</a></code>, as well as their asynchronous counterparts <code><a href="reference/send_aio.html">send_aio()</a></code> and <code><a href="reference/recv_aio.html">recv_aio()</a></code>. This affords a great deal of flexibility in ingesting and processing streaming data.</p>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
 <div class="section level3">
