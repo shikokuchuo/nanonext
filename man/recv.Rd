@@ -11,7 +11,7 @@ recv(
   con,
   mode = c("serial", "character", "complex", "double", "integer", "logical", "numeric",
     "raw"),
-  block = FALSE,
+  block,
   keep.raw = TRUE,
   ...,
   n
@@ -55,10 +55,10 @@ into the respective mode.
 <Streams> [default 'character'] note that 'serial' is not an option for
 Streams.}
 
-\item{block}{<Sockets> [default FALSE] logical flag whether to block until
-successful or return immediately (e.g. if no connection is available).
-<Contexts and Streams> [default TRUE] optionally an integer maximum time
-to block in milliseconds, after which the operation will time out.}
+\item{block}{logical TRUE to block until successful or FALSE to return
+immediately even if unsuccessful  (e.g. if no connection is available),
+or else an integer value specifying the maximum time to block in
+milliseconds, after which the operation will time out.}
 
 \item{keep.raw}{[default TRUE] logical flag whether to keep the received raw
 vector (useful for verification e.g. via hashing). If FALSE, will return
@@ -87,15 +87,20 @@ In case of an error, an integer 'errorValue' is returned (to be
     specified), the received raw vector will always be returned to allow for
     the data to be recovered.
 }
-\section{Contexts}{
- Will block while awaiting the receive operation to complete.
-    Set a timeout to ensure that the function returns under all scenarios.
-}
+\section{Blocking}{
 
-\section{Streams}{
- Receivng a byte stream synchronously will block while
-    awaiting the receive operation to complete. Set a timeout to ensure that
-    the function returns under all scenarios.
+
+    For Sockets: the default behaviour is non-blocking with \code{block = FALSE}.
+    This will return immediately with an error if the message could not be
+    queued for sending.
+
+    For Contexts and Streams: the default behaviour is blocking with \code{block = TRUE}.
+    This will wait until the send has completed. For Contexts, certain protocol /
+    transport combinations may limit the number of messages that can be queued
+    if they have yet to be received. Set a timeout in this case to ensure that
+    the function returns under all scenarios. As the underlying implementation
+    differs to that for Sockets, it is recommended to set a positive integer
+    value for \code{block} rather than FALSE.
 }
 
 \examples{

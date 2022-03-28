@@ -9,20 +9,20 @@ send_ctx(context, data, mode = c("serial", "raw"), timeout, echo = TRUE)
 \arguments{
 \item{context}{a Context.}
 
-\item{data}{an object (if mode = 'raw', a vector).}
+\item{data}{an object (a vector, if mode = 'raw').}
 
-\item{mode}{whether data will be sent serialized or as a raw vector. Specify
-'serial' for sending and receiving objects within R for perfect
-reproducibility. Specify 'raw' for sending vectors of any type (converted
-to a raw byte vector for sending) - essential when interfacing with
-external applications. For Streams, 'raw' is the only choice and any other
-value is ignored.}
+\item{mode}{either 'serial' for sending serialised R objects, or 'raw' for
+sending vectors of any type (converted to a raw byte vector for sending).
+For Streams, 'raw' is the only choice and any other value is ignored. Use
+'serial' for perfect reproducibility within R, although 'raw' must be used
+when interfacing with external applications that do not understand R
+serialisation.}
 
 \item{timeout}{(optional) integer value in milliseconds. If unspecified, a
 socket-specific default timeout will be used.}
 
-\item{echo}{[default TRUE] logical flag whether to return the raw vector of
-sent data. Set to FALSE for performance-critical applications.}
+\item{echo}{[default TRUE] logical TRUE to return the raw vector of sent data,
+or FALSE to return an integer exit code (invisibly).}
 }
 \value{
 Raw vector of sent data, or (invisibly) an integer exit code (zero on

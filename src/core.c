@@ -258,11 +258,38 @@ SEXP rnng_send(SEXP socket, SEXP data, SEXP block) {
   if (R_ExternalPtrTag(socket) != nano_SocketSymbol)
     error_return("'socket' is not a valid Socket");
   nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(socket);
-  const Rboolean blk = Rf_asLogical(block);
-  int flags = blk == 1 ? 0 : 2u;
+
+  const int blk = Rf_asInteger(block);
   const R_xlen_t dlen = XLENGTH(data);
   unsigned char *dp = RAW(data);
-  int xc = nng_send(*sock, dp, dlen, flags);
+  int xc;
+  nng_msg *msgp;
+  nng_aio *aiop;
+
+  switch (blk) {
+  case 0:
+    xc = nng_send(*sock, dp, dlen, 2u);
+    break;
+  case 1:
+    xc = nng_send(*sock, dp, dlen, 0);
+    break;
+  default:
+    xc = nng_msg_alloc(&msgp, 0);
+    if (xc)
+      return Rf_ScalarInteger(xc);
+    if ((xc = nng_msg_append(msgp, dp, dlen)) ||
+        (xc = nng_aio_alloc(&aiop, NULL, NULL))) {
+      nng_msg_free(msgp);
+      return Rf_ScalarInteger(xc);
+    }
+    nng_aio_set_msg(aiop, msgp);
+    nng_aio_set_timeout(aiop, blk);
+    nng_send_aio(*sock, aiop);
+    nng_aio_wait(aiop);
+    xc = nng_aio_result(aiop);
+    nng_aio_free(aiop);
+  }
+
   if (xc)
     return Rf_ScalarInteger(xc);
   return data;
@@ -274,19 +301,58 @@ SEXP rnng_recv(SEXP socket, SEXP block) {
   if (R_ExternalPtrTag(socket) != nano_SocketSymbol)
     error_return("'socket' is not a valid Socket");
   nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(socket);
-  const Rboolean blk = Rf_asLogical(block);
-  int flags = blk == 1 ? 1u : 3u;
-  char *buf = NULL;
-  size_t sz;
-  int xc = nng_recv(*sock, &buf, &sz, flags);
-  if (xc)
-    return Rf_ScalarInteger(xc);
 
-  SEXP res = PROTECT(Rf_allocVector(RAWSXP, sz));
-  unsigned char *rp = RAW(res);
-  memcpy(rp, buf, sz);
-  nng_free(buf, sz);
-  UNPROTECT(1);
+  const int blk = Rf_asInteger(block);
+  int xc;
+  unsigned char *buf = NULL;
+  unsigned char *rp = NULL;
+  size_t sz;
+  nng_aio *aiop;
+  SEXP res;
+
+  switch (blk) {
+  case 0:
+    xc = nng_recv(*sock, &buf, &sz, 3u);
+    if (xc)
+      return Rf_ScalarInteger(xc);
+    res = PROTECT(Rf_allocVector(RAWSXP, sz));
+    rp = RAW(res);
+    memcpy(rp, buf, sz);
+    nng_free(buf, sz);
+    UNPROTECT(1);
+    break;
+  case 1:
+    xc = nng_recv(*sock, &buf, &sz, 1u);
+    if (xc)
+      return Rf_ScalarInteger(xc);
+    res = PROTECT(Rf_allocVector(RAWSXP, sz));
+    rp = RAW(res);
+    memcpy(rp, buf, sz);
+    nng_free(buf, sz);
+    UNPROTECT(1);
+    break;
+  default:
+    xc = nng_aio_alloc(&aiop, NULL, NULL);
+    if (xc)
+      return Rf_ScalarInteger(xc);
+    nng_aio_set_timeout(aiop, blk);
+    nng_recv_aio(*sock, aiop);
+    nng_aio_wait(aiop);
+    xc = nng_aio_result(aiop);
+    if (xc) {
+      nng_aio_free(aiop);
+      return Rf_ScalarInteger(xc);
+    }
+    nng_msg *msgp = nng_aio_get_msg(aiop);
+    sz = nng_msg_len(msgp);
+    res = PROTECT(Rf_allocVector(RAWSXP, sz));
+    rp = RAW(res);
+    memcpy(rp, nng_msg_body(msgp), sz);
+    nng_msg_free(msgp);
+    nng_aio_free(aiop);
+    UNPROTECT(1);
+  }
+
   return res;
 
 }

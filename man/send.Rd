@@ -7,7 +7,7 @@
 \alias{send.nanoStream}
 \title{Send}
 \usage{
-send(con, data, mode, block, echo)
+send(con, data, mode = c("serial", "raw"), block, echo = TRUE)
 
 \method{send}{nanoSocket}(con, data, mode = c("serial", "raw"), block = FALSE, echo = TRUE)
 
@@ -18,22 +18,22 @@ send(con, data, mode, block, echo)
 \arguments{
 \item{con}{a Socket, Context or Stream.}
 
-\item{data}{an object (if mode = 'raw', a vector).}
+\item{data}{an object (a vector, if mode = 'raw').}
 
-\item{mode}{whether data will be sent serialized or as a raw vector. Specify
-'serial' for sending and receiving objects within R for perfect
-reproducibility. Specify 'raw' for sending vectors of any type (converted
-to a raw byte vector for sending) - essential when interfacing with
-external applications. For Streams, 'raw' is the only choice and any other
-value is ignored.}
+\item{mode}{either 'serial' for sending serialised R objects, or 'raw' for
+sending vectors of any type (converted to a raw byte vector for sending).
+For Streams, 'raw' is the only choice and any other value is ignored. Use
+'serial' for perfect reproducibility within R, although 'raw' must be used
+when interfacing with external applications that do not understand R
+serialisation.}
 
-\item{block}{<Sockets> [default FALSE] logical flag whether to block until
-successful or return immediately (e.g. if no connection is available).
-<Contexts and Streams> [default TRUE] optionally an integer maximum time
-to block in milliseconds, after which the operation will time out.}
+\item{block}{logical TRUE to block until successful or FALSE to return
+immediately even if unsuccessful  (e.g. if no connection is available),
+or else an integer value specifying the maximum time to block in
+milliseconds, after which the operation will time out.}
 
-\item{echo}{[default TRUE] logical flag whether to return the raw vector of
-sent data. Set to FALSE for performance-critical applications.}
+\item{echo}{[default TRUE] logical TRUE to return the raw vector of sent data,
+or FALSE to return an integer exit code (invisibly).}
 }
 \value{
 Raw vector of sent data, or (invisibly) an integer exit code (zero on
@@ -42,17 +42,20 @@ Raw vector of sent data, or (invisibly) an integer exit code (zero on
 \description{
 Send data over a connection (Socket, Context or Stream).
 }
-\section{Contexts}{
- Will block if the send is in progress and has not yet
-    completed - certain protocol / transport combinations may limit the
-    number of messages that can be queued if they have yet to be received.
-    Set a timeout to ensure the function returns under all scenarios.
-}
+\section{Blocking}{
 
-\section{Streams}{
- Sending a byte stream synchronously will block if the send
-    is in progress and has not yet completed. Set a timeout to ensure the
-    function returns under all scenarios.
+
+    For Sockets: the default behaviour is non-blocking with \code{block = FALSE}.
+    This will return immediately with an error if the message could not be
+    queued for sending.
+
+    For Contexts and Streams: the default behaviour is blocking with \code{block = TRUE}.
+    This will wait until the send has completed. For Contexts, certain protocol /
+    transport combinations may limit the number of messages that can be queued
+    if they have yet to be received. Set a timeout in this case to ensure that
+    the function returns under all scenarios. As the underlying implementation
+    differs to that for Sockets, it is recommended to set a positive integer
+    value for \code{block} rather than FALSE.
 }
 
 \examples{

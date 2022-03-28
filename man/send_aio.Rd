@@ -18,14 +18,14 @@ send_aio(con, data, mode = c("serial", "raw"), timeout)
 \arguments{
 \item{con}{a Socket, Context or Stream.}
 
-\item{data}{an object (if mode = 'raw', a vector).}
+\item{data}{an object (a vector, if mode = 'raw').}
 
-\item{mode}{whether data will be sent serialized or as a raw vector. Specify
-'serial' for sending and receiving objects within R for perfect
-reproducibility. Specify 'raw' for sending vectors of any type (converted
-to a raw byte vector for sending) - essential when interfacing with
-external applications. For Streams, 'raw' is the only choice and any other
-value is ignored.}
+\item{mode}{either 'serial' for sending serialised R objects, or 'raw' for
+sending vectors of any type (converted to a raw byte vector for sending).
+For Streams, 'raw' is the only choice and any other value is ignored. Use
+'serial' for perfect reproducibility within R, although 'raw' must be used
+when interfacing with external applications that do not understand R
+serialisation.}
 
 \item{timeout}{(optional) integer value in milliseconds. If unspecified, a
 socket-specific default timeout will be used.}
