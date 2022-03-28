@@ -62,7 +62,7 @@ Send data over a connection (Socket, Context or Stream).
 pub <- socket("pub", dial = "inproc://nanonext")
 
 send(pub, data.frame(a = 1, b = 2))
-send(pub, c(10.1, 20.2, 30.3), mode = "raw")
+send(pub, c(10.1, 20.2, 30.3), mode = "raw", block = 100)
 
 close(pub)
 

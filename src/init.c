@@ -71,7 +71,7 @@ static const R_CallMethodDef CallEntries[] = {
   {"rnng_listener_set_string", (DL_FUNC) &rnng_listener_set_string, 3},
   {"rnng_listener_set_uint64", (DL_FUNC) &rnng_listener_set_uint64, 3},
   {"rnng_listener_start", (DL_FUNC) &rnng_listener_start, 1},
-  {"rnng_ncurl", (DL_FUNC) &rnng_ncurl, 2},
+  {"rnng_ncurl", (DL_FUNC) &rnng_ncurl, 5},
   {"rnng_protocol_open", (DL_FUNC) &rnng_protocol_open, 1},
   {"rnng_recv", (DL_FUNC) &rnng_recv, 2},
   {"rnng_recv_aio", (DL_FUNC) &rnng_recv_aio, 2},

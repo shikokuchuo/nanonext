@@ -4,12 +4,18 @@
 \alias{ncurl}
 \title{ncurl}
 \usage{
-ncurl(http, ...)
+ncurl(url, method = NULL, ctype = NULL, auth = NULL, data = NULL)
 }
 \arguments{
-\item{http}{the URL address.}
+\item{url}{the URL address.}
 
-\item{...}{(optional) additional arguments, see 'methods' section below.}
+\item{method}{(optional) the HTTP method.}
+
+\item{ctype}{(optional) the 'Content-type' header.}
+
+\item{auth}{(optional) the 'Authorization' header.}
+
+\item{data}{(optional) the request data to be submitted.}
 }
 \value{
 Named list of 2 elements:
@@ -24,19 +30,6 @@ Named list of 2 elements:
 \description{
 nano cURL - a minimalist http(s) client.
 }
-\section{Methods}{
-
-
-    Additional arguments may be passed in using '...' for HTTP methods other
-    than GET.
-    \itemize{
-    \item{Parsed as follows: [method], [content-type], [data]}
-    \item{Example: "POST", "text/plain", "hello world"}
-    \item{All 3 arguments must be supplied, and will be ignored otherwise, as
-    will extra arguments}
-    }
-}
-
 \section{Redirects}{
 
 
@@ -55,6 +48,7 @@ nano cURL - a minimalist http(s) client.
 
 \examples{
 ncurl("http://httpbin.org/get")
-ncurl("http://httpbin.org/post", "POST", "text/plain", "hello world")
+ncurl("http://httpbin.org/put", "PUT", "text/plain", "Bearer APIKEY", "hello world")
+ncurl("http://httpbin.org/post", "POST", "application/json", data = '{"key": "value"}')
 
 }

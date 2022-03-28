@@ -108,8 +108,8 @@ is_error_value <- function(x) inherits(x, "errorValue")
 logging <- function(level) {
 
   cache <- switch(tolower(Sys.getenv("NANONEXT_LOG")),
-                  info = 1L,
-                  0L)
+                  info = TRUE,
+                  FALSE)
 
   logging <- function(level = c("keep", "check", "error", "info")) {
 
@@ -118,10 +118,10 @@ logging <- function(level) {
     original <- cache
     cache <<- switch(level,
                      check = switch(tolower(Sys.getenv("NANONEXT_LOG")),
-                                    info = 1L,
-                                    0L),
-                     error = 0L,
-                     info = 1L,
+                                    info = TRUE,
+                                    FALSE),
+                     error = FALSE,
+                     info = TRUE,
                      keep = original)
     if (cache != original) cat(sprintf("%s [ %s ] %s: %s\n",
                                        format.POSIXct(Sys.time()), "log level", "set to",

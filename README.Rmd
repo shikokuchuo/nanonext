@@ -404,7 +404,7 @@ Above it can be seen that the final value resolves into a timeout, which is an i
 
 ### ncurl: Minimalist http Client
 
-`ncurl()` is a minimalistic http(s) client. In normal use, it takes only one argument, the URL. It can follow redirects.
+`ncurl()` is a minimalist http(s) client. In normal use, it takes only one argument, the URL. It can follow redirects.
 
 ```{r ncurl}
 
@@ -412,7 +412,16 @@ ncurl("http://httpbin.org/headers")
 
 ```
 
-For advanced use, supports additional HTTP methods such as POST or PUT. In this respect, it may be used as a performant and lightweight method for making requests to REST APIs.
+For advanced use, supports additional HTTP methods such as POST or PUT.
+
+```{r ncurladv}
+
+res <- ncurl("http://httpbin.org/post", "POST", "application/json", "Bearer APIKEY", '{"key": "value"}')
+res$data
+
+```
+
+In this respect, it may be used as a performant and lightweight method for making requests to REST APIs.
 
 [&laquo; Back to ToC](#table-of-contents)
 
@@ -424,12 +433,13 @@ For advanced use, supports additional HTTP methods such as POST or PUT. In this 
 
 s <- stream(dial = "wss://socketsbay.com/wss/v2/2/demo/", textframes = TRUE)
 s
+s |> send("hello world")
 
 ```
 
-The stream interface is especially useful for communicating with websocket servers. Where TLS is enabled in the NNG library, connecting to secure websockets is configured automatically. Here, the argument `textframes = TRUE` can be specified where the websocket server uses text rather than binary frames.
+The stream interface can be used to communicate with websocket servers. Where TLS is enabled in the NNG library, connecting to secure websockets is configured automatically. Here, the argument `textframes = TRUE` can be specified where the websocket server uses text rather than binary frames.
 
-The same API as found in the rest of the package is available: synchronous `send`/`recv`, as well as their asynchronous counterparts `send_aio`/`recv_aio`. This affords an extraordinary amount of flexibility in ingesting and processing streaming data.
+The same API for Sockets can equally be used on Streams: `send()` and `recv()`, as well as their asynchronous counterparts `send_aio()` and `recv_aio()`. This affords a great deal of flexibility in ingesting and processing streaming data.
 
 [&laquo; Back to ToC](#table-of-contents)
 

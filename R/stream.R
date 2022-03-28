@@ -28,6 +28,10 @@
 #'     TLS is automatically configured for dialing a secure websocket address
 #'     starting 'wss://' (where the NNG library has been built with TLS support).
 #'
+#' @examples
+#' # will succeed only if there is an open connection at the address:
+#' s <- stream(dial = "tcp://127.0.0.1:5555")
+#'
 #' @export
 #'
 stream <- function(dial = NULL, listen = NULL, textframes = FALSE) {
@@ -70,8 +74,11 @@ stream <- function(dial = NULL, listen = NULL, textframes = FALSE) {
 #'
 #' nano cURL - a minimalist http(s) client.
 #'
-#' @param http the URL address.
-#' @param ... (optional) additional arguments, see 'methods' section below.
+#' @param url the URL address.
+#' @param method (optional) the HTTP method.
+#' @param ctype (optional) the 'Content-type' header.
+#' @param auth (optional) the 'Authorization' header.
+#' @param data (optional) the request data to be submitted.
 #'
 #' @return Named list of 2 elements:
 #'     \itemize{
@@ -80,17 +87,6 @@ stream <- function(dial = NULL, listen = NULL, textframes = FALSE) {
 #'     \item{\code{$data}} {- converted character string (if a recognised text
 #'     format), or NULL otherwise. Other tools can be used to further parse this
 #'     as html, json, xml etc. if required.}
-#'     }
-#'
-#' @section Methods:
-#'
-#'     Additional arguments may be passed in using '...' for HTTP methods other
-#'     than GET.
-#'     \itemize{
-#'     \item{Parsed as follows: [method], [content-type], [data]}
-#'     \item{Example: "POST", "text/plain", "hello world"}
-#'     \item{All 3 arguments must be supplied, and will be ignored otherwise, as
-#'     will extra arguments}
 #'     }
 #'
 #' @section Redirects:
@@ -107,17 +103,15 @@ stream <- function(dial = NULL, listen = NULL, textframes = FALSE) {
 #'
 #' @examples
 #' ncurl("http://httpbin.org/get")
-#' ncurl("http://httpbin.org/post", "POST", "text/plain", "hello world")
+#' ncurl("http://httpbin.org/put", "PUT", "text/plain", "Bearer APIKEY", "hello world")
+#' ncurl("http://httpbin.org/post", "POST", "application/json", data = '{"key": "value"}')
 #'
 #' @export
 #'
-ncurl <- function(http, ...) {
+ncurl <- function(url, method = NULL, ctype = NULL, auth = NULL, data = NULL) {
 
-  dots <- list(...)
-  args <- if (length(dots) >= 3L) {
-    list(dots[[1L]], dots[[2L]], writeBin(object = dots[[3L]], con = raw()))
-  }
-  res <- .Call(rnng_ncurl, http, args)
+  data <- if (!missing(data)) writeBin(object = data, con = raw())
+  res <- .Call(rnng_ncurl, url, method, ctype, auth, data)
   missing(res) && return(invisible())
   if (is.integer(res)) {
     logerror(res)

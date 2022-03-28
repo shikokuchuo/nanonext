@@ -38,3 +38,8 @@ A Stream is used for raw byte stream connections. Byte streams are
     TLS is automatically configured for dialing a secure websocket address
     starting 'wss://' (where the NNG library has been built with TLS support).
 }
+\examples{
+# will succeed only if there is an open connection at the address:
+s <- stream(dial = "tcp://127.0.0.1:5555")
+
+}

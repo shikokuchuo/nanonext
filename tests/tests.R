@@ -32,8 +32,8 @@ invisible(n1$dialer[[1]]$state == "started" || stop())
 
 invisible(n$send(data.frame(), block = FALSE, echo = FALSE))
 invisible(n1$recv(block = FALSE))
-n1$send("test", mode = "raw", block = FALSE, echo = FALSE)
-invisible(n$recv("character", block = FALSE))
+n1$send("test", mode = "raw", block = 500, echo = FALSE)
+invisible(n$recv("character", block = 500))
 saio <- n$send_aio(data.frame(), timeout = 500)
 invisible(!is.null(saio[["aio"]]) || stop())
 invisible(!is.null(saio$result) || stop())
@@ -96,6 +96,10 @@ sock2 <- socket(protocol = "respondent", listen = "inproc://sock2", dial = "inpr
 invisible(!is.null(sock$dialer) && !is.null(sock$listener) || stop())
 invisible(close(sock) == 0L || stop())
 invisible(close(sock2) == 0L || stop())
+
+invisible(is.integer(suppressMessages(ncurl("http://127.0.0.1:5555"))) || stop())
+invisible(is.integer(suppressMessages(stream(dial = "tcp://127.0.0.1:5555"))) || stop())
+logging(level = "keep")
 
 invisible(is.character(ver <- nng_version()) && length(ver) == 2L || stop())
 invisible(is.character(nng_error(0L)) || stop())

@@ -40,7 +40,7 @@
 #' pub <- socket("pub", dial = "inproc://nanonext")
 #'
 #' send(pub, data.frame(a = 1, b = 2))
-#' send(pub, c(10.1, 20.2, 30.3), mode = "raw")
+#' send(pub, c(10.1, 20.2, 30.3), mode = "raw", block = 100)
 #'
 #' close(pub)
 #'
@@ -190,7 +190,7 @@ send.nanoStream <- function(con,
 #' recv(s2, keep.raw = FALSE)
 #'
 #' send(s1, c(1.1, 2.2, 3.3), mode = "raw")
-#' res <- recv(s2, mode = "double")
+#' res <- recv(s2, mode = "double", block = 100)
 #' res
 #' send(s1, "example message", mode = "raw", echo = FALSE)
 #' recv(s2, mode = "character", keep.raw = FALSE)

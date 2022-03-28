@@ -370,7 +370,7 @@ aio
 #> < recvAio >
 #>  - $data for message data
 aio$data |> str()
-#>  num [1:100000000] -0.0012 -1.2404 1.1994 1.2642 -0.2507 ...
+#>  num [1:100000000] -0.736 -1.684 0.223 0.326 1.103 ...
 ```
 
 As `call_aio()` is blocking and will wait for completion, an alternative
@@ -405,37 +405,37 @@ an environment variable `NANONEXT_LOG`.
 
 ``` r
 logging(level = "info")
-#> 2022-03-27 15:31:07 [ log level ] set to: info
+#> 2022-03-29 00:05:47 [ log level ] set to: info
 
 pub <- socket("pub", listen = "inproc://nanobroadcast")
-#> 2022-03-27 15:31:07 [ sock open ] id: 9 | protocol: pub
-#> 2022-03-27 15:31:07 [ list start ] sock: 9 | url: inproc://nanobroadcast
+#> 2022-03-29 00:05:47 [ sock open ] id: 9 | protocol: pub
+#> 2022-03-29 00:05:47 [ list start ] sock: 9 | url: inproc://nanobroadcast
 sub <- socket("sub", dial = "inproc://nanobroadcast")
-#> 2022-03-27 15:31:07 [ sock open ] id: 10 | protocol: sub
-#> 2022-03-27 15:31:07 [ dial start ] sock: 10 | url: inproc://nanobroadcast
+#> 2022-03-29 00:05:47 [ sock open ] id: 10 | protocol: sub
+#> 2022-03-29 00:05:47 [ dial start ] sock: 10 | url: inproc://nanobroadcast
 
 sub |> subscribe(topic = "examples")
-#> 2022-03-27 15:31:07 [ subscribe ] sock: 10 | topic: examples
+#> 2022-03-29 00:05:47 [ subscribe ] sock: 10 | topic: examples
 pub |> send(c("examples", "this is an example"), mode = "raw", echo = FALSE)
 sub |> recv(mode = "character", keep.raw = FALSE)
 #> [1] "examples"           "this is an example"
 
 pub |> send(c("other", "this other topic will not be received"), mode = "raw", echo = FALSE)
 sub |> recv(mode = "character", keep.raw = FALSE)
-#> 2022-03-27 15:31:07 [ 8 ] Try again
+#> 2022-03-29 00:05:47 [ 8 ] Try again
 
 # specify NULL to subscribe to ALL topics
 sub |> subscribe(topic = NULL)
-#> 2022-03-27 15:31:07 [ subscribe ] sock: 10 | topic: ALL
+#> 2022-03-29 00:05:47 [ subscribe ] sock: 10 | topic: ALL
 pub |> send(c("newTopic", "this is a new topic"), mode = "raw", echo = FALSE)
 sub |> recv("character", keep.raw = FALSE)
 #> [1] "newTopic"            "this is a new topic"
 
 sub |> unsubscribe(topic = NULL)
-#> 2022-03-27 15:31:07 [ unsubscribe ] sock: 10 | topic: ALL
+#> 2022-03-29 00:05:47 [ unsubscribe ] sock: 10 | topic: ALL
 pub |> send(c("newTopic", "this topic will now not be received"), mode = "raw", echo = FALSE)
 sub |> recv("character", keep.raw = FALSE)
-#> 2022-03-27 15:31:07 [ 8 ] Try again
+#> 2022-03-29 00:05:47 [ 8 ] Try again
 
 # however the topics explicitly subscribed to are still received
 pub |> send(c("examples", "this example will still be received"), mode = "raw", echo = FALSE)
@@ -444,7 +444,7 @@ sub |> recv(mode = "character", keep.raw = FALSE)
 
 # set logging level back to the default of errors only
 logging(level = "error")
-#> 2022-03-27 15:31:07 [ log level ] set to: error
+#> 2022-03-29 00:05:47 [ log level ] set to: error
 
 close(pub)
 close(sub)
@@ -495,7 +495,7 @@ aio2$data
 # after the survey expires, the second resolves into a timeout error
 Sys.sleep(0.5)
 aio2$data
-#> 2022-03-27 15:31:07 [ 5 ] Timed out
+#> 2022-03-29 00:05:48 [ 5 ] Timed out
 #> 'errorValue' int 5
 
 close(sur)
@@ -512,7 +512,7 @@ integer message values.
 
 ### ncurl: Minimalist http Client
 
-`ncurl()` is a minimalistic http(s) client. In normal use, it takes only
+`ncurl()` is a minimalist http(s) client. In normal use, it takes only
 one argument, the URL. It can follow redirects.
 
 ``` r
@@ -521,14 +521,21 @@ ncurl("http://httpbin.org/headers")
 #>   [1] 7b 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73
 #>  [26] 74 22 3a 20 22 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22
 #>  [51] 58 2d 41 6d 7a 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31
-#>  [76] 2d 36 32 34 30 37 35 32 63 2d 30 63 61 34 34 63 64 31 30 33 64 62 31 61 61
-#> [101] 38 30 66 32 31 62 62 62 38 22 0a 20 20 7d 0a 7d 0a
+#>  [76] 2d 36 32 34 32 33 66 34 63 2d 35 31 38 62 62 65 38 66 34 31 65 31 37 37 39
+#> [101] 63 34 32 34 61 35 61 62 33 22 0a 20 20 7d 0a 7d 0a
 #> 
 #> $data
-#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6240752c-0ca44cd103db1aa80f21bbb8\"\n  }\n}\n"
+#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-62423f4c-518bbe8f41e1779c424a5ab3\"\n  }\n}\n"
 ```
 
 For advanced use, supports additional HTTP methods such as POST or PUT.
+
+``` r
+res <- ncurl("http://httpbin.org/post", "POST", "application/json", "Bearer APIKEY", '{"key": "value"}')
+res$data
+#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-62423f4c-4de27fd3765f72b51e01d918\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"78.145.225.121\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
+```
+
 In this respect, it may be used as a performant and lightweight method
 for making requests to REST APIs.
 
@@ -547,18 +554,20 @@ s
 #>  - type: dialer 
 #>  - url: wss://socketsbay.com/wss/v2/2/demo/ 
 #>  - textframes: TRUE
+s |> send("hello world")
+#>  [1] 68 65 6c 6c 6f 20 77 6f 72 6c 64 00
 ```
 
-The stream interface is especially useful for communicating with
-websocket servers. Where TLS is enabled in the NNG library, connecting
-to secure websockets is configured automatically. Here, the argument
-`textframes = TRUE` can be specified where the websocket server uses
-text rather than binary frames.
+The stream interface can be used to communicate with websocket servers.
+Where TLS is enabled in the NNG library, connecting to secure websockets
+is configured automatically. Here, the argument `textframes = TRUE` can
+be specified where the websocket server uses text rather than binary
+frames.
 
-The same API as found in the rest of the package is available:
-synchronous `send`/`recv`, as well as their asynchronous counterparts
-`send_aio`/`recv_aio`. This affords an extraordinary amount of
-flexibility in ingesting and processing streaming data.
+The same API for Sockets can equally be used on Streams: `send()` and
+`recv()`, as well as their asynchronous counterparts `send_aio()` and
+`recv_aio()`. This affords a great deal of flexibility in ingesting and
+processing streaming data.
 
 [« Back to ToC](#table-of-contents)
 

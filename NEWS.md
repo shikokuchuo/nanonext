@@ -3,6 +3,7 @@
 #### New Features
 
 * New `stream()` interface exposes low-level byte stream functionality in the NNG library, intended for communicating with non-NNG endpoints, including but not limited to websocket servers.
+* `ncurl()` adds explicit arguments supporting HTTP methods other than GET, including for setting the 'Authorization' header.
   
 #### Updates
 
