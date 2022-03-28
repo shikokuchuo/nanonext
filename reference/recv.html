@@ -63,7 +63,7 @@
   <span class="va">con</span>,
   mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"serial"</span>, <span class="st">"character"</span>, <span class="st">"complex"</span>, <span class="st">"double"</span>, <span class="st">"integer"</span>, <span class="st">"logical"</span>, <span class="st">"numeric"</span>,
     <span class="st">"raw"</span><span class="op">)</span>,
-  block <span class="op">=</span> <span class="cn">FALSE</span>,
+  <span class="va">block</span>,
   keep.raw <span class="op">=</span> <span class="cn">TRUE</span>,
   <span class="va">...</span>,
   <span class="va">n</span>
@@ -113,10 +113,10 @@ into the respective mode.
 &lt;Streams&gt; [default 'character'] note that 'serial' is not an option for
 Streams.</p></dd>
 <dt>block</dt>
-<dd><p>&lt;Sockets&gt; [default FALSE] logical flag whether to block until
-successful or return immediately (e.g. if no connection is available).
-&lt;Contexts and Streams&gt; [default TRUE] optionally an integer maximum time
-to block in milliseconds, after which the operation will time out.</p></dd>
+<dd><p>logical TRUE to block until successful or FALSE to return
+immediately even if unsuccessful  (e.g. if no connection is available),
+or else an integer value specifying the maximum time to block in
+milliseconds, after which the operation will time out.</p></dd>
 <dt>keep.raw</dt>
 <dd><p>[default TRUE] logical flag whether to keep the received raw
 vector (useful for verification e.g. via hashing). If FALSE, will return
@@ -143,16 +143,21 @@ Can be an over-estimate, but note that a buffer of this size is reserved.</p></d
     specified), the received raw vector will always be returned to allow for
     the data to be recovered.</p>
     </div>
-    <div id="contexts">
-    <h2>Contexts</h2>
-    <p>Will block while awaiting the receive operation to complete.
-    Set a timeout to ensure that the function returns under all scenarios.</p>
-    </div>
-    <div id="streams">
-    <h2>Streams</h2>
-    <p>Receivng a byte stream synchronously will block while
-    awaiting the receive operation to complete. Set a timeout to ensure that
-    the function returns under all scenarios.</p>
+    <div id="blocking">
+    <h2>Blocking</h2>
+    
+
+
+<p>For Sockets: the default behaviour is non-blocking with <code>block = FALSE</code>.
+    This will return immediately with an error if the message could not be
+    queued for sending.</p>
+<p>For Contexts and Streams: the default behaviour is blocking with <code>block = TRUE</code>.
+    This will wait until the send has completed. For Contexts, certain protocol /
+    transport combinations may limit the number of messages that can be queued
+    if they have yet to be received. Set a timeout in this case to ensure that
+    the function returns under all scenarios. As the underlying implementation
+    differs to that for Sockets, it is recommended to set a positive integer
+    value for <code>block</code> rather than FALSE.</p>
     </div>
 
     <div id="ref-examples">

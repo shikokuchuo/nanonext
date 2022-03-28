@@ -57,12 +57,12 @@
 <h2 class="page-header" data-toc-text="0.3.0.9001" id="nanonext-0309001-development">nanonext 0.3.0.9001 (development)<a class="anchor" aria-label="anchor" href="#nanonext-0309001-development"></a></h2>
 <div class="section level5">
 <h5 id="new-features-0-3-0-9001">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-3-0-9001"></a></h5>
-<ul><li>New ‘stream’ interface exposes low-level byte stream functionality in the NNG library, intended for communicating with non-NNG endpoints, including but not limited to websocket servers.</li>
+<ul><li>New <code><a href="../reference/stream.html">stream()</a></code> interface exposes low-level byte stream functionality in the NNG library, intended for communicating with non-NNG endpoints, including but not limited to websocket servers.</li>
 </ul></div>
 <div class="section level5">
 <h5 id="updates-0-3-0-9001">Updates<a class="anchor" aria-label="anchor" href="#updates-0-3-0-9001"></a></h5>
-<ul><li>Unified synchronous <code><a href="../reference/send.html">send()</a></code> and <code><a href="../reference/recv.html">recv()</a></code> functions, and their async counterparts <code><a href="../reference/send_aio.html">send_aio()</a></code> and <code><a href="../reference/recv_aio.html">recv_aio()</a></code>, are now S3 generics and can be used across Sockets, Contexts as well as Streams.</li>
-<li>A timeout can now be specified directly using the ‘block’ argument for synchronous sends over a Context/Stream.</li>
+<ul><li>Unified synchronous <code><a href="../reference/send.html">send()</a></code> and <code><a href="../reference/recv.html">recv()</a></code> functions, and their asynchronous counterparts <code><a href="../reference/send_aio.html">send_aio()</a></code> and <code><a href="../reference/recv_aio.html">recv_aio()</a></code>, are now S3 generics and can be used across Sockets, Contexts and Streams.</li>
+<li>Revised ‘block’ argument for synchronous <code><a href="../reference/send.html">send()</a></code> and <code><a href="../reference/recv.html">recv()</a></code> allows setting a timeout for all methods.</li>
 <li>
 <code><a href="../reference/send_ctx.html">send_ctx()</a></code> and <code><a href="../reference/recv_ctx.html">recv_ctx()</a></code> are deprecated and will be removed in a future package version - the methods for <code><a href="../reference/send.html">send()</a></code> and <code><a href="../reference/recv.html">recv()</a></code> should be used instead.</li>
 </ul></div>
