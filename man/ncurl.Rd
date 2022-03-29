@@ -4,10 +4,19 @@
 \alias{ncurl}
 \title{ncurl}
 \usage{
-ncurl(url, method = NULL, ctype = NULL, auth = NULL, data = NULL)
+ncurl(
+  url,
+  async = FALSE,
+  method = NULL,
+  ctype = NULL,
+  auth = NULL,
+  data = NULL
+)
 }
 \arguments{
 \item{url}{the URL address.}
+
+\item{async}{[default FALSE] logical value whether to perform actions async.}
 
 \item{method}{(optional) the HTTP method.}
 
@@ -26,6 +35,8 @@ Named list of 2 elements:
     format), or NULL otherwise. Other tools can be used to further parse this
     as html, json, xml etc. if required.}
     }
+
+    Or else, if \code{async = TRUE}, a 'recvAio' (object of class 'recvAio').
 }
 \description{
 nano cURL - a minimalist http(s) client.
@@ -48,7 +59,7 @@ nano cURL - a minimalist http(s) client.
 
 \examples{
 ncurl("http://httpbin.org/get")
-ncurl("http://httpbin.org/put", "PUT", "text/plain", "Bearer APIKEY", "hello world")
-ncurl("http://httpbin.org/post", "POST", "application/json", data = '{"key": "value"}')
+ncurl("http://httpbin.org/put", ,"PUT", "text/plain", "Bearer APIKEY", "hello world")
+ncurl("http://httpbin.org/post", ,"POST", "application/json", ,'{"key": "value"}')
 
 }

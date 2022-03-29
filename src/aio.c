@@ -1,6 +1,7 @@
 /* nanonext - C level - Core Functions -------------------------------------- */
 
 #include <nng/nng.h>
+#include <nng/supplemental/http/http.h>
 #include <nng/supplemental/tls/tls.h>
 #include <nng/supplemental/util/platform.h>
 #include "nanonext.h"
@@ -78,6 +79,46 @@ static void iov_finalizer(SEXP xptr) {
     return;
   unsigned char *xp = (unsigned char *) R_ExternalPtrAddr(xptr);
   R_Free(xp);
+  R_ClearExternalPtr(xptr);
+
+}
+
+static void res_finalizer(SEXP xptr) {
+
+  if (R_ExternalPtrAddr(xptr) == NULL)
+    return;
+  nng_http_res *xp = (nng_http_res *) R_ExternalPtrAddr(xptr);
+  nng_http_res_free(xp);
+  R_ClearExternalPtr(xptr);
+
+}
+
+static void req_finalizer(SEXP xptr) {
+
+  if (R_ExternalPtrAddr(xptr) == NULL)
+    return;
+  nng_http_req *xp = (nng_http_req *) R_ExternalPtrAddr(xptr);
+  nng_http_req_free(xp);
+  R_ClearExternalPtr(xptr);
+
+}
+
+static void client_finalizer(SEXP xptr) {
+
+  if (R_ExternalPtrAddr(xptr) == NULL)
+    return;
+  nng_http_client *xp = (nng_http_client *) R_ExternalPtrAddr(xptr);
+  nng_http_client_free(xp);
+  R_ClearExternalPtr(xptr);
+
+}
+
+static void url_finalizer(SEXP xptr) {
+
+  if (R_ExternalPtrAddr(xptr) == NULL)
+    return;
+  nng_url *xp = (nng_url *) R_ExternalPtrAddr(xptr);
+  nng_url_free(xp);
   R_ClearExternalPtr(xptr);
 
 }
@@ -834,6 +875,206 @@ SEXP rnng_stream_close(SEXP stream) {
   Rf_setAttrib(stream, nano_UrlSymbol, R_NilValue);
 
   return Rf_ScalarInteger(0);
+
+}
+
+/* ncurl aio ---------------------------------------------------------------- */
+
+SEXP rnng_ncurl_aio(SEXP http, SEXP method, SEXP ctype, SEXP auth, SEXP data) {
+
+  nng_url *url;
+  nng_http_client *client;
+  nng_http_req *req;
+  nng_http_res *res;
+  nng_aio *aiop;
+  int_mtx *mutex;
+  int xc;
+  struct nng_tls_config *cfg;
+  int tls = 0;
+
+  const char *httr = CHAR(STRING_ELT(http, 0));
+  xc = nng_url_parse(&url, httr);
+  if (xc)
+    return Rf_ScalarInteger(xc);
+  xc = nng_http_client_alloc(&client, url);
+  if (xc) {
+    nng_url_free(url);
+    return Rf_ScalarInteger(xc);
+  }
+  xc = nng_http_req_alloc(&req, url);
+  if (xc) {
+    nng_http_client_free(client);
+    nng_url_free(url);
+    return Rf_ScalarInteger(xc);
+  }
+  if (method != R_NilValue) {
+    const char *met = CHAR(STRING_ELT(method, 0));
+    xc = nng_http_req_set_method(req, met);
+    if (xc) {
+      nng_http_req_free(req);
+      nng_http_client_free(client);
+      nng_url_free(url);
+      return Rf_ScalarInteger(xc);
+    }
+  }
+  if (ctype != R_NilValue) {
+    const char *cty = CHAR(STRING_ELT(ctype, 0));
+    xc = nng_http_req_set_header(req, "Content-Type", cty);
+    if (xc) {
+      nng_http_req_free(req);
+      nng_http_client_free(client);
+      nng_url_free(url);
+      return Rf_ScalarInteger(xc);
+    }
+  }
+  if (auth != R_NilValue) {
+    const char *aut = CHAR(STRING_ELT(auth, 0));
+    xc = nng_http_req_set_header(req, "Authorization", aut);
+    if (xc) {
+      nng_http_req_free(req);
+      nng_http_client_free(client);
+      nng_url_free(url);
+      return Rf_ScalarInteger(xc);
+    }
+  }
+  if (data != R_NilValue) {
+    unsigned char *dp = RAW(data);
+    const R_xlen_t dlen = XLENGTH(data) - 1;
+    xc = nng_http_req_set_data(req, dp, dlen);
+    if (xc) {
+      nng_http_req_free(req);
+      nng_http_client_free(client);
+      nng_url_free(url);
+      return Rf_ScalarInteger(xc);
+    }
+  }
+  xc = nng_http_res_alloc(&res);
+  if (xc) {
+    nng_http_req_free(req);
+    nng_http_client_free(client);
+    nng_url_free(url);
+    return Rf_ScalarInteger(xc);
+  }
+
+  mutex = R_Calloc(1, int_mtx);
+  xc = nng_mtx_alloc(&mutex->mtx);
+  if (xc) {
+    R_Free(mutex);
+    nng_http_res_free(res);
+    nng_http_req_free(req);
+    nng_http_client_free(client);
+    nng_url_free(url);
+    return Rf_ScalarInteger(xc);
+  }
+  xc = nng_aio_alloc(&aiop, write_completion, mutex);
+  if (xc) {
+    nng_mtx_free(mutex->mtx);
+    R_Free(mutex);
+    nng_http_res_free(res);
+    nng_http_req_free(req);
+    nng_http_client_free(client);
+    nng_url_free(url);
+    return Rf_ScalarInteger(xc);
+  }
+
+  if (!strcmp(url->u_scheme, "https")) {
+    xc = nng_tls_config_alloc(&cfg, 0);
+    if (xc) {
+      nng_aio_free(aiop);
+      nng_mtx_free(mutex->mtx);
+      R_Free(mutex);
+      nng_http_res_free(res);
+      nng_http_req_free(req);
+      nng_http_client_free(client);
+      nng_url_free(url);
+      return Rf_ScalarInteger(xc);
+    }
+    if ((xc = nng_tls_config_auth_mode(cfg, 0)) ||
+        (xc = nng_http_client_set_tls(client, cfg))) {
+      nng_tls_config_free(cfg);
+      nng_aio_free(aiop);
+      nng_mtx_free(mutex->mtx);
+      R_Free(mutex);
+      nng_http_res_free(res);
+      nng_http_req_free(req);
+      nng_http_client_free(client);
+      nng_url_free(url);
+      return Rf_ScalarInteger(xc);
+    }
+    tls = 1;
+  }
+
+  nng_http_client_transact(client, req, res, aiop);
+
+  SEXP aio = PROTECT(R_MakeExternalPtr(aiop, nano_AioSymbol, R_NilValue));
+  R_RegisterCFinalizerEx(aio, aio_finalizer, TRUE);
+  SEXP mtx = PROTECT(R_MakeExternalPtr(mutex, nano_StateSymbol, R_NilValue));
+  R_RegisterCFinalizerEx(mtx, mtx_finalizer, TRUE);
+  SEXP ares = PROTECT(R_MakeExternalPtr(res, R_NilValue, R_NilValue));
+  R_RegisterCFinalizerEx(ares, res_finalizer, TRUE);
+  SEXP areq = PROTECT(R_MakeExternalPtr(req, R_NilValue, R_NilValue));
+  R_RegisterCFinalizerEx(areq, req_finalizer, TRUE);
+  SEXP acli = PROTECT(R_MakeExternalPtr(client, R_NilValue, R_NilValue));
+  R_RegisterCFinalizerEx(acli, client_finalizer, TRUE);
+  SEXP aurl = PROTECT(R_MakeExternalPtr(url, R_NilValue, R_NilValue));
+  R_RegisterCFinalizerEx(aurl, url_finalizer, TRUE);
+
+  Rf_setAttrib(mtx, nano_IovSymbol, ares);
+  Rf_setAttrib(mtx, nano_DialerSymbol, areq);
+  Rf_setAttrib(mtx, nano_ContextSymbol, acli);
+  Rf_setAttrib(mtx, nano_UrlSymbol, aurl);
+  Rf_setAttrib(mtx, nano_IdSymbol, Rf_ScalarInteger(tls));
+  Rf_setAttrib(aio, nano_StateSymbol, mtx);
+
+  UNPROTECT(6);
+  return aio;
+
+}
+
+SEXP rnng_aio_http(SEXP aio) {
+
+  if (R_ExternalPtrTag(aio) != nano_AioSymbol)
+    error_return("'aio' is not a valid Aio");
+  if (R_ExternalPtrAddr(aio) == NULL)
+    error_return("'aio' is not an active Aio");
+
+  uint16_t code;
+  void *dat;
+  size_t sz;
+
+  nng_aio *aiop = (nng_aio *) R_ExternalPtrAddr(aio);
+  SEXP state = Rf_getAttrib(aio, nano_StateSymbol);
+  int_mtx *mutex = (int_mtx *) R_ExternalPtrAddr(state);
+  nng_http_res *res = (nng_http_res *) R_ExternalPtrAddr(Rf_getAttrib(state, nano_IovSymbol));
+  nng_mtx_lock(mutex->mtx);
+  int resolv = mutex->state;
+  nng_mtx_unlock(mutex->mtx);
+  if (!resolv)
+    return R_MissingArg;
+
+  int xc = nng_aio_result(aiop);
+  if (xc) {
+    nng_aio_free(aiop);
+    R_ClearExternalPtr(aio);
+    Rf_setAttrib(aio, nano_StateSymbol, R_NilValue);
+    return Rf_ScalarInteger(xc);
+  }
+
+  code = nng_http_res_get_status(res);
+  if (code != 200)
+    REprintf("HTTP Server Response: %d %s\n", code, nng_http_res_get_reason(res));
+
+  nng_http_res_get_data(res, &dat, &sz);
+  SEXP vec = PROTECT(Rf_allocVector(RAWSXP, sz));
+  unsigned char *rp = RAW(vec);
+  memcpy(rp, dat, sz);
+
+  nng_aio_free(aiop);
+  R_ClearExternalPtr(aio);
+  Rf_setAttrib(aio, nano_StateSymbol, R_NilValue);
+
+  UNPROTECT(1);
+  return vec;
 
 }
 

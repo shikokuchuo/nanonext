@@ -412,16 +412,16 @@ ncurl("http://httpbin.org/headers")
 
 ```
 
-For advanced use, supports additional HTTP methods such as POST or PUT.
+For advanced use, supports additional HTTP methods such as POST or PUT. In this respect, it may be used as a performant and lightweight method for making requests to REST APIs.
 
 ```{r ncurladv}
 
-res <- ncurl("http://httpbin.org/post", "POST", "application/json", "Bearer APIKEY", '{"key": "value"}')
-res$data
+res <- ncurl("http://httpbin.org/post", async = TRUE, "POST", "application/json", "Bearer APIKEY", '{"key": "value"}')
+call_aio(res)$data
 
 ```
 
-In this respect, it may be used as a performant and lightweight method for making requests to REST APIs.
+There is also the option of performing requests asynchronously, in which case the function returns immediately with a 'recvAio'.
 
 [&laquo; Back to ToC](#table-of-contents)
 

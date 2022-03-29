@@ -24,6 +24,7 @@ extern SEXP nano_UrlSymbol;
 /* define functions */
 extern SEXP rnng_aio_call(SEXP);
 extern SEXP rnng_aio_get_msg(SEXP);
+extern SEXP rnng_aio_http(SEXP);
 extern SEXP rnng_aio_result(SEXP);
 extern SEXP rnng_aio_stop(SEXP);
 extern SEXP rnng_aio_stream_recv(SEXP);
@@ -62,6 +63,7 @@ extern SEXP rnng_listener_set_string(SEXP, SEXP, SEXP);
 extern SEXP rnng_listener_set_uint64(SEXP, SEXP, SEXP);
 extern SEXP rnng_listener_start(SEXP);
 extern SEXP rnng_ncurl(SEXP, SEXP, SEXP, SEXP, SEXP);
+extern SEXP rnng_ncurl_aio(SEXP, SEXP, SEXP, SEXP, SEXP);
 extern SEXP rnng_protocol_open(SEXP);
 extern SEXP rnng_recv(SEXP, SEXP);
 extern SEXP rnng_recv_aio(SEXP, SEXP);

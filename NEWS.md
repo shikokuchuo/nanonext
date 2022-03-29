@@ -1,9 +1,9 @@
-# nanonext 0.3.0.9001 (development)
+# nanonext 0.3.0.9002 (development)
 
 #### New Features
 
 * New `stream()` interface exposes low-level byte stream functionality in the NNG library, intended for communicating with non-NNG endpoints, including but not limited to websocket servers.
-* `ncurl()` adds explicit arguments supporting HTTP methods other than GET, including for setting the 'Authorization' header.
+* `ncurl()` adds an 'async' option to perform HTTP requests asynchronously, returning immediately with a 'recvAio'. Also adds explicit arguments for HTTP method, content type and authorization headers and request data.
   
 #### Updates
 
