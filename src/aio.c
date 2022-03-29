@@ -123,6 +123,16 @@ static void url_finalizer(SEXP xptr) {
 
 }
 
+static void tls_finalizer(SEXP xptr) {
+
+  if (R_ExternalPtrAddr(xptr) == NULL)
+    return;
+  nng_tls_config *xp = (nng_tls_config *) R_ExternalPtrAddr(xptr);
+  nng_tls_config_free(xp);
+  R_ClearExternalPtr(xptr);
+
+}
+
 /* core aio functions ------------------------------------------------------- */
 
 SEXP rnng_recv_aio(SEXP socket, SEXP timeout) {
@@ -1012,18 +1022,22 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP method, SEXP ctype, SEXP auth, SEXP data) {
   R_RegisterCFinalizerEx(mtx, mtx_finalizer, TRUE);
   SEXP ares = PROTECT(R_MakeExternalPtr(res, R_NilValue, R_NilValue));
   R_RegisterCFinalizerEx(ares, res_finalizer, TRUE);
+  Rf_setAttrib(mtx, nano_IovSymbol, ares);
   SEXP areq = PROTECT(R_MakeExternalPtr(req, R_NilValue, R_NilValue));
   R_RegisterCFinalizerEx(areq, req_finalizer, TRUE);
+  R_MakeWeakRef(mtx, areq, R_NilValue, TRUE);
   SEXP acli = PROTECT(R_MakeExternalPtr(client, R_NilValue, R_NilValue));
   R_RegisterCFinalizerEx(acli, client_finalizer, TRUE);
+  R_MakeWeakRef(mtx, acli, R_NilValue, TRUE);
   SEXP aurl = PROTECT(R_MakeExternalPtr(url, R_NilValue, R_NilValue));
   R_RegisterCFinalizerEx(aurl, url_finalizer, TRUE);
-
-  Rf_setAttrib(mtx, nano_IovSymbol, ares);
-  Rf_setAttrib(mtx, nano_DialerSymbol, areq);
-  Rf_setAttrib(mtx, nano_ContextSymbol, acli);
-  Rf_setAttrib(mtx, nano_UrlSymbol, aurl);
-  Rf_setAttrib(mtx, nano_IdSymbol, Rf_ScalarInteger(tls));
+  R_MakeWeakRef(mtx, aurl, R_NilValue, TRUE);
+  if (tls) {
+    SEXP acfg = PROTECT(R_MakeExternalPtr(cfg, R_NilValue, R_NilValue));
+    R_RegisterCFinalizerEx(acfg, tls_finalizer, TRUE);
+    R_MakeWeakRef(mtx, acfg, R_NilValue, TRUE);
+    UNPROTECT(1);
+  }
   Rf_setAttrib(aio, nano_StateSymbol, mtx);
 
   UNPROTECT(6);
@@ -1063,6 +1077,13 @@ SEXP rnng_aio_http(SEXP aio) {
   code = nng_http_res_get_status(res);
   if (code != 200)
     REprintf("HTTP Server Response: %d %s\n", code, nng_http_res_get_reason(res));
+  if (code >= 300 && code < 400) {
+    const char *location = nng_http_res_get_header(res, "Location");
+    nng_aio_free(aiop);
+    R_ClearExternalPtr(aio);
+    Rf_setAttrib(aio, nano_StateSymbol, R_NilValue);
+    return Rf_mkString(location);
+  }
 
   nng_http_res_get_data(res, &dat, &sz);
   SEXP vec = PROTECT(Rf_allocVector(RAWSXP, sz));

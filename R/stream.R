@@ -99,6 +99,9 @@ stream <- function(dial = NULL, listen = NULL, textframes = FALSE) {
 #'
 #'     In non-interactive sessions: redirects are never followed.
 #'
+#'     For async requests, the redirect address will be returned as a character
+#'     string at \code{$raw} and \code{$data} will be NULL.
+#'
 #' @section TLS Support:
 #'
 #'     Connecting to secure https sites is supported if \code{\link{nng_version}}

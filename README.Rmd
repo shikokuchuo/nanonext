@@ -50,7 +50,7 @@ Implemented transports:
 5. [RPC and Distributed Computing](#rpc-and-distributed-computing)
 6. [Publisher / Subscriber Model](#publisher-subscriber-model)
 7. [Surveyor / Repondent Model](#surveyor-respondent-model)
-8. [ncurl: Minimalist http Client](#ncurl-minimalist-http-client)
+8. [ncurl: (Async) HTTP Client](#ncurl-async-http-client)
 9. [stream: Websocket Client](#stream-websocket-client)
 10. [Building from source](#building-from-source)
 11. [Links](#links)
@@ -402,9 +402,13 @@ Above it can be seen that the final value resolves into a timeout, which is an i
 
 [&laquo; Back to ToC](#table-of-contents)
 
-### ncurl: Minimalist http Client
+### ncurl: Async HTTP Client
 
-`ncurl()` is a minimalist http(s) client. In normal use, it takes only one argument, the URL. It can follow redirects.
+`ncurl()` is a minimalist http(s) client.
+
+By setting `async = TRUE`, it performs requests asynchronously, returning immediately with a 'recvAio'.
+
+For normal use, it takes just the URL. It can follow redirects.
 
 ```{r ncurl}
 
@@ -412,16 +416,19 @@ ncurl("http://httpbin.org/headers")
 
 ```
 
-For advanced use, supports additional HTTP methods such as POST or PUT. In this respect, it may be used as a performant and lightweight method for making requests to REST APIs.
+For advanced use, supports additional HTTP methods such as POST or PUT.
 
 ```{r ncurladv}
 
-res <- ncurl("http://httpbin.org/post", async = TRUE, "POST", "application/json", "Bearer APIKEY", '{"key": "value"}')
+res <- ncurl("http://httpbin.org/post", async = TRUE,
+             "POST", "application/json", "Bearer APIKEY", '{"key": "value"}')
+res
+
 call_aio(res)$data
 
 ```
 
-There is also the option of performing requests asynchronously, in which case the function returns immediately with a 'recvAio'.
+In this respect, it may be used as a performant and lightweight method for making REST API requests.
 
 [&laquo; Back to ToC](#table-of-contents)
 

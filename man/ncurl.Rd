@@ -48,6 +48,9 @@ nano cURL - a minimalist http(s) client.
     whether to follow or not (default: yes).
 
     In non-interactive sessions: redirects are never followed.
+
+    For async requests, the redirect address will be returned as a character
+    string at \code{$raw} and \code{$data} will be NULL.
 }
 
 \section{TLS Support}{
