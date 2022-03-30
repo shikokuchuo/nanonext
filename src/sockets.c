@@ -11,6 +11,7 @@
 #include <nng/protocol/reqrep0/rep.h>
 #include <nng/protocol/survey0/survey.h>
 #include <nng/protocol/survey0/respond.h>
+#include <nng/supplemental/util/platform.h>
 #include "nanonext.h"
 
 
@@ -79,6 +80,95 @@ SEXP rnng_close(SEXP socket) {
   if (!xc)
     Rf_setAttrib(socket, nano_StateSymbol, Rf_mkString("closed"));
   return Rf_ScalarInteger(xc);
+
+}
+
+/* messenger ---------------------------------------------------------------- */
+
+static void thread_finalizer(SEXP xptr) {
+
+  if (R_ExternalPtrAddr(xptr) == NULL)
+    return;
+  nng_thread *xp = (nng_thread *) R_ExternalPtrAddr(xptr);
+  nng_thread_destroy(xp);
+  R_ClearExternalPtr(xptr);
+
+}
+
+static void rnng_thread(void *arg) {
+
+  unsigned char *buf = NULL;
+  size_t sz;
+  nng_socket *sock = (nng_socket *) arg;
+
+  while (1) {
+    int xc = nng_recv(*sock, &buf, &sz, 1u);
+    if (xc) {
+      REprintf("Messenger session ended\n");
+      break;
+    }
+    if (!strcmp((const char *) buf, ":q")) break;
+    REprintf("> %s\n", buf);
+    nng_free(buf, sz);
+  }
+
+}
+
+SEXP rnng_messenger(SEXP url, SEXP mode) {
+
+  const char *up = CHAR(STRING_ELT(url, 0));
+  int dial = INTEGER(mode)[0];
+
+  SEXP con;
+  SEXP socket;
+  int xc;
+
+  nng_socket *sock = R_Calloc(1, nng_socket);
+  xc = nng_pair0_open(sock);
+  if (xc) {
+    R_Free(sock);
+    return Rf_ScalarInteger(xc);
+  }
+
+  if (dial) {
+    nng_dialer *dp = R_Calloc(1, nng_dialer);
+    int xc = nng_dial(*sock, up, dp, 2u);
+    if (xc) {
+      R_Free(dp);
+      R_Free(sock);
+      return Rf_ScalarInteger(xc);
+    }
+    socket = PROTECT(R_MakeExternalPtr(sock, nano_SocketSymbol, R_NilValue));
+    R_RegisterCFinalizerEx(socket, socket_finalizer, TRUE);
+    con = PROTECT(R_MakeExternalPtr(dp, nano_DialerSymbol, R_NilValue));
+    R_MakeWeakRef(socket, con, R_NilValue, TRUE);
+    UNPROTECT(1);
+
+  } else {
+    nng_listener *lp = R_Calloc(1, nng_listener);
+    int xc = nng_listen(*sock, up, lp, 0);
+    if (xc) {
+      R_Free(lp);
+      R_Free(sock);
+      return Rf_ScalarInteger(xc);
+    }
+    socket = PROTECT(R_MakeExternalPtr(sock, nano_SocketSymbol, R_NilValue));
+    R_RegisterCFinalizerEx(socket, socket_finalizer, TRUE);
+    con = PROTECT(R_MakeExternalPtr(lp, nano_ListenerSymbol, R_NilValue));
+    R_MakeWeakRef(socket, con, R_NilValue, TRUE);
+    UNPROTECT(1);
+  }
+
+  nng_thread *thr;
+  nng_thread_create(&thr, rnng_thread, sock);
+  SEXP xptr = PROTECT(R_MakeExternalPtr(thr, R_NilValue, R_NilValue));
+  R_RegisterCFinalizerEx(xptr, thread_finalizer, TRUE);
+  R_MakeWeakRef(socket, xptr, R_NilValue, TRUE);
+
+  Rf_classgets(socket, Rf_mkString("nanoSocket"));
+
+  UNPROTECT(2);
+  return socket;
 
 }
 

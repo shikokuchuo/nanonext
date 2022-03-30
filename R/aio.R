@@ -1,4 +1,6 @@
-# nanonext - Core Functions - Aio Functions ------------------------------------
+# nanonext - Core - Aio Functions ----------------------------------------------
+
+# send_aio/recv_aio ------------------------------------------------------------
 
 #' Send Async
 #'
@@ -419,6 +421,8 @@ recv_aio.nanoStream <- function(con,
   `[[<-`(`[[<-`(env, "keep.raw", keep.raw), "aio", aio)
 
 }
+
+# Core aio functions -----------------------------------------------------------
 
 #' Call the Value of an Asynchronous AIO Operation
 #'
