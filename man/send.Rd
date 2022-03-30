@@ -47,15 +47,14 @@ Send data over a connection (Socket, Context or Stream).
 
     For Sockets: the default behaviour is non-blocking with \code{block = FALSE}.
     This will return immediately with an error if the message could not be
-    queued for sending.
+    queued for sending. Certain protocol / transport combinations may limit
+    the number of messages that can be queued if they have yet to be received.
 
     For Contexts and Streams: the default behaviour is blocking with \code{block = TRUE}.
-    This will wait until the send has completed. For Contexts, certain protocol /
-    transport combinations may limit the number of messages that can be queued
-    if they have yet to be received. Set a timeout in this case to ensure that
-    the function returns under all scenarios. As the underlying implementation
-    differs to that for Sockets, it is recommended to set a positive integer
-    value for \code{block} rather than FALSE.
+    This will wait until the send has completed. Set a timeout in this case
+    to ensure that the function returns under all scenarios. As the underlying
+    implementation differs to that for Sockets, it is recommended to set a
+    positive integer value for \code{block} rather than FALSE.
 }
 
 \examples{
