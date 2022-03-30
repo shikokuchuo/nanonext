@@ -63,8 +63,8 @@
 </ul></div>
 <div class="section level5">
 <h5 id="updates-0-3-0-9002">Updates<a class="anchor" aria-label="anchor" href="#updates-0-3-0-9002"></a></h5>
-<ul><li>Unified synchronous <code><a href="../reference/send.html">send()</a></code> and <code><a href="../reference/recv.html">recv()</a></code> functions, and their asynchronous counterparts <code><a href="../reference/send_aio.html">send_aio()</a></code> and <code><a href="../reference/recv_aio.html">recv_aio()</a></code>, are now S3 generics and can be used across Sockets, Contexts and Streams.</li>
-<li>Revised ‘block’ argument for synchronous <code><a href="../reference/send.html">send()</a></code> and <code><a href="../reference/recv.html">recv()</a></code> allows setting a timeout for all methods.</li>
+<ul><li>Unified <code><a href="../reference/send.html">send()</a></code> and <code><a href="../reference/recv.html">recv()</a></code> functions, and their asynchronous counterparts <code><a href="../reference/send_aio.html">send_aio()</a></code> and <code><a href="../reference/recv_aio.html">recv_aio()</a></code>, are now S3 generics and can be used across Sockets, Contexts and Streams.</li>
+<li>Revised ‘block’ argument for <code><a href="../reference/send.html">send()</a></code> and <code><a href="../reference/recv.html">recv()</a></code> now allows an integer value for setting a timeout.</li>
 <li>
 <code><a href="../reference/send_ctx.html">send_ctx()</a></code> and <code><a href="../reference/recv_ctx.html">recv_ctx()</a></code> are deprecated and will be removed in a future package version - the methods for <code><a href="../reference/send.html">send()</a></code> and <code><a href="../reference/recv.html">recv()</a></code> should be used instead.</li>
 </ul></div>
