@@ -56,7 +56,7 @@ into the respective mode.
 Streams.}
 
 \item{block}{logical TRUE to block until successful or FALSE to return
-immediately even if unsuccessful  (e.g. if no connection is available),
+immediately even if unsuccessful  (e.g. if no messages are available),
 or else an integer value specifying the maximum time to block in
 milliseconds, after which the operation will time out.}
 

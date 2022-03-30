@@ -136,7 +136,7 @@ send.nanoStream <- function(con,
 #'
 #' Receive data over a connection (Socket, Context or Stream).
 #'
-#' @inheritParams send
+#' @param con a Socket, Context or Stream.
 #' @param mode <Sockets and Contexts> [default 'serial'] mode of vector to be
 #'     received - one of 'serial', 'character', 'complex', 'double', 'integer',
 #'     'logical', 'numeric', or 'raw'. The default 'serial' means a serialised
@@ -144,6 +144,10 @@ send.nanoStream <- function(con,
 #'     into the respective mode.
 #'     <Streams> [default 'character'] note that 'serial' is not an option for
 #'     Streams.
+#' @param block logical TRUE to block until successful or FALSE to return
+#'     immediately even if unsuccessful  (e.g. if no messages are available),
+#'     or else an integer value specifying the maximum time to block in
+#'     milliseconds, after which the operation will time out.
 #' @param keep.raw [default TRUE] logical flag whether to keep the received raw
 #'     vector (useful for verification e.g. via hashing). If FALSE, will return
 #'     the converted data only.
