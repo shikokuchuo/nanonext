@@ -46,20 +46,23 @@ messenger <- function(dial = NULL, listen = NULL) {
     cat("\r", `length<-`(intro, i), sep = " ", file = stdout())
     Sys.sleep(0.02)
   }
-  cat("  |  type your message:\n", file = stdout())
+  cat("\n", file = stdout())
   s <- .Call(rnng_send, sock, as.raw(0L), 0L)
   if (is.integer(s)) {
-    cat("[ peer offline ] waiting for connection...\n", file = stdout())
+    cat(sprintf("| peer offline: waiting for connection: %s\n", format.POSIXct(Sys.time())),
+        file = stderr())
   } else {
-    cat("[ peer online ] connected\n", file = stdout())
+    cat(sprintf("| peer online: connected: %s\n", format.POSIXct(Sys.time())),
+        file = stderr())
   }
+  cat("type your message:\n", file = stdout())
   repeat {
     data <- readline()
     if (identical(data, ":q")) break
     if (identical(data, "")) next
     data <- writeBin(object = data, con = raw())
     s <- .Call(rnng_send, sock, data, 0L)
-    if (is.integer(s)) message(sprintf("%s [ peer offline ] message not sent", format.POSIXct(Sys.time())))
+    if (is.integer(s)) message(sprintf("| peer offline: message not sent > %s", format.POSIXct(Sys.time())))
   }
 
 }

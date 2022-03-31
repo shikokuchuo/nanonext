@@ -1,5 +1,6 @@
 /* nanonext - C level - Sockets and Protocols ------------------------------- */
 
+#include <time.h>
 #include <nng/nng.h>
 #include <nng/protocol/bus0/bus.h>
 #include <nng/protocol/pair0/pair.h>
@@ -100,12 +101,18 @@ static void rnng_thread(void *arg) {
   unsigned char *buf = NULL;
   size_t sz;
   int xc;
+  time_t now;
+  struct tm *tms;
   nng_socket *sock = (nng_socket *) arg;
 
   while (1) {
     xc = nng_recv(*sock, &buf, &sz, 1u);
+    time(&now);
     if (xc) {
-      REprintf("messenger session ended\n");
+      tms = localtime(&now);
+      REprintf("| messenger session: ended: %d-%02d-%02d %02d:%02d:%02d\n",
+               tms->tm_year + 1900, tms->tm_mon + 1, tms->tm_mday,
+               tms->tm_hour, tms->tm_min, tms->tm_sec);
       break;
     }
     if (!strcmp((const char *) buf, ":q")) {
@@ -113,12 +120,19 @@ static void rnng_thread(void *arg) {
       break;
     }
     if (!strcmp((const char *) buf, "")) {
+      tms = localtime(&now);
+      REprintf("| peer status: changed: %d-%02d-%02d %02d:%02d:%02d\n",
+               tms->tm_year + 1900, tms->tm_mon + 1, tms->tm_mday,
+               tms->tm_hour, tms->tm_min, tms->tm_sec);
       nng_free(buf, sz);
-      Rprintf("[ peer status ] changed\n");
       continue;
     }
 
-    Rprintf("> %s\n", buf);
+    tms = localtime(&now);
+    Rprintf("%s < %d-%02d-%02d %02d:%02d:%02d\n",
+            buf,
+            tms->tm_year + 1900, tms->tm_mon + 1, tms->tm_mday,
+            tms->tm_hour, tms->tm_min, tms->tm_sec);
     nng_free(buf, sz);
   }
 
