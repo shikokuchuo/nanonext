@@ -99,16 +99,26 @@ static void rnng_thread(void *arg) {
 
   unsigned char *buf = NULL;
   size_t sz;
+  int xc;
   nng_socket *sock = (nng_socket *) arg;
 
   while (1) {
-    int xc = nng_recv(*sock, &buf, &sz, 1u);
+    xc = nng_recv(*sock, &buf, &sz, 1u);
     if (xc) {
-      REprintf("Messenger session ended\n");
+      REprintf("messenger session ended\n");
       break;
     }
-    if (!strcmp((const char *) buf, ":q")) break;
-    REprintf("> %s\n", buf);
+    if (!strcmp((const char *) buf, ":q")) {
+      nng_free(buf, sz);
+      break;
+    }
+    if (!strcmp((const char *) buf, "")) {
+      nng_free(buf, sz);
+      Rprintf("[ peer status ] changed\n");
+      continue;
+    }
+
+    Rprintf("> %s\n", buf);
     nng_free(buf, sz);
   }
 
