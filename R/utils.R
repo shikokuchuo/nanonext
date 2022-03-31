@@ -88,6 +88,7 @@ is_error_value <- function(x) inherits(x, "errorValue")
 #'     package load. If the variable is set incorrectly, the default level
 #'     of 'error' is used instead.
 #'
+#' @keywords internal
 #' @export
 #'
 logging <- function(level = c("keep", "check", "error", "info")) {

@@ -4,14 +4,11 @@
 \alias{messenger}
 \title{Messenger}
 \usage{
-messenger(dial = NULL, listen = NULL)
+messenger(url)
 }
 \arguments{
-\item{dial}{(optional) a URL to dial, specifying the transport and address as
+\item{url}{a URL to connect to, specifying the transport and address as
 a character string e.g. 'tcp://127.0.0.1:5555' (see \link{transports}).}
-
-\item{listen}{(optional) a URL to listen at, specifying the transport and
-address as a character string e.g. 'tcp://127.0.0.1:5555' (see \link{transports}).}
 }
 \value{
 Invisible NULL.

@@ -98,7 +98,7 @@ static void thread_finalizer(SEXP xptr) {
 
 static void rnng_thread(void *arg) {
 
-  unsigned char *buf = NULL;
+  char *buf = NULL;
   size_t sz;
   int xc;
   time_t now;
@@ -110,19 +110,24 @@ static void rnng_thread(void *arg) {
     if (xc) {
       time(&now);
       tms = localtime(&now);
-      REprintf("| messenger session: ended: %d-%02d-%02d %02d:%02d:%02d\n",
+      REprintf("| messenger session ended: %d-%02d-%02d %02d:%02d:%02d\n",
                tms->tm_year + 1900, tms->tm_mon + 1, tms->tm_mday,
                tms->tm_hour, tms->tm_min, tms->tm_sec);
       break;
     }
-    if (!strcmp((const char *) buf, ":q")) {
-      nng_free(buf, sz);
-      break;
-    }
-    if (!strcmp((const char *) buf, "")) {
+    if (!strcmp(buf, ":c ")) {
       time(&now);
       tms = localtime(&now);
-      REprintf("| peer status: changed: %d-%02d-%02d %02d:%02d:%02d\n",
+      REprintf("| peer connected: %d-%02d-%02d %02d:%02d:%02d\n",
+               tms->tm_year + 1900, tms->tm_mon + 1, tms->tm_mday,
+               tms->tm_hour, tms->tm_min, tms->tm_sec);
+      nng_free(buf, sz);
+      continue;
+    }
+    if (!strcmp(buf, ":d ")) {
+      time(&now);
+      tms = localtime(&now);
+      REprintf("| peer disconnected: %d-%02d-%02d %02d:%02d:%02d\n",
                tms->tm_year + 1900, tms->tm_mon + 1, tms->tm_mday,
                tms->tm_hour, tms->tm_min, tms->tm_sec);
       nng_free(buf, sz);
@@ -131,7 +136,7 @@ static void rnng_thread(void *arg) {
 
     time(&now);
     tms = localtime(&now);
-    Rprintf("%s < %d-%02d-%02d %02d:%02d:%02d\n",
+    Rprintf("%s\n < %d-%02d-%02d %02d:%02d:%02d\n",
             buf,
             tms->tm_year + 1900, tms->tm_mon + 1, tms->tm_mday,
             tms->tm_hour, tms->tm_min, tms->tm_sec);
@@ -140,14 +145,13 @@ static void rnng_thread(void *arg) {
 
 }
 
-SEXP rnng_messenger(SEXP url, SEXP mode) {
+SEXP rnng_messenger(SEXP url) {
 
   const char *up = CHAR(STRING_ELT(url, 0));
-  int dial = INTEGER(mode)[0];
-
   SEXP con;
   SEXP socket;
   int xc;
+  nng_listener *dlp;
 
   nng_socket *sock = R_Calloc(1, nng_socket);
   xc = nng_pair0_open(sock);
@@ -155,35 +159,29 @@ SEXP rnng_messenger(SEXP url, SEXP mode) {
     R_Free(sock);
     return Rf_ScalarInteger(xc);
   }
-
-  if (dial) {
-    nng_dialer *dp = R_Calloc(1, nng_dialer);
-    int xc = nng_dial(*sock, up, dp, 2u);
+  dlp = R_Calloc(1, nng_listener);
+  xc = nng_listen(*sock, up, dlp, 0);
+  if (xc == 10) {
+    R_Free(dlp);
+    nng_dialer *dlp = R_Calloc(1, nng_dialer);
+    xc = nng_dial(*sock, up, dlp, 2u);
     if (xc) {
-      R_Free(dp);
+      R_Free(dlp);
       R_Free(sock);
       return Rf_ScalarInteger(xc);
     }
-    socket = PROTECT(R_MakeExternalPtr(sock, nano_SocketSymbol, R_NilValue));
-    R_RegisterCFinalizerEx(socket, socket_finalizer, TRUE);
-    con = PROTECT(R_MakeExternalPtr(dp, nano_DialerSymbol, R_NilValue));
-    R_MakeWeakRef(socket, con, R_NilValue, TRUE);
-    UNPROTECT(1);
 
-  } else {
-    nng_listener *lp = R_Calloc(1, nng_listener);
-    int xc = nng_listen(*sock, up, lp, 0);
-    if (xc) {
-      R_Free(lp);
-      R_Free(sock);
-      return Rf_ScalarInteger(xc);
-    }
-    socket = PROTECT(R_MakeExternalPtr(sock, nano_SocketSymbol, R_NilValue));
-    R_RegisterCFinalizerEx(socket, socket_finalizer, TRUE);
-    con = PROTECT(R_MakeExternalPtr(lp, nano_ListenerSymbol, R_NilValue));
-    R_MakeWeakRef(socket, con, R_NilValue, TRUE);
-    UNPROTECT(1);
+  } else if (xc) {
+    R_Free(dlp);
+    R_Free(sock);
+    return Rf_ScalarInteger(xc);
   }
+
+  socket = PROTECT(R_MakeExternalPtr(sock, nano_SocketSymbol, R_NilValue));
+  R_RegisterCFinalizerEx(socket, socket_finalizer, TRUE);
+  con = PROTECT(R_MakeExternalPtr(dlp, nano_ListenerSymbol, R_NilValue));
+  R_MakeWeakRef(socket, con, R_NilValue, TRUE);
+  UNPROTECT(1);
 
   nng_thread *thr;
   nng_thread_create(&thr, rnng_thread, sock);

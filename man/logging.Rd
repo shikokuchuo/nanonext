@@ -21,3 +21,4 @@ The environment variable 'NANONEXT_LOG' is checked automatically on
     package load. If the variable is set incorrectly, the default level
     of 'error' is used instead.
 }
+\keyword{internal}

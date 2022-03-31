@@ -99,7 +99,6 @@ invisible(close(sock2) == 0L || stop())
 
 invisible(is.integer(suppressMessages(ncurl("http://127.0.0.1:5555"))) || stop())
 invisible(is.integer(suppressMessages(stream(dial = "tcp://127.0.0.1:5555"))) || stop())
-logging(level = "keep")
 
 invisible(is.character(ver <- nng_version()) && length(ver) == 2L || stop())
 invisible(is.character(nng_error(0L)) || stop())
