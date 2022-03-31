@@ -77,57 +77,25 @@ is_error_value <- function(x) inherits(x, "errorValue")
 
 #' Logging Level
 #'
-#' Set the logging level of nanonext.
+#' This function is deprecated.
 #'
-#' @param level specify a logging level
-#'     \itemize{
-#'     \item{'keep'} {which keeps the current logging level}
-#'     \item{'check'} {which checks the value of environment variable 'NANONEXT_LOG'}
-#'     \item{'error'} {which sends all NNG errors to stderr}
-#'     \item{'info'} {which in addition sends key informational events such as
-#'     socket open etc. to stdout}
-#'     }
+#' @param level specify a logging level. No longer used.
 #'
-#' @return Invisible NULL. A confirmation is printed to the console (stdout) if
-#'     the logging level has changed. If the function is called with no arguments,
-#'     the integer code of the logging level is returned instead.
+#' @return Invisible NULL. If the function is called with no arguments,
+#'     the logical code of the logging level is returned instead.
 #'
 #' @details The environment variable 'NANONEXT_LOG' is checked automatically on
-#'     package load and then cached for optimal performance. It is also checked
-#'     each time \code{logging(level = "check")} is called. If the variable is
-#'     set incorrectly, the default level of 'error' is used instead.
-#'
-#' @examples
-#' logging(level = "info")
-#' sock <- socket("respondent", dial = "inproc://nanolog")
-#' logging(level = "error")
-#' close(sock)
+#'     package load. If the variable is set incorrectly, the default level
+#'     of 'error' is used instead.
 #'
 #' @export
 #'
-logging <- function(level) {
+logging <- function(level = c("keep", "check", "error", "info")) {
 
-  cache <- switch(tolower(Sys.getenv("NANONEXT_LOG")),
-                  info = TRUE,
-                  FALSE)
-
-  logging <- function(level = c("keep", "check", "error", "info")) {
-
-    missing(level) && return(cache)
-    level <- match.arg(level)
-    original <- cache
-    cache <<- switch(level,
-                     check = switch(tolower(Sys.getenv("NANONEXT_LOG")),
-                                    info = TRUE,
-                                    FALSE),
-                     error = FALSE,
-                     info = TRUE,
-                     keep = original)
-    if (cache != original) cat(sprintf("%s [ %s ] %s: %s\n",
-                                       format.POSIXct(Sys.time()), "log level", "set to",
-                                       if (cache) "info" else "error"),  file = stdout())
-
-  }
+  missing(level) && return(.logging.)
+  cat("nanonext logging is deprecated and this function can no longer be used\n",
+      "logging level can still be set via the environment variable NANONEXT_LOG\n",
+      "prior to package load for the time being\n", file = stderr())
 
 }
 

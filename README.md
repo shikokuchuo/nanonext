@@ -370,7 +370,7 @@ aio
 #> < recvAio >
 #>  - $data for message data
 aio$data |> str()
-#>  num [1:100000000] 0.809 -1.518 1.473 0.943 1.033 ...
+#>  num [1:100000000] 1.3356 -0.0658 0.6899 -0.0952 -0.1385 ...
 ```
 
 As `call_aio()` is blocking and will wait for completion, an alternative
@@ -393,58 +393,37 @@ arbitrary R code using the RPC model.
 ### Publisher Subscriber Model
 
 {nanonext} fully implements NNG’s pub/sub protocol as per the below
-example.
-
-The built-in logging levels are also demonstrated here. NNG errors are
-always output to stderr and operation is otherwise silent by default. To
-enable key information events to be sent to stdout, use
-`logging(level = "info")`.
-
-The log level can also be set externally in production environments via
-an environment variable `NANONEXT_LOG`.
+example. A subscriber can subscribe to one or multiple topics broadcast
+by a publisher.
 
 ``` r
-logging(level = "info")
-#> 2022-03-29 14:33:28 [ log level ] set to: info
-
 pub <- socket("pub", listen = "inproc://nanobroadcast")
-#> 2022-03-29 14:33:28 [ sock open ] id: 9 | protocol: pub
-#> 2022-03-29 14:33:28 [ list start ] sock: 9 | url: inproc://nanobroadcast
 sub <- socket("sub", dial = "inproc://nanobroadcast")
-#> 2022-03-29 14:33:28 [ sock open ] id: 10 | protocol: sub
-#> 2022-03-29 14:33:28 [ dial start ] sock: 10 | url: inproc://nanobroadcast
 
 sub |> subscribe(topic = "examples")
-#> 2022-03-29 14:33:28 [ subscribe ] sock: 10 | topic: examples
 pub |> send(c("examples", "this is an example"), mode = "raw", echo = FALSE)
 sub |> recv(mode = "character", keep.raw = FALSE)
 #> [1] "examples"           "this is an example"
 
 pub |> send(c("other", "this other topic will not be received"), mode = "raw", echo = FALSE)
 sub |> recv(mode = "character", keep.raw = FALSE)
-#> 2022-03-29 14:33:28 [ 8 ] Try again
+#> 2022-03-31 16:21:28 [ 8 ] Try again
 
 # specify NULL to subscribe to ALL topics
 sub |> subscribe(topic = NULL)
-#> 2022-03-29 14:33:28 [ subscribe ] sock: 10 | topic: ALL
 pub |> send(c("newTopic", "this is a new topic"), mode = "raw", echo = FALSE)
 sub |> recv("character", keep.raw = FALSE)
 #> [1] "newTopic"            "this is a new topic"
 
 sub |> unsubscribe(topic = NULL)
-#> 2022-03-29 14:33:28 [ unsubscribe ] sock: 10 | topic: ALL
 pub |> send(c("newTopic", "this topic will now not be received"), mode = "raw", echo = FALSE)
 sub |> recv("character", keep.raw = FALSE)
-#> 2022-03-29 14:33:28 [ 8 ] Try again
+#> 2022-03-31 16:21:28 [ 8 ] Try again
 
 # however the topics explicitly subscribed to are still received
 pub |> send(c("examples", "this example will still be received"), mode = "raw", echo = FALSE)
 sub |> recv(mode = "character", keep.raw = FALSE)
 #> [1] "examples"                            "this example will still be received"
-
-# set logging level back to the default of errors only
-logging(level = "error")
-#> 2022-03-29 14:33:28 [ log level ] set to: error
 
 close(pub)
 close(sub)
@@ -495,7 +474,7 @@ aio2$data
 # after the survey expires, the second resolves into a timeout error
 Sys.sleep(0.5)
 aio2$data
-#> 2022-03-29 14:33:28 [ 5 ] Timed out
+#> 2022-03-31 16:21:29 [ 5 ] Timed out
 #> 'errorValue' int 5
 
 close(sur)
@@ -525,11 +504,11 @@ ncurl("http://httpbin.org/headers")
 #>   [1] 7b 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73
 #>  [26] 74 22 3a 20 22 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22
 #>  [51] 58 2d 41 6d 7a 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31
-#>  [76] 2d 36 32 34 33 30 61 61 38 2d 32 33 32 30 39 39 30 63 34 66 32 39 35 39 65
-#> [101] 66 33 38 32 63 63 34 38 62 22 0a 20 20 7d 0a 7d 0a
+#>  [76] 2d 36 32 34 35 63 36 66 39 2d 35 62 64 37 34 31 65 61 35 35 38 36 61 36 63
+#> [101] 66 30 65 34 64 36 61 61 61 22 0a 20 20 7d 0a 7d 0a
 #> 
 #> $data
-#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-62430aa8-2320990c4f2959ef382cc48b\"\n  }\n}\n"
+#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6245c6f9-5bd741ea5586a6cf0e4d6aaa\"\n  }\n}\n"
 ```
 
 For advanced use, supports additional HTTP methods such as POST or PUT.
@@ -543,7 +522,7 @@ res
 #>  - $raw for raw message
 
 call_aio(res)$data
-#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-62430aa9-733452c942d2794e22818b4e\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"79.173.189.204\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
+#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6245c6f9-7f1995a270c8f351194cfa3a\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"79.173.189.204\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
 ```
 
 In this respect, it may be used as a performant and lightweight method

@@ -36,7 +36,6 @@ After using this function, to start a new survey, the surveyor must:
 \examples{
 sur <- socket("surveyor", listen = "inproc://nanonext")
 res <- socket("respondent", dial = "inproc://nanonext")
-logging(level = "info")
 
 survey_time(sur, 1000)
 send(sur, "reply to this survey")
@@ -47,7 +46,6 @@ s <- send_aio(res, "replied")
 
 call_aio(aio)$data
 
-logging(level = "error")
 close(sur)
 close(res)
 

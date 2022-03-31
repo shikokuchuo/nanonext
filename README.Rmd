@@ -314,15 +314,9 @@ The {mirai} package <https://shikokuchuo.net/mirai/> (available on CRAN) uses {n
 
 ### Publisher Subscriber Model
 
-{nanonext} fully implements NNG's pub/sub protocol as per the below example.
-
-The built-in logging levels are also demonstrated here. NNG errors are always output to stderr and operation is otherwise silent by default. To enable key information events to be sent to stdout, use `logging(level = "info")`. 
-
-The log level can also be set externally in production environments via an environment variable `NANONEXT_LOG`.
+{nanonext} fully implements NNG's pub/sub protocol as per the below example. A subscriber can subscribe to one or multiple topics broadcast by a publisher.
 
 ```{r pub}
-
-logging(level = "info")
 
 pub <- socket("pub", listen = "inproc://nanobroadcast")
 sub <- socket("sub", dial = "inproc://nanobroadcast")
@@ -346,9 +340,6 @@ sub |> recv("character", keep.raw = FALSE)
 # however the topics explicitly subscribed to are still received
 pub |> send(c("examples", "this example will still be received"), mode = "raw", echo = FALSE)
 sub |> recv(mode = "character", keep.raw = FALSE)
-
-# set logging level back to the default of errors only
-logging(level = "error")
 
 close(pub)
 close(sub)

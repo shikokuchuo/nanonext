@@ -24,7 +24,6 @@
 #' @examples
 #' pub <- socket("pub", listen = "inproc://nanonext")
 #' sub <- socket("sub", dial = "inproc://nanonext")
-#' logging(level = "info")
 #'
 #' subscribe(sub, "examples")
 #' send(pub, c("examples", "this is an example"), mode = "raw")
@@ -32,7 +31,6 @@
 #' send(pub, c("other", "this other topic will not be received"), mode = "raw")
 #' recv(sub, "character")
 #'
-#' logging(level = "error")
 #' close(pub)
 #' close(sub)
 #'
@@ -43,7 +41,7 @@ subscribe <- function(socket, topic = NULL) {
   xc <- .Call(rnng_socket_set_string, socket, "sub:subscribe" , topic)
   if (xc) {
     logerror(xc)
-  } else if (logging()) {
+  } else if (.logging.) {
     loginfo(evt = "subscribe", pkey = "sock", pval = attr(socket, "id"),
             skey = "topic", sval = if (is.null(topic)) "ALL" else topic)
   }
@@ -78,7 +76,6 @@ subscribe <- function(socket, topic = NULL) {
 #' @examples
 #' pub <- socket("pub", listen = "inproc://nanonext")
 #' sub <- socket("sub", dial = "inproc://nanonext")
-#' logging(level = "info")
 #'
 #' subscribe(sub, NULL)
 #' send(pub, c("examples", "this is an example"), mode = "raw")
@@ -87,7 +84,6 @@ subscribe <- function(socket, topic = NULL) {
 #' send(pub, c("examples", "this example will not be received"), mode = "raw")
 #' recv(sub, "character")
 #'
-#' logging(level = "error")
 #' close(pub)
 #' close(sub)
 #'
@@ -98,7 +94,7 @@ unsubscribe <- function(socket, topic = NULL) {
   xc <- .Call(rnng_socket_set_string, socket, "sub:unsubscribe" , topic)
   if (xc) {
     logerror(xc)
-  } else if (logging()) {
+  } else if (.logging.) {
     loginfo(evt = "unsubscribe", pkey = "sock", pval = attr(socket, "id"),
             skey = "topic", sval = if (is.null(topic)) "ALL" else topic)
   }
@@ -133,7 +129,6 @@ unsubscribe <- function(socket, topic = NULL) {
 #' @examples
 #' sur <- socket("surveyor", listen = "inproc://nanonext")
 #' res <- socket("respondent", dial = "inproc://nanonext")
-#' logging(level = "info")
 #'
 #' survey_time(sur, 1000)
 #' send(sur, "reply to this survey")
@@ -144,7 +139,6 @@ unsubscribe <- function(socket, topic = NULL) {
 #'
 #' call_aio(aio)$data
 #'
-#' logging(level = "error")
 #' close(sur)
 #' close(res)
 #'
@@ -155,7 +149,7 @@ survey_time <- function(socket, time) {
   xc <- .Call(rnng_socket_set_ms, socket, "surveyor:survey-time", time)
   if (xc) {
     logerror(xc)
-  } else if (logging()) {
+  } else if (.logging.) {
     loginfo(evt = "survey", pkey = "sock", pval = attr(socket, "id"),
             skey = "set time", sval = as.character(time))
   }

@@ -45,7 +45,7 @@ stream <- function(dial = NULL, listen = NULL, textframes = FALSE) {
         logerror(res)
         return(invisible(res))
       }
-      if (logging()) {
+      if (.logging.) {
         loginfo(evt = "stream open", pkey = "list", pval = 1L,
                 skey = "url", sval = listen)
       }
@@ -58,7 +58,7 @@ stream <- function(dial = NULL, listen = NULL, textframes = FALSE) {
       logerror(res)
       return(invisible(res))
     }
-    if (logging()) {
+    if (.logging.) {
       loginfo(evt = "stream open", pkey = "dial", pval = 1L,
               skey = "url", sval = dial)
     }

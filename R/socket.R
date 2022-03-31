@@ -69,7 +69,7 @@ socket <- function(protocol = c("pair", "bus", "push", "pull", "req", "rep",
     logerror(res)
     return(invisible(res))
   }
-  if (logging()) {
+  if (.logging.) {
     loginfo(evt = "sock open", pkey = "id", pval = attr(res, "id"),
             skey = "protocol", sval = attr(res, "protocol"))
   }

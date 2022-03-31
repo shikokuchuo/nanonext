@@ -107,8 +107,8 @@ static void rnng_thread(void *arg) {
 
   while (1) {
     xc = nng_recv(*sock, &buf, &sz, 1u);
-    time(&now);
     if (xc) {
+      time(&now);
       tms = localtime(&now);
       REprintf("| messenger session: ended: %d-%02d-%02d %02d:%02d:%02d\n",
                tms->tm_year + 1900, tms->tm_mon + 1, tms->tm_mday,
@@ -120,6 +120,7 @@ static void rnng_thread(void *arg) {
       break;
     }
     if (!strcmp((const char *) buf, "")) {
+      time(&now);
       tms = localtime(&now);
       REprintf("| peer status: changed: %d-%02d-%02d %02d:%02d:%02d\n",
                tms->tm_year + 1900, tms->tm_mon + 1, tms->tm_mday,
@@ -128,6 +129,7 @@ static void rnng_thread(void *arg) {
       continue;
     }
 
+    time(&now);
     tms = localtime(&now);
     Rprintf("%s < %d-%02d-%02d %02d:%02d:%02d\n",
             buf,

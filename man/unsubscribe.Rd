@@ -36,7 +36,6 @@ Note that if the topic was not previously subscribed to then an
 \examples{
 pub <- socket("pub", listen = "inproc://nanonext")
 sub <- socket("sub", dial = "inproc://nanonext")
-logging(level = "info")
 
 subscribe(sub, NULL)
 send(pub, c("examples", "this is an example"), mode = "raw")
@@ -45,7 +44,6 @@ unsubscribe(sub, NULL)
 send(pub, c("examples", "this example will not be received"), mode = "raw")
 recv(sub, "character")
 
-logging(level = "error")
 close(pub)
 close(sub)
 

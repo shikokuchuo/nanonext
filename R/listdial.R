@@ -82,7 +82,7 @@ dial <- function(socket,
         logerror(res)
         return(invisible(res))
       }
-      if (logging()) loginfo(evt = "dial start", pkey = "sock", pval = attr(res, "socket"),
+      if (.logging.) loginfo(evt = "dial start", pkey = "sock", pval = attr(res, "socket"),
                              skey = "url", sval = url)
     } else {
       res <- .Call(rnng_dialer_create, .subset2(socket, "socket"), url)
@@ -109,7 +109,7 @@ dial <- function(socket,
         logerror(res)
         return(invisible(res))
       }
-      if (logging()) loginfo(evt = "dial start", pkey = "sock", pval = attr(res, "socket"),
+      if (.logging.) loginfo(evt = "dial start", pkey = "sock", pval = attr(res, "socket"),
                              skey = "url", sval = url)
     } else {
       res <- .Call(rnng_dialer_create, socket, url)
@@ -208,7 +208,7 @@ listen <- function(socket,
         logerror(res)
         return(invisible(res))
       }
-      if (logging()) loginfo(evt = "list start", pkey = "sock", pval = attr(res, "socket"),
+      if (.logging.) loginfo(evt = "list start", pkey = "sock", pval = attr(res, "socket"),
                              skey = "url", sval = url)
     } else {
       res <- .Call(rnng_listener_create, .subset2(socket, "socket"), url)
@@ -235,7 +235,7 @@ listen <- function(socket,
         logerror(res)
         return(invisible(res))
       }
-      if (logging()) loginfo(evt = "list start", pkey = "sock", pval = attr(res, "socket"),
+      if (.logging.) loginfo(evt = "list start", pkey = "sock", pval = attr(res, "socket"),
                              skey = "url", sval = url)
     } else {
       res <- .Call(rnng_listener_create, socket, url)

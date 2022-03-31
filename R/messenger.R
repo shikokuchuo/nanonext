@@ -41,6 +41,7 @@ messenger <- function(dial = NULL, listen = NULL) {
     close(sock)
     invisible()
   })
+  cat("\014", file = stdout())
   intro <- unlist(strsplit("nanonext messenger", ""))
   for (i in seq_along(intro)) {
     cat("\r", `length<-`(intro, i), sep = " ", file = stdout())

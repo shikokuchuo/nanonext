@@ -124,8 +124,11 @@
 NULL
 
 .onLoad <- function(libname, pkgname) {
-  logging <- logging()
-  logging <<- logging
+  .logging. <- switch(tolower(Sys.getenv("NANONEXT_LOG")),
+                              info = TRUE,
+                              FALSE)
+  .logging. <<- .logging.
   invisible()
 }
 
+.logging. <- FALSE

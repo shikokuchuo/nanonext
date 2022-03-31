@@ -7,33 +7,17 @@
 logging(level = c("keep", "check", "error", "info"))
 }
 \arguments{
-\item{level}{specify a logging level
-\itemize{
-\item{'keep'} {which keeps the current logging level}
-\item{'check'} {which checks the value of environment variable 'NANONEXT_LOG'}
-\item{'error'} {which sends all NNG errors to stderr}
-\item{'info'} {which in addition sends key informational events such as
-socket open etc. to stdout}
-}}
+\item{level}{specify a logging level. No longer used.}
 }
 \value{
-Invisible NULL. A confirmation is printed to the console (stdout) if
-    the logging level has changed. If the function is called with no arguments,
-    the integer code of the logging level is returned instead.
+Invisible NULL. If the function is called with no arguments,
+    the logical code of the logging level is returned instead.
 }
 \description{
-Set the logging level of nanonext.
+This function is deprecated.
 }
 \details{
 The environment variable 'NANONEXT_LOG' is checked automatically on
-    package load and then cached for optimal performance. It is also checked
-    each time \code{logging(level = "check")} is called. If the variable is
-    set incorrectly, the default level of 'error' is used instead.
-}
-\examples{
-logging(level = "info")
-sock <- socket("respondent", dial = "inproc://nanolog")
-logging(level = "error")
-close(sock)
-
+    package load. If the variable is set incorrectly, the default level
+    of 'error' is used instead.
 }

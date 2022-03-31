@@ -1,4 +1,4 @@
-# nanonext 0.3.0.9003 (development)
+# nanonext 0.3.0.9004 (development)
 
 #### New Features
 
@@ -11,6 +11,7 @@
 * Unified `send()` and `recv()` functions, and their asynchronous counterparts `send_aio()` and `recv_aio()`, are now S3 generics and can be used across Sockets, Contexts and Streams.
 * Revised 'block' argument for `send()` and `recv()` now allows an integer value for setting a timeout.
 * `send_ctx()` and `recv_ctx()` are deprecated and will be removed in a future package version - the methods for `send()` and `recv()` should be used instead.
+* Logging is deprecated and is being phased out. Logging can still be set via 'NANONEXT_LOG' prior to package load but the ability to set via the `logging()` function has been removed. Logging will be removed entirely in a future package version.
 
 # nanonext 0.3.0
 
