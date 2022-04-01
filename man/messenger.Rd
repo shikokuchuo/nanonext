@@ -20,7 +20,9 @@ Console-based 2-way messaging system based on NNG scalability protocols.
 
 
     Type outgoing messages and hit return to send.
-    Incoming messages are prefixed by \code{>}.
+
+    The timestamps of outgoing messages are prefixed by \code{>} and that of
+    incoming messages by \code{<}.
 
     \code{:q} is the command to quit.
 

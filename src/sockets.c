@@ -118,7 +118,7 @@ static void rnng_thread(void *arg) {
     if (!strcmp(buf, ":c ")) {
       time(&now);
       tms = localtime(&now);
-      REprintf("| peer connected: %d-%02d-%02d %02d:%02d:%02d\n",
+      REprintf("| <- peer connected: %d-%02d-%02d %02d:%02d:%02d\n",
                tms->tm_year + 1900, tms->tm_mon + 1, tms->tm_mday,
                tms->tm_hour, tms->tm_min, tms->tm_sec);
       nng_free(buf, sz);
@@ -127,7 +127,7 @@ static void rnng_thread(void *arg) {
     if (!strcmp(buf, ":d ")) {
       time(&now);
       tms = localtime(&now);
-      REprintf("| peer disconnected: %d-%02d-%02d %02d:%02d:%02d\n",
+      REprintf("| -> peer disconnected: %d-%02d-%02d %02d:%02d:%02d\n",
                tms->tm_year + 1900, tms->tm_mon + 1, tms->tm_mday,
                tms->tm_hour, tms->tm_min, tms->tm_sec);
       nng_free(buf, sz);
@@ -136,8 +136,8 @@ static void rnng_thread(void *arg) {
 
     time(&now);
     tms = localtime(&now);
-    Rprintf("%s\n < %d-%02d-%02d %02d:%02d:%02d\n",
-            buf,
+    Rprintf("%s\n%*s< %d-%02d-%02d %02d:%02d:%02d\n",
+            buf, sz, "",
             tms->tm_year + 1900, tms->tm_mon + 1, tms->tm_mday,
             tms->tm_hour, tms->tm_min, tms->tm_sec);
     nng_free(buf, sz);

@@ -12,7 +12,9 @@
 #' @section Usage:
 #'
 #'     Type outgoing messages and hit return to send.
-#'     Incoming messages are prefixed by \code{>}.
+#'
+#'     The timestamps of outgoing messages are prefixed by \code{>} and that of
+#'     incoming messages by \code{<}.
 #'
 #'     \code{:q} is the command to quit.
 #'
@@ -34,20 +36,19 @@ messenger <- function(url) {
     close(sock)
     invisible()
   })
-  cat("\014", file = stdout())
+  cat("\n", file = stdout())
   intro <- unlist(strsplit("nanonext messenger", ""))
   for (i in seq_along(intro)) {
     cat("\r", `length<-`(intro, i), sep = " ", file = stdout())
     Sys.sleep(0.02)
   }
   cat(sprintf("\n| url: %s\n", url), file = stdout())
-  s <- .Call(rnng_send, sock, writeBin(":c ", raw()), 0L)
+  cat("| connecting... ", file = stderr())
+  s <- .Call(rnng_send, sock, writeBin(":c ", raw()), 2000L)
   if (is.integer(s)) {
-    cat(sprintf("| peer offline: %s\n", format.POSIXct(Sys.time())),
-        file = stderr())
+    cat(sprintf("\r| peer offline: %s\n", format.POSIXct(Sys.time())), file = stderr())
   } else {
-    cat(sprintf("| peer online: %s\n", format.POSIXct(Sys.time())),
-        file = stderr())
+    cat(sprintf("\r| peer online: %s\n", format.POSIXct(Sys.time())), file = stderr())
   }
   cat("type your message:\n", file = stdout())
   repeat {
@@ -57,10 +58,11 @@ messenger <- function(url) {
     rdata <- writeBin(object = data, con = raw())
     s <- .Call(rnng_send, sock, rdata, 0L)
     if (is.integer(s)) {
-      cat(sprintf("| peer offline: message not sent > %s\n", format.POSIXct(Sys.time())),
+      cat(sprintf("%*s > not sent: peer offline: %s\n", nchar(data), "", format.POSIXct(Sys.time())),
           file = stderr())
     } else {
-      cat(sprintf(" > %s\n", format.POSIXct(Sys.time())), file = stdout())
+      cat(sprintf("%*s > %s\n", nchar(data), "", format.POSIXct(Sys.time())),
+          file = stdout())
     }
   }
 
