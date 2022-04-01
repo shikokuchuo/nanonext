@@ -44,7 +44,7 @@ messenger <- function(url) {
   }
   cat(sprintf("\n| url: %s\n", url), file = stdout())
   cat("| connecting... ", file = stderr())
-  s <- .Call(rnng_send, sock, writeBin(":c ", raw()), 2000L)
+  s <- .Call(rnng_send, sock, writeBin(":c ", raw()), 1000L)
   if (is.integer(s)) {
     cat(sprintf("\r| peer offline: %s\n", format.POSIXct(Sys.time())), file = stderr())
   } else {

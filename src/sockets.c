@@ -161,7 +161,7 @@ SEXP rnng_messenger(SEXP url) {
   }
   dlp = R_Calloc(1, nng_listener);
   xc = nng_listen(*sock, up, dlp, 0);
-  if (xc == 10) {
+  if (xc == 10 || xc == 15) {
     R_Free(dlp);
     nng_dialer *dlp = R_Calloc(1, nng_dialer);
     xc = nng_dial(*sock, up, dlp, 2u);
