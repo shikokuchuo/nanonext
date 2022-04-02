@@ -6,9 +6,10 @@
 #'
 #' @param url the URL address.
 #' @param async [default FALSE] logical value whether to perform actions async.
-#' @param method (optional) the HTTP method.
-#' @param ctype (optional) the 'Content-type' header.
-#' @param auth (optional) the 'Authorization' header.
+#' @param method (optional) the HTTP method (defaults to 'GET' if not specified).
+#' @param headers (optional) a named list or character vector specifying the
+#'     HTTP request headers e.g. \code{list(`Content-Type` = "text/plain")} or
+#'     \code{c(Authorization = "Bearer APIKEY")}.
 #' @param data (optional) the request data to be submitted.
 #'
 #' @return Named list of 2 elements:
@@ -39,18 +40,18 @@
 #'
 #' @examples
 #' ncurl("http://httpbin.org/get")
-#' ncurl("http://httpbin.org/put", ,"PUT", "text/plain", "Bearer APIKEY", "hello world")
-#' ncurl("http://httpbin.org/post", ,"POST", "application/json", ,'{"key": "value"}')
+#' ncurl("http://httpbin.org/put", ,"PUT", list(Authorization = "Bearer APIKEY"), "hello world")
+#' ncurl("http://httpbin.org/post", ,"POST", c(`Content-Type` = "application/json"),'{"k":"v"}')
 #'
 #' @export
 #'
-ncurl <- function(url, async = FALSE, method = NULL, ctype = NULL, auth = NULL, data = NULL) {
+ncurl <- function(url, async = FALSE, method = NULL, headers = NULL, data = NULL) {
 
   data <- if (!missing(data)) writeBin(object = data, con = raw())
 
   if (missing(async) || !isTRUE(async)) {
 
-    res <- .Call(rnng_ncurl, url, method, ctype, auth, data)
+    res <- .Call(rnng_ncurl, url, method, headers, data)
     missing(res) && return(invisible())
     if (is.integer(res)) {
       logerror(res)
@@ -65,7 +66,7 @@ ncurl <- function(url, async = FALSE, method = NULL, ctype = NULL, auth = NULL, 
 
   } else {
 
-    aio <- .Call(rnng_ncurl_aio, url, method, ctype, auth, data)
+    aio <- .Call(rnng_ncurl_aio, url, method, headers, data)
     is.integer(aio) && {
       logerror(aio)
       return(invisible(`class<-`(aio, "errorValue")))

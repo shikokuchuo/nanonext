@@ -893,7 +893,7 @@ SEXP rnng_stream_close(SEXP stream) {
 
 /* ncurl aio ---------------------------------------------------------------- */
 
-SEXP rnng_ncurl_aio(SEXP http, SEXP method, SEXP ctype, SEXP auth, SEXP data) {
+SEXP rnng_ncurl_aio(SEXP http, SEXP method, SEXP headers, SEXP data) {
 
   nng_url *url;
   nng_http_client *client;
@@ -930,25 +930,40 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP method, SEXP ctype, SEXP auth, SEXP data) {
       return Rf_ScalarInteger(xc);
     }
   }
-  if (ctype != R_NilValue) {
-    const char *cty = CHAR(STRING_ELT(ctype, 0));
-    xc = nng_http_req_set_header(req, "Content-Type", cty);
-    if (xc) {
-      nng_http_req_free(req);
-      nng_http_client_free(client);
-      nng_url_free(url);
-      return Rf_ScalarInteger(xc);
+  if (headers != R_NilValue) {
+    R_xlen_t hlen = Rf_xlength(headers);
+    SEXP names = PROTECT(Rf_getAttrib(headers, R_NamesSymbol));
+    switch (TYPEOF(headers)) {
+    case STRSXP:
+      for (R_xlen_t i = 0; i < hlen; i++) {
+        const char *head = CHAR(STRING_ELT(headers, i));
+        const char *name = CHAR(STRING_ELT(names, i));
+        xc = nng_http_req_set_header(req, name, head);
+        if (xc) {
+          nng_http_req_free(req);
+          nng_http_client_free(client);
+          nng_url_free(url);
+          UNPROTECT(1);
+          return Rf_ScalarInteger(xc);
+        }
+      }
+      break;
+    case VECSXP:
+      for (R_xlen_t i = 0; i < hlen; i++) {
+        const char *head = CHAR(STRING_ELT(VECTOR_ELT(headers, i), 0));
+        const char *name = CHAR(STRING_ELT(names, i));
+        xc = nng_http_req_set_header(req, name, head);
+        if (xc) {
+          nng_http_req_free(req);
+          nng_http_client_free(client);
+          nng_url_free(url);
+          UNPROTECT(1);
+          return Rf_ScalarInteger(xc);
+        }
+      }
+      break;
     }
-  }
-  if (auth != R_NilValue) {
-    const char *aut = CHAR(STRING_ELT(auth, 0));
-    xc = nng_http_req_set_header(req, "Authorization", aut);
-    if (xc) {
-      nng_http_req_free(req);
-      nng_http_client_free(client);
-      nng_url_free(url);
-      return Rf_ScalarInteger(xc);
-    }
+    UNPROTECT(1);
   }
   if (data != R_NilValue) {
     unsigned char *dp = RAW(data);

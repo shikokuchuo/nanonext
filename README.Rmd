@@ -411,8 +411,9 @@ For advanced use, supports additional HTTP methods such as POST or PUT.
 
 ```{r ncurladv}
 
-res <- ncurl("http://httpbin.org/post", async = TRUE,
-             "POST", "application/json", "Bearer APIKEY", '{"key": "value"}')
+res <- ncurl("http://httpbin.org/post", async = TRUE, method = "POST",
+             headers = c(`Content-Type` = "application/json", Authorization = "Bearer APIKEY"),
+             data = '{"key": "value"}')
 res
 
 call_aio(res)$data

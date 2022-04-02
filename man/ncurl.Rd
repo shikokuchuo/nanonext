@@ -4,25 +4,18 @@
 \alias{ncurl}
 \title{ncurl}
 \usage{
-ncurl(
-  url,
-  async = FALSE,
-  method = NULL,
-  ctype = NULL,
-  auth = NULL,
-  data = NULL
-)
+ncurl(url, async = FALSE, method = NULL, headers = NULL, data = NULL)
 }
 \arguments{
 \item{url}{the URL address.}
 
 \item{async}{[default FALSE] logical value whether to perform actions async.}
 
-\item{method}{(optional) the HTTP method.}
+\item{method}{(optional) the HTTP method (defaults to 'GET' if not specified).}
 
-\item{ctype}{(optional) the 'Content-type' header.}
-
-\item{auth}{(optional) the 'Authorization' header.}
+\item{headers}{(optional) a named list or character vector specifying the
+HTTP request headers e.g. \code{list(`Content-Type` = "text/plain")} or
+\code{c(Authorization = "Bearer APIKEY")}.}
 
 \item{data}{(optional) the request data to be submitted.}
 }
@@ -62,7 +55,7 @@ nano cURL - a minimalist http(s) client.
 
 \examples{
 ncurl("http://httpbin.org/get")
-ncurl("http://httpbin.org/put", ,"PUT", "text/plain", "Bearer APIKEY", "hello world")
-ncurl("http://httpbin.org/post", ,"POST", "application/json", ,'{"key": "value"}')
+ncurl("http://httpbin.org/put", ,"PUT", list(Authorization = "Bearer APIKEY"), "hello world")
+ncurl("http://httpbin.org/post", ,"POST", c(`Content-Type` = "application/json"),'{"k":"v"}')
 
 }

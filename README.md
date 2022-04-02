@@ -370,7 +370,7 @@ aio
 #> < recvAio >
 #>  - $data for message data
 aio$data |> str()
-#>  num [1:100000000] 1.3356 -0.0658 0.6899 -0.0952 -0.1385 ...
+#>  num [1:100000000] -1.898 0.604 0.988 0.395 -0.633 ...
 ```
 
 As `call_aio()` is blocking and will wait for completion, an alternative
@@ -407,7 +407,7 @@ sub |> recv(mode = "character", keep.raw = FALSE)
 
 pub |> send(c("other", "this other topic will not be received"), mode = "raw", echo = FALSE)
 sub |> recv(mode = "character", keep.raw = FALSE)
-#> 2022-03-31 16:21:28 [ 8 ] Try again
+#> 2022-04-02 19:46:07 [ 8 ] Try again
 
 # specify NULL to subscribe to ALL topics
 sub |> subscribe(topic = NULL)
@@ -418,7 +418,7 @@ sub |> recv("character", keep.raw = FALSE)
 sub |> unsubscribe(topic = NULL)
 pub |> send(c("newTopic", "this topic will now not be received"), mode = "raw", echo = FALSE)
 sub |> recv("character", keep.raw = FALSE)
-#> 2022-03-31 16:21:28 [ 8 ] Try again
+#> 2022-04-02 19:46:07 [ 8 ] Try again
 
 # however the topics explicitly subscribed to are still received
 pub |> send(c("examples", "this example will still be received"), mode = "raw", echo = FALSE)
@@ -474,7 +474,7 @@ aio2$data
 # after the survey expires, the second resolves into a timeout error
 Sys.sleep(0.5)
 aio2$data
-#> 2022-03-31 16:21:29 [ 5 ] Timed out
+#> 2022-04-02 19:46:08 [ 5 ] Timed out
 #> 'errorValue' int 5
 
 close(sur)
@@ -504,25 +504,26 @@ ncurl("http://httpbin.org/headers")
 #>   [1] 7b 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73
 #>  [26] 74 22 3a 20 22 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22
 #>  [51] 58 2d 41 6d 7a 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31
-#>  [76] 2d 36 32 34 35 63 36 66 39 2d 35 62 64 37 34 31 65 61 35 35 38 36 61 36 63
-#> [101] 66 30 65 34 64 36 61 61 61 22 0a 20 20 7d 0a 7d 0a
+#>  [76] 2d 36 32 34 38 39 39 66 30 2d 35 61 32 31 32 64 64 61 36 33 65 66 38 31 66
+#> [101] 31 30 64 39 39 66 62 63 30 22 0a 20 20 7d 0a 7d 0a
 #> 
 #> $data
-#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6245c6f9-5bd741ea5586a6cf0e4d6aaa\"\n  }\n}\n"
+#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-624899f0-5a212dda63ef81f10d99fbc0\"\n  }\n}\n"
 ```
 
 For advanced use, supports additional HTTP methods such as POST or PUT.
 
 ``` r
-res <- ncurl("http://httpbin.org/post", async = TRUE,
-             "POST", "application/json", "Bearer APIKEY", '{"key": "value"}')
+res <- ncurl("http://httpbin.org/post", async = TRUE, method = "POST",
+             headers = c(`Content-Type` = "application/json", Authorization = "Bearer APIKEY"),
+             data = '{"key": "value"}')
 res
 #> < recvAio >
 #>  - $data for message data
 #>  - $raw for raw message
 
 call_aio(res)$data
-#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6245c6f9-7f1995a270c8f351194cfa3a\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"79.173.189.204\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
+#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-624899f0-1c6f78c46ce661ac017ee613\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"78.145.225.121\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
 ```
 
 In this respect, it may be used as a performant and lightweight method
