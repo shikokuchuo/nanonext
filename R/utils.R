@@ -100,6 +100,18 @@ logging <- function(level = c("keep", "check", "error", "info")) {
 
 }
 
+# nanonext - Limited scope exported functions ----------------------------------
+
+#' @export
+#'
+.mirai_scm <- function() {
+
+  identical(parent.env(parent.env(parent.frame())), getNamespace("mirai")) ||
+    stop("this function is for package internal use only")
+  .Call(rnng_scm)
+
+}
+
 # nanonext - Non-exported functions --------------------------------------------
 
 encode <- function(data, mode) {
