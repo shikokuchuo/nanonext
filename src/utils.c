@@ -135,7 +135,7 @@ SEXP rnng_ncurl(SEXP http, SEXP method, SEXP ctype, SEXP auth, SEXP data) {
       nng_url_free(url);
       return Rf_ScalarInteger(xc);
     }
-    if ((xc = nng_tls_config_auth_mode(cfg, 0)) ||
+    if ((xc = nng_tls_config_auth_mode(cfg, 1)) ||
         (xc = nng_http_client_set_tls(client, cfg))) {
       nng_tls_config_free(cfg);
       nng_aio_free(aio);

@@ -21,6 +21,7 @@ static void socket_finalizer(SEXP xptr) {
   if (R_ExternalPtrAddr(xptr) == NULL)
     return;
   nng_socket *xp = (nng_socket *) R_ExternalPtrAddr(xptr);
+  nng_close(*xp);
   R_Free(xp);
   R_ClearExternalPtr(xptr);
 
@@ -63,8 +64,7 @@ SEXP rnng_protocol_open(SEXP protocol) {
   SET_STRING_ELT(klass, 0, Rf_mkChar("nanoSocket"));
   SET_STRING_ELT(klass, 1, Rf_mkChar("nano"));
   Rf_classgets(socket, klass);
-  int id = nng_socket_id(*sock);
-  Rf_setAttrib(socket, nano_IdSymbol, Rf_ScalarInteger(id));
+  Rf_setAttrib(socket, nano_IdSymbol, Rf_ScalarInteger((int) sock->id));
   Rf_setAttrib(socket, nano_StateSymbol, Rf_mkString("opened"));
   Rf_setAttrib(socket, nano_ProtocolSymbol, protocol);
   UNPROTECT(2);
@@ -107,17 +107,16 @@ static void rnng_thread(void *arg) {
 
   while (1) {
     xc = nng_recv(*sock, &buf, &sz, 1u);
+    time(&now);
+    tms = localtime(&now);
+
     if (xc) {
-      time(&now);
-      tms = localtime(&now);
       REprintf("| messenger session ended: %d-%02d-%02d %02d:%02d:%02d\n",
                tms->tm_year + 1900, tms->tm_mon + 1, tms->tm_mday,
                tms->tm_hour, tms->tm_min, tms->tm_sec);
       break;
     }
     if (!strcmp(buf, ":c ")) {
-      time(&now);
-      tms = localtime(&now);
       REprintf("| <- peer connected: %d-%02d-%02d %02d:%02d:%02d\n",
                tms->tm_year + 1900, tms->tm_mon + 1, tms->tm_mday,
                tms->tm_hour, tms->tm_min, tms->tm_sec);
@@ -125,8 +124,6 @@ static void rnng_thread(void *arg) {
       continue;
     }
     if (!strcmp(buf, ":d ")) {
-      time(&now);
-      tms = localtime(&now);
       REprintf("| -> peer disconnected: %d-%02d-%02d %02d:%02d:%02d\n",
                tms->tm_year + 1900, tms->tm_mon + 1, tms->tm_mday,
                tms->tm_hour, tms->tm_min, tms->tm_sec);
@@ -134,13 +131,12 @@ static void rnng_thread(void *arg) {
       continue;
     }
 
-    time(&now);
-    tms = localtime(&now);
     Rprintf("%s\n%*s< %d-%02d-%02d %02d:%02d:%02d\n",
             buf, sz, "",
             tms->tm_year + 1900, tms->tm_mon + 1, tms->tm_mday,
             tms->tm_hour, tms->tm_min, tms->tm_sec);
     nng_free(buf, sz);
+
   }
 
 }
@@ -188,8 +184,6 @@ SEXP rnng_messenger(SEXP url) {
   SEXP xptr = PROTECT(R_MakeExternalPtr(thr, R_NilValue, R_NilValue));
   R_RegisterCFinalizerEx(xptr, thread_finalizer, TRUE);
   R_MakeWeakRef(socket, xptr, R_NilValue, TRUE);
-
-  Rf_classgets(socket, Rf_mkString("nanoSocket"));
 
   UNPROTECT(2);
   return socket;

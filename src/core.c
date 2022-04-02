@@ -10,6 +10,7 @@ static void context_finalizer(SEXP xptr) {
   if (R_ExternalPtrAddr(xptr) == NULL)
     return;
   nng_ctx *xp = (nng_ctx *) R_ExternalPtrAddr(xptr);
+  nng_ctx_close(*xp);
   R_Free(xp);
   R_ClearExternalPtr(xptr);
 
@@ -20,6 +21,7 @@ static void dialer_finalizer(SEXP xptr) {
   if (R_ExternalPtrAddr(xptr) == NULL)
     return;
   nng_dialer *xp = (nng_dialer *) R_ExternalPtrAddr(xptr);
+  nng_dialer_close(*xp);
   R_Free(xp);
   R_ClearExternalPtr(xptr);
 
@@ -30,6 +32,7 @@ static void listener_finalizer(SEXP xptr) {
   if (R_ExternalPtrAddr(xptr) == NULL)
     return;
   nng_listener *xp = (nng_listener *) R_ExternalPtrAddr(xptr);
+  nng_listener_close(*xp);
   R_Free(xp);
   R_ClearExternalPtr(xptr);
 
@@ -54,12 +57,10 @@ SEXP rnng_ctx_open(SEXP socket) {
   SET_STRING_ELT(klass, 0, Rf_mkChar("nanoContext"));
   SET_STRING_ELT(klass, 1, Rf_mkChar("nano"));
   Rf_classgets(context, klass);
-  int id = nng_ctx_id(*ctxp);
-  Rf_setAttrib(context, nano_IdSymbol, Rf_ScalarInteger(id));
+  Rf_setAttrib(context, nano_IdSymbol, Rf_ScalarInteger((int) ctxp->id));
   Rf_setAttrib(context, nano_StateSymbol, Rf_mkString("opened"));
   Rf_setAttrib(context, nano_ProtocolSymbol, Rf_getAttrib(socket, nano_ProtocolSymbol));
-  int sid = nng_socket_id(*sock);
-  Rf_setAttrib(context, nano_SocketSymbol, Rf_ScalarInteger(sid));
+  Rf_setAttrib(context, nano_SocketSymbol, Rf_ScalarInteger((int) sock->id));
 
   UNPROTECT(2);
   return context;
@@ -98,12 +99,10 @@ SEXP rnng_dial(SEXP socket, SEXP url) {
   SET_STRING_ELT(klass, 0, Rf_mkChar("nanoDialer"));
   SET_STRING_ELT(klass, 1, Rf_mkChar("nano"));
   Rf_classgets(dialer, klass);
-  int id = nng_dialer_id(*dp);
-  Rf_setAttrib(dialer, nano_IdSymbol, Rf_ScalarInteger(id));
+  Rf_setAttrib(dialer, nano_IdSymbol, Rf_ScalarInteger((int) dp->id));
   Rf_setAttrib(dialer, nano_UrlSymbol, url);
   Rf_setAttrib(dialer, nano_StateSymbol, Rf_mkString("started"));
-  int sid = nng_socket_id(*sock);
-  Rf_setAttrib(dialer, nano_SocketSymbol, Rf_ScalarInteger(sid));
+  Rf_setAttrib(dialer, nano_SocketSymbol, Rf_ScalarInteger((int) sock->id));
 
   UNPROTECT(2);
   return dialer;
@@ -128,12 +127,10 @@ SEXP rnng_dialer_create(SEXP socket, SEXP url) {
   SET_STRING_ELT(klass, 0, Rf_mkChar("nanoDialer"));
   SET_STRING_ELT(klass, 1, Rf_mkChar("nano"));
   Rf_classgets(dialer, klass);
-  int id = nng_dialer_id(*dp);
-  Rf_setAttrib(dialer, nano_IdSymbol, Rf_ScalarInteger(id));
+  Rf_setAttrib(dialer, nano_IdSymbol, Rf_ScalarInteger((int) dp->id));
   Rf_setAttrib(dialer, nano_UrlSymbol, url);
   Rf_setAttrib(dialer, nano_StateSymbol, Rf_mkString("not started"));
-  int sid = nng_socket_id(*sock);
-  Rf_setAttrib(dialer, nano_SocketSymbol, Rf_ScalarInteger(sid));
+  Rf_setAttrib(dialer, nano_SocketSymbol, Rf_ScalarInteger((int) sock->id));
 
   UNPROTECT(2);
   return dialer;
@@ -158,12 +155,10 @@ SEXP rnng_listen(SEXP socket, SEXP url) {
   SET_STRING_ELT(klass, 0, Rf_mkChar("nanoListener"));
   SET_STRING_ELT(klass, 1, Rf_mkChar("nano"));
   Rf_classgets(listener, klass);
-  int id = nng_listener_id(*lp);
-  Rf_setAttrib(listener, nano_IdSymbol, Rf_ScalarInteger(id));
+  Rf_setAttrib(listener, nano_IdSymbol, Rf_ScalarInteger((int) lp->id));
   Rf_setAttrib(listener, nano_UrlSymbol, url);
   Rf_setAttrib(listener, nano_StateSymbol, Rf_mkString("started"));
-  int sid = nng_socket_id(*sock);
-  Rf_setAttrib(listener, nano_SocketSymbol, Rf_ScalarInteger(sid));
+  Rf_setAttrib(listener, nano_SocketSymbol, Rf_ScalarInteger((int) sock->id));
 
   UNPROTECT(2);
   return listener;
@@ -188,12 +183,10 @@ SEXP rnng_listener_create(SEXP socket, SEXP url) {
   SET_STRING_ELT(klass, 0, Rf_mkChar("nanoListener"));
   SET_STRING_ELT(klass, 1, Rf_mkChar("nano"));
   Rf_classgets(listener, klass);
-  int id = nng_listener_id(*lp);
-  Rf_setAttrib(listener, nano_IdSymbol, Rf_ScalarInteger(id));
+  Rf_setAttrib(listener, nano_IdSymbol, Rf_ScalarInteger((int) lp->id));
   Rf_setAttrib(listener, nano_UrlSymbol, url);
   Rf_setAttrib(listener, nano_StateSymbol, Rf_mkString("not started"));
-  int sid = nng_socket_id(*sock);
-  Rf_setAttrib(listener, nano_SocketSymbol, Rf_ScalarInteger(sid));
+  Rf_setAttrib(listener, nano_SocketSymbol, Rf_ScalarInteger((int) sock->id));
 
   UNPROTECT(2);
   return listener;

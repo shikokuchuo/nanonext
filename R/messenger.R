@@ -33,7 +33,7 @@ messenger <- function(url) {
   }
   on.exit(expr = {
     s <- .Call(rnng_send, sock, writeBin(":d ", raw()), 0L)
-    close(sock)
+    .Call(rnng_close, sock)
     invisible()
   })
   cat("\n", file = stdout())

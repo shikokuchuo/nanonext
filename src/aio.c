@@ -48,6 +48,7 @@ static void stream_dialer_finalizer(SEXP xptr) {
   if (R_ExternalPtrAddr(xptr) == NULL)
     return;
   nng_stream_dialer *xp = (nng_stream_dialer *) R_ExternalPtrAddr(xptr);
+  nng_stream_dialer_close(xp);
   nng_stream_dialer_free(xp);
   R_ClearExternalPtr(xptr);
 
@@ -58,6 +59,7 @@ static void stream_listener_finalizer(SEXP xptr) {
   if (R_ExternalPtrAddr(xptr) == NULL)
     return;
   nng_stream_listener *xp = (nng_stream_listener *) R_ExternalPtrAddr(xptr);
+  nng_stream_listener_close(xp);
   nng_stream_listener_free(xp);
   R_ClearExternalPtr(xptr);
 
@@ -68,6 +70,7 @@ static void stream_finalizer(SEXP xptr) {
   if (R_ExternalPtrAddr(xptr) == NULL)
     return;
   nng_stream *xp = (nng_stream *) R_ExternalPtrAddr(xptr);
+  nng_stream_close(xp);
   nng_stream_free(xp);
   R_ClearExternalPtr(xptr);
 
@@ -467,7 +470,7 @@ SEXP rnng_stream_dial(SEXP url, SEXP textframes) {
       nng_url_free(up);
       return Rf_ScalarInteger(xc);
     }
-    if ((xc = nng_tls_config_auth_mode(cfg, 0)) ||
+    if ((xc = nng_tls_config_auth_mode(cfg, 1)) ||
         (xc = nng_stream_dialer_set_ptr(dp, "tls-config", cfg))) {
       nng_tls_config_free(cfg);
       nng_stream_dialer_free(dp);
@@ -555,13 +558,13 @@ SEXP rnng_stream_listen(SEXP url, SEXP textframes) {
   }
 
   if (!strcmp(up->u_scheme, "wss")) {
-    xc = nng_tls_config_alloc(&cfg, 0);
+    xc = nng_tls_config_alloc(&cfg, 1);
     if (xc) {
       nng_stream_listener_free(lp);
       nng_url_free(up);
       return Rf_ScalarInteger(xc);
     }
-    if ((xc = nng_tls_config_auth_mode(cfg, 0)) ||
+    if ((xc = nng_tls_config_auth_mode(cfg, 1)) ||
         (xc = nng_stream_listener_set_ptr(lp, "tls-config", cfg))) {
       nng_tls_config_free(cfg);
       nng_stream_listener_free(lp);
@@ -999,7 +1002,7 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP method, SEXP ctype, SEXP auth, SEXP data) {
       nng_url_free(url);
       return Rf_ScalarInteger(xc);
     }
-    if ((xc = nng_tls_config_auth_mode(cfg, 0)) ||
+    if ((xc = nng_tls_config_auth_mode(cfg, 1)) ||
         (xc = nng_http_client_set_tls(client, cfg))) {
       nng_tls_config_free(cfg);
       nng_aio_free(aiop);
