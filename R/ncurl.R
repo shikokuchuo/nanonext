@@ -52,7 +52,6 @@ ncurl <- function(url, async = FALSE, method = NULL, headers = NULL, data = NULL
   if (missing(async) || !isTRUE(async)) {
 
     res <- .Call(rnng_ncurl, url, method, headers, data)
-    missing(res) && return(invisible())
     if (is.integer(res)) {
       logerror(res)
       return(invisible(res))
