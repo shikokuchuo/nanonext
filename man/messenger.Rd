@@ -27,6 +27,6 @@ Console-based 2-way messaging system based on NNG scalability protocols.
     \code{:q} is the command to quit.
 
     NOTE: This is an experimental feature that is currently undergoing
-    early-stage testing.
+    testing.
 }
 

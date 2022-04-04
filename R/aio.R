@@ -122,12 +122,14 @@ send_aio.nanoStream <- function(con, data, mode = "raw", timeout) {
   }
   env <- `class<-`(new.env(), "sendAio")
   result <- NULL
+  unresolv <- TRUE
   makeActiveBinding(sym = "result", fun = function(x) {
-    if (is.null(result)) {
+    if (unresolv) {
       res <- .Call(rnng_aio_result, aio)
       missing(res) && return(.Call(rnng_aio_unresolv))
       if (res) logerror(res)
       result <<- res
+      unresolv <<- FALSE
     }
     result
   }, env = env)
@@ -373,7 +375,7 @@ recv_aio.nanoStream <- function(con,
   if (keep.raw) {
     makeActiveBinding(sym = "raw", fun = function(x) {
       if (unresolv) {
-        res <- .Call(rnng_aio_stream_recv, aio)
+        res <- .Call(rnng_aio_stream_in, aio)
         missing(res) && return(.Call(rnng_aio_unresolv))
         is.integer(res) && {
           data <<- raw <<- `class<-`(res, "errorValue")
@@ -397,7 +399,7 @@ recv_aio.nanoStream <- function(con,
   }
   makeActiveBinding(sym = "data", fun = function(x) {
     if (unresolv) {
-      res <- .Call(rnng_aio_stream_recv, aio)
+      res <- .Call(rnng_aio_stream_in, aio)
       missing(res) && return(.Call(rnng_aio_unresolv))
       is.integer(res) && {
         data <<- raw <<- `class<-`(res, "errorValue")

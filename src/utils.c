@@ -46,13 +46,13 @@ SEXP rnng_ncurl(SEXP http, SEXP method, SEXP headers, SEXP data) {
   nng_http_req *req;
   nng_http_res *res;
   nng_aio *aio;
+  nng_tls_config *cfg;
   int xc;
-  uint16_t code;
   void *dat;
   size_t sz;
-  struct nng_tls_config *cfg;
-  int tls = 0;
+  uint16_t code;
 
+  cfg = NULL;
   const char *httr = CHAR(STRING_ELT(http, 0));
   xc = nng_url_parse(&url, httr);
   if (xc)
@@ -160,14 +160,13 @@ SEXP rnng_ncurl(SEXP http, SEXP method, SEXP headers, SEXP data) {
       nng_url_free(url);
       return Rf_ScalarInteger(xc);
     }
-    tls = 1;
   }
 
   nng_http_client_transact(client, req, res, aio);
   nng_aio_wait(aio);
   xc = nng_aio_result(aio);
   if (xc) {
-    if (tls)
+    if (cfg != NULL)
       nng_tls_config_free(cfg);
     nng_aio_free(aio);
     nng_http_res_free(res);
@@ -184,7 +183,7 @@ SEXP rnng_ncurl(SEXP http, SEXP method, SEXP headers, SEXP data) {
   if (code >= 300 && code < 400) {
     const char *location = nng_http_res_get_header(res, "Location");
     SEXP ret = Rf_mkString(location);
-    if (tls)
+    if (cfg != NULL)
       nng_tls_config_free(cfg);
     nng_http_res_free(res);
     nng_http_req_free(req);
@@ -198,7 +197,7 @@ SEXP rnng_ncurl(SEXP http, SEXP method, SEXP headers, SEXP data) {
   unsigned char *rp = RAW(vec);
   memcpy(rp, dat, sz);
 
-  if (tls)
+  if (cfg != NULL)
     nng_tls_config_free(cfg);
   nng_http_res_free(res);
   nng_http_req_free(req);

@@ -8,38 +8,124 @@
 
 /* definitions and statics -------------------------------------------------- */
 
-typedef struct int_mtx_s {
-  int state;
+typedef struct nano_aio_s {
+  nng_aio *aio;
   nng_mtx *mtx;
-} int_mtx;
+  uint8_t resolved;
+  uint8_t type;
+  void *data;
+  int result;
+} nano_aio;
 
-static void aio_finalizer(SEXP xptr) {
+typedef struct nano_handle_s {
+  uint16_t code;
+  nng_url *url;
+  nng_http_client *cli;
+  nng_http_req *req;
+  nng_http_res *res;
+  nng_tls_config *cfg;
+} nano_handle;
 
-  if (R_ExternalPtrAddr(xptr) == NULL)
-    return;
-  nng_aio *xp = (nng_aio *) R_ExternalPtrAddr(xptr);
-  nng_aio_free(xp);
-  R_ClearExternalPtr(xptr);
+static void saio_complete(void *arg) {
+
+  nano_aio *saio = (nano_aio *) (arg);
+  saio->result = nng_aio_result(saio->aio);
+  if (saio->result)
+    nng_msg_free(nng_aio_get_msg(saio->aio));
+  nng_mtx_lock(saio->mtx);
+  saio->resolved = 1;
+  nng_mtx_unlock(saio->mtx);
 
 }
 
-static void mtx_finalizer(SEXP xptr) {
+static void raio_complete(void *arg) {
+
+  nano_aio *raio = (nano_aio *) (arg);
+  raio->result = nng_aio_result(raio->aio);
+  if(!raio->result)
+    raio->data = nng_aio_get_msg(raio->aio);
+  nng_mtx_lock(raio->mtx);
+  raio->resolved = 1;
+  nng_mtx_unlock(raio->mtx);
+
+}
+
+static void iaio_complete(void *arg) {
+
+  nano_aio *iaio = (nano_aio *) (arg);
+  iaio->result = nng_aio_result(iaio->aio);
+  nng_mtx_lock(iaio->mtx);
+  iaio->resolved = 1;
+  nng_mtx_unlock(iaio->mtx);
+
+}
+
+static void saio_finalizer(SEXP xptr) {
 
   if (R_ExternalPtrAddr(xptr) == NULL)
     return;
-  int_mtx *xp = (int_mtx *) R_ExternalPtrAddr(xptr);
+  nano_aio *xp = (nano_aio *) R_ExternalPtrAddr(xptr);
+  nng_aio_free(xp->aio);
   nng_mtx_free(xp->mtx);
   R_Free(xp);
-  R_ClearExternalPtr(xptr);
 
 }
 
-static void write_completion(void *arg) {
+static void raio_finalizer(SEXP xptr) {
 
-  int_mtx *mutex = (int_mtx *) (arg);
-  nng_mtx_lock(mutex->mtx);
-  mutex->state = 1;
-  nng_mtx_unlock(mutex->mtx);
+  if (R_ExternalPtrAddr(xptr) == NULL)
+    return;
+  nano_aio *xp = (nano_aio *) R_ExternalPtrAddr(xptr);
+  nng_aio_free(xp->aio);
+  nng_mtx_free(xp->mtx);
+  if (xp->data != NULL)
+    nng_msg_free(xp->data);
+  R_Free(xp);
+
+}
+
+static void isaio_finalizer(SEXP xptr) {
+
+  if (R_ExternalPtrAddr(xptr) == NULL)
+    return;
+  nano_aio *xp = (nano_aio *) R_ExternalPtrAddr(xptr);
+  nng_aio_free(xp->aio);
+  nng_mtx_free(xp->mtx);
+  R_Free(xp->data);
+  R_Free(xp);
+
+}
+
+static void iraio_finalizer(SEXP xptr) {
+
+  if (R_ExternalPtrAddr(xptr) == NULL)
+    return;
+  nano_aio *xp = (nano_aio *) R_ExternalPtrAddr(xptr);
+  nng_iov *iov = (nng_iov *) xp->data;
+  nng_aio_free(xp->aio);
+  nng_mtx_free(xp->mtx);
+  R_Free(iov->iov_buf);
+  R_Free(iov);
+  R_Free(xp);
+
+}
+
+static void haio_finalizer(SEXP xptr) {
+
+  if (R_ExternalPtrAddr(xptr) == NULL)
+    return;
+  nano_aio *xp = (nano_aio *) R_ExternalPtrAddr(xptr);
+  nano_handle *handle = (nano_handle *) xp->data;
+  nng_aio_free(xp->aio);
+  nng_mtx_free(xp->mtx);
+  if (handle->cfg != NULL)
+    nng_tls_config_free(handle->cfg);
+  nng_http_res_free(handle->res);
+  nng_http_req_free(handle->req);
+  nng_http_client_free(handle->cli);
+  nng_url_free(handle->url);
+  R_Free(handle);
+  R_Free(xp);
 
 }
 
@@ -50,7 +136,6 @@ static void stream_dialer_finalizer(SEXP xptr) {
   nng_stream_dialer *xp = (nng_stream_dialer *) R_ExternalPtrAddr(xptr);
   nng_stream_dialer_close(xp);
   nng_stream_dialer_free(xp);
-  R_ClearExternalPtr(xptr);
 
 }
 
@@ -61,7 +146,6 @@ static void stream_listener_finalizer(SEXP xptr) {
   nng_stream_listener *xp = (nng_stream_listener *) R_ExternalPtrAddr(xptr);
   nng_stream_listener_close(xp);
   nng_stream_listener_free(xp);
-  R_ClearExternalPtr(xptr);
 
 }
 
@@ -72,67 +156,6 @@ static void stream_finalizer(SEXP xptr) {
   nng_stream *xp = (nng_stream *) R_ExternalPtrAddr(xptr);
   nng_stream_close(xp);
   nng_stream_free(xp);
-  R_ClearExternalPtr(xptr);
-
-}
-
-static void iov_finalizer(SEXP xptr) {
-
-  if (R_ExternalPtrAddr(xptr) == NULL)
-    return;
-  unsigned char *xp = (unsigned char *) R_ExternalPtrAddr(xptr);
-  R_Free(xp);
-  R_ClearExternalPtr(xptr);
-
-}
-
-static void res_finalizer(SEXP xptr) {
-
-  if (R_ExternalPtrAddr(xptr) == NULL)
-    return;
-  nng_http_res *xp = (nng_http_res *) R_ExternalPtrAddr(xptr);
-  nng_http_res_free(xp);
-  R_ClearExternalPtr(xptr);
-
-}
-
-static void req_finalizer(SEXP xptr) {
-
-  if (R_ExternalPtrAddr(xptr) == NULL)
-    return;
-  nng_http_req *xp = (nng_http_req *) R_ExternalPtrAddr(xptr);
-  nng_http_req_free(xp);
-  R_ClearExternalPtr(xptr);
-
-}
-
-static void client_finalizer(SEXP xptr) {
-
-  if (R_ExternalPtrAddr(xptr) == NULL)
-    return;
-  nng_http_client *xp = (nng_http_client *) R_ExternalPtrAddr(xptr);
-  nng_http_client_free(xp);
-  R_ClearExternalPtr(xptr);
-
-}
-
-static void url_finalizer(SEXP xptr) {
-
-  if (R_ExternalPtrAddr(xptr) == NULL)
-    return;
-  nng_url *xp = (nng_url *) R_ExternalPtrAddr(xptr);
-  nng_url_free(xp);
-  R_ClearExternalPtr(xptr);
-
-}
-
-static void tls_finalizer(SEXP xptr) {
-
-  if (R_ExternalPtrAddr(xptr) == NULL)
-    return;
-  nng_tls_config *xp = (nng_tls_config *) R_ExternalPtrAddr(xptr);
-  nng_tls_config_free(xp);
-  R_ClearExternalPtr(xptr);
 
 }
 
@@ -144,35 +167,32 @@ SEXP rnng_recv_aio(SEXP socket, SEXP timeout) {
     error_return("'socket' is not a valid Socket");
 
   nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(socket);
-  nng_aio *aiop;
+  nano_aio *raio;
   int xc;
   const nng_duration dur = (nng_duration) Rf_asInteger(timeout);
 
-  int_mtx *mutex = R_Calloc(1, int_mtx);
-  xc = nng_mtx_alloc(&mutex->mtx);
+  raio = R_Calloc(1, nano_aio);
+  raio->data = NULL;
+
+  xc = nng_aio_alloc(&raio->aio, raio_complete, raio);
   if (xc) {
-    R_Free(mutex);
+    R_Free(raio);
     return Rf_ScalarInteger(xc);
   }
-  xc = nng_aio_alloc(&aiop, write_completion, mutex);
+  xc = nng_mtx_alloc(&raio->mtx);
   if (xc) {
-    nng_mtx_free(mutex->mtx);
-    R_Free(mutex);
+    nng_mtx_free(raio->mtx);
+    R_Free(raio);
     return Rf_ScalarInteger(xc);
   }
-  nng_aio_set_timeout(aiop, dur);
 
-  nng_recv_aio(*sock, aiop);
+  nng_aio_set_timeout(raio->aio, dur);
+  nng_recv_aio(*sock, raio->aio);
 
-  SEXP aio = PROTECT(R_MakeExternalPtr(aiop, nano_AioSymbol, R_NilValue));
-  R_RegisterCFinalizerEx(aio, aio_finalizer, TRUE);
+  SEXP aio = PROTECT(R_MakeExternalPtr(raio, nano_AioSymbol, R_NilValue));
+  R_RegisterCFinalizerEx(aio, raio_finalizer, TRUE);
 
-  SEXP mtx = PROTECT(R_MakeExternalPtr(mutex, nano_StateSymbol, R_NilValue));
-  R_RegisterCFinalizerEx(mtx, mtx_finalizer, TRUE);
-
-  Rf_setAttrib(aio, nano_StateSymbol, mtx);
-
-  UNPROTECT(2);
+  UNPROTECT(1);
   return aio;
 
 }
@@ -183,35 +203,32 @@ SEXP rnng_ctx_recv_aio(SEXP context, SEXP timeout) {
     error_return("'context' is not a valid Context");
 
   nng_ctx *ctxp = (nng_ctx *) R_ExternalPtrAddr(context);
-  nng_aio *aiop;
+  nano_aio *raio;
   int xc;
   const nng_duration dur = (nng_duration) Rf_asInteger(timeout);
 
-  int_mtx *mutex = R_Calloc(1, int_mtx);
-  xc = nng_mtx_alloc(&mutex->mtx);
+  raio = R_Calloc(1, nano_aio);
+  raio->data = NULL;
+
+  xc = nng_aio_alloc(&raio->aio, raio_complete, raio);
   if (xc) {
-    R_Free(mutex);
+    R_Free(raio);
     return Rf_ScalarInteger(xc);
   }
-  xc = nng_aio_alloc(&aiop, write_completion, mutex);
+  xc = nng_mtx_alloc(&raio->mtx);
   if (xc) {
-    nng_mtx_free(mutex->mtx);
-    R_Free(mutex);
+    nng_mtx_free(raio->mtx);
+    R_Free(raio);
     return Rf_ScalarInteger(xc);
   }
-  nng_aio_set_timeout(aiop, dur);
 
-  nng_ctx_recv(*ctxp, aiop);
+  nng_aio_set_timeout(raio->aio, dur);
+  nng_ctx_recv(*ctxp, raio->aio);
 
-  SEXP aio = PROTECT(R_MakeExternalPtr(aiop, nano_AioSymbol, R_NilValue));
-  R_RegisterCFinalizerEx(aio, aio_finalizer, TRUE);
+  SEXP aio = PROTECT(R_MakeExternalPtr(raio, nano_AioSymbol, R_NilValue));
+  R_RegisterCFinalizerEx(aio, raio_finalizer, TRUE);
 
-  SEXP mtx = PROTECT(R_MakeExternalPtr(mutex, nano_StateSymbol, R_NilValue));
-  R_RegisterCFinalizerEx(mtx, mtx_finalizer, TRUE);
-
-  Rf_setAttrib(aio, nano_StateSymbol, mtx);
-
-  UNPROTECT(2);
+  UNPROTECT(1);
   return aio;
 
 }
@@ -224,51 +241,49 @@ SEXP rnng_send_aio(SEXP socket, SEXP data, SEXP timeout) {
     error_return("'socket' is not a valid Socket");
 
   nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(socket);
-  int_mtx *mutex;
-  nng_msg *msgp;
-  nng_aio *aiop;
+  nano_aio *saio;
+  nng_msg *msg;
   int xc;
 
   const nng_duration dur = (nng_duration) Rf_asInteger(timeout);
   unsigned char *dp = RAW(data);
-  const R_xlen_t xlen = XLENGTH(data);
+  const R_xlen_t xlen = Rf_xlength(data);
 
-  xc = nng_msg_alloc(&msgp, 0);
-  if (xc)
-    return Rf_ScalarInteger(xc);
-  xc = nng_msg_append(msgp, dp, xlen);
+  saio = R_Calloc(1, nano_aio);
+
+  xc = nng_msg_alloc(&msg, 0);
   if (xc) {
-    nng_msg_free(msgp);
+    R_Free(saio);
     return Rf_ScalarInteger(xc);
   }
-  mutex = R_Calloc(1, int_mtx);
-  xc = nng_mtx_alloc(&mutex->mtx);
+  xc = nng_msg_append(msg, dp, xlen);
   if (xc) {
-    R_Free(mutex);
-    nng_msg_free(msgp);
+    nng_msg_free(msg);
+    R_Free(saio);
     return Rf_ScalarInteger(xc);
   }
-  xc = nng_aio_alloc(&aiop, write_completion, mutex);
+  xc = nng_aio_alloc(&saio->aio, saio_complete, saio);
   if (xc) {
-    nng_mtx_free(mutex->mtx);
-    R_Free(mutex);
-    nng_msg_free(msgp);
+    nng_msg_free(msg);
+    R_Free(saio);
     return Rf_ScalarInteger(xc);
   }
-  nng_aio_set_msg(aiop, msgp);
-  nng_aio_set_timeout(aiop, dur);
+  xc = nng_mtx_alloc(&saio->mtx);
+  if (xc) {
+    nng_aio_free(saio->aio);
+    nng_msg_free(msg);
+    R_Free(saio);
+    return Rf_ScalarInteger(xc);
+  }
 
-  nng_send_aio(*sock, aiop);
+  nng_aio_set_msg(saio->aio, msg);
+  nng_aio_set_timeout(saio->aio, dur);
+  nng_send_aio(*sock, saio->aio);
 
-  SEXP aio = PROTECT(R_MakeExternalPtr(aiop, nano_AioSymbol, R_NilValue));
-  R_RegisterCFinalizerEx(aio, aio_finalizer, TRUE);
+  SEXP aio = PROTECT(R_MakeExternalPtr(saio, nano_AioSymbol, R_NilValue));
+  R_RegisterCFinalizerEx(aio, saio_finalizer, TRUE);
 
-  SEXP mtx = PROTECT(R_MakeExternalPtr(mutex, nano_StateSymbol, R_NilValue));
-  R_RegisterCFinalizerEx(mtx, mtx_finalizer, TRUE);
-
-  Rf_setAttrib(aio, nano_StateSymbol, mtx);
-
-  UNPROTECT(2);
+  UNPROTECT(1);
   return aio;
 
 }
@@ -279,51 +294,50 @@ SEXP rnng_ctx_send_aio(SEXP context, SEXP data, SEXP timeout) {
     error_return("'context' is not a valid Context");
 
   nng_ctx *ctxp = (nng_ctx *) R_ExternalPtrAddr(context);
-  int_mtx *mutex;
-  nng_msg *msgp;
-  nng_aio *aiop;
+  nano_aio *saio;
+  nng_msg *msg;
   int xc;
 
   const nng_duration dur = (nng_duration) Rf_asInteger(timeout);
   unsigned char *dp = RAW(data);
-  const R_xlen_t xlen = XLENGTH(data);
+  const R_xlen_t xlen = Rf_xlength(data);
 
-  xc = nng_msg_alloc(&msgp, 0);
-  if (xc)
-    return Rf_ScalarInteger(xc);
-  xc = nng_msg_append(msgp, dp, xlen);
+  saio = R_Calloc(1, nano_aio);
+
+  xc = nng_msg_alloc(&msg, 0);
   if (xc) {
-    nng_msg_free(msgp);
+    R_Free(saio);
     return Rf_ScalarInteger(xc);
   }
-  mutex = R_Calloc(1, int_mtx);
-  xc = nng_mtx_alloc(&mutex->mtx);
+
+  xc = nng_msg_append(msg, dp, xlen);
   if (xc) {
-    R_Free(mutex);
-    nng_msg_free(msgp);
+    nng_msg_free(msg);
+    R_Free(saio);
     return Rf_ScalarInteger(xc);
   }
-  xc = nng_aio_alloc(&aiop, write_completion, mutex);
+  xc = nng_aio_alloc(&saio->aio, saio_complete, saio);
   if (xc) {
-    nng_mtx_free(mutex->mtx);
-    R_Free(mutex);
-    nng_msg_free(msgp);
+    nng_msg_free(msg);
+    R_Free(saio);
     return Rf_ScalarInteger(xc);
   }
-  nng_aio_set_msg(aiop, msgp);
-  nng_aio_set_timeout(aiop, dur);
+  xc = nng_mtx_alloc(&saio->mtx);
+  if (xc) {
+    nng_aio_free(saio->aio);
+    nng_msg_free(msg);
+    R_Free(saio);
+    return Rf_ScalarInteger(xc);
+  }
 
-  nng_ctx_send(*ctxp, aiop);
+  nng_aio_set_msg(saio->aio, msg);
+  nng_aio_set_timeout(saio->aio, dur);
+  nng_ctx_send(*ctxp, saio->aio);
 
-  SEXP aio = PROTECT(R_MakeExternalPtr(aiop, nano_AioSymbol, R_NilValue));
-  R_RegisterCFinalizerEx(aio, aio_finalizer, TRUE);
+  SEXP aio = PROTECT(R_MakeExternalPtr(saio, nano_AioSymbol, R_NilValue));
+  R_RegisterCFinalizerEx(aio, saio_finalizer, TRUE);
 
-  SEXP mtx = PROTECT(R_MakeExternalPtr(mutex, nano_StateSymbol, R_NilValue));
-  R_RegisterCFinalizerEx(mtx, mtx_finalizer, TRUE);
-
-  Rf_setAttrib(aio, nano_StateSymbol, mtx);
-
-  UNPROTECT(2);
+  UNPROTECT(1);
   return aio;
 
 }
@@ -335,33 +349,37 @@ SEXP rnng_aio_get_msg(SEXP aio) {
   if (R_ExternalPtrAddr(aio) == NULL)
     error_return("'aio' is not an active Aio");
 
-  nng_aio *aiop = (nng_aio *) R_ExternalPtrAddr(aio);
-  int_mtx *mutex = (int_mtx *) R_ExternalPtrAddr(Rf_getAttrib(aio, nano_StateSymbol));
-  nng_mtx_lock(mutex->mtx);
-  int resolv = mutex->state;
-  nng_mtx_unlock(mutex->mtx);
+  uint8_t resolv;
+  int res;
+  nano_aio *raio = (nano_aio *) R_ExternalPtrAddr(aio);
+
+  nng_mtx_lock(raio->mtx);
+  resolv = raio->resolved;
+  nng_mtx_unlock(raio->mtx);
   if (!resolv)
     return R_MissingArg;
 
-  int xc = nng_aio_result(aiop);
-  if (xc) {
-    nng_aio_free(aiop);
+  res = raio->result;
+  if (res) {
+    nng_mtx_free(raio->mtx);
+    nng_aio_free(raio->aio);
+    R_Free(raio);
     R_ClearExternalPtr(aio);
-    Rf_setAttrib(aio, nano_StateSymbol, R_NilValue);
-    return Rf_ScalarInteger(xc);
+    return Rf_ScalarInteger(res);
   }
-  nng_msg *msgp = nng_aio_get_msg(aiop);
-  size_t sz = nng_msg_len(msgp);
-  SEXP res = PROTECT(Rf_allocVector(RAWSXP, sz));
-  unsigned char *rp = RAW(res);
-  memcpy(rp, nng_msg_body(msgp), sz);
-  nng_msg_free(msgp);
-  nng_aio_free(aiop);
+
+  size_t sz = nng_msg_len(raio->data);
+  SEXP vec = PROTECT(Rf_allocVector(RAWSXP, sz));
+  unsigned char *rp = RAW(vec);
+  memcpy(rp, nng_msg_body(raio->data), sz);
+  nng_msg_free(raio->data);
+  nng_aio_free(raio->aio);
+  nng_mtx_free(raio->mtx);
+  R_Free(raio);
   R_ClearExternalPtr(aio);
-  Rf_setAttrib(aio, nano_StateSymbol, R_NilValue);
 
   UNPROTECT(1);
-  return res;
+  return vec;
 
 }
 
@@ -372,21 +390,36 @@ SEXP rnng_aio_result(SEXP aio) {
   if (R_ExternalPtrAddr(aio) == NULL)
     error_return("'aio' is not an active Aio");
 
-  nng_aio *aiop = (nng_aio *) R_ExternalPtrAddr(aio);
-  int_mtx *mutex = (int_mtx *) R_ExternalPtrAddr(Rf_getAttrib(aio, nano_StateSymbol));
-  nng_mtx_lock(mutex->mtx);
-  int resolv = mutex->state;
-  nng_mtx_unlock(mutex->mtx);
+  uint8_t resolv;
+  int res;
+  nano_aio *aiop = (nano_aio *) R_ExternalPtrAddr(aio);
+
+  nng_mtx_lock(aiop->mtx);
+  resolv = aiop->resolved;
+  nng_mtx_unlock(aiop->mtx);
   if (!resolv)
     return R_MissingArg;
 
-  int xc = nng_aio_result(aiop);
+  res = aiop->result;
 
-  nng_aio_free(aiop);
+  nng_iov *iov;
+  nng_aio_free(aiop->aio);
+  nng_mtx_free(aiop->mtx);
+  switch (aiop->type) {
+  case 0:
+    break;
+  case 1:
+    R_Free(aiop->data);
+    break;
+  case 2:
+    iov = (nng_iov *) aiop->data;
+    R_Free(iov->iov_buf);
+    R_Free(iov);
+    break;
+  }
+  R_Free(aiop);
   R_ClearExternalPtr(aio);
-  Rf_setAttrib(aio, nano_StateSymbol, R_NilValue);
-
-  return Rf_ScalarInteger(xc);
+  return Rf_ScalarInteger(res);
 
 }
 
@@ -397,8 +430,8 @@ SEXP rnng_aio_call(SEXP aio) {
   if (R_ExternalPtrAddr(aio) == NULL)
     return Rf_ScalarLogical(1);
 
-  nng_aio *aiop = (nng_aio *) R_ExternalPtrAddr(aio);
-  nng_aio_wait(aiop);
+  nano_aio *aiop = (nano_aio *) R_ExternalPtrAddr(aio);
+  nng_aio_wait(aiop->aio);
   return Rf_ScalarLogical(0);
 
 }
@@ -410,12 +443,39 @@ SEXP rnng_aio_stop(SEXP aio) {
   if (R_ExternalPtrAddr(aio) == NULL)
     error_return("'aio' is not an active Aio");
 
-  nng_aio *aiop = (nng_aio *) R_ExternalPtrAddr(aio);
-  nng_aio_stop(aiop);
+  nano_aio *aiop = (nano_aio *) R_ExternalPtrAddr(aio);
+  nng_aio_stop(aiop->aio);
 
-  nng_aio_free(aiop);
+  nng_iov *iov;
+  nano_handle *handle;
+  nng_aio_free(aiop->aio);
+  nng_mtx_free(aiop->mtx);
+  switch (aiop->type) {
+  case 0:
+    if (aiop->data != NULL)
+      nng_msg_free(aiop->data);
+    break;
+  case 1:
+    R_Free(aiop->data);
+    break;
+  case 2:
+    iov = (nng_iov *) aiop->data;
+    R_Free(iov->iov_buf);
+    R_Free(iov);
+    break;
+  case 3:
+    handle = (nano_handle *) aiop->data;
+    if (handle->cfg != NULL)
+      nng_tls_config_free(handle->cfg);
+    nng_http_res_free(handle->res);
+    nng_http_req_free(handle->req);
+    nng_http_client_free(handle->cli);
+    nng_url_free(handle->url);
+    R_Free(handle);
+    break;
+  }
+  R_Free(aiop);
   R_ClearExternalPtr(aio);
-  Rf_setAttrib(aio, nano_StateSymbol, R_NilValue);
 
   return R_NilValue;
 
@@ -433,15 +493,15 @@ SEXP rnng_aio_unresolv(void) {
 SEXP rnng_stream_dial(SEXP url, SEXP textframes) {
 
   nng_url *up;
-  struct nng_tls_config *cfg;
+  nng_tls_config *cfg;
   nng_stream_dialer *dp;
   nng_aio *aiop;
   int xc;
-  int tls = 0;
   int frames = 0;
   const int mod = LOGICAL(textframes)[0];
   const char *add = CHAR(STRING_ELT(url, 0));
 
+  cfg = NULL;
   xc = nng_url_parse(&up, add);
   if (xc)
     return Rf_ScalarInteger(xc);
@@ -477,12 +537,11 @@ SEXP rnng_stream_dial(SEXP url, SEXP textframes) {
       nng_url_free(up);
       return Rf_ScalarInteger(xc);
     }
-    tls = 1;
   }
 
   xc = nng_aio_alloc(&aiop, NULL, NULL);
   if (xc) {
-    if (tls)
+    if (cfg != NULL)
       nng_tls_config_free(cfg);
     nng_stream_dialer_free(dp);
     nng_url_free(up);
@@ -492,7 +551,7 @@ SEXP rnng_stream_dial(SEXP url, SEXP textframes) {
   nng_aio_wait(aiop);
   xc = nng_aio_result(aiop);
   if (xc) {
-    if (tls)
+    if (cfg != NULL)
       nng_tls_config_free(cfg);
     nng_aio_free(aiop);
     nng_stream_dialer_free(dp);
@@ -501,7 +560,7 @@ SEXP rnng_stream_dial(SEXP url, SEXP textframes) {
   }
   nng_stream *stream;
   stream = nng_aio_get_output(aiop, 0);
-  if (tls)
+  if (cfg != NULL)
     nng_tls_config_free(cfg);
   nng_aio_free(aiop);
   nng_url_free(up);
@@ -527,15 +586,15 @@ SEXP rnng_stream_dial(SEXP url, SEXP textframes) {
 SEXP rnng_stream_listen(SEXP url, SEXP textframes) {
 
   nng_url *up;
-  struct nng_tls_config *cfg;
+  nng_tls_config *cfg;
   nng_stream_listener *lp;
   nng_aio *aiop;
   int xc;
-  int tls = 0;
   int frames = 0;
   const int mod = LOGICAL(textframes)[0];
   const char *add = CHAR(STRING_ELT(url, 0));
 
+  cfg = NULL;
   xc = nng_url_parse(&up, add);
   if (xc)
     return Rf_ScalarInteger(xc);
@@ -571,12 +630,11 @@ SEXP rnng_stream_listen(SEXP url, SEXP textframes) {
       nng_url_free(up);
       return Rf_ScalarInteger(xc);
     }
-    tls = 1;
   }
 
   xc = nng_stream_listener_listen(lp);
   if (xc) {
-    if (tls)
+    if (cfg != NULL)
       nng_tls_config_free(cfg);
     nng_stream_listener_free(lp);
     nng_url_free(up);
@@ -584,7 +642,7 @@ SEXP rnng_stream_listen(SEXP url, SEXP textframes) {
   }
   xc = nng_aio_alloc(&aiop, NULL, NULL);
   if (xc) {
-    if (tls)
+    if (cfg != NULL)
       nng_tls_config_free(cfg);
     nng_stream_listener_free(lp);
     nng_url_free(up);
@@ -594,7 +652,7 @@ SEXP rnng_stream_listen(SEXP url, SEXP textframes) {
   nng_aio_wait(aiop);
   xc = nng_aio_result(aiop);
   if (xc) {
-    if (tls)
+    if (cfg != NULL)
       nng_tls_config_free(cfg);
     nng_aio_free(aiop);
     nng_stream_listener_free(lp);
@@ -604,7 +662,7 @@ SEXP rnng_stream_listen(SEXP url, SEXP textframes) {
 
   nng_stream *stream;
   stream = nng_aio_get_output(aiop, 0);
-  if (tls)
+  if (cfg != NULL)
     nng_tls_config_free(cfg);
   nng_aio_free(aiop);
   nng_url_free(up);
@@ -637,7 +695,7 @@ SEXP rnng_stream_send(SEXP stream, SEXP data, SEXP timeout) {
   nng_stream *sp = (nng_stream *) R_ExternalPtrAddr(stream);
   const nng_duration dur = (nng_duration) Rf_asInteger(timeout);
   unsigned char *dp = RAW(data);
-  const R_xlen_t xlen = XLENGTH(data);
+  const R_xlen_t xlen = Rf_xlength(data);
   int xc;
   nng_iov iov;
   nng_aio *aiop;
@@ -680,49 +738,47 @@ SEXP rnng_stream_send_aio(SEXP stream, SEXP data, SEXP timeout) {
   nng_stream *sp = (nng_stream *) R_ExternalPtrAddr(stream);
   const nng_duration dur = (nng_duration) Rf_asInteger(timeout);
   unsigned char *dp = RAW(data);
-  const R_xlen_t xlen = XLENGTH(data);
-  int xc;
-  nng_iov iov;
-  nng_aio *aiop;
-  int_mtx *mutex;
-
+  const R_xlen_t xlen = Rf_xlength(data);
   const int frames = LOGICAL(Rf_getAttrib(stream, nano_TextframesSymbol))[0];
+  int xc;
 
-  iov.iov_len = frames == 1 ? xlen - 1 : xlen;
-  iov.iov_buf = dp;
+  nano_aio *iaio = R_Calloc(1, nano_aio);
+  iaio->type = 1;
 
-  mutex = R_Calloc(1, int_mtx);
-  xc = nng_mtx_alloc(&mutex->mtx);
+  nng_iov *iov = R_Calloc(1, nng_iov);
+  iaio->data = iov;
+  iov->iov_len = frames == 1 ? xlen - 1 : xlen;
+  iov->iov_buf = dp;
+
+  xc = nng_aio_alloc(&iaio->aio, iaio_complete, iaio);
   if (xc) {
-    R_Free(mutex);
+    R_Free(iov);
+    R_Free(iaio);
+    return Rf_ScalarInteger(xc);
+  }
+  xc = nng_mtx_alloc(&iaio->mtx);
+  if (xc) {
+    nng_aio_free(iaio->aio);
+    R_Free(iov);
+    R_Free(iaio);
+    return Rf_ScalarInteger(xc);
+  }
+  xc = nng_aio_set_iov(iaio->aio, 1, iaio->data);
+  if (xc) {
+    nng_mtx_free(iaio->mtx);
+    nng_aio_free(iaio->aio);
+    R_Free(iov);
+    R_Free(iaio);
     return Rf_ScalarInteger(xc);
   }
 
-  xc = nng_aio_alloc(&aiop, write_completion, mutex);
-  if (xc) {
-    nng_mtx_free(mutex->mtx);
-    R_Free(mutex);
-    return Rf_ScalarInteger(xc);
-  }
+  nng_aio_set_timeout(iaio->aio, dur);
+  nng_stream_send(sp, iaio->aio);
 
-  xc = nng_aio_set_iov(aiop, 1, &iov);
-  if (xc) {
-    nng_aio_free(aiop);
-    nng_mtx_free(mutex->mtx);
-    R_Free(mutex);
-    return Rf_ScalarInteger(xc);
-  }
+  SEXP aio = PROTECT(R_MakeExternalPtr(iaio, nano_AioSymbol, R_NilValue));
+  R_RegisterCFinalizerEx(aio, isaio_finalizer, TRUE);
 
-  nng_aio_set_timeout(aiop, dur);
-  nng_stream_send(sp, aiop);
-
-  SEXP aio = PROTECT(R_MakeExternalPtr(aiop, nano_AioSymbol, R_NilValue));
-  R_RegisterCFinalizerEx(aio, aio_finalizer, TRUE);
-  SEXP mtx = PROTECT(R_MakeExternalPtr(mutex, nano_StateSymbol, R_NilValue));
-  R_RegisterCFinalizerEx(mtx, mtx_finalizer, TRUE);
-  Rf_setAttrib(aio, nano_StateSymbol, mtx);
-
-  UNPROTECT(2);
+  UNPROTECT(1);
   return aio;
 
 }
@@ -737,21 +793,23 @@ SEXP rnng_stream_recv(SEXP stream, SEXP bytes, SEXP timeout) {
   nng_stream *sp = (nng_stream *) R_ExternalPtrAddr(stream);
   const nng_duration dur = (nng_duration) Rf_asInteger(timeout);
   const size_t xlen = Rf_asInteger(bytes) + 1;
-  int xc;
   nng_iov iov;
   nng_aio *aiop;
+  int xc;
 
-  unsigned char *data = R_Calloc(xlen, unsigned char);
   iov.iov_len = xlen;
-  iov.iov_buf = data;
+  iov.iov_buf = R_Calloc(xlen, unsigned char);
 
   xc = nng_aio_alloc(&aiop, NULL, NULL);
-  if (xc)
+  if (xc) {
+    R_Free(iov.iov_buf);
     return Rf_ScalarInteger(xc);
+  }
 
   xc = nng_aio_set_iov(aiop, 1, &iov);
   if (xc) {
     nng_aio_free(aiop);
+    R_Free(iov.iov_buf);
     return Rf_ScalarInteger(xc);
   }
 
@@ -762,6 +820,7 @@ SEXP rnng_stream_recv(SEXP stream, SEXP bytes, SEXP timeout) {
   xc = nng_aio_result(aiop);
   if (xc) {
     nng_aio_free(aiop);
+    R_Free(iov.iov_buf);
     return Rf_ScalarInteger(xc);
   }
 
@@ -770,7 +829,7 @@ SEXP rnng_stream_recv(SEXP stream, SEXP bytes, SEXP timeout) {
   unsigned char *rp = RAW(res);
   memcpy(rp, iov.iov_buf, sz);
   nng_aio_free(aiop);
-  R_Free(data);
+  R_Free(iov.iov_buf);
 
   UNPROTECT(1);
   return res;
@@ -788,89 +847,95 @@ SEXP rnng_stream_recv_aio(SEXP stream, SEXP bytes, SEXP timeout) {
   const nng_duration dur = (nng_duration) Rf_asInteger(timeout);
   const size_t xlen = Rf_asInteger(bytes) + 1;
   int xc;
-  nng_iov iov;
-  nng_aio *aiop;
-  int_mtx *mutex;
 
-  unsigned char *data = R_Calloc(xlen, unsigned char);
-  iov.iov_len = xlen;
-  iov.iov_buf = data;
+  nano_aio *iaio = R_Calloc(1, nano_aio);
+  iaio->type = 2;
 
-  mutex = R_Calloc(1, int_mtx);
-  xc = nng_mtx_alloc(&mutex->mtx);
+  nng_iov *iov = R_Calloc(1, nng_iov);
+  iaio->data = iov;
+  iov->iov_len = xlen;
+  iov->iov_buf = R_Calloc(xlen, unsigned char);
+
+  xc = nng_aio_alloc(&iaio->aio, iaio_complete, iaio);
   if (xc) {
-    R_Free(mutex);
+    R_Free(iov->iov_buf);
+    R_Free(iov);
+    R_Free(iaio);
+    return Rf_ScalarInteger(xc);
+  }
+  xc = nng_mtx_alloc(&iaio->mtx);
+  if (xc) {
+    nng_aio_free(iaio->aio);
+    R_Free(iov->iov_buf);
+    R_Free(iov);
+    R_Free(iaio);
+    return Rf_ScalarInteger(xc);
+  }
+  xc = nng_aio_set_iov(iaio->aio, 1, iaio->data);
+  if (xc) {
+    nng_mtx_free(iaio->mtx);
+    nng_aio_free(iaio->aio);
+    R_Free(iov->iov_buf);
+    R_Free(iov);
+    R_Free(iaio);
     return Rf_ScalarInteger(xc);
   }
 
-  xc = nng_aio_alloc(&aiop, write_completion, mutex);
-  if (xc) {
-    nng_mtx_free(mutex->mtx);
-    R_Free(mutex);
-    return Rf_ScalarInteger(xc);
-  }
+  nng_aio_set_timeout(iaio->aio, dur);
+  nng_stream_recv(sp, iaio->aio);
 
-  xc = nng_aio_set_iov(aiop, 1, &iov);
-  if (xc) {
-    nng_aio_free(aiop);
-    nng_mtx_free(mutex->mtx);
-    R_Free(mutex);
-    return Rf_ScalarInteger(xc);
-  }
+  SEXP aio = PROTECT(R_MakeExternalPtr(iaio, nano_AioSymbol, R_NilValue));
+  R_RegisterCFinalizerEx(aio, iraio_finalizer, TRUE);
 
-  nng_aio_set_timeout(aiop, dur);
-  nng_stream_recv(sp, aiop);
-
-  SEXP aio = PROTECT(R_MakeExternalPtr(aiop, nano_AioSymbol, R_NilValue));
-  R_RegisterCFinalizerEx(aio, aio_finalizer, TRUE);
-  SEXP mtx = PROTECT(R_MakeExternalPtr(mutex, nano_StateSymbol, R_NilValue));
-  R_RegisterCFinalizerEx(mtx, mtx_finalizer, TRUE);
-  SEXP dat = PROTECT(R_MakeExternalPtr(data, nano_IovSymbol, R_NilValue));
-  R_RegisterCFinalizerEx(dat, iov_finalizer, TRUE);
-  Rf_setAttrib(aio, nano_StateSymbol, mtx);
-  Rf_setAttrib(aio, nano_IovSymbol, dat);
-
-  UNPROTECT(3);
+  UNPROTECT(1);
   return aio;
 
 }
 
-SEXP rnng_aio_stream_recv(SEXP aio) {
+SEXP rnng_aio_stream_in(SEXP aio) {
 
   if (R_ExternalPtrTag(aio) != nano_AioSymbol)
     error_return("'aio' is not a valid Aio");
   if (R_ExternalPtrAddr(aio) == NULL)
     error_return("'aio' is not an active Aio");
 
-  nng_aio *aiop = (nng_aio *) R_ExternalPtrAddr(aio);
+  uint8_t resolv;
+  int res;
+  nano_aio *iaio = (nano_aio *) R_ExternalPtrAddr(aio);
 
-  int_mtx *mutex = (int_mtx *) R_ExternalPtrAddr(Rf_getAttrib(aio, nano_StateSymbol));
-  nng_mtx_lock(mutex->mtx);
-  int resolv = mutex->state;
-  nng_mtx_unlock(mutex->mtx);
+  nng_mtx_lock(iaio->mtx);
+  resolv = iaio->resolved;
+  nng_mtx_unlock(iaio->mtx);
   if (!resolv)
     return R_MissingArg;
 
-  int xc = nng_aio_result(aiop);
-  if (xc) {
-    nng_aio_free(aiop);
+  res = iaio->result;
+  nng_iov *iov = (nng_iov *) iaio->data;
+
+  if (res) {
+    R_Free(iov->iov_buf);
+    R_Free(iov);
+    nng_aio_free(iaio->aio);
+    nng_mtx_free(iaio->mtx);
+    R_Free(iaio);
     R_ClearExternalPtr(aio);
-    Rf_setAttrib(aio, nano_StateSymbol, R_NilValue);
-    return Rf_ScalarInteger(xc);
+    return Rf_ScalarInteger(res);
   }
 
-  size_t sz = nng_aio_count(aiop);
-  SEXP res = PROTECT(Rf_allocVector(RAWSXP, sz));
-  unsigned char *iov = (unsigned char *) R_ExternalPtrAddr(Rf_getAttrib(aio, nano_IovSymbol));
-  unsigned char *rp = RAW(res);
-  memcpy(rp, iov, sz);
-  nng_aio_free(aiop);
+  size_t sz = nng_aio_count(iaio->aio);
+  SEXP vec = PROTECT(Rf_allocVector(RAWSXP, sz));
+  unsigned char *rp = RAW(vec);
+  memcpy(rp, iov->iov_buf, sz);
+
+  R_Free(iov->iov_buf);
+  R_Free(iov);
+  nng_aio_free(iaio->aio);
+  nng_mtx_free(iaio->mtx);
+  R_Free(iaio);
   R_ClearExternalPtr(aio);
-  Rf_setAttrib(aio, nano_IovSymbol, R_NilValue);
-  Rf_setAttrib(aio, nano_StateSymbol, R_NilValue);
 
   UNPROTECT(1);
-  return res;
+  return vec;
 
 }
 
@@ -895,38 +960,44 @@ SEXP rnng_stream_close(SEXP stream) {
 
 SEXP rnng_ncurl_aio(SEXP http, SEXP method, SEXP headers, SEXP data) {
 
-  nng_url *url;
-  nng_http_client *client;
-  nng_http_req *req;
-  nng_http_res *res;
-  nng_aio *aiop;
-  int_mtx *mutex;
   int xc;
-  struct nng_tls_config *cfg;
-  int tls = 0;
+  nano_aio *haio = R_Calloc(1, nano_aio);
+  haio->type = 3;
+  nano_handle *handle = R_Calloc(1, nano_handle);
+  handle->cfg = NULL;
+  haio->data = handle;
 
   const char *httr = CHAR(STRING_ELT(http, 0));
-  xc = nng_url_parse(&url, httr);
-  if (xc)
-    return Rf_ScalarInteger(xc);
-  xc = nng_http_client_alloc(&client, url);
+  xc = nng_url_parse(&handle->url, httr);
   if (xc) {
-    nng_url_free(url);
+    R_Free(handle);
+    R_Free(haio);
     return Rf_ScalarInteger(xc);
   }
-  xc = nng_http_req_alloc(&req, url);
+  xc = nng_http_client_alloc(&handle->cli, handle->url);
   if (xc) {
-    nng_http_client_free(client);
-    nng_url_free(url);
+    nng_url_free(handle->url);
+    R_Free(handle);
+    R_Free(haio);
+    return Rf_ScalarInteger(xc);
+  }
+  xc = nng_http_req_alloc(&handle->req, handle->url);
+  if (xc) {
+    nng_http_client_free(handle->cli);
+    nng_url_free(handle->url);
+    R_Free(handle);
+    R_Free(haio);
     return Rf_ScalarInteger(xc);
   }
   if (method != R_NilValue) {
     const char *met = CHAR(STRING_ELT(method, 0));
-    xc = nng_http_req_set_method(req, met);
+    xc = nng_http_req_set_method(handle->req, met);
     if (xc) {
-      nng_http_req_free(req);
-      nng_http_client_free(client);
-      nng_url_free(url);
+      nng_http_req_free(handle->req);
+      nng_http_client_free(handle->cli);
+      nng_url_free(handle->url);
+      R_Free(handle);
+      R_Free(haio);
       return Rf_ScalarInteger(xc);
     }
   }
@@ -938,11 +1009,13 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP method, SEXP headers, SEXP data) {
       for (R_xlen_t i = 0; i < hlen; i++) {
         const char *head = CHAR(STRING_ELT(headers, i));
         const char *name = CHAR(STRING_ELT(names, i));
-        xc = nng_http_req_set_header(req, name, head);
+        xc = nng_http_req_set_header(handle->req, name, head);
         if (xc) {
-          nng_http_req_free(req);
-          nng_http_client_free(client);
-          nng_url_free(url);
+          nng_http_req_free(handle->req);
+          nng_http_client_free(handle->cli);
+          nng_url_free(handle->url);
+          R_Free(handle);
+          R_Free(haio);
           UNPROTECT(1);
           return Rf_ScalarInteger(xc);
         }
@@ -952,11 +1025,13 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP method, SEXP headers, SEXP data) {
       for (R_xlen_t i = 0; i < hlen; i++) {
         const char *head = CHAR(STRING_ELT(VECTOR_ELT(headers, i), 0));
         const char *name = CHAR(STRING_ELT(names, i));
-        xc = nng_http_req_set_header(req, name, head);
+        xc = nng_http_req_set_header(handle->req, name, head);
         if (xc) {
-          nng_http_req_free(req);
-          nng_http_client_free(client);
-          nng_url_free(url);
+          nng_http_req_free(handle->req);
+          nng_http_client_free(handle->cli);
+          nng_url_free(handle->url);
+          R_Free(handle);
+          R_Free(haio);
           UNPROTECT(1);
           return Rf_ScalarInteger(xc);
         }
@@ -967,98 +1042,83 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP method, SEXP headers, SEXP data) {
   }
   if (data != R_NilValue) {
     unsigned char *dp = RAW(data);
-    const R_xlen_t dlen = XLENGTH(data) - 1;
-    xc = nng_http_req_set_data(req, dp, dlen);
+    const R_xlen_t dlen = Rf_xlength(data) - 1;
+    xc = nng_http_req_set_data(handle->req, dp, dlen);
     if (xc) {
-      nng_http_req_free(req);
-      nng_http_client_free(client);
-      nng_url_free(url);
+      nng_http_req_free(handle->req);
+      nng_http_client_free(handle->cli);
+      nng_url_free(handle->url);
+      R_Free(handle);
+      R_Free(haio);
       return Rf_ScalarInteger(xc);
     }
   }
-  xc = nng_http_res_alloc(&res);
+  xc = nng_http_res_alloc(&handle->res);
   if (xc) {
-    nng_http_req_free(req);
-    nng_http_client_free(client);
-    nng_url_free(url);
+    nng_http_req_free(handle->req);
+    nng_http_client_free(handle->cli);
+    nng_url_free(handle->url);
+    R_Free(handle);
+    R_Free(haio);
     return Rf_ScalarInteger(xc);
   }
 
-  mutex = R_Calloc(1, int_mtx);
-  xc = nng_mtx_alloc(&mutex->mtx);
+  xc = nng_aio_alloc(&haio->aio, iaio_complete, haio);
   if (xc) {
-    R_Free(mutex);
-    nng_http_res_free(res);
-    nng_http_req_free(req);
-    nng_http_client_free(client);
-    nng_url_free(url);
+    nng_http_res_free(handle->res);
+    nng_http_req_free(handle->req);
+    nng_http_client_free(handle->cli);
+    nng_url_free(handle->url);
+    R_Free(handle);
+    R_Free(haio);
     return Rf_ScalarInteger(xc);
   }
-  xc = nng_aio_alloc(&aiop, write_completion, mutex);
+  xc = nng_mtx_alloc(&haio->mtx);
   if (xc) {
-    nng_mtx_free(mutex->mtx);
-    R_Free(mutex);
-    nng_http_res_free(res);
-    nng_http_req_free(req);
-    nng_http_client_free(client);
-    nng_url_free(url);
+    nng_aio_free(haio->aio);
+    nng_http_res_free(handle->res);
+    nng_http_req_free(handle->req);
+    nng_http_client_free(handle->cli);
+    nng_url_free(handle->url);
+    R_Free(handle);
+    R_Free(haio);
     return Rf_ScalarInteger(xc);
   }
 
-  if (!strcmp(url->u_scheme, "https")) {
-    xc = nng_tls_config_alloc(&cfg, 0);
+  if (!strcmp(handle->url->u_scheme, "https")) {
+    xc = nng_tls_config_alloc(&handle->cfg, 0);
     if (xc) {
-      nng_aio_free(aiop);
-      nng_mtx_free(mutex->mtx);
-      R_Free(mutex);
-      nng_http_res_free(res);
-      nng_http_req_free(req);
-      nng_http_client_free(client);
-      nng_url_free(url);
+      nng_mtx_free(haio->mtx);
+      nng_aio_free(haio->aio);
+      nng_http_res_free(handle->res);
+      nng_http_req_free(handle->req);
+      nng_http_client_free(handle->cli);
+      nng_url_free(handle->url);
+      R_Free(handle);
+      R_Free(haio);
       return Rf_ScalarInteger(xc);
     }
-    if ((xc = nng_tls_config_auth_mode(cfg, 1)) ||
-        (xc = nng_http_client_set_tls(client, cfg))) {
-      nng_tls_config_free(cfg);
-      nng_aio_free(aiop);
-      nng_mtx_free(mutex->mtx);
-      R_Free(mutex);
-      nng_http_res_free(res);
-      nng_http_req_free(req);
-      nng_http_client_free(client);
-      nng_url_free(url);
+    if ((xc = nng_tls_config_auth_mode(handle->cfg, 1)) ||
+        (xc = nng_http_client_set_tls(handle->cli, handle->cfg))) {
+      nng_tls_config_free(handle->cfg);
+      nng_mtx_free(haio->mtx);
+      nng_aio_free(haio->aio);
+      nng_http_res_free(handle->res);
+      nng_http_req_free(handle->req);
+      nng_http_client_free(handle->cli);
+      nng_url_free(handle->url);
+      R_Free(handle);
+      R_Free(haio);
       return Rf_ScalarInteger(xc);
     }
-    tls = 1;
   }
 
-  nng_http_client_transact(client, req, res, aiop);
+  nng_http_client_transact(handle->cli, handle->req, handle->res, haio->aio);
 
-  SEXP aio = PROTECT(R_MakeExternalPtr(aiop, nano_AioSymbol, R_NilValue));
-  R_RegisterCFinalizerEx(aio, aio_finalizer, TRUE);
-  SEXP mtx = PROTECT(R_MakeExternalPtr(mutex, nano_StateSymbol, R_NilValue));
-  R_RegisterCFinalizerEx(mtx, mtx_finalizer, TRUE);
-  SEXP ares = PROTECT(R_MakeExternalPtr(res, R_NilValue, R_NilValue));
-  R_RegisterCFinalizerEx(ares, res_finalizer, TRUE);
-  Rf_setAttrib(mtx, nano_IovSymbol, ares);
-  SEXP areq = PROTECT(R_MakeExternalPtr(req, R_NilValue, R_NilValue));
-  R_RegisterCFinalizerEx(areq, req_finalizer, TRUE);
-  R_MakeWeakRef(mtx, areq, R_NilValue, TRUE);
-  SEXP acli = PROTECT(R_MakeExternalPtr(client, R_NilValue, R_NilValue));
-  R_RegisterCFinalizerEx(acli, client_finalizer, TRUE);
-  R_MakeWeakRef(mtx, acli, R_NilValue, TRUE);
-  SEXP aurl = PROTECT(R_MakeExternalPtr(url, R_NilValue, R_NilValue));
-  R_RegisterCFinalizerEx(aurl, url_finalizer, TRUE);
-  R_MakeWeakRef(mtx, aurl, R_NilValue, TRUE);
-  if (tls) {
-    SEXP acfg = PROTECT(R_MakeExternalPtr(cfg, R_NilValue, R_NilValue));
-    R_RegisterCFinalizerEx(acfg, tls_finalizer, TRUE);
-    R_MakeWeakRef(mtx, acfg, R_NilValue, TRUE);
-    UNPROTECT(1);
-  }
-  Rf_setAttrib(aio, nano_StateSymbol, mtx);
+  SEXP aio = PROTECT(R_MakeExternalPtr(haio, nano_AioSymbol, R_NilValue));
+  R_RegisterCFinalizerEx(aio, haio_finalizer, TRUE);
 
-  UNPROTECT(6);
+  UNPROTECT(1);
   return aio;
 
 }
@@ -1070,47 +1130,71 @@ SEXP rnng_aio_http(SEXP aio) {
   if (R_ExternalPtrAddr(aio) == NULL)
     error_return("'aio' is not an active Aio");
 
-  uint16_t code;
   void *dat;
   size_t sz;
+  uint8_t resolv;
+  int res;
+  uint16_t code;
+  nano_aio *haio = (nano_aio *) R_ExternalPtrAddr(aio);
 
-  nng_aio *aiop = (nng_aio *) R_ExternalPtrAddr(aio);
-  SEXP state = Rf_getAttrib(aio, nano_StateSymbol);
-  int_mtx *mutex = (int_mtx *) R_ExternalPtrAddr(state);
-  nng_http_res *res = (nng_http_res *) R_ExternalPtrAddr(Rf_getAttrib(state, nano_IovSymbol));
-  nng_mtx_lock(mutex->mtx);
-  int resolv = mutex->state;
-  nng_mtx_unlock(mutex->mtx);
+  nng_mtx_lock(haio->mtx);
+  resolv = haio->resolved;
+  nng_mtx_unlock(haio->mtx);
   if (!resolv)
     return R_MissingArg;
 
-  int xc = nng_aio_result(aiop);
-  if (xc) {
-    nng_aio_free(aiop);
+  res = haio->result;
+  nano_handle *handle = (nano_handle *) haio->data;
+  if (res) {
+    if (handle->cfg != NULL)
+      nng_tls_config_free(handle->cfg);
+    nng_mtx_free(haio->mtx);
+    nng_aio_free(haio->aio);
+    nng_http_res_free(handle->res);
+    nng_http_req_free(handle->req);
+    nng_http_client_free(handle->cli);
+    nng_url_free(handle->url);
+    R_Free(handle);
+    R_Free(haio);
     R_ClearExternalPtr(aio);
-    Rf_setAttrib(aio, nano_StateSymbol, R_NilValue);
-    return Rf_ScalarInteger(xc);
+    return Rf_ScalarInteger(res);
   }
 
-  code = nng_http_res_get_status(res);
+  code = nng_http_res_get_status(handle->res);
   if (code != 200)
-    REprintf("HTTP Server Response: %d %s\n", code, nng_http_res_get_reason(res));
+    REprintf("HTTP Server Response: %d %s\n", code, nng_http_res_get_reason(handle->res));
   if (code >= 300 && code < 400) {
-    const char *location = nng_http_res_get_header(res, "Location");
-    nng_aio_free(aiop);
+    const char *location = nng_http_res_get_header(handle->res, "Location");
+    if (handle->cfg != NULL)
+      nng_tls_config_free(handle->cfg);
+    nng_mtx_free(haio->mtx);
+    nng_aio_free(haio->aio);
+    nng_http_res_free(handle->res);
+    nng_http_req_free(handle->req);
+    nng_http_client_free(handle->cli);
+    nng_url_free(handle->url);
+    R_Free(handle);
+    R_Free(haio);
     R_ClearExternalPtr(aio);
-    Rf_setAttrib(aio, nano_StateSymbol, R_NilValue);
     return Rf_mkString(location);
   }
 
-  nng_http_res_get_data(res, &dat, &sz);
+  nng_http_res_get_data(handle->res, &dat, &sz);
   SEXP vec = PROTECT(Rf_allocVector(RAWSXP, sz));
   unsigned char *rp = RAW(vec);
   memcpy(rp, dat, sz);
 
-  nng_aio_free(aiop);
+  if (handle->cfg != NULL)
+    nng_tls_config_free(handle->cfg);
+  nng_mtx_free(haio->mtx);
+  nng_aio_free(haio->aio);
+  nng_http_res_free(handle->res);
+  nng_http_req_free(handle->req);
+  nng_http_client_free(handle->cli);
+  nng_url_free(handle->url);
+  R_Free(handle);
+  R_Free(haio);
   R_ClearExternalPtr(aio);
-  Rf_setAttrib(aio, nano_StateSymbol, R_NilValue);
 
   UNPROTECT(1);
   return vec;

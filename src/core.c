@@ -12,7 +12,6 @@ static void context_finalizer(SEXP xptr) {
   nng_ctx *xp = (nng_ctx *) R_ExternalPtrAddr(xptr);
   nng_ctx_close(*xp);
   R_Free(xp);
-  R_ClearExternalPtr(xptr);
 
 }
 
@@ -23,7 +22,6 @@ static void dialer_finalizer(SEXP xptr) {
   nng_dialer *xp = (nng_dialer *) R_ExternalPtrAddr(xptr);
   nng_dialer_close(*xp);
   R_Free(xp);
-  R_ClearExternalPtr(xptr);
 
 }
 
@@ -34,7 +32,6 @@ static void listener_finalizer(SEXP xptr) {
   nng_listener *xp = (nng_listener *) R_ExternalPtrAddr(xptr);
   nng_listener_close(*xp);
   R_Free(xp);
-  R_ClearExternalPtr(xptr);
 
 }
 
@@ -253,7 +250,7 @@ SEXP rnng_send(SEXP socket, SEXP data, SEXP block) {
   nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(socket);
 
   const int blk = Rf_asInteger(block);
-  const R_xlen_t dlen = XLENGTH(data);
+  const R_xlen_t dlen = Rf_xlength(data);
   unsigned char *dp = RAW(data);
   int xc;
   nng_msg *msgp;
@@ -360,7 +357,7 @@ SEXP rnng_ctx_send(SEXP context, SEXP data, SEXP timeout) {
   int xc;
   const nng_duration dur = (nng_duration) Rf_asInteger(timeout);
   unsigned char *dp = RAW(data);
-  const R_xlen_t xlen = XLENGTH(data);
+  const R_xlen_t xlen = Rf_xlength(data);
 
   xc = nng_msg_alloc(&msgp, 0);
   if (xc)

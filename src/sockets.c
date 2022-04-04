@@ -23,7 +23,6 @@ static void socket_finalizer(SEXP xptr) {
   nng_socket *xp = (nng_socket *) R_ExternalPtrAddr(xptr);
   nng_close(*xp);
   R_Free(xp);
-  R_ClearExternalPtr(xptr);
 
 }
 

@@ -7,7 +7,6 @@ SEXP nano_AioSymbol;
 SEXP nano_ContextSymbol;
 SEXP nano_DialerSymbol;
 SEXP nano_IdSymbol;
-SEXP nano_IovSymbol;
 SEXP nano_ListenerSymbol;
 SEXP nano_ProtocolSymbol;
 SEXP nano_SocketSymbol;
@@ -21,7 +20,6 @@ static void RegisterSymbols(void) {
   nano_ContextSymbol = Rf_install("context");
   nano_DialerSymbol = Rf_install("dialer");
   nano_IdSymbol = Rf_install("id");
-  nano_IovSymbol = Rf_install("iov");
   nano_ListenerSymbol = Rf_install("listener");
   nano_ProtocolSymbol = Rf_install("protocol");
   nano_SocketSymbol = Rf_install("socket");
@@ -37,7 +35,7 @@ static const R_CallMethodDef CallEntries[] = {
   {"rnng_aio_http", (DL_FUNC) &rnng_aio_http, 1},
   {"rnng_aio_result", (DL_FUNC) &rnng_aio_result, 1},
   {"rnng_aio_stop", (DL_FUNC) &rnng_aio_stop, 1},
-  {"rnng_aio_stream_recv", (DL_FUNC) &rnng_aio_stream_recv, 1},
+  {"rnng_aio_stream_in", (DL_FUNC) &rnng_aio_stream_in, 1},
   {"rnng_aio_unresolv", (DL_FUNC) &rnng_aio_unresolv, 0},
   {"rnng_close", (DL_FUNC) &rnng_close, 1},
   {"rnng_ctx_close", (DL_FUNC) &rnng_ctx_close, 1},

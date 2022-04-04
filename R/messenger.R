@@ -19,7 +19,7 @@
 #'     \code{:q} is the command to quit.
 #'
 #'     NOTE: This is an experimental feature that is currently undergoing
-#'     early-stage testing.
+#'     testing.
 #'
 #' @export
 #'
