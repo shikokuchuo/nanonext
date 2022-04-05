@@ -60,7 +60,7 @@
 <ul><li>New <code><a href="../reference/stream.html">stream()</a></code> interface exposes low-level byte stream functionality in the NNG library, intended for communicating with non-NNG endpoints, including but not limited to websocket servers.</li>
 <li>
 <code><a href="../reference/ncurl.html">ncurl()</a></code> adds an ‘async’ option to perform HTTP requests asynchronously, returning immediately with a ‘recvAio’. Also adds explicit arguments for HTTP method, headers (which takes a named list or character vector) and request data.</li>
-<li>New <code><a href="../reference/messenger.html">messenger()</a></code> function implements a console-based 2-way messaging system using NNG’s scalability protocols [currently experimental and undergoing testing].</li>
+<li>New <code><a href="../reference/messenger.html">messenger()</a></code> function implements a multi-threaded console-based messaging system using NNG’s scalability protocols.</li>
 </ul></div>
 <div class="section level5">
 <h5 id="updates-0-3-0-9005">Updates<a class="anchor" aria-label="anchor" href="#updates-0-3-0-9005"></a></h5>
@@ -68,7 +68,7 @@
 <li>Revised ‘block’ argument for <code><a href="../reference/send.html">send()</a></code> and <code><a href="../reference/recv.html">recv()</a></code> now allows an integer value for setting a timeout.</li>
 <li>
 <code><a href="../reference/send_ctx.html">send_ctx()</a></code> and <code><a href="../reference/recv_ctx.html">recv_ctx()</a></code> are deprecated and will be removed in a future package version - the methods for <code><a href="../reference/send.html">send()</a></code> and <code><a href="../reference/recv.html">recv()</a></code> should be used instead.</li>
-<li>Returned NNG error codes are now all classed ‘errorValue’ and messages have been upgraded to warnings across the package.</li>
+<li>Returned NNG error codes are now all classed ‘errorValue’ and messages have been upgraded to warnings across the package to allow enhanced reporting of the originating call e.g. via <code><a href="https://rdrr.io/r/base/warnings.html" class="external-link">warnings()</a></code>. Timestamps have been removed in a trade-off for better performance.</li>
 <li>Logging is deprecated and in the process of being phased out. Logging can still be set via ‘NANONEXT_LOG’ prior to package load but <code><a href="../reference/logging.html">logging()</a></code> can no longer be used. Logging will be removed entirely in a future package version.</li>
 </ul></div>
 </div>
