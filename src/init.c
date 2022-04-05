@@ -5,10 +5,12 @@
 
 SEXP nano_AioSymbol;
 SEXP nano_ContextSymbol;
+SEXP nano_DataSymbol;
 SEXP nano_DialerSymbol;
 SEXP nano_IdSymbol;
 SEXP nano_ListenerSymbol;
 SEXP nano_ProtocolSymbol;
+SEXP nano_ResultSymbol;
 SEXP nano_SocketSymbol;
 SEXP nano_StateSymbol;
 SEXP nano_StreamSymbol;
@@ -18,10 +20,12 @@ SEXP nano_UrlSymbol;
 static void RegisterSymbols(void) {
   nano_AioSymbol = Rf_install("aio");
   nano_ContextSymbol = Rf_install("context");
+  nano_DataSymbol = Rf_install("data");
   nano_DialerSymbol = Rf_install("dialer");
   nano_IdSymbol = Rf_install("id");
   nano_ListenerSymbol = Rf_install("listener");
   nano_ProtocolSymbol = Rf_install("protocol");
+  nano_ResultSymbol = Rf_install("result");
   nano_SocketSymbol = Rf_install("socket");
   nano_StateSymbol = Rf_install("state");
   nano_StreamSymbol = Rf_install("stream");

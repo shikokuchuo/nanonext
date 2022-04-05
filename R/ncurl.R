@@ -68,7 +68,7 @@ ncurl <- function(url, async = FALSE, method = NULL, headers = NULL, data = NULL
     aio <- .Call(rnng_ncurl_aio, url, method, headers, data)
     is.integer(aio) && {
       logerror(aio)
-      return(invisible(`class<-`(aio, "errorValue")))
+      return(invisible(aio))
     }
     env <- `class<-`(new.env(), "recvAio")
     data <- raw <- NULL
@@ -78,7 +78,7 @@ ncurl <- function(url, async = FALSE, method = NULL, headers = NULL, data = NULL
         res <- .Call(rnng_aio_http, aio)
         missing(res) && return(.Call(rnng_aio_unresolv))
         is.integer(res) && {
-          data <<- raw <<- `class<-`(res, "errorValue")
+          data <<- raw <<- res
           unresolv <<- FALSE
           logerror(res)
           return(invisible(data))
@@ -94,7 +94,7 @@ ncurl <- function(url, async = FALSE, method = NULL, headers = NULL, data = NULL
         res <- .Call(rnng_aio_http, aio)
         missing(res) && return(.Call(rnng_aio_unresolv))
         is.integer(res) && {
-          data <<- raw <<- `class<-`(res, "errorValue")
+          data <<- raw <<- res
           unresolv <<- FALSE
           logerror(res)
           return(invisible(data))

@@ -11,10 +11,12 @@
 /* define internal symbols */
 extern SEXP nano_AioSymbol;
 extern SEXP nano_ContextSymbol;
+extern SEXP nano_DataSymbol;
 extern SEXP nano_DialerSymbol;
 extern SEXP nano_IdSymbol;
 extern SEXP nano_ListenerSymbol;
 extern SEXP nano_ProtocolSymbol;
+extern SEXP nano_ResultSymbol;
 extern SEXP nano_SocketSymbol;
 extern SEXP nano_StateSymbol;
 extern SEXP nano_StreamSymbol;

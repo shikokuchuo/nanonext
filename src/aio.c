@@ -33,6 +33,15 @@ typedef struct nano_handle_s {
   nng_tls_config *cfg;
 } nano_handle;
 
+static SEXP mk_error(const int xc) {
+
+  SEXP err = PROTECT(Rf_ScalarInteger(xc));
+  Rf_classgets(err, Rf_mkString("errorValue"));
+  UNPROTECT(1);
+  return err;
+
+}
+
 static void saio_complete(void *arg) {
 
   nano_aio *saio = (nano_aio *) (arg);
@@ -155,13 +164,13 @@ SEXP rnng_recv_aio(SEXP socket, SEXP timeout) {
   xc = nng_aio_alloc(&raio->aio, raio_complete, raio);
   if (xc) {
     R_Free(raio);
-    return Rf_ScalarInteger(xc);
+    return mk_error(xc);
   }
   xc = nng_mtx_alloc(&raio->mtx);
   if (xc) {
     nng_mtx_free(raio->mtx);
     R_Free(raio);
-    return Rf_ScalarInteger(xc);
+    return mk_error(xc);
   }
 
   nng_aio_set_timeout(raio->aio, dur);
@@ -192,13 +201,13 @@ SEXP rnng_ctx_recv_aio(SEXP context, SEXP timeout) {
   xc = nng_aio_alloc(&raio->aio, raio_complete, raio);
   if (xc) {
     R_Free(raio);
-    return Rf_ScalarInteger(xc);
+    return mk_error(xc);
   }
   xc = nng_mtx_alloc(&raio->mtx);
   if (xc) {
     nng_mtx_free(raio->mtx);
     R_Free(raio);
-    return Rf_ScalarInteger(xc);
+    return mk_error(xc);
   }
 
   nng_aio_set_timeout(raio->aio, dur);
@@ -235,7 +244,7 @@ SEXP rnng_stream_recv_aio(SEXP stream, SEXP bytes, SEXP timeout) {
     R_Free(iov->iov_buf);
     R_Free(iov);
     R_Free(iaio);
-    return Rf_ScalarInteger(xc);
+    return mk_error(xc);
   }
   xc = nng_mtx_alloc(&iaio->mtx);
   if (xc) {
@@ -243,7 +252,7 @@ SEXP rnng_stream_recv_aio(SEXP stream, SEXP bytes, SEXP timeout) {
     R_Free(iov->iov_buf);
     R_Free(iov);
     R_Free(iaio);
-    return Rf_ScalarInteger(xc);
+    return mk_error(xc);
   }
   xc = nng_aio_set_iov(iaio->aio, 1, iaio->data);
   if (xc) {
@@ -252,7 +261,7 @@ SEXP rnng_stream_recv_aio(SEXP stream, SEXP bytes, SEXP timeout) {
     R_Free(iov->iov_buf);
     R_Free(iov);
     R_Free(iaio);
-    return Rf_ScalarInteger(xc);
+    return mk_error(xc);
   }
 
   nng_aio_set_timeout(iaio->aio, dur);
@@ -489,7 +498,7 @@ SEXP rnng_aio_get_msg(SEXP aio) {
     nng_aio_free(raio->aio);
     R_Free(raio);
     R_ClearExternalPtr(aio);
-    return Rf_ScalarInteger(res);
+    return mk_error(res);
   }
 
   size_t sz = nng_msg_len(raio->data);
@@ -534,7 +543,7 @@ SEXP rnng_aio_stream_in(SEXP aio) {
     nng_mtx_free(iaio->mtx);
     R_Free(iaio);
     R_ClearExternalPtr(aio);
-    return Rf_ScalarInteger(res);
+    return mk_error(res);
   }
 
   size_t sz = nng_aio_count(iaio->aio);
@@ -556,25 +565,33 @@ SEXP rnng_aio_stream_in(SEXP aio) {
 
 SEXP rnng_aio_call(SEXP aio) {
 
-  if (R_ExternalPtrTag(aio) != nano_AioSymbol)
+  SEXP coreaio = Rf_findVarInFrame(aio, nano_AioSymbol);
+  if (R_ExternalPtrTag(coreaio) != nano_AioSymbol)
     error_return("'aio' is not a valid Aio");
-  if (R_ExternalPtrAddr(aio) == NULL)
-    return Rf_ScalarLogical(1);
+  if (R_ExternalPtrAddr(coreaio) == NULL)
+    return aio;
 
-  nano_aio *aiop = (nano_aio *) R_ExternalPtrAddr(aio);
+  nano_aio *aiop = (nano_aio *) R_ExternalPtrAddr(coreaio);
   nng_aio_wait(aiop->aio);
-  return Rf_ScalarLogical(0);
+  if (Rf_inherits(aio, "recvAio"))
+    Rf_findVarInFrame(aio, nano_DataSymbol);
+  else
+    Rf_findVarInFrame(aio, nano_ResultSymbol);
+
+  return aio;
 
 }
 
 SEXP rnng_aio_stop(SEXP aio) {
 
-  if (R_ExternalPtrTag(aio) != nano_AioSymbol)
+  SEXP coreaio = Rf_findVarInFrame(aio, nano_AioSymbol);
+
+  if (R_ExternalPtrTag(coreaio) != nano_AioSymbol)
     error_return("'aio' is not a valid Aio");
-  if (R_ExternalPtrAddr(aio) == NULL)
+  if (R_ExternalPtrAddr(coreaio) == NULL)
     error_return("'aio' is not an active Aio");
 
-  nano_aio *aiop = (nano_aio *) R_ExternalPtrAddr(aio);
+  nano_aio *aiop = (nano_aio *) R_ExternalPtrAddr(coreaio);
   nng_aio_stop(aiop->aio);
 
   nng_iov *iov;
@@ -608,7 +625,7 @@ SEXP rnng_aio_stop(SEXP aio) {
     break;
   }
   R_Free(aiop);
-  R_ClearExternalPtr(aio);
+  R_ClearExternalPtr(coreaio);
 
   return R_NilValue;
 
@@ -637,14 +654,14 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP method, SEXP headers, SEXP data) {
   if (xc) {
     R_Free(handle);
     R_Free(haio);
-    return Rf_ScalarInteger(xc);
+    return mk_error(xc);
   }
   xc = nng_http_client_alloc(&handle->cli, handle->url);
   if (xc) {
     nng_url_free(handle->url);
     R_Free(handle);
     R_Free(haio);
-    return Rf_ScalarInteger(xc);
+    return mk_error(xc);
   }
   xc = nng_http_req_alloc(&handle->req, handle->url);
   if (xc) {
@@ -652,7 +669,7 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP method, SEXP headers, SEXP data) {
     nng_url_free(handle->url);
     R_Free(handle);
     R_Free(haio);
-    return Rf_ScalarInteger(xc);
+    return mk_error(xc);
   }
   if (method != R_NilValue) {
     const char *met = CHAR(STRING_ELT(method, 0));
@@ -663,7 +680,7 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP method, SEXP headers, SEXP data) {
       nng_url_free(handle->url);
       R_Free(handle);
       R_Free(haio);
-      return Rf_ScalarInteger(xc);
+      return mk_error(xc);
     }
   }
   if (headers != R_NilValue) {
@@ -682,7 +699,7 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP method, SEXP headers, SEXP data) {
           R_Free(handle);
           R_Free(haio);
           UNPROTECT(1);
-          return Rf_ScalarInteger(xc);
+          return mk_error(xc);
         }
       }
       break;
@@ -698,7 +715,7 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP method, SEXP headers, SEXP data) {
           R_Free(handle);
           R_Free(haio);
           UNPROTECT(1);
-          return Rf_ScalarInteger(xc);
+          return mk_error(xc);
         }
       }
       break;
@@ -715,7 +732,7 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP method, SEXP headers, SEXP data) {
       nng_url_free(handle->url);
       R_Free(handle);
       R_Free(haio);
-      return Rf_ScalarInteger(xc);
+      return mk_error(xc);
     }
   }
   xc = nng_http_res_alloc(&handle->res);
@@ -725,7 +742,7 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP method, SEXP headers, SEXP data) {
     nng_url_free(handle->url);
     R_Free(handle);
     R_Free(haio);
-    return Rf_ScalarInteger(xc);
+    return mk_error(xc);
   }
 
   xc = nng_aio_alloc(&haio->aio, iaio_complete, haio);
@@ -736,7 +753,7 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP method, SEXP headers, SEXP data) {
     nng_url_free(handle->url);
     R_Free(handle);
     R_Free(haio);
-    return Rf_ScalarInteger(xc);
+    return mk_error(xc);
   }
   xc = nng_mtx_alloc(&haio->mtx);
   if (xc) {
@@ -747,7 +764,7 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP method, SEXP headers, SEXP data) {
     nng_url_free(handle->url);
     R_Free(handle);
     R_Free(haio);
-    return Rf_ScalarInteger(xc);
+    return mk_error(xc);
   }
 
   if (!strcmp(handle->url->u_scheme, "https")) {
@@ -761,7 +778,7 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP method, SEXP headers, SEXP data) {
       nng_url_free(handle->url);
       R_Free(handle);
       R_Free(haio);
-      return Rf_ScalarInteger(xc);
+      return mk_error(xc);
     }
     if ((xc = nng_tls_config_auth_mode(handle->cfg, 1)) ||
         (xc = nng_http_client_set_tls(handle->cli, handle->cfg))) {
@@ -774,7 +791,7 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP method, SEXP headers, SEXP data) {
       nng_url_free(handle->url);
       R_Free(handle);
       R_Free(haio);
-      return Rf_ScalarInteger(xc);
+      return mk_error(xc);
     }
   }
 
@@ -822,7 +839,7 @@ SEXP rnng_aio_http(SEXP aio) {
     R_Free(handle);
     R_Free(haio);
     R_ClearExternalPtr(aio);
-    return Rf_ScalarInteger(res);
+    return mk_error(res);
   }
 
   code = nng_http_res_get_status(handle->res);

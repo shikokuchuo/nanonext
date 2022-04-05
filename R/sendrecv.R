@@ -238,7 +238,7 @@ recv.nanoSocket <- function(con,
   res <- .Call(rnng_recv, con, block)
   is.integer(res) && {
     logerror(res)
-    return(invisible(`class<-`(res, "errorValue")))
+    return(invisible(res))
   }
   on.exit(expr = return(res))
   data <- decode(con = res, mode = mode)
@@ -263,7 +263,7 @@ recv.nanoContext <- function(con,
   res <- .Call(rnng_ctx_recv, con, block)
   is.integer(res) && {
     logerror(res)
-    return(invisible(`class<-`(res, "errorValue")))
+    return(invisible(res))
   }
   on.exit(expr = return(res))
   data <- decode(con = res, mode = mode)
@@ -290,7 +290,7 @@ recv.nanoStream <- function(con,
   res <- .Call(rnng_stream_recv, con, n, block)
   is.integer(res) && {
     logerror(res)
-    return(invisible(`class<-`(res, "errorValue")))
+    return(invisible(res))
   }
   on.exit(expr = return(res))
   data <- decode(con = res, mode = mode)

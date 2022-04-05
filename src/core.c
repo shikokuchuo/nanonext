@@ -3,7 +3,16 @@
 #include <nng/nng.h>
 #include "nanonext.h"
 
-/* external pointer finalisers ---------------------------------------------- */
+/* statics ------------------------------------------------------------------ */
+
+static SEXP mk_error(const int xc) {
+
+  SEXP err = PROTECT(Rf_ScalarInteger(xc));
+  Rf_classgets(err, Rf_mkString("errorValue"));
+  UNPROTECT(1);
+  return err;
+
+}
 
 static void context_finalizer(SEXP xptr) {
 
@@ -304,7 +313,7 @@ SEXP rnng_recv(SEXP socket, SEXP block) {
   case 0:
     xc = nng_recv(*sock, &buf, &sz, 3u);
     if (xc)
-      return Rf_ScalarInteger(xc);
+      return mk_error(xc);
     res = PROTECT(Rf_allocVector(RAWSXP, sz));
     rp = RAW(res);
     memcpy(rp, buf, sz);
@@ -314,7 +323,7 @@ SEXP rnng_recv(SEXP socket, SEXP block) {
   case 1:
     xc = nng_recv(*sock, &buf, &sz, 1u);
     if (xc)
-      return Rf_ScalarInteger(xc);
+      return mk_error(xc);
     res = PROTECT(Rf_allocVector(RAWSXP, sz));
     rp = RAW(res);
     memcpy(rp, buf, sz);
@@ -324,14 +333,14 @@ SEXP rnng_recv(SEXP socket, SEXP block) {
   default:
     xc = nng_aio_alloc(&aiop, NULL, NULL);
     if (xc)
-      return Rf_ScalarInteger(xc);
+      return mk_error(xc);
     nng_aio_set_timeout(aiop, blk);
     nng_recv_aio(*sock, aiop);
     nng_aio_wait(aiop);
     xc = nng_aio_result(aiop);
     if (xc) {
       nng_aio_free(aiop);
-      return Rf_ScalarInteger(xc);
+      return mk_error(xc);
     }
     nng_msg *msgp = nng_aio_get_msg(aiop);
     sz = nng_msg_len(msgp);
@@ -391,7 +400,7 @@ SEXP rnng_ctx_recv(SEXP context, SEXP timeout) {
 
   xc = nng_aio_alloc(&aiop, NULL, NULL);
   if (xc)
-    return Rf_ScalarInteger(xc);
+    return mk_error(xc);
   nng_aio_set_timeout(aiop, dur);
   nng_ctx_recv(*ctxp, aiop);
 
@@ -399,7 +408,7 @@ SEXP rnng_ctx_recv(SEXP context, SEXP timeout) {
   xc = nng_aio_result(aiop);
   if (xc) {
     nng_aio_free(aiop);
-    return Rf_ScalarInteger(xc);
+    return mk_error(xc);
   }
 
   nng_msg *msgp = nng_aio_get_msg(aiop);
@@ -474,14 +483,14 @@ SEXP rnng_stream_recv(SEXP stream, SEXP bytes, SEXP timeout) {
   xc = nng_aio_alloc(&aiop, NULL, NULL);
   if (xc) {
     R_Free(iov.iov_buf);
-    return Rf_ScalarInteger(xc);
+    return mk_error(xc);
   }
 
   xc = nng_aio_set_iov(aiop, 1, &iov);
   if (xc) {
     nng_aio_free(aiop);
     R_Free(iov.iov_buf);
-    return Rf_ScalarInteger(xc);
+    return mk_error(xc);
   }
 
   nng_aio_set_timeout(aiop, dur);
@@ -492,7 +501,7 @@ SEXP rnng_stream_recv(SEXP stream, SEXP bytes, SEXP timeout) {
   if (xc) {
     nng_aio_free(aiop);
     R_Free(iov.iov_buf);
-    return Rf_ScalarInteger(xc);
+    return mk_error(xc);
   }
 
   size_t sz = nng_aio_count(aiop);

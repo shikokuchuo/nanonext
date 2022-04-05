@@ -218,7 +218,7 @@ recv_aio.nanoSocket <- function(con,
   aio <- .Call(rnng_recv_aio, con, timeout)
   is.integer(aio) && {
     logerror(aio)
-    return(invisible(`class<-`(aio, "errorValue")))
+    return(invisible(aio))
   }
   env <- `class<-`(new.env(), "recvAio")
   data <- raw <- NULL
@@ -229,7 +229,7 @@ recv_aio.nanoSocket <- function(con,
         res <- .Call(rnng_aio_get_msg, aio)
         missing(res) && return(.Call(rnng_aio_unresolv))
         is.integer(res) && {
-          data <<- raw <<- `class<-`(res, "errorValue")
+          data <<- raw <<- res
           unresolv <<- FALSE
           logerror(res)
           return(invisible(data))
@@ -253,7 +253,7 @@ recv_aio.nanoSocket <- function(con,
       res <- .Call(rnng_aio_get_msg, aio)
       missing(res) && return(.Call(rnng_aio_unresolv))
       is.integer(res) && {
-        data <<- raw <<- `class<-`(res, "errorValue")
+        data <<- raw <<- res
         unresolv <<- FALSE
         logerror(res)
         return(invisible(data))
@@ -292,7 +292,7 @@ recv_aio.nanoContext <- function(con,
   aio <- .Call(rnng_ctx_recv_aio, con, timeout)
   is.integer(aio) && {
     logerror(aio)
-    return(invisible(`class<-`(aio, "errorValue")))
+    return(invisible(aio))
   }
   env <- `class<-`(new.env(), "recvAio")
   data <- raw <- NULL
@@ -303,7 +303,7 @@ recv_aio.nanoContext <- function(con,
         res <- .Call(rnng_aio_get_msg, aio)
         missing(res) && return(.Call(rnng_aio_unresolv))
         is.integer(res) && {
-          data <<- raw <<- `class<-`(res, "errorValue")
+          data <<- raw <<- res
           unresolv <<- FALSE
           logerror(res)
           return(invisible(data))
@@ -327,7 +327,7 @@ recv_aio.nanoContext <- function(con,
       res <- .Call(rnng_aio_get_msg, aio)
       missing(res) && return(.Call(rnng_aio_unresolv))
       is.integer(res) && {
-        data <<- raw <<- `class<-`(res, "errorValue")
+        data <<- raw <<- res
         unresolv <<- FALSE
         logerror(res)
         return(invisible(data))
@@ -367,7 +367,7 @@ recv_aio.nanoStream <- function(con,
   aio <- .Call(rnng_stream_recv_aio, con, n, timeout)
   is.integer(aio) && {
     logerror(aio)
-    return(invisible(`class<-`(aio, "errorValue")))
+    return(invisible(aio))
   }
   env <- `class<-`(new.env(), "recvAio")
   data <- raw <- NULL
@@ -378,7 +378,7 @@ recv_aio.nanoStream <- function(con,
         res <- .Call(rnng_aio_stream_in, aio)
         missing(res) && return(.Call(rnng_aio_unresolv))
         is.integer(res) && {
-          data <<- raw <<- `class<-`(res, "errorValue")
+          data <<- raw <<- res
           unresolv <<- FALSE
           logerror(res)
           return(invisible(data))
@@ -402,7 +402,7 @@ recv_aio.nanoStream <- function(con,
       res <- .Call(rnng_aio_stream_in, aio)
       missing(res) && return(.Call(rnng_aio_unresolv))
       is.integer(res) && {
-        data <<- raw <<- `class<-`(res, "errorValue")
+        data <<- raw <<- res
         unresolv <<- FALSE
         logerror(res)
         return(invisible(data))
@@ -483,13 +483,7 @@ recv_aio.nanoStream <- function(con,
 #'
 call_aio <- function(aio) {
 
-  .Call(rnng_aio_call, .subset2(aio, "aio")) && return(invisible(aio))
-  if (inherits(aio, "recvAio")) {
-    .subset2(aio, "data")
-  } else if (inherits(aio, "sendAio")) {
-    .subset2(aio, "result")
-  }
-  invisible(aio)
+  invisible(.Call(rnng_aio_call, aio))
 
 }
 
@@ -510,7 +504,7 @@ call_aio <- function(aio) {
 #'
 stop_aio <- function(aio) {
 
-  invisible(.Call(rnng_aio_stop, .subset2(aio, "aio")))
+  invisible(.Call(rnng_aio_stop, aio))
 
 }
 

@@ -5,7 +5,16 @@
 #include <nng/supplemental/tls/tls.h>
 #include "nanonext.h"
 
-/* external pointer finalisers ---------------------------------------------- */
+/* statics ------------------------------------------------------------------ */
+
+static SEXP mk_error(const int xc) {
+
+  SEXP err = PROTECT(Rf_ScalarInteger(xc));
+  Rf_classgets(err, Rf_mkString("errorValue"));
+  UNPROTECT(1);
+  return err;
+
+}
 
 static void stream_dialer_finalizer(SEXP xptr) {
 
@@ -90,17 +99,17 @@ SEXP rnng_ncurl(SEXP http, SEXP method, SEXP headers, SEXP data) {
   const char *httr = CHAR(STRING_ELT(http, 0));
   xc = nng_url_parse(&url, httr);
   if (xc)
-    return Rf_ScalarInteger(xc);
+    return mk_error(xc);
   xc = nng_http_client_alloc(&client, url);
   if (xc) {
     nng_url_free(url);
-    return Rf_ScalarInteger(xc);
+    return mk_error(xc);
   }
   xc = nng_http_req_alloc(&req, url);
   if (xc) {
     nng_http_client_free(client);
     nng_url_free(url);
-    return Rf_ScalarInteger(xc);
+    return mk_error(xc);
   }
   if (method != R_NilValue) {
     const char *met = CHAR(STRING_ELT(method, 0));
@@ -109,7 +118,7 @@ SEXP rnng_ncurl(SEXP http, SEXP method, SEXP headers, SEXP data) {
       nng_http_req_free(req);
       nng_http_client_free(client);
       nng_url_free(url);
-      return Rf_ScalarInteger(xc);
+      return mk_error(xc);
     }
   }
   if (headers != R_NilValue) {
@@ -126,7 +135,7 @@ SEXP rnng_ncurl(SEXP http, SEXP method, SEXP headers, SEXP data) {
           nng_http_client_free(client);
           nng_url_free(url);
           UNPROTECT(1);
-          return Rf_ScalarInteger(xc);
+          return mk_error(xc);
         }
       }
       break;
@@ -140,7 +149,7 @@ SEXP rnng_ncurl(SEXP http, SEXP method, SEXP headers, SEXP data) {
           nng_http_client_free(client);
           nng_url_free(url);
           UNPROTECT(1);
-          return Rf_ScalarInteger(xc);
+          return mk_error(xc);
         }
       }
       break;
@@ -155,7 +164,7 @@ SEXP rnng_ncurl(SEXP http, SEXP method, SEXP headers, SEXP data) {
       nng_http_req_free(req);
       nng_http_client_free(client);
       nng_url_free(url);
-      return Rf_ScalarInteger(xc);
+      return mk_error(xc);
     }
   }
   xc = nng_http_res_alloc(&res);
@@ -163,7 +172,7 @@ SEXP rnng_ncurl(SEXP http, SEXP method, SEXP headers, SEXP data) {
     nng_http_req_free(req);
     nng_http_client_free(client);
     nng_url_free(url);
-    return Rf_ScalarInteger(xc);
+    return mk_error(xc);
   }
   xc = nng_aio_alloc(&aio, NULL, NULL);
   if (xc) {
@@ -171,7 +180,7 @@ SEXP rnng_ncurl(SEXP http, SEXP method, SEXP headers, SEXP data) {
     nng_http_req_free(req);
     nng_http_client_free(client);
     nng_url_free(url);
-    return Rf_ScalarInteger(xc);
+    return mk_error(xc);
   }
 
   if (!strcmp(url->u_scheme, "https")) {
@@ -182,7 +191,7 @@ SEXP rnng_ncurl(SEXP http, SEXP method, SEXP headers, SEXP data) {
       nng_http_req_free(req);
       nng_http_client_free(client);
       nng_url_free(url);
-      return Rf_ScalarInteger(xc);
+      return mk_error(xc);
     }
     if ((xc = nng_tls_config_auth_mode(cfg, 1)) ||
         (xc = nng_http_client_set_tls(client, cfg))) {
@@ -192,7 +201,7 @@ SEXP rnng_ncurl(SEXP http, SEXP method, SEXP headers, SEXP data) {
       nng_http_req_free(req);
       nng_http_client_free(client);
       nng_url_free(url);
-      return Rf_ScalarInteger(xc);
+      return mk_error(xc);
     }
   }
 
@@ -207,7 +216,7 @@ SEXP rnng_ncurl(SEXP http, SEXP method, SEXP headers, SEXP data) {
     nng_http_req_free(req);
     nng_http_client_free(client);
     nng_url_free(url);
-    return Rf_ScalarInteger(xc);
+    return mk_error(xc);
   }
   nng_aio_free(aio);
 
