@@ -370,7 +370,7 @@ aio
 #> < recvAio >
 #>  - $data for message data
 aio$data |> str()
-#>  num [1:100000000] -1.898 0.604 0.988 0.395 -0.633 ...
+#>  num [1:100000000] 1.0489 0.7951 -0.5668 -0.1798 0.0081 ...
 ```
 
 As `call_aio()` is blocking and will wait for completion, an alternative
@@ -407,7 +407,7 @@ sub |> recv(mode = "character", keep.raw = FALSE)
 
 pub |> send(c("other", "this other topic will not be received"), mode = "raw", echo = FALSE)
 sub |> recv(mode = "character", keep.raw = FALSE)
-#> 2022-04-02 19:46:07 [ 8 ] Try again
+#> Warning: [ 8 ] Try again
 
 # specify NULL to subscribe to ALL topics
 sub |> subscribe(topic = NULL)
@@ -418,7 +418,7 @@ sub |> recv("character", keep.raw = FALSE)
 sub |> unsubscribe(topic = NULL)
 pub |> send(c("newTopic", "this topic will now not be received"), mode = "raw", echo = FALSE)
 sub |> recv("character", keep.raw = FALSE)
-#> 2022-04-02 19:46:07 [ 8 ] Try again
+#> Warning: [ 8 ] Try again
 
 # however the topics explicitly subscribed to are still received
 pub |> send(c("examples", "this example will still be received"), mode = "raw", echo = FALSE)
@@ -474,7 +474,7 @@ aio2$data
 # after the survey expires, the second resolves into a timeout error
 Sys.sleep(0.5)
 aio2$data
-#> 2022-04-02 19:46:08 [ 5 ] Timed out
+#> Warning: [ 5 ] Timed out
 #> 'errorValue' int 5
 
 close(sur)
@@ -483,9 +483,9 @@ close(res2)
 ```
 
 Above it can be seen that the final value resolves into a timeout, which
-is an integer 5 classed as ‘errorValue’. All receive functions class
-integer error codes as ‘errorValue’ to be easily distinguishable from
-integer message values.
+is an integer 5 classed as ‘errorValue’. All integer error codes are
+classed as ‘errorValue’ to be easily distinguishable from integer
+message values.
 
 [« Back to ToC](#table-of-contents)
 
@@ -504,11 +504,11 @@ ncurl("http://httpbin.org/headers")
 #>   [1] 7b 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73
 #>  [26] 74 22 3a 20 22 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22
 #>  [51] 58 2d 41 6d 7a 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31
-#>  [76] 2d 36 32 34 38 39 39 66 30 2d 35 61 32 31 32 64 64 61 36 33 65 66 38 31 66
-#> [101] 31 30 64 39 39 66 62 63 30 22 0a 20 20 7d 0a 7d 0a
+#>  [76] 2d 36 32 34 63 39 66 31 32 2d 32 64 31 31 65 38 35 62 32 32 61 34 65 36 36
+#> [101] 66 31 38 63 62 32 66 31 36 22 0a 20 20 7d 0a 7d 0a
 #> 
 #> $data
-#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-624899f0-5a212dda63ef81f10d99fbc0\"\n  }\n}\n"
+#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-624c9f12-2d11e85b22a4e66f18cb2f16\"\n  }\n}\n"
 ```
 
 For advanced use, supports additional HTTP methods such as POST or PUT.
@@ -523,7 +523,7 @@ res
 #>  - $raw for raw message
 
 call_aio(res)$data
-#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-624899f0-1c6f78c46ce661ac017ee613\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"78.145.225.121\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
+#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-624c9f12-73d4984b4f201f7c28549806\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"78.145.225.121\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
 ```
 
 In this respect, it may be used as a performant and lightweight method

@@ -11,6 +11,7 @@ static SEXP mk_error(const int xc) {
 
   SEXP err = PROTECT(Rf_ScalarInteger(xc));
   Rf_classgets(err, Rf_mkString("errorValue"));
+  Rf_warningcall(R_NilValue, "[ %d ] %s", xc, nng_strerror(xc));
   UNPROTECT(1);
   return err;
 
@@ -268,12 +269,12 @@ SEXP rnng_stream_dial(SEXP url, SEXP textframes) {
   cfg = NULL;
   xc = nng_url_parse(&up, add);
   if (xc)
-    return Rf_ScalarInteger(xc);
+    return mk_error(xc);
 
   xc = nng_stream_dialer_alloc_url(&dp, up);
   if (xc) {
     nng_url_free(up);
-    return Rf_ScalarInteger(xc);
+    return mk_error(xc);
   }
 
   if (!strcmp(up->u_scheme, "ws") || !strcmp(up->u_scheme, "wss")) {
@@ -282,7 +283,7 @@ SEXP rnng_stream_dial(SEXP url, SEXP textframes) {
         (xc = nng_stream_dialer_set_bool(dp, "ws:send-text", 1)))) {
       nng_stream_dialer_free(dp);
       nng_url_free(up);
-      return Rf_ScalarInteger(xc);
+      return mk_error(xc);
     }
     frames = mod;
   }
@@ -292,14 +293,14 @@ SEXP rnng_stream_dial(SEXP url, SEXP textframes) {
     if (xc) {
       nng_stream_dialer_free(dp);
       nng_url_free(up);
-      return Rf_ScalarInteger(xc);
+      return mk_error(xc);
     }
     if ((xc = nng_tls_config_auth_mode(cfg, 1)) ||
         (xc = nng_stream_dialer_set_ptr(dp, "tls-config", cfg))) {
       nng_tls_config_free(cfg);
       nng_stream_dialer_free(dp);
       nng_url_free(up);
-      return Rf_ScalarInteger(xc);
+      return mk_error(xc);
     }
   }
 
@@ -309,7 +310,7 @@ SEXP rnng_stream_dial(SEXP url, SEXP textframes) {
       nng_tls_config_free(cfg);
     nng_stream_dialer_free(dp);
     nng_url_free(up);
-    return Rf_ScalarInteger(xc);
+    return mk_error(xc);
   }
   nng_stream_dialer_dial(dp, aiop);
   nng_aio_wait(aiop);
@@ -320,7 +321,7 @@ SEXP rnng_stream_dial(SEXP url, SEXP textframes) {
     nng_aio_free(aiop);
     nng_stream_dialer_free(dp);
     nng_url_free(up);
-    return Rf_ScalarInteger(xc);
+    return mk_error(xc);
   }
   nng_stream *stream;
   stream = nng_aio_get_output(aiop, 0);
@@ -361,12 +362,12 @@ SEXP rnng_stream_listen(SEXP url, SEXP textframes) {
   cfg = NULL;
   xc = nng_url_parse(&up, add);
   if (xc)
-    return Rf_ScalarInteger(xc);
+    return mk_error(xc);
 
   xc = nng_stream_listener_alloc_url(&lp, up);
   if (xc) {
     nng_url_free(up);
-    return Rf_ScalarInteger(xc);
+    return mk_error(xc);
   }
 
   if (!strcmp(up->u_scheme, "ws") || !strcmp(up->u_scheme, "wss")) {
@@ -375,7 +376,7 @@ SEXP rnng_stream_listen(SEXP url, SEXP textframes) {
         (xc = nng_stream_listener_set_bool(lp, "ws:send-text", 1)))) {
       nng_stream_listener_free(lp);
       nng_url_free(up);
-      return Rf_ScalarInteger(xc);
+      return mk_error(xc);
     }
     frames = mod;
   }
@@ -385,14 +386,14 @@ SEXP rnng_stream_listen(SEXP url, SEXP textframes) {
     if (xc) {
       nng_stream_listener_free(lp);
       nng_url_free(up);
-      return Rf_ScalarInteger(xc);
+      return mk_error(xc);
     }
     if ((xc = nng_tls_config_auth_mode(cfg, 1)) ||
         (xc = nng_stream_listener_set_ptr(lp, "tls-config", cfg))) {
       nng_tls_config_free(cfg);
       nng_stream_listener_free(lp);
       nng_url_free(up);
-      return Rf_ScalarInteger(xc);
+      return mk_error(xc);
     }
   }
 
@@ -402,7 +403,7 @@ SEXP rnng_stream_listen(SEXP url, SEXP textframes) {
       nng_tls_config_free(cfg);
     nng_stream_listener_free(lp);
     nng_url_free(up);
-    return Rf_ScalarInteger(xc);
+    return mk_error(xc);
   }
   xc = nng_aio_alloc(&aiop, NULL, NULL);
   if (xc) {
@@ -410,7 +411,7 @@ SEXP rnng_stream_listen(SEXP url, SEXP textframes) {
       nng_tls_config_free(cfg);
     nng_stream_listener_free(lp);
     nng_url_free(up);
-    return Rf_ScalarInteger(xc);
+    return mk_error(xc);
   }
   nng_stream_listener_accept(lp, aiop);
   nng_aio_wait(aiop);
@@ -421,7 +422,7 @@ SEXP rnng_stream_listen(SEXP url, SEXP textframes) {
     nng_aio_free(aiop);
     nng_stream_listener_free(lp);
     nng_url_free(up);
-    return Rf_ScalarInteger(xc);
+    return mk_error(xc);
   }
 
   nng_stream *stream;

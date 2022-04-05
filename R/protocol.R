@@ -38,14 +38,11 @@
 #'
 subscribe <- function(socket, topic = NULL) {
 
-  xc <- .Call(rnng_socket_set_string, socket, "sub:subscribe" , topic)
-  if (xc) {
-    logerror(xc)
-  } else if (.logging.) {
+  if (.logging.) {
     loginfo(evt = "subscribe", pkey = "sock", pval = attr(socket, "id"),
             skey = "topic", sval = if (is.null(topic)) "ALL" else topic)
   }
-  invisible(xc)
+  invisible(.Call(rnng_socket_set_string, socket, "sub:subscribe" , topic))
 
 }
 
@@ -91,14 +88,11 @@ subscribe <- function(socket, topic = NULL) {
 #'
 unsubscribe <- function(socket, topic = NULL) {
 
-  xc <- .Call(rnng_socket_set_string, socket, "sub:unsubscribe" , topic)
-  if (xc) {
-    logerror(xc)
-  } else if (.logging.) {
+  if (.logging.) {
     loginfo(evt = "unsubscribe", pkey = "sock", pval = attr(socket, "id"),
             skey = "topic", sval = if (is.null(topic)) "ALL" else topic)
   }
-  invisible(xc)
+  invisible(.Call(rnng_socket_set_string, socket, "sub:unsubscribe" , topic))
 
 }
 
@@ -146,14 +140,11 @@ unsubscribe <- function(socket, topic = NULL) {
 #'
 survey_time <- function(socket, time) {
 
-  xc <- .Call(rnng_socket_set_ms, socket, "surveyor:survey-time", time)
-  if (xc) {
-    logerror(xc)
-  } else if (.logging.) {
+  if (.logging.) {
     loginfo(evt = "survey", pkey = "sock", pval = attr(socket, "id"),
             skey = "set time", sval = as.character(time))
   }
-  invisible(xc)
+  invisible(.Call(rnng_socket_set_ms, socket, "surveyor:survey-time", time))
 
 }
 

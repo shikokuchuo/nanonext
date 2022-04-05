@@ -389,7 +389,7 @@ close(res2)
 
 ```
 
-Above it can be seen that the final value resolves into a timeout, which is an integer 5 classed as 'errorValue'. All receive functions class integer error codes as 'errorValue' to be easily distinguishable from integer message values.
+Above it can be seen that the final value resolves into a timeout, which is an integer 5 classed as 'errorValue'. All integer error codes are classed as 'errorValue' to be easily distinguishable from integer message values.
 
 [&laquo; Back to ToC](#table-of-contents)
 

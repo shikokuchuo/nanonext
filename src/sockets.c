@@ -15,6 +15,17 @@
 #include <nng/supplemental/util/platform.h>
 #include "nanonext.h"
 
+/* statics ------------------------------------------------------------------ */
+
+static SEXP mk_error(const int xc) {
+
+  SEXP err = PROTECT(Rf_ScalarInteger(xc));
+  Rf_classgets(err, Rf_mkString("errorValue"));
+  Rf_warningcall(R_NilValue, "[ %d ] %s", xc, nng_strerror(xc));
+  UNPROTECT(1);
+  return err;
+
+}
 
 static void socket_finalizer(SEXP xptr) {
 
@@ -25,6 +36,8 @@ static void socket_finalizer(SEXP xptr) {
   R_Free(xp);
 
 }
+
+/* sockets ------------------------------------------------------------------ */
 
 SEXP rnng_protocol_open(SEXP protocol) {
 
@@ -54,7 +67,7 @@ SEXP rnng_protocol_open(SEXP protocol) {
 
   if (xc) {
     R_Free(sock);
-    return Rf_ScalarInteger(xc);
+    return mk_error(xc);
   }
 
   SEXP socket = PROTECT(R_MakeExternalPtr(sock, nano_SocketSymbol, R_NilValue));
@@ -77,9 +90,10 @@ SEXP rnng_close(SEXP socket) {
     error_return("'socket' is not a valid Socket");
   nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(socket);
   int xc = nng_close(*sock);
-  if (!xc)
-    Rf_setAttrib(socket, nano_StateSymbol, Rf_mkString("closed"));
-  return Rf_ScalarInteger(xc);
+  if (xc)
+    return mk_error(xc);
+  Rf_setAttrib(socket, nano_StateSymbol, Rf_mkString("closed"));
+  return Rf_ScalarInteger(0);
 
 }
 
@@ -152,7 +166,7 @@ SEXP rnng_messenger(SEXP url) {
   xc = nng_pair0_open(sock);
   if (xc) {
     R_Free(sock);
-    return Rf_ScalarInteger(xc);
+    return mk_error(xc);
   }
   dlp = R_Calloc(1, nng_listener);
   xc = nng_listen(*sock, up, dlp, 0);
@@ -163,13 +177,13 @@ SEXP rnng_messenger(SEXP url) {
     if (xc) {
       R_Free(dlp);
       R_Free(sock);
-      return Rf_ScalarInteger(xc);
+      return mk_error(xc);
     }
 
   } else if (xc) {
     R_Free(dlp);
     R_Free(sock);
-    return Rf_ScalarInteger(xc);
+    return mk_error(xc);
   }
 
   socket = PROTECT(R_MakeExternalPtr(sock, nano_SocketSymbol, R_NilValue));

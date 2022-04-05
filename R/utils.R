@@ -128,11 +128,6 @@ decode <- function(con, mode) {
          readBin(con = con, what = mode, n = length(con)))
 }
 
-logerror <- function(xc) {
-  message(sprintf("%s [ %d ] %s",
-                  format.POSIXct(Sys.time()), xc, .Call(rnng_strerror, xc)))
-}
-
 loginfo <- function(evt, pkey, pval, skey, sval) {
   cat(sprintf("%s [ %s ] %s: %d | %s: %s\n",
               format.POSIXct(Sys.time()), evt, pkey, pval, skey, sval), file = stdout())

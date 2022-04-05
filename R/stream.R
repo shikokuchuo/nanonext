@@ -41,10 +41,7 @@ stream <- function(dial = NULL, listen = NULL, textframes = FALSE) {
       is.character(listen) || stop("'listen' should be a URL provided as a character string")
       textframes <- isTRUE(textframes)
       res <- .Call(rnng_stream_listen, listen, textframes)
-      is.integer(res) && {
-        logerror(res)
-        return(invisible(res))
-      }
+      is.integer(res) && return(invisible(res))
       if (.logging.) {
         loginfo(evt = "stream open", pkey = "list", pval = 1L,
                 skey = "url", sval = listen)
@@ -54,10 +51,7 @@ stream <- function(dial = NULL, listen = NULL, textframes = FALSE) {
     is.character(dial) || stop("'dial' should be a URL provided as a character string")
     textframes <- isTRUE(textframes)
     res <- .Call(rnng_stream_dial, dial, textframes)
-    is.integer(res) && {
-      logerror(res)
-      return(invisible(res))
-    }
+    is.integer(res) && return(invisible(res))
     if (.logging.) {
       loginfo(evt = "stream open", pkey = "dial", pval = 1L,
               skey = "url", sval = dial)

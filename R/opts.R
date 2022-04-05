@@ -53,7 +53,6 @@ setopt.nanoSocket <- function(object,
                string = .Call(rnng_socket_set_string, object, opt, value),
                uint64 = .Call(rnng_socket_set_uint64, object, opt, value))
 
-  if (xc) logerror(xc)
   invisible(xc)
 
 }
@@ -83,7 +82,6 @@ setopt.nanoDialer <- function(object,
                string = .Call(rnng_dialer_set_string, object, opt, value),
                uint64 = .Call(rnng_dialer_set_uint64, object, opt, value))
 
-  if (xc) logerror(xc)
   invisible(xc)
 
 }
@@ -113,7 +111,6 @@ setopt.nanoListener <- function(object,
                string = .Call(rnng_listener_set_string, object, opt, value),
                uint64 = .Call(rnng_listener_set_uint64, object, opt, value))
 
-  if (xc) logerror(xc)
   invisible(xc)
 
 }
@@ -144,7 +141,6 @@ setopt.nanoContext <- function(object,
                string = .Call(rnng_ctx_set_string, object, opt, value),
                uint64 = .Call(rnng_ctx_set_uint64, object, opt, value))
 
-  if (xc) logerror(xc)
   invisible(xc)
 
 }

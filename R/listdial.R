@@ -77,18 +77,14 @@ dial <- function(socket,
 
   if (missing(autostart) || isTRUE(autostart)) {
     res <- .Call(rnng_dial, socket, url)
-    is.integer(res) && {
-      logerror(res)
-      return(invisible(res))
-    }
+    is.integer(res) && return(invisible(res))
     if (.logging.) loginfo(evt = "dial start", pkey = "sock", pval = attr(res, "socket"),
                            skey = "url", sval = url)
+
   } else {
     res <- .Call(rnng_dialer_create, socket, url)
-    is.integer(res) && {
-      logerror(res)
-      return(invisible(res))
-    }
+    is.integer(res) && return(invisible(res))
+
   }
 
   if (is.environment(socket)) {
@@ -191,18 +187,14 @@ listen <- function(socket,
 
   if (missing(autostart) || isTRUE(autostart)) {
     res <- .Call(rnng_listen, socket, url)
-    is.integer(res) && {
-      logerror(res)
-      return(invisible(res))
-    }
+    is.integer(res) && return(invisible(res))
     if (.logging.) loginfo(evt = "list start", pkey = "sock", pval = attr(res, "socket"),
                            skey = "url", sval = url)
+
   } else {
     res <- .Call(rnng_listener_create, socket, url)
-    is.integer(res) && {
-      logerror(res)
-      return(invisible(res))
-    }
+    is.integer(res) && return(invisible(res))
+
   }
 
   if (is.environment(socket)) {

@@ -26,14 +26,11 @@ NULL
 #'
 start.nanoListener <- function(x, ...) {
 
-  xc <- .Call(rnng_listener_start, x)
-  if (xc) {
-    logerror(xc)
-  } else if (.logging.) {
+  if (.logging.) {
     loginfo(evt = "list start", pkey = "sock", pval = attr(x, "socket"),
             skey = "url", sval = attr(x, "url"))
   }
-  invisible(xc)
+  invisible(.Call(rnng_listener_start, x))
 
 }
 
@@ -43,14 +40,11 @@ start.nanoListener <- function(x, ...) {
 #'
 start.nanoDialer <- function(x, async = TRUE, ...) {
 
-  xc <- .Call(rnng_dialer_start, x, async)
-  if (xc) {
-    logerror(xc)
-  } else if (.logging.) {
+  if (.logging.) {
     loginfo(evt = "dial start", pkey = "sock", pval = attr(x, "socket"),
             skey = "url", sval = attr(x, "url"))
   }
-  invisible(xc)
+  invisible(.Call(rnng_dialer_start, x, async))
 
 }
 
@@ -89,14 +83,11 @@ NULL
 #'
 close.nanoSocket <- function(con, ...) {
 
-  xc <- .Call(rnng_close, con)
-  if (xc) {
-    logerror(xc)
-  } else if (.logging.) {
+  if (.logging.) {
     loginfo(evt = "sock close", pkey = "id", pval = attr(con, "id"),
             skey = "protocol", sval = attr(con, "protocol"))
   }
-  invisible(xc)
+  invisible(.Call(rnng_close, con))
 
 }
 
@@ -106,9 +97,7 @@ close.nanoSocket <- function(con, ...) {
 #'
 close.nanoContext <- function(con, ...) {
 
-  xc <- .Call(rnng_ctx_close, con)
-  if (xc) logerror(xc)
-  invisible(xc)
+  invisible(.Call(rnng_ctx_close, con))
 
 }
 
@@ -118,15 +107,11 @@ close.nanoContext <- function(con, ...) {
 #'
 close.nanoDialer <- function(con, ...) {
 
-  xc <- .Call(rnng_dialer_close, con)
-  if (xc) {
-    logerror(xc)
-  } else if (.logging.) {
+  if (.logging.) {
     loginfo(evt = "dial close", pkey = "sock", pval = attr(con, "socket"),
             skey = "url", sval = attr(con, "url"))
   }
-
-  invisible(xc)
+  invisible(.Call(rnng_dialer_close, con))
 
 }
 
@@ -136,15 +121,11 @@ close.nanoDialer <- function(con, ...) {
 #'
 close.nanoListener <- function(con, ...) {
 
-  xc <- .Call(rnng_listener_close, con)
-  if (xc) {
-    logerror(xc)
-  } else if (.logging.) {
+  if (.logging.) {
     loginfo(evt = "list close", pkey = "sock", pval = attr(con, "socket"),
             skey = "url", sval = attr(con, "url"))
   }
-
-  invisible(xc)
+  invisible(.Call(rnng_listener_close, con))
 
 }
 
@@ -156,10 +137,9 @@ close.nanoStream <- function(con, ...) {
 
   pkey <- if (is.null(attr(con, "dialer"))) "list" else "dial"
   sval <- attr(con, "url")
-  xc <- .Call(rnng_stream_close, con)
   if (.logging.) loginfo(evt = "stream close", pkey = pkey, pval = 1,
                          skey = "url", sval = sval)
-  invisible(xc)
+  invisible(.Call(rnng_stream_close, con))
 
 }
 

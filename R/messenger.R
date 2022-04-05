@@ -27,15 +27,13 @@ messenger <- function(url) {
 
   is.character(url) || stop("the url must be supplied as a character string")
   sock <- .Call(rnng_messenger, url)
-  is.integer(sock) && {
-    logerror(sock)
-    return(invisible(sock))
-  }
+  is.integer(sock) && return(invisible(sock))
   on.exit(expr = {
-    s <- .Call(rnng_send, sock, writeBin(":d ", raw()), 0L)
+    s <- suppressWarnings(.Call(rnng_send, sock, writeBin(":d ", raw()), 0L))
     .Call(rnng_close, sock)
     invisible()
   })
+
   cat("\n", file = stdout())
   intro <- unlist(strsplit("nanonext messenger", ""))
   for (i in seq_along(intro)) {
@@ -44,19 +42,20 @@ messenger <- function(url) {
   }
   cat(sprintf("\n| url: %s\n", url), file = stdout())
   cat("| connecting... ", file = stderr())
-  s <- .Call(rnng_send, sock, writeBin(":c ", raw()), 1000L)
+  s <- suppressWarnings(.Call(rnng_send, sock, writeBin(":c ", raw()), 1000L))
   if (is.integer(s)) {
     cat(sprintf("\r| peer offline: %s\n", format.POSIXct(Sys.time())), file = stderr())
   } else {
     cat(sprintf("\r| peer online: %s\n", format.POSIXct(Sys.time())), file = stderr())
   }
   cat("type your message:\n", file = stdout())
+
   repeat {
     data <- readline()
     if (identical(data, ":q")) break
     if (identical(data, "")) next
     rdata <- writeBin(object = data, con = raw())
-    s <- .Call(rnng_send, sock, rdata, 0L)
+    s <- suppressWarnings(.Call(rnng_send, sock, rdata, 0L))
     if (is.integer(s)) {
       cat(sprintf("%*s > not sent: peer offline: %s\n", nchar(data), "", format.POSIXct(Sys.time())),
           file = stderr())

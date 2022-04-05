@@ -37,6 +37,7 @@ static SEXP mk_error(const int xc) {
 
   SEXP err = PROTECT(Rf_ScalarInteger(xc));
   Rf_classgets(err, Rf_mkString("errorValue"));
+  Rf_warningcall(R_NilValue, "[ %d ] %s", xc, nng_strerror(xc));
   UNPROTECT(1);
   return err;
 
@@ -457,7 +458,11 @@ SEXP rnng_aio_result(SEXP aio) {
   if (!resolv)
     return R_MissingArg;
 
-  return Rf_ScalarInteger(aiop->result);
+  int res = aiop->result;
+  if (res)
+    return mk_error(res);
+
+  return Rf_ScalarInteger(res);
 
 }
 
@@ -469,7 +474,6 @@ SEXP rnng_aio_get_msg(SEXP aio) {
     error_return("'aio' is not an active Aio");
 
   uint8_t resolv;
-  int res;
   nano_aio *raio = (nano_aio *) R_ExternalPtrAddr(aio);
 
   nng_mtx_lock(raio->mtx);
@@ -478,7 +482,7 @@ SEXP rnng_aio_get_msg(SEXP aio) {
   if (!resolv)
     return R_MissingArg;
 
-  res = raio->result;
+  int res = raio->result;
   if (res)
     return mk_error(res);
 
@@ -500,7 +504,6 @@ SEXP rnng_aio_stream_in(SEXP aio) {
     error_return("'aio' is not an active Aio");
 
   uint8_t resolv;
-  int res;
   nano_aio *iaio = (nano_aio *) R_ExternalPtrAddr(aio);
 
   nng_mtx_lock(iaio->mtx);
@@ -509,12 +512,11 @@ SEXP rnng_aio_stream_in(SEXP aio) {
   if (!resolv)
     return R_MissingArg;
 
-  res = iaio->result;
-  nng_iov *iov = (nng_iov *) iaio->data;
-
+  int res = iaio->result;
   if (res)
     return mk_error(res);
 
+  nng_iov *iov = (nng_iov *) iaio->data;
   size_t sz = nng_aio_count(iaio->aio);
   SEXP vec = PROTECT(Rf_allocVector(RAWSXP, sz));
   unsigned char *rp = RAW(vec);
@@ -529,6 +531,7 @@ SEXP rnng_aio_call(SEXP aio) {
 
   if (TYPEOF(aio) != ENVSXP)
     return aio;
+
   SEXP coreaio = Rf_findVarInFrame(aio, nano_AioSymbol);
   if (R_ExternalPtrTag(coreaio) != nano_AioSymbol || R_ExternalPtrAddr(coreaio) == NULL)
     return aio;
@@ -548,6 +551,7 @@ SEXP rnng_aio_stop(SEXP aio) {
 
   if (TYPEOF(aio) != ENVSXP)
     error_return("'aio' is not a valid Aio");
+
   SEXP coreaio = Rf_findVarInFrame(aio, nano_AioSymbol);
   if (R_ExternalPtrTag(coreaio) != nano_AioSymbol)
     error_return("'aio' is not a valid Aio");
@@ -788,11 +792,7 @@ SEXP rnng_aio_http(SEXP aio) {
   if (R_ExternalPtrAddr(aio) == NULL)
     error_return("'aio' is not an active Aio");
 
-  void *dat;
-  size_t sz;
-  uint16_t code;
   uint8_t resolv;
-  int res;
   nano_aio *haio = (nano_aio *) R_ExternalPtrAddr(aio);
 
   nng_mtx_lock(haio->mtx);
@@ -801,18 +801,20 @@ SEXP rnng_aio_http(SEXP aio) {
   if (!resolv)
     return R_MissingArg;
 
-  res = haio->result;
+  int res = haio->result;
   if (res)
     return mk_error(res);
 
   nano_handle *handle = (nano_handle *) haio->data;
-  code = nng_http_res_get_status(handle->res);
+  uint16_t code = nng_http_res_get_status(handle->res);
   if (code != 200) {
     REprintf("HTTP Server Response: %d %s\n", code, nng_http_res_get_reason(handle->res));
     if (code >= 300 && code < 400)
       return Rf_mkString(nng_http_res_get_header(handle->res, "Location"));
   }
 
+  void *dat;
+  size_t sz;
   nng_http_res_get_data(handle->res, &dat, &sz);
   SEXP vec = PROTECT(Rf_allocVector(RAWSXP, sz));
   unsigned char *rp = RAW(vec);

@@ -44,12 +44,7 @@
 context <- function(socket) {
 
   if (is.environment(socket)) socket <- .subset2(socket, "socket")
-  res <- .Call(rnng_ctx_open, socket)
-  is.integer(res) && {
-    logerror(res)
-    return(invisible(res))
-  }
-  res
+  .Call(rnng_ctx_open, socket)
 
 }
 
@@ -123,20 +118,14 @@ reply <- function(context,
   send_mode <- match.arg(send_mode)
   if (missing(timeout)) timeout <- -2L
   res <- .Call(rnng_ctx_recv, context, timeout)
-  is.integer(res) && {
-    logerror(res)
-    return(invisible(res))
-  }
+  is.integer(res) && return(invisible(res))
   on.exit(expr = send_aio(context, as.raw(0L), mode = send_mode))
   data <- decode(con = res, mode = recv_mode)
   data <- execute(data, ...)
   data <- encode(data = data, mode = send_mode)
   on.exit()
   res <- .Call(rnng_ctx_send, context, data, timeout)
-  is.integer(res) && {
-    logerror(res)
-    return(invisible(res))
-  }
+  is.integer(res) && return(invisible(res))
   invisible(0L)
 
 }
@@ -202,16 +191,11 @@ request <- function(context,
   force(data)
   data <- encode(data = data, mode = send_mode)
   res <- .Call(rnng_ctx_send_aio, context, data, -2L)
-  is.integer(res) && {
-    logerror(res)
-    return(invisible(res))
-  }
+  is.integer(res) && return(invisible(res))
 
   aio <- .Call(rnng_ctx_recv_aio, context, timeout)
-  is.integer(aio) && {
-    logerror(aio)
-    return(invisible(aio))
-  }
+  is.integer(aio) && return(invisible(aio))
+
   env <- new.env(hash = FALSE)
   data <- raw <- NULL
   unresolv <- TRUE
@@ -224,8 +208,7 @@ request <- function(context,
           data <<- raw <<- res
           aio <<- env[["aio"]] <<- NULL
           unresolv <<- FALSE
-          logerror(res)
-          return(invisible(data))
+          return(invisible(res))
         }
         on.exit(expr = {
           raw <<- res
@@ -251,8 +234,7 @@ request <- function(context,
         data <<- raw <<- res
         aio <<- env[["aio"]] <<- NULL
         unresolv <<- FALSE
-        logerror(res)
-        return(invisible(data))
+        return(invisible(res))
       }
       on.exit(expr = {
         data <<- res
@@ -301,10 +283,7 @@ send_ctx <- function(context, data, mode = c("serial", "raw"), timeout, echo = T
   force(data)
   data <- encode(data = data, mode = mode)
   res <- .Call(rnng_ctx_send, context, data, timeout)
-  is.integer(res) && {
-    logerror(res)
-    return(invisible(res))
-  }
+  is.integer(res) && return(invisible(res))
   if (missing(echo) || isTRUE(echo)) res else invisible(0L)
 
 }
@@ -345,10 +324,7 @@ recv_ctx <- function(context,
   mode <- match.arg(mode)
   if (missing(timeout)) timeout <- -2L
   res <- .Call(rnng_ctx_recv, context, timeout)
-  is.integer(res) && {
-    logerror(res)
-    return(invisible(`class<-`(res, "errorValue")))
-  }
+  is.integer(res) && return(invisible(res))
   on.exit(expr = return(res))
   data <- decode(con = res, mode = mode)
   on.exit()

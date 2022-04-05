@@ -78,10 +78,7 @@ send.nanoSocket <- function(con,
   force(data)
   data <- encode(data = data, mode = mode)
   res <- .Call(rnng_send, con, data, block)
-  is.integer(res) && {
-    logerror(res)
-    return(invisible(res))
-  }
+  is.integer(res) && return(invisible(res))
   if (missing(echo) || isTRUE(echo)) res else invisible(0L)
 
 }
@@ -101,10 +98,7 @@ send.nanoContext <- function(con,
   force(data)
   data <- encode(data = data, mode = mode)
   res <- .Call(rnng_ctx_send, con, data, block)
-  is.integer(res) && {
-    logerror(res)
-    return(invisible(res))
-  }
+  is.integer(res) && return(invisible(res))
   if (missing(echo) || isTRUE(echo)) res else invisible(0L)
 
 }
@@ -123,10 +117,7 @@ send.nanoStream <- function(con,
   data <- encode(data = data, mode = "raw")
   if (missing(block) || isTRUE(block)) block <- -2L
   res <- .Call(rnng_stream_send, con, data, block)
-  is.integer(res) && {
-    logerror(res)
-    return(invisible(res))
-  }
+  is.integer(res) && return(invisible(res))
   if (missing(echo) || isTRUE(echo)) res else invisible(0L)
 
 }
@@ -236,10 +227,7 @@ recv.nanoSocket <- function(con,
 
   mode <- match.arg(mode)
   res <- .Call(rnng_recv, con, block)
-  is.integer(res) && {
-    logerror(res)
-    return(invisible(res))
-  }
+  is.integer(res) && return(invisible(res))
   on.exit(expr = return(res))
   data <- decode(con = res, mode = mode)
   on.exit()
@@ -261,10 +249,7 @@ recv.nanoContext <- function(con,
   mode <- match.arg(mode)
   if (missing(block) || isTRUE(block)) block <- -2L
   res <- .Call(rnng_ctx_recv, con, block)
-  is.integer(res) && {
-    logerror(res)
-    return(invisible(res))
-  }
+  is.integer(res) && return(invisible(res))
   on.exit(expr = return(res))
   data <- decode(con = res, mode = mode)
   on.exit()
@@ -288,10 +273,7 @@ recv.nanoStream <- function(con,
   mode <- match.arg(mode)
   if (missing(block) || isTRUE(block)) block <- -2L
   res <- .Call(rnng_stream_recv, con, n, block)
-  is.integer(res) && {
-    logerror(res)
-    return(invisible(res))
-  }
+  is.integer(res) && return(invisible(res))
   on.exit(expr = return(res))
   data <- decode(con = res, mode = mode)
   on.exit()
