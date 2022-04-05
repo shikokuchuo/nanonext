@@ -212,7 +212,7 @@ request <- function(context,
     logerror(aio)
     return(invisible(aio))
   }
-  env <- `class<-`(new.env(hash = FALSE), "recvAio")
+  env <- new.env(hash = FALSE)
   data <- raw <- NULL
   unresolv <- TRUE
   if (keep.raw) {
@@ -222,14 +222,14 @@ request <- function(context,
         missing(res) && return(.Call(rnng_aio_unresolv))
         is.integer(res) && {
           data <<- raw <<- res
-          rm("aio", envir = env)
+          aio <<- env[["aio"]] <<- NULL
           unresolv <<- FALSE
           logerror(res)
           return(invisible(data))
         }
         on.exit(expr = {
           raw <<- res
-          rm("aio", envir = env)
+          aio <<- env[["aio"]] <<- NULL
           unresolv <<- FALSE
           return(res)
         })
@@ -237,7 +237,7 @@ request <- function(context,
         on.exit()
         raw <<- res
         data <<- data
-        rm("aio", envir = env)
+        aio <<- env[["aio"]] <<- NULL
         unresolv <<- FALSE
       }
       raw
@@ -249,14 +249,14 @@ request <- function(context,
       missing(res) && return(.Call(rnng_aio_unresolv))
       is.integer(res) && {
         data <<- raw <<- res
-        rm("aio", envir = env)
+        aio <<- env[["aio"]] <<- NULL
         unresolv <<- FALSE
         logerror(res)
         return(invisible(data))
       }
       on.exit(expr = {
         data <<- res
-        rm("aio", envir = env)
+        aio <<- env[["aio"]] <<- NULL
         unresolv <<- FALSE
         return(res)
       })
@@ -264,12 +264,12 @@ request <- function(context,
       on.exit()
       if (keep.raw) raw <<- res
       data <<- data
-      rm("aio", envir = env)
+      aio <<- env[["aio"]] <<- NULL
       unresolv <<- FALSE
     }
     data
   }, env = env)
-  `[[<-`(`[[<-`(env, "keep.raw", keep.raw), "aio", aio)
+  `class<-`(`[[<-`(`[[<-`(env, "keep.raw", keep.raw), "aio", aio), "recvAio")
 
 }
 

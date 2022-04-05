@@ -70,7 +70,7 @@ ncurl <- function(url, async = FALSE, method = NULL, headers = NULL, data = NULL
       logerror(aio)
       return(invisible(aio))
     }
-    env <- `class<-`(new.env(), "recvAio")
+    env <- new.env(hash = FALSE)
     data <- raw <- NULL
     unresolv <- TRUE
     makeActiveBinding(sym = "raw", fun = function(x) {
@@ -79,14 +79,14 @@ ncurl <- function(url, async = FALSE, method = NULL, headers = NULL, data = NULL
         missing(res) && return(.Call(rnng_aio_unresolv))
         is.integer(res) && {
           data <<- raw <<- res
-          rm("aio", envir = env)
+          aio <<- env[["aio"]] <<- NULL
           unresolv <<- FALSE
           logerror(res)
           return(invisible(data))
         }
         raw <<- res
         data <<- tryCatch(rawToChar(res), error = function(e) NULL)
-        rm("aio", envir = env)
+        aio <<- env[["aio"]] <<- NULL
         unresolv <<- FALSE
       }
       raw
@@ -97,19 +97,19 @@ ncurl <- function(url, async = FALSE, method = NULL, headers = NULL, data = NULL
         missing(res) && return(.Call(rnng_aio_unresolv))
         is.integer(res) && {
           data <<- raw <<- res
-          rm("aio", envir = env)
+          aio <<- env[["aio"]] <<- NULL
           unresolv <<- FALSE
           logerror(res)
           return(invisible(data))
         }
         raw <<- res
         data <<- tryCatch(rawToChar(res), error = function(e) NULL)
-        rm("aio", envir = env)
+        aio <<- env[["aio"]] <<- NULL
         unresolv <<- FALSE
       }
       data
     }, env = env)
-    `[[<-`(`[[<-`(env, "keep.raw", TRUE), "aio", aio)
+    `class<-`(`[[<-`(`[[<-`(env, "keep.raw", TRUE), "aio", aio), "recvAio")
 
   }
 }
