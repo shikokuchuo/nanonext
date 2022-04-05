@@ -51,6 +51,7 @@ SEXP rnng_ctx_open(SEXP socket) {
   if (R_ExternalPtrTag(socket) != nano_SocketSymbol)
     error_return("'socket' is not a valid Socket");
   nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(socket);
+
   nng_ctx *ctxp = R_Calloc(1, nng_ctx);
   int xc = nng_ctx_open(ctxp, *sock);
   if (xc) {
@@ -89,6 +90,8 @@ SEXP rnng_ctx_close(SEXP context) {
 
 SEXP rnng_dial(SEXP socket, SEXP url) {
 
+  if (TYPEOF(socket) == ENVSXP)
+    socket = Rf_findVarInFrame(socket, nano_SocketSymbol);
   if (R_ExternalPtrTag(socket) != nano_SocketSymbol)
     error_return("'socket' is not a valid Socket");
   nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(socket);
@@ -117,6 +120,8 @@ SEXP rnng_dial(SEXP socket, SEXP url) {
 
 SEXP rnng_dialer_create(SEXP socket, SEXP url) {
 
+  if (TYPEOF(socket) == ENVSXP)
+    socket = Rf_findVarInFrame(socket, nano_SocketSymbol);
   if (R_ExternalPtrTag(socket) != nano_SocketSymbol)
     error_return("'socket' is not a valid Socket");
   nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(socket);
@@ -145,6 +150,8 @@ SEXP rnng_dialer_create(SEXP socket, SEXP url) {
 
 SEXP rnng_listen(SEXP socket, SEXP url) {
 
+  if (TYPEOF(socket) == ENVSXP)
+    socket = Rf_findVarInFrame(socket, nano_SocketSymbol);
   if (R_ExternalPtrTag(socket) != nano_SocketSymbol)
     error_return("'socket' is not a valid Socket");
   nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(socket);
@@ -173,6 +180,8 @@ SEXP rnng_listen(SEXP socket, SEXP url) {
 
 SEXP rnng_listener_create(SEXP socket, SEXP url) {
 
+  if (TYPEOF(socket) == ENVSXP)
+    socket = Rf_findVarInFrame(socket, nano_SocketSymbol);
   if (R_ExternalPtrTag(socket) != nano_SocketSymbol)
     error_return("'socket' is not a valid Socket");
   nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(socket);

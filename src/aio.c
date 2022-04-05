@@ -449,7 +449,6 @@ SEXP rnng_aio_result(SEXP aio) {
     error_return("'aio' is not an active Aio");
 
   uint8_t resolv;
-  int res;
   nano_aio *aiop = (nano_aio *) R_ExternalPtrAddr(aio);
 
   nng_mtx_lock(aiop->mtx);
@@ -458,20 +457,7 @@ SEXP rnng_aio_result(SEXP aio) {
   if (!resolv)
     return R_MissingArg;
 
-  res = aiop->result;
-
-  nng_aio_free(aiop->aio);
-  nng_mtx_free(aiop->mtx);
-  switch (aiop->type) {
-  case IOV_SENDAIO:
-    R_Free(aiop->data);
-    break;
-  default:
-    break;
-  }
-  R_Free(aiop);
-  R_ClearExternalPtr(aio);
-  return Rf_ScalarInteger(res);
+  return Rf_ScalarInteger(aiop->result);
 
 }
 
@@ -493,23 +479,13 @@ SEXP rnng_aio_get_msg(SEXP aio) {
     return R_MissingArg;
 
   res = raio->result;
-  if (res) {
-    nng_mtx_free(raio->mtx);
-    nng_aio_free(raio->aio);
-    R_Free(raio);
-    R_ClearExternalPtr(aio);
+  if (res)
     return mk_error(res);
-  }
 
   size_t sz = nng_msg_len(raio->data);
   SEXP vec = PROTECT(Rf_allocVector(RAWSXP, sz));
   unsigned char *rp = RAW(vec);
   memcpy(rp, nng_msg_body(raio->data), sz);
-  nng_msg_free(raio->data);
-  nng_aio_free(raio->aio);
-  nng_mtx_free(raio->mtx);
-  R_Free(raio);
-  R_ClearExternalPtr(aio);
 
   UNPROTECT(1);
   return vec;
@@ -536,27 +512,13 @@ SEXP rnng_aio_stream_in(SEXP aio) {
   res = iaio->result;
   nng_iov *iov = (nng_iov *) iaio->data;
 
-  if (res) {
-    R_Free(iov->iov_buf);
-    R_Free(iov);
-    nng_aio_free(iaio->aio);
-    nng_mtx_free(iaio->mtx);
-    R_Free(iaio);
-    R_ClearExternalPtr(aio);
+  if (res)
     return mk_error(res);
-  }
 
   size_t sz = nng_aio_count(iaio->aio);
   SEXP vec = PROTECT(Rf_allocVector(RAWSXP, sz));
   unsigned char *rp = RAW(vec);
   memcpy(rp, iov->iov_buf, sz);
-
-  R_Free(iov->iov_buf);
-  R_Free(iov);
-  nng_aio_free(iaio->aio);
-  nng_mtx_free(iaio->mtx);
-  R_Free(iaio);
-  R_ClearExternalPtr(aio);
 
   UNPROTECT(1);
   return vec;
@@ -565,10 +527,10 @@ SEXP rnng_aio_stream_in(SEXP aio) {
 
 SEXP rnng_aio_call(SEXP aio) {
 
+  if (TYPEOF(aio) != ENVSXP)
+    return aio;
   SEXP coreaio = Rf_findVarInFrame(aio, nano_AioSymbol);
-  if (R_ExternalPtrTag(coreaio) != nano_AioSymbol)
-    error_return("'aio' is not a valid Aio");
-  if (R_ExternalPtrAddr(coreaio) == NULL)
+  if (R_ExternalPtrTag(coreaio) != nano_AioSymbol || R_ExternalPtrAddr(coreaio) == NULL)
     return aio;
 
   nano_aio *aiop = (nano_aio *) R_ExternalPtrAddr(coreaio);
@@ -584,8 +546,9 @@ SEXP rnng_aio_call(SEXP aio) {
 
 SEXP rnng_aio_stop(SEXP aio) {
 
+  if (TYPEOF(aio) != ENVSXP)
+    error_return("'aio' is not a valid Aio");
   SEXP coreaio = Rf_findVarInFrame(aio, nano_AioSymbol);
-
   if (R_ExternalPtrTag(coreaio) != nano_AioSymbol)
     error_return("'aio' is not a valid Aio");
   if (R_ExternalPtrAddr(coreaio) == NULL)
@@ -632,10 +595,23 @@ SEXP rnng_aio_stop(SEXP aio) {
 }
 
 SEXP rnng_aio_unresolv(void) {
+
   SEXP res = PROTECT(Rf_ScalarLogical(NA_LOGICAL));
   Rf_classgets(res, Rf_mkString("unresolvedValue"));
   UNPROTECT(1);
   return res;
+
+}
+
+SEXP rnng_unresolved(SEXP x) {
+
+  if (Rf_inherits(x, "unresolvedValue") ||
+      (Rf_inherits(x, "recvAio") && Rf_inherits(Rf_findVarInFrame(x, nano_DataSymbol), "unresolvedValue")) ||
+      (Rf_inherits(x, "sendAio") && Rf_inherits(Rf_findVarInFrame(x, nano_ResultSymbol), "unresolvedValue")))
+    return Rf_ScalarLogical(1);
+
+  return Rf_ScalarLogical(0);
+
 }
 
 /* ncurl aio ---------------------------------------------------------------- */
@@ -826,59 +802,21 @@ SEXP rnng_aio_http(SEXP aio) {
     return R_MissingArg;
 
   res = haio->result;
-  nano_handle *handle = (nano_handle *) haio->data;
-  if (res) {
-    if (handle->cfg != NULL)
-      nng_tls_config_free(handle->cfg);
-    nng_mtx_free(haio->mtx);
-    nng_aio_free(haio->aio);
-    nng_http_res_free(handle->res);
-    nng_http_req_free(handle->req);
-    nng_http_client_free(handle->cli);
-    nng_url_free(handle->url);
-    R_Free(handle);
-    R_Free(haio);
-    R_ClearExternalPtr(aio);
+  if (res)
     return mk_error(res);
-  }
 
+  nano_handle *handle = (nano_handle *) haio->data;
   code = nng_http_res_get_status(handle->res);
   if (code != 200) {
     REprintf("HTTP Server Response: %d %s\n", code, nng_http_res_get_reason(handle->res));
-    if (code >= 300 && code < 400) {
-      const char *location = nng_http_res_get_header(handle->res, "Location");
-      SEXP ret = Rf_mkString(location);
-      if (handle->cfg != NULL)
-        nng_tls_config_free(handle->cfg);
-      nng_mtx_free(haio->mtx);
-      nng_aio_free(haio->aio);
-      nng_http_res_free(handle->res);
-      nng_http_req_free(handle->req);
-      nng_http_client_free(handle->cli);
-      nng_url_free(handle->url);
-      R_Free(handle);
-      R_Free(haio);
-      R_ClearExternalPtr(aio);
-      return ret;
-    }
+    if (code >= 300 && code < 400)
+      return Rf_mkString(nng_http_res_get_header(handle->res, "Location"));
   }
 
   nng_http_res_get_data(handle->res, &dat, &sz);
   SEXP vec = PROTECT(Rf_allocVector(RAWSXP, sz));
   unsigned char *rp = RAW(vec);
   memcpy(rp, dat, sz);
-
-  if (handle->cfg != NULL)
-    nng_tls_config_free(handle->cfg);
-  nng_mtx_free(haio->mtx);
-  nng_aio_free(haio->aio);
-  nng_http_res_free(handle->res);
-  nng_http_req_free(handle->req);
-  nng_http_client_free(handle->cli);
-  nng_url_free(handle->url);
-  R_Free(handle);
-  R_Free(haio);
-  R_ClearExternalPtr(aio);
 
   UNPROTECT(1);
   return vec;

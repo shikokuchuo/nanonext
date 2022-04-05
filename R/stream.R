@@ -39,7 +39,7 @@ stream <- function(dial = NULL, listen = NULL, textframes = FALSE) {
   if (missing(dial)) {
     if (missing(listen)) stop("specify a URL for either 'dial' or 'listen'") else {
       is.character(listen) || stop("'listen' should be a URL provided as a character string")
-      if (!isTRUE(textframes)) textframes <- FALSE
+      textframes <- isTRUE(textframes)
       res <- .Call(rnng_stream_listen, listen, textframes)
       is.integer(res) && {
         logerror(res)
@@ -52,7 +52,7 @@ stream <- function(dial = NULL, listen = NULL, textframes = FALSE) {
     }
   } else {
     is.character(dial) || stop("'dial' should be a URL provided as a character string")
-    if (!isTRUE(textframes)) textframes <- FALSE
+    textframes <- isTRUE(textframes)
     res <- .Call(rnng_stream_dial, dial, textframes)
     is.integer(res) && {
       logerror(res)

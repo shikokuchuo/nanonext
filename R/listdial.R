@@ -74,26 +74,28 @@ dial <- function(socket,
                  autostart = TRUE) {
 
   is.character(url) || stop("'url' should be a character string")
+
+  if (missing(autostart) || isTRUE(autostart)) {
+    res <- .Call(rnng_dial, socket, url)
+    is.integer(res) && {
+      logerror(res)
+      return(invisible(res))
+    }
+    if (.logging.) loginfo(evt = "dial start", pkey = "sock", pval = attr(res, "socket"),
+                           skey = "url", sval = url)
+  } else {
+    res <- .Call(rnng_dialer_create, socket, url)
+    is.integer(res) && {
+      logerror(res)
+      return(invisible(res))
+    }
+  }
+
   if (is.environment(socket)) {
 
-    if (missing(autostart) || isTRUE(autostart)) {
-      res <- .Call(rnng_dial, .subset2(socket, "socket"), url)
-      is.integer(res) && {
-        logerror(res)
-        return(invisible(res))
-      }
-      if (.logging.) loginfo(evt = "dial start", pkey = "sock", pval = attr(res, "socket"),
-                             skey = "url", sval = url)
-    } else {
-      res <- .Call(rnng_dialer_create, .subset2(socket, "socket"), url)
-      is.integer(res) && {
-        logerror(res)
-        return(invisible(res))
-      }
-    }
     socket[["dialer"]] <- c(.subset2(socket, "dialer"), res)
     socket[["dialer_setopt"]] <- function(type = c("bool", "int", "ms", "size",
-                                                 "string", "uint64"),
+                                                   "string", "uint64"),
                                           opt,
                                           value) invisible(lapply(.subset2(socket, "dialer"),
                                                                   setopt,
@@ -103,22 +105,8 @@ dial <- function(socket,
 
   } else {
 
-    if (missing(autostart) || isTRUE(autostart)) {
-      res <- .Call(rnng_dial, socket, url)
-      is.integer(res) && {
-        logerror(res)
-        return(invisible(res))
-      }
-      if (.logging.) loginfo(evt = "dial start", pkey = "sock", pval = attr(res, "socket"),
-                             skey = "url", sval = url)
-    } else {
-      res <- .Call(rnng_dialer_create, socket, url)
-      is.integer(res) && {
-        logerror(res)
-        return(invisible(res))
-      }
-    }
     attr(socket, "dialer") <- c(attr(socket, "dialer"), res)
+
   }
 
   invisible(0L)
@@ -200,23 +188,25 @@ listen <- function(socket,
                    autostart = TRUE) {
 
   is.character(url) || stop("'url' should be a character string")
+
+  if (missing(autostart) || isTRUE(autostart)) {
+    res <- .Call(rnng_listen, socket, url)
+    is.integer(res) && {
+      logerror(res)
+      return(invisible(res))
+    }
+    if (.logging.) loginfo(evt = "list start", pkey = "sock", pval = attr(res, "socket"),
+                           skey = "url", sval = url)
+  } else {
+    res <- .Call(rnng_listener_create, socket, url)
+    is.integer(res) && {
+      logerror(res)
+      return(invisible(res))
+    }
+  }
+
   if (is.environment(socket)) {
 
-    if (missing(autostart) || isTRUE(autostart)) {
-      res <- .Call(rnng_listen, .subset2(socket, "socket"), url)
-      is.integer(res) && {
-        logerror(res)
-        return(invisible(res))
-      }
-      if (.logging.) loginfo(evt = "list start", pkey = "sock", pval = attr(res, "socket"),
-                             skey = "url", sval = url)
-    } else {
-      res <- .Call(rnng_listener_create, .subset2(socket, "socket"), url)
-      is.integer(res) && {
-        logerror(res)
-        return(invisible(res))
-      }
-    }
     socket[["listener"]] <- c(.subset2(socket, "listener"), res)
     socket[["listener_setopt"]] <- function(type = c("bool", "int", "ms", "size",
                                                    "string", "uint64"),
@@ -229,22 +219,8 @@ listen <- function(socket,
 
   } else {
 
-    if (missing(autostart) || isTRUE(autostart)) {
-      res <- .Call(rnng_listen, socket, url)
-      is.integer(res) && {
-        logerror(res)
-        return(invisible(res))
-      }
-      if (.logging.) loginfo(evt = "list start", pkey = "sock", pval = attr(res, "socket"),
-                             skey = "url", sval = url)
-    } else {
-      res <- .Call(rnng_listener_create, socket, url)
-      is.integer(res) && {
-        logerror(res)
-        return(invisible(res))
-      }
-    }
     attr(socket, "listener") <- c(attr(socket, "listener"), res)
+
   }
 
   invisible(0L)

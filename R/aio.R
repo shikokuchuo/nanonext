@@ -57,7 +57,7 @@ send_aio.nanoSocket <- function(con, data, mode = c("serial", "raw"), timeout) {
     logerror(aio)
     return(invisible(aio))
   }
-  env <- `class<-`(new.env(), "sendAio")
+  env <- `class<-`(new.env(hash = FALSE), "sendAio")
   result <- NULL
   unresolv <- TRUE
   makeActiveBinding(sym = "result", fun = function(x) {
@@ -66,6 +66,7 @@ send_aio.nanoSocket <- function(con, data, mode = c("serial", "raw"), timeout) {
       missing(res) && return(.Call(rnng_aio_unresolv))
       if (res) logerror(res)
       result <<- res
+      rm("aio", envir = env)
       unresolv <<- FALSE
     }
     result
@@ -89,7 +90,7 @@ send_aio.nanoContext <- function(con, data, mode = c("serial", "raw"), timeout) 
     logerror(aio)
     return(invisible(aio))
   }
-  env <- `class<-`(new.env(), "sendAio")
+  env <- `class<-`(new.env(hash = FALSE), "sendAio")
   result <- NULL
   unresolv <- TRUE
   makeActiveBinding(sym = "result", fun = function(x) {
@@ -98,6 +99,7 @@ send_aio.nanoContext <- function(con, data, mode = c("serial", "raw"), timeout) 
       missing(res) && return(.Call(rnng_aio_unresolv))
       if (res) logerror(res)
       result <<- res
+      rm("aio", envir = env)
       unresolv <<- FALSE
     }
     result
@@ -120,7 +122,7 @@ send_aio.nanoStream <- function(con, data, mode = "raw", timeout) {
     logerror(aio)
     return(invisible(aio))
   }
-  env <- `class<-`(new.env(), "sendAio")
+  env <- `class<-`(new.env(hash = FALSE), "sendAio")
   result <- NULL
   unresolv <- TRUE
   makeActiveBinding(sym = "result", fun = function(x) {
@@ -129,6 +131,7 @@ send_aio.nanoStream <- function(con, data, mode = "raw", timeout) {
       missing(res) && return(.Call(rnng_aio_unresolv))
       if (res) logerror(res)
       result <<- res
+      rm("aio", envir = env)
       unresolv <<- FALSE
     }
     result
@@ -220,7 +223,7 @@ recv_aio.nanoSocket <- function(con,
     logerror(aio)
     return(invisible(aio))
   }
-  env <- `class<-`(new.env(), "recvAio")
+  env <- `class<-`(new.env(hash = FALSE), "recvAio")
   data <- raw <- NULL
   unresolv <- TRUE
   if (keep.raw) {
@@ -230,12 +233,14 @@ recv_aio.nanoSocket <- function(con,
         missing(res) && return(.Call(rnng_aio_unresolv))
         is.integer(res) && {
           data <<- raw <<- res
+          rm("aio", envir = env)
           unresolv <<- FALSE
           logerror(res)
           return(invisible(data))
         }
         on.exit(expr = {
           raw <<- res
+          rm("aio", envir = env)
           unresolv <<- FALSE
           return(res)
         })
@@ -243,6 +248,7 @@ recv_aio.nanoSocket <- function(con,
         on.exit()
         raw <<- res
         data <<- data
+        rm("aio", envir = env)
         unresolv <<- FALSE
       }
       raw
@@ -254,12 +260,14 @@ recv_aio.nanoSocket <- function(con,
       missing(res) && return(.Call(rnng_aio_unresolv))
       is.integer(res) && {
         data <<- raw <<- res
+        rm("aio", envir = env)
         unresolv <<- FALSE
         logerror(res)
         return(invisible(data))
       }
       on.exit(expr = {
         data <<- res
+        rm("aio", envir = env)
         unresolv <<- FALSE
         return(res)
       })
@@ -267,6 +275,7 @@ recv_aio.nanoSocket <- function(con,
       on.exit()
       if (keep.raw) raw <<- res
       data <<- data
+      rm("aio", envir = env)
       unresolv <<- FALSE
     }
     data
@@ -294,7 +303,7 @@ recv_aio.nanoContext <- function(con,
     logerror(aio)
     return(invisible(aio))
   }
-  env <- `class<-`(new.env(), "recvAio")
+  env <- `class<-`(new.env(hash = FALSE), "recvAio")
   data <- raw <- NULL
   unresolv <- TRUE
   if (keep.raw) {
@@ -304,12 +313,14 @@ recv_aio.nanoContext <- function(con,
         missing(res) && return(.Call(rnng_aio_unresolv))
         is.integer(res) && {
           data <<- raw <<- res
+          rm("aio", envir = env)
           unresolv <<- FALSE
           logerror(res)
           return(invisible(data))
         }
         on.exit(expr = {
           raw <<- res
+          rm("aio", envir = env)
           unresolv <<- FALSE
           return(res)
         })
@@ -317,6 +328,7 @@ recv_aio.nanoContext <- function(con,
         on.exit()
         raw <<- res
         data <<- data
+        rm("aio", envir = env)
         unresolv <<- FALSE
       }
       raw
@@ -328,12 +340,14 @@ recv_aio.nanoContext <- function(con,
       missing(res) && return(.Call(rnng_aio_unresolv))
       is.integer(res) && {
         data <<- raw <<- res
+        rm("aio", envir = env)
         unresolv <<- FALSE
         logerror(res)
         return(invisible(data))
       }
       on.exit(expr = {
         data <<- res
+        rm("aio", envir = env)
         unresolv <<- FALSE
         return(res)
       })
@@ -341,6 +355,7 @@ recv_aio.nanoContext <- function(con,
       on.exit()
       if (keep.raw) raw <<- res
       data <<- data
+      rm("aio", envir = env)
       unresolv <<- FALSE
     }
     data
@@ -369,7 +384,7 @@ recv_aio.nanoStream <- function(con,
     logerror(aio)
     return(invisible(aio))
   }
-  env <- `class<-`(new.env(), "recvAio")
+  env <- `class<-`(new.env(hash = FALSE), "recvAio")
   data <- raw <- NULL
   unresolv <- TRUE
   if (keep.raw) {
@@ -379,12 +394,14 @@ recv_aio.nanoStream <- function(con,
         missing(res) && return(.Call(rnng_aio_unresolv))
         is.integer(res) && {
           data <<- raw <<- res
+          rm("aio", envir = env)
           unresolv <<- FALSE
           logerror(res)
           return(invisible(data))
         }
         on.exit(expr = {
           raw <<- res
+          rm("aio", envir = env)
           unresolv <<- FALSE
           return(res)
         })
@@ -392,6 +409,7 @@ recv_aio.nanoStream <- function(con,
         on.exit()
         raw <<- res
         data <<- data
+        rm("aio", envir = env)
         unresolv <<- FALSE
       }
       raw
@@ -403,6 +421,7 @@ recv_aio.nanoStream <- function(con,
       missing(res) && return(.Call(rnng_aio_unresolv))
       is.integer(res) && {
         data <<- raw <<- res
+        rm("aio", envir = env)
         unresolv <<- FALSE
         logerror(res)
         return(invisible(data))
@@ -410,12 +429,14 @@ recv_aio.nanoStream <- function(con,
       on.exit(expr = {
         data <<- res
         unresolv <<- FALSE
+        rm("aio", envir = env)
         return(res)
       })
       data <- decode(con = res, mode = mode)
       on.exit()
       if (keep.raw) raw <<- res
       data <<- data
+      rm("aio", envir = env)
       unresolv <<- FALSE
     }
     data
@@ -543,10 +564,7 @@ stop_aio <- function(aio) {
 #'
 unresolved <- function(aio) {
 
-  {inherits(aio, "unresolvedValue") ||
-      inherits(aio, "recvAio") && inherits(.subset2(aio, "data"), "unresolvedValue") ||
-      inherits(aio, "sendAio") && inherits(.subset2(aio, "result"), "unresolvedValue")} &&
-    return(TRUE)
+  .Call(rnng_unresolved, aio)
 
 }
 

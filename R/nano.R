@@ -59,7 +59,7 @@ nano <- function(protocol = c("pair", "bus", "push", "pull", "req", "rep",
 
   protocol <- match.arg(protocol)
 
-  nano <- `class<-`(new.env(), "nanoObject")
+  nano <- `class<-`(new.env(hash = FALSE), "nanoObject")
   socket <- socket(protocol)
   makeActiveBinding("socket", function(x) socket, nano)
 

@@ -125,7 +125,7 @@ reply <- function(context,
   res <- .Call(rnng_ctx_recv, context, timeout)
   is.integer(res) && {
     logerror(res)
-    return(invisible(`class<-`(res, "errorValue")))
+    return(invisible(res))
   }
   on.exit(expr = send_aio(context, as.raw(0L), mode = send_mode))
   data <- decode(con = res, mode = recv_mode)
@@ -210,9 +210,9 @@ request <- function(context,
   aio <- .Call(rnng_ctx_recv_aio, context, timeout)
   is.integer(aio) && {
     logerror(aio)
-    return(invisible(`class<-`(aio, "errorValue")))
+    return(invisible(aio))
   }
-  env <- `class<-`(new.env(), "recvAio")
+  env <- `class<-`(new.env(hash = FALSE), "recvAio")
   data <- raw <- NULL
   unresolv <- TRUE
   if (keep.raw) {
@@ -221,13 +221,15 @@ request <- function(context,
         res <- .Call(rnng_aio_get_msg, aio)
         missing(res) && return(.Call(rnng_aio_unresolv))
         is.integer(res) && {
-          data <<- raw <<- `class<-`(res, "errorValue")
+          data <<- raw <<- res
+          rm("aio", envir = env)
           unresolv <<- FALSE
           logerror(res)
           return(invisible(data))
         }
         on.exit(expr = {
           raw <<- res
+          rm("aio", envir = env)
           unresolv <<- FALSE
           return(res)
         })
@@ -235,6 +237,7 @@ request <- function(context,
         on.exit()
         raw <<- res
         data <<- data
+        rm("aio", envir = env)
         unresolv <<- FALSE
       }
       raw
@@ -245,13 +248,15 @@ request <- function(context,
       res <- .Call(rnng_aio_get_msg, aio)
       missing(res) && return(.Call(rnng_aio_unresolv))
       is.integer(res) && {
-        data <<- raw <<- `class<-`(res, "errorValue")
+        data <<- raw <<- res
+        rm("aio", envir = env)
         unresolv <<- FALSE
         logerror(res)
         return(invisible(data))
       }
       on.exit(expr = {
         data <<- res
+        rm("aio", envir = env)
         unresolv <<- FALSE
         return(res)
       })
@@ -259,6 +264,7 @@ request <- function(context,
       on.exit()
       if (keep.raw) raw <<- res
       data <<- data
+      rm("aio", envir = env)
       unresolv <<- FALSE
     }
     data

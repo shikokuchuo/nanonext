@@ -79,12 +79,14 @@ ncurl <- function(url, async = FALSE, method = NULL, headers = NULL, data = NULL
         missing(res) && return(.Call(rnng_aio_unresolv))
         is.integer(res) && {
           data <<- raw <<- res
+          rm("aio", envir = env)
           unresolv <<- FALSE
           logerror(res)
           return(invisible(data))
         }
         raw <<- res
         data <<- tryCatch(rawToChar(res), error = function(e) NULL)
+        rm("aio", envir = env)
         unresolv <<- FALSE
       }
       raw
@@ -95,12 +97,14 @@ ncurl <- function(url, async = FALSE, method = NULL, headers = NULL, data = NULL
         missing(res) && return(.Call(rnng_aio_unresolv))
         is.integer(res) && {
           data <<- raw <<- res
+          rm("aio", envir = env)
           unresolv <<- FALSE
           logerror(res)
           return(invisible(data))
         }
         raw <<- res
         data <<- tryCatch(rawToChar(res), error = function(e) NULL)
+        rm("aio", envir = env)
         unresolv <<- FALSE
       }
       data
