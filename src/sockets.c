@@ -21,7 +21,7 @@ static SEXP mk_error(const int xc) {
 
   SEXP err = PROTECT(Rf_ScalarInteger(xc));
   Rf_classgets(err, Rf_mkString("errorValue"));
-  Rf_warningcall(R_NilValue, "[ %d ] %s", xc, nng_strerror(xc));
+  Rf_warning("[ %d ] %s", xc, nng_strerror(xc));
   UNPROTECT(1);
   return err;
 

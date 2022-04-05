@@ -2,7 +2,8 @@
 
 #' Messenger
 #'
-#' Console-based 2-way messaging system based on NNG scalability protocols.
+#' Multi-threaded console-based 2-way messaging system based on NNG scalability
+#'     protocols.
 #'
 #' @param url a URL to connect to, specifying the transport and address as
 #'     a character string e.g. 'tcp://127.0.0.1:5555' (see \link{transports}).

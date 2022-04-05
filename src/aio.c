@@ -37,7 +37,7 @@ static SEXP mk_error(const int xc) {
 
   SEXP err = PROTECT(Rf_ScalarInteger(xc));
   Rf_classgets(err, Rf_mkString("errorValue"));
-  Rf_warningcall(R_NilValue, "[ %d ] %s", xc, nng_strerror(xc));
+  Rf_warning("[ %d ] %s", xc, nng_strerror(xc));
   UNPROTECT(1);
   return err;
 
@@ -445,9 +445,9 @@ SEXP rnng_stream_send_aio(SEXP stream, SEXP data, SEXP timeout) {
 SEXP rnng_aio_result(SEXP aio) {
 
   if (R_ExternalPtrTag(aio) != nano_AioSymbol)
-    error_return("'aio' is not a valid Aio");
+    error_return("object is not a valid Aio");
   if (R_ExternalPtrAddr(aio) == NULL)
-    error_return("'aio' is not an active Aio");
+    error_return("object is not an active Aio");
 
   uint8_t resolv;
   nano_aio *aiop = (nano_aio *) R_ExternalPtrAddr(aio);
@@ -469,9 +469,9 @@ SEXP rnng_aio_result(SEXP aio) {
 SEXP rnng_aio_get_msg(SEXP aio) {
 
   if (R_ExternalPtrTag(aio) != nano_AioSymbol)
-    error_return("'aio' is not a valid Aio");
+    error_return("object is not a valid Aio");
   if (R_ExternalPtrAddr(aio) == NULL)
-    error_return("'aio' is not an active Aio");
+    error_return("object is not an active Aio");
 
   uint8_t resolv;
   nano_aio *raio = (nano_aio *) R_ExternalPtrAddr(aio);
@@ -499,9 +499,9 @@ SEXP rnng_aio_get_msg(SEXP aio) {
 SEXP rnng_aio_stream_in(SEXP aio) {
 
   if (R_ExternalPtrTag(aio) != nano_AioSymbol)
-    error_return("'aio' is not a valid Aio");
+    error_return("object is not a valid Aio");
   if (R_ExternalPtrAddr(aio) == NULL)
-    error_return("'aio' is not an active Aio");
+    error_return("object is not an active Aio");
 
   uint8_t resolv;
   nano_aio *iaio = (nano_aio *) R_ExternalPtrAddr(aio);
@@ -550,13 +550,11 @@ SEXP rnng_aio_call(SEXP aio) {
 SEXP rnng_aio_stop(SEXP aio) {
 
   if (TYPEOF(aio) != ENVSXP)
-    error_return("'aio' is not a valid Aio");
+    error_return("object is not an active Aio");
 
   SEXP coreaio = Rf_findVarInFrame(aio, nano_AioSymbol);
-  if (R_ExternalPtrTag(coreaio) != nano_AioSymbol)
-    error_return("'aio' is not a valid Aio");
-  if (R_ExternalPtrAddr(coreaio) == NULL)
-    error_return("'aio' is not an active Aio");
+  if (R_ExternalPtrTag(coreaio) != nano_AioSymbol || R_ExternalPtrAddr(coreaio) == NULL)
+    error_return("object is not an active Aio");
 
   nano_aio *aiop = (nano_aio *) R_ExternalPtrAddr(coreaio);
   nng_aio_stop(aiop->aio);
@@ -788,9 +786,9 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP method, SEXP headers, SEXP data) {
 SEXP rnng_aio_http(SEXP aio) {
 
   if (R_ExternalPtrTag(aio) != nano_AioSymbol)
-    error_return("'aio' is not a valid Aio");
+    errorcall_return(R_NilValue, "object is not a valid Aio");
   if (R_ExternalPtrAddr(aio) == NULL)
-    error_return("'aio' is not an active Aio");
+    errorcall_return(R_NilValue, "object is not an active Aio");
 
   uint8_t resolv;
   nano_aio *haio = (nano_aio *) R_ExternalPtrAddr(aio);
