@@ -1,19 +1,7 @@
 /* nanonext - Options Configuration ----------------------------------------- */
 
-#include <nng/nng.h>
+#define NANONEXT_INTERNALS
 #include "nanonext.h"
-
-/* statics ------------------------------------------------------------------ */
-
-static SEXP mk_error(const int xc) {
-
-  SEXP err = PROTECT(Rf_ScalarInteger(xc));
-  Rf_classgets(err, Rf_mkString("errorValue"));
-  Rf_warning("%d | %s", xc, nng_strerror(xc));
-  UNPROTECT(1);
-  return err;
-
-}
 
 /* set socket options ------------------------------------------------------- */
 

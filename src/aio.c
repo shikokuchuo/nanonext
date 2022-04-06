@@ -1,9 +1,7 @@
 /* nanonext - C level - Core Functions -------------------------------------- */
 
-#include <nng/nng.h>
-#include <nng/supplemental/http/http.h>
-#include <nng/supplemental/tls/tls.h>
-#include <nng/supplemental/util/platform.h>
+#define NANONEXT_INTERNALS
+#define NANONEXT_SUPLEMENTALS
 #include "nanonext.h"
 
 /* definitions and statics -------------------------------------------------- */
@@ -32,16 +30,6 @@ typedef struct nano_handle_s {
   nng_http_res *res;
   nng_tls_config *cfg;
 } nano_handle;
-
-static SEXP mk_error(const int xc) {
-
-  SEXP err = PROTECT(Rf_ScalarInteger(xc));
-  Rf_classgets(err, Rf_mkString("errorValue"));
-  Rf_warning("%d | %s", xc, nng_strerror(xc));
-  UNPROTECT(1);
-  return err;
-
-}
 
 static void saio_complete(void *arg) {
 
@@ -143,6 +131,182 @@ static void haio_finalizer(SEXP xptr) {
   nng_url_free(handle->url);
   R_Free(handle);
   R_Free(xp);
+
+}
+
+/* core aio ----------------------------------------------------------------- */
+
+SEXP rnng_aio_result(SEXP aio) {
+
+  if (R_ExternalPtrTag(aio) != nano_AioSymbol)
+    error_return("object is not a valid Aio");
+  if (R_ExternalPtrAddr(aio) == NULL)
+    error_return("object is not an active Aio");
+
+  uint8_t resolv;
+  nano_aio *aiop = (nano_aio *) R_ExternalPtrAddr(aio);
+
+  nng_mtx_lock(aiop->mtx);
+  resolv = aiop->resolved;
+  nng_mtx_unlock(aiop->mtx);
+  if (!resolv)
+    return R_MissingArg;
+
+  int res = aiop->result;
+  if (res)
+    return mk_error(res);
+
+  return Rf_ScalarInteger(res);
+
+}
+
+SEXP rnng_aio_get_msg(SEXP aio) {
+
+  if (R_ExternalPtrTag(aio) != nano_AioSymbol)
+    error_return("object is not a valid Aio");
+  if (R_ExternalPtrAddr(aio) == NULL)
+    error_return("object is not an active Aio");
+
+  uint8_t resolv;
+  nano_aio *raio = (nano_aio *) R_ExternalPtrAddr(aio);
+
+  nng_mtx_lock(raio->mtx);
+  resolv = raio->resolved;
+  nng_mtx_unlock(raio->mtx);
+  if (!resolv)
+    return R_MissingArg;
+
+  int res = raio->result;
+  if (res)
+    return mk_error(res);
+
+  size_t sz = nng_msg_len(raio->data);
+  SEXP vec = PROTECT(Rf_allocVector(RAWSXP, sz));
+  unsigned char *rp = RAW(vec);
+  memcpy(rp, nng_msg_body(raio->data), sz);
+
+  UNPROTECT(1);
+  return vec;
+
+}
+
+SEXP rnng_aio_stream_in(SEXP aio) {
+
+  if (R_ExternalPtrTag(aio) != nano_AioSymbol)
+    error_return("object is not a valid Aio");
+  if (R_ExternalPtrAddr(aio) == NULL)
+    error_return("object is not an active Aio");
+
+  uint8_t resolv;
+  nano_aio *iaio = (nano_aio *) R_ExternalPtrAddr(aio);
+
+  nng_mtx_lock(iaio->mtx);
+  resolv = iaio->resolved;
+  nng_mtx_unlock(iaio->mtx);
+  if (!resolv)
+    return R_MissingArg;
+
+  int res = iaio->result;
+  if (res)
+    return mk_error(res);
+
+  nng_iov *iov = (nng_iov *) iaio->data;
+  size_t sz = nng_aio_count(iaio->aio);
+  SEXP vec = PROTECT(Rf_allocVector(RAWSXP, sz));
+  unsigned char *rp = RAW(vec);
+  memcpy(rp, iov->iov_buf, sz);
+
+  UNPROTECT(1);
+  return vec;
+
+}
+
+SEXP rnng_aio_call(SEXP aio) {
+
+  if (TYPEOF(aio) != ENVSXP)
+    return aio;
+
+  SEXP coreaio = Rf_findVarInFrame(aio, nano_AioSymbol);
+  if (R_ExternalPtrTag(coreaio) != nano_AioSymbol || R_ExternalPtrAddr(coreaio) == NULL)
+    return aio;
+
+  nano_aio *aiop = (nano_aio *) R_ExternalPtrAddr(coreaio);
+  nng_aio_wait(aiop->aio);
+  if (Rf_inherits(aio, "recvAio"))
+    Rf_findVarInFrame(aio, nano_DataSymbol);
+  else
+    Rf_findVarInFrame(aio, nano_ResultSymbol);
+
+  return aio;
+
+}
+
+SEXP rnng_aio_stop(SEXP aio) {
+
+  if (TYPEOF(aio) != ENVSXP)
+    return R_NilValue;
+
+  SEXP coreaio = Rf_findVarInFrame(aio, nano_AioSymbol);
+  if (R_ExternalPtrTag(coreaio) != nano_AioSymbol || R_ExternalPtrAddr(coreaio) == NULL)
+    return R_NilValue;
+
+  nano_aio *aiop = (nano_aio *) R_ExternalPtrAddr(coreaio);
+  nng_aio_stop(aiop->aio);
+
+  nng_iov *iov;
+  nano_handle *handle;
+  nng_aio_free(aiop->aio);
+  nng_mtx_free(aiop->mtx);
+  switch (aiop->type) {
+  case RECVAIO:
+    if (aiop->data != NULL)
+      nng_msg_free(aiop->data);
+    break;
+  case IOV_SENDAIO:
+    R_Free(aiop->data);
+    break;
+  case IOV_RECVAIO:
+    iov = (nng_iov *) aiop->data;
+    R_Free(iov->iov_buf);
+    R_Free(iov);
+    break;
+  case HTTP_AIO:
+    handle = (nano_handle *) aiop->data;
+    if (handle->cfg != NULL)
+      nng_tls_config_free(handle->cfg);
+    nng_http_res_free(handle->res);
+    nng_http_req_free(handle->req);
+    nng_http_client_free(handle->cli);
+    nng_url_free(handle->url);
+    R_Free(handle);
+    break;
+  default:
+    break;
+  }
+  R_Free(aiop);
+  R_ClearExternalPtr(coreaio);
+
+  return R_NilValue;
+
+}
+
+SEXP rnng_aio_unresolv(void) {
+
+  SEXP res = PROTECT(Rf_ScalarLogical(NA_LOGICAL));
+  Rf_classgets(res, Rf_mkString("unresolvedValue"));
+  UNPROTECT(1);
+  return res;
+
+}
+
+SEXP rnng_unresolved(SEXP x) {
+
+  if (Rf_inherits(x, "unresolvedValue") ||
+      (Rf_inherits(x, "recvAio") && Rf_inherits(Rf_findVarInFrame(x, nano_DataSymbol), "unresolvedValue")) ||
+      (Rf_inherits(x, "sendAio") && Rf_inherits(Rf_findVarInFrame(x, nano_ResultSymbol), "unresolvedValue")))
+    return Rf_ScalarLogical(1);
+
+  return Rf_ScalarLogical(0);
 
 }
 
@@ -437,182 +601,6 @@ SEXP rnng_stream_send_aio(SEXP stream, SEXP data, SEXP timeout) {
 
   UNPROTECT(1);
   return aio;
-
-}
-
-/* core aio ----------------------------------------------------------------- */
-
-SEXP rnng_aio_result(SEXP aio) {
-
-  if (R_ExternalPtrTag(aio) != nano_AioSymbol)
-    error_return("object is not a valid Aio");
-  if (R_ExternalPtrAddr(aio) == NULL)
-    error_return("object is not an active Aio");
-
-  uint8_t resolv;
-  nano_aio *aiop = (nano_aio *) R_ExternalPtrAddr(aio);
-
-  nng_mtx_lock(aiop->mtx);
-  resolv = aiop->resolved;
-  nng_mtx_unlock(aiop->mtx);
-  if (!resolv)
-    return R_MissingArg;
-
-  int res = aiop->result;
-  if (res)
-    return mk_error(res);
-
-  return Rf_ScalarInteger(res);
-
-}
-
-SEXP rnng_aio_get_msg(SEXP aio) {
-
-  if (R_ExternalPtrTag(aio) != nano_AioSymbol)
-    error_return("object is not a valid Aio");
-  if (R_ExternalPtrAddr(aio) == NULL)
-    error_return("object is not an active Aio");
-
-  uint8_t resolv;
-  nano_aio *raio = (nano_aio *) R_ExternalPtrAddr(aio);
-
-  nng_mtx_lock(raio->mtx);
-  resolv = raio->resolved;
-  nng_mtx_unlock(raio->mtx);
-  if (!resolv)
-    return R_MissingArg;
-
-  int res = raio->result;
-  if (res)
-    return mk_error(res);
-
-  size_t sz = nng_msg_len(raio->data);
-  SEXP vec = PROTECT(Rf_allocVector(RAWSXP, sz));
-  unsigned char *rp = RAW(vec);
-  memcpy(rp, nng_msg_body(raio->data), sz);
-
-  UNPROTECT(1);
-  return vec;
-
-}
-
-SEXP rnng_aio_stream_in(SEXP aio) {
-
-  if (R_ExternalPtrTag(aio) != nano_AioSymbol)
-    error_return("object is not a valid Aio");
-  if (R_ExternalPtrAddr(aio) == NULL)
-    error_return("object is not an active Aio");
-
-  uint8_t resolv;
-  nano_aio *iaio = (nano_aio *) R_ExternalPtrAddr(aio);
-
-  nng_mtx_lock(iaio->mtx);
-  resolv = iaio->resolved;
-  nng_mtx_unlock(iaio->mtx);
-  if (!resolv)
-    return R_MissingArg;
-
-  int res = iaio->result;
-  if (res)
-    return mk_error(res);
-
-  nng_iov *iov = (nng_iov *) iaio->data;
-  size_t sz = nng_aio_count(iaio->aio);
-  SEXP vec = PROTECT(Rf_allocVector(RAWSXP, sz));
-  unsigned char *rp = RAW(vec);
-  memcpy(rp, iov->iov_buf, sz);
-
-  UNPROTECT(1);
-  return vec;
-
-}
-
-SEXP rnng_aio_call(SEXP aio) {
-
-  if (TYPEOF(aio) != ENVSXP)
-    return aio;
-
-  SEXP coreaio = Rf_findVarInFrame(aio, nano_AioSymbol);
-  if (R_ExternalPtrTag(coreaio) != nano_AioSymbol || R_ExternalPtrAddr(coreaio) == NULL)
-    return aio;
-
-  nano_aio *aiop = (nano_aio *) R_ExternalPtrAddr(coreaio);
-  nng_aio_wait(aiop->aio);
-  if (Rf_inherits(aio, "recvAio"))
-    Rf_findVarInFrame(aio, nano_DataSymbol);
-  else
-    Rf_findVarInFrame(aio, nano_ResultSymbol);
-
-  return aio;
-
-}
-
-SEXP rnng_aio_stop(SEXP aio) {
-
-  if (TYPEOF(aio) != ENVSXP)
-    return R_NilValue;
-
-  SEXP coreaio = Rf_findVarInFrame(aio, nano_AioSymbol);
-  if (R_ExternalPtrTag(coreaio) != nano_AioSymbol || R_ExternalPtrAddr(coreaio) == NULL)
-    return R_NilValue;
-
-  nano_aio *aiop = (nano_aio *) R_ExternalPtrAddr(coreaio);
-  nng_aio_stop(aiop->aio);
-
-  nng_iov *iov;
-  nano_handle *handle;
-  nng_aio_free(aiop->aio);
-  nng_mtx_free(aiop->mtx);
-  switch (aiop->type) {
-  case RECVAIO:
-    if (aiop->data != NULL)
-      nng_msg_free(aiop->data);
-    break;
-  case IOV_SENDAIO:
-    R_Free(aiop->data);
-    break;
-  case IOV_RECVAIO:
-    iov = (nng_iov *) aiop->data;
-    R_Free(iov->iov_buf);
-    R_Free(iov);
-    break;
-  case HTTP_AIO:
-    handle = (nano_handle *) aiop->data;
-    if (handle->cfg != NULL)
-      nng_tls_config_free(handle->cfg);
-    nng_http_res_free(handle->res);
-    nng_http_req_free(handle->req);
-    nng_http_client_free(handle->cli);
-    nng_url_free(handle->url);
-    R_Free(handle);
-    break;
-  default:
-    break;
-  }
-  R_Free(aiop);
-  R_ClearExternalPtr(coreaio);
-
-  return R_NilValue;
-
-}
-
-SEXP rnng_aio_unresolv(void) {
-
-  SEXP res = PROTECT(Rf_ScalarLogical(NA_LOGICAL));
-  Rf_classgets(res, Rf_mkString("unresolvedValue"));
-  UNPROTECT(1);
-  return res;
-
-}
-
-SEXP rnng_unresolved(SEXP x) {
-
-  if (Rf_inherits(x, "unresolvedValue") ||
-      (Rf_inherits(x, "recvAio") && Rf_inherits(Rf_findVarInFrame(x, nano_DataSymbol), "unresolvedValue")) ||
-      (Rf_inherits(x, "sendAio") && Rf_inherits(Rf_findVarInFrame(x, nano_ResultSymbol), "unresolvedValue")))
-    return Rf_ScalarLogical(1);
-
-  return Rf_ScalarLogical(0);
 
 }
 

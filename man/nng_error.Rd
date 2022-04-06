@@ -15,8 +15,23 @@ A character vector.
 \description{
 Translate integer exit code to human readable form. All package functions
     return an integer exit code on error rather than the expected return
-    value.
+    value. These are classed 'errorValue' and may be checked by the function
+    \code{\link{is_error_value}}.
 }
+\section{Warnings}{
+
+
+    A warning is generated every time an 'errorValue' is returned. The package
+    changes the behaviour of warnings by setting \code{options(warn = 1)}
+    upon package load. This prints the warning to the console as soon as it
+    occurs, rather than the default of waiting for the top–level function to
+    return.
+
+    See \code{\link{warning}} or the entry for 'warn' in \code{\link{options}}
+    for further details. The original option value for 'warn' is reverted upon
+    package unload.
+}
+
 \examples{
 nng_error(1L)
 

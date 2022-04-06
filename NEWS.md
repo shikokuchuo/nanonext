@@ -8,7 +8,7 @@
   
 #### Updates
 
-* Behavioural change: messages have been upgraded to warnings across the package to allow for enhanced reporting of the originating call e.g. via `warnings()`. Note that warnings are only printed when execution returns to the top level, e.g. at the end of a function or loop. If timely printing to stderr is required e.g. for logging, that should be written into your error handler within the function/loop etc.
+* Behavioural change: messages have been upgraded to warnings across the package to allow for enhanced reporting of the originating call e.g. via `warnings()` and flexibility in handling by setting the value of 'warn' using `options()`. `options(warn = 1)` is set upon package load for immediate printing of warnings (and reverted upon unload).
 * Unified `send()` and `recv()` functions, and their asynchronous counterparts `send_aio()` and `recv_aio()`, are now S3 generics and can be used across Sockets, Contexts and Streams.
 * Revised 'block' argument for `send()` and `recv()` now allows an integer value for setting a timeout.
 * `send_ctx()` and `recv_ctx()` are deprecated and will be removed in a future package version - the methods for `send()` and `recv()` should be used instead.

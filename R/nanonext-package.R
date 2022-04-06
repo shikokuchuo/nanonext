@@ -128,7 +128,16 @@ NULL
                               info = TRUE,
                               FALSE)
   .logging. <<- .logging.
+  .warn. <- getOption("warn")
+  .warn. <<- .warn.
+  options(warn = 1L)
   invisible()
 }
 
+.onUnload <- function(libpath) {
+  options(warn = .warn.)
+  invisible()
+}
+
+.warn. <- NULL
 .logging. <- FALSE

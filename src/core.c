@@ -1,19 +1,11 @@
 /* nanonext - C level - Core Functions -------------------------------------- */
 
-#include <nng/nng.h>
+#define NANONEXT_INTERNALS
+#define NANONEXT_PROTOCOLS
+#define NANONEXT_FINALIZERS
 #include "nanonext.h"
 
 /* statics ------------------------------------------------------------------ */
-
-static SEXP mk_error(const int xc) {
-
-  SEXP err = PROTECT(Rf_ScalarInteger(xc));
-  Rf_classgets(err, Rf_mkString("errorValue"));
-  Rf_warning("%d | %s", xc, nng_strerror(xc));
-  UNPROTECT(1);
-  return err;
-
-}
 
 static void context_finalizer(SEXP xptr) {
 
@@ -25,23 +17,63 @@ static void context_finalizer(SEXP xptr) {
 
 }
 
-static void dialer_finalizer(SEXP xptr) {
+/* sockets ------------------------------------------------------------------ */
 
-  if (R_ExternalPtrAddr(xptr) == NULL)
-    return;
-  nng_dialer *xp = (nng_dialer *) R_ExternalPtrAddr(xptr);
-  nng_dialer_close(*xp);
-  R_Free(xp);
+SEXP rnng_protocol_open(SEXP protocol) {
+
+  nng_socket *sock = R_Calloc(1, nng_socket);
+  const char *pro = CHAR(STRING_ELT(protocol, 0));
+  int xc = -1;
+  if (!strcmp(pro, "pair"))
+    xc = nng_pair0_open(sock);
+  else if (!strcmp(pro, "req"))
+    xc = nng_req0_open(sock);
+  else if (!strcmp(pro, "rep"))
+    xc = nng_rep0_open(sock);
+  else if (!strcmp(pro, "push"))
+    xc = nng_push0_open(sock);
+  else if (!strcmp(pro, "pull"))
+    xc = nng_pull0_open(sock);
+  else if (!strcmp(pro, "bus"))
+    xc = nng_bus0_open(sock);
+  else if (!strcmp(pro, "pub"))
+    xc = nng_pub0_open(sock);
+  else if (!strcmp(pro, "sub"))
+    xc = nng_sub0_open(sock);
+  else if (!strcmp(pro, "surveyor"))
+    xc = nng_surveyor0_open(sock);
+  else if (!strcmp(pro, "respondent"))
+    xc = nng_respondent0_open(sock);
+
+  if (xc) {
+    R_Free(sock);
+    return mk_error(xc);
+  }
+
+  SEXP socket = PROTECT(R_MakeExternalPtr(sock, nano_SocketSymbol, R_NilValue));
+  R_RegisterCFinalizerEx(socket, socket_finalizer, TRUE);
+  SEXP klass = PROTECT(Rf_allocVector(STRSXP, 2));
+  SET_STRING_ELT(klass, 0, Rf_mkChar("nanoSocket"));
+  SET_STRING_ELT(klass, 1, Rf_mkChar("nano"));
+  Rf_classgets(socket, klass);
+  Rf_setAttrib(socket, nano_IdSymbol, Rf_ScalarInteger((int) sock->id));
+  Rf_setAttrib(socket, nano_StateSymbol, Rf_mkString("opened"));
+  Rf_setAttrib(socket, nano_ProtocolSymbol, protocol);
+  UNPROTECT(2);
+  return socket;
 
 }
 
-static void listener_finalizer(SEXP xptr) {
+SEXP rnng_close(SEXP socket) {
 
-  if (R_ExternalPtrAddr(xptr) == NULL)
-    return;
-  nng_listener *xp = (nng_listener *) R_ExternalPtrAddr(xptr);
-  nng_listener_close(*xp);
-  R_Free(xp);
+  if (R_ExternalPtrTag(socket) != nano_SocketSymbol)
+    error_return("'socket' is not a valid Socket");
+  nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(socket);
+  int xc = nng_close(*sock);
+  if (xc)
+    return mk_error(xc);
+  Rf_setAttrib(socket, nano_StateSymbol, Rf_mkString("closed"));
+  return Rf_ScalarInteger(0);
 
 }
 
@@ -290,7 +322,7 @@ SEXP rnng_send(SEXP socket, SEXP data, SEXP block) {
   default:
     xc = nng_msg_alloc(&msgp, 0);
     if (xc)
-      return Rf_ScalarInteger(xc);
+      return mk_error(xc);
     if ((xc = nng_msg_append(msgp, dp, dlen)) ||
         (xc = nng_aio_alloc(&aiop, NULL, NULL))) {
       nng_msg_free(msgp);

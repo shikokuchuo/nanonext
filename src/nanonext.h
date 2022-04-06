@@ -3,10 +3,78 @@
 #ifndef NANONEXT_H
 #define NANONEXT_H
 
+#ifdef NANONEXT_INTERNALS
+#include <nng/nng.h>
+#endif
+
+#ifdef NANONEXT_PROTOCOLS
+#include <nng/protocol/bus0/bus.h>
+#include <nng/protocol/pair0/pair.h>
+#include <nng/protocol/pubsub0/pub.h>
+#include <nng/protocol/pubsub0/sub.h>
+#include <nng/protocol/pipeline0/pull.h>
+#include <nng/protocol/pipeline0/push.h>
+#include <nng/protocol/reqrep0/req.h>
+#include <nng/protocol/reqrep0/rep.h>
+#include <nng/protocol/survey0/survey.h>
+#include <nng/protocol/survey0/respond.h>
+#endif
+
+#ifdef NANONEXT_SUPLEMENTALS
+#include <nng/supplemental/http/http.h>
+#include <nng/supplemental/tls/tls.h>
+#include <nng/supplemental/util/platform.h>
+#endif
+
 #define R_NO_REMAP
 #define STRICT_R_HEADERS
 #include <R.h>
 #include <Rinternals.h>
+#include <R_ext/Visibility.h>
+
+#ifdef NANONEXT_INTERNALS
+static SEXP mk_error(const int xc) {
+
+  SEXP err = PROTECT(Rf_ScalarInteger(xc));
+  Rf_classgets(err, Rf_mkString("errorValue"));
+  Rf_warning("%d | %s", xc, nng_strerror(xc));
+  UNPROTECT(1);
+  return err;
+
+}
+#endif
+
+#ifdef NANONEXT_FINALIZERS
+static void socket_finalizer(SEXP xptr) {
+
+  if (R_ExternalPtrAddr(xptr) == NULL)
+    return;
+  nng_socket *xp = (nng_socket *) R_ExternalPtrAddr(xptr);
+  nng_close(*xp);
+  R_Free(xp);
+
+}
+
+static void dialer_finalizer(SEXP xptr) {
+
+  if (R_ExternalPtrAddr(xptr) == NULL)
+    return;
+  nng_dialer *xp = (nng_dialer *) R_ExternalPtrAddr(xptr);
+  nng_dialer_close(*xp);
+  R_Free(xp);
+
+}
+
+static void listener_finalizer(SEXP xptr) {
+
+  if (R_ExternalPtrAddr(xptr) == NULL)
+    return;
+  nng_listener *xp = (nng_listener *) R_ExternalPtrAddr(xptr);
+  nng_listener_close(*xp);
+  R_Free(xp);
+
+}
+#endif
 
 /* define internal symbols */
 extern SEXP nano_AioSymbol;

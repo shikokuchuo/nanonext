@@ -1,7 +1,6 @@
 /* nanonext - package level registrations ----------------------------------- */
 
 #include "nanonext.h"
-#include <R_ext/Visibility.h>
 
 SEXP nano_AioSymbol;
 SEXP nano_ContextSymbol;

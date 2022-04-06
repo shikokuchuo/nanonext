@@ -61,7 +61,7 @@ nano <- function(protocol = c("pair", "bus", "push", "pull", "req", "rep",
 
   nano <- `class<-`(new.env(hash = FALSE), "nanoObject")
   socket <- socket(protocol)
-  makeActiveBinding("socket", function(x) socket, nano)
+  makeActiveBinding(sym = "socket", fun = function(x) socket, env = nano)
 
   if (!missing(dial)) {
     dial(nano, url = dial, autostart = autostart)
