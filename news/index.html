@@ -64,12 +64,13 @@
 </ul></div>
 <div class="section level5">
 <h5 id="updates-0-3-0-9005">Updates<a class="anchor" aria-label="anchor" href="#updates-0-3-0-9005"></a></h5>
-<ul><li>Unified <code><a href="../reference/send.html">send()</a></code> and <code><a href="../reference/recv.html">recv()</a></code> functions, and their asynchronous counterparts <code><a href="../reference/send_aio.html">send_aio()</a></code> and <code><a href="../reference/recv_aio.html">recv_aio()</a></code>, are now S3 generics and can be used across Sockets, Contexts and Streams.</li>
+<ul><li>Behavioural change: messages have been upgraded to warnings across the package to allow for enhanced reporting of the originating call e.g. via <code><a href="https://rdrr.io/r/base/warnings.html" class="external-link">warnings()</a></code>. Note that warnings are only printed when execution returns to the top level, e.g. at the end of a function or loop. If timely printing to stderr is required e.g. for logging, that should be written into your error handler within the function/loop etc.</li>
+<li>Unified <code><a href="../reference/send.html">send()</a></code> and <code><a href="../reference/recv.html">recv()</a></code> functions, and their asynchronous counterparts <code><a href="../reference/send_aio.html">send_aio()</a></code> and <code><a href="../reference/recv_aio.html">recv_aio()</a></code>, are now S3 generics and can be used across Sockets, Contexts and Streams.</li>
 <li>Revised ‘block’ argument for <code><a href="../reference/send.html">send()</a></code> and <code><a href="../reference/recv.html">recv()</a></code> now allows an integer value for setting a timeout.</li>
 <li>
 <code><a href="../reference/send_ctx.html">send_ctx()</a></code> and <code><a href="../reference/recv_ctx.html">recv_ctx()</a></code> are deprecated and will be removed in a future package version - the methods for <code><a href="../reference/send.html">send()</a></code> and <code><a href="../reference/recv.html">recv()</a></code> should be used instead.</li>
-<li>Returned NNG error codes are now all classed ‘errorValue’ and messages have been upgraded to warnings across the package to allow enhanced reporting of the originating call e.g. via <code><a href="https://rdrr.io/r/base/warnings.html" class="external-link">warnings()</a></code>. Timestamps have been removed in a trade-off for better performance.</li>
-<li>Logging is deprecated and in the process of being phased out. Logging can still be set via ‘NANONEXT_LOG’ prior to package load but <code><a href="../reference/logging.html">logging()</a></code> can no longer be used. Logging will be removed entirely in a future package version.</li>
+<li>To allow for more flexible practices, logging is now deprecated and being phased out. Logging can still be set via ‘NANONEXT_LOG’ prior to package load but <code><a href="../reference/logging.html">logging()</a></code> can no longer be used. Logging will be removed entirely in a future package version.</li>
+<li>Returned NNG error codes are now all classed as ‘errorValue’ across the package.</li>
 </ul></div>
 </div>
     <div class="section level2">
