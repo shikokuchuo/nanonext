@@ -20,4 +20,7 @@ Stops the asynchronous I/O operation associated with 'aio' by
     aborting, and then waits for it to complete or to be completely aborted.
     The Aio is then deallocated and no further operations may be performed on
     it.
+
+    Note this function operates silently and does not error even if 'aio' is
+    not an active Aio, always returning invisible NULL.
 }

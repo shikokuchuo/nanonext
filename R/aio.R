@@ -433,7 +433,7 @@ recv_aio.nanoStream <- function(con,
 #'
 #' @param aio An Aio (object of class 'sendAio' or 'recvAio').
 #'
-#' @return The passed Aio object (invisibly).
+#' @return The passed object (invisibly).
 #'
 #' @details For a 'recvAio', the received raw vector may be retrieved at \code{$raw}
 #'     (unless 'keep.raw' was set to FALSE when receiving), and the converted R
@@ -451,6 +451,9 @@ recv_aio.nanoStream <- function(con,
 #'
 #'     Once the value has been successfully retrieved, the Aio is deallocated
 #'     and only the value is stored in the Aio object.
+#'
+#'     Note this function operates silently and does not error even if 'aio' is
+#'     not an active Aio, always returning invisibly the passed object.
 #'
 #' @section Alternatively:
 #'
@@ -499,6 +502,9 @@ call_aio <- function(aio) {
 #'     aborting, and then waits for it to complete or to be completely aborted.
 #'     The Aio is then deallocated and no further operations may be performed on
 #'     it.
+#'
+#'     Note this function operates silently and does not error even if 'aio' is
+#'     not an active Aio, always returning invisible NULL.
 #'
 #' @export
 #'

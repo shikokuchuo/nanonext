@@ -10,7 +10,7 @@ call_aio(aio)
 \item{aio}{An Aio (object of class 'sendAio' or 'recvAio').}
 }
 \value{
-The passed Aio object (invisibly).
+The passed object (invisibly).
 }
 \description{
 Retrieve the value of an asynchronous AIO operation, waiting for the AIO
@@ -33,6 +33,9 @@ For a 'recvAio', the received raw vector may be retrieved at \code{$raw}
 
     Once the value has been successfully retrieved, the Aio is deallocated
     and only the value is stored in the Aio object.
+
+    Note this function operates silently and does not error even if 'aio' is
+    not an active Aio, always returning invisibly the passed object.
 }
 \section{Alternatively}{
 

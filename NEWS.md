@@ -8,11 +8,12 @@
   
 #### Updates
 
+* Behavioural change: messages have been upgraded to warnings across the package to allow for enhanced reporting of the originating call e.g. via `warnings()`. Note that warnings are only printed when execution returns to the top level, e.g. at the end of a function or loop. If timely printing to stderr is required e.g. for logging, that should be written into your error handler within the function/loop etc.
 * Unified `send()` and `recv()` functions, and their asynchronous counterparts `send_aio()` and `recv_aio()`, are now S3 generics and can be used across Sockets, Contexts and Streams.
 * Revised 'block' argument for `send()` and `recv()` now allows an integer value for setting a timeout.
 * `send_ctx()` and `recv_ctx()` are deprecated and will be removed in a future package version - the methods for `send()` and `recv()` should be used instead.
-* Returned NNG error codes are now all classed 'errorValue' and messages have been upgraded to warnings across the package to allow enhanced reporting of the originating call e.g. via `warnings()`. Timestamps have been removed in a trade-off for better performance.
-* Logging is deprecated and in the process of being phased out. Logging can still be set via 'NANONEXT_LOG' prior to package load but `logging()` can no longer be used. Logging will be removed entirely in a future package version.
+* To allow for more flexible practices, logging is now deprecated and being phased out. Logging can still be set via 'NANONEXT_LOG' prior to package load but `logging()` can no longer be used. Logging will be removed entirely in a future package version.
+* Returned NNG error codes are now all classed as 'errorValue' across the package.
 
 # nanonext 0.3.0
 
