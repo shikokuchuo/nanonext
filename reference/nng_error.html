@@ -82,15 +82,24 @@
     
 
 
-<p>A warning is generated every time an 'errorValue' is returned. The package
-    changes the behaviour of warnings by setting <code>options(warn = 1)</code>
-    upon package load. This prints the warning to the console as soon as it
-    occurs, rather than the default of waiting for the top–level function to
-    return.</p>
-<p>See <code><a href="https://rdrr.io/r/base/warning.html" class="external-link">warning</a></code> or the entry for 'warn' in <code><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></code>
-    for further details. The original option value for 'warn' is reverted upon
-    package unload.</p>
-    </div>
+<p>A warning is generated every time an 'errorValue' is returned.</p>
+<p><code><a href="nano_init.html">nano_init</a></code> may be used to set the value of option 'warn' and
+    automatically reverts it upon package unload. The default, applied by
+    calling <code><a href="nano_init.html">nano_init()</a></code> with no arguments, is 'immediate', which prints
+    warnings as they occur.</p>
+<p>Further options for warnings may be set manually via <code><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></code>:</p>
+<p></p><ul><li><p>warning.expression  - an R code expression to be called if a
+    warning is
+    generated, replacing the standard message. If non-null it is called
+    irrespective of the value of option warn.</p></li>
+<li><p>warning.length  - sets the truncation limit in bytes for error and warning
+    messages. A non-negative integer, with allowed values 100...8170, default
+    1000.</p></li>
+<li><p>nwarnings  - the limit for the number of warnings kept when warn = 0,
+    default 50. This will discard messages if called whilst they are being
+    collected. If you increase this limit, be aware that the current
+    implementation pre-allocates the equivalent of a named list for them.</p></li>
+</ul></div>
 
     <div id="ref-examples">
     <h2>Examples</h2>

@@ -61,10 +61,11 @@
 <li>
 <code><a href="../reference/ncurl.html">ncurl()</a></code> adds an ‘async’ option to perform HTTP requests asynchronously, returning immediately with a ‘recvAio’. Also adds explicit arguments for HTTP method, headers (which takes a named list or character vector) and request data.</li>
 <li>New <code><a href="../reference/messenger.html">messenger()</a></code> function implements a multi-threaded console-based messaging system using NNG’s scalability protocols.</li>
+<li>New <code><a href="../reference/nano_init.html">nano_init()</a></code> function intended to be called immediately after package load to set how to handle warnings, with a default of immediate printing of warnings (settings automatically reverted upon unload).</li>
 </ul></div>
 <div class="section level5">
 <h5 id="updates-0-3-0-9005">Updates<a class="anchor" aria-label="anchor" href="#updates-0-3-0-9005"></a></h5>
-<ul><li>Behavioural change: messages have been upgraded to warnings across the package to allow for enhanced reporting of the originating call e.g. via <code><a href="https://rdrr.io/r/base/warnings.html" class="external-link">warnings()</a></code> and flexibility in handling by setting the value of ‘warn’ using <code><a href="https://rdrr.io/r/base/options.html" class="external-link">options()</a></code>. <code>options(warn = 1)</code> is set upon package load for immediate printing of warnings (and reverted upon unload).</li>
+<ul><li>Behavioural change: messages have been upgraded to warnings across the package to allow for enhanced reporting of the originating call e.g. via <code><a href="https://rdrr.io/r/base/warnings.html" class="external-link">warnings()</a></code> and flexibility in handling via setting <code><a href="https://rdrr.io/r/base/options.html" class="external-link">options()</a></code>.</li>
 <li>Unified <code><a href="../reference/send.html">send()</a></code> and <code><a href="../reference/recv.html">recv()</a></code> functions, and their asynchronous counterparts <code><a href="../reference/send_aio.html">send_aio()</a></code> and <code><a href="../reference/recv_aio.html">recv_aio()</a></code>, are now S3 generics and can be used across Sockets, Contexts and Streams.</li>
 <li>Revised ‘block’ argument for <code><a href="../reference/send.html">send()</a></code> and <code><a href="../reference/recv.html">recv()</a></code> now allows an integer value for setting a timeout.</li>
 <li>
