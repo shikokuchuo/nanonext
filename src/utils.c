@@ -2,7 +2,7 @@
 
 #define NANONEXT_INTERNALS
 #define NANONEXT_PROTOCOLS
-#define NANONEXT_SUPLEMENTALS
+#define NANONEXT_SUPPLEMENTALS
 #define NANONEXT_FINALIZERS
 #include <time.h>
 #include "nanonext.h"

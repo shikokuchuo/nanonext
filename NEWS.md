@@ -5,10 +5,11 @@
 * New `stream()` interface exposes low-level byte stream functionality in the NNG library, intended for communicating with non-NNG endpoints, including but not limited to websocket servers.
 * `ncurl()` adds an 'async' option to perform HTTP requests asynchronously, returning immediately with a 'recvAio'. Also adds explicit arguments for HTTP method, headers (which takes a named list or character vector) and request data.
 * New `messenger()` function implements a multi-threaded console-based messaging system using NNG's scalability protocols.
-  
+* New `nano_init()` function intended to be called immediately after package load to set how to handle warnings, with a default of immediate printing of warnings (settings automatically reverted upon unload).
+
 #### Updates
 
-* Behavioural change: messages have been upgraded to warnings across the package to allow for enhanced reporting of the originating call e.g. via `warnings()` and flexibility in handling by setting the value of 'warn' using `options()`. `options(warn = 1)` is set upon package load for immediate printing of warnings (and reverted upon unload).
+* Behavioural change: messages have been upgraded to warnings across the package to allow for enhanced reporting of the originating call e.g. via `warnings()` and flexibility in handling via setting `options()`.
 * Unified `send()` and `recv()` functions, and their asynchronous counterparts `send_aio()` and `recv_aio()`, are now S3 generics and can be used across Sockets, Contexts and Streams.
 * Revised 'block' argument for `send()` and `recv()` now allows an integer value for setting a timeout.
 * `send_ctx()` and `recv_ctx()` are deprecated and will be removed in a future package version - the methods for `send()` and `recv()` should be used instead.

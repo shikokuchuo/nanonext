@@ -1,7 +1,7 @@
 /* nanonext - C level - Core Functions -------------------------------------- */
 
 #define NANONEXT_INTERNALS
-#define NANONEXT_SUPLEMENTALS
+#define NANONEXT_SUPPLEMENTALS
 #include "nanonext.h"
 
 /* definitions and statics -------------------------------------------------- */

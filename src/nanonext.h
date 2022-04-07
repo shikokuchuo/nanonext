@@ -20,7 +20,7 @@
 #include <nng/protocol/survey0/respond.h>
 #endif
 
-#ifdef NANONEXT_SUPLEMENTALS
+#ifdef NANONEXT_SUPPLEMENTALS
 #include <nng/supplemental/http/http.h>
 #include <nng/supplemental/tls/tls.h>
 #include <nng/supplemental/util/platform.h>

@@ -72,6 +72,10 @@ install.packages("nanonext", repos = "https://shikokuchuo.r-universe.dev")
 
 ### Interfaces
 
+Call `nano_init()` after package load to set global options. The default
+by calling `nano_init()` with no arguments will cause generated warnings
+to print immediately as they occur.
+
 {nanonext} offers 2 equivalent interfaces: an object-oriented interface,
 and a functional interface.
 
@@ -90,6 +94,8 @@ Create nano objects:
 
 ``` r
 library(nanonext)
+nano_init()
+
 nano1 <- nano("req", listen = "inproc://nanonext")
 nano2 <- nano("rep", dial = "inproc://nanonext")
 ```
@@ -129,6 +135,8 @@ Create sockets:
 
 ``` r
 library(nanonext)
+nano_init()
+
 socket1 <- socket("push", listen = "tcp://127.0.0.1:5555")
 socket2 <- socket("pull", dial = "tcp://127.0.0.1:5555")
 ```
@@ -370,7 +378,7 @@ aio
 #> < recvAio >
 #>  - $data for message data
 aio$data |> str()
-#>  num [1:100000000] -0.257 -0.142 -0.473 0.718 -1.426 ...
+#>  num [1:100000000] 0.946 -0.658 -1.397 0.983 0.339 ...
 ```
 
 As `call_aio()` is blocking and will wait for completion, an alternative
@@ -505,11 +513,11 @@ ncurl("http://httpbin.org/headers")
 #>   [1] 7b 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73
 #>  [26] 74 22 3a 20 22 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22
 #>  [51] 58 2d 41 6d 7a 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31
-#>  [76] 2d 36 32 34 65 30 30 36 64 2d 37 38 30 37 36 62 37 63 31 35 65 64 66 37 65
-#> [101] 37 31 64 36 62 32 34 63 35 22 0a 20 20 7d 0a 7d 0a
+#>  [76] 2d 36 32 34 65 61 39 38 66 2d 35 31 39 65 31 39 66 61 31 38 61 37 38 31 31
+#> [101] 31 31 66 62 34 36 62 35 36 22 0a 20 20 7d 0a 7d 0a
 #> 
 #> $data
-#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-624e006d-78076b7c15edf7e71d6b24c5\"\n  }\n}\n"
+#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-624ea98f-519e19fa18a781111fb46b56\"\n  }\n}\n"
 ```
 
 For advanced use, supports additional HTTP methods such as POST or PUT.
@@ -524,7 +532,7 @@ res
 #>  - $raw for raw message
 
 call_aio(res)$data
-#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-624e006d-06173bcd5b43d5622303afe5\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"78.145.225.121\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
+#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-624ea98f-641a91ed52b661a054b5065c\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"79.173.189.204\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
 ```
 
 In this respect, it may be used as a performant and lightweight method
