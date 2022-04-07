@@ -242,9 +242,10 @@ decode <- function(con, mode) {
 }
 
 match.arg2 <- function(choice, choices) {
-  arg <- deparse(substitute(choice))
-  index <- pmatch(choice[1L], choices, nomatch = 0L)
-  index || stop(sprintf("'%s' should be one of %s", arg, paste(choices, collapse = ", ")))
+  identical(choice, choices) && return(1L)
+  index <- pmatch(choice[1L], choices, nomatch = 0L, duplicates.ok = TRUE)
+  index || stop(sprintf("'%s' should be one of %s",
+                        deparse(substitute(choice)), paste(choices, collapse = ", ")))
   index
 }
 
