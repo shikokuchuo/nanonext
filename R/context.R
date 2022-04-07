@@ -188,16 +188,16 @@ request <- function(context,
   send_mode <- match.arg2(send_mode, c("serial", "raw"))
   recv_mode <- match.arg2(recv_mode, c("serial", "character", "complex", "double",
                                        "integer", "logical", "numeric", "raw"))
-  keep.raw <- missing(keep.raw) || isTRUE(keep.raw)
-  if (missing(timeout)) timeout <- -2L
   force(data)
   data <- encode(data = data, mode = send_mode)
   res <- .Call(rnng_ctx_send_aio, context, data, -2L)
   is.integer(res) && return(invisible(res))
 
+  if (missing(timeout)) timeout <- -2L
   aio <- .Call(rnng_ctx_recv_aio, context, timeout)
   is.integer(aio) && return(invisible(aio))
 
+  keep.raw <- missing(keep.raw) || isTRUE(keep.raw)
   env <- new.env(hash = FALSE)
   data <- raw <- NULL
   unresolv <- TRUE

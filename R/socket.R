@@ -66,7 +66,7 @@ socket <- function(protocol = c("pair", "bus", "req", "rep", "push", "pull",
   protocol <- match.arg2(protocol, c("pair", "bus", "req", "rep", "push", "pull",
                                      "pub", "sub", "surveyor", "respondent"))
   res <- .Call(rnng_protocol_open, protocol)
-  is.integer(res) && return(invisible(res))
+  is.integer(res) && return(res)
   if (.logging.) {
     loginfo(evt = "sock open", pkey = "id", pval = attr(res, "id"),
             skey = "protocol", sval = attr(res, "protocol"))

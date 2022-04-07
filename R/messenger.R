@@ -27,7 +27,6 @@
 #'
 messenger <- function(url) {
 
-  is.character(url) || stop("the url must be supplied as a character string")
   sock <- .Call(rnng_messenger, url)
   is.integer(sock) && return(invisible(sock))
   on.exit(expr = {

@@ -94,9 +94,9 @@ send.nanoContext <- function(con,
                              echo = TRUE) {
 
   mode <- match.arg2(mode, c("serial", "raw"))
-  if (missing(block) || isTRUE(block)) block <- -2L
   force(data)
   data <- encode(data = data, mode = mode)
+  if (missing(block) || isTRUE(block)) block <- -2L
   res <- .Call(rnng_ctx_send, con, data, block)
   is.integer(res) && return(invisible(res))
   if (missing(echo) || isTRUE(echo)) res else invisible(0L)
@@ -142,7 +142,7 @@ send.nanoStream <- function(con,
 #' @param keep.raw [default TRUE] logical flag whether to keep the received raw
 #'     vector (useful for verification e.g. via hashing). If FALSE, will return
 #'     the converted data only.
-#' @param n <Streams> [default 10000] the maximum number of bytes to receive.
+#' @param n <Streams> [default 10000L] the maximum number of bytes to receive.
 #'     Can be an over-estimate, but note that a buffer of this size is reserved.
 #' @param ... currently unused.
 #'
@@ -269,7 +269,7 @@ recv.nanoStream <- function(con,
                                      "logical", "numeric", "raw"),
                             block = TRUE,
                             keep.raw = TRUE,
-                            n = 10000,
+                            n = 10000L,
                             ...) {
 
   mode <- match.arg2(mode, c("character", "complex", "double", "integer",

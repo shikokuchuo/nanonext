@@ -73,8 +73,6 @@ dial <- function(socket,
                  url = "inproc://nanonext",
                  autostart = TRUE) {
 
-  is.character(url) || stop("'url' should be a character string")
-
   if (missing(autostart) || isTRUE(autostart)) {
     res <- .Call(rnng_dial, socket, url)
     is.integer(res) && return(invisible(res))
@@ -182,8 +180,6 @@ dial <- function(socket,
 listen <- function(socket,
                    url = "inproc://nanonext",
                    autostart = TRUE) {
-
-  is.character(url) || stop("'url' should be a character string")
 
   if (missing(autostart) || isTRUE(autostart)) {
     res <- .Call(rnng_listen, socket, url)

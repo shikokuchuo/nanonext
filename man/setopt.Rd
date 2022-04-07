@@ -3,10 +3,11 @@
 \name{setopt}
 \alias{setopt}
 \alias{setopt.nanoSocket}
+\alias{setopt.nanoContext}
 \alias{setopt.nanoDialer}
 \alias{setopt.nanoListener}
-\alias{setopt.nanoContext}
-\title{Set Option on Socket, Context, Dialer or Listener}
+\alias{setopt.nanoStream}
+\title{Set Option on Socket, Context, Dialer, Listener or Stream}
 \usage{
 setopt(
   object,
@@ -16,6 +17,13 @@ setopt(
 )
 
 \method{setopt}{nanoSocket}(
+  object,
+  type = c("bool", "int", "ms", "size", "string", "uint64"),
+  opt,
+  value
+)
+
+\method{setopt}{nanoContext}(
   object,
   type = c("bool", "int", "ms", "size", "string", "uint64"),
   opt,
@@ -36,7 +44,7 @@ setopt(
   value
 )
 
-\method{setopt}{nanoContext}(
+\method{setopt}{nanoStream}(
   object,
   type = c("bool", "int", "ms", "size", "string", "uint64"),
   opt,
@@ -44,7 +52,7 @@ setopt(
 )
 }
 \arguments{
-\item{object}{a Socket, Context, Listener or Dialer.}
+\item{object}{a Socket, Context, Listener, Dialer or Stream.}
 
 \item{type}{[default 'bool'] type of option - either 'bool', 'int', 'ms'
 (duration), 'size', 'string' or 'uint64'.}
@@ -58,7 +66,7 @@ See \link{opts}.}
 Invisibly, an integer exit code (zero on success).
 }
 \description{
-Set \link{opts} on a Socket, Context, Dialer or Listener.
+Set \link{opts} on a Socket, Context, Dialer, Listener or Stream.
 }
 \details{
 Note: once a dialer or listener has started, it is not generally
@@ -74,6 +82,12 @@ s <- socket("pair")
 setopt(s, "ms", "recv-timeout", 2000)
 close(s)
 
+s <- socket("req")
+ctx <- context(s)
+setopt(ctx, "ms", "send-timeout", 2000)
+close(ctx)
+close(s)
+
 s <- socket("pair", dial = "inproc://nanonext", autostart = FALSE)
 setopt(s$dialer[[1]], "ms", "reconnect-time-min", 2000)
 start(s$dialer[[1]])
@@ -82,12 +96,6 @@ close(s)
 s <- socket("pair", listen = "inproc://nanonext", autostart = FALSE)
 setopt(s$listener[[1]], "size", "recv-size-max", 1024)
 start(s$listener[[1]])
-close(s)
-
-s <- socket("req")
-ctx <- context(s)
-setopt(ctx, "ms", "send-timeout", 2000)
-close(ctx)
 close(s)
 
 }

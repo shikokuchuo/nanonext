@@ -64,7 +64,7 @@ the converted data only.}
 
 \item{...}{currently unused.}
 
-\item{n}{<Streams> [default 10000] the maximum number of bytes to receive.
+\item{n}{<Streams> [default 10000L] the maximum number of bytes to receive.
 Can be an over-estimate, but note that a buffer of this size is reserved.}
 }
 \value{

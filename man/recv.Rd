@@ -40,7 +40,7 @@ recv(
   mode = c("character", "complex", "double", "integer", "logical", "numeric", "raw"),
   block = TRUE,
   keep.raw = TRUE,
-  n = 10000,
+  n = 10000L,
   ...
 )
 }
@@ -66,7 +66,7 @@ the converted data only.}
 
 \item{...}{currently unused.}
 
-\item{n}{<Streams> [default 10000] the maximum number of bytes to receive.
+\item{n}{<Streams> [default 10000L] the maximum number of bytes to receive.
 Can be an over-estimate, but note that a buffer of this size is reserved.}
 }
 \value{

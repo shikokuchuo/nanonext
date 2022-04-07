@@ -49,9 +49,9 @@ send_aio <- function(con, data, mode = c("serial", "raw"), timeout) UseMethod("s
 send_aio.nanoSocket <- function(con, data, mode = c("serial", "raw"), timeout) {
 
   mode <- match.arg2(mode, c("serial", "raw"))
-  if (missing(timeout)) timeout <- -2L
   force(data)
   data <- encode(data = data, mode = mode)
+  if (missing(timeout)) timeout <- -2L
   aio <- .Call(rnng_send_aio, con, data, timeout)
   is.integer(aio) && return(invisible(aio))
 
@@ -79,9 +79,9 @@ send_aio.nanoSocket <- function(con, data, mode = c("serial", "raw"), timeout) {
 send_aio.nanoContext <- function(con, data, mode = c("serial", "raw"), timeout) {
 
   mode <- match.arg2(mode, c("serial", "raw"))
-  if (missing(timeout)) timeout <- -2L
   force(data)
   data <- encode(data = data, mode = mode)
+  if (missing(timeout)) timeout <- -2L
   aio <- .Call(rnng_ctx_send_aio, con, data, timeout)
   is.integer(aio) && return(invisible(aio))
 
@@ -208,11 +208,11 @@ recv_aio.nanoSocket <- function(con,
 
   mode <- match.arg2(mode, c("serial", "character", "complex", "double",
                              "integer", "logical", "numeric", "raw"))
-  keep.raw <- missing(keep.raw) || isTRUE(keep.raw)
   if (missing(timeout)) timeout <- -2L
   aio <- .Call(rnng_recv_aio, con, timeout)
   is.integer(aio) && return(invisible(aio))
 
+  keep.raw <- missing(keep.raw) || isTRUE(keep.raw)
   env <- new.env(hash = FALSE)
   data <- raw <- NULL
   unresolv <- TRUE
@@ -285,11 +285,11 @@ recv_aio.nanoContext <- function(con,
 
   mode <- match.arg2(mode, c("serial", "character", "complex", "double",
                              "integer", "logical", "numeric", "raw"))
-  keep.raw <- missing(keep.raw) || isTRUE(keep.raw)
   if (missing(timeout)) timeout <- -2L
   aio <- .Call(rnng_ctx_recv_aio, con, timeout)
   is.integer(aio) && return(invisible(aio))
 
+  keep.raw <- missing(keep.raw) || isTRUE(keep.raw)
   env <- new.env(hash = FALSE)
   data <- raw <- NULL
   unresolv <- TRUE
@@ -363,11 +363,11 @@ recv_aio.nanoStream <- function(con,
 
   mode <- match.arg2(mode, c("character", "complex", "double", "integer",
                              "logical", "numeric", "raw")) + 1L
-  keep.raw <- missing(keep.raw) || isTRUE(keep.raw)
   if (missing(timeout)) timeout <- -2L
   aio <- .Call(rnng_stream_recv_aio, con, n, timeout)
   is.integer(aio) && return(invisible(aio))
 
+  keep.raw <- missing(keep.raw) || isTRUE(keep.raw)
   env <- new.env(hash = FALSE)
   data <- raw <- NULL
   unresolv <- TRUE

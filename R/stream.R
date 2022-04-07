@@ -36,29 +36,16 @@
 #'
 stream <- function(dial = NULL, listen = NULL, textframes = FALSE) {
 
+  textframes <- isTRUE(textframes)
   if (missing(dial)) {
-    if (missing(listen)) stop("specify a URL for either 'dial' or 'listen'") else {
-      is.character(listen) || stop("'listen' should be a URL provided as a character string")
-      textframes <- isTRUE(textframes)
-      res <- .Call(rnng_stream_listen, listen, textframes)
-      is.integer(res) && return(invisible(res))
-      if (.logging.) {
-        loginfo(evt = "stream open", pkey = "list", pval = 1L,
-                skey = "url", sval = listen)
-      }
+    if (missing(listen)) {
+      stop("specify a URL for either 'dial' or 'listen'")
+    } else {
+      .Call(rnng_stream_listen, listen, textframes)
     }
   } else {
-    is.character(dial) || stop("'dial' should be a URL provided as a character string")
-    textframes <- isTRUE(textframes)
-    res <- .Call(rnng_stream_dial, dial, textframes)
-    is.integer(res) && return(invisible(res))
-    if (.logging.) {
-      loginfo(evt = "stream open", pkey = "dial", pval = 1L,
-              skey = "url", sval = dial)
-    }
+    .Call(rnng_stream_dial, dial, textframes)
   }
-  if (textframes != attr(res, "textframes")) message("ignoring 'textframes' as not supported on this transport")
-  res
 
 }
 

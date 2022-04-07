@@ -142,13 +142,13 @@ is_error_value <- function(x) inherits(x, "errorValue")
 #'     level, 'error' to upgrade all warnings to errors (stops execution), and
 #'     'none' to ignore all warnings.
 #'
-#' @return Integer \code{code} applied to \code{options(warn = code)} (invisibly).
+#' @return Invisibly, the integer \code{code} applied to \code{options(warn = code)}.
 #'
 #' @section Warnings:
 #'
 #'     A warning is generated every time an 'errorValue' is returned.
 #'
-#'     This funnction sets the option 'warn' to the appropriate value and
+#'     This function sets the global option 'warn' to the appropriate value and
 #'     automatically reverts it upon package unload. The default, applied by
 #'     calling \code{nano_init()} with no arguments, is 'immediate', which
 #'     prints warnings as they occur.

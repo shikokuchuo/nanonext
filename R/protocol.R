@@ -42,7 +42,7 @@ subscribe <- function(socket, topic = NULL) {
     loginfo(evt = "subscribe", pkey = "sock", pval = attr(socket, "id"),
             skey = "topic", sval = if (is.null(topic)) "ALL" else topic)
   }
-  invisible(.Call(rnng_socket_set_string, socket, "sub:subscribe" , topic))
+  invisible(.Call(rnng_socket_set, socket, 5L, "sub:subscribe", topic))
 
 }
 
@@ -92,7 +92,7 @@ unsubscribe <- function(socket, topic = NULL) {
     loginfo(evt = "unsubscribe", pkey = "sock", pval = attr(socket, "id"),
             skey = "topic", sval = if (is.null(topic)) "ALL" else topic)
   }
-  invisible(.Call(rnng_socket_set_string, socket, "sub:unsubscribe" , topic))
+  invisible(.Call(rnng_socket_set, socket, 5L, "sub:unsubscribe", topic))
 
 }
 
@@ -144,7 +144,7 @@ survey_time <- function(socket, time) {
     loginfo(evt = "survey", pkey = "sock", pval = attr(socket, "id"),
             skey = "set time", sval = as.character(time))
   }
-  invisible(.Call(rnng_socket_set_ms, socket, "surveyor:survey-time", time))
+  invisible(.Call(rnng_socket_set, socket, 3L, "surveyor:survey-time", time))
 
 }
 
