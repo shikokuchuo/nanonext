@@ -73,7 +73,7 @@ level, 'error' to upgrade all warnings to errors (stops execution), and
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>Integer <code>code</code> applied to <code>options(warn = code)</code> (invisibly).</p>
+    <p>Invisibly, the integer <code>code</code> applied to <code>options(warn = code)</code>.</p>
     </div>
     <div id="warnings">
     <h2>Warnings</h2>
@@ -81,7 +81,7 @@ level, 'error' to upgrade all warnings to errors (stops execution), and
 
 
 <p>A warning is generated every time an 'errorValue' is returned.</p>
-<p>This funnction sets the option 'warn' to the appropriate value and
+<p>This function sets the global option 'warn' to the appropriate value and
     automatically reverts it upon package unload. The default, applied by
     calling <code>nano_init()</code> with no arguments, is 'immediate', which
     prints warnings as they occur.</p>
