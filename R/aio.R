@@ -48,7 +48,7 @@ send_aio <- function(con, data, mode = c("serial", "raw"), timeout) UseMethod("s
 #'
 send_aio.nanoSocket <- function(con, data, mode = c("serial", "raw"), timeout) {
 
-  mode <- match.arg(mode)
+  mode <- match.arg2(mode, c("serial", "raw"))
   if (missing(timeout)) timeout <- -2L
   force(data)
   data <- encode(data = data, mode = mode)
@@ -78,7 +78,7 @@ send_aio.nanoSocket <- function(con, data, mode = c("serial", "raw"), timeout) {
 #'
 send_aio.nanoContext <- function(con, data, mode = c("serial", "raw"), timeout) {
 
-  mode <- match.arg(mode)
+  mode <- match.arg2(mode, c("serial", "raw"))
   if (missing(timeout)) timeout <- -2L
   force(data)
   data <- encode(data = data, mode = mode)
@@ -109,7 +109,7 @@ send_aio.nanoContext <- function(con, data, mode = c("serial", "raw"), timeout) 
 send_aio.nanoStream <- function(con, data, mode = "raw", timeout) {
 
   force(data)
-  data <- encode(data = data, mode = "raw")
+  data <- encode(data = data, mode = 2L)
   if (missing(timeout)) timeout <- -2L
   aio <- .Call(rnng_stream_send_aio, con, data, timeout)
   is.integer(aio) && return(invisible(aio))
@@ -206,7 +206,8 @@ recv_aio.nanoSocket <- function(con,
                                 keep.raw = TRUE,
                                 ...) {
 
-  mode <- match.arg(mode)
+  mode <- match.arg2(mode, c("serial", "character", "complex", "double",
+                             "integer", "logical", "numeric", "raw"))
   keep.raw <- missing(keep.raw) || isTRUE(keep.raw)
   if (missing(timeout)) timeout <- -2L
   aio <- .Call(rnng_recv_aio, con, timeout)
@@ -282,7 +283,8 @@ recv_aio.nanoContext <- function(con,
                                  keep.raw = TRUE,
                                  ...) {
 
-  mode <- match.arg(mode)
+  mode <- match.arg2(mode, c("serial", "character", "complex", "double",
+                             "integer", "logical", "numeric", "raw"))
   keep.raw <- missing(keep.raw) || isTRUE(keep.raw)
   if (missing(timeout)) timeout <- -2L
   aio <- .Call(rnng_ctx_recv_aio, con, timeout)
@@ -359,7 +361,8 @@ recv_aio.nanoStream <- function(con,
                                 n = 10000,
                                 ...) {
 
-  mode <- match.arg(mode)
+  mode <- match.arg2(mode, c("character", "complex", "double", "integer",
+                             "logical", "numeric", "raw")) + 1L
   keep.raw <- missing(keep.raw) || isTRUE(keep.raw)
   if (missing(timeout)) timeout <- -2L
   aio <- .Call(rnng_stream_recv_aio, con, n, timeout)

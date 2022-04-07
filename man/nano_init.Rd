@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{nano_init}
 \alias{nano_init}
-\title{Nanonext Initialise}
+\title{nanonext Initialise}
 \usage{
 nano_init(warn = c("immediate", "deferred", "error", "none"))
 }

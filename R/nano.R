@@ -51,7 +51,7 @@
 #'
 #' @export
 #'
-nano <- function(protocol = c("pair", "bus", "push", "pull", "req", "rep",
+nano <- function(protocol = c("pair", "bus", "req", "rep", "push", "pull",
                               "pub", "sub", "surveyor", "respondent"),
                  dial = NULL,
                  listen = NULL,

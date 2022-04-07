@@ -17,8 +17,7 @@ R binding for NNG (Nanomsg Next Gen), a successor to ZeroMQ. NNG is a socket
 
 
     Call \code{\link{nano_init}} after package load to set global options.
-    The default by calling \code{nano_init()} with no arguments will cause
-    generated warnings to print immediately as they occur.
+    Using defaults will cause warnings to print immediately as they occur.
 
     \{nanonext\} offers 2 equivalent interfaces: an object-oriented interface,
     and a functional interface.

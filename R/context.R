@@ -114,8 +114,9 @@ reply <- function(context,
                   timeout,
                   ...) {
 
-  recv_mode <- match.arg(recv_mode)
-  send_mode <- match.arg(send_mode)
+  recv_mode <- match.arg2(recv_mode, c("serial", "character", "complex", "double",
+                                       "integer", "logical", "numeric", "raw"))
+  send_mode <- match.arg2(send_mode, c("serial", "raw"))
   if (missing(timeout)) timeout <- -2L
   res <- .Call(rnng_ctx_recv, context, timeout)
   is.integer(res) && return(invisible(res))
@@ -184,8 +185,9 @@ request <- function(context,
                     timeout,
                     keep.raw = TRUE) {
 
-  send_mode <- match.arg(send_mode)
-  recv_mode <- match.arg(recv_mode)
+  send_mode <- match.arg2(send_mode, c("serial", "raw"))
+  recv_mode <- match.arg2(recv_mode, c("serial", "character", "complex", "double",
+                                       "integer", "logical", "numeric", "raw"))
   keep.raw <- missing(keep.raw) || isTRUE(keep.raw)
   if (missing(timeout)) timeout <- -2L
   force(data)
@@ -278,7 +280,7 @@ request <- function(context,
 #'
 send_ctx <- function(context, data, mode = c("serial", "raw"), timeout, echo = TRUE) {
 
-  mode <- match.arg(mode)
+  mode <- match.arg2(mode, c("serial", "raw"))
   if (missing(timeout)) timeout <- -2L
   force(data)
   data <- encode(data = data, mode = mode)
@@ -321,7 +323,8 @@ recv_ctx <- function(context,
                      timeout,
                      keep.raw = TRUE) {
 
-  mode <- match.arg(mode)
+  mode <- match.arg2(mode, c("serial", "character", "complex", "double",
+                             "integer", "logical", "numeric", "raw"))
   if (missing(timeout)) timeout <- -2L
   res <- .Call(rnng_ctx_recv, context, timeout)
   is.integer(res) && return(invisible(res))

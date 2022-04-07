@@ -37,22 +37,6 @@
 #'     block; instead if the message cannot be delivered for any reason it is
 #'     discarded.
 #'
-#' @section Pipeline (one-way pipe):
-#'
-#'     In the pipeline pattern, pushers distribute messages to pullers, hence
-#'     useful for solving producer/consumer problems.
-#'
-#'     If multiple peers are connected, the pattern attempts to distribute fairly.
-#'     Each message sent by a pusher will be sent to one of its peer pullers,
-#'     chosen in a round-robin fashion. This property makes this pattern useful
-#'     in load-balancing scenarios.
-#'
-#'     [protocol, push] The push protocol is one half of a pipeline pattern. The
-#'     other side is the pull protocol.
-#'
-#'     [protocol, pull] The pull protocol is one half of a pipeline pattern. The
-#'     other half is the push protocol.
-#'
 #' @section Request/Reply (I ask, you answer):
 #'
 #'     In a request/reply pattern, a requester sends a message to one replier,
@@ -69,6 +53,22 @@
 #'     [protocol, rep] The rep protocol is one half of a request/reply pattern.
 #'     This socket may be used to receive messages (requests), and then to send
 #'     replies. Generally a reply can only be sent after receiving a request.
+#'
+#' @section Pipeline (one-way pipe):
+#'
+#'     In the pipeline pattern, pushers distribute messages to pullers, hence
+#'     useful for solving producer/consumer problems.
+#'
+#'     If multiple peers are connected, the pattern attempts to distribute fairly.
+#'     Each message sent by a pusher will be sent to one of its peer pullers,
+#'     chosen in a round-robin fashion. This property makes this pattern useful
+#'     in load-balancing scenarios.
+#'
+#'     [protocol, push] The push protocol is one half of a pipeline pattern. The
+#'     other side is the pull protocol.
+#'
+#'     [protocol, pull] The pull protocol is one half of a pipeline pattern. The
+#'     other half is the push protocol.
 #'
 #' @section Publisher/Subscriber (topics & broadcast):
 #'

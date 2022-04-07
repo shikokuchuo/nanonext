@@ -6,8 +6,8 @@
 #'     outgoing connection) or listen (accept an incoming connection) at an
 #'     address.
 #'
-#' @param protocol [default 'pair'] choose protocol - 'pair', 'bus', 'push',
-#'     'pull', 'req', 'rep', 'pub', 'sub', 'surveyor', or 'respondent' - see
+#' @param protocol [default 'pair'] choose protocol - 'pair', 'bus', 'req',
+#'     'rep', 'push', 'pull', 'pub', 'sub', 'surveyor', or 'respondent' - see
 #'     \link{protocols}.
 #' @param dial (optional) a URL to dial, specifying the transport and address as
 #'     a character string e.g. 'inproc://anyvalue' or 'tcp://127.0.0.1:5555'
@@ -57,25 +57,22 @@
 #'
 #' @export
 #'
-socket <- function(protocol = c("pair", "bus", "push", "pull", "req", "rep",
+socket <- function(protocol = c("pair", "bus", "req", "rep", "push", "pull",
                                 "pub", "sub", "surveyor", "respondent"),
                    dial = NULL,
                    listen = NULL,
                    autostart = TRUE) {
 
-  protocol <- match.arg(protocol)
+  protocol <- match.arg2(protocol, c("pair", "bus", "req", "rep", "push", "pull",
+                                     "pub", "sub", "surveyor", "respondent"))
   res <- .Call(rnng_protocol_open, protocol)
   is.integer(res) && return(invisible(res))
   if (.logging.) {
     loginfo(evt = "sock open", pkey = "id", pval = attr(res, "id"),
             skey = "protocol", sval = attr(res, "protocol"))
   }
-  if (!missing(dial)) {
-    dial(res, url = dial, autostart = autostart)
-  }
-  if (!missing(listen)) {
-    listen(res, url = listen, autostart = autostart)
-  }
+  if (!missing(dial)) dial(res, url = dial, autostart = autostart)
+  if (!missing(listen)) listen(res, url = listen, autostart = autostart)
   res
 
 }

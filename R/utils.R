@@ -132,7 +132,7 @@ is_nul_byte <- function(x) identical(x, as.raw(0L))
 #'
 is_error_value <- function(x) inherits(x, "errorValue")
 
-#' Nanonext Initialise
+#' nanonext Initialise
 #'
 #' Initialise global options - intended to be called immediately after package load.
 #'
@@ -176,10 +176,8 @@ is_error_value <- function(x) inherits(x, "errorValue")
 #'
 nano_init <- function(warn = c("immediate", "deferred", "error", "none")) {
 
-  cand <- c("immediate", "deferred", "error", "none")
-  warn <- switch(pmatch(warn[1L], cand, nomatch = NULL),
-                 1L, 0L, 2L, -1L)
-  is.null(warn) && stop("'warn' should be one of ", paste(cand, collapse = ", "))
+  warn <- match.arg2(warn, c("immediate", "deferred", "error", "none"))
+  warn <- switch(warn, 1L, 0L, 2L, -1L)
   if (is.null(getOption("nanonext.original.warn"))) options(nanonext.original.warn = getOption("warn"))
   options(warn = warn)
   invisible(warn)
@@ -227,16 +225,27 @@ logging <- function(level = c("keep", "check", "error", "info")) {
 
 encode <- function(data, mode) {
   switch(mode,
-         serial = serialize(object = data, connection = NULL),
-         raw = if (is.raw(data)) data else writeBin(object = data, con = raw()))
+         serialize(object = data, connection = NULL),
+         if (is.raw(data)) data else writeBin(object = data, con = raw()))
 }
 
 decode <- function(con, mode) {
   switch(mode,
-         serial = unserialize(connection = con),
-         character = (r <- readBin(con = con, what = mode, n = length(con)))[r != ""],
-         raw = con,
-         readBin(con = con, what = mode, n = length(con)))
+         unserialize(connection = con),
+         (r <- readBin(con = con, what = "character", n = length(con)))[r != ""],
+         readBin(con = con, what = "complex", n = length(con)),
+         readBin(con = con, what = "double", n = length(con)),
+         readBin(con = con, what = "integer", n = length(con)),
+         readBin(con = con, what = "logical", n = length(con)),
+         readBin(con = con, what = "numeric", n = length(con)),
+         con)
+}
+
+match.arg2 <- function(choice, choices) {
+  arg <- deparse(substitute(choice))
+  index <- pmatch(choice[1L], choices, nomatch = 0L)
+  index || stop(sprintf("'%s' should be one of %s", arg, paste(choices, collapse = ", ")))
+  index
 }
 
 loginfo <- function(evt, pkey, pval, skey, sval) {

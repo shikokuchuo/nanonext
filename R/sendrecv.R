@@ -74,7 +74,7 @@ send.nanoSocket <- function(con,
                             block = FALSE,
                             echo = TRUE) {
 
-  mode <- match.arg(mode)
+  mode <- match.arg2(mode, c("serial", "raw"))
   force(data)
   data <- encode(data = data, mode = mode)
   res <- .Call(rnng_send, con, data, block)
@@ -93,7 +93,7 @@ send.nanoContext <- function(con,
                              block = TRUE,
                              echo = TRUE) {
 
-  mode <- match.arg(mode)
+  mode <- match.arg2(mode, c("serial", "raw"))
   if (missing(block) || isTRUE(block)) block <- -2L
   force(data)
   data <- encode(data = data, mode = mode)
@@ -114,7 +114,7 @@ send.nanoStream <- function(con,
                             echo = TRUE) {
 
   force(data)
-  data <- encode(data = data, mode = "raw")
+  data <- encode(data = data, mode = 2L)
   if (missing(block) || isTRUE(block)) block <- -2L
   res <- .Call(rnng_stream_send, con, data, block)
   is.integer(res) && return(invisible(res))
@@ -225,7 +225,8 @@ recv.nanoSocket <- function(con,
                             keep.raw = TRUE,
                             ...) {
 
-  mode <- match.arg(mode)
+  mode <- match.arg2(mode, c("serial", "character", "complex", "double",
+                             "integer", "logical", "numeric", "raw"))
   res <- .Call(rnng_recv, con, block)
   is.integer(res) && return(invisible(res))
   on.exit(expr = return(res))
@@ -246,7 +247,8 @@ recv.nanoContext <- function(con,
                              keep.raw = TRUE,
                              ...) {
 
-  mode <- match.arg(mode)
+  mode <- match.arg2(mode, c("serial", "character", "complex", "double",
+                             "integer", "logical", "numeric", "raw"))
   if (missing(block) || isTRUE(block)) block <- -2L
   res <- .Call(rnng_ctx_recv, con, block)
   is.integer(res) && return(invisible(res))
@@ -270,7 +272,8 @@ recv.nanoStream <- function(con,
                             n = 10000,
                             ...) {
 
-  mode <- match.arg(mode)
+  mode <- match.arg2(mode, c("character", "complex", "double", "integer",
+                             "logical", "numeric", "raw")) + 1L
   if (missing(block) || isTRUE(block)) block <- -2L
   res <- .Call(rnng_stream_recv, con, n, block)
   is.integer(res) && return(invisible(res))

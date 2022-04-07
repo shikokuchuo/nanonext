@@ -21,29 +21,55 @@ static void context_finalizer(SEXP xptr) {
 
 SEXP rnng_protocol_open(SEXP protocol) {
 
+  int pro = INTEGER(protocol)[0];
+  char *pname;
+  int xc;
+
   nng_socket *sock = R_Calloc(1, nng_socket);
-  const char *pro = CHAR(STRING_ELT(protocol, 0));
-  int xc = -1;
-  if (!strcmp(pro, "pair"))
+  switch (pro) {
+  case 1:
+    pname = "pair";
     xc = nng_pair0_open(sock);
-  else if (!strcmp(pro, "req"))
-    xc = nng_req0_open(sock);
-  else if (!strcmp(pro, "rep"))
-    xc = nng_rep0_open(sock);
-  else if (!strcmp(pro, "push"))
-    xc = nng_push0_open(sock);
-  else if (!strcmp(pro, "pull"))
-    xc = nng_pull0_open(sock);
-  else if (!strcmp(pro, "bus"))
+    break;
+  case 2:
+    pname = "bus";
     xc = nng_bus0_open(sock);
-  else if (!strcmp(pro, "pub"))
+    break;
+  case 3:
+    pname = "req";
+    xc = nng_req0_open(sock);
+    break;
+  case 4:
+    pname = "rep";
+    xc = nng_rep0_open(sock);
+    break;
+  case 5:
+    pname = "push";
+    xc = nng_push0_open(sock);
+    break;
+  case 6:
+    pname = "pull";
+    xc = nng_pull0_open(sock);
+    break;
+  case 7:
+    pname = "pub";
     xc = nng_pub0_open(sock);
-  else if (!strcmp(pro, "sub"))
+    break;
+  case 8:
+    pname = "sub";
     xc = nng_sub0_open(sock);
-  else if (!strcmp(pro, "surveyor"))
+    break;
+  case 9:
+    pname = "surveyor";
     xc = nng_surveyor0_open(sock);
-  else if (!strcmp(pro, "respondent"))
+    break;
+  case 10:
+    pname = "respondent";
     xc = nng_respondent0_open(sock);
+    break;
+  default:
+    xc = -1;
+  }
 
   if (xc) {
     R_Free(sock);
@@ -58,7 +84,7 @@ SEXP rnng_protocol_open(SEXP protocol) {
   Rf_classgets(socket, klass);
   Rf_setAttrib(socket, nano_IdSymbol, Rf_ScalarInteger((int) sock->id));
   Rf_setAttrib(socket, nano_StateSymbol, Rf_mkString("opened"));
-  Rf_setAttrib(socket, nano_ProtocolSymbol, protocol);
+  Rf_setAttrib(socket, nano_ProtocolSymbol, Rf_mkString(pname));
   UNPROTECT(2);
   return socket;
 
