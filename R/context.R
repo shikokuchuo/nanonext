@@ -198,7 +198,7 @@ request <- function(context,
   is.integer(aio) && return(invisible(aio))
 
   keep.raw <- missing(keep.raw) || isTRUE(keep.raw)
-  data <- raw <- context <- res <- NULL
+  data <- raw <- NULL
   unresolv <- TRUE
   env <- new.env(hash = FALSE)
   if (keep.raw) {

@@ -55,7 +55,7 @@ send_aio.nanoSocket <- function(con, data, mode = c("serial", "raw"), timeout = 
   aio <- .Call(rnng_send_aio, con, data, timeout)
   is.integer(aio) && return(invisible(aio))
 
-  result <- data <- con <- NULL
+  result <- NULL
   unresolv <- TRUE
   env <- new.env(hash = FALSE)
   makeActiveBinding(sym = "result", fun = function(x) {
@@ -84,7 +84,7 @@ send_aio.nanoContext <- function(con, data, mode = c("serial", "raw"), timeout =
   aio <- .Call(rnng_ctx_send_aio, con, data, timeout)
   is.integer(aio) && return(invisible(aio))
 
-  result <- data <- con <- NULL
+  result <- NULL
   unresolv <- TRUE
   env <- new.env(hash = FALSE)
   makeActiveBinding(sym = "result", fun = function(x) {
@@ -112,7 +112,7 @@ send_aio.nanoStream <- function(con, data, mode = "raw", timeout = -2L) {
   aio <- .Call(rnng_stream_send_aio, con, data, timeout)
   is.integer(aio) && return(invisible(aio))
 
-  result <- data <- con <- NULL
+  result <- NULL
   unresolv <- TRUE
   env <- new.env(hash = FALSE)
   makeActiveBinding(sym = "result", fun = function(x) {
@@ -210,7 +210,7 @@ recv_aio.nanoSocket <- function(con,
   is.integer(aio) && return(invisible(aio))
 
   keep.raw <- missing(keep.raw) || isTRUE(keep.raw)
-  data <- raw <- con <- NULL
+  data <- raw <- NULL
   unresolv <- TRUE
   env <- new.env(hash = FALSE)
   if (keep.raw) {
@@ -286,7 +286,7 @@ recv_aio.nanoContext <- function(con,
   is.integer(aio) && return(invisible(aio))
 
   keep.raw <- missing(keep.raw) || isTRUE(keep.raw)
-  data <- raw <- con <- NULL
+  data <- raw <- NULL
   unresolv <- TRUE
   env <- new.env(hash = FALSE)
   if (keep.raw) {
@@ -363,7 +363,7 @@ recv_aio.nanoStream <- function(con,
   is.integer(aio) && return(invisible(aio))
 
   keep.raw <- missing(keep.raw) || isTRUE(keep.raw)
-  data <- raw <- con <- NULL
+  data <- raw <- NULL
   unresolv <- TRUE
   env <- new.env(hash = FALSE)
   if (keep.raw) {

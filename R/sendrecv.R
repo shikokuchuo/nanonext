@@ -32,8 +32,8 @@
 #'     For Contexts and Streams: the default behaviour is blocking with \code{block = TRUE}.
 #'     This will wait until the send has completed. Set a timeout in this case
 #'     to ensure that the function returns under all scenarios. As the underlying
-#'     implementation differs to that for Sockets, it is recommended to set a
-#'     positive integer value for \code{block} rather than FALSE.
+#'     implementation uses an asynchronous send with a wait, it is recommended
+#'     to set a positive integer value for \code{block} rather than FALSE.
 #'
 #' @examples
 #' pub <- socket("pub", dial = "inproc://nanonext")
@@ -167,8 +167,8 @@ send.nanoStream <- function(con,
 #'     For Contexts and Streams: the default behaviour is blocking with \code{block = TRUE}.
 #'     This will wait until a message is received. Set a timeout in this case to
 #'     ensure that the function returns under all scenarios. As the underlying
-#'     implementation differs to that for Sockets, it is recommended to set a
-#'     positive integer value for \code{block} rather than FALSE.
+#'     implementation uses an asynchronous send with a wait, it is recommended
+#'     to set a positive integer value for \code{block} rather than FALSE.
 #'
 #' @examples
 #' s1 <- socket("bus", listen = "inproc://nanonext")
