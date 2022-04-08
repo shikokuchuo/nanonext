@@ -153,8 +153,8 @@ Can be an over-estimate, but note that a buffer of this size is reserved.</p></d
 <p>For Contexts and Streams: the default behaviour is blocking with <code>block = TRUE</code>.
     This will wait until a message is received. Set a timeout in this case to
     ensure that the function returns under all scenarios. As the underlying
-    implementation differs to that for Sockets, it is recommended to set a
-    positive integer value for <code>block</code> rather than FALSE.</p>
+    implementation uses an asynchronous send with a wait, it is recommended
+    to set a positive integer value for <code>block</code> rather than FALSE.</p>
     </div>
 
     <div id="ref-examples">
