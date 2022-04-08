@@ -63,10 +63,10 @@
   <span class="va">con</span>,
   mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"serial"</span>, <span class="st">"character"</span>, <span class="st">"complex"</span>, <span class="st">"double"</span>, <span class="st">"integer"</span>, <span class="st">"logical"</span>, <span class="st">"numeric"</span>,
     <span class="st">"raw"</span><span class="op">)</span>,
-  <span class="va">timeout</span>,
+  timeout <span class="op">=</span> <span class="op">-</span><span class="fl">2L</span>,
   keep.raw <span class="op">=</span> <span class="cn">TRUE</span>,
   <span class="va">...</span>,
-  <span class="va">n</span>
+  n <span class="op">=</span> <span class="fl">100000L</span>
 <span class="op">)</span>
 
 <span class="co"># S3 method for nanoSocket</span>
@@ -74,7 +74,7 @@
   <span class="va">con</span>,
   mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"serial"</span>, <span class="st">"character"</span>, <span class="st">"complex"</span>, <span class="st">"double"</span>, <span class="st">"integer"</span>, <span class="st">"logical"</span>, <span class="st">"numeric"</span>,
     <span class="st">"raw"</span><span class="op">)</span>,
-  <span class="va">timeout</span>,
+  timeout <span class="op">=</span> <span class="op">-</span><span class="fl">2L</span>,
   keep.raw <span class="op">=</span> <span class="cn">TRUE</span>,
   <span class="va">...</span>
 <span class="op">)</span>
@@ -84,7 +84,7 @@
   <span class="va">con</span>,
   mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"serial"</span>, <span class="st">"character"</span>, <span class="st">"complex"</span>, <span class="st">"double"</span>, <span class="st">"integer"</span>, <span class="st">"logical"</span>, <span class="st">"numeric"</span>,
     <span class="st">"raw"</span><span class="op">)</span>,
-  <span class="va">timeout</span>,
+  timeout <span class="op">=</span> <span class="op">-</span><span class="fl">2L</span>,
   keep.raw <span class="op">=</span> <span class="cn">TRUE</span>,
   <span class="va">...</span>
 <span class="op">)</span>
@@ -93,9 +93,9 @@
 <span class="fu">recv_aio</span><span class="op">(</span>
   <span class="va">con</span>,
   mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"character"</span>, <span class="st">"complex"</span>, <span class="st">"double"</span>, <span class="st">"integer"</span>, <span class="st">"logical"</span>, <span class="st">"numeric"</span>, <span class="st">"raw"</span><span class="op">)</span>,
-  <span class="va">timeout</span>,
+  timeout <span class="op">=</span> <span class="op">-</span><span class="fl">2L</span>,
   keep.raw <span class="op">=</span> <span class="cn">TRUE</span>,
-  n <span class="op">=</span> <span class="fl">10000</span>,
+  n <span class="op">=</span> <span class="fl">100000L</span>,
   <span class="va">...</span>
 <span class="op">)</span></code></pre></div>
     </div>
@@ -113,8 +113,9 @@ into the respective mode.
 &lt;Streams&gt; [default 'character'] note that 'serial' is not an option for
 Streams.</p></dd>
 <dt>timeout</dt>
-<dd><p>(optional) integer value in milliseconds. If unspecified, a
-socket-specific default timeout will be used.</p></dd>
+<dd><p>(optional) integer value in milliseconds. If unspecified, the
+default of -2L uses a socket-specific default, which is usually the same
+as no timeout.</p></dd>
 <dt>keep.raw</dt>
 <dd><p>[default TRUE] logical flag whether to keep the received raw
 vector (useful for verification e.g. via hashing). If FALSE, will return
@@ -122,7 +123,7 @@ the converted data only.</p></dd>
 <dt>...</dt>
 <dd><p>currently unused.</p></dd>
 <dt>n</dt>
-<dd><p>&lt;Streams&gt; [default 10000L] the maximum number of bytes to receive.
+<dd><p>&lt;Streams&gt; [default 100000L] the maximum number of bytes to receive.
 Can be an over-estimate, but note that a buffer of this size is reserved.</p></dd>
 </dl></div>
     <div id="value">

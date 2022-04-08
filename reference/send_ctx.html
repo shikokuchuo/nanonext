@@ -59,7 +59,7 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">send_ctx</span><span class="op">(</span><span class="va">context</span>, <span class="va">data</span>, mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"serial"</span>, <span class="st">"raw"</span><span class="op">)</span>, <span class="va">timeout</span>, echo <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">send_ctx</span><span class="op">(</span><span class="va">context</span>, <span class="va">data</span>, mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"serial"</span>, <span class="st">"raw"</span><span class="op">)</span>, timeout <span class="op">=</span> <span class="op">-</span><span class="fl">2L</span>, echo <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -76,8 +76,9 @@ For Streams, 'raw' is the only choice and any other value is ignored. Use
 when interfacing with external applications that do not understand R
 serialisation.</p></dd>
 <dt>timeout</dt>
-<dd><p>(optional) integer value in milliseconds. If unspecified, a
-socket-specific default timeout will be used.</p></dd>
+<dd><p>(optional) integer value in milliseconds. If unspecified, the
+default of -2L uses a socket-specific default, which is usually the same
+as no timeout.</p></dd>
 <dt>echo</dt>
 <dd><p>[default TRUE] logical TRUE to return the raw vector of sent data,
 or FALSE to return an integer exit code (invisibly).</p></dd>

@@ -63,7 +63,7 @@
   <span class="va">context</span>,
   mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"serial"</span>, <span class="st">"character"</span>, <span class="st">"complex"</span>, <span class="st">"double"</span>, <span class="st">"integer"</span>, <span class="st">"logical"</span>, <span class="st">"numeric"</span>,
     <span class="st">"raw"</span><span class="op">)</span>,
-  <span class="va">timeout</span>,
+  timeout <span class="op">=</span> <span class="op">-</span><span class="fl">2L</span>,
   keep.raw <span class="op">=</span> <span class="cn">TRUE</span>
 <span class="op">)</span></code></pre></div>
     </div>
@@ -81,8 +81,9 @@ into the respective mode.
 &lt;Streams&gt; [default 'character'] note that 'serial' is not an option for
 Streams.</p></dd>
 <dt>timeout</dt>
-<dd><p>(optional) integer value in milliseconds. If unspecified, a
-socket-specific default timeout will be used.</p></dd>
+<dd><p>(optional) integer value in milliseconds. If unspecified, the
+default of -2L uses a socket-specific default, which is usually the same
+as no timeout.</p></dd>
 <dt>keep.raw</dt>
 <dd><p>[default TRUE] logical flag whether to keep the received raw
 vector (useful for verification e.g. via hashing). If FALSE, will return
