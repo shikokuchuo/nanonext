@@ -7,8 +7,9 @@
 #' Send data asynchronously over a connection (Socket, Context or Stream).
 #'
 #' @inheritParams send
-#' @param timeout (optional) integer value in milliseconds. If unspecified, a
-#'     socket-specific default timeout will be used.
+#' @param timeout (optional) integer value in milliseconds. If unspecified, the
+#'     default of -2L uses a socket-specific default, which is usually the same
+#'     as no timeout.
 #'
 #' @return A 'sendAio' (object of class 'sendAio').
 #'
@@ -40,24 +41,23 @@
 #' @rdname send_aio
 #' @export
 #'
-send_aio <- function(con, data, mode = c("serial", "raw"), timeout) UseMethod("send_aio")
+send_aio <- function(con, data, mode = c("serial", "raw"), timeout = -2L) UseMethod("send_aio")
 
 #' @rdname send_aio
 #' @method send_aio nanoSocket
 #' @export
 #'
-send_aio.nanoSocket <- function(con, data, mode = c("serial", "raw"), timeout) {
+send_aio.nanoSocket <- function(con, data, mode = c("serial", "raw"), timeout = -2L) {
 
   mode <- match.arg2(mode, c("serial", "raw"))
   force(data)
   data <- encode(data = data, mode = mode)
-  if (missing(timeout)) timeout <- -2L
   aio <- .Call(rnng_send_aio, con, data, timeout)
   is.integer(aio) && return(invisible(aio))
 
-  env <- new.env(hash = FALSE)
-  result <- NULL
+  result <- data <- con <- NULL
   unresolv <- TRUE
+  env <- new.env(hash = FALSE)
   makeActiveBinding(sym = "result", fun = function(x) {
     if (unresolv) {
       res <- .Call(rnng_aio_result, aio)
@@ -76,18 +76,17 @@ send_aio.nanoSocket <- function(con, data, mode = c("serial", "raw"), timeout) {
 #' @method send_aio nanoContext
 #' @export
 #'
-send_aio.nanoContext <- function(con, data, mode = c("serial", "raw"), timeout) {
+send_aio.nanoContext <- function(con, data, mode = c("serial", "raw"), timeout = -2L) {
 
   mode <- match.arg2(mode, c("serial", "raw"))
   force(data)
   data <- encode(data = data, mode = mode)
-  if (missing(timeout)) timeout <- -2L
   aio <- .Call(rnng_ctx_send_aio, con, data, timeout)
   is.integer(aio) && return(invisible(aio))
 
-  env <- new.env(hash = FALSE)
-  result <- NULL
+  result <- data <- con <- NULL
   unresolv <- TRUE
+  env <- new.env(hash = FALSE)
   makeActiveBinding(sym = "result", fun = function(x) {
     if (unresolv) {
       res <- .Call(rnng_aio_result, aio)
@@ -106,17 +105,16 @@ send_aio.nanoContext <- function(con, data, mode = c("serial", "raw"), timeout) 
 #' @method send_aio nanoStream
 #' @export
 #'
-send_aio.nanoStream <- function(con, data, mode = "raw", timeout) {
+send_aio.nanoStream <- function(con, data, mode = "raw", timeout = -2L) {
 
   force(data)
   data <- encode(data = data, mode = 2L)
-  if (missing(timeout)) timeout <- -2L
   aio <- .Call(rnng_stream_send_aio, con, data, timeout)
   is.integer(aio) && return(invisible(aio))
 
-  env <- new.env(hash = FALSE)
-  result <- NULL
+  result <- data <- con <- NULL
   unresolv <- TRUE
+  env <- new.env(hash = FALSE)
   makeActiveBinding(sym = "result", fun = function(x) {
     if (unresolv) {
       res <- .Call(rnng_aio_result, aio)
@@ -190,10 +188,10 @@ send_aio.nanoStream <- function(con, data, mode = "raw", timeout) {
 recv_aio <- function(con,
                      mode = c("serial", "character", "complex", "double",
                               "integer", "logical", "numeric", "raw"),
-                     timeout,
+                     timeout = -2L,
                      keep.raw = TRUE,
                      ...,
-                     n) UseMethod("recv_aio")
+                     n = 100000L) UseMethod("recv_aio")
 
 #' @rdname recv_aio
 #' @method recv_aio nanoSocket
@@ -202,20 +200,19 @@ recv_aio <- function(con,
 recv_aio.nanoSocket <- function(con,
                                 mode = c("serial", "character", "complex", "double",
                                          "integer", "logical", "numeric", "raw"),
-                                timeout,
+                                timeout = -2L,
                                 keep.raw = TRUE,
                                 ...) {
 
   mode <- match.arg2(mode, c("serial", "character", "complex", "double",
                              "integer", "logical", "numeric", "raw"))
-  if (missing(timeout)) timeout <- -2L
   aio <- .Call(rnng_recv_aio, con, timeout)
   is.integer(aio) && return(invisible(aio))
 
   keep.raw <- missing(keep.raw) || isTRUE(keep.raw)
-  env <- new.env(hash = FALSE)
-  data <- raw <- NULL
+  data <- raw <- con <- NULL
   unresolv <- TRUE
+  env <- new.env(hash = FALSE)
   if (keep.raw) {
     makeActiveBinding(sym = "raw", fun = function(x) {
       if (unresolv) {
@@ -279,20 +276,19 @@ recv_aio.nanoSocket <- function(con,
 recv_aio.nanoContext <- function(con,
                                  mode = c("serial", "character", "complex", "double",
                                           "integer", "logical", "numeric", "raw"),
-                                 timeout,
+                                 timeout = -2L,
                                  keep.raw = TRUE,
                                  ...) {
 
   mode <- match.arg2(mode, c("serial", "character", "complex", "double",
                              "integer", "logical", "numeric", "raw"))
-  if (missing(timeout)) timeout <- -2L
   aio <- .Call(rnng_ctx_recv_aio, con, timeout)
   is.integer(aio) && return(invisible(aio))
 
   keep.raw <- missing(keep.raw) || isTRUE(keep.raw)
-  env <- new.env(hash = FALSE)
-  data <- raw <- NULL
+  data <- raw <- con <- NULL
   unresolv <- TRUE
+  env <- new.env(hash = FALSE)
   if (keep.raw) {
     makeActiveBinding(sym = "raw", fun = function(x) {
       if (unresolv) {
@@ -356,21 +352,20 @@ recv_aio.nanoContext <- function(con,
 recv_aio.nanoStream <- function(con,
                                 mode = c("character", "complex", "double", "integer",
                                          "logical", "numeric", "raw"),
-                                timeout,
+                                timeout = -2L,
                                 keep.raw = TRUE,
-                                n = 10000,
+                                n = 100000L,
                                 ...) {
 
   mode <- match.arg2(mode, c("character", "complex", "double", "integer",
                              "logical", "numeric", "raw")) + 1L
-  if (missing(timeout)) timeout <- -2L
   aio <- .Call(rnng_stream_recv_aio, con, n, timeout)
   is.integer(aio) && return(invisible(aio))
 
   keep.raw <- missing(keep.raw) || isTRUE(keep.raw)
-  env <- new.env(hash = FALSE)
-  data <- raw <- NULL
+  data <- raw <- con <- NULL
   unresolv <- TRUE
+  env <- new.env(hash = FALSE)
   if (keep.raw) {
     makeActiveBinding(sym = "raw", fun = function(x) {
       if (unresolv) {

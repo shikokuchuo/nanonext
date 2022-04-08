@@ -67,9 +67,10 @@ context <- function(socket) {
 #'     'character', 'complex', 'double', 'integer', 'logical', 'numeric', or 'raw'.
 #'     The default 'serial' means a serialised R object, for the other modes,
 #'     the raw vector received will be converted into the respective mode.
-#' @param timeout in ms. If unspecified, a socket-specific default timeout will
-#'     be used. Note that this applies to receiving the request. The total elapsed
-#'     time would also include the time for performing 'execute' on the received
+#' @param timeout (optional) integer value in milliseconds. If unspecified, the
+#'     default of -2L uses a socket-specific default, which is usually the same
+#'     as no timeout. Note that this applies to receiving the request. The total
+#'     elapsed time would also include performing 'execute' on the received
 #'     data. The timeout then also applies to sending the result (in the event
 #'     that the requestor has become unavailable since sending the request).
 #' @param ... additional arguments passed to the function specified by 'execute'.
@@ -111,13 +112,12 @@ reply <- function(context,
                   recv_mode = c("serial", "character", "complex", "double",
                                 "integer", "logical", "numeric", "raw"),
                   send_mode = c("serial", "raw"),
-                  timeout,
+                  timeout = -2L,
                   ...) {
 
   recv_mode <- match.arg2(recv_mode, c("serial", "character", "complex", "double",
                                        "integer", "logical", "numeric", "raw"))
   send_mode <- match.arg2(send_mode, c("serial", "raw"))
-  if (missing(timeout)) timeout <- -2L
   res <- .Call(rnng_ctx_recv, context, timeout)
   is.integer(res) && return(invisible(res))
   on.exit(expr = send_aio(context, as.raw(0L), mode = send_mode))
@@ -140,8 +140,9 @@ reply <- function(context,
 #' @inheritParams reply
 #' @inheritParams recv
 #' @param data an object (if send_mode = 'raw', a vector).
-#' @param timeout in ms. If unspecified, a socket-specific default timeout will
-#'     be used. Note that this applies to receiving the result.
+#' @param timeout (optional) integer value in milliseconds. If unspecified, the
+#'     default of -2L uses a socket-specific default, which is usually the same
+#'     as no timeout. Note that this applies to receiving the result.
 #'
 #' @return A 'recvAio' (object of class 'recvAio').
 #'
@@ -182,7 +183,7 @@ request <- function(context,
                     send_mode = c("serial", "raw"),
                     recv_mode = c("serial", "character", "complex", "double",
                                   "integer", "logical", "numeric", "raw"),
-                    timeout,
+                    timeout = -2L,
                     keep.raw = TRUE) {
 
   send_mode <- match.arg2(send_mode, c("serial", "raw"))
@@ -193,14 +194,13 @@ request <- function(context,
   res <- .Call(rnng_ctx_send_aio, context, data, -2L)
   is.integer(res) && return(invisible(res))
 
-  if (missing(timeout)) timeout <- -2L
   aio <- .Call(rnng_ctx_recv_aio, context, timeout)
   is.integer(aio) && return(invisible(aio))
 
   keep.raw <- missing(keep.raw) || isTRUE(keep.raw)
-  env <- new.env(hash = FALSE)
-  data <- raw <- NULL
+  data <- raw <- context <- res <- NULL
   unresolv <- TRUE
+  env <- new.env(hash = FALSE)
   if (keep.raw) {
     makeActiveBinding(sym = "raw", fun = function(x) {
       if (unresolv) {
@@ -278,10 +278,9 @@ request <- function(context,
 #' @keywords internal
 #' @export
 #'
-send_ctx <- function(context, data, mode = c("serial", "raw"), timeout, echo = TRUE) {
+send_ctx <- function(context, data, mode = c("serial", "raw"), timeout = -2L, echo = TRUE) {
 
   mode <- match.arg2(mode, c("serial", "raw"))
-  if (missing(timeout)) timeout <- -2L
   force(data)
   data <- encode(data = data, mode = mode)
   res <- .Call(rnng_ctx_send, context, data, timeout)
@@ -320,12 +319,11 @@ send_ctx <- function(context, data, mode = c("serial", "raw"), timeout, echo = T
 recv_ctx <- function(context,
                      mode = c("serial", "character", "complex", "double",
                               "integer", "logical", "numeric", "raw"),
-                     timeout,
+                     timeout = -2L,
                      keep.raw = TRUE) {
 
   mode <- match.arg2(mode, c("serial", "character", "complex", "double",
                              "integer", "logical", "numeric", "raw"))
-  if (missing(timeout)) timeout <- -2L
   res <- .Call(rnng_ctx_recv, context, timeout)
   is.integer(res) && return(invisible(res))
   on.exit(expr = return(res))

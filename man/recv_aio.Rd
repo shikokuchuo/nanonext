@@ -11,17 +11,17 @@ recv_aio(
   con,
   mode = c("serial", "character", "complex", "double", "integer", "logical", "numeric",
     "raw"),
-  timeout,
+  timeout = -2L,
   keep.raw = TRUE,
   ...,
-  n
+  n = 100000L
 )
 
 \method{recv_aio}{nanoSocket}(
   con,
   mode = c("serial", "character", "complex", "double", "integer", "logical", "numeric",
     "raw"),
-  timeout,
+  timeout = -2L,
   keep.raw = TRUE,
   ...
 )
@@ -30,7 +30,7 @@ recv_aio(
   con,
   mode = c("serial", "character", "complex", "double", "integer", "logical", "numeric",
     "raw"),
-  timeout,
+  timeout = -2L,
   keep.raw = TRUE,
   ...
 )
@@ -38,9 +38,9 @@ recv_aio(
 \method{recv_aio}{nanoStream}(
   con,
   mode = c("character", "complex", "double", "integer", "logical", "numeric", "raw"),
-  timeout,
+  timeout = -2L,
   keep.raw = TRUE,
-  n = 10000,
+  n = 100000L,
   ...
 )
 }
@@ -55,8 +55,9 @@ into the respective mode.
 <Streams> [default 'character'] note that 'serial' is not an option for
 Streams.}
 
-\item{timeout}{(optional) integer value in milliseconds. If unspecified, a
-socket-specific default timeout will be used.}
+\item{timeout}{(optional) integer value in milliseconds. If unspecified, the
+default of -2L uses a socket-specific default, which is usually the same
+as no timeout.}
 
 \item{keep.raw}{[default TRUE] logical flag whether to keep the received raw
 vector (useful for verification e.g. via hashing). If FALSE, will return
@@ -64,7 +65,7 @@ the converted data only.}
 
 \item{...}{currently unused.}
 
-\item{n}{<Streams> [default 10000L] the maximum number of bytes to receive.
+\item{n}{<Streams> [default 100000L] the maximum number of bytes to receive.
 Can be an over-estimate, but note that a buffer of this size is reserved.}
 }
 \value{

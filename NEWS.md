@@ -4,17 +4,18 @@
 
 * New `stream()` interface exposes low-level byte stream functionality in the NNG library, intended for communicating with non-NNG endpoints, including but not limited to websocket servers.
 * `ncurl()` adds an 'async' option to perform HTTP requests asynchronously, returning immediately with a 'recvAio'. Also adds explicit arguments for HTTP method, headers (which takes a named list or character vector) and request data.
-* New `messenger()` function implements a multi-threaded console-based messaging system using NNG's scalability protocols.
+* New `messenger()` function implements a multi-threaded console-based messaging system using NNG's scalability protocols (currently as proof of concept).
 * New `nano_init()` function intended to be called immediately after package load to set global options.
 
 #### Updates
 
 * Behavioural change: messages have been upgraded to warnings across the package to allow for enhanced reporting of the originating call e.g. via `warnings()` and flexibility in handling via setting `options()`.
+* Returned NNG error codes are now all classed as 'errorValue' across the package.
 * Unified `send()` and `recv()` functions, and their asynchronous counterparts `send_aio()` and `recv_aio()`, are now S3 generics and can be used across Sockets, Contexts and Streams.
-* Revised 'block' argument for `send()` and `recv()` now allows an integer value for setting a timeout.
+* Revised 'block' argument for `send()` and `recv()` now allows an integer value for setting a timeout (under the hood this wraps an asynchronous send/recv followed by a wait to make it a synchronous function).
 * `send_ctx()` and `recv_ctx()` are deprecated and will be removed in a future package version - the methods for `send()` and `recv()` should be used instead.
 * To allow for more flexible practices, logging is now deprecated and being phased out. Logging can still be set via 'NANONEXT_LOG' prior to package load but `logging()` can no longer be used. Logging will be removed entirely in the next package version.
-* Returned NNG error codes are now all classed as 'errorValue' across the package.
+* Internal performance optimisations.
 
 # nanonext 0.3.0
 

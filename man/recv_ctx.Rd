@@ -8,7 +8,7 @@ recv_ctx(
   context,
   mode = c("serial", "character", "complex", "double", "integer", "logical", "numeric",
     "raw"),
-  timeout,
+  timeout = -2L,
   keep.raw = TRUE
 )
 }
@@ -23,8 +23,9 @@ into the respective mode.
 <Streams> [default 'character'] note that 'serial' is not an option for
 Streams.}
 
-\item{timeout}{(optional) integer value in milliseconds. If unspecified, a
-socket-specific default timeout will be used.}
+\item{timeout}{(optional) integer value in milliseconds. If unspecified, the
+default of -2L uses a socket-specific default, which is usually the same
+as no timeout.}
 
 \item{keep.raw}{[default TRUE] logical flag whether to keep the received raw
 vector (useful for verification e.g. via hashing). If FALSE, will return

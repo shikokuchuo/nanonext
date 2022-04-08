@@ -67,9 +67,9 @@ ncurl <- function(url, async = FALSE, method = NULL, headers = NULL, data = NULL
     aio <- .Call(rnng_ncurl_aio, url, method, headers, data)
     is.integer(aio) && return(invisible(aio))
 
-    env <- new.env(hash = FALSE)
     data <- raw <- NULL
     unresolv <- TRUE
+    env <- new.env(hash = FALSE)
     makeActiveBinding(sym = "raw", fun = function(x) {
       if (unresolv) {
         res <- .Call(rnng_aio_http, aio)

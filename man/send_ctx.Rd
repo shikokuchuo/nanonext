@@ -4,7 +4,7 @@
 \alias{send_ctx}
 \title{Send over Context}
 \usage{
-send_ctx(context, data, mode = c("serial", "raw"), timeout, echo = TRUE)
+send_ctx(context, data, mode = c("serial", "raw"), timeout = -2L, echo = TRUE)
 }
 \arguments{
 \item{context}{a Context.}
@@ -18,8 +18,9 @@ For Streams, 'raw' is the only choice and any other value is ignored. Use
 when interfacing with external applications that do not understand R
 serialisation.}
 
-\item{timeout}{(optional) integer value in milliseconds. If unspecified, a
-socket-specific default timeout will be used.}
+\item{timeout}{(optional) integer value in milliseconds. If unspecified, the
+default of -2L uses a socket-specific default, which is usually the same
+as no timeout.}
 
 \item{echo}{[default TRUE] logical TRUE to return the raw vector of sent data,
 or FALSE to return an integer exit code (invisibly).}

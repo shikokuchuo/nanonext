@@ -7,13 +7,13 @@
 \alias{send_aio.nanoStream}
 \title{Send Async}
 \usage{
-send_aio(con, data, mode = c("serial", "raw"), timeout)
+send_aio(con, data, mode = c("serial", "raw"), timeout = -2L)
 
-\method{send_aio}{nanoSocket}(con, data, mode = c("serial", "raw"), timeout)
+\method{send_aio}{nanoSocket}(con, data, mode = c("serial", "raw"), timeout = -2L)
 
-\method{send_aio}{nanoContext}(con, data, mode = c("serial", "raw"), timeout)
+\method{send_aio}{nanoContext}(con, data, mode = c("serial", "raw"), timeout = -2L)
 
-\method{send_aio}{nanoStream}(con, data, mode = "raw", timeout)
+\method{send_aio}{nanoStream}(con, data, mode = "raw", timeout = -2L)
 }
 \arguments{
 \item{con}{a Socket, Context or Stream.}
@@ -27,8 +27,9 @@ For Streams, 'raw' is the only choice and any other value is ignored. Use
 when interfacing with external applications that do not understand R
 serialisation.}
 
-\item{timeout}{(optional) integer value in milliseconds. If unspecified, a
-socket-specific default timeout will be used.}
+\item{timeout}{(optional) integer value in milliseconds. If unspecified, the
+default of -2L uses a socket-specific default, which is usually the same
+as no timeout.}
 }
 \value{
 A 'sendAio' (object of class 'sendAio').
