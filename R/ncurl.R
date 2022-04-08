@@ -6,6 +6,8 @@
 #'
 #' @param url the URL address.
 #' @param async [default FALSE] logical value whether to perform actions async.
+#' @param convert [default TRUE] logical value whether to attempt conversion of
+#'     the received raw bytes to a character vetor.
 #' @param method (optional) the HTTP method (defaults to 'GET' if not specified).
 #' @param headers (optional) a named list or character vector specifying the
 #'     HTTP request headers e.g. \code{list(`Content-Type` = "text/plain")} or
@@ -16,9 +18,9 @@
 #'     \itemize{
 #'     \item{\code{$raw}} {- raw vector of the received resource (use
 #'     \code{\link{writeBin}} to save to a file).}
-#'     \item{\code{$data}} {- converted character string (if a recognised text
-#'     format), or NULL otherwise. Other tools can be used to further parse this
-#'     as html, json, xml etc. if required.}
+#'     \item{\code{$data}} {- converted character string (if \code{'convert' = TRUE}
+#'     and content is a recognised text format), or NULL otherwise. Other tools
+#'     can be used to further parse this as html, json, xml etc. if required.}
 #'     }
 #'
 #'     Or else, if \code{async = TRUE}, a 'recvAio' (object of class 'recvAio').
@@ -40,12 +42,17 @@
 #'
 #' @examples
 #' ncurl("http://httpbin.org/get")
-#' ncurl("http://httpbin.org/put", ,"PUT", list(Authorization = "Bearer APIKEY"), "hello world")
-#' ncurl("http://httpbin.org/post", ,"POST", c(`Content-Type` = "application/json"),'{"k":"v"}')
+#' ncurl("http://httpbin.org/put",,,"PUT", list(Authorization = "Bearer APIKEY"), "hello world")
+#' ncurl("http://httpbin.org/post",,,"POST", c(`Content-Type` = "application/json"),'{"k":"v"}')
 #'
 #' @export
 #'
-ncurl <- function(url, async = FALSE, method = NULL, headers = NULL, data = NULL) {
+ncurl <- function(url,
+                  async = FALSE,
+                  convert = TRUE,
+                  method = NULL,
+                  headers = NULL,
+                  data = NULL) {
 
   data <- if (!missing(data)) writeBin(object = data, con = raw())
 
@@ -59,7 +66,9 @@ ncurl <- function(url, async = FALSE, method = NULL, headers = NULL, data = NULL
       continue %in% c("n", "N", "no", "NO") && return(invisible(res))
       return(ncurl(res))
     }
-    data <- tryCatch(rawToChar(res), error = function(e) NULL)
+
+    data <- if (missing(convert) || isTRUE(convert)) tryCatch(rawToChar(res), error = function(e) NULL)
+
     list(raw = res, data = data)
 
   } else {
@@ -67,6 +76,7 @@ ncurl <- function(url, async = FALSE, method = NULL, headers = NULL, data = NULL
     aio <- .Call(rnng_ncurl_aio, url, method, headers, data)
     is.integer(aio) && return(invisible(aio))
 
+    convert <- missing(convert) || isTRUE(convert)
     data <- raw <- NULL
     unresolv <- TRUE
     env <- new.env(hash = FALSE)
@@ -81,7 +91,7 @@ ncurl <- function(url, async = FALSE, method = NULL, headers = NULL, data = NULL
           return(invisible(res))
         }
         raw <<- res
-        data <<- tryCatch(rawToChar(res), error = function(e) NULL)
+        data <<- if (convert) tryCatch(rawToChar(res), error = function(e) NULL)
         aio <<- env[["aio"]] <<- NULL
         unresolv <<- FALSE
       }
@@ -98,7 +108,7 @@ ncurl <- function(url, async = FALSE, method = NULL, headers = NULL, data = NULL
           return(invisible(res))
         }
         raw <<- res
-        data <<- tryCatch(rawToChar(res), error = function(e) NULL)
+        data <<- if (convert) tryCatch(rawToChar(res), error = function(e) NULL)
         aio <<- env[["aio"]] <<- NULL
         unresolv <<- FALSE
       }

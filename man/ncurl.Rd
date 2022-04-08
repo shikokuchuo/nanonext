@@ -4,12 +4,22 @@
 \alias{ncurl}
 \title{ncurl}
 \usage{
-ncurl(url, async = FALSE, method = NULL, headers = NULL, data = NULL)
+ncurl(
+  url,
+  async = FALSE,
+  convert = TRUE,
+  method = NULL,
+  headers = NULL,
+  data = NULL
+)
 }
 \arguments{
 \item{url}{the URL address.}
 
 \item{async}{[default FALSE] logical value whether to perform actions async.}
+
+\item{convert}{[default TRUE] logical value whether to attempt conversion of
+the received raw bytes to a character vetor.}
 
 \item{method}{(optional) the HTTP method (defaults to 'GET' if not specified).}
 
@@ -24,9 +34,9 @@ Named list of 2 elements:
     \itemize{
     \item{\code{$raw}} {- raw vector of the received resource (use
     \code{\link{writeBin}} to save to a file).}
-    \item{\code{$data}} {- converted character string (if a recognised text
-    format), or NULL otherwise. Other tools can be used to further parse this
-    as html, json, xml etc. if required.}
+    \item{\code{$data}} {- converted character string (if \code{'convert' = TRUE}
+    and content is a recognised text format), or NULL otherwise. Other tools
+    can be used to further parse this as html, json, xml etc. if required.}
     }
 
     Or else, if \code{async = TRUE}, a 'recvAio' (object of class 'recvAio').
@@ -55,7 +65,7 @@ nano cURL - a minimalist http(s) client.
 
 \examples{
 ncurl("http://httpbin.org/get")
-ncurl("http://httpbin.org/put", ,"PUT", list(Authorization = "Bearer APIKEY"), "hello world")
-ncurl("http://httpbin.org/post", ,"POST", c(`Content-Type` = "application/json"),'{"k":"v"}')
+ncurl("http://httpbin.org/put",,,"PUT", list(Authorization = "Bearer APIKEY"), "hello world")
+ncurl("http://httpbin.org/post",,,"POST", c(`Content-Type` = "application/json"),'{"k":"v"}')
 
 }

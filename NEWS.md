@@ -3,7 +3,7 @@
 #### New Features
 
 * New `stream()` interface exposes low-level byte stream functionality in the NNG library, intended for communicating with non-NNG endpoints, including but not limited to websocket servers.
-* `ncurl()` adds an 'async' option to perform HTTP requests asynchronously, returning immediately with a 'recvAio'. Also adds explicit arguments for HTTP method, headers (which takes a named list or character vector) and request data.
+* `ncurl()` adds an 'async' option to perform HTTP requests asynchronously, returning immediately with a 'recvAio'. Also adds arguments 'convert' to specify if conversion from raw bytes is required, as well as for HTTP method, headers (which takes a named list or character vector) and request data.
 * New `messenger()` function implements a multi-threaded console-based messaging system using NNG's scalability protocols (currently as proof of concept).
 * New `nano_init()` function intended to be called immediately after package load to set global options.
 
