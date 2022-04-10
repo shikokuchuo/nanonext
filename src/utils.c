@@ -3,13 +3,12 @@
 #define NANONEXT_INTERNALS
 #define NANONEXT_PROTOCOLS
 #define NANONEXT_SUPPLEMENTALS
-#define NANONEXT_FINALIZERS
 #include <time.h>
 #include "nanonext.h"
 
-/* statics ------------------------------------------------------------------ */
+/* finalizers --------------------------------------------------------------- */
 
-static void stream_dialer_finalizer(SEXP xptr) {
+void stream_dialer_finalizer(SEXP xptr) {
 
   if (R_ExternalPtrAddr(xptr) == NULL)
     return;
@@ -19,7 +18,7 @@ static void stream_dialer_finalizer(SEXP xptr) {
 
 }
 
-static void stream_listener_finalizer(SEXP xptr) {
+void stream_listener_finalizer(SEXP xptr) {
 
   if (R_ExternalPtrAddr(xptr) == NULL)
     return;
@@ -29,7 +28,7 @@ static void stream_listener_finalizer(SEXP xptr) {
 
 }
 
-static void stream_finalizer(SEXP xptr) {
+void stream_finalizer(SEXP xptr) {
 
   if (R_ExternalPtrAddr(xptr) == NULL)
     return;
@@ -115,7 +114,7 @@ SEXP rnng_ncurl(SEXP http, SEXP method, SEXP headers, SEXP data) {
     }
   }
   if (headers != R_NilValue) {
-    R_xlen_t hlen = Rf_xlength(headers);
+    const R_xlen_t hlen = Rf_xlength(headers);
     SEXP names = PROTECT(Rf_getAttrib(headers, R_NamesSymbol));
     switch (TYPEOF(headers)) {
     case STRSXP:
@@ -492,19 +491,21 @@ static void rnng_thread(void *arg) {
       break;
     }
 
-    if (!strcmp(buf, ":c ")) {
-      REprintf("| <- peer connected: %d-%02d-%02d %02d:%02d:%02d\n",
-               tms->tm_year + 1900, tms->tm_mon + 1, tms->tm_mday,
-               tms->tm_hour, tms->tm_min, tms->tm_sec);
-      nng_free(buf, sz);
-      continue;
-    }
-    if (!strcmp(buf, ":d ")) {
-      REprintf("| -> peer disconnected: %d-%02d-%02d %02d:%02d:%02d\n",
-               tms->tm_year + 1900, tms->tm_mon + 1, tms->tm_mday,
-               tms->tm_hour, tms->tm_min, tms->tm_sec);
-      nng_free(buf, sz);
-      continue;
+    if (!strncmp(buf, ":", 1)) {
+      if (!strcmp(buf, ":c ")) {
+        REprintf("| <- peer connected: %d-%02d-%02d %02d:%02d:%02d\n",
+                 tms->tm_year + 1900, tms->tm_mon + 1, tms->tm_mday,
+                 tms->tm_hour, tms->tm_min, tms->tm_sec);
+        nng_free(buf, sz);
+        continue;
+      }
+      if (!strcmp(buf, ":d ")) {
+        REprintf("| -> peer disconnected: %d-%02d-%02d %02d:%02d:%02d\n",
+                 tms->tm_year + 1900, tms->tm_mon + 1, tms->tm_mday,
+                 tms->tm_hour, tms->tm_min, tms->tm_sec);
+        nng_free(buf, sz);
+        continue;
+      }
     }
 
     Rprintf("%s\n%*s< %d-%02d-%02d %02d:%02d:%02d\n",

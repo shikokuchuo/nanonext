@@ -142,7 +142,7 @@ send.nanoStream <- function(con,
 #' @param keep.raw [default TRUE] logical flag whether to keep the received raw
 #'     vector (useful for verification e.g. via hashing). If FALSE, will return
 #'     the converted data only.
-#' @param n <Streams> [default 100000L] the maximum number of bytes to receive.
+#' @param n <Streams> [default 65536L] the maximum number of bytes to receive.
 #'     Can be an over-estimate, but note that a buffer of this size is reserved.
 #' @param ... currently unused.
 #'
@@ -212,7 +212,7 @@ recv <- function(con,
                  block,
                  keep.raw = TRUE,
                  ...,
-                 n = 100000L) UseMethod("recv")
+                 n = 65536L) UseMethod("recv")
 
 #' @rdname recv
 #' @method recv nanoSocket
@@ -269,7 +269,7 @@ recv.nanoStream <- function(con,
                                      "logical", "numeric", "raw"),
                             block = TRUE,
                             keep.raw = TRUE,
-                            n = 100000L,
+                            n = 65536L,
                             ...) {
 
   mode <- match.arg2(mode, c("character", "complex", "double", "integer",

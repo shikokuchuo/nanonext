@@ -55,7 +55,7 @@ send_aio.nanoSocket <- function(con, data, mode = c("serial", "raw"), timeout = 
   aio <- .Call(rnng_send_aio, con, data, timeout)
   is.integer(aio) && return(invisible(aio))
 
-  result <- NULL
+  data <- result <- NULL
   unresolv <- TRUE
   env <- new.env(hash = FALSE)
   makeActiveBinding(sym = "result", fun = function(x) {
@@ -84,7 +84,7 @@ send_aio.nanoContext <- function(con, data, mode = c("serial", "raw"), timeout =
   aio <- .Call(rnng_ctx_send_aio, con, data, timeout)
   is.integer(aio) && return(invisible(aio))
 
-  result <- NULL
+  data <- result <- NULL
   unresolv <- TRUE
   env <- new.env(hash = FALSE)
   makeActiveBinding(sym = "result", fun = function(x) {
@@ -112,7 +112,7 @@ send_aio.nanoStream <- function(con, data, mode = "raw", timeout = -2L) {
   aio <- .Call(rnng_stream_send_aio, con, data, timeout)
   is.integer(aio) && return(invisible(aio))
 
-  result <- NULL
+  data <- result <- NULL
   unresolv <- TRUE
   env <- new.env(hash = FALSE)
   makeActiveBinding(sym = "result", fun = function(x) {
@@ -191,7 +191,7 @@ recv_aio <- function(con,
                      timeout = -2L,
                      keep.raw = TRUE,
                      ...,
-                     n = 100000L) UseMethod("recv_aio")
+                     n = 65536L) UseMethod("recv_aio")
 
 #' @rdname recv_aio
 #' @method recv_aio nanoSocket
@@ -354,7 +354,7 @@ recv_aio.nanoStream <- function(con,
                                          "logical", "numeric", "raw"),
                                 timeout = -2L,
                                 keep.raw = TRUE,
-                                n = 100000L,
+                                n = 65536L,
                                 ...) {
 
   mode <- match.arg2(mode, c("character", "complex", "double", "integer",

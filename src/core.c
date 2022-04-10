@@ -2,12 +2,53 @@
 
 #define NANONEXT_INTERNALS
 #define NANONEXT_PROTOCOLS
-#define NANONEXT_FINALIZERS
 #include "nanonext.h"
 
-/* statics ------------------------------------------------------------------ */
+/* mk_error ----------------------------------------------------------------- */
 
-static void context_finalizer(SEXP xptr) {
+SEXP mk_error(const int xc) {
+
+  SEXP err = PROTECT(Rf_ScalarInteger(xc));
+  Rf_classgets(err, Rf_mkString("errorValue"));
+  Rf_warning("%d | %s", xc, nng_strerror(xc));
+  UNPROTECT(1);
+  return err;
+
+}
+
+/* finalizers --------------------------------------------------------------- */
+
+void socket_finalizer(SEXP xptr) {
+
+  if (R_ExternalPtrAddr(xptr) == NULL)
+    return;
+  nng_socket *xp = (nng_socket *) R_ExternalPtrAddr(xptr);
+  nng_close(*xp);
+  R_Free(xp);
+
+}
+
+void dialer_finalizer(SEXP xptr) {
+
+  if (R_ExternalPtrAddr(xptr) == NULL)
+    return;
+  nng_dialer *xp = (nng_dialer *) R_ExternalPtrAddr(xptr);
+  nng_dialer_close(*xp);
+  R_Free(xp);
+
+}
+
+void listener_finalizer(SEXP xptr) {
+
+  if (R_ExternalPtrAddr(xptr) == NULL)
+    return;
+  nng_listener *xp = (nng_listener *) R_ExternalPtrAddr(xptr);
+  nng_listener_close(*xp);
+  R_Free(xp);
+
+}
+
+void context_finalizer(SEXP xptr) {
 
   if (R_ExternalPtrAddr(xptr) == NULL)
     return;
@@ -21,7 +62,7 @@ static void context_finalizer(SEXP xptr) {
 
 SEXP rnng_protocol_open(SEXP protocol) {
 
-  int pro = INTEGER(protocol)[0];
+  const int pro = *INTEGER(protocol);
   char *pname;
   int xc;
 
@@ -545,7 +586,7 @@ SEXP rnng_stream_recv(SEXP stream, SEXP bytes, SEXP timeout) {
 
   nng_stream *sp = (nng_stream *) R_ExternalPtrAddr(stream);
   const nng_duration dur = (nng_duration) Rf_asInteger(timeout);
-  const size_t xlen = Rf_asInteger(bytes) + 1;
+  const size_t xlen = Rf_asInteger(bytes);
   nng_iov iov;
   nng_aio *aiop;
   int xc;

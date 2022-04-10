@@ -33,50 +33,12 @@
 #include <R_ext/Visibility.h>
 
 #ifdef NANONEXT_INTERNALS
-static SEXP mk_error(const int xc) {
-
-  SEXP err = PROTECT(Rf_ScalarInteger(xc));
-  Rf_classgets(err, Rf_mkString("errorValue"));
-  Rf_warning("%d | %s", xc, nng_strerror(xc));
-  UNPROTECT(1);
-  return err;
-
-}
+extern SEXP mk_error(const int);
+extern void socket_finalizer(SEXP);
+extern void dialer_finalizer(SEXP);
+extern void listener_finalizer(SEXP);
 #endif
 
-#ifdef NANONEXT_FINALIZERS
-static void socket_finalizer(SEXP xptr) {
-
-  if (R_ExternalPtrAddr(xptr) == NULL)
-    return;
-  nng_socket *xp = (nng_socket *) R_ExternalPtrAddr(xptr);
-  nng_close(*xp);
-  R_Free(xp);
-
-}
-
-static void dialer_finalizer(SEXP xptr) {
-
-  if (R_ExternalPtrAddr(xptr) == NULL)
-    return;
-  nng_dialer *xp = (nng_dialer *) R_ExternalPtrAddr(xptr);
-  nng_dialer_close(*xp);
-  R_Free(xp);
-
-}
-
-static void listener_finalizer(SEXP xptr) {
-
-  if (R_ExternalPtrAddr(xptr) == NULL)
-    return;
-  nng_listener *xp = (nng_listener *) R_ExternalPtrAddr(xptr);
-  nng_listener_close(*xp);
-  R_Free(xp);
-
-}
-#endif
-
-/* define internal symbols */
 extern SEXP nano_AioSymbol;
 extern SEXP nano_ContextSymbol;
 extern SEXP nano_DataSymbol;
@@ -91,7 +53,6 @@ extern SEXP nano_StreamSymbol;
 extern SEXP nano_TextframesSymbol;
 extern SEXP nano_UrlSymbol;
 
-/* define functions */
 extern SEXP rnng_aio_call(SEXP);
 extern SEXP rnng_aio_get_msg(SEXP);
 extern SEXP rnng_aio_http(SEXP);

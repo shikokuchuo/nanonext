@@ -19,9 +19,8 @@
 #'
 #'     \code{:q} is the command to quit.
 #'
-#'     NOTE: This is a proof of concept intended for use within internal
-#'     networks. Currently no measures are taken to verify the identity of
-#'     endpoints, and hence should not be used to transmit sensitive information.
+#'     NOTE: This is currently a proof of concept and should not be used for
+#'     critical applications.
 #'
 #' @export
 #'
@@ -43,6 +42,7 @@ messenger <- function(url) {
   }
   cat(sprintf("\n| url: %s\n", url), file = stdout())
   cat("| connecting... ", file = stderr())
+
   s <- suppressWarnings(.Call(rnng_send, sock, writeBin(":c ", raw()), 1000L))
   if (is.integer(s)) {
     cat(sprintf("\r| peer offline: %s\n", format.POSIXct(Sys.time())), file = stderr())

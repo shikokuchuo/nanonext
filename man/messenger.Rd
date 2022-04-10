@@ -27,8 +27,7 @@ Multi-threaded console-based 2-way messaging system based on NNG scalability
 
     \code{:q} is the command to quit.
 
-    NOTE: This is a proof of concept intended for use within internal
-    networks. Currently no measures are taken to verify the identity of
-    endpoints, and hence should not be used to transmit sensitive information.
+    NOTE: This is currently a proof of concept and should not be used for
+    critical applications.
 }
 
