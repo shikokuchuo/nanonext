@@ -126,14 +126,6 @@
 #'
 NULL
 
-.onLoad <- function(libname, pkgname) {
-  .logging. <- switch(tolower(Sys.getenv("NANONEXT_LOG")),
-                              info = TRUE,
-                              FALSE)
-  .logging. <<- .logging.
-  invisible()
-}
-
 .onUnload <- function(libpath) {
   if (!is.null(warn <- getOption("nanonext.original.warn"))) {
     options(warn = warn)
@@ -142,4 +134,3 @@ NULL
   invisible()
 }
 
-.logging. <- FALSE

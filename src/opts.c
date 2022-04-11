@@ -42,7 +42,7 @@ SEXP rnng_socket_set(SEXP socket, SEXP type, SEXP opt, SEXP value) {
 
   if (xc)
     return mk_error(xc);
-  return Rf_ScalarInteger(0);
+  return Rf_ScalarInteger(xc);
 
 }
 
@@ -83,7 +83,7 @@ SEXP rnng_dialer_set(SEXP dialer, SEXP type, SEXP opt, SEXP value) {
 
   if (xc)
     return mk_error(xc);
-  return Rf_ScalarInteger(0);
+  return Rf_ScalarInteger(xc);
 
 }
 
@@ -124,7 +124,7 @@ SEXP rnng_listener_set(SEXP listener, SEXP type, SEXP opt, SEXP value) {
 
   if (xc)
     return mk_error(xc);
-  return Rf_ScalarInteger(0);
+  return Rf_ScalarInteger(xc);
 
 }
 
@@ -165,7 +165,7 @@ SEXP rnng_ctx_set(SEXP context, SEXP type, SEXP opt, SEXP value) {
 
   if (xc)
     return mk_error(xc);
-  return Rf_ScalarInteger(0);
+  return Rf_ScalarInteger(xc);
 
 }
 
@@ -206,7 +206,7 @@ SEXP rnng_stream_set(SEXP stream, SEXP type, SEXP opt, SEXP value) {
 
   if (xc)
     return mk_error(xc);
-  return Rf_ScalarInteger(0);
+  return Rf_ScalarInteger(xc);
 
 }
 

@@ -1,3 +1,14 @@
+# nanonext 0.4.0.9000 (under development)
+
+#### New Features
+
+* Added convenience auxiliary functions `is_nano()` and `is_aio()`.
+
+#### Updates
+
+* Deprecated `send_ctx()`, `recv_ctx()` and logging are removed.
+* Internal performance optimisations.
+
 # nanonext 0.4.0
 
 #### New Features

@@ -66,6 +66,53 @@ nng_version <- function() .Call(rnng_version)
 #'
 nng_error <- function(xc) .Call(rnng_strerror, as.integer(xc))
 
+#' Is Nano
+#'
+#' Is the object an object created by the nanonext package i.e. a nanoSocket,
+#'     nanoContext, nanoStream, nanoListener, nanoDialer or nano Object.
+#'
+#' @param x an object.
+#'
+#' @return Logical value TRUE or FALSE.
+#'
+#' @details Note: does not include Aio objects, for which there is a separate
+#'     function \code{\link{is_aio}}.
+#'
+#' @examples
+#' s <- socket()
+#' is_nano(s)
+#' n <- nano()
+#' is_nano(n)
+#'
+#' close(s)
+#' n$close()
+#'
+#' @export
+#'
+is_nano <- function(x) inherits(x, c("nano", "nanoObject"))
+
+#' Is Aio
+#'
+#' Is the object an Aio (sendAio or recvAio).
+#'
+#' @param x an object.
+#'
+#' @return Logical value TRUE or FALSE.
+#'
+#' @examples
+#' sock <- socket(listen = "inproc://isaio")
+#' r <- recv_aio(sock)
+#' s <- send_aio(sock, "test")
+#'
+#' is_aio(r)
+#' is_aio(s)
+#'
+#' close(sock)
+#'
+#' @export
+#'
+is_aio <- function(x) inherits(x, c("recvAio", "sendAio"))
+
 #' Is Nul Byte
 #'
 #' Is the object a nul byte.
@@ -184,31 +231,6 @@ nano_init <- function(warn = c("immediate", "deferred", "error", "none")) {
 
 }
 
-#' Logging Level
-#'
-#' This function is deprecated.
-#'
-#' @param level specify a logging level. No longer used.
-#'
-#' @return Invisible NULL. If the function is called with no arguments,
-#'     the logical code of the logging level is returned instead.
-#'
-#' @details The environment variable 'NANONEXT_LOG' is checked automatically on
-#'     package load. If the variable is set incorrectly, the default level
-#'     of 'error' is used instead.
-#'
-#' @keywords internal
-#' @export
-#'
-logging <- function(level = c("keep", "check", "error", "info")) {
-
-  missing(level) && return(.logging.)
-  cat("nanonext logging is deprecated and this function can no longer be used\n",
-      "logging level can still be set via the environment variable NANONEXT_LOG\n",
-      "prior to package load for the time being\n", file = stderr())
-
-}
-
 # nanonext - Limited scope exported functions ----------------------------------
 
 #' @export
@@ -247,10 +269,5 @@ match.arg2 <- function(choice, choices) {
   index || stop(sprintf("'%s' should be one of %s",
                         deparse(substitute(choice)), paste(choices, collapse = ", ")))
   index
-}
-
-loginfo <- function(evt, pkey, pval, skey, sval) {
-  cat(sprintf("%s [ %s ] %s: %d | %s: %s\n",
-              format.POSIXct(Sys.time()), evt, pkey, pval, skey, sval), file = stdout())
 }
 

@@ -269,6 +269,12 @@ print.sendAio <- function(x, ...) {
 
 #' @export
 #'
+`$<-.nano` <- function(x, name, value) {
+  x
+}
+
+#' @export
+#'
 `$<-.nanoObject` <- function(x, name, value) {
   x
 }

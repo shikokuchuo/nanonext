@@ -78,8 +78,8 @@ send.nanoSocket <- function(con,
   force(data)
   data <- encode(data = data, mode = mode)
   res <- .Call(rnng_send, con, data, block)
-  is.integer(res) && return(invisible(res))
-  if (missing(echo) || isTRUE(echo)) res else invisible(0L)
+  res && return(invisible(res))
+  if (missing(echo) || isTRUE(echo)) data else invisible(res)
 
 }
 
@@ -98,8 +98,8 @@ send.nanoContext <- function(con,
   data <- encode(data = data, mode = mode)
   if (missing(block) || isTRUE(block)) block <- -2L
   res <- .Call(rnng_ctx_send, con, data, block)
-  is.integer(res) && return(invisible(res))
-  if (missing(echo) || isTRUE(echo)) res else invisible(0L)
+  res && return(invisible(res))
+  if (missing(echo) || isTRUE(echo)) data else invisible(res)
 
 }
 
@@ -117,8 +117,8 @@ send.nanoStream <- function(con,
   data <- encode(data = data, mode = 2L)
   if (missing(block) || isTRUE(block)) block <- -2L
   res <- .Call(rnng_stream_send, con, data, block)
-  is.integer(res) && return(invisible(res))
-  if (missing(echo) || isTRUE(echo)) res else invisible(0L)
+  res && return(invisible(res))
+  if (missing(echo) || isTRUE(echo)) data else invisible(res)
 
 }
 

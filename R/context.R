@@ -21,9 +21,8 @@
 #'
 #'     Note: not every protocol supports creation of separate contexts.
 #'
-#'     To send and receive over a context use \code{\link{send_ctx}} and
-#'     \code{\link{recv_ctx}} respectively. It is also possible to perform async
-#'     send and receive over a context using \code{\link{send_aio}} and
+#'     To send and receive over a context use \code{\link{send}} and
+#'     \code{\link{recv}} or their async counterparts \code{\link{send_aio}} and
 #'     \code{\link{recv_aio}}.
 #'
 #' @examples
@@ -125,9 +124,7 @@ reply <- function(context,
   data <- execute(data, ...)
   data <- encode(data = data, mode = send_mode)
   on.exit()
-  res <- .Call(rnng_ctx_send, context, data, timeout)
-  is.integer(res) && return(invisible(res))
-  invisible(0L)
+  invisible(.Call(rnng_ctx_send, context, data, timeout))
 
 }
 
@@ -254,83 +251,6 @@ request <- function(context,
     data
   }, env = env)
   `class<-`(`[[<-`(`[[<-`(env, "keep.raw", keep.raw), "aio", aio), "recvAio")
-
-}
-
-# Deprecated - do not use ------------------------------------------------------
-
-#' Send over Context
-#'
-#' Send data over a Context [Deprecated].
-#'
-#' @param context a Context.
-#' @inheritParams send
-#' @inheritParams send_aio
-#'
-#' @return Raw vector of sent data, or (invisibly) an integer exit code (zero on
-#'     success) if 'echo' is set to FALSE.
-#'
-#' @details Will block if the send is in progress and has not yet completed -
-#'     certain protocol / transport combinations may limit the number of messages
-#'     that can be queued if they have yet to be received. Set a timeout to
-#'     ensure the function returns under all scenarios.
-#'
-#' @keywords internal
-#' @export
-#'
-send_ctx <- function(context, data, mode = c("serial", "raw"), timeout = -2L, echo = TRUE) {
-
-  mode <- match.arg2(mode, c("serial", "raw"))
-  force(data)
-  data <- encode(data = data, mode = mode)
-  res <- .Call(rnng_ctx_send, context, data, timeout)
-  is.integer(res) && return(invisible(res))
-  if (missing(echo) || isTRUE(echo)) res else invisible(0L)
-
-}
-
-#' Receive over Context
-#'
-#' Receive data over a Context [Deprecated].
-#'
-#' @param context a Context.
-#' @inheritParams recv
-#' @inheritParams send_aio
-#'
-#' @return Named list of 2 elements: 'raw' containing the received raw vector
-#'     and 'data' containing the converted object, or else the converted object
-#'     if 'keep.raw' is set to FALSE.
-#'
-#' @details Will block while awaiting the receive operation to complete.
-#'     Set a timeout to ensure that the function returns under all scenarios.
-#'
-#'     In case of an error, an integer 'errorValue' is returned (to be
-#'     distiguishable from an integer message value). This can be verified using
-#'     \code{\link{is_error_value}}.
-#'
-#'     If the raw data was successfully received but an error occurred in
-#'     unserialisation or data conversion (for example if the incorrect mode was
-#'     specified), the received raw vector will always be returned to allow for
-#'     the data to be recovered.
-#'
-#' @keywords internal
-#' @export
-#'
-recv_ctx <- function(context,
-                     mode = c("serial", "character", "complex", "double",
-                              "integer", "logical", "numeric", "raw"),
-                     timeout = -2L,
-                     keep.raw = TRUE) {
-
-  mode <- match.arg2(mode, c("serial", "character", "complex", "double",
-                             "integer", "logical", "numeric", "raw"))
-  res <- .Call(rnng_ctx_recv, context, timeout)
-  is.integer(res) && return(invisible(res))
-  on.exit(expr = return(res))
-  data <- decode(con = res, mode = mode)
-  on.exit()
-  missing(data) && return(.Call(rnng_scm))
-  if (missing(keep.raw) || isTRUE(keep.raw)) list(raw = res, data = data) else data
 
 }
 

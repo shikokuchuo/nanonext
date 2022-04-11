@@ -29,9 +29,8 @@ For convenience, this function may be called on a nano object as well
 
     Note: not every protocol supports creation of separate contexts.
 
-    To send and receive over a context use \code{\link{send_ctx}} and
-    \code{\link{recv_ctx}} respectively. It is also possible to perform async
-    send and receive over a context using \code{\link{send_aio}} and
+    To send and receive over a context use \code{\link{send}} and
+    \code{\link{recv}} or their async counterparts \code{\link{send_aio}} and
     \code{\link{recv_aio}}.
 }
 \examples{

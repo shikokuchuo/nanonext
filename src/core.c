@@ -405,7 +405,7 @@ SEXP rnng_send(SEXP socket, SEXP data, SEXP block) {
 
   if (xc)
     return mk_error(xc);
-  return data;
+  return Rf_ScalarInteger(xc);
 
 }
 
@@ -499,7 +499,7 @@ SEXP rnng_ctx_send(SEXP context, SEXP data, SEXP timeout) {
   nng_aio_free(aiop);
   if (xc)
     return mk_error(xc);
-  return data;
+  return Rf_ScalarInteger(xc);
 
 }
 
@@ -575,7 +575,7 @@ SEXP rnng_stream_send(SEXP stream, SEXP data, SEXP timeout) {
 
   if (xc)
     return mk_error(xc);
-  return data;
+  return Rf_ScalarInteger(xc);
 
 }
 
