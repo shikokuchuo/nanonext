@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.0.9000</span>
       </span>
     </div>
 
@@ -54,7 +54,19 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.4.0" id="nanonext-040">nanonext 0.4.0<a class="anchor" aria-label="anchor" href="#nanonext-040"></a></h2>
+<h2 class="page-header" data-toc-text="0.4.0.9000" id="nanonext-0409000-under-development">nanonext 0.4.0.9000 (under development)<a class="anchor" aria-label="anchor" href="#nanonext-0409000-under-development"></a></h2>
+<div class="section level5">
+<h5 id="new-features-0-4-0-9000">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-4-0-9000"></a></h5>
+<ul><li>Added convenience auxiliary functions <code><a href="../reference/is_nano.html">is_nano()</a></code> and <code><a href="../reference/is_aio.html">is_aio()</a></code>.</li>
+</ul></div>
+<div class="section level5">
+<h5 id="updates-0-4-0-9000">Updates<a class="anchor" aria-label="anchor" href="#updates-0-4-0-9000"></a></h5>
+<ul><li>Deprecated <code>send_ctx()</code>, <code>recv_ctx()</code> and logging are removed.</li>
+<li>Internal performance optimisations.</li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="0.4.0" id="nanonext-040">nanonext 0.4.0<small>2022-04-10</small><a class="anchor" aria-label="anchor" href="#nanonext-040"></a></h2>
 <div class="section level5">
 <h5 id="new-features-0-4-0">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-4-0"></a></h5>
 <ul><li>New <code><a href="../reference/stream.html">stream()</a></code> interface exposes low-level byte stream functionality in the NNG library, intended for communicating with non-NNG endpoints, including but not limited to websocket servers.</li>
@@ -70,8 +82,8 @@
 <li>Unified <code><a href="../reference/send.html">send()</a></code> and <code><a href="../reference/recv.html">recv()</a></code> functions, and their asynchronous counterparts <code><a href="../reference/send_aio.html">send_aio()</a></code> and <code><a href="../reference/recv_aio.html">recv_aio()</a></code>, are now S3 generics and can be used across Sockets, Contexts and Streams.</li>
 <li>Revised ‘block’ argument for <code><a href="../reference/send.html">send()</a></code> and <code><a href="../reference/recv.html">recv()</a></code> now allows an integer value for setting a timeout.</li>
 <li>
-<code><a href="../reference/send_ctx.html">send_ctx()</a></code> and <code><a href="../reference/recv_ctx.html">recv_ctx()</a></code> are deprecated and will be removed in a future package version - the methods for <code><a href="../reference/send.html">send()</a></code> and <code><a href="../reference/recv.html">recv()</a></code> should be used instead.</li>
-<li>To allow for more flexible practices, logging is now deprecated and will be removed entirely in the next package version. Logging can still be enabled via ‘NANONEXT_LOG’ prior to package load but <code><a href="../reference/logging.html">logging()</a></code> is now defunct.</li>
+<code>send_ctx()</code> and <code>recv_ctx()</code> are deprecated and will be removed in a future package version - the methods for <code><a href="../reference/send.html">send()</a></code> and <code><a href="../reference/recv.html">recv()</a></code> should be used instead.</li>
+<li>To allow for more flexible practices, logging is now deprecated and will be removed entirely in the next package version. Logging can still be enabled via ‘NANONEXT_LOG’ prior to package load but <code>logging()</code> is now defunct.</li>
 <li>Internal performance optimisations.</li>
 </ul></div>
 </div>
@@ -88,7 +100,7 @@
 <li>
 <code><a href="../reference/survey_time.html">survey_time()</a></code> added as a convenience function for surveyor/respondent patterns.</li>
 <li>
-<code><a href="../reference/logging.html">logging()</a></code> function to specify a global package logging level - ‘error’ or ‘info’. Automatically checks the environment variable ‘NANONEXT_LOG’ on package load and then each time <code>logging(level = "check")</code> is called.</li>
+<code>logging()</code> function to specify a global package logging level - ‘error’ or ‘info’. Automatically checks the environment variable ‘NANONEXT_LOG’ on package load and then each time <code>logging(level = "check")</code> is called.</li>
 <li>
 <code><a href="../reference/ncurl.html">ncurl()</a></code> adds a ‘…’ argument. Support for HTTP methods other than GET.</li>
 </ul></div>
@@ -132,7 +144,7 @@
 <ul><li>This now permits R serialization as an option, consolidating the functionality of the ’_vec’ series of functions.</li>
 </ul></li>
 <li>Functions ‘send_vec’ and ‘recv_vec’ are deprecated and will be removed in a future release.</li>
-<li>Functions ‘ctx_send’ and ‘ctx_recv’ have been renamed <code><a href="../reference/send_ctx.html">send_ctx()</a></code> and <code><a href="../reference/recv_ctx.html">recv_ctx()</a></code> for consistency.</li>
+<li>Functions ‘ctx_send’ and ‘ctx_recv’ have been renamed <code>send_ctx()</code> and <code>recv_ctx()</code> for consistency.</li>
 <li>The <code>$socket_close()</code> method of nano objects has been renamed <code>$close()</code> to better align with the functional API.</li>
 </ul></div>
 </div>
