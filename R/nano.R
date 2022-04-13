@@ -128,15 +128,25 @@ nano <- function(protocol = c("pair", "bus", "req", "rep", "push", "pull",
                                                                opt = opt,
                                                                value = value)
 
-  if (protocol == "sub") {
-    nano[["subscribe"]] <- function(topic = NULL) subscribe(socket,
-                                                            topic = topic)
-    nano[["unsubscribe"]] <- function(topic = NULL) unsubscribe(socket,
-                                                                topic = topic)
-  }
-  if (protocol == "surveyor") {
-    nano[["survey_time"]] <- function(time) survey_time(socket, time = time)
-  }
+  switch(protocol,
+         req =,
+         rep = {
+           nano[["context"]] <- function() context(socket)
+         },
+         sub = {
+           nano[["subscribe"]] <- function(topic = NULL) subscribe(socket,
+                                                                   topic = topic)
+           nano[["unsubscribe"]] <- function(topic = NULL) unsubscribe(socket,
+                                                                       topic = topic)
+         },
+         surveyor = {
+           nano[["context"]] <- function() context(socket)
+           nano[["survey_time"]] <- function(time) survey_time(socket, time = time)
+         },
+         respondent = {
+           nano[["context"]] <- function() context(socket)
+         },
+         NULL)
 
   nano
 

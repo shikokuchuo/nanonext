@@ -2,6 +2,7 @@
 
 #### New Features
 
+* `$context()` method added for creating new contexts from nano Objects with supported protocols (i.e. req, rep, surveyor, respondent).
 * Added convenience auxiliary functions `is_nano()` and `is_aio()`.
 
 #### Updates
