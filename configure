@@ -14,7 +14,7 @@ if [ "$NANONEXT_ARM" ]; then
   PKG_LIBS="$PKG_LIBS -latomic"
 fi
 PKG_CFLAGS=""
-LIB_VER="1.5.2"
+LIB_VER="722bf46"
 SYS_LIB=0
 
 # Check for custom locations
@@ -66,23 +66,27 @@ elif [ -d "/usr/local/opt/nng" ]; then
 else
   echo "prior system libnng installation not found"
   echo "preparing to download and build library from source..."
-  curl -L https://github.com/nanomsg/nng/archive/refs/tags/v$LIB_VER.tar.gz -o nng.tar.gz
+  curl -L https://api.github.com/repos/nanomsg/nng/tarball/$LIB_VER -o nng.tar.gz
   gzip -dc nng.tar.gz | tar -xf -
   rm -f nng.tar.gz
-  cd nng-$LIB_VER
+  cd nanomsg-nng-$LIB_VER
   mkdir build
   cd build
   which cmake
   if [ $? -ne 0 ]; then
     export PATH=$PATH:/Applications/CMake.app/Contents/bin
   fi
-  cmake -DCMAKE_C_FLAGS="${CMAKE_C_FLAGS} -fPIC" -DNNG_ELIDE_DEPRECATED=1 -DNNG_TESTS=0 -DNNG_TOOLS=0 ..
+  if [ "$NANONEXT_TLS" ]; then
+    cmake -DCMAKE_C_FLAGS="${CMAKE_C_FLAGS} -fPIC" -DNNG_ENABLE_TLS=1 -DNNG_ELIDE_DEPRECATED=1 -DNNG_TESTS=0 -DNNG_TOOLS=0 ..
+  else
+    cmake -DCMAKE_C_FLAGS="${CMAKE_C_FLAGS} -fPIC" -DNNG_ELIDE_DEPRECATED=1 -DNNG_TESTS=0 -DNNG_TOOLS=0 ..
+  fi
   make
   cd ../..
   mkdir lib
-  mv -f nng-$LIB_VER/build/libnng.a lib
-  mv -f nng-$LIB_VER/include ./
-  rm -rf nng-$LIB_VER
+  mv -f nanomsg-nng-$LIB_VER/build/libnng.a lib
+  mv -f nanomsg-nng-$LIB_VER/include ./
+  rm -rf nanomsg-nng-$LIB_VER
   PKG_CFLAGS="-I`pwd`/include $PKG_CFLAGS"
   PKG_LIBS="-L`pwd`/lib $PKG_LIBS"
 
@@ -119,23 +123,27 @@ if [ $? -ne 0 ]; then
   else
     echo "Attempt to use system libnng failed"
     echo "Preparing to download and build library from source..."
-    curl -L https://github.com/nanomsg/nng/archive/refs/tags/v$LIB_VER.tar.gz -o nng.tar.gz
+    curl -L https://api.github.com/repos/nanomsg/nng/tarball/$LIB_VER -o nng.tar.gz
     gzip -dc nng.tar.gz | tar -xf -
     rm -f nng.tar.gz
-    cd nng-$LIB_VER
+    cd nanomsg-nng-$LIB_VER
     mkdir build
     cd build
     which cmake
     if [ $? -ne 0 ]; then
       export PATH=$PATH:/Applications/CMake.app/Contents/bin
     fi
-    cmake -DCMAKE_C_FLAGS="${CMAKE_C_FLAGS} -fPIC" -DNNG_ELIDE_DEPRECATED=1 -DNNG_TESTS=0 -DNNG_TOOLS=0 ..
+    if [ "$NANONEXT_TLS" ]; then
+      cmake -DCMAKE_C_FLAGS="${CMAKE_C_FLAGS} -fPIC" -DNNG_ENABLE_TLS=1 -DNNG_ELIDE_DEPRECATED=1 -DNNG_TESTS=0 -DNNG_TOOLS=0 ..
+    else
+      cmake -DCMAKE_C_FLAGS="${CMAKE_C_FLAGS} -fPIC" -DNNG_ELIDE_DEPRECATED=1 -DNNG_TESTS=0 -DNNG_TOOLS=0 ..
+    fi
     make
     cd ../..
     mkdir lib
-    mv -f nng-$LIB_VER/build/libnng.a lib
-    mv -f nng-$LIB_VER/include ./
-    rm -rf nng-$LIB_VER
+    mv -f nanomsg-nng-$LIB_VER/build/libnng.a lib
+    mv -f nanomsg-nng-$LIB_VER/include ./
+    rm -rf nanomsg-nng-$LIB_VER
     PKG_CFLAGS="-I`pwd`/include $PKG_CFLAGS"
     PKG_LIBS="-L`pwd`/lib $PKG_LIBS"
     # Test for libnng
