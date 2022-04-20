@@ -93,8 +93,14 @@ enables sending and receiving of TEXT frames (ignored otherwise).</p></dd>
     missing.</p>
 <p>Specify only one of 'dial' or 'listen'. If both are specified, 'listen'
     will be ignored.</p>
-<p>TLS is automatically configured for dialing a secure websocket address
-    starting 'wss://' (where the NNG library has been built with TLS support).</p>
+    </div>
+    <div id="tls-support">
+    <h2>TLS Support</h2>
+    
+
+
+<p>Dialing a secure websocket address starting 'wss://' is supported if
+    <code><a href="nng_version.html">nng_version</a></code> shows 'TLS supported'.</p>
     </div>
 
     <div id="ref-examples">
