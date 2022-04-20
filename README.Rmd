@@ -459,11 +459,10 @@ This is available in system package repositories as:
 -   `libnng-dev` (deb)
 -   `nng-devel` (rpm)
 -   `nng` (Homebrew on MacOS)
--   `nng` from vcpkg (see <https://vcpkg.io/>).
 
 A system installation of 'libnng' in the standard filesystem locations will be detected and used if possible.
 
-Otherwise, a release version of 'libnng' will be downloaded and built from source automatically during package installation (note: this requires 'cmake').
+Otherwise, a suitable recent version of 'libnng' will be downloaded and built from source automatically during package installation (note: this requires 'cmake').
 
 #### Windows
 
@@ -471,9 +470,12 @@ Pre-built libraries (for i386 / x64 / x64-UCRT) are automatically downloaded dur
 
 #### TLS Support
 
-If a system installation of 'libnng' and 'libmbedtls' development headers are both detected in the same location, it is assumed that NNG was built with TLS support (using Mbed TLS) and the appropriate options are set to ensure a successful install.
+If system installations of 'libnng' and 'libmbedtls' development headers are detected in the same location, it is assumed that NNG was built with TLS support (using Mbed TLS) and TLS support is configured appropriately.
 
-If your system installation of NNG was built with TLS support (using Mbed TLS) but detection of 'libmbedtls' failed (possibly as it was installed in another location), you may also set the environment variable `Sys.setenv(NANONEXT_TLS=1)` before installing the package to ensure that the appropriate options are set.
+Otherwise, the environment variable `Sys.setenv(NANONEXT_TLS=1)` may be set prior to installation if:
+
+- your system installations of 'libnng' (built with TLS support) and 'libmbedtls' are in different locations; or
+- you have a system installation of 'libmbedtls' but not 'libnng' and want nanonext to download and build a more recent version of 'libnng' than available in system repositories against this.
 
 #### Certain ARM architectures
 

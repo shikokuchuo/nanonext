@@ -23,16 +23,6 @@ if [ "$INCLUDE_DIR" ] || [ "$LIB_DIR" ]; then
   PKG_CFLAGS="-I$INCLUDE_DIR $PKG_CFLAGS"
   PKG_LIBS="-L$LIB_DIR $PKG_LIBS"
 
-elif [ -d "$HOME/vcpkg/installed/x64-linux/include/nng" ]; then
-  echo "found libnng vcpkg installation..."
-  PKG_CFLAGS="-I$HOME/vcpkg/installed/x64-linux/include $PKG_CFLAGS"
-  PKG_LIBS="-L$HOME/vcpkg/installed/x64-linux/lib $PKG_LIBS"
-  if [ -d "$HOME/vcpkg/installed/x64-linux/include/mbedtls" ]; then
-    echo "found mbedtls vcpkg installation... using TLS support"
-    PKG_LIBS="$PKG_LIBS -lmbedtls -lmbedx509 -lmbedcrypto"
-  fi
-  SYS_LIB=1
-
 elif [ -d "/usr/local/include/nng" ]; then
   echo "found system libnng installation..."
   PKG_CFLAGS="-I/usr/local/include $PKG_CFLAGS"
@@ -110,11 +100,7 @@ if [ $? -ne 0 ]; then
     echo "Automatic download and/or build also failed. Try installing:"
     echo " * deb: libnng-dev (Debian, Ubuntu, etc.)"
     echo " * rpm: nng-devel (Fedora, CentOS etc.)"
-    echo " * arch: https://aur.archlinux.org/nng.git (Arch from AUR)"
     echo " * brew: nng (MacOS)"
-    echo "Alternatively:"
-    echo " * vcpkg: nng (Linux/MacOS, follow getting started instructions at"
-    echo "               https://vcpkg.io/ starting from your HOME directory)"
     echo "If 'libnng' is already installed but in a non-standard location, you"
     echo "may set INCLUDE_DIR and LIB_DIR manually via:"
     echo "R CMD INSTALL --configure-vars='INCLUDE_DIR=... LIB_DIR=...'"
@@ -154,11 +140,7 @@ if [ $? -ne 0 ]; then
       echo "Automatic download and/or build also failed. Try installing:"
       echo " * deb: libnng-dev (Debian, Ubuntu, etc.)"
       echo " * rpm: nng-devel (Fedora, CentOS etc.)"
-      echo " * arch: https://aur.archlinux.org/nng.git (Arch from AUR)"
       echo " * brew: nng (MacOS)"
-      echo "Alternatively:"
-      echo " * vcpkg: nng (Linux/MacOS, follow getting started instructions at"
-      echo "               https://vcpkg.io/ starting from your HOME directory)"
       echo "If 'libnng' is already installed but in a non-standard location, you"
       echo "may set INCLUDE_DIR and LIB_DIR manually via:"
       echo "R CMD INSTALL --configure-vars='INCLUDE_DIR=... LIB_DIR=...'"

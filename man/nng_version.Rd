@@ -15,10 +15,21 @@ Returns the version of 'libnng' used and whether TLS is supported.
 \section{TLS Support}{
 
 
-    The environment variable 'NANONEXT_TLS' may be set, e.g. by
-    \code{Sys.setenv(NANONEXT_TLS=1)}, prior to package installation to enable
-    TLS where the system NNG library has been built with TLS support (using
-    Mbed TLS). Note: this is not applicable to Windows systems.
+    Where system installations of 'libnng' and 'libmbedtls' development
+    headers are detected in the same location, it is assumed that NNG was
+    built with TLS support (using Mbed TLS) and TLS is configured appropriately.
+
+    Otherwise, the environment variable `Sys.setenv(NANONEXT_TLS=1)` may be
+    set prior to installation if:
+
+    - your system installations of 'libnng' (built with TLS support) and
+    'libmbedtls' are in different locations; or
+
+    - you have a system installation of 'libmbedtls' but not 'libnng' and want
+    nanonext to download and build a more recent version of 'libnng' than
+    available in system repositories against this.
+
+    Note: this is not applicable to Windows systems.
 }
 
 \examples{

@@ -377,7 +377,7 @@ aio
 #> < recvAio >
 #>  - $data for message data
 aio$data |> str()
-#>  num [1:100000000] 1.361 -0.547 1.283 -0.905 -1.785 ...
+#>  num [1:100000000] -0.479 -0.448 0.216 -0.424 0.037 ...
 ```
 
 As `call_aio()` is blocking and will wait for completion, an alternative
@@ -512,11 +512,11 @@ ncurl("http://httpbin.org/headers")
 #>   [1] 7b 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73
 #>  [26] 74 22 3a 20 22 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22
 #>  [51] 58 2d 41 6d 7a 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31
-#>  [76] 2d 36 32 35 33 33 33 66 37 2d 31 38 35 39 61 30 31 35 30 30 39 61 38 36 63
-#> [101] 64 35 37 31 63 38 31 35 35 22 0a 20 20 7d 0a 7d 0a
+#>  [76] 2d 36 32 35 66 65 35 62 35 2d 34 38 38 66 62 31 34 63 32 36 36 37 66 39 65
+#> [101] 66 32 30 31 65 33 30 32 38 22 0a 20 20 7d 0a 7d 0a
 #> 
 #> $data
-#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-625333f7-1859a015009a86cd571c8155\"\n  }\n}\n"
+#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-625fe5b5-488fb14c2667f9ef201e3028\"\n  }\n}\n"
 ```
 
 For advanced use, supports additional HTTP methods such as POST or PUT.
@@ -531,7 +531,7 @@ res
 #>  - $raw for raw message
 
 call_aio(res)$data
-#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-625333f8-02809e8e020ccb400cecf3e9\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"79.173.189.204\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
+#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-625fe5b5-073a52686414e1556c6f9853\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"79.173.189.204\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
 ```
 
 In this respect, it may be used as a performant and lightweight method
@@ -581,13 +581,12 @@ This is available in system package repositories as:
 -   `libnng-dev` (deb)
 -   `nng-devel` (rpm)
 -   `nng` (Homebrew on MacOS)
--   `nng` from vcpkg (see <https://vcpkg.io/>).
 
 A system installation of ‘libnng’ in the standard filesystem locations
 will be detected and used if possible.
 
-Otherwise, a release version of ‘libnng’ will be downloaded and built
-from source automatically during package installation (note: this
+Otherwise, a suitable recent version of ‘libnng’ will be downloaded and
+built from source automatically during package installation (note: this
 requires ‘cmake’).
 
 #### Windows
@@ -597,16 +596,19 @@ downloaded during the package installation process.
 
 #### TLS Support
 
-If a system installation of ‘libnng’ and ‘libmbedtls’ development
-headers are both detected in the same location, it is assumed that NNG
-was built with TLS support (using Mbed TLS) and the appropriate options
-are set to ensure a successful install.
+If system installations of ‘libnng’ and ‘libmbedtls’ development headers
+are detected in the same location, it is assumed that NNG was built with
+TLS support (using Mbed TLS) and TLS support is configured
+appropriately.
 
-If your system installation of NNG was built with TLS support (using
-Mbed TLS) but detection of ‘libmbedtls’ failed (possibly as it was
-installed in another location), you may also set the environment
-variable `Sys.setenv(NANONEXT_TLS=1)` before installing the package to
-ensure that the appropriate options are set.
+Otherwise, the environment variable `Sys.setenv(NANONEXT_TLS=1)` may be
+set prior to installation if:
+
+-   your system installations of ‘libnng’ (built with TLS support) and
+    ‘libmbedtls’ are in different locations; or
+-   you have a system installation of ‘libmbedtls’ but not ‘libnng’ and
+    want nanonext to download and build a more recent version of
+    ‘libnng’ than available in system repositories against this.
 
 #### Certain ARM architectures
 
