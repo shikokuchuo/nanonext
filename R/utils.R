@@ -12,8 +12,8 @@
 #'     headers are detected in the same location, it is assumed that NNG was
 #'     built with TLS support (using Mbed TLS) and TLS is configured appropriately.
 #'
-#'     Otherwise, the environment variable `Sys.setenv(NANONEXT_TLS=1)` may be
-#'     set prior to installation if:
+#'     Otherwise, the environment variable \code{Sys.setenv(NANONEXT_TLS=1)} may
+#'     be set prior to installation if:
 #'
 #'     - your system installations of 'libnng' (built with TLS support) and
 #'     'libmbedtls' are in different locations; or
@@ -265,12 +265,12 @@ encode <- function(data, mode) {
 decode <- function(con, mode) {
   switch(mode,
          unserialize(connection = con),
-         (r <- readBin(con = con, what = "character", n = length(con)))[r != ""],
-         readBin(con = con, what = "complex", n = length(con)),
-         readBin(con = con, what = "double", n = length(con)),
-         readBin(con = con, what = "integer", n = length(con)),
-         readBin(con = con, what = "logical", n = length(con)),
-         readBin(con = con, what = "numeric", n = length(con)),
+         (r <- readBin(con = con, what = "character", n = length(con) / 2L))[nzchar(r)],
+         readBin(con = con, what = "complex", n = length(con) / 16L),
+         readBin(con = con, what = double(), n = length(con) / 8L),
+         readBin(con = con, what = integer(), n = length(con) / 4L),
+         readBin(con = con, what = logical(), n = length(con) / 4L),
+         readBin(con = con, what = numeric(), n = length(con) / 8L),
          con)
 }
 

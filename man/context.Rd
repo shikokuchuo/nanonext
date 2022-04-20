@@ -7,7 +7,7 @@
 context(socket)
 }
 \arguments{
-\item{socket}{a Socket or nano object.}
+\item{socket}{a Socket.}
 }
 \value{
 A new Context (object of class 'nanoContext' and 'nano').
@@ -18,20 +18,20 @@ Open a new Context to be used with a Socket. The purpose of a Context is to
     and listeners, while still benefiting from separate state tracking.
 }
 \details{
-For convenience, this function may be called on a nano object as well
-    as a socket, in which case it is the equivalent of calling the function
-    on the object's socket directly.
-
-    Contexts allow the independent and concurrent use of stateful
+Contexts allow the independent and concurrent use of stateful
     operations using the same socket. For example, two different contexts
     created on a rep socket can each receive requests, and send replies to
     them, without any regard to or interference with each other.
 
-    Note: not every protocol supports creation of separate contexts.
+    Note: only certain protocols support creation of separate contexts -
+    namely req, rep, surveyor, respondent.
 
     To send and receive over a context use \code{\link{send}} and
     \code{\link{recv}} or their async counterparts \code{\link{send_aio}} and
     \code{\link{recv_aio}}.
+
+    For nano objects, use the \code{$context()} method, which will return a
+    new context.
 }
 \examples{
 s <- socket("req", listen = "inproc://nanonext")
@@ -41,7 +41,7 @@ close(ctx)
 close(s)
 
 n <- nano("req", listen = "inproc://nanonext")
-ctx <- context(n)
+ctx <- n$context()
 ctx
 close(ctx)
 n$close()

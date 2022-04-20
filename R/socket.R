@@ -65,11 +65,11 @@ socket <- function(protocol = c("pair", "bus", "req", "rep", "push", "pull",
 
   protocol <- match.arg2(protocol, c("pair", "bus", "req", "rep", "push", "pull",
                                      "pub", "sub", "surveyor", "respondent"))
-  res <- .Call(rnng_protocol_open, protocol)
-  is.integer(res) && return(res)
-  if (!missing(dial)) dial(res, url = dial, autostart = autostart)
-  if (!missing(listen)) listen(res, url = listen, autostart = autostart)
-  res
+  sock <- .Call(rnng_protocol_open, protocol)
+  is.integer(sock) && return(sock)
+  if (!missing(dial)) dial(sock, url = dial, autostart = autostart)
+  if (!missing(listen)) listen(sock, url = listen, autostart = autostart)
+  sock
 
 }
 

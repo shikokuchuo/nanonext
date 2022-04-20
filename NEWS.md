@@ -2,12 +2,12 @@
 
 #### New Features
 
-* `$context()` method added for creating new contexts from nano Objects using supported protocols (i.e. req, rep, surveyor, respondent).
+* `$context()` method added for creating new contexts from nano Objects using supported protocols (i.e. req, rep, surveyor, respondent) - this replaces the `context()` function for nano Objects.
 * Added convenience auxiliary functions `is_nano()` and `is_aio()`.
 
 #### Updates
 
-* NNG library used on Windows and for building from source updated to 1.6.0 pre-release.
+* NNG library used for building from source (and on Windows) updated to 1.6.0 pre-release.
 * Setting 'NANONEXT_TLS=1' now allows the downloaded NNG library to be built against a system mbedtls installation.
 * Deprecated `send_ctx()`, `recv_ctx()` and logging are removed.
 * Internal performance optimisations.

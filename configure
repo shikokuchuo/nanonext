@@ -71,7 +71,7 @@ else
   else
     cmake -DCMAKE_C_FLAGS="${CMAKE_C_FLAGS} -fPIC" -DNNG_ELIDE_DEPRECATED=1 -DNNG_TESTS=0 -DNNG_TOOLS=0 ..
   fi
-  make
+  cmake --build .
   cd ../..
   mkdir lib
   mv -f nanomsg-nng-$LIB_VER/build/libnng.a lib
@@ -124,7 +124,7 @@ if [ $? -ne 0 ]; then
     else
       cmake -DCMAKE_C_FLAGS="${CMAKE_C_FLAGS} -fPIC" -DNNG_ELIDE_DEPRECATED=1 -DNNG_TESTS=0 -DNNG_TOOLS=0 ..
     fi
-    make
+    cmake --build .
     cd ../..
     mkdir lib
     mv -f nanomsg-nng-$LIB_VER/build/libnng.a lib

@@ -397,7 +397,7 @@ SEXP rnng_stream_recv_aio(SEXP stream, SEXP bytes, SEXP timeout) {
   int xc;
 
   nano_aio *iaio = R_Calloc(1, nano_aio);
-  iaio->type = 2;
+  iaio->type = IOV_RECVAIO;
 
   nng_iov *iov = R_Calloc(1, nng_iov);
   iaio->data = iov;
@@ -564,7 +564,7 @@ SEXP rnng_stream_send_aio(SEXP stream, SEXP data, SEXP timeout) {
   int xc;
 
   nano_aio *iaio = R_Calloc(1, nano_aio);
-  iaio->type = 1;
+  iaio->type = IOV_SENDAIO;
 
   nng_iov *iov = R_Calloc(1, nng_iov);
   iaio->data = iov;
@@ -610,7 +610,7 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP method, SEXP headers, SEXP data) {
 
   int xc;
   nano_aio *haio = R_Calloc(1, nano_aio);
-  haio->type = 3;
+  haio->type = HTTP_AIO;
   nano_handle *handle = R_Calloc(1, nano_handle);
   handle->cfg = NULL;
   haio->data = handle;

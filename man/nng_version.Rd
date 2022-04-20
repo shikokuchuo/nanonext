@@ -19,8 +19,8 @@ Returns the version of 'libnng' used and whether TLS is supported.
     headers are detected in the same location, it is assumed that NNG was
     built with TLS support (using Mbed TLS) and TLS is configured appropriately.
 
-    Otherwise, the environment variable `Sys.setenv(NANONEXT_TLS=1)` may be
-    set prior to installation if:
+    Otherwise, the environment variable \code{Sys.setenv(NANONEXT_TLS=1)} may
+    be set prior to installation if:
 
     - your system installations of 'libnng' (built with TLS support) and
     'libmbedtls' are in different locations; or
