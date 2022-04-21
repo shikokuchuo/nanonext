@@ -116,11 +116,10 @@ reply <- function(context,
   recv_mode <- match.arg2(recv_mode, c("serial", "character", "complex", "double",
                                        "integer", "logical", "numeric", "raw"))
   send_mode <- match.arg2(send_mode, c("serial", "raw"))
-  res <- .Call(rnng_ctx_recv, context, timeout)
-  is.integer(res) && return(invisible(res))
+  res <- .Call(rnng_ctx_recv, context, recv_mode, timeout, FALSE)
+  is_error_value(res) && return(res)
   on.exit(expr = send_aio(context, as.raw(0L), mode = send_mode))
-  data <- decode(con = res, mode = recv_mode)
-  data <- execute(data, ...)
+  data <- execute(res, ...)
   data <- encode(data = data, mode = send_mode)
   on.exit()
   invisible(.Call(rnng_ctx_send, context, data, timeout))
@@ -188,10 +187,10 @@ request <- function(context,
   force(data)
   data <- encode(data = data, mode = send_mode)
   res <- .Call(rnng_ctx_send_aio, context, data, -2L)
-  is.integer(res) && return(invisible(res))
+  is.integer(res) && return(res)
 
   aio <- .Call(rnng_ctx_recv_aio, context, timeout)
-  is.integer(aio) && return(invisible(aio))
+  is.integer(aio) && return(aio)
 
   keep.raw <- missing(keep.raw) || isTRUE(keep.raw)
   data <- raw <- NULL
@@ -206,7 +205,7 @@ request <- function(context,
           data <<- raw <<- res
           aio <<- env[["aio"]] <<- NULL
           unresolv <<- FALSE
-          return(invisible(res))
+          return(res)
         }
         on.exit(expr = {
           raw <<- res
@@ -232,7 +231,7 @@ request <- function(context,
         data <<- raw <<- res
         aio <<- env[["aio"]] <<- NULL
         unresolv <<- FALSE
-        return(invisible(res))
+        return(res)
       }
       on.exit(expr = {
         data <<- res

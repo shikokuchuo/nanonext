@@ -227,12 +227,8 @@ recv.nanoSocket <- function(con,
 
   mode <- match.arg2(mode, c("serial", "character", "complex", "double",
                              "integer", "logical", "numeric", "raw"))
-  res <- .Call(rnng_recv, con, block)
-  is.integer(res) && return(invisible(res))
-  on.exit(expr = return(res))
-  data <- decode(con = res, mode = mode)
-  on.exit()
-  if (missing(keep.raw) || isTRUE(keep.raw)) list(raw = res, data = data) else data
+  keep.raw <- missing(keep.raw) || isTRUE(keep.raw)
+  .Call(rnng_recv, con, mode, block, keep.raw)
 
 }
 
@@ -250,13 +246,8 @@ recv.nanoContext <- function(con,
   mode <- match.arg2(mode, c("serial", "character", "complex", "double",
                              "integer", "logical", "numeric", "raw"))
   if (missing(block) || isTRUE(block)) block <- -2L
-  res <- .Call(rnng_ctx_recv, con, block)
-  is.integer(res) && return(invisible(res))
-  on.exit(expr = return(res))
-  data <- decode(con = res, mode = mode)
-  on.exit()
-  missing(data) && return(.Call(rnng_scm))
-  if (missing(keep.raw) || isTRUE(keep.raw)) list(raw = res, data = data) else data
+  keep.raw <- missing(keep.raw) || isTRUE(keep.raw)
+  .Call(rnng_ctx_recv, con, mode, block, keep.raw)
 
 }
 
@@ -275,12 +266,8 @@ recv.nanoStream <- function(con,
   mode <- match.arg2(mode, c("character", "complex", "double", "integer",
                              "logical", "numeric", "raw")) + 1L
   if (missing(block) || isTRUE(block)) block <- -2L
-  res <- .Call(rnng_stream_recv, con, n, block)
-  is.integer(res) && return(invisible(res))
-  on.exit(expr = return(res))
-  data <- decode(con = res, mode = mode)
-  on.exit()
-  if (missing(keep.raw) || isTRUE(keep.raw)) list(raw = res, data = data) else data
+  keep.raw <- missing(keep.raw) || isTRUE(keep.raw)
+  .Call(rnng_stream_recv, con, mode, block, keep.raw, n)
 
 }
 

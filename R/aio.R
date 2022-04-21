@@ -53,7 +53,7 @@ send_aio.nanoSocket <- function(con, data, mode = c("serial", "raw"), timeout = 
   force(data)
   data <- encode(data = data, mode = mode)
   aio <- .Call(rnng_send_aio, con, data, timeout)
-  is.integer(aio) && return(invisible(aio))
+  is.integer(aio) && return(aio)
 
   data <- result <- NULL
   unresolv <- TRUE
@@ -82,7 +82,7 @@ send_aio.nanoContext <- function(con, data, mode = c("serial", "raw"), timeout =
   force(data)
   data <- encode(data = data, mode = mode)
   aio <- .Call(rnng_ctx_send_aio, con, data, timeout)
-  is.integer(aio) && return(invisible(aio))
+  is.integer(aio) && return(aio)
 
   data <- result <- NULL
   unresolv <- TRUE
@@ -110,7 +110,7 @@ send_aio.nanoStream <- function(con, data, mode = "raw", timeout = -2L) {
   force(data)
   data <- encode(data = data, mode = 2L)
   aio <- .Call(rnng_stream_send_aio, con, data, timeout)
-  is.integer(aio) && return(invisible(aio))
+  is.integer(aio) && return(aio)
 
   data <- result <- NULL
   unresolv <- TRUE
@@ -207,7 +207,7 @@ recv_aio.nanoSocket <- function(con,
   mode <- match.arg2(mode, c("serial", "character", "complex", "double",
                              "integer", "logical", "numeric", "raw"))
   aio <- .Call(rnng_recv_aio, con, timeout)
-  is.integer(aio) && return(invisible(aio))
+  is.integer(aio) && return(aio)
 
   keep.raw <- missing(keep.raw) || isTRUE(keep.raw)
   data <- raw <- NULL
@@ -222,7 +222,7 @@ recv_aio.nanoSocket <- function(con,
           data <<- raw <<- res
           aio <<- env[["aio"]] <<- NULL
           unresolv <<- FALSE
-          return(invisible(res))
+          return(res)
         }
         on.exit(expr = {
           raw <<- res
@@ -248,7 +248,7 @@ recv_aio.nanoSocket <- function(con,
         data <<- raw <<- res
         aio <<- env[["aio"]] <<- NULL
         unresolv <<- FALSE
-        return(invisible(res))
+        return(res)
       }
       on.exit(expr = {
         data <<- res
@@ -283,7 +283,7 @@ recv_aio.nanoContext <- function(con,
   mode <- match.arg2(mode, c("serial", "character", "complex", "double",
                              "integer", "logical", "numeric", "raw"))
   aio <- .Call(rnng_ctx_recv_aio, con, timeout)
-  is.integer(aio) && return(invisible(aio))
+  is.integer(aio) && return(aio)
 
   keep.raw <- missing(keep.raw) || isTRUE(keep.raw)
   data <- raw <- NULL
@@ -298,7 +298,7 @@ recv_aio.nanoContext <- function(con,
           data <<- raw <<- res
           aio <<- env[["aio"]] <<- NULL
           unresolv <<- FALSE
-          return(invisible(res))
+          return(res)
         }
         on.exit(expr = {
           raw <<- res
@@ -324,7 +324,7 @@ recv_aio.nanoContext <- function(con,
         data <<- raw <<- res
         aio <<- env[["aio"]] <<- NULL
         unresolv <<- FALSE
-        return(invisible(res))
+        return(res)
       }
       on.exit(expr = {
         data <<- res
@@ -360,7 +360,7 @@ recv_aio.nanoStream <- function(con,
   mode <- match.arg2(mode, c("character", "complex", "double", "integer",
                              "logical", "numeric", "raw")) + 1L
   aio <- .Call(rnng_stream_recv_aio, con, n, timeout)
-  is.integer(aio) && return(invisible(aio))
+  is.integer(aio) && return(aio)
 
   keep.raw <- missing(keep.raw) || isTRUE(keep.raw)
   data <- raw <- NULL
@@ -375,7 +375,7 @@ recv_aio.nanoStream <- function(con,
           data <<- raw <<- res
           aio <<- env[["aio"]] <<- NULL
           unresolv <<- FALSE
-          return(invisible(res))
+          return(res)
         }
         on.exit(expr = {
           raw <<- res
@@ -401,7 +401,7 @@ recv_aio.nanoStream <- function(con,
         data <<- raw <<- res
         aio <<- env[["aio"]] <<- NULL
         unresolv <<- FALSE
-        return(invisible(res))
+        return(res)
       }
       on.exit(expr = {
         data <<- res

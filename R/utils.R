@@ -75,7 +75,7 @@ nng_version <- function() .Call(rnng_version)
 #'
 #' @export
 #'
-nng_error <- function(xc) .Call(rnng_strerror, as.integer(xc))
+nng_error <- function(xc) .Call(rnng_strerror, xc)
 
 #' Is Nano
 #'

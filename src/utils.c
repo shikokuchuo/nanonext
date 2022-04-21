@@ -42,7 +42,7 @@ void stream_finalizer(SEXP xptr) {
 
 SEXP rnng_strerror(SEXP error) {
 
-  int xc = INTEGER(error)[0];
+  int xc = Rf_asInteger(error);
   const char *err = nng_strerror(xc);
   return Rf_mkString(err);
 

@@ -4,7 +4,7 @@
 #define NANONEXT_PROTOCOLS
 #include "nanonext.h"
 
-/* mk_error ----------------------------------------------------------------- */
+/* internals ---------------------------------------------------------------- */
 
 SEXP mk_error(const int xc) {
 
@@ -13,6 +13,125 @@ SEXP mk_error(const int xc) {
   Rf_warning("%d | %s", xc, nng_strerror(xc));
   UNPROTECT(1);
   return err;
+
+}
+
+SEXP rawOneString(unsigned char *bytes, R_xlen_t nbytes, R_xlen_t *np) {
+
+  unsigned char *p;
+  R_xlen_t i;
+  char *buf;
+  SEXP res;
+
+  for (i = *np, p = bytes + (*np); i < nbytes; p++, i++)
+    if (*p == '\0') break;
+
+  if (i < nbytes) {
+    p = bytes + (*np);
+    *np = i + 1;
+    res = Rf_mkChar((char *) p);
+  } else {
+    buf = R_chk_calloc(nbytes - (*np) + 1, 1);
+    memcpy(buf, bytes + (*np), nbytes - (*np));
+    *np = nbytes;
+    res = Rf_mkChar(buf);
+    R_Free(buf);
+  }
+
+  return res;
+
+}
+
+SEXP nano_decode(unsigned char *buf, const size_t sz, const int mod, const int kpr) {
+
+  SEXP raw, data, out;
+  unsigned char *rp;
+  void *cp;
+  int tryErr = 0;
+
+  switch (mod) {
+  case 1:
+    raw = PROTECT(Rf_allocVector(RAWSXP, sz));
+    cp = RAW(raw);
+    memcpy(cp, buf, sz);
+    data = R_tryEval(Rf_lang2(nano_UnserSymbol, raw), R_GlobalEnv, &tryErr);
+    break;
+  case 2:
+    data = PROTECT(Rf_allocVector(STRSXP, sz));
+    R_xlen_t i, m, nbytes = sz, np = 0;
+    for(i = 0, m = 0; i < sz; i++) {
+      SEXP onechar = rawOneString(buf, nbytes, &np);
+      if (onechar != R_NilValue) {
+        SET_STRING_ELT(data, i, onechar);
+        if (Rf_xlength(onechar) > 0) m++;
+      } else break;
+    }
+    SETLENGTH(data, m);
+    break;
+  case 3:
+    data = PROTECT(Rf_allocVector(CPLXSXP, sz / (sizeof(double) * 2)));
+    cp = COMPLEX(data);
+    memcpy(cp, buf, sz);
+    break;
+  case 4:
+    data = PROTECT(Rf_allocVector(REALSXP, sz / sizeof(double)));
+    cp = REAL(data);
+    memcpy(cp, buf, sz);
+    break;
+  case 5:
+    data = PROTECT(Rf_allocVector(INTSXP, sz / sizeof(int)));
+    cp = INTEGER(data);
+    memcpy(cp, buf, sz);
+    break;
+  case 6:
+    data = PROTECT(Rf_allocVector(LGLSXP, sz / sizeof(int)));
+    cp = LOGICAL(data);
+    memcpy(cp, buf, sz);
+    break;
+  case 7:
+    data = PROTECT(Rf_allocVector(REALSXP, sz / sizeof(double)));
+    cp = REAL(data);
+    memcpy(cp, buf, sz);
+    break;
+  case 8:
+    data = PROTECT(Rf_allocVector(RAWSXP, sz));
+    cp = RAW(data);
+    memcpy(cp, buf, sz);
+    break;
+  default:
+    data = PROTECT(R_NilValue);
+    break;
+  }
+
+  if (kpr) {
+    switch (mod) {
+    case 1:
+      if (tryErr) {
+        data = raw;
+        raw = PROTECT(R_NilValue);
+      } else {
+        PROTECT(data);
+      }
+      break;
+    case 8:
+      PROTECT(raw = data);
+      break;
+    default:
+      raw = PROTECT(Rf_allocVector(RAWSXP, sz));
+      rp = RAW(raw);
+      memcpy(rp, buf, sz);
+    }
+
+    const char *names[] = {"raw", "data", ""};
+    out = PROTECT(Rf_mkNamed(VECSXP, names));
+    SET_VECTOR_ELT(out, 0, raw);
+    SET_VECTOR_ELT(out, 1, data);
+    UNPROTECT(3);
+    return out;
+  }
+
+  UNPROTECT(1);
+  return data;
 
 }
 
@@ -409,16 +528,17 @@ SEXP rnng_send(SEXP socket, SEXP data, SEXP block) {
 
 }
 
-SEXP rnng_recv(SEXP socket, SEXP block) {
+SEXP rnng_recv(SEXP socket, SEXP mode, SEXP block, SEXP keep) {
 
   if (R_ExternalPtrTag(socket) != nano_SocketSymbol)
     error_return("'con' is not a valid Socket");
   nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(socket);
 
   const int blk = Rf_asInteger(block);
+  const int mod = *INTEGER(mode);
+  const int kpr = *LOGICAL(keep);
   int xc;
-  unsigned char *buf = NULL;
-  unsigned char *rp = NULL;
+  unsigned char *buf;
   size_t sz;
   nng_aio *aiop;
   SEXP res;
@@ -428,21 +548,15 @@ SEXP rnng_recv(SEXP socket, SEXP block) {
     xc = nng_recv(*sock, &buf, &sz, 3u);
     if (xc)
       return mk_error(xc);
-    res = PROTECT(Rf_allocVector(RAWSXP, sz));
-    rp = RAW(res);
-    memcpy(rp, buf, sz);
+    res = nano_decode(buf, sz, mod, kpr);
     nng_free(buf, sz);
-    UNPROTECT(1);
     break;
   case 1:
     xc = nng_recv(*sock, &buf, &sz, 1u);
     if (xc)
       return mk_error(xc);
-    res = PROTECT(Rf_allocVector(RAWSXP, sz));
-    rp = RAW(res);
-    memcpy(rp, buf, sz);
+    res = nano_decode(buf, sz, mod, kpr);
     nng_free(buf, sz);
-    UNPROTECT(1);
     break;
   default:
     xc = nng_aio_alloc(&aiop, NULL, NULL);
@@ -457,13 +571,11 @@ SEXP rnng_recv(SEXP socket, SEXP block) {
       return mk_error(xc);
     }
     nng_msg *msgp = nng_aio_get_msg(aiop);
+    buf = nng_msg_body(msgp);
     sz = nng_msg_len(msgp);
-    res = PROTECT(Rf_allocVector(RAWSXP, sz));
-    rp = RAW(res);
-    memcpy(rp, nng_msg_body(msgp), sz);
+    res = nano_decode(buf, sz, mod, kpr);
     nng_msg_free(msgp);
     nng_aio_free(aiop);
-    UNPROTECT(1);
   }
 
   return res;
@@ -503,14 +615,19 @@ SEXP rnng_ctx_send(SEXP context, SEXP data, SEXP timeout) {
 
 }
 
-SEXP rnng_ctx_recv(SEXP context, SEXP timeout) {
+SEXP rnng_ctx_recv(SEXP context, SEXP mode, SEXP timeout, SEXP keep) {
 
   if (R_ExternalPtrTag(context) != nano_ContextSymbol)
     error_return("'con' is not a valid Context");
   nng_ctx *ctxp = (nng_ctx *) R_ExternalPtrAddr(context);
   nng_aio *aiop;
-  int xc;
+  const int mod = *INTEGER(mode);
+  const int kpr = *LOGICAL(keep);
   const nng_duration dur = (nng_duration) Rf_asInteger(timeout);
+  unsigned char *buf;
+  size_t sz;
+  int xc;
+  SEXP res;
 
   xc = nng_aio_alloc(&aiop, NULL, NULL);
   if (xc)
@@ -526,14 +643,12 @@ SEXP rnng_ctx_recv(SEXP context, SEXP timeout) {
   }
 
   nng_msg *msgp = nng_aio_get_msg(aiop);
-  size_t sz = nng_msg_len(msgp);
-  SEXP res = PROTECT(Rf_allocVector(RAWSXP, sz));
-  unsigned char *rp = RAW(res);
-  memcpy(rp, nng_msg_body(msgp), sz);
+  sz = nng_msg_len(msgp);
+  buf = nng_msg_body(msgp);
+  res = nano_decode(buf, sz, mod, kpr);
   nng_msg_free(msgp);
   nng_aio_free(aiop);
 
-  UNPROTECT(1);
   return res;
 
 }
@@ -579,17 +694,21 @@ SEXP rnng_stream_send(SEXP stream, SEXP data, SEXP timeout) {
 
 }
 
-SEXP rnng_stream_recv(SEXP stream, SEXP bytes, SEXP timeout) {
+SEXP rnng_stream_recv(SEXP stream, SEXP mode, SEXP timeout, SEXP keep, SEXP bytes) {
 
   if (R_ExternalPtrTag(stream) != nano_StreamSymbol)
     error_return("'con' is not a valid Stream");
 
   nng_stream *sp = (nng_stream *) R_ExternalPtrAddr(stream);
+  const int mod = *INTEGER(mode);
+  const int kpr = *LOGICAL(keep);
   const nng_duration dur = (nng_duration) Rf_asInteger(timeout);
   const size_t xlen = Rf_asInteger(bytes);
   nng_iov iov;
   nng_aio *aiop;
+  size_t sz;
   int xc;
+  SEXP res;
 
   iov.iov_len = xlen;
   iov.iov_buf = R_Calloc(xlen, unsigned char);
@@ -618,14 +737,11 @@ SEXP rnng_stream_recv(SEXP stream, SEXP bytes, SEXP timeout) {
     return mk_error(xc);
   }
 
-  size_t sz = nng_aio_count(aiop);
-  SEXP res = PROTECT(Rf_allocVector(RAWSXP, sz));
-  unsigned char *rp = RAW(res);
-  memcpy(rp, iov.iov_buf, sz);
+  sz = nng_aio_count(aiop);
+  res = nano_decode(iov.iov_buf, sz, mod, kpr);
   nng_aio_free(aiop);
   R_Free(iov.iov_buf);
 
-  UNPROTECT(1);
   return res;
 
 }

@@ -78,7 +78,7 @@ dial <- function(socket,
   } else {
     .Call(rnng_dialer_create, socket, url)
   }
-  is.integer(res) && return(invisible(res))
+  is.integer(res) && return(res)
 
   if (is.environment(socket)) {
 
@@ -181,7 +181,7 @@ listen <- function(socket,
   } else {
     .Call(rnng_listener_create, socket, url)
   }
-  is.integer(res) && return(invisible(res))
+  is.integer(res) && return(res)
 
   if (is.environment(socket)) {
 

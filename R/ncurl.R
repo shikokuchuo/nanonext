@@ -59,11 +59,11 @@ ncurl <- function(url,
   if (missing(async) || !isTRUE(async)) {
 
     res <- .Call(rnng_ncurl, url, method, headers, data)
-    is.integer(res) && return(invisible(res))
+    is.integer(res) && return(res)
 
     if (is.character(res)) {
       continue <- if (interactive()) readline(sprintf("Follow redirect to <%s>? [Y/n] ", res)) else "n"
-      continue %in% c("n", "N", "no", "NO") && return(invisible(res))
+      continue %in% c("n", "N", "no", "NO") && return(res)
       return(ncurl(res))
     }
 
@@ -74,7 +74,7 @@ ncurl <- function(url,
   } else {
 
     aio <- .Call(rnng_ncurl_aio, url, method, headers, data)
-    is.integer(aio) && return(invisible(aio))
+    is.integer(aio) && return(aio)
 
     convert <- missing(convert) || isTRUE(convert)
     data <- raw <- NULL
@@ -88,7 +88,7 @@ ncurl <- function(url,
           data <<- raw <<- res
           aio <<- env[["aio"]] <<- NULL
           unresolv <<- FALSE
-          return(invisible(res))
+          return(res)
         }
         raw <<- res
         data <<- if (convert) tryCatch(rawToChar(res), error = function(e) NULL)
@@ -105,7 +105,7 @@ ncurl <- function(url,
           data <<- raw <<- res
           aio <<- env[["aio"]] <<- NULL
           unresolv <<- FALSE
-          return(invisible(res))
+          return(res)
         }
         raw <<- res
         data <<- if (convert) tryCatch(rawToChar(res), error = function(e) NULL)
