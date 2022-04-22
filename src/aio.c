@@ -160,7 +160,7 @@ SEXP rnng_aio_result(SEXP aio) {
 
 }
 
-SEXP rnng_aio_get_msg(SEXP aio) {
+SEXP rnng_aio_get_msg(SEXP aio, SEXP mode, SEXP keep) {
 
   if (R_ExternalPtrTag(aio) != nano_AioSymbol)
     error_return("object is not a valid Aio");
@@ -180,17 +180,16 @@ SEXP rnng_aio_get_msg(SEXP aio) {
   if (res)
     return mk_error(res);
 
+  const int mod = *INTEGER(mode);
+  const int kpr = *LOGICAL(keep);
+  unsigned char *buf = nng_msg_body(raio->data);
   size_t sz = nng_msg_len(raio->data);
-  SEXP vec = PROTECT(Rf_allocVector(RAWSXP, sz));
-  unsigned char *rp = RAW(vec);
-  memcpy(rp, nng_msg_body(raio->data), sz);
 
-  UNPROTECT(1);
-  return vec;
+  return nano_decode(buf, sz, mod, kpr);
 
 }
 
-SEXP rnng_aio_stream_in(SEXP aio) {
+SEXP rnng_aio_stream_in(SEXP aio, SEXP mode, SEXP keep) {
 
   if (R_ExternalPtrTag(aio) != nano_AioSymbol)
     error_return("object is not a valid Aio");
@@ -210,14 +209,13 @@ SEXP rnng_aio_stream_in(SEXP aio) {
   if (res)
     return mk_error(res);
 
+  const int mod = *INTEGER(mode);
+  const int kpr = *LOGICAL(keep);
   nng_iov *iov = (nng_iov *) iaio->data;
+  unsigned char *buf = iov->iov_buf;
   size_t sz = nng_aio_count(iaio->aio);
-  SEXP vec = PROTECT(Rf_allocVector(RAWSXP, sz));
-  unsigned char *rp = RAW(vec);
-  memcpy(rp, iov->iov_buf, sz);
 
-  UNPROTECT(1);
-  return vec;
+  return nano_decode(buf, sz, mod, kpr);
 
 }
 

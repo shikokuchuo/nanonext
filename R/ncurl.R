@@ -84,14 +84,12 @@ ncurl <- function(url,
       if (unresolv) {
         res <- .Call(rnng_aio_http, aio)
         missing(res) && return(.Call(rnng_aio_unresolv))
-        is.integer(res) && {
+        if (is.integer(res)) {
           data <<- raw <<- res
-          aio <<- env[["aio"]] <<- NULL
-          unresolv <<- FALSE
-          return(res)
+        } else {
+          raw <<- res
+          data <<- if (convert) tryCatch(rawToChar(res), error = function(e) NULL)
         }
-        raw <<- res
-        data <<- if (convert) tryCatch(rawToChar(res), error = function(e) NULL)
         aio <<- env[["aio"]] <<- NULL
         unresolv <<- FALSE
       }
@@ -101,14 +99,12 @@ ncurl <- function(url,
       if (unresolv) {
         res <- .Call(rnng_aio_http, aio)
         missing(res) && return(.Call(rnng_aio_unresolv))
-        is.integer(res) && {
+        if (is.integer(res)) {
           data <<- raw <<- res
-          aio <<- env[["aio"]] <<- NULL
-          unresolv <<- FALSE
-          return(res)
+        } else {
+          raw <<- res
+          data <<- if (convert) tryCatch(rawToChar(res), error = function(e) NULL)
         }
-        raw <<- res
-        data <<- if (convert) tryCatch(rawToChar(res), error = function(e) NULL)
         aio <<- env[["aio"]] <<- NULL
         unresolv <<- FALSE
       }

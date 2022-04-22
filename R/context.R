@@ -190,7 +190,7 @@ request <- function(context,
   is.integer(res) && return(res)
 
   aio <- .Call(rnng_ctx_recv_aio, context, timeout)
-  is.integer(aio) && return(aio)
+  is_error_value(aio) && return(aio)
 
   keep.raw <- missing(keep.raw) || isTRUE(keep.raw)
   data <- raw <- NULL
@@ -199,24 +199,14 @@ request <- function(context,
   if (keep.raw) {
     makeActiveBinding(sym = "raw", fun = function(x) {
       if (unresolv) {
-        res <- .Call(rnng_aio_get_msg, aio)
+        res <- .Call(rnng_aio_get_msg, aio, recv_mode, keep.raw)
         missing(res) && return(.Call(rnng_aio_unresolv))
-        is.integer(res) && {
+        if (is_error_value(res)) {
           data <<- raw <<- res
-          aio <<- env[["aio"]] <<- NULL
-          unresolv <<- FALSE
-          return(res)
+        } else {
+          raw <<- .subset2(res, "raw")
+          data <<- .subset2(res, "data")
         }
-        on.exit(expr = {
-          raw <<- res
-          aio <<- env[["aio"]] <<- NULL
-          unresolv <<- FALSE
-          return(res)
-        })
-        data <- decode(con = res, mode = recv_mode)
-        on.exit()
-        raw <<- res
-        data <<- data
         aio <<- env[["aio"]] <<- NULL
         unresolv <<- FALSE
       }
@@ -225,24 +215,16 @@ request <- function(context,
   }
   makeActiveBinding(sym = "data", fun = function(x) {
     if (unresolv) {
-      res <- .Call(rnng_aio_get_msg, aio)
+      res <- .Call(rnng_aio_get_msg, aio, recv_mode, keep.raw)
       missing(res) && return(.Call(rnng_aio_unresolv))
-      is.integer(res) && {
+      if (is_error_value(res)) {
         data <<- raw <<- res
-        aio <<- env[["aio"]] <<- NULL
-        unresolv <<- FALSE
-        return(res)
-      }
-      on.exit(expr = {
+      } else if (keep.raw) {
+        raw <<- .subset2(res, "raw")
+        data <<- .subset2(res, "data")
+      } else {
         data <<- res
-        aio <<- env[["aio"]] <<- NULL
-        unresolv <<- FALSE
-        return(res)
-      })
-      data <- decode(con = res, mode = recv_mode)
-      on.exit()
-      if (keep.raw) raw <<- res
-      data <<- data
+      }
       aio <<- env[["aio"]] <<- NULL
       unresolv <<- FALSE
     }

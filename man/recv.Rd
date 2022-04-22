@@ -47,13 +47,11 @@ recv(
 \arguments{
 \item{con}{a Socket, Context or Stream.}
 
-\item{mode}{<Sockets and Contexts> [default 'serial'] mode of vector to be
-received - one of 'serial', 'character', 'complex', 'double', 'integer',
-'logical', 'numeric', or 'raw'. The default 'serial' means a serialised
-R object, for the other modes, the raw vector received will be converted
-into the respective mode.
-<Streams> [default 'character'] note that 'serial' is not an option for
-Streams.}
+\item{mode}{[default 'serial'] mode of vector to be received - one of 'serial',
+'character', 'complex', 'double', 'integer', 'logical', 'numeric', or 'raw'.
+The default 'serial' means a serialised R object, for the other modes,
+the raw vector received will be converted into the respective mode.
+For Streams, 'serial' is not an option and the default is 'character'.}
 
 \item{block}{logical TRUE to block until successful or FALSE to return
 immediately even if unsuccessful  (e.g. if no messages are available),
@@ -66,8 +64,9 @@ the converted data only.}
 
 \item{...}{currently unused.}
 
-\item{n}{<Streams> [default 65536L] the maximum number of bytes to receive.
-Can be an over-estimate, but note that a buffer of this size is reserved.}
+\item{n}{[default 65536L] applicable to Streams only, the maximum number of
+bytes to receive. Can be an over-estimate, but note that a buffer of this
+size is reserved.}
 }
 \value{
 Named list of 2 elements: 'raw' containing the received raw vector

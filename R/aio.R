@@ -216,24 +216,14 @@ recv_aio.nanoSocket <- function(con,
   if (keep.raw) {
     makeActiveBinding(sym = "raw", fun = function(x) {
       if (unresolv) {
-        res <- .Call(rnng_aio_get_msg, aio)
+        res <- .Call(rnng_aio_get_msg, aio, mode, keep.raw)
         missing(res) && return(.Call(rnng_aio_unresolv))
-        is.integer(res) && {
+        if (is_error_value(res)) {
           data <<- raw <<- res
-          aio <<- env[["aio"]] <<- NULL
-          unresolv <<- FALSE
-          return(res)
+        } else {
+          raw <<- .subset2(res, "raw")
+          data <<- .subset2(res, "data")
         }
-        on.exit(expr = {
-          raw <<- res
-          aio <<- env[["aio"]] <<- NULL
-          unresolv <<- FALSE
-          return(res)
-        })
-        data <- decode(con = res, mode = mode)
-        on.exit()
-        raw <<- res
-        data <<- data
         aio <<- env[["aio"]] <<- NULL
         unresolv <<- FALSE
       }
@@ -242,24 +232,16 @@ recv_aio.nanoSocket <- function(con,
   }
   makeActiveBinding(sym = "data", fun = function(x) {
     if (unresolv) {
-      res <- .Call(rnng_aio_get_msg, aio)
+      res <- .Call(rnng_aio_get_msg, aio, mode, keep.raw)
       missing(res) && return(.Call(rnng_aio_unresolv))
-      is.integer(res) && {
+      if (is_error_value(res)) {
         data <<- raw <<- res
-        aio <<- env[["aio"]] <<- NULL
-        unresolv <<- FALSE
-        return(res)
-      }
-      on.exit(expr = {
+      } else if (keep.raw) {
+        raw <<- .subset2(res, "raw")
+        data <<- .subset2(res, "data")
+      } else {
         data <<- res
-        aio <<- env[["aio"]] <<- NULL
-        unresolv <<- FALSE
-        return(res)
-      })
-      data <- decode(con = res, mode = mode)
-      on.exit()
-      if (keep.raw) raw <<- res
-      data <<- data
+      }
       aio <<- env[["aio"]] <<- NULL
       unresolv <<- FALSE
     }
@@ -292,24 +274,14 @@ recv_aio.nanoContext <- function(con,
   if (keep.raw) {
     makeActiveBinding(sym = "raw", fun = function(x) {
       if (unresolv) {
-        res <- .Call(rnng_aio_get_msg, aio)
+        res <- .Call(rnng_aio_get_msg, aio, mode, keep.raw)
         missing(res) && return(.Call(rnng_aio_unresolv))
-        is.integer(res) && {
+        if (is_error_value(res)) {
           data <<- raw <<- res
-          aio <<- env[["aio"]] <<- NULL
-          unresolv <<- FALSE
-          return(res)
+        } else {
+          raw <<- .subset2(res, "raw")
+          data <<- .subset2(res, "data")
         }
-        on.exit(expr = {
-          raw <<- res
-          aio <<- env[["aio"]] <<- NULL
-          unresolv <<- FALSE
-          return(res)
-        })
-        data <- decode(con = res, mode = mode)
-        on.exit()
-        raw <<- res
-        data <<- data
         aio <<- env[["aio"]] <<- NULL
         unresolv <<- FALSE
       }
@@ -318,24 +290,16 @@ recv_aio.nanoContext <- function(con,
   }
   makeActiveBinding(sym = "data", fun = function(x) {
     if (unresolv) {
-      res <- .Call(rnng_aio_get_msg, aio)
+      res <- .Call(rnng_aio_get_msg, aio, mode, keep.raw)
       missing(res) && return(.Call(rnng_aio_unresolv))
-      is.integer(res) && {
+      if (is_error_value(res)) {
         data <<- raw <<- res
-        aio <<- env[["aio"]] <<- NULL
-        unresolv <<- FALSE
-        return(res)
-      }
-      on.exit(expr = {
+      } else if (keep.raw) {
+        raw <<- .subset2(res, "raw")
+        data <<- .subset2(res, "data")
+      } else {
         data <<- res
-        aio <<- env[["aio"]] <<- NULL
-        unresolv <<- FALSE
-        return(res)
-      })
-      data <- decode(con = res, mode = mode)
-      on.exit()
-      if (keep.raw) raw <<- res
-      data <<- data
+      }
       aio <<- env[["aio"]] <<- NULL
       unresolv <<- FALSE
     }
@@ -369,24 +333,14 @@ recv_aio.nanoStream <- function(con,
   if (keep.raw) {
     makeActiveBinding(sym = "raw", fun = function(x) {
       if (unresolv) {
-        res <- .Call(rnng_aio_stream_in, aio)
+        res <- .Call(rnng_aio_stream_in, aio, mode, keep.raw)
         missing(res) && return(.Call(rnng_aio_unresolv))
-        is.integer(res) && {
+        if (is_error_value(res)) {
           data <<- raw <<- res
-          aio <<- env[["aio"]] <<- NULL
-          unresolv <<- FALSE
-          return(res)
+        } else {
+          raw <<- .subset2(res, "raw")
+          data <<- .subset2(res, "data")
         }
-        on.exit(expr = {
-          raw <<- res
-          aio <<- env[["aio"]] <<- NULL
-          unresolv <<- FALSE
-          return(res)
-        })
-        data <- decode(con = res, mode = mode)
-        on.exit()
-        raw <<- res
-        data <<- data
         aio <<- env[["aio"]] <<- NULL
         unresolv <<- FALSE
       }
@@ -395,24 +349,16 @@ recv_aio.nanoStream <- function(con,
   }
   makeActiveBinding(sym = "data", fun = function(x) {
     if (unresolv) {
-      res <- .Call(rnng_aio_stream_in, aio)
+      res <- .Call(rnng_aio_stream_in, aio, mode, keep.raw)
       missing(res) && return(.Call(rnng_aio_unresolv))
-      is.integer(res) && {
+      if (is_error_value(res)) {
         data <<- raw <<- res
-        aio <<- env[["aio"]] <<- NULL
-        unresolv <<- FALSE
-        return(res)
-      }
-      on.exit(expr = {
+      } else if (keep.raw) {
+        raw <<- .subset2(res, "raw")
+        data <<- .subset2(res, "data")
+      } else {
         data <<- res
-        unresolv <<- FALSE
-        aio <<- env[["aio"]] <<- NULL
-        return(res)
-      })
-      data <- decode(con = res, mode = mode)
-      on.exit()
-      if (keep.raw) raw <<- res
-      data <<- data
+      }
       aio <<- env[["aio"]] <<- NULL
       unresolv <<- FALSE
     }

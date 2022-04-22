@@ -262,18 +262,6 @@ encode <- function(data, mode) {
          if (is.raw(data)) data else writeBin(object = data, con = raw()))
 }
 
-decode <- function(con, mode) {
-  switch(mode,
-         unserialize(connection = con),
-         (r <- readBin(con = con, what = "character", n = length(con) / 2L))[nzchar(r)],
-         readBin(con = con, what = "complex", n = length(con) / 16L),
-         readBin(con = con, what = double(), n = length(con) / 8L),
-         readBin(con = con, what = integer(), n = length(con) / 4L),
-         readBin(con = con, what = logical(), n = length(con) / 4L),
-         readBin(con = con, what = numeric(), n = length(con) / 8L),
-         con)
-}
-
 match.arg2 <- function(choice, choices) {
   identical(choice, choices) && return(1L)
   index <- pmatch(choice[1L], choices, nomatch = 0L, duplicates.ok = TRUE)

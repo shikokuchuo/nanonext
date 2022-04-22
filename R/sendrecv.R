@@ -6,9 +6,9 @@
 #'
 #' @param con a Socket, Context or Stream.
 #' @param data an object (a vector, if mode = 'raw').
-#' @param mode either 'serial' for sending serialised R objects, or 'raw' for
+#' @param mode [default 'serial'] for sending serialised R objects, or 'raw' for
 #'     sending vectors of any type (converted to a raw byte vector for sending).
-#'     For Streams, 'raw' is the only choice and any other value is ignored. Use
+#'     For Streams, 'raw' is the only option and any other value is ignored. Use
 #'     'serial' for perfect reproducibility within R, although 'raw' must be used
 #'     when interfacing with external applications that do not understand R
 #'     serialisation.
@@ -128,13 +128,11 @@ send.nanoStream <- function(con,
 #' Receive data over a connection (Socket, Context or Stream).
 #'
 #' @param con a Socket, Context or Stream.
-#' @param mode <Sockets and Contexts> [default 'serial'] mode of vector to be
-#'     received - one of 'serial', 'character', 'complex', 'double', 'integer',
-#'     'logical', 'numeric', or 'raw'. The default 'serial' means a serialised
-#'     R object, for the other modes, the raw vector received will be converted
-#'     into the respective mode.
-#'     <Streams> [default 'character'] note that 'serial' is not an option for
-#'     Streams.
+#' @param mode [default 'serial'] mode of vector to be received - one of 'serial',
+#'     'character', 'complex', 'double', 'integer', 'logical', 'numeric', or 'raw'.
+#'     The default 'serial' means a serialised R object, for the other modes,
+#'     the raw vector received will be converted into the respective mode.
+#'     For Streams, 'serial' is not an option and the default is 'character'.
 #' @param block logical TRUE to block until successful or FALSE to return
 #'     immediately even if unsuccessful  (e.g. if no messages are available),
 #'     or else an integer value specifying the maximum time to block in
@@ -142,8 +140,9 @@ send.nanoStream <- function(con,
 #' @param keep.raw [default TRUE] logical flag whether to keep the received raw
 #'     vector (useful for verification e.g. via hashing). If FALSE, will return
 #'     the converted data only.
-#' @param n <Streams> [default 65536L] the maximum number of bytes to receive.
-#'     Can be an over-estimate, but note that a buffer of this size is reserved.
+#' @param n [default 65536L] applicable to Streams only, the maximum number of
+#'     bytes to receive. Can be an over-estimate, but note that a buffer of this
+#'     size is reserved.
 #' @param ... currently unused.
 #'
 #' @return Named list of 2 elements: 'raw' containing the received raw vector
