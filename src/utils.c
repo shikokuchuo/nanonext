@@ -42,27 +42,31 @@ void stream_finalizer(SEXP xptr) {
 
 SEXP rnng_strerror(SEXP error) {
 
-  int xc = Rf_asInteger(error);
-  const char *err = nng_strerror(xc);
-  return Rf_mkString(err);
+  const int xc = Rf_asInteger(error);
+  return Rf_mkString(nng_strerror(xc));
 
 }
 
 SEXP rnng_version(void) {
 
-  const char *ver = nng_version();
-  nng_tls_config *cfg;
-  int xc = nng_tls_config_alloc(&cfg, 0);
+  const char *ver;
   char *tls;
+  nng_tls_config *cfg;
+  int xc;
+  SEXP version;
+
+  ver = nng_version();
+  xc = nng_tls_config_alloc(&cfg, 0);
   if (xc) {
     tls = "No TLS Support";
   } else{
     tls = "TLS supported";
     nng_tls_config_free(cfg);
   }
-  SEXP version = PROTECT(Rf_allocVector(STRSXP, 2));
+  PROTECT(version = Rf_allocVector(STRSXP, 2));
   SET_STRING_ELT(version, 0, Rf_mkChar(ver));
   SET_STRING_ELT(version, 1, Rf_mkChar(tls));
+
   UNPROTECT(1);
   return version;
 
@@ -76,19 +80,16 @@ SEXP rnng_scm(void) {
 
 SEXP rnng_ncurl(SEXP http, SEXP method, SEXP headers, SEXP data) {
 
+  const char *httr = CHAR(STRING_ELT(http, 0));
   nng_url *url;
   nng_http_client *client;
   nng_http_req *req;
   nng_http_res *res;
   nng_aio *aio;
-  nng_tls_config *cfg;
+  nng_tls_config *cfg = NULL;
   int xc;
-  void *dat;
-  size_t sz;
   uint16_t code;
 
-  cfg = NULL;
-  const char *httr = CHAR(STRING_ELT(http, 0));
   xc = nng_url_parse(&url, httr);
   if (xc)
     return mk_error(xc);
@@ -115,7 +116,9 @@ SEXP rnng_ncurl(SEXP http, SEXP method, SEXP headers, SEXP data) {
   }
   if (headers != R_NilValue) {
     const R_xlen_t hlen = Rf_xlength(headers);
-    SEXP names = PROTECT(Rf_getAttrib(headers, R_NamesSymbol));
+    SEXP names;
+    PROTECT(names = Rf_getAttrib(headers, R_NamesSymbol));
+
     switch (TYPEOF(headers)) {
     case STRSXP:
       for (R_xlen_t i = 0; i < hlen; i++) {
@@ -146,6 +149,7 @@ SEXP rnng_ncurl(SEXP http, SEXP method, SEXP headers, SEXP data) {
       }
       break;
     }
+
     UNPROTECT(1);
   }
   if (data != R_NilValue) {
@@ -228,17 +232,23 @@ SEXP rnng_ncurl(SEXP http, SEXP method, SEXP headers, SEXP data) {
     }
   }
 
-  nng_http_res_get_data(res, &dat, &sz);
-  SEXP vec = PROTECT(Rf_allocVector(RAWSXP, sz));
-  unsigned char *rp = RAW(vec);
-  memcpy(rp, dat, sz);
+  void *dat;
+  size_t sz;
+  unsigned char *rp;
+  SEXP vec;
 
+  nng_http_res_get_data(res, &dat, &sz);
+
+  PROTECT(vec = Rf_allocVector(RAWSXP, sz));
+  rp = RAW(vec);
+  memcpy(rp, dat, sz);
   if (cfg != NULL)
     nng_tls_config_free(cfg);
   nng_http_res_free(res);
   nng_http_req_free(req);
   nng_http_client_free(client);
   nng_url_free(url);
+
   UNPROTECT(1);
   return vec;
 
@@ -248,16 +258,15 @@ SEXP rnng_ncurl(SEXP http, SEXP method, SEXP headers, SEXP data) {
 
 SEXP rnng_stream_dial(SEXP url, SEXP textframes) {
 
+  const char *add = CHAR(STRING_ELT(url, 0));
+  const int mod = *LOGICAL(textframes);
   nng_url *up;
-  nng_tls_config *cfg;
+  nng_tls_config *cfg = NULL;
   nng_stream_dialer *dp;
   nng_aio *aiop;
-  int xc;
-  int frames = 0;
-  const int mod = LOGICAL(textframes)[0];
-  const char *add = CHAR(STRING_ELT(url, 0));
+  int xc, frames = 0;
+  SEXP sd, st, klass;
 
-  cfg = NULL;
   xc = nng_url_parse(&up, add);
   if (xc)
     return mk_error(xc);
@@ -321,15 +330,16 @@ SEXP rnng_stream_dial(SEXP url, SEXP textframes) {
   nng_aio_free(aiop);
   nng_url_free(up);
 
-  SEXP sd = PROTECT(R_MakeExternalPtr(dp, nano_DialerSymbol, R_NilValue));
+  PROTECT(sd = R_MakeExternalPtr(dp, nano_DialerSymbol, R_NilValue));
   R_RegisterCFinalizerEx(sd, stream_dialer_finalizer, TRUE);
-  SEXP st = PROTECT(R_MakeExternalPtr(stream, nano_StreamSymbol, R_NilValue));
+
+  PROTECT(st = R_MakeExternalPtr(stream, nano_StreamSymbol, R_NilValue));
   R_RegisterCFinalizerEx(st, stream_finalizer, TRUE);
   Rf_setAttrib(st, nano_DialerSymbol, sd);
   Rf_setAttrib(st, nano_UrlSymbol, url);
   Rf_setAttrib(st, nano_TextframesSymbol, Rf_ScalarLogical(frames));
 
-  SEXP klass = PROTECT(Rf_allocVector(STRSXP, 2));
+  PROTECT(klass = Rf_allocVector(STRSXP, 2));
   SET_STRING_ELT(klass, 0, Rf_mkChar("nanoStream"));
   SET_STRING_ELT(klass, 1, Rf_mkChar("nano"));
   Rf_classgets(st, klass);
@@ -341,16 +351,15 @@ SEXP rnng_stream_dial(SEXP url, SEXP textframes) {
 
 SEXP rnng_stream_listen(SEXP url, SEXP textframes) {
 
+  const char *add = CHAR(STRING_ELT(url, 0));
+  const int mod = *LOGICAL(textframes);
   nng_url *up;
-  nng_tls_config *cfg;
+  nng_tls_config *cfg = NULL;
   nng_stream_listener *lp;
   nng_aio *aiop;
-  int xc;
-  int frames = 0;
-  const int mod = LOGICAL(textframes)[0];
-  const char *add = CHAR(STRING_ELT(url, 0));
+  int xc, frames = 0;
+  SEXP sl, st, klass;
 
-  cfg = NULL;
   xc = nng_url_parse(&up, add);
   if (xc)
     return mk_error(xc);
@@ -423,15 +432,16 @@ SEXP rnng_stream_listen(SEXP url, SEXP textframes) {
   nng_aio_free(aiop);
   nng_url_free(up);
 
-  SEXP sl = PROTECT(R_MakeExternalPtr(lp, nano_ListenerSymbol, R_NilValue));
+  PROTECT(sl = R_MakeExternalPtr(lp, nano_ListenerSymbol, R_NilValue));
   R_RegisterCFinalizerEx(sl, stream_listener_finalizer, TRUE);
-  SEXP st = PROTECT(R_MakeExternalPtr(stream, nano_StreamSymbol, R_NilValue));
+
+  PROTECT(st = R_MakeExternalPtr(stream, nano_StreamSymbol, R_NilValue));
   R_RegisterCFinalizerEx(st, stream_finalizer, TRUE);
   Rf_setAttrib(st, nano_ListenerSymbol, sl);
   Rf_setAttrib(st, nano_UrlSymbol, url);
   Rf_setAttrib(st, nano_TextframesSymbol, Rf_ScalarLogical(frames));
 
-  SEXP klass = PROTECT(Rf_allocVector(STRSXP, 2));
+  PROTECT(klass = Rf_allocVector(STRSXP, 2));
   SET_STRING_ELT(klass, 0, Rf_mkChar("nanoStream"));
   SET_STRING_ELT(klass, 1, Rf_mkChar("nano"));
   Rf_classgets(st, klass);
@@ -472,12 +482,12 @@ static void thread_finalizer(SEXP xptr) {
 
 static void rnng_thread(void *arg) {
 
+  nng_socket *sock = (nng_socket *) arg;
   char *buf = NULL;
   size_t sz;
-  int xc;
   time_t now;
   struct tm *tms;
-  nng_socket *sock = (nng_socket *) arg;
+  int xc;
 
   while (1) {
     xc = nng_recv(*sock, &buf, &sz, 1u);
@@ -521,13 +531,13 @@ static void rnng_thread(void *arg) {
 SEXP rnng_messenger(SEXP url) {
 
   const char *up = CHAR(STRING_ELT(url, 0));
-  SEXP con;
-  SEXP socket;
-  int xc;
-  uint8_t dialer = 0;
-  void *dlp;
-
   nng_socket *sock = R_Calloc(1, nng_socket);
+  nng_thread *thr;
+  void *dlp;
+  uint8_t dialer = 0;
+  int xc;
+  SEXP socket, con, xptr;
+
   xc = nng_pair0_open(sock);
   if (xc) {
     R_Free(sock);
@@ -552,18 +562,19 @@ SEXP rnng_messenger(SEXP url) {
     return mk_error(xc);
   }
 
-  socket = PROTECT(R_MakeExternalPtr(sock, nano_SocketSymbol, R_NilValue));
+  PROTECT(socket = R_MakeExternalPtr(sock, nano_SocketSymbol, R_NilValue));
   R_RegisterCFinalizerEx(socket, socket_finalizer, TRUE);
-  con = PROTECT(R_MakeExternalPtr(dlp, R_NilValue, R_NilValue));
+
+  PROTECT(con = R_MakeExternalPtr(dlp, R_NilValue, R_NilValue));
   if (dialer)
     R_RegisterCFinalizerEx(con, dialer_finalizer, TRUE);
   else
     R_RegisterCFinalizerEx(con, listener_finalizer, TRUE);
   R_MakeWeakRef(socket, con, R_NilValue, TRUE);
 
-  nng_thread *thr;
   nng_thread_create(&thr, rnng_thread, sock);
-  SEXP xptr = PROTECT(R_MakeExternalPtr(thr, R_NilValue, R_NilValue));
+
+  PROTECT(xptr = R_MakeExternalPtr(thr, R_NilValue, R_NilValue));
   R_RegisterCFinalizerEx(xptr, thread_finalizer, TRUE);
   R_MakeWeakRef(socket, xptr, R_NilValue, TRUE);
 

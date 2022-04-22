@@ -180,8 +180,7 @@ SEXP rnng_aio_get_msg(SEXP aio, SEXP mode, SEXP keep) {
   if (res)
     return mk_error(res);
 
-  const int mod = *INTEGER(mode);
-  const int kpr = *LOGICAL(keep);
+  const int mod = *INTEGER(mode), kpr = *LOGICAL(keep);
   unsigned char *buf = nng_msg_body(raio->data);
   size_t sz = nng_msg_len(raio->data);
 
@@ -209,8 +208,7 @@ SEXP rnng_aio_stream_in(SEXP aio, SEXP mode, SEXP keep) {
   if (res)
     return mk_error(res);
 
-  const int mod = *INTEGER(mode);
-  const int kpr = *LOGICAL(keep);
+  const int mod = *INTEGER(mode), kpr = *LOGICAL(keep);
   nng_iov *iov = (nng_iov *) iaio->data;
   unsigned char *buf = iov->iov_buf;
   size_t sz = nng_aio_count(iaio->aio);
@@ -250,11 +248,11 @@ SEXP rnng_aio_stop(SEXP aio) {
 
   nano_aio *aiop = (nano_aio *) R_ExternalPtrAddr(coreaio);
   nng_aio_stop(aiop->aio);
+  nng_aio_free(aiop->aio);
+  nng_mtx_free(aiop->mtx);
 
   nng_iov *iov;
   nano_handle *handle;
-  nng_aio_free(aiop->aio);
-  nng_mtx_free(aiop->mtx);
   switch (aiop->type) {
   case RECVAIO:
     if (aiop->data != NULL)
@@ -290,7 +288,8 @@ SEXP rnng_aio_stop(SEXP aio) {
 
 SEXP rnng_aio_unresolv(void) {
 
-  SEXP res = PROTECT(Rf_ScalarLogical(NA_LOGICAL));
+  SEXP res;
+  PROTECT(res = Rf_ScalarLogical(NA_LOGICAL));
   Rf_classgets(res, Rf_mkString("unresolvedValue"));
   UNPROTECT(1);
   return res;
@@ -316,11 +315,11 @@ SEXP rnng_recv_aio(SEXP socket, SEXP timeout) {
     error_return("'con' is not a valid Socket");
 
   nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(socket);
-  nano_aio *raio;
-  int xc;
   const nng_duration dur = (nng_duration) Rf_asInteger(timeout);
+  nano_aio *raio = R_Calloc(1, nano_aio);
+  int xc;
+  SEXP aio;
 
-  raio = R_Calloc(1, nano_aio);
   raio->type = RECVAIO;
   raio->data = NULL;
 
@@ -339,7 +338,7 @@ SEXP rnng_recv_aio(SEXP socket, SEXP timeout) {
   nng_aio_set_timeout(raio->aio, dur);
   nng_recv_aio(*sock, raio->aio);
 
-  SEXP aio = PROTECT(R_MakeExternalPtr(raio, nano_AioSymbol, R_NilValue));
+  PROTECT(aio = R_MakeExternalPtr(raio, nano_AioSymbol, R_NilValue));
   R_RegisterCFinalizerEx(aio, raio_finalizer, TRUE);
 
   UNPROTECT(1);
@@ -353,11 +352,11 @@ SEXP rnng_ctx_recv_aio(SEXP context, SEXP timeout) {
     error_return("'con' is not a valid Context");
 
   nng_ctx *ctxp = (nng_ctx *) R_ExternalPtrAddr(context);
-  nano_aio *raio;
-  int xc;
   const nng_duration dur = (nng_duration) Rf_asInteger(timeout);
+  nano_aio *raio = R_Calloc(1, nano_aio);
+  int xc;
+  SEXP aio;
 
-  raio = R_Calloc(1, nano_aio);
   raio->type = RECVAIO;
   raio->data = NULL;
 
@@ -376,7 +375,7 @@ SEXP rnng_ctx_recv_aio(SEXP context, SEXP timeout) {
   nng_aio_set_timeout(raio->aio, dur);
   nng_ctx_recv(*ctxp, raio->aio);
 
-  SEXP aio = PROTECT(R_MakeExternalPtr(raio, nano_AioSymbol, R_NilValue));
+  PROTECT(aio = R_MakeExternalPtr(raio, nano_AioSymbol, R_NilValue));
   R_RegisterCFinalizerEx(aio, raio_finalizer, TRUE);
 
   UNPROTECT(1);
@@ -392,12 +391,12 @@ SEXP rnng_stream_recv_aio(SEXP stream, SEXP bytes, SEXP timeout) {
   nng_stream *sp = (nng_stream *) R_ExternalPtrAddr(stream);
   const nng_duration dur = (nng_duration) Rf_asInteger(timeout);
   const size_t xlen = Rf_asInteger(bytes);
-  int xc;
-
   nano_aio *iaio = R_Calloc(1, nano_aio);
-  iaio->type = IOV_RECVAIO;
-
   nng_iov *iov = R_Calloc(1, nng_iov);
+  int xc;
+  SEXP aio;
+
+  iaio->type = IOV_RECVAIO;
   iaio->data = iov;
   iov->iov_len = xlen;
   iov->iov_buf = R_Calloc(xlen, unsigned char);
@@ -430,7 +429,7 @@ SEXP rnng_stream_recv_aio(SEXP stream, SEXP bytes, SEXP timeout) {
   nng_aio_set_timeout(iaio->aio, dur);
   nng_stream_recv(sp, iaio->aio);
 
-  SEXP aio = PROTECT(R_MakeExternalPtr(iaio, nano_AioSymbol, R_NilValue));
+  PROTECT(aio = R_MakeExternalPtr(iaio, nano_AioSymbol, R_NilValue));
   R_RegisterCFinalizerEx(aio, iraio_finalizer, TRUE);
 
   UNPROTECT(1);
@@ -446,15 +445,14 @@ SEXP rnng_send_aio(SEXP socket, SEXP data, SEXP timeout) {
     error_return("'con' is not a valid Socket");
 
   nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(socket);
-  nano_aio *saio;
-  nng_msg *msg;
-  int xc;
-
   const nng_duration dur = (nng_duration) Rf_asInteger(timeout);
   unsigned char *dp = RAW(data);
   const R_xlen_t xlen = Rf_xlength(data);
+  nano_aio *saio = R_Calloc(1, nano_aio);
+  nng_msg *msg;
+  int xc;
+  SEXP aio;
 
-  saio = R_Calloc(1, nano_aio);
   saio->type = SENDAIO;
 
   xc = nng_msg_alloc(&msg, 0);
@@ -486,7 +484,7 @@ SEXP rnng_send_aio(SEXP socket, SEXP data, SEXP timeout) {
   nng_aio_set_timeout(saio->aio, dur);
   nng_send_aio(*sock, saio->aio);
 
-  SEXP aio = PROTECT(R_MakeExternalPtr(saio, nano_AioSymbol, R_NilValue));
+  PROTECT(aio = R_MakeExternalPtr(saio, nano_AioSymbol, R_NilValue));
   R_RegisterCFinalizerEx(aio, saio_finalizer, TRUE);
 
   UNPROTECT(1);
@@ -500,15 +498,14 @@ SEXP rnng_ctx_send_aio(SEXP context, SEXP data, SEXP timeout) {
     error_return("'con' is not a valid Context");
 
   nng_ctx *ctxp = (nng_ctx *) R_ExternalPtrAddr(context);
-  nano_aio *saio;
-  nng_msg *msg;
-  int xc;
-
   const nng_duration dur = (nng_duration) Rf_asInteger(timeout);
   unsigned char *dp = RAW(data);
   const R_xlen_t xlen = Rf_xlength(data);
+  nano_aio *saio = R_Calloc(1, nano_aio);
+  nng_msg *msg;
+  int xc;
+  SEXP aio;
 
-  saio = R_Calloc(1, nano_aio);
   saio->type = SENDAIO;
 
   xc = nng_msg_alloc(&msg, 0);
@@ -541,7 +538,7 @@ SEXP rnng_ctx_send_aio(SEXP context, SEXP data, SEXP timeout) {
   nng_aio_set_timeout(saio->aio, dur);
   nng_ctx_send(*ctxp, saio->aio);
 
-  SEXP aio = PROTECT(R_MakeExternalPtr(saio, nano_AioSymbol, R_NilValue));
+  PROTECT(aio = R_MakeExternalPtr(saio, nano_AioSymbol, R_NilValue));
   R_RegisterCFinalizerEx(aio, saio_finalizer, TRUE);
 
   UNPROTECT(1);
@@ -558,13 +555,13 @@ SEXP rnng_stream_send_aio(SEXP stream, SEXP data, SEXP timeout) {
   const nng_duration dur = (nng_duration) Rf_asInteger(timeout);
   unsigned char *dp = RAW(data);
   const R_xlen_t xlen = Rf_xlength(data);
-  const int frames = LOGICAL(Rf_getAttrib(stream, nano_TextframesSymbol))[0];
-  int xc;
-
+  const int frames = *LOGICAL(Rf_getAttrib(stream, nano_TextframesSymbol));
   nano_aio *iaio = R_Calloc(1, nano_aio);
-  iaio->type = IOV_SENDAIO;
-
   nng_iov *iov = R_Calloc(1, nng_iov);
+  int xc;
+  SEXP aio;
+
+  iaio->type = IOV_SENDAIO;
   iaio->data = iov;
   iov->iov_len = frames == 1 ? xlen - 1 : xlen;
   iov->iov_buf = dp;
@@ -594,7 +591,7 @@ SEXP rnng_stream_send_aio(SEXP stream, SEXP data, SEXP timeout) {
   nng_aio_set_timeout(iaio->aio, dur);
   nng_stream_send(sp, iaio->aio);
 
-  SEXP aio = PROTECT(R_MakeExternalPtr(iaio, nano_AioSymbol, R_NilValue));
+  PROTECT(aio = R_MakeExternalPtr(iaio, nano_AioSymbol, R_NilValue));
   R_RegisterCFinalizerEx(aio, isaio_finalizer, TRUE);
 
   UNPROTECT(1);
@@ -606,14 +603,16 @@ SEXP rnng_stream_send_aio(SEXP stream, SEXP data, SEXP timeout) {
 
 SEXP rnng_ncurl_aio(SEXP http, SEXP method, SEXP headers, SEXP data) {
 
-  int xc;
-  nano_aio *haio = R_Calloc(1, nano_aio);
-  haio->type = HTTP_AIO;
-  nano_handle *handle = R_Calloc(1, nano_handle);
-  handle->cfg = NULL;
-  haio->data = handle;
-
   const char *httr = CHAR(STRING_ELT(http, 0));
+  nano_aio *haio = R_Calloc(1, nano_aio);
+  nano_handle *handle = R_Calloc(1, nano_handle);
+  int xc;
+  SEXP aio;
+
+  haio->type = HTTP_AIO;
+  haio->data = handle;
+  handle->cfg = NULL;
+
   xc = nng_url_parse(&handle->url, httr);
   if (xc) {
     R_Free(handle);
@@ -649,7 +648,9 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP method, SEXP headers, SEXP data) {
   }
   if (headers != R_NilValue) {
     R_xlen_t hlen = Rf_xlength(headers);
-    SEXP names = PROTECT(Rf_getAttrib(headers, R_NamesSymbol));
+    SEXP names;
+    PROTECT(names = Rf_getAttrib(headers, R_NamesSymbol));
+
     switch (TYPEOF(headers)) {
     case STRSXP:
       for (R_xlen_t i = 0; i < hlen; i++) {
@@ -684,6 +685,7 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP method, SEXP headers, SEXP data) {
       }
       break;
     }
+
     UNPROTECT(1);
   }
   if (data != R_NilValue) {
@@ -761,7 +763,7 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP method, SEXP headers, SEXP data) {
 
   nng_http_client_transact(handle->cli, handle->req, handle->res, haio->aio);
 
-  SEXP aio = PROTECT(R_MakeExternalPtr(haio, nano_AioSymbol, R_NilValue));
+  PROTECT(aio = R_MakeExternalPtr(haio, nano_AioSymbol, R_NilValue));
   R_RegisterCFinalizerEx(aio, haio_finalizer, TRUE);
 
   UNPROTECT(1);
@@ -799,9 +801,13 @@ SEXP rnng_aio_http(SEXP aio) {
 
   void *dat;
   size_t sz;
+  unsigned char *rp;
+  SEXP vec;
+
   nng_http_res_get_data(handle->res, &dat, &sz);
-  SEXP vec = PROTECT(Rf_allocVector(RAWSXP, sz));
-  unsigned char *rp = RAW(vec);
+
+  PROTECT(vec = Rf_allocVector(RAWSXP, sz));
+  rp = RAW(vec);
   memcpy(rp, dat, sz);
 
   UNPROTECT(1);

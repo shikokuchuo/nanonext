@@ -38,7 +38,7 @@
 #'
 stream <- function(dial = NULL, listen = NULL, textframes = FALSE) {
 
-  textframes <- isTRUE(textframes)
+  textframes <- !missing(textframes) && isTRUE(textframes)
   if (missing(dial)) {
     if (missing(listen)) {
       stop("specify a URL for either 'dial' or 'listen'")

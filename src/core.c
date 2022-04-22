@@ -8,7 +8,8 @@
 
 SEXP mk_error(const int xc) {
 
-  SEXP err = PROTECT(Rf_ScalarInteger(xc));
+  SEXP err;
+  PROTECT(err = Rf_ScalarInteger(xc));
   Rf_classgets(err, Rf_mkString("errorValue"));
   Rf_warning("%d | %s", xc, nng_strerror(xc));
   UNPROTECT(1);
@@ -44,20 +45,19 @@ SEXP rawOneString(unsigned char *bytes, R_xlen_t nbytes, R_xlen_t *np) {
 
 SEXP nano_decode(unsigned char *buf, const size_t sz, const int mod, const int kpr) {
 
-  SEXP raw, data, out;
-  unsigned char *rp;
   void *cp;
   int tryErr = 0;
+  SEXP raw, data;
 
   switch (mod) {
   case 1:
-    raw = PROTECT(Rf_allocVector(RAWSXP, sz));
+    PROTECT(raw = Rf_allocVector(RAWSXP, sz));
     cp = RAW(raw);
     memcpy(cp, buf, sz);
     data = R_tryEval(Rf_lang2(nano_UnserSymbol, raw), R_GlobalEnv, &tryErr);
     break;
   case 2:
-    data = PROTECT(Rf_allocVector(STRSXP, sz));
+    PROTECT(data = Rf_allocVector(STRSXP, sz));
     R_xlen_t i, m, nbytes = sz, np = 0;
     for(i = 0, m = 0; i < sz; i++) {
       SEXP onechar = rawOneString(buf, nbytes, &np);
@@ -69,46 +69,50 @@ SEXP nano_decode(unsigned char *buf, const size_t sz, const int mod, const int k
     SETLENGTH(data, m);
     break;
   case 3:
-    data = PROTECT(Rf_allocVector(CPLXSXP, sz / (sizeof(double) * 2)));
+    PROTECT(data = Rf_allocVector(CPLXSXP, sz / (sizeof(double) * 2)));
     cp = COMPLEX(data);
     memcpy(cp, buf, sz);
     break;
   case 4:
-    data = PROTECT(Rf_allocVector(REALSXP, sz / sizeof(double)));
+    PROTECT(data = Rf_allocVector(REALSXP, sz / sizeof(double)));
     cp = REAL(data);
     memcpy(cp, buf, sz);
     break;
   case 5:
-    data = PROTECT(Rf_allocVector(INTSXP, sz / sizeof(int)));
+    PROTECT(data = Rf_allocVector(INTSXP, sz / sizeof(int)));
     cp = INTEGER(data);
     memcpy(cp, buf, sz);
     break;
   case 6:
-    data = PROTECT(Rf_allocVector(LGLSXP, sz / sizeof(int)));
+    PROTECT(data = Rf_allocVector(LGLSXP, sz / sizeof(int)));
     cp = LOGICAL(data);
     memcpy(cp, buf, sz);
     break;
   case 7:
-    data = PROTECT(Rf_allocVector(REALSXP, sz / sizeof(double)));
+    PROTECT(data = Rf_allocVector(REALSXP, sz / sizeof(double)));
     cp = REAL(data);
     memcpy(cp, buf, sz);
     break;
   case 8:
-    data = PROTECT(Rf_allocVector(RAWSXP, sz));
+    PROTECT(data = Rf_allocVector(RAWSXP, sz));
     cp = RAW(data);
     memcpy(cp, buf, sz);
     break;
   default:
-    data = PROTECT(R_NilValue);
+    PROTECT(data = R_NilValue);
     break;
   }
 
   if (kpr) {
+
+    SEXP out;
+    const char *names[] = {"raw", "data", ""};
+
     switch (mod) {
     case 1:
       if (tryErr) {
-        data = raw;
-        raw = PROTECT(R_NilValue);
+        PROTECT(data = raw);
+        raw = R_NilValue;
       } else {
         PROTECT(data);
       }
@@ -117,15 +121,15 @@ SEXP nano_decode(unsigned char *buf, const size_t sz, const int mod, const int k
       PROTECT(raw = data);
       break;
     default:
-      raw = PROTECT(Rf_allocVector(RAWSXP, sz));
-      rp = RAW(raw);
+      PROTECT(raw = Rf_allocVector(RAWSXP, sz));
+      unsigned char *rp = RAW(raw);
       memcpy(rp, buf, sz);
     }
 
-    const char *names[] = {"raw", "data", ""};
-    out = PROTECT(Rf_mkNamed(VECSXP, names));
+    PROTECT(out = Rf_mkNamed(VECSXP, names));
     SET_VECTOR_ELT(out, 0, raw);
     SET_VECTOR_ELT(out, 1, data);
+
     UNPROTECT(3);
     return out;
   }
@@ -182,10 +186,12 @@ void context_finalizer(SEXP xptr) {
 SEXP rnng_protocol_open(SEXP protocol) {
 
   const int pro = *INTEGER(protocol);
+  nng_socket *sock;
   char *pname;
   int xc;
+  SEXP socket, klass;
 
-  nng_socket *sock = R_Calloc(1, nng_socket);
+  sock = R_Calloc(1, nng_socket);
   switch (pro) {
   case 1:
     pname = "pair";
@@ -236,15 +242,17 @@ SEXP rnng_protocol_open(SEXP protocol) {
     return mk_error(xc);
   }
 
-  SEXP socket = PROTECT(R_MakeExternalPtr(sock, nano_SocketSymbol, R_NilValue));
+  PROTECT(socket = R_MakeExternalPtr(sock, nano_SocketSymbol, R_NilValue));
   R_RegisterCFinalizerEx(socket, socket_finalizer, TRUE);
-  SEXP klass = PROTECT(Rf_allocVector(STRSXP, 2));
+
+  PROTECT(klass = Rf_allocVector(STRSXP, 2));
   SET_STRING_ELT(klass, 0, Rf_mkChar("nanoSocket"));
   SET_STRING_ELT(klass, 1, Rf_mkChar("nano"));
   Rf_classgets(socket, klass);
   Rf_setAttrib(socket, nano_IdSymbol, Rf_ScalarInteger((int) sock->id));
   Rf_setAttrib(socket, nano_StateSymbol, Rf_mkString("opened"));
   Rf_setAttrib(socket, nano_ProtocolSymbol, Rf_mkString(pname));
+
   UNPROTECT(2);
   return socket;
 
@@ -270,16 +278,19 @@ SEXP rnng_ctx_open(SEXP socket) {
   if (R_ExternalPtrTag(socket) != nano_SocketSymbol)
     error_return("'socket' is not a valid Socket");
   nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(socket);
-
   nng_ctx *ctxp = R_Calloc(1, nng_ctx);
+  SEXP context, klass;
+
   int xc = nng_ctx_open(ctxp, *sock);
   if (xc) {
     R_Free(ctxp);
     return mk_error(xc);
   }
-  SEXP context = PROTECT(R_MakeExternalPtr(ctxp, nano_ContextSymbol, R_NilValue));
+
+  PROTECT(context = R_MakeExternalPtr(ctxp, nano_ContextSymbol, R_NilValue));
   R_RegisterCFinalizerEx(context, context_finalizer, TRUE);
-  SEXP klass = PROTECT(Rf_allocVector(STRSXP, 2));
+
+  PROTECT(klass = Rf_allocVector(STRSXP, 2));
   SET_STRING_ELT(klass, 0, Rf_mkChar("nanoContext"));
   SET_STRING_ELT(klass, 1, Rf_mkChar("nano"));
   Rf_classgets(context, klass);
@@ -317,14 +328,19 @@ SEXP rnng_dial(SEXP socket, SEXP url) {
   nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(socket);
   const char *up = CHAR(STRING_ELT(url, 0));
   nng_dialer *dp = R_Calloc(1, nng_dialer);
-  int xc = nng_dial(*sock, up, dp, 2u);
+  int xc;
+  SEXP dialer, klass;
+
+  xc = nng_dial(*sock, up, dp, 2u);
   if (xc) {
     R_Free(dp);
     return mk_error(xc);
   }
-  SEXP dialer = PROTECT(R_MakeExternalPtr(dp, nano_DialerSymbol, R_NilValue));
+
+  PROTECT(dialer = R_MakeExternalPtr(dp, nano_DialerSymbol, R_NilValue));
   R_RegisterCFinalizerEx(dialer, dialer_finalizer, TRUE);
-  SEXP klass = PROTECT(Rf_allocVector(STRSXP, 2));
+
+  PROTECT(klass = Rf_allocVector(STRSXP, 2));
   SET_STRING_ELT(klass, 0, Rf_mkChar("nanoDialer"));
   SET_STRING_ELT(klass, 1, Rf_mkChar("nano"));
   Rf_classgets(dialer, klass);
@@ -347,14 +363,19 @@ SEXP rnng_dialer_create(SEXP socket, SEXP url) {
   nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(socket);
   const char *up = CHAR(STRING_ELT(url, 0));
   nng_dialer *dp = R_Calloc(1, nng_dialer);
-  int xc = nng_dialer_create(dp, *sock, up);
+  int xc;
+  SEXP dialer, klass;
+
+  xc = nng_dialer_create(dp, *sock, up);
   if (xc) {
     R_Free(dp);
     return mk_error(xc);
   }
-  SEXP dialer = PROTECT(R_MakeExternalPtr(dp, nano_DialerSymbol, R_NilValue));
+
+  PROTECT(dialer = R_MakeExternalPtr(dp, nano_DialerSymbol, R_NilValue));
   R_RegisterCFinalizerEx(dialer, dialer_finalizer, TRUE);
-  SEXP klass = PROTECT(Rf_allocVector(STRSXP, 2));
+
+  PROTECT(klass = Rf_allocVector(STRSXP, 2));
   SET_STRING_ELT(klass, 0, Rf_mkChar("nanoDialer"));
   SET_STRING_ELT(klass, 1, Rf_mkChar("nano"));
   Rf_classgets(dialer, klass);
@@ -377,14 +398,19 @@ SEXP rnng_listen(SEXP socket, SEXP url) {
   nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(socket);
   const char *up = CHAR(STRING_ELT(url, 0));
   nng_listener *lp = R_Calloc(1, nng_listener);
-  int xc = nng_listen(*sock, up, lp, 0);
+  int xc;
+  SEXP listener, klass;
+
+  xc = nng_listen(*sock, up, lp, 0);
   if (xc) {
     R_Free(lp);
     return mk_error(xc);
   }
-  SEXP listener = PROTECT(R_MakeExternalPtr(lp, nano_ListenerSymbol, R_NilValue));
+
+  PROTECT(listener = R_MakeExternalPtr(lp, nano_ListenerSymbol, R_NilValue));
   R_RegisterCFinalizerEx(listener, listener_finalizer, TRUE);
-  SEXP klass = PROTECT(Rf_allocVector(STRSXP, 2));
+
+  PROTECT(klass = Rf_allocVector(STRSXP, 2));
   SET_STRING_ELT(klass, 0, Rf_mkChar("nanoListener"));
   SET_STRING_ELT(klass, 1, Rf_mkChar("nano"));
   Rf_classgets(listener, klass);
@@ -407,14 +433,19 @@ SEXP rnng_listener_create(SEXP socket, SEXP url) {
   nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(socket);
   const char *up = CHAR(STRING_ELT(url, 0));
   nng_listener *lp = R_Calloc(1, nng_listener);
-  int xc = nng_listener_create(lp, *sock, up);
+  int xc;
+  SEXP listener, klass;
+
+  xc = nng_listener_create(lp, *sock, up);
   if (xc) {
     R_Free(lp);
     return mk_error(xc);
   }
-  SEXP listener = PROTECT(R_MakeExternalPtr(lp, nano_ListenerSymbol, R_NilValue));
+
+  PROTECT(listener = R_MakeExternalPtr(lp, nano_ListenerSymbol, R_NilValue));
   R_RegisterCFinalizerEx(listener, listener_finalizer, TRUE);
-  SEXP klass = PROTECT(Rf_allocVector(STRSXP, 2));
+
+  PROTECT(klass = Rf_allocVector(STRSXP, 2));
   SET_STRING_ELT(klass, 0, Rf_mkChar("nanoListener"));
   SET_STRING_ELT(klass, 1, Rf_mkChar("nano"));
   Rf_classgets(listener, klass);
@@ -491,9 +522,9 @@ SEXP rnng_send(SEXP socket, SEXP data, SEXP block) {
     error_return("'con' is not a valid Socket");
   nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(socket);
 
-  const int blk = Rf_asInteger(block);
   const R_xlen_t dlen = Rf_xlength(data);
   unsigned char *dp = RAW(data);
+  const int blk = Rf_asInteger(block);
   int xc;
   nng_msg *msgp;
   nng_aio *aiop;
@@ -534,9 +565,7 @@ SEXP rnng_recv(SEXP socket, SEXP mode, SEXP block, SEXP keep) {
     error_return("'con' is not a valid Socket");
   nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(socket);
 
-  const int blk = Rf_asInteger(block);
-  const int mod = *INTEGER(mode);
-  const int kpr = *LOGICAL(keep);
+  const int blk = Rf_asInteger(block), mod = *INTEGER(mode), kpr = *LOGICAL(keep);
   int xc;
   unsigned char *buf;
   size_t sz;
@@ -587,12 +616,12 @@ SEXP rnng_ctx_send(SEXP context, SEXP data, SEXP timeout) {
   if (R_ExternalPtrTag(context) != nano_ContextSymbol)
     error_return("'con' is not a valid Context");
   nng_ctx *ctxp = (nng_ctx *) R_ExternalPtrAddr(context);
-  nng_msg *msgp;
-  nng_aio *aiop;
-  int xc;
   const nng_duration dur = (nng_duration) Rf_asInteger(timeout);
   unsigned char *dp = RAW(data);
   const R_xlen_t xlen = Rf_xlength(data);
+  int xc;
+  nng_msg *msgp;
+  nng_aio *aiop;
 
   xc = nng_msg_alloc(&msgp, 0);
   if (xc)
@@ -621,12 +650,11 @@ SEXP rnng_ctx_recv(SEXP context, SEXP mode, SEXP timeout, SEXP keep) {
     error_return("'con' is not a valid Context");
   nng_ctx *ctxp = (nng_ctx *) R_ExternalPtrAddr(context);
   nng_aio *aiop;
-  const int mod = *INTEGER(mode);
-  const int kpr = *LOGICAL(keep);
   const nng_duration dur = (nng_duration) Rf_asInteger(timeout);
+  const int mod = *INTEGER(mode), kpr = *LOGICAL(keep);
+  int xc;
   unsigned char *buf;
   size_t sz;
-  int xc;
   SEXP res;
 
   xc = nng_aio_alloc(&aiop, NULL, NULL);
@@ -643,8 +671,8 @@ SEXP rnng_ctx_recv(SEXP context, SEXP mode, SEXP timeout, SEXP keep) {
   }
 
   nng_msg *msgp = nng_aio_get_msg(aiop);
-  sz = nng_msg_len(msgp);
   buf = nng_msg_body(msgp);
+  sz = nng_msg_len(msgp);
   res = nano_decode(buf, sz, mod, kpr);
   nng_msg_free(msgp);
   nng_aio_free(aiop);
@@ -700,14 +728,14 @@ SEXP rnng_stream_recv(SEXP stream, SEXP mode, SEXP timeout, SEXP keep, SEXP byte
     error_return("'con' is not a valid Stream");
 
   nng_stream *sp = (nng_stream *) R_ExternalPtrAddr(stream);
-  const int mod = *INTEGER(mode);
-  const int kpr = *LOGICAL(keep);
   const nng_duration dur = (nng_duration) Rf_asInteger(timeout);
   const size_t xlen = Rf_asInteger(bytes);
+  const int mod = *INTEGER(mode), kpr = *LOGICAL(keep);
+  int xc;
   nng_iov iov;
   nng_aio *aiop;
+  unsigned char *buf;
   size_t sz;
-  int xc;
   SEXP res;
 
   iov.iov_len = xlen;
@@ -737,8 +765,9 @@ SEXP rnng_stream_recv(SEXP stream, SEXP mode, SEXP timeout, SEXP keep, SEXP byte
     return mk_error(xc);
   }
 
+  buf = iov.iov_buf;
   sz = nng_aio_count(aiop);
-  res = nano_decode(iov.iov_buf, sz, mod, kpr);
+  res = nano_decode(buf, sz, mod, kpr);
   nng_aio_free(aiop);
   R_Free(iov.iov_buf);
 
