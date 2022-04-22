@@ -99,20 +99,19 @@ SEXP rawOneString(unsigned char *bytes, R_xlen_t nbytes, R_xlen_t *np) {
 
 SEXP nano_decode(unsigned char *buf, const size_t sz, const int mod, const int kpr) {
 
-  int tryErr = 0;
+  int p = 0, tryErr = 0;
   SEXP raw, data;
 
   switch (mod) {
   case 1:
-    PROTECT(raw = Rf_allocVector(RAWSXP, sz));
+    PROTECT(raw = Rf_allocVector(RAWSXP, sz)); p++;
     memcpy(RAW(raw), buf, sz);
     SEXP expr;
-    PROTECT(expr = Rf_lang2(nano_UnserSymbol, raw));
-    data = R_tryEval(expr, R_BaseEnv, &tryErr);
-    UNPROTECT(1);
+    PROTECT(expr = Rf_lang2(nano_UnserSymbol, raw)); p++;
+    PROTECT(data = R_tryEval(expr, R_BaseEnv, &tryErr)); p++;
     break;
   case 2:
-    PROTECT(data = Rf_allocVector(STRSXP, sz));
+    PROTECT(data = Rf_allocVector(STRSXP, sz)); p++;
     R_xlen_t i, m, nbytes = sz, np = 0;
     for (i = 0, m = 0; i < sz; i++) {
       SEXP onechar = rawOneString(buf, nbytes, &np);
@@ -123,31 +122,31 @@ SEXP nano_decode(unsigned char *buf, const size_t sz, const int mod, const int k
     SETLENGTH(data, m);
     break;
   case 3:
-    PROTECT(data = Rf_allocVector(CPLXSXP, sz / (sizeof(double) * 2)));
+    PROTECT(data = Rf_allocVector(CPLXSXP, sz / (sizeof(double) * 2))); p++;
     memcpy(COMPLEX(data), buf, sz);
     break;
   case 4:
-    PROTECT(data = Rf_allocVector(REALSXP, sz / sizeof(double)));
+    PROTECT(data = Rf_allocVector(REALSXP, sz / sizeof(double))); p++;
     memcpy(REAL(data), buf, sz);
     break;
   case 5:
-    PROTECT(data = Rf_allocVector(INTSXP, sz / sizeof(int)));
+    PROTECT(data = Rf_allocVector(INTSXP, sz / sizeof(int))); p++;
     memcpy(INTEGER(data), buf, sz);
     break;
   case 6:
-    PROTECT(data = Rf_allocVector(LGLSXP, sz / sizeof(int)));
+    PROTECT(data = Rf_allocVector(LGLSXP, sz / sizeof(int))); p++;
     memcpy(LOGICAL(data), buf, sz);
     break;
   case 7:
-    PROTECT(data = Rf_allocVector(REALSXP, sz / sizeof(double)));
+    PROTECT(data = Rf_allocVector(REALSXP, sz / sizeof(double))); p++;
     memcpy(REAL(data), buf, sz);
     break;
   case 8:
-    PROTECT(data = Rf_allocVector(RAWSXP, sz));
+    PROTECT(data = Rf_allocVector(RAWSXP, sz)); p++;
     memcpy(RAW(data), buf, sz);
     break;
   default:
-    PROTECT(data = R_NilValue);
+    PROTECT(data = R_NilValue); p++;
     break;
   }
 
@@ -159,29 +158,27 @@ SEXP nano_decode(unsigned char *buf, const size_t sz, const int mod, const int k
     switch (mod) {
     case 1:
       if (tryErr) {
-        PROTECT(data = raw);
-        raw = R_NilValue;
-      } else {
-        PROTECT(data);
+        PROTECT(data = raw); p++;
+        PROTECT(raw = R_NilValue); p++;
       }
       break;
     case 8:
-      PROTECT(raw = data);
+      PROTECT(raw = data); p++;
       break;
     default:
-      PROTECT(raw = Rf_allocVector(RAWSXP, sz));
+      PROTECT(raw = Rf_allocVector(RAWSXP, sz)); p++;
       memcpy(RAW(raw), buf, sz);
     }
 
-    PROTECT(out = Rf_mkNamed(VECSXP, names));
+    PROTECT(out = Rf_mkNamed(VECSXP, names)); p++;
     SET_VECTOR_ELT(out, 0, raw);
     SET_VECTOR_ELT(out, 1, data);
 
-    UNPROTECT(3);
+    UNPROTECT(p);
     return out;
   }
 
-  UNPROTECT(1);
+  UNPROTECT(p);
   return data;
 
 }
@@ -650,9 +647,7 @@ SEXP rnng_recv(SEXP socket, SEXP mode, SEXP block, SEXP keep) {
       return mk_error(xc);
     }
     nng_msg *msgp = nng_aio_get_msg(aiop);
-    buf = nng_msg_body(msgp);
-    sz = nng_msg_len(msgp);
-    res = nano_decode(buf, sz, mod, kpr);
+    res = nano_decode(nng_msg_body(msgp), nng_msg_len(msgp), mod, kpr);
     nng_msg_free(msgp);
     nng_aio_free(aiop);
   }
@@ -707,8 +702,6 @@ SEXP rnng_ctx_recv(SEXP context, SEXP mode, SEXP timeout, SEXP keep) {
   const nng_duration dur = (nng_duration) Rf_asInteger(timeout);
   const int mod = *INTEGER(mode), kpr = *LOGICAL(keep);
   int xc;
-  unsigned char *buf;
-  size_t sz;
   SEXP res;
 
   xc = nng_aio_alloc(&aiop, NULL, NULL);
@@ -725,9 +718,7 @@ SEXP rnng_ctx_recv(SEXP context, SEXP mode, SEXP timeout, SEXP keep) {
   }
 
   nng_msg *msgp = nng_aio_get_msg(aiop);
-  buf = nng_msg_body(msgp);
-  sz = nng_msg_len(msgp);
-  res = nano_decode(buf, sz, mod, kpr);
+  res = nano_decode(nng_msg_body(msgp), nng_msg_len(msgp), mod, kpr);
   nng_msg_free(msgp);
   nng_aio_free(aiop);
 
@@ -790,7 +781,6 @@ SEXP rnng_stream_recv(SEXP stream, SEXP mode, SEXP timeout, SEXP keep, SEXP byte
   int xc;
   nng_iov iov;
   nng_aio *aiop;
-  unsigned char *buf;
   size_t sz;
   SEXP res;
 
@@ -821,9 +811,8 @@ SEXP rnng_stream_recv(SEXP stream, SEXP mode, SEXP timeout, SEXP keep, SEXP byte
     return mk_error(xc);
   }
 
-  buf = iov.iov_buf;
   sz = nng_aio_count(aiop);
-  res = nano_decode(buf, sz, mod, kpr);
+  res = nano_decode(iov.iov_buf, sz, mod, kpr);
   nng_aio_free(aiop);
   R_Free(iov.iov_buf);
 
