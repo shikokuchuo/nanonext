@@ -78,9 +78,9 @@
 <dt>data</dt>
 <dd><p>an object (a vector, if mode = 'raw').</p></dd>
 <dt>mode</dt>
-<dd><p>either 'serial' for sending serialised R objects, or 'raw' for
+<dd><p>[default 'serial'] for sending serialised R objects, or 'raw' for
 sending vectors of any type (converted to a raw byte vector for sending).
-For Streams, 'raw' is the only choice and any other value is ignored. Use
+For Streams, 'raw' is the only option and any other value is ignored. Use
 'serial' for perfect reproducibility within R, although 'raw' must be used
 when interfacing with external applications that do not understand R
 serialisation.</p></dd>

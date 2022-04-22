@@ -105,13 +105,11 @@
     <dl><dt>con</dt>
 <dd><p>a Socket, Context or Stream.</p></dd>
 <dt>mode</dt>
-<dd><p>&lt;Sockets and Contexts&gt; [default 'serial'] mode of vector to be
-received - one of 'serial', 'character', 'complex', 'double', 'integer',
-'logical', 'numeric', or 'raw'. The default 'serial' means a serialised
-R object, for the other modes, the raw vector received will be converted
-into the respective mode.
-&lt;Streams&gt; [default 'character'] note that 'serial' is not an option for
-Streams.</p></dd>
+<dd><p>[default 'serial'] mode of vector to be received - one of 'serial',
+'character', 'complex', 'double', 'integer', 'logical', 'numeric', or 'raw'.
+The default 'serial' means a serialised R object, for the other modes,
+the raw vector received will be converted into the respective mode.
+For Streams, 'serial' is not an option and the default is 'character'.</p></dd>
 <dt>timeout</dt>
 <dd><p>(optional) integer value in milliseconds. If unspecified, the
 default of -2L uses a socket-specific default, which is usually the same
@@ -123,8 +121,9 @@ the converted data only.</p></dd>
 <dt>...</dt>
 <dd><p>currently unused.</p></dd>
 <dt>n</dt>
-<dd><p>&lt;Streams&gt; [default 65536L] the maximum number of bytes to receive.
-Can be an over-estimate, but note that a buffer of this size is reserved.</p></dd>
+<dd><p>[default 65536L] applicable to Streams only, the maximum number of
+bytes to receive. Can be an over-estimate, but note that a buffer of this
+size is reserved.</p></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>
