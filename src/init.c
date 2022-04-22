@@ -2,6 +2,21 @@
 
 #include "nanonext.h"
 
+SEXP nano_AioSymbol;
+SEXP nano_ContextSymbol;
+SEXP nano_DataSymbol;
+SEXP nano_DialerSymbol;
+SEXP nano_IdSymbol;
+SEXP nano_ListenerSymbol;
+SEXP nano_ProtocolSymbol;
+SEXP nano_ResultSymbol;
+SEXP nano_SocketSymbol;
+SEXP nano_StateSymbol;
+SEXP nano_StreamSymbol;
+SEXP nano_TextframesSymbol;
+SEXP nano_UnserSymbol;
+SEXP nano_UrlSymbol;
+
 static void RegisterSymbols(void) {
   nano_AioSymbol = Rf_install("aio");
   nano_ContextSymbol = Rf_install("context");

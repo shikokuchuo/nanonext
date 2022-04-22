@@ -50,11 +50,11 @@ SEXP nano_encode(SEXP object) {
     break;
   case STRSXP:
     for (i = 0; i < xlen; i++)
-      outlen += strlen(Rf_translateChar0(STRING_ELT(object, i))) + 1;
+      outlen += strlen(Rf_translateCharUTF8(STRING_ELT(object, i))) + 1;
     PROTECT(out = Rf_allocVector(RAWSXP, outlen));
     buf = RAW(out);
     for (i = 0, np = 0; i < xlen; i++) {
-      s = Rf_translateChar0(STRING_ELT(object, i));
+      s = Rf_translateCharUTF8(STRING_ELT(object, i));
       memcpy(buf + np, s, strlen(s) + 1);
       np += strlen(s) + 1;
     }
