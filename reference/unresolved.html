@@ -88,7 +88,7 @@ stored in <code>$result</code>, <code>$raw</code> or <code>$data</code> as the c
 <span class="r-in"></span>
 <span class="r-in"><span class="kw">while</span> <span class="op">(</span><span class="fu">unresolved</span><span class="op">(</span><span class="va">aio</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span class="r-in">  <span class="co"># do stuff before checking resolution again</span></span>
-<span class="r-in">  <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"unresolved"</span><span class="op">)</span></span>
+<span class="r-in">  <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"unresolved\n"</span><span class="op">)</span></span>
 <span class="r-in">  <span class="va">s2</span> <span class="op">&lt;-</span> <span class="fu"><a href="socket.html">socket</a></span><span class="op">(</span><span class="st">"pair"</span>, dial <span class="op">=</span> <span class="st">"inproc://nanonext"</span><span class="op">)</span></span>
 <span class="r-in">  <span class="fu"><a href="https://rdrr.io/r/base/Sys.sleep.html" class="external-link">Sys.sleep</a></span><span class="op">(</span><span class="fl">0.01</span><span class="op">)</span></span>
 <span class="r-in"><span class="op">}</span></span>
