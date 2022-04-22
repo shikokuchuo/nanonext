@@ -74,12 +74,11 @@ send.nanoSocket <- function(con,
                             block = FALSE,
                             echo = TRUE) {
 
-  mode <- match.arg2(mode, c("serial", "raw"))
-  force(data)
-  data <- encode(data = data, mode = mode)
+  if (missing(mode) || match.arg1(mode) == 1L)
+    data <- serialize(object = data, connection = NULL)
   res <- .Call(rnng_send, con, data, block)
-  res && return(invisible(res))
-  if (missing(echo) || isTRUE(echo)) data else invisible(res)
+  is.integer(res) && return(res)
+  if (missing(echo) || isTRUE(echo)) res else invisible(0L)
 
 }
 
@@ -93,13 +92,12 @@ send.nanoContext <- function(con,
                              block = TRUE,
                              echo = TRUE) {
 
-  mode <- match.arg2(mode, c("serial", "raw"))
-  force(data)
-  data <- encode(data = data, mode = mode)
+  if (missing(mode) || match.arg1(mode) == 1L)
+    data <- serialize(object = data, connection = NULL)
   if (missing(block) || isTRUE(block)) block <- -2L
   res <- .Call(rnng_ctx_send, con, data, block)
-  res && return(invisible(res))
-  if (missing(echo) || isTRUE(echo)) data else invisible(res)
+  is.integer(res) && return(res)
+  if (missing(echo) || isTRUE(echo)) res else invisible(0L)
 
 }
 
@@ -113,12 +111,10 @@ send.nanoStream <- function(con,
                             block = TRUE,
                             echo = TRUE) {
 
-  force(data)
-  data <- encode(data = data, mode = 2L)
   if (missing(block) || isTRUE(block)) block <- -2L
   res <- .Call(rnng_stream_send, con, data, block)
-  res && return(invisible(res))
-  if (missing(echo) || isTRUE(echo)) data else invisible(res)
+  is.integer(res) && return(res)
+  if (missing(echo) || isTRUE(echo)) res else invisible(0L)
 
 }
 

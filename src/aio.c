@@ -446,12 +446,12 @@ SEXP rnng_send_aio(SEXP socket, SEXP data, SEXP timeout) {
 
   nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(socket);
   const nng_duration dur = (nng_duration) Rf_asInteger(timeout);
-  unsigned char *dp = RAW(data);
-  const R_xlen_t xlen = Rf_xlength(data);
   nano_aio *saio = R_Calloc(1, nano_aio);
   nng_msg *msg;
   int xc;
-  SEXP aio;
+  SEXP aio, enc = nano_encode(data);
+  const R_xlen_t xlen = Rf_xlength(enc);
+  unsigned char *dp = RAW(enc);
 
   saio->type = SENDAIO;
 
@@ -499,12 +499,12 @@ SEXP rnng_ctx_send_aio(SEXP context, SEXP data, SEXP timeout) {
 
   nng_ctx *ctxp = (nng_ctx *) R_ExternalPtrAddr(context);
   const nng_duration dur = (nng_duration) Rf_asInteger(timeout);
-  unsigned char *dp = RAW(data);
-  const R_xlen_t xlen = Rf_xlength(data);
   nano_aio *saio = R_Calloc(1, nano_aio);
   nng_msg *msg;
   int xc;
-  SEXP aio;
+  SEXP aio, enc = nano_encode(data);
+  const R_xlen_t xlen = Rf_xlength(enc);
+  unsigned char *dp = RAW(enc);
 
   saio->type = SENDAIO;
 
@@ -553,13 +553,13 @@ SEXP rnng_stream_send_aio(SEXP stream, SEXP data, SEXP timeout) {
 
   nng_stream *sp = (nng_stream *) R_ExternalPtrAddr(stream);
   const nng_duration dur = (nng_duration) Rf_asInteger(timeout);
-  unsigned char *dp = RAW(data);
-  const R_xlen_t xlen = Rf_xlength(data);
   const int frames = *LOGICAL(Rf_getAttrib(stream, nano_TextframesSymbol));
   nano_aio *iaio = R_Calloc(1, nano_aio);
   nng_iov *iov = R_Calloc(1, nng_iov);
   int xc;
-  SEXP aio;
+  SEXP aio, enc = nano_encode(data);
+  const R_xlen_t xlen = Rf_xlength(enc);
+  unsigned char *dp = RAW(enc);
 
   iaio->type = IOV_SENDAIO;
   iaio->data = iov;

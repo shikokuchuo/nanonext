@@ -34,6 +34,7 @@
 
 #ifdef NANONEXT_INTERNALS
 extern SEXP mk_error(const int);
+extern SEXP nano_encode(SEXP);
 extern SEXP rawOneString(unsigned char *, R_xlen_t, R_xlen_t *);
 extern SEXP nano_decode(unsigned char *, const size_t, const int, const int);
 extern void socket_finalizer(SEXP);
@@ -41,20 +42,20 @@ extern void dialer_finalizer(SEXP);
 extern void listener_finalizer(SEXP);
 #endif
 
-extern SEXP nano_AioSymbol;
-extern SEXP nano_ContextSymbol;
-extern SEXP nano_DataSymbol;
-extern SEXP nano_DialerSymbol;
-extern SEXP nano_IdSymbol;
-extern SEXP nano_ListenerSymbol;
-extern SEXP nano_ProtocolSymbol;
-extern SEXP nano_ResultSymbol;
-extern SEXP nano_SocketSymbol;
-extern SEXP nano_StateSymbol;
-extern SEXP nano_StreamSymbol;
-extern SEXP nano_TextframesSymbol;
-extern SEXP nano_UnserSymbol;
-extern SEXP nano_UrlSymbol;
+SEXP nano_AioSymbol;
+SEXP nano_ContextSymbol;
+SEXP nano_DataSymbol;
+SEXP nano_DialerSymbol;
+SEXP nano_IdSymbol;
+SEXP nano_ListenerSymbol;
+SEXP nano_ProtocolSymbol;
+SEXP nano_ResultSymbol;
+SEXP nano_SocketSymbol;
+SEXP nano_StateSymbol;
+SEXP nano_StreamSymbol;
+SEXP nano_TextframesSymbol;
+SEXP nano_UnserSymbol;
+SEXP nano_UrlSymbol;
 
 extern SEXP rnng_aio_call(SEXP);
 extern SEXP rnng_aio_get_msg(SEXP, SEXP, SEXP);

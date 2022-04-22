@@ -49,9 +49,8 @@ send_aio <- function(con, data, mode = c("serial", "raw"), timeout = -2L) UseMet
 #'
 send_aio.nanoSocket <- function(con, data, mode = c("serial", "raw"), timeout = -2L) {
 
-  mode <- match.arg2(mode, c("serial", "raw"))
-  force(data)
-  data <- encode(data = data, mode = mode)
+  if (missing(mode) || match.arg1(mode) == 1L)
+    data <- serialize(object = data, connection = NULL)
   aio <- .Call(rnng_send_aio, con, data, timeout)
   is.integer(aio) && return(aio)
 
@@ -78,9 +77,8 @@ send_aio.nanoSocket <- function(con, data, mode = c("serial", "raw"), timeout = 
 #'
 send_aio.nanoContext <- function(con, data, mode = c("serial", "raw"), timeout = -2L) {
 
-  mode <- match.arg2(mode, c("serial", "raw"))
-  force(data)
-  data <- encode(data = data, mode = mode)
+  if (missing(mode) || match.arg1(mode) == 1L)
+    data <- serialize(object = data, connection = NULL)
   aio <- .Call(rnng_ctx_send_aio, con, data, timeout)
   is.integer(aio) && return(aio)
 
@@ -107,8 +105,6 @@ send_aio.nanoContext <- function(con, data, mode = c("serial", "raw"), timeout =
 #'
 send_aio.nanoStream <- function(con, data, mode = "raw", timeout = -2L) {
 
-  force(data)
-  data <- encode(data = data, mode = 2L)
   aio <- .Call(rnng_stream_send_aio, con, data, timeout)
   is.integer(aio) && return(aio)
 
@@ -479,7 +475,7 @@ stop_aio <- function(aio) {
 #'
 #' while (unresolved(aio)) {
 #'   # do stuff before checking resolution again
-#'   cat("unresolved")
+#'   cat("unresolved\n")
 #'   s2 <- socket("pair", dial = "inproc://nanonext")
 #'   Sys.sleep(0.01)
 #' }

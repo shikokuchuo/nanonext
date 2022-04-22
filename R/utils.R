@@ -256,17 +256,17 @@ nano_init <- function(warn = c("immediate", "deferred", "error", "none")) {
 
 # nanonext - Non-exported functions --------------------------------------------
 
-encode <- function(data, mode) {
-  switch(mode,
-         serialize(object = data, connection = NULL),
-         if (is.raw(data)) data else writeBin(object = data, con = raw()))
-}
-
 match.arg2 <- function(choice, choices) {
   identical(choice, choices) && return(1L)
   index <- pmatch(choice[1L], choices, nomatch = 0L, duplicates.ok = TRUE)
   index || stop(sprintf("'%s' should be one of %s",
                         deparse(substitute(choice)), paste(choices, collapse = ", ")))
+  index
+}
+
+match.arg1 <- function(choice) {
+  index <- pmatch(choice[1L], c("serial", "raw"), nomatch = 0L, duplicates.ok = TRUE)
+  index || stop(sprintf("'%s' should be one of serial, raw", deparse(substitute(choice))))
   index
 }
 

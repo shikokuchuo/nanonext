@@ -17,6 +17,60 @@ SEXP mk_error(const int xc) {
 
 }
 
+SEXP nano_encode(SEXP object) {
+
+  R_xlen_t i, xlen = Rf_xlength(object);
+  const char *s;
+  unsigned char *buf;
+  size_t sz, np, outlen = 0;
+  SEXP out;
+
+  if (!Rf_isVectorAtomic(object))
+    error_return("'data' is not an atomic vector type");
+  switch (TYPEOF(object)) {
+  case REALSXP:
+    sz = xlen * sizeof(double);
+    out = Rf_allocVector(RAWSXP, sz);
+    memcpy(RAW(out), REAL(object), sz);
+    break;
+  case INTSXP:
+    sz = xlen * sizeof(int);
+    out = Rf_allocVector(RAWSXP, sz);
+    memcpy(RAW(out), INTEGER(object), sz);
+    break;
+  case LGLSXP:
+    sz = xlen * sizeof(int);
+    out = Rf_allocVector(RAWSXP, sz);
+    memcpy(RAW(out), LOGICAL(object), sz);
+    break;
+  case CPLXSXP:
+    sz = xlen * sizeof(double) * 2;
+    out = Rf_allocVector(RAWSXP, sz);
+    memcpy(RAW(out), COMPLEX(object), sz);
+    break;
+  case STRSXP:
+    for (i = 0; i < xlen; i++)
+      outlen += strlen(Rf_translateChar0(STRING_ELT(object, i))) + 1;
+    PROTECT(out = Rf_allocVector(RAWSXP, outlen));
+    buf = RAW(out);
+    for (i = 0, np = 0; i < xlen; i++) {
+      s = Rf_translateChar0(STRING_ELT(object, i));
+      memcpy(buf + np, s, strlen(s) + 1);
+      np += strlen(s) + 1;
+    }
+    UNPROTECT(1);
+    break;
+  case RAWSXP:
+    out = object;
+    break;
+  default:
+    error_return("vector type for 'data' is unimplemented");
+  }
+
+  return out;
+
+}
+
 SEXP rawOneString(unsigned char *bytes, R_xlen_t nbytes, R_xlen_t *np) {
 
   unsigned char *p;
@@ -45,15 +99,13 @@ SEXP rawOneString(unsigned char *bytes, R_xlen_t nbytes, R_xlen_t *np) {
 
 SEXP nano_decode(unsigned char *buf, const size_t sz, const int mod, const int kpr) {
 
-  void *cp;
   int tryErr = 0;
   SEXP raw, data;
 
   switch (mod) {
   case 1:
     PROTECT(raw = Rf_allocVector(RAWSXP, sz));
-    cp = RAW(raw);
-    memcpy(cp, buf, sz);
+    memcpy(RAW(raw), buf, sz);
     SEXP expr;
     PROTECT(expr = Rf_lang2(nano_UnserSymbol, raw));
     data = R_tryEval(expr, R_BaseEnv, &tryErr);
@@ -72,33 +124,27 @@ SEXP nano_decode(unsigned char *buf, const size_t sz, const int mod, const int k
     break;
   case 3:
     PROTECT(data = Rf_allocVector(CPLXSXP, sz / (sizeof(double) * 2)));
-    cp = COMPLEX(data);
-    memcpy(cp, buf, sz);
+    memcpy(COMPLEX(data), buf, sz);
     break;
   case 4:
     PROTECT(data = Rf_allocVector(REALSXP, sz / sizeof(double)));
-    cp = REAL(data);
-    memcpy(cp, buf, sz);
+    memcpy(REAL(data), buf, sz);
     break;
   case 5:
     PROTECT(data = Rf_allocVector(INTSXP, sz / sizeof(int)));
-    cp = INTEGER(data);
-    memcpy(cp, buf, sz);
+    memcpy(INTEGER(data), buf, sz);
     break;
   case 6:
     PROTECT(data = Rf_allocVector(LGLSXP, sz / sizeof(int)));
-    cp = LOGICAL(data);
-    memcpy(cp, buf, sz);
+    memcpy(LOGICAL(data), buf, sz);
     break;
   case 7:
     PROTECT(data = Rf_allocVector(REALSXP, sz / sizeof(double)));
-    cp = REAL(data);
-    memcpy(cp, buf, sz);
+    memcpy(REAL(data), buf, sz);
     break;
   case 8:
     PROTECT(data = Rf_allocVector(RAWSXP, sz));
-    cp = RAW(data);
-    memcpy(cp, buf, sz);
+    memcpy(RAW(data), buf, sz);
     break;
   default:
     PROTECT(data = R_NilValue);
@@ -124,8 +170,7 @@ SEXP nano_decode(unsigned char *buf, const size_t sz, const int mod, const int k
       break;
     default:
       PROTECT(raw = Rf_allocVector(RAWSXP, sz));
-      unsigned char *rp = RAW(raw);
-      memcpy(rp, buf, sz);
+      memcpy(RAW(raw), buf, sz);
     }
 
     PROTECT(out = Rf_mkNamed(VECSXP, names));
@@ -524,25 +569,27 @@ SEXP rnng_send(SEXP socket, SEXP data, SEXP block) {
     error_return("'con' is not a valid Socket");
   nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(socket);
 
-  const R_xlen_t dlen = Rf_xlength(data);
-  unsigned char *dp = RAW(data);
   const int blk = Rf_asInteger(block);
   int xc;
   nng_msg *msgp;
   nng_aio *aiop;
 
+  SEXP enc = nano_encode(data);
+  const R_xlen_t xlen = Rf_xlength(enc);
+  unsigned char *dp = RAW(enc);
+
   switch (blk) {
   case 0:
-    xc = nng_send(*sock, dp, dlen, 2u);
+    xc = nng_send(*sock, dp, xlen, 2u);
     break;
   case 1:
-    xc = nng_send(*sock, dp, dlen, 0);
+    xc = nng_send(*sock, dp, xlen, 0);
     break;
   default:
     xc = nng_msg_alloc(&msgp, 0);
     if (xc)
       return mk_error(xc);
-    if ((xc = nng_msg_append(msgp, dp, dlen)) ||
+    if ((xc = nng_msg_append(msgp, dp, xlen)) ||
         (xc = nng_aio_alloc(&aiop, NULL, NULL))) {
       nng_msg_free(msgp);
       return mk_error(xc);
@@ -557,7 +604,8 @@ SEXP rnng_send(SEXP socket, SEXP data, SEXP block) {
 
   if (xc)
     return mk_error(xc);
-  return Rf_ScalarInteger(xc);
+
+  return enc;
 
 }
 
@@ -618,12 +666,15 @@ SEXP rnng_ctx_send(SEXP context, SEXP data, SEXP timeout) {
   if (R_ExternalPtrTag(context) != nano_ContextSymbol)
     error_return("'con' is not a valid Context");
   nng_ctx *ctxp = (nng_ctx *) R_ExternalPtrAddr(context);
+
   const nng_duration dur = (nng_duration) Rf_asInteger(timeout);
-  unsigned char *dp = RAW(data);
-  const R_xlen_t xlen = Rf_xlength(data);
   int xc;
   nng_msg *msgp;
   nng_aio *aiop;
+
+  SEXP enc = nano_encode(data);
+  const R_xlen_t xlen = Rf_xlength(enc);
+  unsigned char *dp = RAW(enc);
 
   xc = nng_msg_alloc(&msgp, 0);
   if (xc)
@@ -642,7 +693,8 @@ SEXP rnng_ctx_send(SEXP context, SEXP data, SEXP timeout) {
   nng_aio_free(aiop);
   if (xc)
     return mk_error(xc);
-  return Rf_ScalarInteger(xc);
+
+  return enc;
 
 }
 
@@ -687,17 +739,18 @@ SEXP rnng_stream_send(SEXP stream, SEXP data, SEXP timeout) {
 
   if (R_ExternalPtrTag(stream) != nano_StreamSymbol)
     error_return("'con' is not a valid Stream");
-
   nng_stream *sp = (nng_stream *) R_ExternalPtrAddr(stream);
+
   const nng_duration dur = (nng_duration) Rf_asInteger(timeout);
-  unsigned char *dp = RAW(data);
-  const R_xlen_t xlen = Rf_xlength(data);
   int xc;
   nng_iov iov;
   nng_aio *aiop;
 
-  const int frames = LOGICAL(Rf_getAttrib(stream, nano_TextframesSymbol))[0];
+  SEXP enc = nano_encode(data);
+  const R_xlen_t xlen = Rf_xlength(enc);
+  unsigned char *dp = RAW(enc);
 
+  const int frames = LOGICAL(Rf_getAttrib(stream, nano_TextframesSymbol))[0];
   iov.iov_len = frames == 1 ? xlen - 1 : xlen;
   iov.iov_buf = dp;
 
@@ -720,7 +773,8 @@ SEXP rnng_stream_send(SEXP stream, SEXP data, SEXP timeout) {
 
   if (xc)
     return mk_error(xc);
-  return Rf_ScalarInteger(xc);
+
+  return enc;
 
 }
 

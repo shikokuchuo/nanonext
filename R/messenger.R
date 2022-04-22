@@ -55,8 +55,7 @@ messenger <- function(url) {
     data <- readline()
     if (identical(data, ":q")) break
     if (identical(data, "")) next
-    rdata <- writeBin(object = data, con = raw())
-    s <- suppressWarnings(.Call(rnng_send, sock, rdata, 0L))
+    s <- suppressWarnings(.Call(rnng_send, sock, data, 0L))
     if (is.integer(s)) {
       cat(sprintf("%*s > not sent: peer offline: %s\n", nchar(data), "", format.POSIXct(Sys.time())),
           file = stderr())
