@@ -100,13 +100,13 @@ SEXP rawOneString(unsigned char *bytes, R_xlen_t nbytes, R_xlen_t *np) {
 SEXP nano_decode(unsigned char *buf, const size_t sz, const int mod, const int kpr) {
 
   int tryErr = 0;
-  SEXP raw, data;
+  SEXP raw, data, expr, onechar;
+  R_xlen_t i, m, nbytes = sz, np = 0;
 
   switch (mod) {
   case 1:
     PROTECT(raw = Rf_allocVector(RAWSXP, sz));
     memcpy(RAW(raw), buf, sz);
-    SEXP expr;
     PROTECT(expr = Rf_lang2(nano_UnserSymbol, raw));
     data = R_tryEval(expr, R_BaseEnv, &tryErr);
     UNPROTECT(1);
@@ -117,9 +117,8 @@ SEXP nano_decode(unsigned char *buf, const size_t sz, const int mod, const int k
     break;
   case 2:
     PROTECT(data = Rf_allocVector(STRSXP, sz));
-    R_xlen_t i, m, nbytes = sz, np = 0;
     for (i = 0, m = 0; i < sz; i++) {
-      SEXP onechar = rawOneString(buf, nbytes, &np);
+      onechar = rawOneString(buf, nbytes, &np);
       if (onechar == R_NilValue) break;
       SET_STRING_ELT(data, i, onechar);
       if (Rf_xlength(onechar) > 0) m++;
