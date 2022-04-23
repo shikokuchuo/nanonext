@@ -162,14 +162,11 @@ SEXP nano_decode(unsigned char *buf, const size_t sz, const int mod, const int k
     SEXP out;
     const char *names[] = {"raw", "data", ""};
     PROTECT(data);
-    switch (mod) {
-    case 1:
+    if (mod == 1) {
       PROTECT(raw);
-      break;
-    case 8:
+    } else if (mod == 8) {
       PROTECT(raw = data);
-      break;
-    default:
+    } else {
       PROTECT(raw = Rf_allocVector(RAWSXP, sz));
       memcpy(RAW(raw), buf, sz);
     }
