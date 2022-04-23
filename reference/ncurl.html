@@ -123,14 +123,14 @@ HTTP request headers e.g. <code>list(`Content-Type` = "text/plain")</code> or
 <span class="r-out co"><span class="r-pr">#&gt;</span>   [1] 7b 0a 20 20 22 61 72 67 73 22 3a 20 7b 7d 2c 20 0a 20 20 22 68 65 61 64 65</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [26] 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73 74 22 3a 20 22 68 74 74 70 62</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [51] 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22 58 2d 41 6d 7a 6e 2d 54 72 61</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [76] 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31 2d 36 32 36 33 63 36 39 33 2d</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [101] 33 66 64 66 32 62 65 39 32 66 65 39 61 38 62 61 37 38 62 34 39 31 33 63 22</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [126] 0a 20 20 7d 2c 20 0a 20 20 22 6f 72 69 67 69 6e 22 3a 20 22 32 30 2e 39 37</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [151] 2e 32 34 30 2e 32 33 33 22 2c 20 0a 20 20 22 75 72 6c 22 3a 20 22 68 74 74</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [76] 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31 2d 36 32 36 33 64 33 39 32 2d</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [101] 32 36 35 37 62 31 32 63 33 64 35 35 63 61 39 34 32 30 35 61 31 33 65 65 22</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [126] 0a 20 20 7d 2c 20 0a 20 20 22 6f 72 69 67 69 6e 22 3a 20 22 32 30 2e 31 32</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [151] 37 2e 32 31 2e 31 32 32 22 2c 20 0a 20 20 22 75 72 6c 22 3a 20 22 68 74 74</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [176] 70 3a 2f 2f 68 74 74 70 62 69 6e 2e 6f 72 67 2f 67 65 74 22 0a 7d 0a</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $data</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "{\n  \"args\": {}, \n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6263c693-3fdf2be92fe9a8ba78b4913c\"\n  }, \n  \"origin\": \"20.97.240.233\", \n  \"url\": \"http://httpbin.org/get\"\n}\n"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "{\n  \"args\": {}, \n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6263d392-2657b12c3d55ca94205a13ee\"\n  }, \n  \"origin\": \"20.127.21.122\", \n  \"url\": \"http://httpbin.org/get\"\n}\n"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span class="fu">ncurl</span><span class="op">(</span><span class="st">"http://httpbin.org/put"</span>,,,<span class="st">"PUT"</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>Authorization <span class="op">=</span> <span class="st">"Bearer APIKEY"</span><span class="op">)</span>, <span class="st">"hello world"</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $raw</span>
@@ -142,15 +142,15 @@ HTTP request headers e.g. <code>list(`Content-Type` = "text/plain")</code> or
 <span class="r-out co"><span class="r-pr">#&gt;</span> [126] 2c 20 0a 20 20 20 20 22 43 6f 6e 74 65 6e 74 2d 4c 65 6e 67 74 68 22 3a 20</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [151] 22 31 31 22 2c 20 0a 20 20 20 20 22 48 6f 73 74 22 3a 20 22 68 74 74 70 62</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [176] 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22 58 2d 41 6d 7a 6e 2d 54 72 61</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [201] 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31 2d 36 32 36 33 63 36 39 33 2d</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [226] 34 61 63 66 64 64 39 65 30 33 61 36 64 62 32 38 34 65 30 61 38 31 30 35 22</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [201] 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31 2d 36 32 36 33 64 33 39 32 2d</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [226] 37 30 62 39 33 38 35 65 32 62 30 33 63 37 30 64 32 38 66 62 34 38 64 30 22</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [251] 0a 20 20 7d 2c 20 0a 20 20 22 6a 73 6f 6e 22 3a 20 6e 75 6c 6c 2c 20 0a 20</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [276] 20 22 6f 72 69 67 69 6e 22 3a 20 22 32 30 2e 39 37 2e 32 34 30 2e 32 33 33</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [276] 20 22 6f 72 69 67 69 6e 22 3a 20 22 32 30 2e 31 32 37 2e 32 31 2e 31 32 32</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [301] 22 2c 20 0a 20 20 22 75 72 6c 22 3a 20 22 68 74 74 70 3a 2f 2f 68 74 74 70</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [326] 62 69 6e 2e 6f 72 67 2f 70 75 74 22 0a 7d 0a</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $data</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "{\n  \"args\": {}, \n  \"data\": \"hello world\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"11\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6263c693-4acfdd9e03a6db284e0a8105\"\n  }, \n  \"json\": null, \n  \"origin\": \"20.97.240.233\", \n  \"url\": \"http://httpbin.org/put\"\n}\n"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "{\n  \"args\": {}, \n  \"data\": \"hello world\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"11\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6263d392-70b9385e2b03c70d28fb48d0\"\n  }, \n  \"json\": null, \n  \"origin\": \"20.127.21.122\", \n  \"url\": \"http://httpbin.org/put\"\n}\n"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span class="fu">ncurl</span><span class="op">(</span><span class="st">"http://httpbin.org/post"</span>,,,<span class="st">"POST"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>`Content-Type` <span class="op">=</span> <span class="st">"application/json"</span><span class="op">)</span>,<span class="st">'{"k":"v"}'</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $raw</span>
@@ -162,16 +162,16 @@ HTTP request headers e.g. <code>list(`Content-Type` = "text/plain")</code> or
 <span class="r-out co"><span class="r-pr">#&gt;</span> [126] 6f 6e 74 65 6e 74 2d 54 79 70 65 22 3a 20 22 61 70 70 6c 69 63 61 74 69 6f</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [151] 6e 2f 6a 73 6f 6e 22 2c 20 0a 20 20 20 20 22 48 6f 73 74 22 3a 20 22 68 74</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [176] 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22 58 2d 41 6d 7a 6e 2d</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [201] 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31 2d 36 32 36 33 63 36</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [226] 39 33 2d 30 31 36 34 64 61 38 33 36 32 63 64 62 32 31 39 30 36 66 64 38 66</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [251] 66 66 22 0a 20 20 7d 2c 20 0a 20 20 22 6a 73 6f 6e 22 3a 20 7b 0a 20 20 20</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [201] 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31 2d 36 32 36 33 64 33</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [226] 39 32 2d 37 34 64 37 30 64 66 34 30 63 33 38 36 37 32 65 32 35 63 35 36 30</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [251] 64 36 22 0a 20 20 7d 2c 20 0a 20 20 22 6a 73 6f 6e 22 3a 20 7b 0a 20 20 20</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [276] 20 22 6b 22 3a 20 22 76 22 0a 20 20 7d 2c 20 0a 20 20 22 6f 72 69 67 69 6e</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [301] 22 3a 20 22 32 30 2e 39 37 2e 32 34 30 2e 32 33 33 22 2c 20 0a 20 20 22 75</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [301] 22 3a 20 22 32 30 2e 31 32 37 2e 32 31 2e 31 32 32 22 2c 20 0a 20 20 22 75</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [326] 72 6c 22 3a 20 22 68 74 74 70 3a 2f 2f 68 74 74 70 62 69 6e 2e 6f 72 67 2f</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [351] 70 6f 73 74 22 0a 7d 0a</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $data</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"k\\\":\\\"v\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Content-Length\": \"9\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6263c693-0164da8362cdb21906fd8fff\"\n  }, \n  \"json\": {\n    \"k\": \"v\"\n  }, \n  \"origin\": \"20.97.240.233\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"k\\\":\\\"v\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Content-Length\": \"9\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6263d392-74d70df40c38672e25c560d6\"\n  }, \n  \"json\": {\n    \"k\": \"v\"\n  }, \n  \"origin\": \"20.127.21.122\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"></span>
 </code></pre></div>
