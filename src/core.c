@@ -99,19 +99,24 @@ SEXP rawOneString(unsigned char *bytes, R_xlen_t nbytes, R_xlen_t *np) {
 
 SEXP nano_decode(unsigned char *buf, const size_t sz, const int mod, const int kpr) {
 
-  int p = 0, tryErr = 0;
+  int tryErr = 0;
   SEXP raw, data;
 
   switch (mod) {
   case 1:
-    PROTECT(raw = Rf_allocVector(RAWSXP, sz)); p++;
+    PROTECT(raw = Rf_allocVector(RAWSXP, sz));
     memcpy(RAW(raw), buf, sz);
     SEXP expr;
-    PROTECT(expr = Rf_lang2(nano_UnserSymbol, raw)); p++;
-    PROTECT(data = R_tryEval(expr, R_BaseEnv, &tryErr)); p++;
+    PROTECT(expr = Rf_lang2(nano_UnserSymbol, raw));
+    data = R_tryEval(expr, R_BaseEnv, &tryErr);
+    UNPROTECT(1);
+    if (tryErr) {
+      data = raw;
+      raw = R_NilValue;
+    }
     break;
   case 2:
-    PROTECT(data = Rf_allocVector(STRSXP, sz)); p++;
+    PROTECT(data = Rf_allocVector(STRSXP, sz));
     R_xlen_t i, m, nbytes = sz, np = 0;
     for (i = 0, m = 0; i < sz; i++) {
       SEXP onechar = rawOneString(buf, nbytes, &np);
@@ -122,63 +127,56 @@ SEXP nano_decode(unsigned char *buf, const size_t sz, const int mod, const int k
     SETLENGTH(data, m);
     break;
   case 3:
-    PROTECT(data = Rf_allocVector(CPLXSXP, sz / (sizeof(double) * 2))); p++;
+    PROTECT(data = Rf_allocVector(CPLXSXP, sz / (sizeof(double) * 2)));
     memcpy(COMPLEX(data), buf, sz);
     break;
   case 4:
-    PROTECT(data = Rf_allocVector(REALSXP, sz / sizeof(double))); p++;
+    PROTECT(data = Rf_allocVector(REALSXP, sz / sizeof(double)));
     memcpy(REAL(data), buf, sz);
     break;
   case 5:
-    PROTECT(data = Rf_allocVector(INTSXP, sz / sizeof(int))); p++;
+    PROTECT(data = Rf_allocVector(INTSXP, sz / sizeof(int)));
     memcpy(INTEGER(data), buf, sz);
     break;
   case 6:
-    PROTECT(data = Rf_allocVector(LGLSXP, sz / sizeof(int))); p++;
+    PROTECT(data = Rf_allocVector(LGLSXP, sz / sizeof(int)));
     memcpy(LOGICAL(data), buf, sz);
     break;
   case 7:
-    PROTECT(data = Rf_allocVector(REALSXP, sz / sizeof(double))); p++;
+    PROTECT(data = Rf_allocVector(REALSXP, sz / sizeof(double)));
     memcpy(REAL(data), buf, sz);
     break;
   case 8:
-    PROTECT(data = Rf_allocVector(RAWSXP, sz)); p++;
+    PROTECT(data = Rf_allocVector(RAWSXP, sz));
     memcpy(RAW(data), buf, sz);
     break;
   default:
-    PROTECT(data = R_NilValue); p++;
-    break;
+    PROTECT(data = R_NilValue);
   }
 
   if (kpr) {
-
     SEXP out;
     const char *names[] = {"raw", "data", ""};
-
     switch (mod) {
     case 1:
-      if (tryErr) {
-        PROTECT(data = raw); p++;
-        PROTECT(raw = R_NilValue); p++;
-      }
+      PROTECT(data);
       break;
     case 8:
-      PROTECT(raw = data); p++;
+      PROTECT(raw = data);
       break;
     default:
-      PROTECT(raw = Rf_allocVector(RAWSXP, sz)); p++;
+      PROTECT(raw = Rf_allocVector(RAWSXP, sz));
       memcpy(RAW(raw), buf, sz);
     }
-
-    PROTECT(out = Rf_mkNamed(VECSXP, names)); p++;
+    PROTECT(out = Rf_mkNamed(VECSXP, names));
     SET_VECTOR_ELT(out, 0, raw);
     SET_VECTOR_ELT(out, 1, data);
 
-    UNPROTECT(p);
+    UNPROTECT(3);
     return out;
   }
 
-  UNPROTECT(p);
+  UNPROTECT(1);
   return data;
 
 }
@@ -741,7 +739,7 @@ SEXP rnng_stream_send(SEXP stream, SEXP data, SEXP timeout) {
   const R_xlen_t xlen = Rf_xlength(enc);
   unsigned char *dp = RAW(enc);
 
-  const int frames = LOGICAL(Rf_getAttrib(stream, nano_TextframesSymbol))[0];
+  const int frames = *LOGICAL(Rf_getAttrib(stream, nano_TextframesSymbol));
   iov.iov_len = frames == 1 ? xlen - 1 : xlen;
   iov.iov_buf = dp;
 
@@ -781,7 +779,6 @@ SEXP rnng_stream_recv(SEXP stream, SEXP mode, SEXP timeout, SEXP keep, SEXP byte
   int xc;
   nng_iov iov;
   nng_aio *aiop;
-  size_t sz;
   SEXP res;
 
   iov.iov_len = xlen;
@@ -811,8 +808,7 @@ SEXP rnng_stream_recv(SEXP stream, SEXP mode, SEXP timeout, SEXP keep, SEXP byte
     return mk_error(xc);
   }
 
-  sz = nng_aio_count(aiop);
-  res = nano_decode(iov.iov_buf, sz, mod, kpr);
+  res = nano_decode(iov.iov_buf, nng_aio_count(aiop), mod, kpr);
   nng_aio_free(aiop);
   R_Free(iov.iov_buf);
 

@@ -100,8 +100,8 @@ In case of an error, an integer 'errorValue' is returned (to be
 }
 
 \examples{
-s1 <- socket("bus", listen = "inproc://nanonext")
-s2 <- socket("bus", dial = "inproc://nanonext")
+s1 <- socket("pair", listen = "inproc://nanonext")
+s2 <- socket("pair", dial = "inproc://nanonext")
 
 send(s1, data.frame(a = 1, b = 2))
 res <- recv(s2)
