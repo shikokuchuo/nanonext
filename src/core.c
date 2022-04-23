@@ -19,36 +19,17 @@ SEXP mk_error(const int xc) {
 
 SEXP nano_encode(SEXP object) {
 
-  R_xlen_t i, xlen = Rf_xlength(object);
-  const char *s;
-  unsigned char *buf;
-  size_t sz, np, outlen = 0;
+  R_xlen_t xlen = Rf_xlength(object);
+  size_t sz;
   SEXP out;
 
   if (!Rf_isVectorAtomic(object))
     error_return("'data' is not an atomic vector type");
-  switch (TYPEOF(object)) {
-  case REALSXP:
-    sz = xlen * sizeof(double);
-    out = Rf_allocVector(RAWSXP, sz);
-    memcpy(RAW(out), REAL(object), sz);
-    break;
-  case INTSXP:
-    sz = xlen * sizeof(int);
-    out = Rf_allocVector(RAWSXP, sz);
-    memcpy(RAW(out), INTEGER(object), sz);
-    break;
-  case LGLSXP:
-    sz = xlen * sizeof(int);
-    out = Rf_allocVector(RAWSXP, sz);
-    memcpy(RAW(out), LOGICAL(object), sz);
-    break;
-  case CPLXSXP:
-    sz = xlen * sizeof(double) * 2;
-    out = Rf_allocVector(RAWSXP, sz);
-    memcpy(RAW(out), COMPLEX(object), sz);
-    break;
-  case STRSXP:
+  if (TYPEOF(object) == STRSXP) {
+    const char *s;
+    unsigned char *buf;
+    size_t np, outlen = 0;
+    R_xlen_t i;
     for (i = 0; i < xlen; i++)
       outlen += strlen(Rf_translateCharUTF8(STRING_ELT(object, i))) + 1;
     PROTECT(out = Rf_allocVector(RAWSXP, outlen));
@@ -59,12 +40,34 @@ SEXP nano_encode(SEXP object) {
       np += strlen(s) + 1;
     }
     UNPROTECT(1);
-    break;
-  case RAWSXP:
-    out = object;
-    break;
-  default:
-    error_return("vector type for 'data' is unimplemented");
+  } else {
+    switch (TYPEOF(object)) {
+    case REALSXP:
+      sz = xlen * sizeof(double);
+      out = Rf_allocVector(RAWSXP, sz);
+      memcpy(RAW(out), REAL(object), sz);
+      break;
+    case INTSXP:
+      sz = xlen * sizeof(int);
+      out = Rf_allocVector(RAWSXP, sz);
+      memcpy(RAW(out), INTEGER(object), sz);
+      break;
+    case LGLSXP:
+      sz = xlen * sizeof(int);
+      out = Rf_allocVector(RAWSXP, sz);
+      memcpy(RAW(out), LOGICAL(object), sz);
+      break;
+    case CPLXSXP:
+      sz = xlen * sizeof(double) * 2;
+      out = Rf_allocVector(RAWSXP, sz);
+      memcpy(RAW(out), COMPLEX(object), sz);
+      break;
+    case RAWSXP:
+      out = object;
+      break;
+    default:
+      error_return("vector type for 'data' is unimplemented");
+    }
   }
 
   return out;
@@ -100,65 +103,68 @@ SEXP rawOneString(unsigned char *bytes, R_xlen_t nbytes, R_xlen_t *np) {
 SEXP nano_decode(unsigned char *buf, const size_t sz, const int mod, const int kpr) {
 
   int tryErr = 0;
-  SEXP raw, data, expr, onechar;
-  R_xlen_t i, m, nbytes = sz, np = 0;
+  SEXP raw, data;
 
-  switch (mod) {
-  case 1:
+  if (mod == 1) {
     PROTECT(raw = Rf_allocVector(RAWSXP, sz));
     memcpy(RAW(raw), buf, sz);
+    SEXP expr;
     PROTECT(expr = Rf_lang2(nano_UnserSymbol, raw));
     data = R_tryEval(expr, R_BaseEnv, &tryErr);
-    UNPROTECT(1);
     if (tryErr) {
       data = raw;
       raw = R_NilValue;
     }
-    break;
-  case 2:
+    UNPROTECT(2);
+  } else if (mod == 2) {
     PROTECT(data = Rf_allocVector(STRSXP, sz));
+    R_xlen_t i, m, nbytes = sz, np = 0;
     for (i = 0, m = 0; i < sz; i++) {
-      onechar = rawOneString(buf, nbytes, &np);
+      SEXP onechar = rawOneString(buf, nbytes, &np);
       if (onechar == R_NilValue) break;
       SET_STRING_ELT(data, i, onechar);
       if (Rf_xlength(onechar) > 0) m++;
     }
     SETLENGTH(data, m);
-    break;
-  case 3:
-    PROTECT(data = Rf_allocVector(CPLXSXP, sz / (sizeof(double) * 2)));
-    memcpy(COMPLEX(data), buf, sz);
-    break;
-  case 4:
-    PROTECT(data = Rf_allocVector(REALSXP, sz / sizeof(double)));
-    memcpy(REAL(data), buf, sz);
-    break;
-  case 5:
-    PROTECT(data = Rf_allocVector(INTSXP, sz / sizeof(int)));
-    memcpy(INTEGER(data), buf, sz);
-    break;
-  case 6:
-    PROTECT(data = Rf_allocVector(LGLSXP, sz / sizeof(int)));
-    memcpy(LOGICAL(data), buf, sz);
-    break;
-  case 7:
-    PROTECT(data = Rf_allocVector(REALSXP, sz / sizeof(double)));
-    memcpy(REAL(data), buf, sz);
-    break;
-  case 8:
-    PROTECT(data = Rf_allocVector(RAWSXP, sz));
-    memcpy(RAW(data), buf, sz);
-    break;
-  default:
-    PROTECT(data = R_NilValue);
+    UNPROTECT(1);
+  } else {
+    switch (mod) {
+    case 3:
+      data = Rf_allocVector(CPLXSXP, sz / (sizeof(double) * 2));
+      memcpy(COMPLEX(data), buf, sz);
+      break;
+    case 4:
+      data = Rf_allocVector(REALSXP, sz / sizeof(double));
+      memcpy(REAL(data), buf, sz);
+      break;
+    case 5:
+      data = Rf_allocVector(INTSXP, sz / sizeof(int));
+      memcpy(INTEGER(data), buf, sz);
+      break;
+    case 6:
+      data = Rf_allocVector(LGLSXP, sz / sizeof(int));
+      memcpy(LOGICAL(data), buf, sz);
+      break;
+    case 7:
+      data = Rf_allocVector(REALSXP, sz / sizeof(double));
+      memcpy(REAL(data), buf, sz);
+      break;
+    case 8:
+      data = Rf_allocVector(RAWSXP, sz);
+      memcpy(RAW(data), buf, sz);
+      break;
+    default:
+      data = R_NilValue;
+    }
   }
 
   if (kpr) {
     SEXP out;
     const char *names[] = {"raw", "data", ""};
+    PROTECT(data);
     switch (mod) {
     case 1:
-      PROTECT(data);
+      PROTECT(raw);
       break;
     case 8:
       PROTECT(raw = data);
@@ -175,7 +181,6 @@ SEXP nano_decode(unsigned char *buf, const size_t sz, const int mod, const int k
     return out;
   }
 
-  UNPROTECT(1);
   return data;
 
 }
