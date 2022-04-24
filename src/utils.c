@@ -480,7 +480,7 @@ static void thread_finalizer(SEXP xptr) {
 static void rnng_thread(void *arg) {
 
   nng_socket *sock = (nng_socket *) arg;
-  char *buf = NULL;
+  unsigned char *buf;
   size_t sz;
   time_t now;
   struct tm *tms;
@@ -498,15 +498,15 @@ static void rnng_thread(void *arg) {
       break;
     }
 
-    if (!strncmp(buf, ":", 1)) {
-      if (!strcmp(buf, ":c ")) {
+    if (!strncmp((char *) buf, ":", 1)) {
+      if (!strcmp((char *) buf, ":c ")) {
         REprintf("| <- peer connected: %d-%02d-%02d %02d:%02d:%02d\n",
                  tms->tm_year + 1900, tms->tm_mon + 1, tms->tm_mday,
                  tms->tm_hour, tms->tm_min, tms->tm_sec);
         nng_free(buf, sz);
         continue;
       }
-      if (!strcmp(buf, ":d ")) {
+      if (!strcmp((char *) buf, ":d ")) {
         REprintf("| -> peer disconnected: %d-%02d-%02d %02d:%02d:%02d\n",
                  tms->tm_year + 1900, tms->tm_mon + 1, tms->tm_mday,
                  tms->tm_hour, tms->tm_min, tms->tm_sec);

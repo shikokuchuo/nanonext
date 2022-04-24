@@ -439,7 +439,7 @@ In this respect, it may be used as a performant and lightweight method for makin
 
 s <- stream(dial = "wss://demo.piesocket.com/v3/channel_1", textframes = TRUE)
 s
-s |> recv(keep.raw = FALSE)
+s |> recv()
 
 ```
 
