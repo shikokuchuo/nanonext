@@ -154,7 +154,7 @@ SEXP rnng_ncurl(SEXP http, SEXP method, SEXP headers, SEXP data) {
   }
   if (data != R_NilValue) {
     unsigned char *dp = RAW(data);
-    const R_xlen_t dlen = XLENGTH(data) - 1;
+    const size_t dlen = (size_t) Rf_xlength(data) - 1;
     xc = nng_http_req_set_data(req, dp, dlen);
     if (xc) {
       nng_http_req_free(req);
@@ -234,14 +234,12 @@ SEXP rnng_ncurl(SEXP http, SEXP method, SEXP headers, SEXP data) {
 
   void *dat;
   size_t sz;
-  unsigned char *rp;
   SEXP vec;
 
   nng_http_res_get_data(res, &dat, &sz);
 
-  PROTECT(vec = Rf_allocVector(RAWSXP, sz));
-  rp = RAW(vec);
-  memcpy(rp, dat, sz);
+  vec = Rf_allocVector(RAWSXP, sz);
+  memcpy(RAW(vec), (unsigned char *) dat, sz);
   if (cfg != NULL)
     nng_tls_config_free(cfg);
   nng_http_res_free(res);
@@ -249,7 +247,6 @@ SEXP rnng_ncurl(SEXP http, SEXP method, SEXP headers, SEXP data) {
   nng_http_client_free(client);
   nng_url_free(url);
 
-  UNPROTECT(1);
   return vec;
 
 }
@@ -543,11 +540,11 @@ SEXP rnng_messenger(SEXP url) {
     R_Free(sock);
     return mk_error(xc);
   }
-  dlp = R_Calloc(1, nng_listener);
+  dlp = (nng_listener *) R_Calloc(1, nng_listener);
   xc = nng_listen(*sock, up, dlp, 0);
   if (xc == 10 || xc == 15) {
     R_Free(dlp);
-    dlp = R_Calloc(1, nng_dialer);
+    dlp = (nng_dialer *) R_Calloc(1, nng_dialer);
     xc = nng_dial(*sock, up, dlp, 2u);
     if (xc) {
       R_Free(dlp);

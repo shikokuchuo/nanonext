@@ -181,7 +181,7 @@ SEXP rnng_aio_get_msg(SEXP aio, SEXP mode, SEXP keep) {
     return mk_error(res);
 
   const int mod = *INTEGER(mode), kpr = *LOGICAL(keep);
-  unsigned char *buf = nng_msg_body(raio->data);
+  unsigned char *buf = (unsigned char *) nng_msg_body(raio->data);
   size_t sz = nng_msg_len(raio->data);
 
   return nano_decode(buf, sz, mod, kpr);
@@ -210,7 +210,7 @@ SEXP rnng_aio_stream_in(SEXP aio, SEXP mode, SEXP keep) {
 
   const int mod = *INTEGER(mode), kpr = *LOGICAL(keep);
   nng_iov *iov = (nng_iov *) iaio->data;
-  unsigned char *buf = iov->iov_buf;
+  unsigned char *buf = (unsigned char *) iov->iov_buf;
   size_t sz = nng_aio_count(iaio->aio);
 
   return nano_decode(buf, sz, mod, kpr);
@@ -390,7 +390,7 @@ SEXP rnng_stream_recv_aio(SEXP stream, SEXP bytes, SEXP timeout) {
 
   nng_stream *sp = (nng_stream *) R_ExternalPtrAddr(stream);
   const nng_duration dur = (nng_duration) Rf_asInteger(timeout);
-  const size_t xlen = Rf_asInteger(bytes);
+  const size_t xlen = (size_t) Rf_asInteger(bytes);
   nano_aio *iaio = R_Calloc(1, nano_aio);
   nng_iov *iov = R_Calloc(1, nng_iov);
   int xc;
@@ -399,7 +399,7 @@ SEXP rnng_stream_recv_aio(SEXP stream, SEXP bytes, SEXP timeout) {
   iaio->type = IOV_RECVAIO;
   iaio->data = iov;
   iov->iov_len = xlen;
-  iov->iov_buf = R_Calloc(xlen, unsigned char);
+  iov->iov_buf = (unsigned char *) R_Calloc(xlen, unsigned char);
 
   xc = nng_aio_alloc(&iaio->aio, iaio_complete, iaio);
   if (xc) {
@@ -416,7 +416,7 @@ SEXP rnng_stream_recv_aio(SEXP stream, SEXP bytes, SEXP timeout) {
     R_Free(iaio);
     return mk_error(xc);
   }
-  xc = nng_aio_set_iov(iaio->aio, 1, iaio->data);
+  xc = nng_aio_set_iov(iaio->aio, 1u, iov);
   if (xc) {
     nng_mtx_free(iaio->mtx);
     nng_aio_free(iaio->aio);
@@ -579,7 +579,7 @@ SEXP rnng_stream_send_aio(SEXP stream, SEXP data, SEXP timeout) {
     R_Free(iaio);
     return Rf_ScalarInteger(xc);
   }
-  xc = nng_aio_set_iov(iaio->aio, 1, iaio->data);
+  xc = nng_aio_set_iov(iaio->aio, 1u, iov);
   if (xc) {
     nng_mtx_free(iaio->mtx);
     nng_aio_free(iaio->aio);
@@ -690,7 +690,7 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP method, SEXP headers, SEXP data) {
   }
   if (data != R_NilValue) {
     unsigned char *dp = RAW(data);
-    const R_xlen_t dlen = Rf_xlength(data) - 1;
+    const size_t dlen = (size_t) Rf_xlength(data) - 1;
     xc = nng_http_req_set_data(handle->req, dp, dlen);
     if (xc) {
       nng_http_req_free(handle->req);
@@ -801,16 +801,13 @@ SEXP rnng_aio_http(SEXP aio) {
 
   void *dat;
   size_t sz;
-  unsigned char *rp;
   SEXP vec;
 
   nng_http_res_get_data(handle->res, &dat, &sz);
 
-  PROTECT(vec = Rf_allocVector(RAWSXP, sz));
-  rp = RAW(vec);
-  memcpy(rp, dat, sz);
+  vec = Rf_allocVector(RAWSXP, sz);
+  memcpy(RAW(vec), (unsigned char *) dat, sz);
 
-  UNPROTECT(1);
   return vec;
 
 }

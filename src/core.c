@@ -20,6 +20,7 @@ SEXP mk_error(const int xc) {
 SEXP nano_encode(SEXP object) {
 
   R_xlen_t xlen = Rf_xlength(object);
+  unsigned char *buf;
   size_t sz;
   SEXP out;
 
@@ -27,7 +28,6 @@ SEXP nano_encode(SEXP object) {
     error_return("'data' is not an atomic vector type");
   if (TYPEOF(object) == STRSXP) {
     const char *s;
-    unsigned char *buf;
     size_t np, outlen = 0;
     R_xlen_t i;
     for (i = 0; i < xlen; i++)
@@ -43,24 +43,28 @@ SEXP nano_encode(SEXP object) {
   } else {
     switch (TYPEOF(object)) {
     case REALSXP:
+      buf = (unsigned char *) REAL(object);
       sz = xlen * sizeof(double);
       out = Rf_allocVector(RAWSXP, sz);
-      memcpy(RAW(out), REAL(object), sz);
+      memcpy(RAW(out), buf, sz);
       break;
     case INTSXP:
+      buf = (unsigned char *) INTEGER(object);
       sz = xlen * sizeof(int);
       out = Rf_allocVector(RAWSXP, sz);
-      memcpy(RAW(out), INTEGER(object), sz);
+      memcpy(RAW(out), buf, sz);
       break;
     case LGLSXP:
+      buf = (unsigned char *) LOGICAL(object);
       sz = xlen * sizeof(int);
       out = Rf_allocVector(RAWSXP, sz);
-      memcpy(RAW(out), LOGICAL(object), sz);
+      memcpy(RAW(out), buf, sz);
       break;
     case CPLXSXP:
+      buf = (unsigned char *) COMPLEX(object);
       sz = xlen * (sizeof(double) + sizeof(double));
       out = Rf_allocVector(RAWSXP, sz);
-      memcpy(RAW(out), COMPLEX(object), sz);
+      memcpy(RAW(out), buf, sz);
       break;
     case RAWSXP:
       out = object;
@@ -78,7 +82,7 @@ SEXP rawOneString(unsigned char *bytes, R_xlen_t nbytes, R_xlen_t *np) {
 
   unsigned char *p;
   R_xlen_t i;
-  char *buf;
+  char *cbuf;
   SEXP res;
 
   for (i = *np, p = bytes + (*np); i < nbytes; p++, i++)
@@ -89,11 +93,11 @@ SEXP rawOneString(unsigned char *bytes, R_xlen_t nbytes, R_xlen_t *np) {
     *np = i + 1;
     res = Rf_mkChar((char *) p);
   } else {
-    buf = R_chk_calloc(nbytes - (*np) + 1, 1);
-    memcpy(buf, bytes + (*np), nbytes - (*np));
+    cbuf = R_chk_calloc(nbytes - (*np) + 1, 1);
+    memcpy(cbuf, bytes + (*np), nbytes - (*np));
     *np = nbytes;
-    res = Rf_mkChar(buf);
-    R_Free(buf);
+    res = Rf_mkChar(cbuf);
+    R_Free(cbuf);
   }
 
   return res;
@@ -646,7 +650,9 @@ SEXP rnng_recv(SEXP socket, SEXP mode, SEXP block, SEXP keep) {
       return mk_error(xc);
     }
     nng_msg *msgp = nng_aio_get_msg(aiop);
-    res = nano_decode(nng_msg_body(msgp), nng_msg_len(msgp), mod, kpr);
+    buf = (unsigned char *) nng_msg_body(msgp);
+    sz = nng_msg_len(msgp);
+    res = nano_decode(buf, sz, mod, kpr);
     nng_msg_free(msgp);
     nng_aio_free(aiop);
   }
@@ -701,6 +707,8 @@ SEXP rnng_ctx_recv(SEXP context, SEXP mode, SEXP timeout, SEXP keep) {
   const nng_duration dur = (nng_duration) Rf_asInteger(timeout);
   const int mod = *INTEGER(mode), kpr = *LOGICAL(keep);
   int xc;
+  unsigned char *buf;
+  size_t sz;
   SEXP res;
 
   xc = nng_aio_alloc(&aiop, NULL, NULL);
@@ -717,7 +725,9 @@ SEXP rnng_ctx_recv(SEXP context, SEXP mode, SEXP timeout, SEXP keep) {
   }
 
   nng_msg *msgp = nng_aio_get_msg(aiop);
-  res = nano_decode(nng_msg_body(msgp), nng_msg_len(msgp), mod, kpr);
+  buf = (unsigned char *) nng_msg_body(msgp);
+  sz = nng_msg_len(msgp);
+  res = nano_decode(buf, sz, mod, kpr);
   nng_msg_free(msgp);
   nng_aio_free(aiop);
 
@@ -783,7 +793,7 @@ SEXP rnng_stream_recv(SEXP stream, SEXP mode, SEXP timeout, SEXP keep, SEXP byte
   SEXP res;
 
   iov.iov_len = xlen;
-  iov.iov_buf = R_Calloc(xlen, unsigned char);
+  iov.iov_buf = (unsigned char *) R_Calloc(xlen, unsigned char);
 
   xc = nng_aio_alloc(&aiop, NULL, NULL);
   if (xc) {

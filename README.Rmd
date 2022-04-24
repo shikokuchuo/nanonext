@@ -437,9 +437,9 @@ In this respect, it may be used as a performant and lightweight method for makin
 
 ```{r stream}
 
-s <- stream(dial = "wss://socketsbay.com/wss/v2/2/demo/", textframes = TRUE)
+s <- stream(dial = "wss://demo.piesocket.com/v3/channel_1", textframes = TRUE)
 s
-s |> send("hello world")
+s |> recv(keep.raw = FALSE)
 
 ```
 
