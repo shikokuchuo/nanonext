@@ -58,7 +58,7 @@ SEXP nano_encode(SEXP object) {
       memcpy(RAW(out), LOGICAL(object), sz);
       break;
     case CPLXSXP:
-      sz = xlen * sizeof(double) * 2;
+      sz = xlen * (sizeof(double) + sizeof(double));
       out = Rf_allocVector(RAWSXP, sz);
       memcpy(RAW(out), COMPLEX(object), sz);
       break;
@@ -130,7 +130,7 @@ SEXP nano_decode(unsigned char *buf, const size_t sz, const int mod, const int k
   } else {
     switch (mod) {
     case 3:
-      data = Rf_allocVector(CPLXSXP, sz / (sizeof(double) * 2));
+      data = Rf_allocVector(CPLXSXP, sz / (sizeof(double) + sizeof(double)));
       memcpy(COMPLEX(data), buf, sz);
       break;
     case 4:
