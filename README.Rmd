@@ -107,7 +107,7 @@ nano2$recv()
 
 #### Functional Interface 
 
-The primary object in the functional interface is the Socket. Use `socket()` to create a socket, and optionally dial or listen at an address. The socket is then passed as the first argument of subsequent actions such as `send()` or `recv()`.
+The primary object in the functional interface is the Socket. Use `socket()` to create a socket and dial or listen at an address. The socket is then passed as the first argument of subsequent actions such as `send()` or `recv()`.
 
 *Example using Pipeline (Push/Pull) protocol with TCP/IP transport:*
 
@@ -268,7 +268,7 @@ close(s2)
 
 Can be used to perform computationally-expensive calculations or I/O-bound operations such as writing large amounts of data to disk in a separate 'server' process running concurrently.
 
-Server process: `reply()` will wait for a message and apply a function, in this case `rnorm()`, before sending back the result.
+[S] Server process: `reply()` will wait for a message and apply a function, in this case `rnorm()`, before sending back the result.
 
 ```{r rpcserver, eval=FALSE}
 
@@ -279,7 +279,7 @@ reply(ctxp, execute = rnorm, send_mode = "raw")
 
 ```
 
-Client process: `request()` performs an async send and receive request and returns immediately with a `recvAio` object.
+[C] Client process: `request()` performs an async send and receive request and returns immediately with a `recvAio` object.
 
 ```{r rpcclient}
 

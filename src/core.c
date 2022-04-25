@@ -17,6 +17,68 @@ SEXP mk_error(const int xc) {
 
 }
 
+SEXP rnng_serial(SEXP mode) {
+
+  const char *mod;
+  int xc = 0;
+
+  if (TYPEOF(mode) == VECSXP) {
+    mod = CHAR(STRING_ELT(VECTOR_ELT(mode, 0), 0));
+    if (!strcmp(mod, "serial"))
+      xc = 1;
+    else
+      error_return("'mode' should be one of serial, raw")
+
+  } else {
+
+    mod = CHAR(STRING_ELT(mode, 0));
+
+    switch (strlen(mod)) {
+    case 1:
+      if (!strcmp(mod, "s"))
+        xc = 1;
+      else if (strcmp(mod, "r"))
+        error_return("'mode' should be one of serial, raw")
+        break;
+    case 2:
+      if (!strcmp(mod, "se"))
+        xc = 1;
+      else if (strcmp(mod, "ra"))
+        error_return("'mode' should be one of serial, raw")
+        break;
+    case 3:
+      if (!strcmp(mod, "ser"))
+        xc = 1;
+      else if (strcmp(mod, "raw"))
+        error_return("'mode' should be one of serial, raw")
+        break;
+    case 4:
+      if (!strcmp(mod, "seri"))
+        xc = 1;
+      else
+        error_return("'mode' should be one of serial, raw")
+        break;
+    case 5:
+      if (!strcmp(mod, "seria"))
+        xc = 1;
+      else
+        error_return("'mode' should be one of serial, raw")
+        break;
+    case 6:
+      if (!strcmp(mod, "serial"))
+        xc = 1;
+      else
+        error_return("'mode' should be one of serial, raw")
+        break;
+    default:
+      error_return("'mode' should be one of serial, raw")
+    }
+  }
+
+  return Rf_ScalarLogical(xc);
+
+}
+
 SEXP nano_encode(SEXP object) {
 
   R_xlen_t xlen = Rf_xlength(object);
@@ -104,7 +166,319 @@ SEXP rawOneString(unsigned char *bytes, R_xlen_t nbytes, R_xlen_t *np) {
 
 }
 
-SEXP nano_decode(unsigned char *buf, const size_t sz, const int mod, const int kpr) {
+SEXP rnng_matcharg(SEXP mode) {
+
+  const char *mod;
+  int xc = 0;
+
+  if (TYPEOF(mode) == VECSXP) {
+    mod = CHAR(STRING_ELT(VECTOR_ELT(mode, 0), 0));
+    if (!strcmp(mod, "serial"))
+      xc = 1;
+    else
+      error_return("'mode' should be one of serial, character, complex, double, integer, logical, numeric, raw");
+
+  } else {
+
+    mod = CHAR(STRING_ELT(mode, 0));
+
+    switch (strlen(mod)) {
+    case 1:
+      if (!strcmp(mod, "s"))
+        xc = 1;
+      else if (!strcmp(mod, "d"))
+        xc = 4;
+      else if (!strcmp(mod, "i"))
+        xc = 5;
+      else if (!strcmp(mod, "l"))
+        xc = 6;
+      else if (!strcmp(mod, "n"))
+        xc = 7;
+      else if (!strcmp(mod, "r"))
+        xc = 8;
+      else
+        error_return("'mode' should be one of serial, character, complex, double, integer, logical, numeric, raw");
+      break;
+    case 2:
+      if (!strcmp(mod, "se"))
+        xc = 1;
+      else if (!strcmp(mod, "ch"))
+        xc = 2;
+      else if (!strcmp(mod, "co"))
+        xc = 3;
+      else if (!strcmp(mod, "do"))
+        xc = 4;
+      else if (!strcmp(mod, "in"))
+        xc = 5;
+      else if (!strcmp(mod, "lo"))
+        xc = 6;
+      else if (!strcmp(mod, "nu"))
+        xc = 7;
+      else if (!strcmp(mod, "ra"))
+        xc = 8;
+      else
+        error_return("'mode' should be one of serial, character, complex, double, integer, logical, numeric, raw");
+      break;
+    case 3:
+      if (!strcmp(mod, "ser"))
+        xc = 1;
+      else if (!strcmp(mod, "cha"))
+        xc = 2;
+      else if (!strcmp(mod, "com"))
+        xc = 3;
+      else if (!strcmp(mod, "dou"))
+        xc = 4;
+      else if (!strcmp(mod, "int"))
+        xc = 5;
+      else if (!strcmp(mod, "log"))
+        xc = 6;
+      else if (!strcmp(mod, "num"))
+        xc = 7;
+      else if (!strcmp(mod, "raw"))
+        xc = 8;
+      else
+        error_return("'mode' should be one of serial, character, complex, double, integer, logical, numeric, raw");
+      break;
+    case 4:
+      if (!strcmp(mod, "seri"))
+        xc = 1;
+      else if (!strcmp(mod, "char"))
+        xc = 2;
+      else if (!strcmp(mod, "comp"))
+        xc = 3;
+      else if (!strcmp(mod, "doub"))
+        xc = 4;
+      else if (!strcmp(mod, "inte"))
+        xc = 5;
+      else if (!strcmp(mod, "logi"))
+        xc = 6;
+      else if (!strcmp(mod, "nume"))
+        xc = 7;
+      else
+        error_return("'mode' should be one of serial, character, complex, double, integer, logical, numeric, raw");
+      break;
+    case 5:
+      if (!strcmp(mod, "seria"))
+        xc = 1;
+      else if (!strcmp(mod, "chara"))
+        xc = 2;
+      else if (!strcmp(mod, "compl"))
+        xc = 3;
+      else if (!strcmp(mod, "doubl"))
+        xc = 4;
+      else if (!strcmp(mod, "integ"))
+        xc = 5;
+      else if (!strcmp(mod, "logic"))
+        xc = 6;
+      else if (!strcmp(mod, "numer"))
+        xc = 7;
+      else
+        error_return("'mode' should be one of serial, character, complex, double, integer, logical, numeric, raw");
+      break;
+    case 6:
+      if (!strcmp(mod, "serial"))
+        xc = 1;
+      else if (!strcmp(mod, "charac"))
+        xc = 2;
+      else if (!strcmp(mod, "comple"))
+        xc = 3;
+      else if (!strcmp(mod, "double"))
+        xc = 4;
+      else if (!strcmp(mod, "intege"))
+        xc = 5;
+      else if (!strcmp(mod, "logica"))
+        xc = 6;
+      else if (!strcmp(mod, "numeri"))
+        xc = 7;
+      else
+        error_return("'mode' should be one of serial, character, complex, double, integer, logical, numeric, raw");
+      break;
+    case 7:
+      if (!strcmp(mod, "charact"))
+        xc = 2;
+      else if (!strcmp(mod, "complex"))
+        xc = 3;
+      else if (!strcmp(mod, "integer"))
+        xc = 5;
+      else if (!strcmp(mod, "logical"))
+        xc = 6;
+      else if (!strcmp(mod, "numeric"))
+        xc = 7;
+      else
+        error_return("'mode' should be one of serial, character, complex, double, integer, logical, numeric, raw");
+      break;
+    case 8:
+      if (!strcmp(mod, "characte"))
+        xc = 2;
+      else
+        error_return("'mode' should be one of serial, character, complex, double, integer, logical, numeric, raw");
+      break;
+    case 9:
+      if (!strcmp(mod, "character"))
+        xc = 2;
+      else
+        error_return("'mode' should be one of serial, character, complex, double, integer, logical, numeric, raw");
+      break;
+    default:
+      error_return("'mode' should be one of serial, character, complex, double, integer, logical, numeric, raw")
+    }
+  }
+
+  return Rf_ScalarInteger(xc);
+
+}
+
+SEXP rnng_matchargs(SEXP mode) {
+
+  const char *mod;
+  int xc = 0;
+
+  if (TYPEOF(mode) == VECSXP) {
+    mod = CHAR(STRING_ELT(VECTOR_ELT(mode, 0), 0));
+    if (!strcmp(mod, "character"))
+      xc = 2;
+    else
+      error_return("'mode' should be one of character, complex, double, integer, logical, numeric, raw");
+
+  } else {
+
+    mod = CHAR(STRING_ELT(mode, 0));
+
+    switch (strlen(mod)) {
+    case 1:
+      if (!strcmp(mod, "d"))
+        xc = 4;
+      else if (!strcmp(mod, "i"))
+        xc = 5;
+      else if (!strcmp(mod, "l"))
+        xc = 6;
+      else if (!strcmp(mod, "n"))
+        xc = 7;
+      else if (!strcmp(mod, "r"))
+        xc = 8;
+      else
+        error_return("'mode' should be one of character, complex, double, integer, logical, numeric, raw");
+      break;
+    case 2:
+      if (!strcmp(mod, "ch"))
+        xc = 2;
+      else if (!strcmp(mod, "co"))
+        xc = 3;
+      else if (!strcmp(mod, "do"))
+        xc = 4;
+      else if (!strcmp(mod, "in"))
+        xc = 5;
+      else if (!strcmp(mod, "lo"))
+        xc = 6;
+      else if (!strcmp(mod, "nu"))
+        xc = 7;
+      else if (!strcmp(mod, "ra"))
+        xc = 8;
+      else
+        error_return("'mode' should be one of character, complex, double, integer, logical, numeric, raw");
+      break;
+    case 3:
+      if (!strcmp(mod, "cha"))
+        xc = 2;
+      else if (!strcmp(mod, "com"))
+        xc = 3;
+      else if (!strcmp(mod, "dou"))
+        xc = 4;
+      else if (!strcmp(mod, "int"))
+        xc = 5;
+      else if (!strcmp(mod, "log"))
+        xc = 6;
+      else if (!strcmp(mod, "num"))
+        xc = 7;
+      else if (!strcmp(mod, "raw"))
+        xc = 8;
+      else
+        error_return("'mode' should be one of character, complex, double, integer, logical, numeric, raw");
+      break;
+    case 4:
+      if (!strcmp(mod, "char"))
+        xc = 2;
+      else if (!strcmp(mod, "comp"))
+        xc = 3;
+      else if (!strcmp(mod, "doub"))
+        xc = 4;
+      else if (!strcmp(mod, "inte"))
+        xc = 5;
+      else if (!strcmp(mod, "logi"))
+        xc = 6;
+      else if (!strcmp(mod, "nume"))
+        xc = 7;
+      else
+        error_return("'mode' should be one of character, complex, double, integer, logical, numeric, raw");
+      break;
+    case 5:
+      if (!strcmp(mod, "chara"))
+        xc = 2;
+      else if (!strcmp(mod, "compl"))
+        xc = 3;
+      else if (!strcmp(mod, "doubl"))
+        xc = 4;
+      else if (!strcmp(mod, "integ"))
+        xc = 5;
+      else if (!strcmp(mod, "logic"))
+        xc = 6;
+      else if (!strcmp(mod, "numer"))
+        xc = 7;
+      else
+        error_return("'mode' should be one of character, complex, double, integer, logical, numeric, raw");
+      break;
+    case 6:
+      if (!strcmp(mod, "charac"))
+        xc = 2;
+      else if (!strcmp(mod, "comple"))
+        xc = 3;
+      else if (!strcmp(mod, "double"))
+        xc = 4;
+      else if (!strcmp(mod, "intege"))
+        xc = 5;
+      else if (!strcmp(mod, "logica"))
+        xc = 6;
+      else if (!strcmp(mod, "numeri"))
+        xc = 7;
+      else
+        error_return("'mode' should be one of character, complex, double, integer, logical, numeric, raw");
+      break;
+    case 7:
+      if (!strcmp(mod, "charact"))
+        xc = 2;
+      else if (!strcmp(mod, "complex"))
+        xc = 3;
+      else if (!strcmp(mod, "integer"))
+        xc = 5;
+      else if (!strcmp(mod, "logical"))
+        xc = 6;
+      else if (!strcmp(mod, "numeric"))
+        xc = 7;
+      else
+        error_return("'mode' should be one of character, complex, double, integer, logical, numeric, raw");
+      break;
+    case 8:
+      if (!strcmp(mod, "characte"))
+        xc = 2;
+      else
+        error_return("'mode' should be one of character, complex, double, integer, logical, numeric, raw");
+      break;
+    case 9:
+      if (!strcmp(mod, "character"))
+        xc = 2;
+      else
+        error_return("'mode' should be one of character, complex, double, integer, logical, numeric, raw");
+      break;
+    default:
+      error_return("'mode' should be one of character, complex, double, integer, logical, numeric, raw")
+    }
+  }
+
+  return Rf_ScalarInteger(xc);
+
+}
+
+SEXP nano_decode(unsigned char *buf, size_t sz, const int mod, const int kpr) {
 
   int tryErr = 0;
   SEXP raw, data;
@@ -563,13 +937,14 @@ SEXP rnng_listener_close(SEXP listener) {
 /* send and recv ------------------------------------------------------------ */
 /* nng flags: bitmask of NNG_FLAG_ALLOC = 1u + NNG_FLAG_NONBLOCK = 2u ------- */
 
-SEXP rnng_send(SEXP socket, SEXP data, SEXP block) {
+SEXP rnng_send(SEXP socket, SEXP data, SEXP block, SEXP echo) {
 
   if (R_ExternalPtrTag(socket) != nano_SocketSymbol)
     error_return("'con' is not a valid Socket");
   nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(socket);
 
-  const int blk = Rf_asInteger(block);
+  const nng_duration blk = (nng_duration) Rf_asInteger(block);
+  const int ech = *LOGICAL(echo);
   int xc;
   nng_msg *msgp;
   nng_aio *aiop;
@@ -578,14 +953,12 @@ SEXP rnng_send(SEXP socket, SEXP data, SEXP block) {
   const R_xlen_t xlen = Rf_xlength(enc);
   unsigned char *dp = RAW(enc);
 
-  switch (blk) {
-  case 0:
-    xc = nng_send(*sock, dp, xlen, 2u);
-    break;
-  case 1:
-    xc = nng_send(*sock, dp, xlen, 0);
-    break;
-  default:
+  if (TYPEOF(block) == LGLSXP) {
+
+    xc = blk ? nng_send(*sock, dp, xlen, 0) : nng_send(*sock, dp, xlen, 2u);
+
+  } else {
+
     xc = nng_msg_alloc(&msgp, 0);
     if (xc)
       return mk_error(xc);
@@ -600,12 +973,16 @@ SEXP rnng_send(SEXP socket, SEXP data, SEXP block) {
     nng_aio_wait(aiop);
     xc = nng_aio_result(aiop);
     nng_aio_free(aiop);
+
   }
 
   if (xc)
     return mk_error(xc);
 
-  return enc;
+  if (ech)
+    return enc;
+  else
+    return R_MissingArg;
 
 }
 
@@ -615,29 +992,24 @@ SEXP rnng_recv(SEXP socket, SEXP mode, SEXP block, SEXP keep) {
     error_return("'con' is not a valid Socket");
   nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(socket);
 
-  const int blk = Rf_asInteger(block), mod = *INTEGER(mode), kpr = *LOGICAL(keep);
+  mode = rnng_matcharg(mode);
+  const int mod = *INTEGER(mode), kpr = *LOGICAL(keep);
   int xc;
   unsigned char *buf;
   size_t sz;
   nng_aio *aiop;
   SEXP res;
 
-  switch (blk) {
-  case 0:
-    xc = nng_recv(*sock, &buf, &sz, 3u);
+  if (TYPEOF(block) == LGLSXP) {
+    const int blk = *LOGICAL(block);
+    xc = blk ? nng_recv(*sock, &buf, &sz, 1u): nng_recv(*sock, &buf, &sz, 3u);
     if (xc)
       return mk_error(xc);
     res = nano_decode(buf, sz, mod, kpr);
     nng_free(buf, sz);
-    break;
-  case 1:
-    xc = nng_recv(*sock, &buf, &sz, 1u);
-    if (xc)
-      return mk_error(xc);
-    res = nano_decode(buf, sz, mod, kpr);
-    nng_free(buf, sz);
-    break;
-  default:
+
+  } else {
+    nng_duration blk = (nng_duration) Rf_asInteger(block);
     xc = nng_aio_alloc(&aiop, NULL, NULL);
     if (xc)
       return mk_error(xc);
@@ -661,17 +1033,24 @@ SEXP rnng_recv(SEXP socket, SEXP mode, SEXP block, SEXP keep) {
 
 }
 
-SEXP rnng_ctx_send(SEXP context, SEXP data, SEXP timeout) {
+SEXP rnng_ctx_send(SEXP context, SEXP data, SEXP timeout, SEXP echo) {
 
   if (R_ExternalPtrTag(context) != nano_ContextSymbol)
     error_return("'con' is not a valid Context");
   nng_ctx *ctxp = (nng_ctx *) R_ExternalPtrAddr(context);
 
-  const nng_duration dur = (nng_duration) Rf_asInteger(timeout);
+  const int ech = *LOGICAL(echo);
+  nng_duration dur;
   int xc;
   nng_msg *msgp;
   nng_aio *aiop;
 
+  if (TYPEOF(timeout) == LGLSXP) {
+    const int blk = *LOGICAL(timeout);
+    dur = blk ? -2 : 0;
+  } else {
+    dur = (nng_duration) Rf_asInteger(timeout);
+  }
   SEXP enc = nano_encode(data);
   const R_xlen_t xlen = Rf_xlength(enc);
   unsigned char *dp = RAW(enc);
@@ -694,7 +1073,10 @@ SEXP rnng_ctx_send(SEXP context, SEXP data, SEXP timeout) {
   if (xc)
     return mk_error(xc);
 
-  return enc;
+  if (ech)
+    return enc;
+  else
+    return R_MissingArg;
 
 }
 
@@ -704,12 +1086,21 @@ SEXP rnng_ctx_recv(SEXP context, SEXP mode, SEXP timeout, SEXP keep) {
     error_return("'con' is not a valid Context");
   nng_ctx *ctxp = (nng_ctx *) R_ExternalPtrAddr(context);
   nng_aio *aiop;
-  const nng_duration dur = (nng_duration) Rf_asInteger(timeout);
+  nng_duration dur;
+
+  mode = rnng_matcharg(mode);
   const int mod = *INTEGER(mode), kpr = *LOGICAL(keep);
   int xc;
   unsigned char *buf;
   size_t sz;
   SEXP res;
+
+  if (TYPEOF(timeout) == LGLSXP) {
+    const int blk = *LOGICAL(timeout);
+    dur = blk ? -2 : 0;
+  } else {
+    dur = (nng_duration) Rf_asInteger(timeout);
+  }
 
   xc = nng_aio_alloc(&aiop, NULL, NULL);
   if (xc)
@@ -735,17 +1126,24 @@ SEXP rnng_ctx_recv(SEXP context, SEXP mode, SEXP timeout, SEXP keep) {
 
 }
 
-SEXP rnng_stream_send(SEXP stream, SEXP data, SEXP timeout) {
+SEXP rnng_stream_send(SEXP stream, SEXP data, SEXP timeout, SEXP echo) {
 
   if (R_ExternalPtrTag(stream) != nano_StreamSymbol)
     error_return("'con' is not a valid Stream");
   nng_stream *sp = (nng_stream *) R_ExternalPtrAddr(stream);
 
-  const nng_duration dur = (nng_duration) Rf_asInteger(timeout);
+  const int ech = *LOGICAL(echo);
+  nng_duration dur;
   int xc;
   nng_iov iov;
   nng_aio *aiop;
 
+  if (TYPEOF(timeout) == LGLSXP) {
+    const int blk = *LOGICAL(timeout);
+    dur = blk ? -2 : 0;
+  } else {
+    dur = (nng_duration) Rf_asInteger(timeout);
+  }
   SEXP enc = nano_encode(data);
   const R_xlen_t xlen = Rf_xlength(enc);
   unsigned char *dp = RAW(enc);
@@ -774,7 +1172,10 @@ SEXP rnng_stream_send(SEXP stream, SEXP data, SEXP timeout) {
   if (xc)
     return mk_error(xc);
 
-  return enc;
+  if (ech)
+    return enc;
+  else
+    return R_MissingArg;
 
 }
 
@@ -782,15 +1183,23 @@ SEXP rnng_stream_recv(SEXP stream, SEXP mode, SEXP timeout, SEXP keep, SEXP byte
 
   if (R_ExternalPtrTag(stream) != nano_StreamSymbol)
     error_return("'con' is not a valid Stream");
-
   nng_stream *sp = (nng_stream *) R_ExternalPtrAddr(stream);
-  const nng_duration dur = (nng_duration) Rf_asInteger(timeout);
-  const size_t xlen = Rf_asInteger(bytes);
+
+  mode = rnng_matchargs(mode);
   const int mod = *INTEGER(mode), kpr = *LOGICAL(keep);
+  const size_t xlen = Rf_asInteger(bytes);
+  nng_duration dur;
   int xc;
   nng_iov iov;
   nng_aio *aiop;
   SEXP res;
+
+  if (TYPEOF(timeout) == LGLSXP) {
+    const int blk = *LOGICAL(timeout);
+    dur = blk ? -2 : 0;
+  } else {
+    dur = (nng_duration) Rf_asInteger(timeout);
+  }
 
   iov.iov_len = xlen;
   iov.iov_buf = (unsigned char *) R_Calloc(xlen, unsigned char);

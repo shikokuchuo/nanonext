@@ -126,9 +126,9 @@ nano2$recv()
 #### Functional Interface
 
 The primary object in the functional interface is the Socket. Use
-`socket()` to create a socket, and optionally dial or listen at an
-address. The socket is then passed as the first argument of subsequent
-actions such as `send()` or `recv()`.
+`socket()` to create a socket and dial or listen at an address. The
+socket is then passed as the first argument of subsequent actions such
+as `send()` or `recv()`.
 
 *Example using Pipeline (Push/Pull) protocol with TCP/IP transport:*
 
@@ -339,8 +339,8 @@ Can be used to perform computationally-expensive calculations or
 I/O-bound operations such as writing large amounts of data to disk in a
 separate ‘server’ process running concurrently.
 
-Server process: `reply()` will wait for a message and apply a function,
-in this case `rnorm()`, before sending back the result.
+\[S\] Server process: `reply()` will wait for a message and apply a
+function, in this case `rnorm()`, before sending back the result.
 
 ``` r
 library(nanonext)
@@ -349,8 +349,8 @@ ctxp <- context(rep)
 reply(ctxp, execute = rnorm, send_mode = "raw") 
 ```
 
-Client process: `request()` performs an async send and receive request
-and returns immediately with a `recvAio` object.
+\[C\] Client process: `request()` performs an async send and receive
+request and returns immediately with a `recvAio` object.
 
 ``` r
 library(nanonext)
@@ -379,7 +379,7 @@ aio
 #> < recvAio >
 #>  - $data for message data
 aio$data |> str()
-#>  num [1:100000000] -1.072 1.447 0.962 -0.483 -0.843 ...
+#>  num [1:100000000] 2.698 0.0645 -1.0922 2.1422 0.8848 ...
 ```
 
 As `call_aio()` is blocking and will wait for completion, an alternative
@@ -516,11 +516,11 @@ ncurl("http://httpbin.org/headers")
 #>   [1] 7b 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73
 #>  [26] 74 22 3a 20 22 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22
 #>  [51] 58 2d 41 6d 7a 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31
-#>  [76] 2d 36 32 36 35 62 32 62 31 2d 33 33 30 61 30 30 30 37 32 33 61 32 61 39 63
-#> [101] 36 36 61 30 36 66 38 36 61 22 0a 20 20 7d 0a 7d 0a
+#>  [76] 2d 36 32 36 37 31 36 30 32 2d 32 35 64 63 33 32 39 63 30 39 35 34 64 36 33
+#> [101] 39 37 37 62 34 30 35 32 39 22 0a 20 20 7d 0a 7d 0a
 #> 
 #> $data
-#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6265b2b1-330a000723a2a9c66a06f86a\"\n  }\n}\n"
+#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-62671602-25dc329c0954d63977b40529\"\n  }\n}\n"
 ```
 
 For advanced use, supports additional HTTP methods such as POST or PUT.
@@ -535,7 +535,7 @@ res
 #>  - $raw for raw message
 
 call_aio(res)$data
-#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6265b2b1-09b62748201d88f5057952ab\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"78.145.225.121\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
+#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-62671603-121afeba10cc694a091360a9\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"78.145.225.121\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
 ```
 
 In this respect, it may be used as a performant and lightweight method

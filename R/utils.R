@@ -264,9 +264,3 @@ match.arg2 <- function(choice, choices) {
   index
 }
 
-match.arg1 <- function(choice) {
-  index <- pmatch(choice[1L], c("serial", "raw"), nomatch = 0L, duplicates.ok = TRUE)
-  index || stop(sprintf("'%s' should be one of serial, raw", deparse(substitute(choice))))
-  index
-}
-

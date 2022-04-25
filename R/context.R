@@ -113,18 +113,15 @@ reply <- function(context,
                   timeout = -2L,
                   ...) {
 
-  recv_mode <- match.arg2(recv_mode, c("serial", "character", "complex", "double",
-                                       "integer", "logical", "numeric", "raw"))
   res <- .Call(rnng_ctx_recv, context, recv_mode, timeout, FALSE)
   is_error_value(res) && return(invisible(res))
   on.exit(expr = send_aio(context, as.raw(0L), mode = send_mode))
   data <- execute(res, ...)
-  if (missing(send_mode) || match.arg1(send_mode) == 1L)
+  if (.Call(rnng_serial, send_mode))
     data <- serialize(object = data, connection = NULL)
-  res <- .Call(rnng_ctx_send, context, data, timeout)
+  res <- .Call(rnng_ctx_send, context, data, timeout, FALSE)
   on.exit()
-  is.integer(res) && return(invisible(res))
-  invisible(0L)
+  if (missing(res)) invisible(0L) else invisible(res)
 
 }
 
@@ -183,9 +180,8 @@ request <- function(context,
                     timeout = -2L,
                     keep.raw = TRUE) {
 
-  recv_mode <- match.arg2(recv_mode, c("serial", "character", "complex", "double",
-                                       "integer", "logical", "numeric", "raw"))
-  if (missing(send_mode) || match.arg1(send_mode) == 1L)
+  recv_mode <- .Call(rnng_matcharg, recv_mode)
+  if (.Call(rnng_serial, send_mode))
     data <- serialize(object = data, connection = NULL)
   res <- .Call(rnng_ctx_send_aio, context, data, -2L)
   is.integer(res) && return(res)

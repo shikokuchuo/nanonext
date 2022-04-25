@@ -29,7 +29,7 @@ messenger <- function(url) {
   sock <- .Call(rnng_messenger, url)
   is.integer(sock) && return(invisible(sock))
   on.exit(expr = {
-    s <- suppressWarnings(.Call(rnng_send, sock, writeBin(":d ", raw()), 0L))
+    suppressWarnings(.Call(rnng_send, sock, writeBin(":d ", raw()), 0L, FALSE))
     .Call(rnng_close, sock)
     invisible()
   })
@@ -43,7 +43,7 @@ messenger <- function(url) {
   cat(sprintf("\n| url: %s\n", url), file = stdout())
   cat("| connecting... ", file = stderr())
 
-  s <- suppressWarnings(.Call(rnng_send, sock, writeBin(":c ", raw()), 1000L))
+  s <- suppressWarnings(.Call(rnng_send, sock, writeBin(":c ", raw()), 1000L, TRUE))
   if (is.integer(s)) {
     cat(sprintf("\r| peer offline: %s\n", format.POSIXct(Sys.time())), file = stderr())
   } else {
@@ -55,7 +55,7 @@ messenger <- function(url) {
     data <- readline()
     if (identical(data, ":q")) break
     if (identical(data, "")) next
-    s <- suppressWarnings(.Call(rnng_send, sock, data, 0L))
+    s <- suppressWarnings(.Call(rnng_send, sock, data, 0L, TRUE))
     if (is.integer(s)) {
       cat(sprintf("%*s > not sent: peer offline: %s\n", nchar(data), "", format.POSIXct(Sys.time())),
           file = stderr())

@@ -74,11 +74,10 @@ send.nanoSocket <- function(con,
                             block = FALSE,
                             echo = TRUE) {
 
-  if (missing(mode) || match.arg1(mode) == 1L)
+  if (.Call(rnng_serial, mode))
     data <- serialize(object = data, connection = NULL)
-  res <- .Call(rnng_send, con, data, block)
-  is.integer(res) && return(res)
-  if (missing(echo) || isTRUE(echo)) res else invisible(0L)
+  res <- .Call(rnng_send, con, data, block, echo)
+  if (missing(res)) invisible(0L) else res
 
 }
 
@@ -92,12 +91,10 @@ send.nanoContext <- function(con,
                              block = TRUE,
                              echo = TRUE) {
 
-  if (missing(mode) || match.arg1(mode) == 1L)
+  if (.Call(rnng_serial, mode))
     data <- serialize(object = data, connection = NULL)
-  if (missing(block) || isTRUE(block)) block <- -2L
-  res <- .Call(rnng_ctx_send, con, data, block)
-  is.integer(res) && return(res)
-  if (missing(echo) || isTRUE(echo)) res else invisible(0L)
+  res <- .Call(rnng_ctx_send, con, data, block, echo)
+  if (missing(res)) invisible(0L) else res
 
 }
 
@@ -111,13 +108,10 @@ send.nanoStream <- function(con,
                             block = TRUE,
                             echo = TRUE) {
 
-  if (missing(block) || isTRUE(block)) block <- -2L
-  res <- .Call(rnng_stream_send, con, data, block)
-  is.integer(res) && return(res)
-  if (missing(echo) || isTRUE(echo)) res else invisible(0L)
+  res <- .Call(rnng_stream_send, con, data, block, echo)
+  if (missing(res)) invisible(0L) else res
 
 }
-
 
 #' Receive
 #'
@@ -220,8 +214,6 @@ recv.nanoSocket <- function(con,
                             keep.raw = TRUE,
                             ...) {
 
-  mode <- match.arg2(mode, c("serial", "character", "complex", "double",
-                             "integer", "logical", "numeric", "raw"))
   .Call(rnng_recv, con, mode, block, keep.raw)
 
 }
@@ -237,9 +229,6 @@ recv.nanoContext <- function(con,
                              keep.raw = TRUE,
                              ...) {
 
-  mode <- match.arg2(mode, c("serial", "character", "complex", "double",
-                             "integer", "logical", "numeric", "raw"))
-  if (missing(block) || isTRUE(block)) block <- -2L
   .Call(rnng_ctx_recv, con, mode, block, keep.raw)
 
 }
@@ -256,9 +245,6 @@ recv.nanoStream <- function(con,
                             n = 65536L,
                             ...) {
 
-  mode <- match.arg2(mode, c("character", "complex", "double", "integer",
-                             "logical", "numeric", "raw")) + 1L
-  if (missing(block) || isTRUE(block)) block <- -2L
   .Call(rnng_stream_recv, con, mode, block, keep.raw, n)
 
 }

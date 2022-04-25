@@ -49,7 +49,7 @@ send_aio <- function(con, data, mode = c("serial", "raw"), timeout = -2L) UseMet
 #'
 send_aio.nanoSocket <- function(con, data, mode = c("serial", "raw"), timeout = -2L) {
 
-  if (missing(mode) || match.arg1(mode) == 1L)
+  if (.Call(rnng_serial, mode))
     data <- serialize(object = data, connection = NULL)
   aio <- .Call(rnng_send_aio, con, data, timeout)
   is.integer(aio) && return(aio)
@@ -77,7 +77,7 @@ send_aio.nanoSocket <- function(con, data, mode = c("serial", "raw"), timeout = 
 #'
 send_aio.nanoContext <- function(con, data, mode = c("serial", "raw"), timeout = -2L) {
 
-  if (missing(mode) || match.arg1(mode) == 1L)
+  if (.Call(rnng_serial, mode))
     data <- serialize(object = data, connection = NULL)
   aio <- .Call(rnng_ctx_send_aio, con, data, timeout)
   is.integer(aio) && return(aio)
@@ -200,8 +200,7 @@ recv_aio.nanoSocket <- function(con,
                                 keep.raw = TRUE,
                                 ...) {
 
-  mode <- match.arg2(mode, c("serial", "character", "complex", "double",
-                             "integer", "logical", "numeric", "raw"))
+  mode <- .Call(rnng_matcharg, mode)
   aio <- .Call(rnng_recv_aio, con, timeout)
   is.integer(aio) && return(aio)
 
@@ -258,8 +257,7 @@ recv_aio.nanoContext <- function(con,
                                  keep.raw = TRUE,
                                  ...) {
 
-  mode <- match.arg2(mode, c("serial", "character", "complex", "double",
-                             "integer", "logical", "numeric", "raw"))
+  mode <- .Call(rnng_matcharg, mode)
   aio <- .Call(rnng_ctx_recv_aio, con, timeout)
   is.integer(aio) && return(aio)
 
@@ -317,8 +315,7 @@ recv_aio.nanoStream <- function(con,
                                 n = 65536L,
                                 ...) {
 
-  mode <- match.arg2(mode, c("character", "complex", "double", "integer",
-                             "logical", "numeric", "raw")) + 1L
+  mode <- .Call(rnng_matchargs, mode)
   aio <- .Call(rnng_stream_recv_aio, con, n, timeout)
   is.integer(aio) && return(aio)
 
