@@ -463,7 +463,7 @@ This is available in system package repositories as:
 
 A system installation of 'libnng' in the standard filesystem locations will be detected and used if possible.
 
-Otherwise, a suitable recent version of 'libnng' will be downloaded and built from source automatically during package installation (note: this requires 'cmake').
+Otherwise, the latest release version of 'libnng' will be downloaded and built from source automatically during package installation (note: this requires 'cmake').
 
 #### Windows
 

@@ -379,7 +379,7 @@ aio
 #> < recvAio >
 #>  - $data for message data
 aio$data |> str()
-#>  num [1:100000000] 2.698 0.0645 -1.0922 2.1422 0.8848 ...
+#>  num [1:100000000] 0.112 0.003 2.633 -0.609 -0.476 ...
 ```
 
 As `call_aio()` is blocking and will wait for completion, an alternative
@@ -516,11 +516,11 @@ ncurl("http://httpbin.org/headers")
 #>   [1] 7b 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73
 #>  [26] 74 22 3a 20 22 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22
 #>  [51] 58 2d 41 6d 7a 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31
-#>  [76] 2d 36 32 36 37 31 36 30 32 2d 32 35 64 63 33 32 39 63 30 39 35 34 64 36 33
-#> [101] 39 37 37 62 34 30 35 32 39 22 0a 20 20 7d 0a 7d 0a
+#>  [76] 2d 36 32 36 38 37 33 65 39 2d 36 66 33 37 32 32 39 34 32 61 34 31 39 31 36
+#> [101] 35 30 35 37 31 38 35 33 31 22 0a 20 20 7d 0a 7d 0a
 #> 
 #> $data
-#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-62671602-25dc329c0954d63977b40529\"\n  }\n}\n"
+#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-626873e9-6f3722942a41916505718531\"\n  }\n}\n"
 ```
 
 For advanced use, supports additional HTTP methods such as POST or PUT.
@@ -535,7 +535,7 @@ res
 #>  - $raw for raw message
 
 call_aio(res)$data
-#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-62671603-121afeba10cc694a091360a9\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"78.145.225.121\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
+#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-626873e9-0c5fdf1b0c8e1f21452df988\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"78.145.225.121\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
 ```
 
 In this respect, it may be used as a performant and lightweight method
@@ -594,7 +594,7 @@ This is available in system package repositories as:
 A system installation of ‘libnng’ in the standard filesystem locations
 will be detected and used if possible.
 
-Otherwise, a suitable recent version of ‘libnng’ will be downloaded and
+Otherwise, the latest release version of ‘libnng’ will be downloaded and
 built from source automatically during package installation (note: this
 requires ‘cmake’).
 

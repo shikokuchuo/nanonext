@@ -7,10 +7,9 @@
 
 #### Updates
 
-* NNG library used for building from source (and on Windows) updated to 1.6.0 pre-release.
 * Setting 'NANONEXT_TLS=1' now allows the downloaded NNG library to be built against a system mbedtls installation.
 * Deprecated `send_ctx()`, `recv_ctx()` and logging are removed.
-* Internal performance optimisations.
+* All-round internal performance optimisations.
 
 # nanonext 0.4.0
 

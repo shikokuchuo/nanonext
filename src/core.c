@@ -995,7 +995,7 @@ SEXP rnng_recv(SEXP socket, SEXP mode, SEXP block, SEXP keep) {
   mode = rnng_matcharg(mode);
   const int mod = *INTEGER(mode), kpr = *LOGICAL(keep);
   int xc;
-  unsigned char *buf;
+  void *buf;
   size_t sz;
   nng_aio *aiop;
   SEXP res;
@@ -1005,7 +1005,7 @@ SEXP rnng_recv(SEXP socket, SEXP mode, SEXP block, SEXP keep) {
     xc = blk ? nng_recv(*sock, &buf, &sz, 1u): nng_recv(*sock, &buf, &sz, 3u);
     if (xc)
       return mk_error(xc);
-    res = nano_decode(buf, sz, mod, kpr);
+    res = nano_decode((unsigned char *) buf, sz, mod, kpr);
     nng_free(buf, sz);
 
   } else {
@@ -1022,9 +1022,8 @@ SEXP rnng_recv(SEXP socket, SEXP mode, SEXP block, SEXP keep) {
       return mk_error(xc);
     }
     nng_msg *msgp = nng_aio_get_msg(aiop);
-    buf = (unsigned char *) nng_msg_body(msgp);
     sz = nng_msg_len(msgp);
-    res = nano_decode(buf, sz, mod, kpr);
+    res = nano_decode((unsigned char *) nng_msg_body(msgp), sz, mod, kpr);
     nng_msg_free(msgp);
     nng_aio_free(aiop);
   }
@@ -1187,7 +1186,7 @@ SEXP rnng_stream_recv(SEXP stream, SEXP mode, SEXP timeout, SEXP keep, SEXP byte
 
   mode = rnng_matchargs(mode);
   const int mod = *INTEGER(mode), kpr = *LOGICAL(keep);
-  const size_t xlen = Rf_asInteger(bytes);
+  const size_t xlen = (size_t) Rf_asInteger(bytes);
   nng_duration dur;
   int xc;
   nng_iov iov;

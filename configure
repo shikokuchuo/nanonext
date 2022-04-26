@@ -14,7 +14,7 @@ if [ "$NANONEXT_ARM" ]; then
   PKG_LIBS="$PKG_LIBS -latomic"
 fi
 PKG_CFLAGS=""
-LIB_VER="722bf46"
+LIB_VER="169221d"
 SYS_LIB=0
 
 # Check for custom locations
