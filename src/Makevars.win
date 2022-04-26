@@ -1,4 +1,4 @@
-RWINLIB = ../windows/rwinlib-1.6.0-pre
+RWINLIB = ../windows/rwinlib-1.5.2
 
 PKG_CFLAGS=-DNNG_STATIC_LIB -I${RWINLIB}/include $(C_VISIBILITY)
 PKG_LIBS=-L${RWINLIB}/lib${R_ARCH}${CRT} -lnng -lws2_32
