@@ -1022,8 +1022,9 @@ SEXP rnng_recv(SEXP socket, SEXP mode, SEXP block, SEXP keep) {
       return mk_error(xc);
     }
     nng_msg *msgp = nng_aio_get_msg(aiop);
+    buf = nng_msg_body(msgp);
     sz = nng_msg_len(msgp);
-    res = nano_decode((unsigned char *) nng_msg_body(msgp), sz, mod, kpr);
+    res = nano_decode((unsigned char *) buf, sz, mod, kpr);
     nng_msg_free(msgp);
     nng_aio_free(aiop);
   }
@@ -1090,7 +1091,7 @@ SEXP rnng_ctx_recv(SEXP context, SEXP mode, SEXP timeout, SEXP keep) {
   mode = rnng_matcharg(mode);
   const int mod = *INTEGER(mode), kpr = *LOGICAL(keep);
   int xc;
-  unsigned char *buf;
+  void *buf;
   size_t sz;
   SEXP res;
 
@@ -1115,9 +1116,9 @@ SEXP rnng_ctx_recv(SEXP context, SEXP mode, SEXP timeout, SEXP keep) {
   }
 
   nng_msg *msgp = nng_aio_get_msg(aiop);
-  buf = (unsigned char *) nng_msg_body(msgp);
+  buf = nng_msg_body(msgp);
   sz = nng_msg_len(msgp);
-  res = nano_decode(buf, sz, mod, kpr);
+  res = nano_decode((unsigned char *) buf, sz, mod, kpr);
   nng_msg_free(msgp);
   nng_aio_free(aiop);
 
@@ -1189,6 +1190,7 @@ SEXP rnng_stream_recv(SEXP stream, SEXP mode, SEXP timeout, SEXP keep, SEXP byte
   const size_t xlen = (size_t) Rf_asInteger(bytes);
   nng_duration dur;
   int xc;
+  size_t sz;
   nng_iov iov;
   nng_aio *aiop;
   SEXP res;
@@ -1201,7 +1203,7 @@ SEXP rnng_stream_recv(SEXP stream, SEXP mode, SEXP timeout, SEXP keep, SEXP byte
   }
 
   iov.iov_len = xlen;
-  iov.iov_buf = (unsigned char *) R_Calloc(xlen, unsigned char);
+  iov.iov_buf = R_Calloc(xlen, unsigned char);
 
   xc = nng_aio_alloc(&aiop, NULL, NULL);
   if (xc) {
@@ -1227,7 +1229,8 @@ SEXP rnng_stream_recv(SEXP stream, SEXP mode, SEXP timeout, SEXP keep, SEXP byte
     return mk_error(xc);
   }
 
-  res = nano_decode(iov.iov_buf, nng_aio_count(aiop), mod, kpr);
+  sz = nng_aio_count(aiop);
+  res = nano_decode((unsigned char *) iov.iov_buf, sz, mod, kpr);
   nng_aio_free(aiop);
   R_Free(iov.iov_buf);
 
