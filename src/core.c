@@ -502,7 +502,7 @@ SEXP nano_decode(void *buf, size_t sz, const int mod, const int kpr) {
       SET_STRING_ELT(data, i, onechar);
       if (Rf_xlength(onechar) > 0) m++;
     }
-    SETLENGTH(data, m);
+    data = Rf_xlengthgets(data, m);
     UNPROTECT(1);
   } else {
     size_t size;
