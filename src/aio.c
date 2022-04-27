@@ -180,11 +180,11 @@ SEXP rnng_aio_get_msg(SEXP aio, SEXP mode, SEXP keep) {
   if (res)
     return mk_error(res);
 
-  const int mod = *INTEGER(mode), kpr = *LOGICAL(keep);
+  const int mod = INTEGER(mode)[0], kpr = LOGICAL(keep)[0];
   void *buf = nng_msg_body(raio->data);
   size_t sz = nng_msg_len(raio->data);
 
-  return nano_decode((unsigned char *) buf, sz, mod, kpr);
+  return nano_decode(buf, sz, mod, kpr);
 
 }
 
@@ -208,11 +208,11 @@ SEXP rnng_aio_stream_in(SEXP aio, SEXP mode, SEXP keep) {
   if (res)
     return mk_error(res);
 
-  const int mod = *INTEGER(mode), kpr = *LOGICAL(keep);
+  const int mod = INTEGER(mode)[0], kpr = LOGICAL(keep)[0];
   nng_iov *iov = (nng_iov *) iaio->data;
   size_t sz = nng_aio_count(iaio->aio);
 
-  return nano_decode((unsigned char *) iov->iov_buf, sz, mod, kpr);
+  return nano_decode(iov->iov_buf, sz, mod, kpr);
 
 }
 
@@ -647,9 +647,7 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP method, SEXP headers, SEXP data) {
   }
   if (headers != R_NilValue) {
     R_xlen_t hlen = Rf_xlength(headers);
-    SEXP names;
-    PROTECT(names = Rf_getAttrib(headers, R_NamesSymbol));
-
+    SEXP names = Rf_getAttrib(headers, R_NamesSymbol);
     switch (TYPEOF(headers)) {
     case STRSXP:
       for (R_xlen_t i = 0; i < hlen; i++) {
@@ -662,7 +660,6 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP method, SEXP headers, SEXP data) {
           nng_url_free(handle->url);
           R_Free(handle);
           R_Free(haio);
-          UNPROTECT(1);
           return mk_error(xc);
         }
       }
@@ -678,18 +675,15 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP method, SEXP headers, SEXP data) {
           nng_url_free(handle->url);
           R_Free(handle);
           R_Free(haio);
-          UNPROTECT(1);
           return mk_error(xc);
         }
       }
       break;
     }
-
-    UNPROTECT(1);
   }
   if (data != R_NilValue) {
     unsigned char *dp = RAW(data);
-    const size_t dlen = (size_t) Rf_xlength(data) - 1;
+    const size_t dlen = Rf_xlength(data) - 1;
     xc = nng_http_req_set_data(handle->req, dp, dlen);
     if (xc) {
       nng_http_req_free(handle->req);
@@ -804,7 +798,7 @@ SEXP rnng_aio_http(SEXP aio) {
 
   nng_http_res_get_data(handle->res, &dat, &sz);
   vec = Rf_allocVector(RAWSXP, sz);
-  memcpy(RAW(vec), (unsigned char *) dat, sz);
+  memcpy(RAW(vec), dat, sz);
 
   return vec;
 

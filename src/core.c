@@ -82,7 +82,7 @@ SEXP rnng_serial(SEXP mode) {
 SEXP nano_encode(SEXP object) {
 
   R_xlen_t xlen = Rf_xlength(object);
-  unsigned char *buf;
+  void *buf;
   size_t sz;
   SEXP out;
 
@@ -105,25 +105,25 @@ SEXP nano_encode(SEXP object) {
   } else {
     switch (TYPEOF(object)) {
     case REALSXP:
-      buf = (unsigned char *) REAL(object);
+      buf = REAL(object);
       sz = xlen * sizeof(double);
       out = Rf_allocVector(RAWSXP, sz);
       memcpy(RAW(out), buf, sz);
       break;
     case INTSXP:
-      buf = (unsigned char *) INTEGER(object);
+      buf = INTEGER(object);
       sz = xlen * sizeof(int);
       out = Rf_allocVector(RAWSXP, sz);
       memcpy(RAW(out), buf, sz);
       break;
     case LGLSXP:
-      buf = (unsigned char *) LOGICAL(object);
+      buf = LOGICAL(object);
       sz = xlen * sizeof(int);
       out = Rf_allocVector(RAWSXP, sz);
       memcpy(RAW(out), buf, sz);
       break;
     case CPLXSXP:
-      buf = (unsigned char *) COMPLEX(object);
+      buf = COMPLEX(object);
       sz = xlen * (sizeof(double) + sizeof(double));
       out = Rf_allocVector(RAWSXP, sz);
       memcpy(RAW(out), buf, sz);
@@ -478,7 +478,7 @@ SEXP rnng_matchargs(SEXP mode) {
 
 }
 
-SEXP nano_decode(unsigned char *buf, size_t sz, const int mod, const int kpr) {
+SEXP nano_decode(void *buf, size_t sz, const int mod, const int kpr) {
 
   int tryErr = 0;
   SEXP raw, data;
@@ -491,7 +491,6 @@ SEXP nano_decode(unsigned char *buf, size_t sz, const int mod, const int kpr) {
     data = R_tryEval(expr, R_BaseEnv, &tryErr);
     if (tryErr) {
       data = raw;
-      raw = R_NilValue;
     }
     UNPROTECT(2);
   } else if (mod == 2) {
@@ -506,26 +505,62 @@ SEXP nano_decode(unsigned char *buf, size_t sz, const int mod, const int kpr) {
     SETLENGTH(data, m);
     UNPROTECT(1);
   } else {
+    size_t size;
     switch (mod) {
     case 3:
-      data = Rf_allocVector(CPLXSXP, sz / (sizeof(double) + sizeof(double)));
-      memcpy(COMPLEX(data), buf, sz);
+      size = sizeof(double) + sizeof(double);
+      if (sz % size == 0) {
+        data = Rf_allocVector(CPLXSXP, sz / size);
+        memcpy(COMPLEX(data), buf, sz);
+      } else {
+        Rf_warning("received data could not be converted to complex");
+        data = Rf_allocVector(RAWSXP, sz);
+        memcpy(RAW(data), buf, sz);
+      }
       break;
     case 4:
-      data = Rf_allocVector(REALSXP, sz / sizeof(double));
-      memcpy(REAL(data), buf, sz);
+      size = sizeof(double);
+      if (sz % size == 0) {
+        data = Rf_allocVector(REALSXP, sz / size);
+        memcpy(REAL(data), buf, sz);
+      } else {
+        Rf_warning("received data could not be converted to double");
+        data = Rf_allocVector(RAWSXP, sz);
+        memcpy(RAW(data), buf, sz);
+      }
       break;
     case 5:
-      data = Rf_allocVector(INTSXP, sz / sizeof(int));
-      memcpy(INTEGER(data), buf, sz);
+      size = sizeof(int);
+      if (sz % size == 0) {
+        data = Rf_allocVector(INTSXP, sz / size);
+        memcpy(INTEGER(data), buf, sz);
+      } else {
+        Rf_warning("received data could not be converted to integer");
+        data = Rf_allocVector(RAWSXP, sz);
+        memcpy(RAW(data), buf, sz);
+      }
       break;
     case 6:
-      data = Rf_allocVector(LGLSXP, sz / sizeof(int));
-      memcpy(LOGICAL(data), buf, sz);
+      size = sizeof(int);
+      if (sz % size == 0) {
+        data = Rf_allocVector(LGLSXP, sz / size);
+        memcpy(LOGICAL(data), buf, sz);
+      } else {
+        Rf_warning("received data could not be converted to logical");
+        data = Rf_allocVector(RAWSXP, sz);
+        memcpy(RAW(data), buf, sz);
+      }
       break;
     case 7:
-      data = Rf_allocVector(REALSXP, sz / sizeof(double));
-      memcpy(REAL(data), buf, sz);
+      size = sizeof(double);
+      if (sz % size == 0) {
+        data = Rf_allocVector(REALSXP, sz / size);
+        memcpy(REAL(data), buf, sz);
+      } else {
+        Rf_warning("received data could not be converted to numeric");
+        data = Rf_allocVector(RAWSXP, sz);
+        memcpy(RAW(data), buf, sz);
+      }
       break;
     case 8:
       data = Rf_allocVector(RAWSXP, sz);
@@ -606,7 +641,7 @@ void context_finalizer(SEXP xptr) {
 
 SEXP rnng_protocol_open(SEXP protocol) {
 
-  const int pro = *INTEGER(protocol);
+  const int pro = INTEGER(protocol)[0];
   nng_socket *sock;
   char *pname;
   int xc;
@@ -944,7 +979,7 @@ SEXP rnng_send(SEXP socket, SEXP data, SEXP block, SEXP echo) {
   nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(socket);
 
   const nng_duration blk = (nng_duration) Rf_asInteger(block);
-  const int ech = *LOGICAL(echo);
+  const int ech = LOGICAL(echo)[0];
   int xc;
   nng_msg *msgp;
   nng_aio *aiop;
@@ -993,7 +1028,7 @@ SEXP rnng_recv(SEXP socket, SEXP mode, SEXP block, SEXP keep) {
   nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(socket);
 
   mode = rnng_matcharg(mode);
-  const int mod = *INTEGER(mode), kpr = *LOGICAL(keep);
+  const int mod = INTEGER(mode)[0], kpr = LOGICAL(keep)[0];
   int xc;
   void *buf;
   size_t sz;
@@ -1001,11 +1036,11 @@ SEXP rnng_recv(SEXP socket, SEXP mode, SEXP block, SEXP keep) {
   SEXP res;
 
   if (TYPEOF(block) == LGLSXP) {
-    const int blk = *LOGICAL(block);
+    const int blk = LOGICAL(block)[0];
     xc = blk ? nng_recv(*sock, &buf, &sz, 1u): nng_recv(*sock, &buf, &sz, 3u);
     if (xc)
       return mk_error(xc);
-    res = nano_decode((unsigned char *) buf, sz, mod, kpr);
+    res = nano_decode(buf, sz, mod, kpr);
     nng_free(buf, sz);
 
   } else {
@@ -1024,7 +1059,7 @@ SEXP rnng_recv(SEXP socket, SEXP mode, SEXP block, SEXP keep) {
     nng_msg *msgp = nng_aio_get_msg(aiop);
     buf = nng_msg_body(msgp);
     sz = nng_msg_len(msgp);
-    res = nano_decode((unsigned char *) buf, sz, mod, kpr);
+    res = nano_decode(buf, sz, mod, kpr);
     nng_msg_free(msgp);
     nng_aio_free(aiop);
   }
@@ -1039,14 +1074,14 @@ SEXP rnng_ctx_send(SEXP context, SEXP data, SEXP timeout, SEXP echo) {
     error_return("'con' is not a valid Context");
   nng_ctx *ctxp = (nng_ctx *) R_ExternalPtrAddr(context);
 
-  const int ech = *LOGICAL(echo);
+  const int ech = LOGICAL(echo)[0];
   nng_duration dur;
   int xc;
   nng_msg *msgp;
   nng_aio *aiop;
 
   if (TYPEOF(timeout) == LGLSXP) {
-    const int blk = *LOGICAL(timeout);
+    const int blk = LOGICAL(timeout)[0];
     dur = blk ? -2 : 0;
   } else {
     dur = (nng_duration) Rf_asInteger(timeout);
@@ -1089,14 +1124,14 @@ SEXP rnng_ctx_recv(SEXP context, SEXP mode, SEXP timeout, SEXP keep) {
   nng_duration dur;
 
   mode = rnng_matcharg(mode);
-  const int mod = *INTEGER(mode), kpr = *LOGICAL(keep);
+  const int mod = INTEGER(mode)[0], kpr = LOGICAL(keep)[0];
   int xc;
   void *buf;
   size_t sz;
   SEXP res;
 
   if (TYPEOF(timeout) == LGLSXP) {
-    const int blk = *LOGICAL(timeout);
+    const int blk = LOGICAL(timeout)[0];
     dur = blk ? -2 : 0;
   } else {
     dur = (nng_duration) Rf_asInteger(timeout);
@@ -1118,7 +1153,7 @@ SEXP rnng_ctx_recv(SEXP context, SEXP mode, SEXP timeout, SEXP keep) {
   nng_msg *msgp = nng_aio_get_msg(aiop);
   buf = nng_msg_body(msgp);
   sz = nng_msg_len(msgp);
-  res = nano_decode((unsigned char *) buf, sz, mod, kpr);
+  res = nano_decode(buf, sz, mod, kpr);
   nng_msg_free(msgp);
   nng_aio_free(aiop);
 
@@ -1132,14 +1167,14 @@ SEXP rnng_stream_send(SEXP stream, SEXP data, SEXP timeout, SEXP echo) {
     error_return("'con' is not a valid Stream");
   nng_stream *sp = (nng_stream *) R_ExternalPtrAddr(stream);
 
-  const int ech = *LOGICAL(echo);
+  const int ech = LOGICAL(echo)[0];
   nng_duration dur;
   int xc;
   nng_iov iov;
   nng_aio *aiop;
 
   if (TYPEOF(timeout) == LGLSXP) {
-    const int blk = *LOGICAL(timeout);
+    const int blk = LOGICAL(timeout)[0];
     dur = blk ? -2 : 0;
   } else {
     dur = (nng_duration) Rf_asInteger(timeout);
@@ -1148,7 +1183,7 @@ SEXP rnng_stream_send(SEXP stream, SEXP data, SEXP timeout, SEXP echo) {
   const R_xlen_t xlen = Rf_xlength(enc);
   unsigned char *dp = RAW(enc);
 
-  const int frames = *LOGICAL(Rf_getAttrib(stream, nano_TextframesSymbol));
+  const int frames = LOGICAL(Rf_getAttrib(stream, nano_TextframesSymbol))[0];
   iov.iov_len = frames == 1 ? xlen - 1 : xlen;
   iov.iov_buf = dp;
 
@@ -1186,7 +1221,7 @@ SEXP rnng_stream_recv(SEXP stream, SEXP mode, SEXP timeout, SEXP keep, SEXP byte
   nng_stream *sp = (nng_stream *) R_ExternalPtrAddr(stream);
 
   mode = rnng_matchargs(mode);
-  const int mod = *INTEGER(mode), kpr = *LOGICAL(keep);
+  const int mod = INTEGER(mode)[0], kpr = LOGICAL(keep)[0];
   const size_t xlen = (size_t) Rf_asInteger(bytes);
   nng_duration dur;
   int xc;
@@ -1196,7 +1231,7 @@ SEXP rnng_stream_recv(SEXP stream, SEXP mode, SEXP timeout, SEXP keep, SEXP byte
   SEXP res;
 
   if (TYPEOF(timeout) == LGLSXP) {
-    const int blk = *LOGICAL(timeout);
+    const int blk = LOGICAL(timeout)[0];
     dur = blk ? -2 : 0;
   } else {
     dur = (nng_duration) Rf_asInteger(timeout);
@@ -1230,7 +1265,7 @@ SEXP rnng_stream_recv(SEXP stream, SEXP mode, SEXP timeout, SEXP keep, SEXP byte
   }
 
   sz = nng_aio_count(aiop);
-  res = nano_decode((unsigned char *) iov.iov_buf, sz, mod, kpr);
+  res = nano_decode(iov.iov_buf, sz, mod, kpr);
   nng_aio_free(aiop);
   R_Free(iov.iov_buf);
 

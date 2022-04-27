@@ -7,6 +7,7 @@
 
 #### Updates
 
+* For receives, if an error occurs in unserialisation or data conversion (e.g. mode was incorrectly specified), the received raw vector is now available at both `$raw` and `$data` if `keep.raw = TRUE`.
 * Setting 'NANONEXT_TLS=1' now allows the downloaded NNG library to be built against a system mbedtls installation.
 * Deprecated `send_ctx()`, `recv_ctx()` and logging are removed.
 * All-round internal performance optimisations.

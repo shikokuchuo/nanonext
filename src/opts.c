@@ -11,7 +11,7 @@ SEXP rnng_socket_set(SEXP socket, SEXP type, SEXP opt, SEXP value) {
     error_return("'object' is not a valid Socket");
   nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(socket);
   const char *op = CHAR(STRING_ELT(opt, 0));
-  const int typ = *INTEGER(type);
+  const int typ = INTEGER(type)[0];
   int xc;
 
   switch (typ) {
@@ -52,7 +52,7 @@ SEXP rnng_dialer_set(SEXP dialer, SEXP type, SEXP opt, SEXP value) {
     error_return("'object' is not a valid Dialer");
   nng_dialer *dial = (nng_dialer *) R_ExternalPtrAddr(dialer);
   const char *op = CHAR(STRING_ELT(opt, 0));
-  const int typ = *INTEGER(type);
+  const int typ = INTEGER(type)[0];
   int xc;
 
   switch (typ) {
@@ -93,7 +93,7 @@ SEXP rnng_listener_set(SEXP listener, SEXP type, SEXP opt, SEXP value) {
     error_return("'object' is not a valid Listener");
   nng_listener *list = (nng_listener *) R_ExternalPtrAddr(listener);
   const char *op = CHAR(STRING_ELT(opt, 0));
-  const int typ = *INTEGER(type);
+  const int typ = INTEGER(type)[0];
   int xc;
 
   switch (typ) {
@@ -134,7 +134,7 @@ SEXP rnng_ctx_set(SEXP context, SEXP type, SEXP opt, SEXP value) {
     error_return("'object' is not a valid Context");
   nng_ctx *ctx = (nng_ctx *) R_ExternalPtrAddr(context);
   const char *op = CHAR(STRING_ELT(opt, 0));
-  const int typ = *INTEGER(type);
+  const int typ = INTEGER(type)[0];
   int xc;
 
   switch (typ) {
@@ -175,7 +175,7 @@ SEXP rnng_stream_set(SEXP stream, SEXP type, SEXP opt, SEXP value) {
     error_return("'object' is not a valid Stream");
   nng_stream *st = (nng_stream *) R_ExternalPtrAddr(stream);
   const char *op = CHAR(STRING_ELT(opt, 0));
-  const int typ = *INTEGER(type);
+  const int typ = INTEGER(type)[0];
   int xc;
 
   switch (typ) {

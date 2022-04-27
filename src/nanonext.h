@@ -34,7 +34,7 @@
 
 #ifdef NANONEXT_INTERNALS
 extern SEXP mk_error(const int);
-extern SEXP nano_decode(unsigned char *, size_t, const int, const int);
+extern SEXP nano_decode(void *, size_t, const int, const int);
 extern SEXP nano_encode(SEXP);
 extern SEXP rawOneString(unsigned char *, R_xlen_t, R_xlen_t *);
 extern void socket_finalizer(SEXP);

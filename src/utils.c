@@ -116,9 +116,7 @@ SEXP rnng_ncurl(SEXP http, SEXP method, SEXP headers, SEXP data) {
   }
   if (headers != R_NilValue) {
     const R_xlen_t hlen = Rf_xlength(headers);
-    SEXP names;
-    PROTECT(names = Rf_getAttrib(headers, R_NamesSymbol));
-
+    SEXP names = Rf_getAttrib(headers, R_NamesSymbol);
     switch (TYPEOF(headers)) {
     case STRSXP:
       for (R_xlen_t i = 0; i < hlen; i++) {
@@ -129,7 +127,6 @@ SEXP rnng_ncurl(SEXP http, SEXP method, SEXP headers, SEXP data) {
           nng_http_req_free(req);
           nng_http_client_free(client);
           nng_url_free(url);
-          UNPROTECT(1);
           return mk_error(xc);
         }
       }
@@ -143,18 +140,15 @@ SEXP rnng_ncurl(SEXP http, SEXP method, SEXP headers, SEXP data) {
           nng_http_req_free(req);
           nng_http_client_free(client);
           nng_url_free(url);
-          UNPROTECT(1);
           return mk_error(xc);
         }
       }
       break;
     }
-
-    UNPROTECT(1);
   }
   if (data != R_NilValue) {
     unsigned char *dp = RAW(data);
-    const size_t dlen = (size_t) Rf_xlength(data) - 1;
+    const size_t dlen = Rf_xlength(data) - 1;
     xc = nng_http_req_set_data(req, dp, dlen);
     if (xc) {
       nng_http_req_free(req);
@@ -239,7 +233,7 @@ SEXP rnng_ncurl(SEXP http, SEXP method, SEXP headers, SEXP data) {
   nng_http_res_get_data(res, &dat, &sz);
 
   vec = Rf_allocVector(RAWSXP, sz);
-  memcpy(RAW(vec), (unsigned char *) dat, sz);
+  memcpy(RAW(vec), dat, sz);
   if (cfg != NULL)
     nng_tls_config_free(cfg);
   nng_http_res_free(res);
@@ -256,7 +250,7 @@ SEXP rnng_ncurl(SEXP http, SEXP method, SEXP headers, SEXP data) {
 SEXP rnng_stream_dial(SEXP url, SEXP textframes) {
 
   const char *add = CHAR(STRING_ELT(url, 0));
-  const int mod = *LOGICAL(textframes);
+  const int mod = LOGICAL(textframes)[0];
   nng_url *up;
   nng_tls_config *cfg = NULL;
   nng_stream_dialer *dp;
@@ -349,7 +343,7 @@ SEXP rnng_stream_dial(SEXP url, SEXP textframes) {
 SEXP rnng_stream_listen(SEXP url, SEXP textframes) {
 
   const char *add = CHAR(STRING_ELT(url, 0));
-  const int mod = *LOGICAL(textframes);
+  const int mod = LOGICAL(textframes)[0];
   nng_url *up;
   nng_tls_config *cfg = NULL;
   nng_stream_listener *lp;
@@ -480,7 +474,7 @@ static void thread_finalizer(SEXP xptr) {
 static void rnng_thread(void *arg) {
 
   nng_socket *sock = (nng_socket *) arg;
-  unsigned char *buf;
+  void *buf;
   size_t sz;
   time_t now;
   struct tm *tms;
@@ -516,7 +510,7 @@ static void rnng_thread(void *arg) {
     }
 
     Rprintf("%s\n%*s< %d-%02d-%02d %02d:%02d:%02d\n",
-            buf, sz, "",
+            (char *) buf, (int) sz, "",
             tms->tm_year + 1900, tms->tm_mon + 1, tms->tm_mday,
             tms->tm_hour, tms->tm_min, tms->tm_sec);
     nng_free(buf, sz);
@@ -540,11 +534,11 @@ SEXP rnng_messenger(SEXP url) {
     R_Free(sock);
     return mk_error(xc);
   }
-  dlp = (nng_listener *) R_Calloc(1, nng_listener);
+  dlp = R_Calloc(1, nng_listener);
   xc = nng_listen(*sock, up, dlp, 0);
   if (xc == 10 || xc == 15) {
     R_Free(dlp);
-    dlp = (nng_dialer *) R_Calloc(1, nng_dialer);
+    dlp = R_Calloc(1, nng_dialer);
     xc = nng_dial(*sock, up, dlp, 2u);
     if (xc) {
       R_Free(dlp);
