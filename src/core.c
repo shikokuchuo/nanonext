@@ -19,60 +19,22 @@ SEXP mk_error(const int xc) {
 
 SEXP rnng_serial(SEXP mode) {
 
-  const char *mod;
+  const char *mod = CHAR(STRING_ELT(mode, 0));
+  size_t slen = strlen(mod);
+  const char *s = "serial", *r = "raw";
   int xc = 0;
 
-  if (TYPEOF(mode) == VECSXP) {
-    mod = CHAR(STRING_ELT(VECTOR_ELT(mode, 0), 0));
-    if (!strcmp(mod, "serial"))
-      xc = 1;
-    else
-      error_return("'mode' should be one of serial, raw")
-
-  } else {
-
-    mod = CHAR(STRING_ELT(mode, 0));
-
-    switch (strlen(mod)) {
-    case 1:
-      if (!strcmp(mod, "s"))
-        xc = 1;
-      else if (strcmp(mod, "r"))
-        error_return("'mode' should be one of serial, raw")
-        break;
-    case 2:
-      if (!strcmp(mod, "se"))
-        xc = 1;
-      else if (strcmp(mod, "ra"))
-        error_return("'mode' should be one of serial, raw")
-        break;
-    case 3:
-      if (!strcmp(mod, "ser"))
-        xc = 1;
-      else if (strcmp(mod, "raw"))
-        error_return("'mode' should be one of serial, raw")
-        break;
-    case 4:
-      if (!strcmp(mod, "seri"))
-        xc = 1;
-      else
-        error_return("'mode' should be one of serial, raw")
-        break;
-    case 5:
-      if (!strcmp(mod, "seria"))
-        xc = 1;
-      else
-        error_return("'mode' should be one of serial, raw")
-        break;
-    case 6:
-      if (!strcmp(mod, "serial"))
-        xc = 1;
-      else
-        error_return("'mode' should be one of serial, raw")
-        break;
-    default:
-      error_return("'mode' should be one of serial, raw")
-    }
+  switch (slen) {
+  case 1:
+  case 2:
+  case 3:
+    if (!strncmp(r, mod, slen)) { xc = 0; break; }
+  case 4:
+  case 5:
+  case 6:
+    if (!strncmp(s, mod, slen)) { xc = 1; break; }
+  default:
+      error_return("'mode' should be one of serial, raw");
   }
 
   return Rf_ScalarLogical(xc);
@@ -168,160 +130,34 @@ SEXP rawOneString(unsigned char *bytes, R_xlen_t nbytes, R_xlen_t *np) {
 
 SEXP rnng_matcharg(SEXP mode) {
 
-  const char *mod;
+  const char *mod = CHAR(STRING_ELT(mode, 0));
+  size_t slen = strlen(mod);
+  const char *s = "serial", *ch = "character", *co = "complex", *d = "double",
+    *i = "integer", *l = "logical", *n = "numeric", *r = "raw";
   int xc = 0;
 
-  if (TYPEOF(mode) == VECSXP) {
-    mod = CHAR(STRING_ELT(VECTOR_ELT(mode, 0), 0));
-    if (!strcmp(mod, "serial"))
-      xc = 1;
-    else
+  switch (slen) {
+  case 1:
+  case 2:
+  case 3:
+    if (!strncmp(r, mod, slen)) { xc = 8; break; }
+  case 4:
+  case 5:
+  case 6:
+    if (!strncmp(d, mod, slen)) { xc = 4; break; }
+    if (!strncmp(s, mod, slen)) { xc = 1; break; }
+  case 7:
+    if (!strncmp(i, mod, slen)) { xc = 5; break; }
+    if (!strncmp(n, mod, slen)) { xc = 7; break; }
+    if (!strncmp(l, mod, slen)) { xc = 6; break; }
+    if (slen == 1)
       error_return("'mode' should be one of serial, character, complex, double, integer, logical, numeric, raw");
-
-  } else {
-
-    mod = CHAR(STRING_ELT(mode, 0));
-
-    switch (strlen(mod)) {
-    case 1:
-      if (!strcmp(mod, "s"))
-        xc = 1;
-      else if (!strcmp(mod, "d"))
-        xc = 4;
-      else if (!strcmp(mod, "i"))
-        xc = 5;
-      else if (!strcmp(mod, "l"))
-        xc = 6;
-      else if (!strcmp(mod, "n"))
-        xc = 7;
-      else if (!strcmp(mod, "r"))
-        xc = 8;
-      else
-        error_return("'mode' should be one of serial, character, complex, double, integer, logical, numeric, raw");
-      break;
-    case 2:
-      if (!strcmp(mod, "se"))
-        xc = 1;
-      else if (!strcmp(mod, "ch"))
-        xc = 2;
-      else if (!strcmp(mod, "co"))
-        xc = 3;
-      else if (!strcmp(mod, "do"))
-        xc = 4;
-      else if (!strcmp(mod, "in"))
-        xc = 5;
-      else if (!strcmp(mod, "lo"))
-        xc = 6;
-      else if (!strcmp(mod, "nu"))
-        xc = 7;
-      else if (!strcmp(mod, "ra"))
-        xc = 8;
-      else
-        error_return("'mode' should be one of serial, character, complex, double, integer, logical, numeric, raw");
-      break;
-    case 3:
-      if (!strcmp(mod, "ser"))
-        xc = 1;
-      else if (!strcmp(mod, "cha"))
-        xc = 2;
-      else if (!strcmp(mod, "com"))
-        xc = 3;
-      else if (!strcmp(mod, "dou"))
-        xc = 4;
-      else if (!strcmp(mod, "int"))
-        xc = 5;
-      else if (!strcmp(mod, "log"))
-        xc = 6;
-      else if (!strcmp(mod, "num"))
-        xc = 7;
-      else if (!strcmp(mod, "raw"))
-        xc = 8;
-      else
-        error_return("'mode' should be one of serial, character, complex, double, integer, logical, numeric, raw");
-      break;
-    case 4:
-      if (!strcmp(mod, "seri"))
-        xc = 1;
-      else if (!strcmp(mod, "char"))
-        xc = 2;
-      else if (!strcmp(mod, "comp"))
-        xc = 3;
-      else if (!strcmp(mod, "doub"))
-        xc = 4;
-      else if (!strcmp(mod, "inte"))
-        xc = 5;
-      else if (!strcmp(mod, "logi"))
-        xc = 6;
-      else if (!strcmp(mod, "nume"))
-        xc = 7;
-      else
-        error_return("'mode' should be one of serial, character, complex, double, integer, logical, numeric, raw");
-      break;
-    case 5:
-      if (!strcmp(mod, "seria"))
-        xc = 1;
-      else if (!strcmp(mod, "chara"))
-        xc = 2;
-      else if (!strcmp(mod, "compl"))
-        xc = 3;
-      else if (!strcmp(mod, "doubl"))
-        xc = 4;
-      else if (!strcmp(mod, "integ"))
-        xc = 5;
-      else if (!strcmp(mod, "logic"))
-        xc = 6;
-      else if (!strcmp(mod, "numer"))
-        xc = 7;
-      else
-        error_return("'mode' should be one of serial, character, complex, double, integer, logical, numeric, raw");
-      break;
-    case 6:
-      if (!strcmp(mod, "serial"))
-        xc = 1;
-      else if (!strcmp(mod, "charac"))
-        xc = 2;
-      else if (!strcmp(mod, "comple"))
-        xc = 3;
-      else if (!strcmp(mod, "double"))
-        xc = 4;
-      else if (!strcmp(mod, "intege"))
-        xc = 5;
-      else if (!strcmp(mod, "logica"))
-        xc = 6;
-      else if (!strcmp(mod, "numeri"))
-        xc = 7;
-      else
-        error_return("'mode' should be one of serial, character, complex, double, integer, logical, numeric, raw");
-      break;
-    case 7:
-      if (!strcmp(mod, "charact"))
-        xc = 2;
-      else if (!strcmp(mod, "complex"))
-        xc = 3;
-      else if (!strcmp(mod, "integer"))
-        xc = 5;
-      else if (!strcmp(mod, "logical"))
-        xc = 6;
-      else if (!strcmp(mod, "numeric"))
-        xc = 7;
-      else
-        error_return("'mode' should be one of serial, character, complex, double, integer, logical, numeric, raw");
-      break;
-    case 8:
-      if (!strcmp(mod, "characte"))
-        xc = 2;
-      else
-        error_return("'mode' should be one of serial, character, complex, double, integer, logical, numeric, raw");
-      break;
-    case 9:
-      if (!strcmp(mod, "character"))
-        xc = 2;
-      else
-        error_return("'mode' should be one of serial, character, complex, double, integer, logical, numeric, raw");
-      break;
-    default:
-      error_return("'mode' should be one of serial, character, complex, double, integer, logical, numeric, raw")
-    }
+    if (!strncmp(co, mod, slen)) { xc = 3; break; }
+  case 8:
+  case 9:
+    if (!strncmp(ch, mod, slen)) { xc = 2; break; }
+  default:
+    error_return("'mode' should be one of serial, character, complex, double, integer, logical, numeric, raw");
   }
 
   return Rf_ScalarInteger(xc);
@@ -330,148 +166,33 @@ SEXP rnng_matcharg(SEXP mode) {
 
 SEXP rnng_matchargs(SEXP mode) {
 
-  const char *mod;
+  const char *mod = CHAR(STRING_ELT(mode, 0));
+  size_t slen = strlen(mod);
+  const char *ch = "character", *co = "complex", *d = "double",
+    *i = "integer", *l = "logical", *n = "numeric", *r = "raw";
   int xc = 0;
 
-  if (TYPEOF(mode) == VECSXP) {
-    mod = CHAR(STRING_ELT(VECTOR_ELT(mode, 0), 0));
-    if (!strcmp(mod, "character"))
-      xc = 2;
-    else
+  switch (slen) {
+  case 1:
+  case 2:
+  case 3:
+    if (!strncmp(r, mod, slen)) { xc = 8; break; }
+  case 4:
+  case 5:
+  case 6:
+    if (!strncmp(d, mod, slen)) { xc = 4; break; }
+  case 7:
+    if (!strncmp(i, mod, slen)) { xc = 5; break; }
+    if (!strncmp(n, mod, slen)) { xc = 7; break; }
+    if (!strncmp(l, mod, slen)) { xc = 6; break; }
+    if (slen == 1)
       error_return("'mode' should be one of character, complex, double, integer, logical, numeric, raw");
-
-  } else {
-
-    mod = CHAR(STRING_ELT(mode, 0));
-
-    switch (strlen(mod)) {
-    case 1:
-      if (!strcmp(mod, "d"))
-        xc = 4;
-      else if (!strcmp(mod, "i"))
-        xc = 5;
-      else if (!strcmp(mod, "l"))
-        xc = 6;
-      else if (!strcmp(mod, "n"))
-        xc = 7;
-      else if (!strcmp(mod, "r"))
-        xc = 8;
-      else
-        error_return("'mode' should be one of character, complex, double, integer, logical, numeric, raw");
-      break;
-    case 2:
-      if (!strcmp(mod, "ch"))
-        xc = 2;
-      else if (!strcmp(mod, "co"))
-        xc = 3;
-      else if (!strcmp(mod, "do"))
-        xc = 4;
-      else if (!strcmp(mod, "in"))
-        xc = 5;
-      else if (!strcmp(mod, "lo"))
-        xc = 6;
-      else if (!strcmp(mod, "nu"))
-        xc = 7;
-      else if (!strcmp(mod, "ra"))
-        xc = 8;
-      else
-        error_return("'mode' should be one of character, complex, double, integer, logical, numeric, raw");
-      break;
-    case 3:
-      if (!strcmp(mod, "cha"))
-        xc = 2;
-      else if (!strcmp(mod, "com"))
-        xc = 3;
-      else if (!strcmp(mod, "dou"))
-        xc = 4;
-      else if (!strcmp(mod, "int"))
-        xc = 5;
-      else if (!strcmp(mod, "log"))
-        xc = 6;
-      else if (!strcmp(mod, "num"))
-        xc = 7;
-      else if (!strcmp(mod, "raw"))
-        xc = 8;
-      else
-        error_return("'mode' should be one of character, complex, double, integer, logical, numeric, raw");
-      break;
-    case 4:
-      if (!strcmp(mod, "char"))
-        xc = 2;
-      else if (!strcmp(mod, "comp"))
-        xc = 3;
-      else if (!strcmp(mod, "doub"))
-        xc = 4;
-      else if (!strcmp(mod, "inte"))
-        xc = 5;
-      else if (!strcmp(mod, "logi"))
-        xc = 6;
-      else if (!strcmp(mod, "nume"))
-        xc = 7;
-      else
-        error_return("'mode' should be one of character, complex, double, integer, logical, numeric, raw");
-      break;
-    case 5:
-      if (!strcmp(mod, "chara"))
-        xc = 2;
-      else if (!strcmp(mod, "compl"))
-        xc = 3;
-      else if (!strcmp(mod, "doubl"))
-        xc = 4;
-      else if (!strcmp(mod, "integ"))
-        xc = 5;
-      else if (!strcmp(mod, "logic"))
-        xc = 6;
-      else if (!strcmp(mod, "numer"))
-        xc = 7;
-      else
-        error_return("'mode' should be one of character, complex, double, integer, logical, numeric, raw");
-      break;
-    case 6:
-      if (!strcmp(mod, "charac"))
-        xc = 2;
-      else if (!strcmp(mod, "comple"))
-        xc = 3;
-      else if (!strcmp(mod, "double"))
-        xc = 4;
-      else if (!strcmp(mod, "intege"))
-        xc = 5;
-      else if (!strcmp(mod, "logica"))
-        xc = 6;
-      else if (!strcmp(mod, "numeri"))
-        xc = 7;
-      else
-        error_return("'mode' should be one of character, complex, double, integer, logical, numeric, raw");
-      break;
-    case 7:
-      if (!strcmp(mod, "charact"))
-        xc = 2;
-      else if (!strcmp(mod, "complex"))
-        xc = 3;
-      else if (!strcmp(mod, "integer"))
-        xc = 5;
-      else if (!strcmp(mod, "logical"))
-        xc = 6;
-      else if (!strcmp(mod, "numeric"))
-        xc = 7;
-      else
-        error_return("'mode' should be one of character, complex, double, integer, logical, numeric, raw");
-      break;
-    case 8:
-      if (!strcmp(mod, "characte"))
-        xc = 2;
-      else
-        error_return("'mode' should be one of character, complex, double, integer, logical, numeric, raw");
-      break;
-    case 9:
-      if (!strcmp(mod, "character"))
-        xc = 2;
-      else
-        error_return("'mode' should be one of character, complex, double, integer, logical, numeric, raw");
-      break;
-    default:
-      error_return("'mode' should be one of character, complex, double, integer, logical, numeric, raw")
-    }
+    if (!strncmp(co, mod, slen)) { xc = 3; break; }
+  case 8:
+  case 9:
+    if (!strncmp(ch, mod, slen)) { xc = 2; break; }
+  default:
+      error_return("'mode' should be one of character, complex, double, integer, logical, numeric, raw");
   }
 
   return Rf_ScalarInteger(xc);

@@ -74,8 +74,8 @@ install.packages("nanonext", repos = "https://shikokuchuo.r-universe.dev")
 
 ### Interfaces
 
-Call `nano_init()` after package load to set global options. Using
-defaults will cause warnings to print immediately as they occur.
+Call `nano_init()` after package load to set global options such as
+causing warnings to print immediately as they occur.
 
 {nanonext} offers 2 equivalent interfaces: an object-oriented interface,
 and a functional interface.
@@ -379,7 +379,7 @@ aio
 #> < recvAio >
 #>  - $data for message data
 aio$data |> str()
-#>  num [1:100000000] 0.1703 -0.0154 0.0138 -0.3083 -0.1477 ...
+#>  num [1:100000000] -0.876 0.565 0.656 -1.265 -0.642 ...
 ```
 
 As `call_aio()` is blocking and will wait for completion, an alternative
@@ -516,11 +516,11 @@ ncurl("http://httpbin.org/headers")
 #>   [1] 7b 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73
 #>  [26] 74 22 3a 20 22 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22
 #>  [51] 58 2d 41 6d 7a 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31
-#>  [76] 2d 36 32 36 39 34 30 66 39 2d 32 37 38 31 35 33 34 36 36 61 31 61 35 38 35
-#> [101] 35 30 39 38 34 30 66 35 62 22 0a 20 20 7d 0a 7d 0a
+#>  [76] 2d 36 32 36 61 62 33 31 37 2d 31 39 63 35 39 37 30 32 36 63 30 63 64 65 32
+#> [101] 63 36 32 61 37 33 39 35 35 22 0a 20 20 7d 0a 7d 0a
 #> 
 #> $data
-#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-626940f9-278153466a1a585509840f5b\"\n  }\n}\n"
+#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-626ab317-19c597026c0cde2c62a73955\"\n  }\n}\n"
 ```
 
 For advanced use, supports additional HTTP methods such as POST or PUT.
@@ -535,7 +535,7 @@ res
 #>  - $raw for raw message
 
 call_aio(res)$data
-#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-626940f9-73f729e64784f75507dcee00\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"79.173.189.204\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
+#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-626ab317-57e5ea9a6c08c36277518b08\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"79.173.189.204\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
 ```
 
 In this respect, it may be used as a performant and lightweight method
