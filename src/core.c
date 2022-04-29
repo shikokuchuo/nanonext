@@ -44,7 +44,6 @@ SEXP rnng_serial(SEXP mode) {
 SEXP nano_encode(SEXP object) {
 
   R_xlen_t xlen = Rf_xlength(object);
-  void *buf;
   size_t sz;
   SEXP out;
 
@@ -52,6 +51,7 @@ SEXP nano_encode(SEXP object) {
     error_return("'data' is not an atomic vector type");
   if (TYPEOF(object) == STRSXP) {
     const char *s;
+    unsigned char *buf;
     size_t np, outlen = 0;
     R_xlen_t i;
     for (i = 0; i < xlen; i++)
@@ -67,28 +67,24 @@ SEXP nano_encode(SEXP object) {
   } else {
     switch (TYPEOF(object)) {
     case REALSXP:
-      buf = REAL(object);
       sz = xlen * sizeof(double);
       out = Rf_allocVector(RAWSXP, sz);
-      memcpy(RAW(out), buf, sz);
+      memcpy(RAW(out), REAL(object), sz);
       break;
     case INTSXP:
-      buf = INTEGER(object);
       sz = xlen * sizeof(int);
       out = Rf_allocVector(RAWSXP, sz);
-      memcpy(RAW(out), buf, sz);
+      memcpy(RAW(out), INTEGER(object), sz);
       break;
     case LGLSXP:
-      buf = LOGICAL(object);
       sz = xlen * sizeof(int);
       out = Rf_allocVector(RAWSXP, sz);
-      memcpy(RAW(out), buf, sz);
+      memcpy(RAW(out), LOGICAL(object), sz);
       break;
     case CPLXSXP:
-      buf = COMPLEX(object);
       sz = xlen * (sizeof(double) + sizeof(double));
       out = Rf_allocVector(RAWSXP, sz);
-      memcpy(RAW(out), buf, sz);
+      memcpy(RAW(out), COMPLEX(object), sz);
       break;
     case RAWSXP:
       out = object;
@@ -199,7 +195,7 @@ SEXP rnng_matchargs(SEXP mode) {
 
 }
 
-SEXP nano_decode(void *buf, size_t sz, const int mod, const int kpr) {
+SEXP nano_decode(unsigned char *buf, size_t sz, const int mod, const int kpr) {
 
   int tryErr = 0;
   SEXP raw, data;
@@ -751,7 +747,7 @@ SEXP rnng_recv(SEXP socket, SEXP mode, SEXP block, SEXP keep) {
   mode = rnng_matcharg(mode);
   const int mod = INTEGER(mode)[0], kpr = LOGICAL(keep)[0];
   int xc;
-  void *buf;
+  unsigned char *buf;
   size_t sz;
   nng_aio *aiop;
   SEXP res;
@@ -847,7 +843,7 @@ SEXP rnng_ctx_recv(SEXP context, SEXP mode, SEXP timeout, SEXP keep) {
   mode = rnng_matcharg(mode);
   const int mod = INTEGER(mode)[0], kpr = LOGICAL(keep)[0];
   int xc;
-  void *buf;
+  unsigned char *buf;
   size_t sz;
   SEXP res;
 
@@ -946,6 +942,7 @@ SEXP rnng_stream_recv(SEXP stream, SEXP mode, SEXP timeout, SEXP keep, SEXP byte
   const size_t xlen = (size_t) Rf_asInteger(bytes);
   nng_duration dur;
   int xc;
+  unsigned char *buf;
   size_t sz;
   nng_iov iov;
   nng_aio *aiop;
@@ -985,8 +982,9 @@ SEXP rnng_stream_recv(SEXP stream, SEXP mode, SEXP timeout, SEXP keep, SEXP byte
     return mk_error(xc);
   }
 
+  buf = iov.iov_buf;
   sz = nng_aio_count(aiop);
-  res = nano_decode(iov.iov_buf, sz, mod, kpr);
+  res = nano_decode(buf, sz, mod, kpr);
   nng_aio_free(aiop);
   R_Free(iov.iov_buf);
 

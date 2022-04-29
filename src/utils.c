@@ -474,7 +474,7 @@ static void thread_finalizer(SEXP xptr) {
 static void rnng_thread(void *arg) {
 
   nng_socket *sock = (nng_socket *) arg;
-  void *buf;
+  unsigned char *buf;
   size_t sz;
   time_t now;
   struct tm *tms;

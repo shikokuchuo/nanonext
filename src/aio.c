@@ -181,7 +181,7 @@ SEXP rnng_aio_get_msg(SEXP aio, SEXP mode, SEXP keep) {
     return mk_error(res);
 
   const int mod = INTEGER(mode)[0], kpr = LOGICAL(keep)[0];
-  void *buf = nng_msg_body(raio->data);
+  unsigned char *buf = nng_msg_body(raio->data);
   size_t sz = nng_msg_len(raio->data);
 
   return nano_decode(buf, sz, mod, kpr);
@@ -210,9 +210,10 @@ SEXP rnng_aio_stream_in(SEXP aio, SEXP mode, SEXP keep) {
 
   const int mod = INTEGER(mode)[0], kpr = LOGICAL(keep)[0];
   nng_iov *iov = (nng_iov *) iaio->data;
+  unsigned char *buf = iov->iov_buf;
   size_t sz = nng_aio_count(iaio->aio);
 
-  return nano_decode(iov->iov_buf, sz, mod, kpr);
+  return nano_decode(buf, sz, mod, kpr);
 
 }
 
