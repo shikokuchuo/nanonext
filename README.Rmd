@@ -478,11 +478,6 @@ Otherwise, the environment variable `Sys.setenv(NANONEXT_TLS=1)` may be set prio
 - your system installations of 'libnng' (built with TLS support) and 'libmbedtls' are in different locations; or
 - you have a system installation of 'libmbedtls' but not 'libnng' and want nanonext to download and build a more recent version of 'libnng' than available in system repositories against this.
 
-#### Certain ARM architectures
-
-If package installation initially fails with an error message of `unable to load shared object:[ ] undefined symbol: __atomic_fetch_sub_8` or similar, please set the environment variable
-`Sys.setenv(NANONEXT_ARM=1)` and then proceed with installation again.
-
 ### Links
 
 nanonext on CRAN: <https://cran.r-project.org/package=nanonext><br />

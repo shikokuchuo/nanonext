@@ -3,6 +3,10 @@
 
 # set -x
 
+# Find compiler
+CC=`${R_HOME}/bin/R CMD config CC`
+CFLAGS=`${R_HOME}/bin/R CMD config CFLAGS`
+
 # Library settings
 PKG_TEST_HEADER="<nng/nng.h>"
 PKG_LIBS="-lnng"
@@ -10,9 +14,18 @@ if [ "$NANONEXT_TLS" ]; then
   echo "trying with TLS support"
   PKG_LIBS="$PKG_LIBS -lmbedtls -lmbedx509 -lmbedcrypto"
 fi
-if [ "$NANONEXT_ARM" ]; then
+
+# Detect -latomic linker flag for e.g. ARM architectures (Raspberry Pi etc.)
+echo "#include <stdint.h>
+uint64_t v;
+int main() {
+    return (int)__atomic_load_n(&v, __ATOMIC_ACQUIRE);
+}" | ${CC} -x c - -o /dev/null > /dev/null 2>&1
+if [ $? -ne 0 ]; then
+  echo "adding -latomic linker flag"
   PKG_LIBS="$PKG_LIBS -latomic"
 fi
+
 PKG_CFLAGS=""
 LIB_VER="169221d"
 SYS_LIB=0
@@ -85,10 +98,6 @@ fi
 # For debugging
 # echo "Using PKG_CFLAGS=$PKG_CFLAGS"
 # echo "Using PKG_LIBS=$PKG_LIBS"
-
-# Find compiler
-CC=`${R_HOME}/bin/R CMD config CC`
-CFLAGS=`${R_HOME}/bin/R CMD config CFLAGS`
 
 # Test for libnng
 echo "#include $PKG_TEST_HEADER" | ${CC} ${PKG_CFLAGS} ${CFLAGS} -E -xc - >/dev/null 2>&1
