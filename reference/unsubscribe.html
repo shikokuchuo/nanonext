@@ -69,8 +69,8 @@
     <dl><dt>socket</dt>
 <dd><p>a Socket using the sub protocol.</p></dd>
 <dt>topic</dt>
-<dd><p>[default NULL] a topic (given as a character string). The default
-NULL unsubscribes from all topics (if all topics were previously subscribed).</p></dd>
+<dd><p>[default NULL] a topic (vector or NULL). The default NULL
+unsubscribes from all topics (if all topics were previously subscribed).</p></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>
@@ -82,10 +82,9 @@ NULL unsubscribes from all topics (if all topics were previously subscribed).</p
     'entry not found' error will result.</p>
 <p>To use pub/sub the publisher must:</p><ul><li><p>specify <code>mode = 'raw'</code> when sending to allow the topics to be
     recognised by the receiving party.</p></li>
-<li><p>send a vector that separates the topic from the rest of the message
-    e.g. <code>send(socket, c("topic", "message"), mode = "raw")</code> - this
-    ensures that topic ends with the required nul byte for it to be
-    recognised.</p></li>
+<li><p>when sending a character vector, the topic must be separated from
+    the rest of the message using e.g.
+    <code>send(socket, c("topic", "message"), mode = "raw")</code></p></li>
 </ul></div>
 
     <div id="ref-examples">

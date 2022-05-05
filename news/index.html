@@ -63,8 +63,11 @@
 </ul></div>
 <div class="section level5">
 <h5 id="updates-0-4-0-9000">Updates<a class="anchor" aria-label="anchor" href="#updates-0-4-0-9000"></a></h5>
-<ul><li>For receives, if an error occurs in unserialisation or data conversion (e.g. mode was incorrectly specified), the received raw vector is now available at both <code>$raw</code> and <code>$data</code> if <code>keep.raw = TRUE</code>.</li>
+<ul><li>
+<code><a href="../reference/subscribe.html">subscribe()</a></code> / <code><a href="../reference/unsubscribe.html">unsubscribe()</a></code> now accept a topic in any of the standard types (not just character), allowing pub/sub to be used when sending integer, double, logical, complex, or raw vectors.</li>
+<li>For receives, if an error occurs in unserialisation or data conversion (e.g. mode was incorrectly specified), the received raw vector is now available at both <code>$raw</code> and <code>$data</code> if <code>keep.raw = TRUE</code>.</li>
 <li>Setting ‘NANONEXT_TLS=1’ now allows the downloaded NNG library to be built against a system mbedtls installation.</li>
+<li>Setting ‘NANONEXT_ARM’ is no longer required on platforms such as Raspberry Pi - the package configure script should now detect platforms that require the libatomic linker flag to be set automatically.</li>
 <li>Deprecated <code>send_ctx()</code>, <code>recv_ctx()</code> and logging are removed.</li>
 <li>All-round internal performance optimisations.</li>
 </ul></div>
