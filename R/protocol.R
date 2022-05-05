@@ -6,8 +6,8 @@
 #'     topic to subscribe to.
 #'
 #' @param socket a Socket using the sub protocol.
-#' @param topic [default NULL] a topic (given as a character string). The default
-#'     NULL subscribes to all topics.
+#' @param topic [default NULL] a topic (vector or NULL). The default NULL
+#'     subscribes to all topics.
 #'
 #' @return Invisibly, an integer exit code (zero on success).
 #'
@@ -15,10 +15,9 @@
 #'     \itemize{
 #'     \item{specify \code{mode = 'raw'} when sending to allow the topics to be
 #'     recognised by the receiving party.}
-#'     \item{send a vector that separates the topic from the rest of the message
-#'     e.g. \code{send(socket, c("topic", "message"), mode = "raw")} - this
-#'     ensures that topic ends with the required nul byte for it to be
-#'     recognised.}
+#'     \item{when sending a character vector, the topic must be separated from
+#'     the rest of the message using e.g.
+#'     \code{send(socket, c("topic", "message"), mode = "raw")}}
 #'     }
 #'
 #' @examples
@@ -38,7 +37,7 @@
 #'
 subscribe <- function(socket, topic = NULL) {
 
-  invisible(.Call(rnng_socket_set, socket, 5L, "sub:subscribe", topic))
+  invisible(.Call(rnng_socket_set, socket, 0L, "sub:subscribe", topic))
 
 }
 
@@ -48,8 +47,8 @@ subscribe <- function(socket, topic = NULL) {
 #'     a topic from the subscription list.
 #'
 #' @param socket a Socket using the sub protocol.
-#' @param topic [default NULL] a topic (given as a character string). The default
-#'     NULL unsubscribes from all topics (if all topics were previously subscribed).
+#' @param topic [default NULL] a topic (vector or NULL). The default NULL
+#'     unsubscribes from all topics (if all topics were previously subscribed).
 #'
 #' @return Invisibly, an integer exit code (zero on success).
 #'
@@ -60,10 +59,9 @@ subscribe <- function(socket, topic = NULL) {
 #'     \itemize{
 #'     \item{specify \code{mode = 'raw'} when sending to allow the topics to be
 #'     recognised by the receiving party.}
-#'     \item{send a vector that separates the topic from the rest of the message
-#'     e.g. \code{send(socket, c("topic", "message"), mode = "raw")} - this
-#'     ensures that topic ends with the required nul byte for it to be
-#'     recognised.}
+#'     \item{when sending a character vector, the topic must be separated from
+#'     the rest of the message using e.g.
+#'     \code{send(socket, c("topic", "message"), mode = "raw")}}
 #'     }
 #'
 #' @examples
@@ -84,7 +82,7 @@ subscribe <- function(socket, topic = NULL) {
 #'
 unsubscribe <- function(socket, topic = NULL) {
 
-  invisible(.Call(rnng_socket_set, socket, 5L, "sub:unsubscribe", topic))
+  invisible(.Call(rnng_socket_set, socket, 0L, "sub:unsubscribe", topic))
 
 }
 

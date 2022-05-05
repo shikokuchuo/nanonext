@@ -15,6 +15,14 @@ SEXP rnng_socket_set(SEXP socket, SEXP type, SEXP opt, SEXP value) {
   int xc;
 
   switch (typ) {
+  case 0:
+    if (value == R_NilValue) {
+      xc = nng_socket_set(*sock, op, NULL, 0);
+    } else {
+      SEXP enc = nano_encode(value);
+      xc = nng_socket_set(*sock, op, RAW(enc), Rf_xlength(enc));
+    }
+    break;
   case 1:
     xc = nng_socket_set_bool(*sock, op, (bool) Rf_asInteger(value));
     break;

@@ -7,8 +7,10 @@
 
 #### Updates
 
+* `subscribe()` / `unsubscribe()` now accept a topic in any of the standard types (not just character), allowing pub/sub to be used when sending integer, double, logical, complex, or raw vectors.
 * For receives, if an error occurs in unserialisation or data conversion (e.g. mode was incorrectly specified), the received raw vector is now available at both `$raw` and `$data` if `keep.raw = TRUE`.
 * Setting 'NANONEXT_TLS=1' now allows the downloaded NNG library to be built against a system mbedtls installation.
+* Setting 'NANONEXT_ARM' is no longer required on platforms such as Raspberry Pi - the package configure script should now detect platforms that require the libatomic linker flag to be set automatically.
 * Deprecated `send_ctx()`, `recv_ctx()` and logging are removed.
 * All-round internal performance optimisations.
 

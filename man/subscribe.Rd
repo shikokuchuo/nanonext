@@ -9,8 +9,8 @@ subscribe(socket, topic = NULL)
 \arguments{
 \item{socket}{a Socket using the sub protocol.}
 
-\item{topic}{[default NULL] a topic (given as a character string). The default
-NULL subscribes to all topics.}
+\item{topic}{[default NULL] a topic (vector or NULL). The default NULL
+subscribes to all topics.}
 }
 \value{
 Invisibly, an integer exit code (zero on success).
@@ -24,10 +24,9 @@ To use pub/sub the publisher must:
     \itemize{
     \item{specify \code{mode = 'raw'} when sending to allow the topics to be
     recognised by the receiving party.}
-    \item{send a vector that separates the topic from the rest of the message
-    e.g. \code{send(socket, c("topic", "message"), mode = "raw")} - this
-    ensures that topic ends with the required nul byte for it to be
-    recognised.}
+    \item{when sending a character vector, the topic must be separated from
+    the rest of the message using e.g.
+    \code{send(socket, c("topic", "message"), mode = "raw")}}
     }
 }
 \examples{
