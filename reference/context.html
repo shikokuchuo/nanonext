@@ -81,8 +81,8 @@
     operations using the same socket. For example, two different contexts
     created on a rep socket can each receive requests, and send replies to
     them, without any regard to or interference with each other.</p>
-<p>Note: only certain protocols support creation of separate contexts -
-    namely req, rep, surveyor, respondent.</p>
+<p>Only the following protocols support creation of contexts: req, rep, sub
+    (in a pub/sub pattern), surveyor, respondent.</p>
 <p>To send and receive over a context use <code><a href="send.html">send</a></code> and
     <code><a href="recv.html">recv</a></code> or their async counterparts <code><a href="send_aio.html">send_aio</a></code> and
     <code><a href="recv_aio.html">recv_aio</a></code>.</p>

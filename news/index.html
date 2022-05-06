@@ -58,17 +58,18 @@
 <div class="section level5">
 <h5 id="new-features-0-4-0-9000">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-4-0-9000"></a></h5>
 <ul><li>
-<code>$context()</code> method added for creating new contexts from nano Objects using supported protocols (i.e. req, rep, surveyor, respondent) - this replaces the <code><a href="../reference/context.html">context()</a></code> function for nano Objects.</li>
+<code>$context()</code> method added for creating new contexts from nano Objects using supported protocols (i.e. req, rep, sub, surveyor, respondent) - this replaces the <code><a href="../reference/context.html">context()</a></code> function for nano Objects.</li>
 <li>Added convenience auxiliary functions <code><a href="../reference/is_nano.html">is_nano()</a></code> and <code><a href="../reference/is_aio.html">is_aio()</a></code>.</li>
+<li>
+<code><a href="../reference/subscribe.html">subscribe()</a></code> / <code><a href="../reference/unsubscribe.html">unsubscribe()</a></code> now accept a topic of any atomic type (not just character), allowing pub/sub to be used when sending integer, double, logical, complex, or raw vectors.</li>
 </ul></div>
 <div class="section level5">
 <h5 id="updates-0-4-0-9000">Updates<a class="anchor" aria-label="anchor" href="#updates-0-4-0-9000"></a></h5>
-<ul><li>
-<code><a href="../reference/subscribe.html">subscribe()</a></code> / <code><a href="../reference/unsubscribe.html">unsubscribe()</a></code> now accept a topic in any of the standard types (not just character), allowing pub/sub to be used when sending integer, double, logical, complex, or raw vectors.</li>
+<ul><li>Protocol-specific helpers <code><a href="../reference/subscribe.html">subscribe()</a></code>, <code><a href="../reference/unsubscribe.html">unsubscribe()</a></code>, and <code><a href="../reference/survey_time.html">survey_time()</a></code> gain nanoContext methods.</li>
 <li>For receives, if an error occurs in unserialisation or data conversion (e.g. mode was incorrectly specified), the received raw vector is now available at both <code>$raw</code> and <code>$data</code> if <code>keep.raw = TRUE</code>.</li>
 <li>Setting ‘NANONEXT_TLS=1’ now allows the downloaded NNG library to be built against a system mbedtls installation.</li>
 <li>Setting ‘NANONEXT_ARM’ is no longer required on platforms such as Raspberry Pi - the package configure script should now detect platforms that require the libatomic linker flag to be set automatically.</li>
-<li>Deprecated <code>send_ctx()</code>, <code>recv_ctx()</code> and logging are removed.</li>
+<li>Deprecated <code>send_ctx()</code>, <code>recv_ctx()</code> and logging removed.</li>
 <li>All-round internal performance optimisations.</li>
 </ul></div>
 </div>

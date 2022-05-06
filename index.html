@@ -154,14 +154,14 @@
 <p>Send message from ‘nano1’:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">nano1</span><span class="op">$</span><span class="fu">send</span><span class="op">(</span><span class="st">"hello world!"</span><span class="op">)</span>
-<span class="co">#&gt;  [1] 58 0a 00 00 00 03 00 04 01 02 00 03 05 00 00 00 00 05 55 54 46 2d 38 00 00</span>
+<span class="co">#&gt;  [1] 58 0a 00 00 00 03 00 04 02 00 00 03 05 00 00 00 00 05 55 54 46 2d 38 00 00</span>
 <span class="co">#&gt; [26] 00 10 00 00 00 01 00 04 00 09 00 00 00 0c 68 65 6c 6c 6f 20 77 6f 72 6c 64</span>
 <span class="co">#&gt; [51] 21</span></code></pre></div>
 <p>Receive message using ‘nano2’:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">nano2</span><span class="op">$</span><span class="fu">recv</span><span class="op">(</span><span class="op">)</span>
 <span class="co">#&gt; $raw</span>
-<span class="co">#&gt;  [1] 58 0a 00 00 00 03 00 04 01 02 00 03 05 00 00 00 00 05 55 54 46 2d 38 00 00</span>
+<span class="co">#&gt;  [1] 58 0a 00 00 00 03 00 04 02 00 00 03 05 00 00 00 00 05 55 54 46 2d 38 00 00</span>
 <span class="co">#&gt; [26] 00 10 00 00 00 01 00 04 00 09 00 00 00 0c 68 65 6c 6c 6f 20 77 6f 72 6c 64</span>
 <span class="co">#&gt; [51] 21</span>
 <span class="co">#&gt; </span>
@@ -183,14 +183,14 @@
 <p>Send message from ‘socket1’:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="reference/send.html">send</a></span><span class="op">(</span><span class="va">socket1</span>, <span class="st">"hello world!"</span><span class="op">)</span>
-<span class="co">#&gt;  [1] 58 0a 00 00 00 03 00 04 01 02 00 03 05 00 00 00 00 05 55 54 46 2d 38 00 00</span>
+<span class="co">#&gt;  [1] 58 0a 00 00 00 03 00 04 02 00 00 03 05 00 00 00 00 05 55 54 46 2d 38 00 00</span>
 <span class="co">#&gt; [26] 00 10 00 00 00 01 00 04 00 09 00 00 00 0c 68 65 6c 6c 6f 20 77 6f 72 6c 64</span>
 <span class="co">#&gt; [51] 21</span></code></pre></div>
 <p>Receive message using ‘socket2’:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="reference/recv.html">recv</a></span><span class="op">(</span><span class="va">socket2</span><span class="op">)</span>
 <span class="co">#&gt; $raw</span>
-<span class="co">#&gt;  [1] 58 0a 00 00 00 03 00 04 01 02 00 03 05 00 00 00 00 05 55 54 46 2d 38 00 00</span>
+<span class="co">#&gt;  [1] 58 0a 00 00 00 03 00 04 02 00 00 03 05 00 00 00 00 05 55 54 46 2d 38 00 00</span>
 <span class="co">#&gt; [26] 00 10 00 00 00 01 00 04 00 09 00 00 00 0c 68 65 6c 6c 6f 20 77 6f 72 6c 64</span>
 <span class="co">#&gt; [51] 21</span>
 <span class="co">#&gt; </span>
@@ -276,7 +276,7 @@
 <span class="co">#&gt;   a b</span>
 <span class="co">#&gt; 1 1 2</span>
 <span class="va">msg</span><span class="op">$</span><span class="va">raw</span>
-<span class="co">#&gt;   [1] 58 0a 00 00 00 03 00 04 01 02 00 03 05 00 00 00 00 05 55 54 46 2d 38 00 00</span>
+<span class="co">#&gt;   [1] 58 0a 00 00 00 03 00 04 02 00 00 03 05 00 00 00 00 05 55 54 46 2d 38 00 00</span>
 <span class="co">#&gt;  [26] 03 13 00 00 00 02 00 00 00 0e 00 00 00 01 3f f0 00 00 00 00 00 00 00 00 00</span>
 <span class="co">#&gt;  [51] 0e 00 00 00 01 40 00 00 00 00 00 00 00 00 00 04 02 00 00 00 01 00 04 00 09</span>
 <span class="co">#&gt;  [76] 00 00 00 05 6e 61 6d 65 73 00 00 00 10 00 00 00 02 00 04 00 09 00 00 00 01</span>
@@ -347,7 +347,7 @@
 <span class="co">#&gt; &lt; recvAio &gt;</span>
 <span class="co">#&gt;  - $data for message data</span>
 <span class="va">aio</span><span class="op">$</span><span class="va">data</span> |&gt; <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt;  num [1:100000000] -0.901 0.2851 -0.0205 0.1886 1.3892 ...</span></code></pre></div>
+<span class="co">#&gt;  num [1:100000000] 0.173 -0.103 -0.522 -0.812 0.532 ...</span></code></pre></div>
 <p>As <code><a href="reference/call_aio.html">call_aio()</a></code> is blocking and will wait for completion, an alternative is to query <code>aio$data</code> directly. This will return an ‘unresolved’ logical NA value if the calculation is yet to complete.</p>
 <p>In this example the calculation is returned, but other operations may reside entirely on the server side, for example writing data to disk.</p>
 <p>In such a case, calling or querying the value confirms that the operation has completed, and provides the return value of the function, which may typically be NULL or an exit code.</p>
@@ -389,7 +389,14 @@
 <span class="co"># however the topics explicitly subscribed to are still received</span>
 <span class="va">pub</span> |&gt; <span class="fu"><a href="reference/send.html">send</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"examples"</span>, <span class="st">"this example will still be received"</span><span class="op">)</span>, mode <span class="op">=</span> <span class="st">"raw"</span>, echo <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
 <span class="va">sub</span> |&gt; <span class="fu"><a href="reference/recv.html">recv</a></span><span class="op">(</span>mode <span class="op">=</span> <span class="st">"character"</span>, keep.raw <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-<span class="co">#&gt; [1] "examples"                            "this example will still be received"</span>
+<span class="co">#&gt; [1] "examples"                            "this example will still be received"</span></code></pre></div>
+<p>The subscribed topic can be any atomic type (not just character), allowing integer, double, logical, complex and raw vectors to be sent as well.</p>
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<code class="sourceCode R">
+<span class="va">sub</span> |&gt; <span class="fu"><a href="reference/subscribe.html">subscribe</a></span><span class="op">(</span>topic <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>
+<span class="va">pub</span> |&gt; <span class="fu"><a href="reference/send.html">send</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">10</span>, <span class="fl">10</span>, <span class="fl">20</span><span class="op">)</span>, mode <span class="op">=</span> <span class="st">"raw"</span>, echo <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
+<span class="va">sub</span> |&gt; <span class="fu"><a href="reference/recv.html">recv</a></span><span class="op">(</span>mode <span class="op">=</span> <span class="st">"double"</span>, keep.raw <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
+<span class="co">#&gt; [1]  1 10 10 20</span>
 
 <span class="fu"><a href="reference/close.html">close</a></span><span class="op">(</span><span class="va">pub</span><span class="op">)</span>
 <span class="fu"><a href="reference/close.html">close</a></span><span class="op">(</span><span class="va">sub</span><span class="op">)</span></code></pre></div>
@@ -400,7 +407,7 @@
 </h3>
 <p>This type of pattern is useful for applications such as service discovery.</p>
 <p>A surveyor sends a survey, which is broadcast to all peer respondents. Respondents are then able to reply, but are not obliged to. The survey itself is a timed event, and responses received after the timeout are discarded.</p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
 <span class="va">sur</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/socket.html">socket</a></span><span class="op">(</span><span class="st">"surveyor"</span>, listen <span class="op">=</span> <span class="st">"inproc://nanoservice"</span><span class="op">)</span>
 <span class="va">res1</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/socket.html">socket</a></span><span class="op">(</span><span class="st">"respondent"</span>, dial <span class="op">=</span> <span class="st">"inproc://nanoservice"</span><span class="op">)</span>
@@ -449,20 +456,20 @@
 <p><code><a href="reference/ncurl.html">ncurl()</a></code> is a minimalist http(s) client.</p>
 <p>By setting <code>async = TRUE</code>, it performs requests asynchronously, returning immediately with a ‘recvAio’.</p>
 <p>For normal use, it takes just the URL. It can follow redirects.</p>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
 <span class="fu"><a href="reference/ncurl.html">ncurl</a></span><span class="op">(</span><span class="st">"http://httpbin.org/headers"</span><span class="op">)</span>
 <span class="co">#&gt; $raw</span>
 <span class="co">#&gt;   [1] 7b 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73</span>
 <span class="co">#&gt;  [26] 74 22 3a 20 22 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22</span>
 <span class="co">#&gt;  [51] 58 2d 41 6d 7a 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31</span>
-<span class="co">#&gt;  [76] 2d 36 32 37 33 61 65 38 65 2d 37 33 31 61 36 62 35 30 32 30 65 63 36 30 31</span>
-<span class="co">#&gt; [101] 32 35 32 62 64 66 32 39 38 22 0a 20 20 7d 0a 7d 0a</span>
+<span class="co">#&gt;  [76] 2d 36 32 37 34 35 31 35 30 2d 32 61 62 61 34 61 31 61 36 39 63 37 36 61 66</span>
+<span class="co">#&gt; [101] 62 32 38 30 61 30 65 66 62 22 0a 20 20 7d 0a 7d 0a</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $data</span>
-<span class="co">#&gt; [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6273ae8e-731a6b5020ec601252bdf298\"\n  }\n}\n"</span></code></pre></div>
+<span class="co">#&gt; [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-62745150-2aba4a1a69c76afb280a0efb\"\n  }\n}\n"</span></code></pre></div>
 <p>For advanced use, supports additional HTTP methods such as POST or PUT.</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
 <span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ncurl.html">ncurl</a></span><span class="op">(</span><span class="st">"http://httpbin.org/post"</span>, async <span class="op">=</span> <span class="cn">TRUE</span>, method <span class="op">=</span> <span class="st">"POST"</span>,
              headers <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>`Content-Type` <span class="op">=</span> <span class="st">"application/json"</span>, Authorization <span class="op">=</span> <span class="st">"Bearer APIKEY"</span><span class="op">)</span>,
@@ -473,7 +480,7 @@
 <span class="co">#&gt;  - $raw for raw message</span>
 
 <span class="fu"><a href="reference/call_aio.html">call_aio</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span><span class="op">$</span><span class="va">data</span>
-<span class="co">#&gt; [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6273ae8f-5a31583a2f9f02b8619845b7\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"79.173.189.204\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"</span></code></pre></div>
+<span class="co">#&gt; [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-62745150-4a03a30d6fcd147d71c51fdf\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"78.145.225.121\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"</span></code></pre></div>
 <p>In this respect, it may be used as a performant and lightweight method for making REST API requests.</p>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
@@ -481,7 +488,7 @@
 <h3 id="stream-websocket-client">stream: Websocket Client<a class="anchor" aria-label="anchor" href="#stream-websocket-client"></a>
 </h3>
 <p><code><a href="reference/stream.html">stream()</a></code> exposes NNG’s low-level byte stream interface for communicating with raw sockets. This may be used for connecting to arbitrary non-NNG endpoints.</p>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
 <span class="va">s</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/stream.html">stream</a></span><span class="op">(</span>dial <span class="op">=</span> <span class="st">"wss://demo.piesocket.com/v3/channel_1"</span>, textframes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 <span class="va">s</span>
