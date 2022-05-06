@@ -23,8 +23,8 @@ Contexts allow the independent and concurrent use of stateful
     created on a rep socket can each receive requests, and send replies to
     them, without any regard to or interference with each other.
 
-    Note: only certain protocols support creation of separate contexts -
-    namely req, rep, surveyor, respondent.
+    Only the following protocols support creation of contexts: req, rep, sub
+    (in a pub/sub pattern), surveyor, respondent.
 
     To send and receive over a context use \code{\link{send}} and
     \code{\link{recv}} or their async counterparts \code{\link{send_aio}} and

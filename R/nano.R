@@ -134,6 +134,7 @@ nano <- function(protocol = c("pair", "bus", "req", "rep", "push", "pull",
            nano[["context"]] <- function() context(socket)
          },
          sub = {
+           nano[["context"]] <- function() context(socket)
            nano[["subscribe"]] <- function(topic = NULL) subscribe(socket,
                                                                    topic = topic)
            nano[["unsubscribe"]] <- function(topic = NULL) unsubscribe(socket,

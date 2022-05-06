@@ -2,11 +2,11 @@
 
 #' Subscribe Topic
 #'
-#' For a socket using the sub protocol in a publisher/subscriber pattern. Set a
-#'     topic to subscribe to.
+#' For a socket or context using the sub protocol in a publisher/subscriber
+#'     pattern. Set a topic to subscribe to.
 #'
-#' @param socket a Socket using the sub protocol.
-#' @param topic [default NULL] a topic (vector or NULL). The default NULL
+#' @param con a Socket or Context using the 'sub' protocol.
+#' @param topic [default NULL] an atomic type or NULL. The default NULL
 #'     subscribes to all topics.
 #'
 #' @return Invisibly, an integer exit code (zero on success).
@@ -30,24 +30,45 @@
 #' send(pub, c("other", "this other topic will not be received"), mode = "raw")
 #' recv(sub, "character")
 #'
+#' subscribe(sub, 2)
+#' send(pub, c(2, 10, 10, 20), mode = "raw")
+#' recv(sub, "double", keep.raw = FALSE)
+#'
 #' close(pub)
 #' close(sub)
 #'
+#' @rdname subscribe
 #' @export
 #'
-subscribe <- function(socket, topic = NULL) {
+subscribe <- function(con, topic = NULL) UseMethod("subscribe")
 
-  invisible(.Call(rnng_socket_set, socket, 0L, "sub:subscribe", topic))
+#' @rdname subscribe
+#' @method subscribe nanoSocket
+#' @export
+#'
+subscribe.nanoSocket <- function(con, topic = NULL) {
+
+  invisible(.Call(rnng_socket_set, con, 0L, "sub:subscribe", topic))
+
+}
+
+#' @rdname subscribe
+#' @method subscribe nanoContext
+#' @export
+#'
+subscribe.nanoContext <- function(con, topic = NULL) {
+
+  invisible(.Call(rnng_ctx_set, con, 0L, "sub:subscribe", topic))
 
 }
 
 #' Unsubscribe Topic
 #'
-#' For a socket using the sub protocol in a publisher/subscriber pattern. Remove
-#'     a topic from the subscription list.
+#' For a socket or context using the sub protocol in a publisher/subscriber
+#'     pattern. Remove a topic from the subscription list.
 #'
-#' @param socket a Socket using the sub protocol.
-#' @param topic [default NULL] a topic (vector or NULL). The default NULL
+#' @param con a Socket or Context using the 'sub' protocol.
+#' @param topic [default NULL] an atomic type or NULL. The default NULL
 #'     unsubscribes from all topics (if all topics were previously subscribed).
 #'
 #' @return Invisibly, an integer exit code (zero on success).
@@ -75,24 +96,46 @@ subscribe <- function(socket, topic = NULL) {
 #' send(pub, c("examples", "this example will not be received"), mode = "raw")
 #' recv(sub, "character")
 #'
+#' subscribe(sub, 2)
+#' send(pub, c(2, 10, 10, 20), mode = "raw")
+#' recv(sub, "double", keep.raw = FALSE)
+#'
 #' close(pub)
 #' close(sub)
 #'
+#' @rdname unsubscribe
 #' @export
 #'
-unsubscribe <- function(socket, topic = NULL) {
+unsubscribe <- function(con, topic = NULL) UseMethod("unsubscribe")
 
-  invisible(.Call(rnng_socket_set, socket, 0L, "sub:unsubscribe", topic))
+#' @rdname unsubscribe
+#' @method unsubscribe nanoSocket
+#' @export
+#'
+unsubscribe.nanoSocket <- function(con, topic = NULL) {
+
+  invisible(.Call(rnng_socket_set, con, 0L, "sub:unsubscribe", topic))
+
+}
+
+#' @rdname unsubscribe
+#' @method unsubscribe nanoContext
+#' @export
+#'
+unsubscribe.nanoContext <- function(con, topic = NULL) {
+
+  invisible(.Call(rnng_ctx_set, con, 0L, "sub:unsubscribe", topic))
 
 }
 
 #' Set Survey Time
 #'
-#' For a socket using the surveyor protocol in a surveyor/respondent pattern.
-#'     Set a survey timeout in ms (remains valid for all subsequent surveys).
-#'     Messages received by the surveyor after the timer has ended are discarded.
+#' For a socket or context using the surveyor protocol in a surveyor/respondent
+#'     pattern. Set a survey timeout in ms (remains valid for all subsequent
+#'     surveys). Messages received by the surveyor after the timer has ended are
+#'     discarded.
 #'
-#' @param socket a Socket or Context using the surveyor protocol.
+#' @param con a Socket or Context using the 'surveyor' protocol.
 #' @param time the survey timeout in ms.
 #'
 #' @return Invisibly, an integer exit code (zero on success).
@@ -126,11 +169,28 @@ unsubscribe <- function(socket, topic = NULL) {
 #' close(sur)
 #' close(res)
 #'
+#' @rdname survey_time
 #' @export
 #'
-survey_time <- function(socket, time) {
+survey_time <- function(con, time) UseMethod("survey_time")
 
-  invisible(.Call(rnng_socket_set, socket, 3L, "surveyor:survey-time", time))
+#' @rdname survey_time
+#' @method survey_time nanoSocket
+#' @export
+#'
+survey_time.nanoSocket <- function(con, time) {
+
+  invisible(.Call(rnng_socket_set, con, 3L, "surveyor:survey-time", time))
+
+}
+
+#' @rdname survey_time
+#' @method survey_time nanoContext
+#' @export
+#'
+survey_time.nanoContext <- function(con, time) {
+
+  invisible(.Call(rnng_ctx_set, con, 3L, "surveyor:survey-time", time))
 
 }
 

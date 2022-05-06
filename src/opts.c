@@ -146,6 +146,14 @@ SEXP rnng_ctx_set(SEXP context, SEXP type, SEXP opt, SEXP value) {
   int xc;
 
   switch (typ) {
+  case 0:
+    if (value == R_NilValue) {
+      xc = nng_ctx_set(*ctx, op, NULL, 0);
+    } else {
+      SEXP enc = nano_encode(value);
+      xc = nng_ctx_set(*ctx, op, RAW(enc), Rf_xlength(enc));
+    }
+    break;
   case 1:
     xc = nng_ctx_set_bool(*ctx, op, (bool) Rf_asInteger(value));
     break;

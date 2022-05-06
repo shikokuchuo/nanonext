@@ -2,12 +2,18 @@
 % Please edit documentation in R/protocol.R
 \name{survey_time}
 \alias{survey_time}
+\alias{survey_time.nanoSocket}
+\alias{survey_time.nanoContext}
 \title{Set Survey Time}
 \usage{
-survey_time(socket, time)
+survey_time(con, time)
+
+\method{survey_time}{nanoSocket}(con, time)
+
+\method{survey_time}{nanoContext}(con, time)
 }
 \arguments{
-\item{socket}{a Socket or Context using the surveyor protocol.}
+\item{con}{a Socket or Context using the 'surveyor' protocol.}
 
 \item{time}{the survey timeout in ms.}
 }
@@ -15,9 +21,10 @@ survey_time(socket, time)
 Invisibly, an integer exit code (zero on success).
 }
 \description{
-For a socket using the surveyor protocol in a surveyor/respondent pattern.
-    Set a survey timeout in ms (remains valid for all subsequent surveys).
-    Messages received by the surveyor after the timer has ended are discarded.
+For a socket or context using the surveyor protocol in a surveyor/respondent
+    pattern. Set a survey timeout in ms (remains valid for all subsequent
+    surveys). Messages received by the surveyor after the timer has ended are
+    discarded.
 }
 \details{
 After using this function, to start a new survey, the surveyor must:

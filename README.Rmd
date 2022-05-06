@@ -348,6 +348,16 @@ sub |> recv("character", keep.raw = FALSE)
 pub |> send(c("examples", "this example will still be received"), mode = "raw", echo = FALSE)
 sub |> recv(mode = "character", keep.raw = FALSE)
 
+```
+
+The subscribed topic can be any atomic type (not just character), allowing integer, double, logical, complex and raw vectors to be sent as well.
+
+```{r pub2}
+
+sub |> subscribe(topic = 1)
+pub |> send(c(1, 10, 10, 20), mode = "raw", echo = FALSE)
+sub |> recv(mode = "double", keep.raw = FALSE)
+
 close(pub)
 close(sub)
 

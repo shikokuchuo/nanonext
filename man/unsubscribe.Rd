@@ -2,22 +2,28 @@
 % Please edit documentation in R/protocol.R
 \name{unsubscribe}
 \alias{unsubscribe}
+\alias{unsubscribe.nanoSocket}
+\alias{unsubscribe.nanoContext}
 \title{Unsubscribe Topic}
 \usage{
-unsubscribe(socket, topic = NULL)
+unsubscribe(con, topic = NULL)
+
+\method{unsubscribe}{nanoSocket}(con, topic = NULL)
+
+\method{unsubscribe}{nanoContext}(con, topic = NULL)
 }
 \arguments{
-\item{socket}{a Socket using the sub protocol.}
+\item{con}{a Socket or Context using the 'sub' protocol.}
 
-\item{topic}{[default NULL] a topic (vector or NULL). The default NULL
+\item{topic}{[default NULL] an atomic type or NULL. The default NULL
 unsubscribes from all topics (if all topics were previously subscribed).}
 }
 \value{
 Invisibly, an integer exit code (zero on success).
 }
 \description{
-For a socket using the sub protocol in a publisher/subscriber pattern. Remove
-    a topic from the subscription list.
+For a socket or context using the sub protocol in a publisher/subscriber
+    pattern. Remove a topic from the subscription list.
 }
 \details{
 Note that if the topic was not previously subscribed to then an
@@ -42,6 +48,10 @@ recv(sub, "character")
 unsubscribe(sub, NULL)
 send(pub, c("examples", "this example will not be received"), mode = "raw")
 recv(sub, "character")
+
+subscribe(sub, 2)
+send(pub, c(2, 10, 10, 20), mode = "raw")
+recv(sub, "double", keep.raw = FALSE)
 
 close(pub)
 close(sub)
