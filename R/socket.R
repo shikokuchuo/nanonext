@@ -6,8 +6,8 @@
 #'     outgoing connection) or listen (accept an incoming connection) at an
 #'     address.
 #'
-#' @param protocol [default 'pair'] choose protocol - 'pair', 'bus', 'req',
-#'     'rep', 'push', 'pull', 'pub', 'sub', 'surveyor', or 'respondent' - see
+#' @param protocol [default 'bus'] choose protocol - 'bus', 'pair', 'push',
+#'     'pull', 'pub', 'sub', 'req', 'rep', 'surveyor', or 'respondent' - see
 #'     \link{protocols}.
 #' @param dial (optional) a URL to dial, specifying the transport and address as
 #'     a character string e.g. 'inproc://anyvalue' or 'tcp://127.0.0.1:5555'
@@ -40,12 +40,12 @@
 #'
 #'     The following Scalability Protocols (communication patterns) are implemented:
 #'     \itemize{
+#'     \item{Bus (mesh networks) - protocol: 'bus'}
 #'     \item{Pair (two-way radio) - protocol: 'pair'}
-#'     \item{Bus (routing) - protocol: 'bus'}
 #'     \item{Pipeline (one-way pipe) - protocol: 'push', 'pull'}
-#'     \item{Request/Reply (I ask, you answer) - protocol: 'req', 'rep'}
 #'     \item{Publisher/Subscriber (topics & broadcast) - protocol: 'pub', 'sub'}
-#'     \item{Survey (everyone votes) - protocol: 'surveyor', 'respondent'}
+#'     \item{Request/Reply (RPC) - protocol: 'req', 'rep'}
+#'     \item{Survey (voting & service discovery) - protocol: 'surveyor', 'respondent'}
 #'     }
 #'
 #'     Please see \link{protocols} for further documentation.
@@ -57,14 +57,14 @@
 #'
 #' @export
 #'
-socket <- function(protocol = c("pair", "bus", "req", "rep", "push", "pull",
-                                "pub", "sub", "surveyor", "respondent"),
+socket <- function(protocol = c("bus", "pair", "push", "pull", "pub", "sub",
+                                "req", "rep", "surveyor", "respondent"),
                    dial = NULL,
                    listen = NULL,
                    autostart = TRUE) {
 
-  protocol <- match.arg2(protocol, c("pair", "bus", "req", "rep", "push", "pull",
-                                     "pub", "sub", "surveyor", "respondent"))
+  protocol <- match.arg2(protocol, c("bus", "pair", "push", "pull", "pub", "sub",
+                                     "req", "rep", "surveyor", "respondent"))
   sock <- .Call(rnng_protocol_open, protocol)
   is.integer(sock) && return(sock)
   if (!missing(dial)) dial(sock, url = dial, autostart = autostart)

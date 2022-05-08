@@ -7,7 +7,7 @@
 #' @param url the URL address.
 #' @param async [default FALSE] logical value whether to perform actions async.
 #' @param convert [default TRUE] logical value whether to attempt conversion of
-#'     the received raw bytes to a character vetor.
+#'     the received raw bytes to a character vector.
 #' @param method (optional) the HTTP method (defaults to 'GET' if not specified).
 #' @param headers (optional) a named list or character vector specifying the
 #'     HTTP request headers e.g. \code{list(`Content-Type` = "text/plain")} or

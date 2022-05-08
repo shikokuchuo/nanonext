@@ -5,7 +5,7 @@
 \title{Open Socket}
 \usage{
 socket(
-  protocol = c("pair", "bus", "req", "rep", "push", "pull", "pub", "sub", "surveyor",
+  protocol = c("bus", "pair", "push", "pull", "pub", "sub", "req", "rep", "surveyor",
     "respondent"),
   dial = NULL,
   listen = NULL,
@@ -13,8 +13,8 @@ socket(
 )
 }
 \arguments{
-\item{protocol}{[default 'pair'] choose protocol - 'pair', 'bus', 'req',
-'rep', 'push', 'pull', 'pub', 'sub', 'surveyor', or 'respondent' - see
+\item{protocol}{[default 'bus'] choose protocol - 'bus', 'pair', 'push',
+'pull', 'pub', 'sub', 'req', 'rep', 'surveyor', or 'respondent' - see
 \link{protocols}.}
 
 \item{dial}{(optional) a URL to dial, specifying the transport and address as
@@ -58,12 +58,12 @@ NNG presents a socket view of networking. The sockets are constructed
 
     The following Scalability Protocols (communication patterns) are implemented:
     \itemize{
+    \item{Bus (mesh networks) - protocol: 'bus'}
     \item{Pair (two-way radio) - protocol: 'pair'}
-    \item{Bus (routing) - protocol: 'bus'}
     \item{Pipeline (one-way pipe) - protocol: 'push', 'pull'}
-    \item{Request/Reply (I ask, you answer) - protocol: 'req', 'rep'}
     \item{Publisher/Subscriber (topics & broadcast) - protocol: 'pub', 'sub'}
-    \item{Survey (everyone votes) - protocol: 'surveyor', 'respondent'}
+    \item{Request/Reply (RPC) - protocol: 'req', 'rep'}
+    \item{Survey (voting & service discovery) - protocol: 'surveyor', 'respondent'}
     }
 
     Please see \link{protocols} for further documentation.

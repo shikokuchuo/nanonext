@@ -9,18 +9,7 @@ Protocols implemented by \{nanonext\}.
     For an authoritative guide please refer to the online documentation for
     the NNG library at <https://nng.nanomsg.org/man/>.
 }
-\section{Pair (two-way radio)}{
-
-
-    [protocol, pair] The pair protocol implements a peer-to-peer pattern,
-    where relationships between peers are one-to-one. Only one peer may be
-    connected to another peer at a time, but both may speak freely.
-
-    Normally, this pattern will block when attempting to send a message
-    if no peer is able to receive the message.
-}
-
-\section{Bus (routing)}{
+\section{Bus (mesh networks)}{
 
 
     [protocol, bus] The bus protocol is useful for routing applications or for
@@ -43,26 +32,18 @@ Protocols implemented by \{nanonext\}.
     discarded.
 }
 
-\section{Request/Reply (I ask, you answer)}{
+\section{Pair (two-way radio)}{
 
 
-    In a request/reply pattern, a requester sends a message to one replier,
-    who is expected to reply with a single answer. This is used for
-    synchronous communications, for example remote procedure calls (RPCs).
+    [protocol, pair] The pair protocol implements a peer-to-peer pattern,
+    where relationships between peers are one-to-one. Only one peer may be
+    connected to another peer at a time, but both may speak freely.
 
-    The request is resent automatically if no reply arrives, until a reply is
-    received or the request times out.
-
-    [protocol, req] The req protocol is one half of a request/reply pattern.
-    This socket may be used to send messages (requests), and then to receive
-    replies. Generally a reply can only be received after sending a request.
-
-    [protocol, rep] The rep protocol is one half of a request/reply pattern.
-    This socket may be used to receive messages (requests), and then to send
-    replies. Generally a reply can only be sent after receiving a request.
+    Normally, this pattern will block when attempting to send a message
+    if no peer is able to receive the message.
 }
 
-\section{Pipeline (one-way pipe)}{
+\section{Push/Pull (one-way pipeline)}{
 
 
     In the pipeline pattern, pushers distribute messages to pullers, hence
@@ -96,7 +77,26 @@ Protocols implemented by \{nanonext\}.
     send them.
 }
 
-\section{Survey (everyone votes)}{
+\section{Request/Reply (RPC)}{
+
+
+    In a request/reply pattern, a requester sends a message to one replier,
+    who is expected to reply with a single answer. This is used for
+    synchronous communications, for example remote procedure calls (RPCs).
+
+    The request is resent automatically if no reply arrives, until a reply is
+    received or the request times out.
+
+    [protocol, req] The req protocol is one half of a request/reply pattern.
+    This socket may be used to send messages (requests), and then to receive
+    replies. Generally a reply can only be received after sending a request.
+
+    [protocol, rep] The rep protocol is one half of a request/reply pattern.
+    This socket may be used to receive messages (requests), and then to send
+    replies. Generally a reply can only be sent after receiving a request.
+}
+
+\section{Surveyor/Respondent (voting & service discovery)}{
 
 
     In a survey pattern, a surveyor sends a survey, which is broadcast to all

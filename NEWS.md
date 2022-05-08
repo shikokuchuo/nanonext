@@ -9,10 +9,11 @@
 #### Updates
 
 * Protocol-specific helpers `subscribe()`, `unsubscribe()`, and `survey_time()` gain nanoContext methods.
+* Default protocol is now 'bus' when opening a new Socket or nano Object - the choices are now ordered more logically.
 * Closing a stream now strips all attributes on the object rendering it a nil external pointer - this is for safety, eliminating a potential crash if attempting to re-use a closed stream.
 * For receives, if an error occurs in unserialisation or data conversion (e.g. mode was incorrectly specified), the received raw vector is now available at both `$raw` and `$data` if `keep.raw = TRUE`.
 * Setting 'NANONEXT_TLS=1' now allows the downloaded NNG library to be built against a system mbedtls installation.
-* Setting 'NANONEXT_ARM' is no longer required on platforms such as Raspberry Pi - the package configure script should now detect platforms that require the libatomic linker flag to be set automatically.
+* Setting 'NANONEXT_ARM' is no longer required on platforms such as Raspberry Pi - the package configure script now detects platforms requiring the libatomic linker flag automatically.
 * Deprecated `send_ctx()`, `recv_ctx()` and logging removed.
 * All-round internal performance optimisations.
 

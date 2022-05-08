@@ -28,12 +28,12 @@ Designed for performance and reliability, the NNG library is written in C and {n
 
 Implemented scalability protocols:
 
-- Bus (routing)
+- Bus (mesh networks)
 - Pair (two-way radio)
-- Pipeline (one-way pipe)
+- Push/Pull (one-way pipeline)
 - Publisher/Subscriber (topics & broadcast)
-- Request/Reply (I ask, you answer)
-- Survey (everyone votes)
+- Request/Reply (RPC)
+- Surveyor/Respondent (voting & service discovery)
 
 Supported transports:
 
@@ -42,7 +42,7 @@ Supported transports:
 - TCP (IPv4 or IPv6)
 - WebSocket
 
-Provided web tools:
+Web tools:
 
 - ncurl - (async) http(s) client
 - stream - secure websockets client (and generic low-level socket interface)
@@ -56,7 +56,7 @@ Provided web tools:
 4. [Async and Concurrency](#async-and-concurrency)
 5. [RPC and Distributed Computing](#rpc-and-distributed-computing)
 6. [Publisher / Subscriber Model](#publisher-subscriber-model)
-7. [Surveyor / Repondent Model](#surveyor-respondent-model)
+7. [Surveyor / Respondent Model](#surveyor-respondent-model)
 8. [ncurl: (Async) HTTP Client](#ncurl-async-http-client)
 9. [stream: Websocket Client](#stream-websocket-client)
 10. [Building from source](#building-from-source)

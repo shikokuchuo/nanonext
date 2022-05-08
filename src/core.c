@@ -367,36 +367,36 @@ SEXP rnng_protocol_open(SEXP protocol) {
   sock = R_Calloc(1, nng_socket);
   switch (pro) {
   case 1:
-    pname = "pair";
-    xc = nng_pair0_open(sock);
-    break;
-  case 2:
     pname = "bus";
     xc = nng_bus0_open(sock);
     break;
+  case 2:
+    pname = "pair";
+    xc = nng_pair0_open(sock);
+    break;
   case 3:
-    pname = "req";
-    xc = nng_req0_open(sock);
-    break;
-  case 4:
-    pname = "rep";
-    xc = nng_rep0_open(sock);
-    break;
-  case 5:
     pname = "push";
     xc = nng_push0_open(sock);
     break;
-  case 6:
+  case 4:
     pname = "pull";
     xc = nng_pull0_open(sock);
     break;
-  case 7:
+  case 5:
     pname = "pub";
     xc = nng_pub0_open(sock);
     break;
-  case 8:
+  case 6:
     pname = "sub";
     xc = nng_sub0_open(sock);
+    break;
+  case 7:
+    pname = "req";
+    xc = nng_req0_open(sock);
+    break;
+  case 8:
+    pname = "rep";
+    xc = nng_rep0_open(sock);
     break;
   case 9:
     pname = "surveyor";

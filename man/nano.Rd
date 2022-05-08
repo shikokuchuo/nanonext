@@ -5,7 +5,7 @@
 \title{Create Nano Object}
 \usage{
 nano(
-  protocol = c("pair", "bus", "req", "rep", "push", "pull", "pub", "sub", "surveyor",
+  protocol = c("bus", "pair", "push", "pull", "pub", "sub", "req", "rep", "surveyor",
     "respondent"),
   dial = NULL,
   listen = NULL,
@@ -13,8 +13,8 @@ nano(
 )
 }
 \arguments{
-\item{protocol}{[default 'pair'] choose protocol - 'pair', 'bus', 'req',
-'rep', 'push', 'pull', 'pub', 'sub', 'surveyor', or 'respondent' - see
+\item{protocol}{[default 'bus'] choose protocol - 'bus', 'pair', 'push',
+'pull', 'pub', 'sub', 'req', 'rep', 'surveyor', or 'respondent' - see
 \link{protocols}.}
 
 \item{dial}{(optional) a URL to dial, specifying the transport and address as

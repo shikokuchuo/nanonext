@@ -19,7 +19,7 @@ ncurl(
 \item{async}{[default FALSE] logical value whether to perform actions async.}
 
 \item{convert}{[default TRUE] logical value whether to attempt conversion of
-the received raw bytes to a character vetor.}
+the received raw bytes to a character vector.}
 
 \item{method}{(optional) the HTTP method (defaults to 'GET' if not specified).}
 

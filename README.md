@@ -30,12 +30,12 @@ spanning the globe.
 
 Implemented scalability protocols:
 
--   Bus (routing)
+-   Bus (mesh networks)
 -   Pair (two-way radio)
--   Pipeline (one-way pipe)
+-   Push/Pull (one-way pipeline)
 -   Publisher/Subscriber (topics & broadcast)
--   Request/Reply (I ask, you answer)
--   Survey (everyone votes)
+-   Request/Reply (RPC)
+-   Surveyor/Respondent (voting & service discovery)
 
 Supported transports:
 
@@ -44,7 +44,7 @@ Supported transports:
 -   TCP (IPv4 or IPv6)
 -   WebSocket
 
-Provided web tools:
+Web tools:
 
 -   ncurl - (async) http(s) client
 -   stream - secure websockets client (and generic low-level socket
@@ -59,7 +59,7 @@ Provided web tools:
 4.  [Async and Concurrency](#async-and-concurrency)
 5.  [RPC and Distributed Computing](#rpc-and-distributed-computing)
 6.  [Publisher / Subscriber Model](#publisher-subscriber-model)
-7.  [Surveyor / Repondent Model](#surveyor-respondent-model)
+7.  [Surveyor / Respondent Model](#surveyor-respondent-model)
 8.  [ncurl: (Async) HTTP Client](#ncurl-async-http-client)
 9.  [stream: Websocket Client](#stream-websocket-client)
 10. [Building from source](#building-from-source)
@@ -395,7 +395,7 @@ aio
 #> < recvAio >
 #>  - $data for message data
 aio$data |> str()
-#>  num [1:100000000] -1.074 0.245 0.744 -0.502 -1.666 ...
+#>  num [1:100000000] 1.5004 -0.1919 -1.5241 0.9783 0.0144 ...
 ```
 
 As `call_aio()` is blocking and will wait for completion, an alternative
@@ -547,11 +547,11 @@ ncurl("http://httpbin.org/headers")
 #>   [1] 7b 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73
 #>  [26] 74 22 3a 20 22 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22
 #>  [51] 58 2d 41 6d 7a 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31
-#>  [76] 2d 36 32 37 37 61 32 61 32 2d 34 39 36 62 38 32 38 61 34 38 63 35 65 61 66
-#> [101] 33 35 38 66 33 37 65 31 34 22 0a 20 20 7d 0a 7d 0a
+#>  [76] 2d 36 32 37 38 32 66 61 64 2d 37 30 63 35 63 31 61 30 37 39 63 66 62 66 32
+#> [101] 31 37 36 65 33 34 30 65 65 22 0a 20 20 7d 0a 7d 0a
 #> 
 #> $data
-#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6277a2a2-496b828a48c5eaf358f37e14\"\n  }\n}\n"
+#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-62782fad-70c5c1a079cfbf2176e340ee\"\n  }\n}\n"
 ```
 
 For advanced use, supports additional HTTP methods such as POST or PUT.
@@ -567,7 +567,7 @@ res
 #>  - $raw for raw message
 
 call_aio(res)$data
-#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6277a2a2-6ae6efe31d378db911a099f5\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"78.145.225.121\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
+#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-62782fad-7472b2c32d5af7603e86ae7d\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"78.145.225.121\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
 ```
 
 In this respect, it may be used as a performant and lightweight method
@@ -597,10 +597,10 @@ s
 #>  - textframes: TRUE
 
 s |> recv(keep.raw = FALSE)
-#> [1] "{\"e\":\"kline\",\"E\":1652007590579,\"s\":\"BTCUSDT\",\"k\":{\"t\":1652007540000,\"T\":1652007599999,\"s\":\"BTCUSDT\",\"i\":\"1m\",\"f\":1351258350,\"L\":1351258570,\"o\":\"34718.38000000\",\"c\":\"34726.74000000\",\"h\":\"34726.74000000\",\"l\":\"34717.06000000\",\"v\":\"3.78973000\",\"n\":221,\"x\":false,\"q\":\"131577.38153510\",\"V\":\"2.16208000\",\"Q\":\"75065.38564240\",\"B\":\"0\"}}"
+#> [1] "{\"e\":\"kline\",\"E\":1652043696064,\"s\":\"BTCUSDT\",\"k\":{\"t\":1652043660000,\"T\":1652043719999,\"s\":\"BTCUSDT\",\"i\":\"1m\",\"f\":1351814911,\"L\":1351815351,\"o\":\"34253.08000000\",\"c\":\"34279.21000000\",\"h\":\"34285.51000000\",\"l\":\"34253.07000000\",\"v\":\"21.53329000\",\"n\":441,\"x\":false,\"q\":\"737928.59980930\",\"V\":\"15.55859000\",\"Q\":\"533152.23838480\",\"B\":\"0\"}}"
 
 s |> recv(keep.raw = FALSE)
-#> [1] "{\"e\":\"kline\",\"E\":1652007592588,\"s\":\"BTCUSDT\",\"k\":{\"t\":1652007540000,\"T\":1652007599999,\"s\":\"BTCUSDT\",\"i\":\"1m\",\"f\":1351258350,\"L\":1351258593,\"o\":\"34718.38000000\",\"c\":\"34729.58000000\",\"h\":\"34729.58000000\",\"l\":\"34717.06000000\",\"v\":\"4.01301000\",\"n\":244,\"x\":false,\"q\":\"139331.29327650\",\"V\":\"2.27211000\",\"Q\":\"78886.44058120\",\"B\":\"0\"}}"
+#> [1] "{\"e\":\"kline\",\"E\":1652043698106,\"s\":\"BTCUSDT\",\"k\":{\"t\":1652043660000,\"T\":1652043719999,\"s\":\"BTCUSDT\",\"i\":\"1m\",\"f\":1351814911,\"L\":1351815367,\"o\":\"34253.08000000\",\"c\":\"34281.51000000\",\"h\":\"34285.51000000\",\"l\":\"34253.07000000\",\"v\":\"21.61695000\",\"n\":457,\"x\":false,\"q\":\"740796.49099100\",\"V\":\"15.64225000\",\"Q\":\"536020.12956650\",\"B\":\"0\"}}"
 
 close(s)
 ```
