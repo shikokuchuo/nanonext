@@ -90,7 +90,7 @@
 </h1></div>
 <!-- badges: start -->
 <p>R binding for NNG (Nanomsg Next Gen), a successor to ZeroMQ. NNG is a socket library providing high-performance scalability protocols, implementing a cross-platform standard for messaging and communications. Serves as a concurrency framework for building distributed applications, utilising ‘Aio’ objects which automatically resolve upon completion of asynchronous operations.</p>
-<p>Designed for performance and reliability, the NNG library is written in C and {nanonext} is a lightweight wrapper depending on no other packages. Provides the interface for code and processes to communicate with each other - receive data generated in Python, perform analysis in R, and send results to a C++ program – all on the same computer or on networks spanning the globe.</p>
+<p>Designed for performance and reliability, the NNG library is written in C and {nanonext} is a lightweight zero-dependency wrapper. Provides the interface for code and processes to communicate with each other - receive data generated in Python, perform analysis in R, and send results to a C++ program – all on the same computer or on networks spanning the globe.</p>
 <p>Implemented scalability protocols:</p>
 <ul>
 <li>Bus (routing)</li>
@@ -100,12 +100,18 @@
 <li>Request/Reply (I ask, you answer)</li>
 <li>Survey (everyone votes)</li>
 </ul>
-<p>Implemented transports:</p>
+<p>Supported transports:</p>
 <ul>
 <li>inproc (intra-process)</li>
 <li>IPC (inter-process)</li>
-<li>TCP/IP (IPv4 or IPv6)</li>
+<li>TCP (IPv4 or IPv6)</li>
 <li>WebSocket</li>
+</ul>
+<p>Provided web tools:</p>
+<ul>
+<li>ncurl - (async) http(s) client</li>
+<li>stream - secure websockets client (and generic low-level socket interface)</li>
+<li>messenger - console-based instant messaging</li>
 </ul>
 <div class="section level3">
 <h3 id="table-of-contents">Table of Contents<a class="anchor" aria-label="anchor" href="#table-of-contents"></a>
@@ -347,7 +353,7 @@
 <span class="co">#&gt; &lt; recvAio &gt;</span>
 <span class="co">#&gt;  - $data for message data</span>
 <span class="va">aio</span><span class="op">$</span><span class="va">data</span> |&gt; <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt;  num [1:100000000] 0.173 -0.103 -0.522 -0.812 0.532 ...</span></code></pre></div>
+<span class="co">#&gt;  num [1:100000000] -1.074 0.245 0.744 -0.502 -1.666 ...</span></code></pre></div>
 <p>As <code><a href="reference/call_aio.html">call_aio()</a></code> is blocking and will wait for completion, an alternative is to query <code>aio$data</code> directly. This will return an ‘unresolved’ logical NA value if the calculation is yet to complete.</p>
 <p>In this example the calculation is returned, but other operations may reside entirely on the server side, for example writing data to disk.</p>
 <p>In such a case, calling or querying the value confirms that the operation has completed, and provides the return value of the function, which may typically be NULL or an exit code.</p>
@@ -390,7 +396,7 @@
 <span class="va">pub</span> |&gt; <span class="fu"><a href="reference/send.html">send</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"examples"</span>, <span class="st">"this example will still be received"</span><span class="op">)</span>, mode <span class="op">=</span> <span class="st">"raw"</span>, echo <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
 <span class="va">sub</span> |&gt; <span class="fu"><a href="reference/recv.html">recv</a></span><span class="op">(</span>mode <span class="op">=</span> <span class="st">"character"</span>, keep.raw <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
 <span class="co">#&gt; [1] "examples"                            "this example will still be received"</span></code></pre></div>
-<p>The subscribed topic can be any atomic type (not just character), allowing integer, double, logical, complex and raw vectors to be sent as well.</p>
+<p>The subscribed topic can be of any atomic type (not just character), allowing integer, double, logical, complex and raw vectors to be sent and received.</p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
 <span class="va">sub</span> |&gt; <span class="fu"><a href="reference/subscribe.html">subscribe</a></span><span class="op">(</span>topic <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>
@@ -463,11 +469,11 @@
 <span class="co">#&gt;   [1] 7b 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73</span>
 <span class="co">#&gt;  [26] 74 22 3a 20 22 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22</span>
 <span class="co">#&gt;  [51] 58 2d 41 6d 7a 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31</span>
-<span class="co">#&gt;  [76] 2d 36 32 37 34 35 31 35 30 2d 32 61 62 61 34 61 31 61 36 39 63 37 36 61 66</span>
-<span class="co">#&gt; [101] 62 32 38 30 61 30 65 66 62 22 0a 20 20 7d 0a 7d 0a</span>
+<span class="co">#&gt;  [76] 2d 36 32 37 37 61 32 61 32 2d 34 39 36 62 38 32 38 61 34 38 63 35 65 61 66</span>
+<span class="co">#&gt; [101] 33 35 38 66 33 37 65 31 34 22 0a 20 20 7d 0a 7d 0a</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $data</span>
-<span class="co">#&gt; [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-62745150-2aba4a1a69c76afb280a0efb\"\n  }\n}\n"</span></code></pre></div>
+<span class="co">#&gt; [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6277a2a2-496b828a48c5eaf358f37e14\"\n  }\n}\n"</span></code></pre></div>
 <p>For advanced use, supports additional HTTP methods such as POST or PUT.</p>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
@@ -480,7 +486,7 @@
 <span class="co">#&gt;  - $raw for raw message</span>
 
 <span class="fu"><a href="reference/call_aio.html">call_aio</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span><span class="op">$</span><span class="va">data</span>
-<span class="co">#&gt; [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-62745150-4a03a30d6fcd147d71c51fdf\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"78.145.225.121\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"</span></code></pre></div>
+<span class="co">#&gt; [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6277a2a2-6ae6efe31d378db911a099f5\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"78.145.225.121\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"</span></code></pre></div>
 <p>In this respect, it may be used as a performant and lightweight method for making REST API requests.</p>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
@@ -488,23 +494,24 @@
 <h3 id="stream-websocket-client">stream: Websocket Client<a class="anchor" aria-label="anchor" href="#stream-websocket-client"></a>
 </h3>
 <p><code><a href="reference/stream.html">stream()</a></code> exposes NNG’s low-level byte stream interface for communicating with raw sockets. This may be used for connecting to arbitrary non-NNG endpoints.</p>
+<p>The stream interface can be used to communicate with websocket servers. Where TLS is enabled in the NNG library, connecting to secure websockets is configured automatically. The argument <code>textframes = TRUE</code> can be specified where the websocket server uses text rather than binary frames.</p>
 <div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
-<span class="va">s</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/stream.html">stream</a></span><span class="op">(</span>dial <span class="op">=</span> <span class="st">"wss://demo.piesocket.com/v3/channel_1"</span>, textframes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
+<span class="va">s</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/stream.html">stream</a></span><span class="op">(</span>dial <span class="op">=</span> <span class="st">"wss://stream.binance.com:9443/ws/btcusdt@kline_1m"</span>, textframes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 <span class="va">s</span>
 <span class="co">#&gt; &lt; nanoStream &gt;</span>
 <span class="co">#&gt;  - type: dialer </span>
-<span class="co">#&gt;  - url: wss://demo.piesocket.com/v3/channel_1 </span>
+<span class="co">#&gt;  - url: wss://stream.binance.com:9443/ws/btcusdt@kline_1m </span>
 <span class="co">#&gt;  - textframes: TRUE</span>
-<span class="va">s</span> |&gt; <span class="fu"><a href="reference/recv.html">recv</a></span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt; $raw</span>
-<span class="co">#&gt;  [1] 7b 22 65 72 72 6f 72 22 3a 22 4d 69 73 73 69 6e 67 20 61 70 69 4b 65 79 22</span>
-<span class="co">#&gt; [26] 7d</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $data</span>
-<span class="co">#&gt; [1] "{\"error\":\"Missing apiKey\"}"</span></code></pre></div>
-<p>The stream interface can be used to communicate with websocket servers. Where TLS is enabled in the NNG library, connecting to secure websockets is configured automatically. Here, the argument <code>textframes = TRUE</code> can be specified where the websocket server uses text rather than binary frames.</p>
-<p>The same API for Sockets can equally be used on Streams: <code><a href="reference/send.html">send()</a></code> and <code><a href="reference/recv.html">recv()</a></code>, as well as their asynchronous counterparts <code><a href="reference/send_aio.html">send_aio()</a></code> and <code><a href="reference/recv_aio.html">recv_aio()</a></code>. This affords a great deal of flexibility in ingesting and processing streaming data.</p>
+
+<span class="va">s</span> |&gt; <span class="fu"><a href="reference/recv.html">recv</a></span><span class="op">(</span>keep.raw <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
+<span class="co">#&gt; [1] "{\"e\":\"kline\",\"E\":1652007590579,\"s\":\"BTCUSDT\",\"k\":{\"t\":1652007540000,\"T\":1652007599999,\"s\":\"BTCUSDT\",\"i\":\"1m\",\"f\":1351258350,\"L\":1351258570,\"o\":\"34718.38000000\",\"c\":\"34726.74000000\",\"h\":\"34726.74000000\",\"l\":\"34717.06000000\",\"v\":\"3.78973000\",\"n\":221,\"x\":false,\"q\":\"131577.38153510\",\"V\":\"2.16208000\",\"Q\":\"75065.38564240\",\"B\":\"0\"}}"</span>
+
+<span class="va">s</span> |&gt; <span class="fu"><a href="reference/recv.html">recv</a></span><span class="op">(</span>keep.raw <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
+<span class="co">#&gt; [1] "{\"e\":\"kline\",\"E\":1652007592588,\"s\":\"BTCUSDT\",\"k\":{\"t\":1652007540000,\"T\":1652007599999,\"s\":\"BTCUSDT\",\"i\":\"1m\",\"f\":1351258350,\"L\":1351258593,\"o\":\"34718.38000000\",\"c\":\"34729.58000000\",\"h\":\"34729.58000000\",\"l\":\"34717.06000000\",\"v\":\"4.01301000\",\"n\":244,\"x\":false,\"q\":\"139331.29327650\",\"V\":\"2.27211000\",\"Q\":\"78886.44058120\",\"B\":\"0\"}}"</span>
+
+<span class="fu"><a href="reference/close.html">close</a></span><span class="op">(</span><span class="va">s</span><span class="op">)</span></code></pre></div>
+<p>The same API for Sockets is available for use on Streams: <code><a href="reference/send.html">send()</a></code> and <code><a href="reference/recv.html">recv()</a></code>, as well as their asynchronous counterparts <code><a href="reference/send_aio.html">send_aio()</a></code> and <code><a href="reference/recv_aio.html">recv_aio()</a></code>. This affords a great deal of flexibility in ingesting and processing streaming data.</p>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
 <div class="section level3">
@@ -537,8 +544,8 @@
 <p>If system installations of ‘libnng’ and ‘libmbedtls’ development headers are detected in the same location, it is assumed that NNG was built with TLS support (using Mbed TLS) and TLS support is configured appropriately.</p>
 <p>Otherwise, the environment variable <code>Sys.setenv(NANONEXT_TLS=1)</code> may be set prior to installation if:</p>
 <ul>
-<li>your system installations of ‘libnng’ (built with TLS support) and ‘libmbedtls’ are in different locations; or</li>
-<li>you have a system installation of ‘libmbedtls’ but not ‘libnng’ and want nanonext to download and build a more recent version of ‘libnng’ than available in system repositories against this.</li>
+<li>system installations of ‘libnng’ (built with TLS support) and ‘libmbedtls’ are in different locations; or</li>
+<li>there is a system installation of ‘libmbedtls’ but not ‘libnng’ - in which case nanonext will download and build the latest release of ‘libnng’ against this.</li>
 </ul>
 </div>
 </div>
