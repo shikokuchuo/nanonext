@@ -22,11 +22,11 @@ utilising ‘Aio’ objects which automatically resolve upon completion of
 asynchronous operations.
 
 Designed for performance and reliability, the NNG library is written in
-C and {nanonext} is a lightweight wrapper depending on no other
-packages. Provides the interface for code and processes to communicate
-with each other - receive data generated in Python, perform analysis in
-R, and send results to a C++ program – all on the same computer or on
-networks spanning the globe.
+C and {nanonext} is a lightweight zero-dependency wrapper. Provides the
+interface for code and processes to communicate with each other -
+receive data generated in Python, perform analysis in R, and send
+results to a C++ program – all on the same computer or on networks
+spanning the globe.
 
 Implemented scalability protocols:
 
@@ -37,12 +37,19 @@ Implemented scalability protocols:
 -   Request/Reply (I ask, you answer)
 -   Survey (everyone votes)
 
-Implemented transports:
+Supported transports:
 
 -   inproc (intra-process)
 -   IPC (inter-process)
--   TCP/IP (IPv4 or IPv6)
+-   TCP (IPv4 or IPv6)
 -   WebSocket
+
+Provided web tools:
+
+-   ncurl - (async) http(s) client
+-   stream - secure websockets client (and generic low-level socket
+    interface)
+-   messenger - console-based instant messaging
 
 ### Table of Contents
 
@@ -388,7 +395,7 @@ aio
 #> < recvAio >
 #>  - $data for message data
 aio$data |> str()
-#>  num [1:100000000] 0.173 -0.103 -0.522 -0.812 0.532 ...
+#>  num [1:100000000] -1.074 0.245 0.744 -0.502 -1.666 ...
 ```
 
 As `call_aio()` is blocking and will wait for completion, an alternative
@@ -448,9 +455,9 @@ sub |> recv(mode = "character", keep.raw = FALSE)
 #> [1] "examples"                            "this example will still be received"
 ```
 
-The subscribed topic can be any atomic type (not just character),
-allowing integer, double, logical, complex and raw vectors to be sent as
-well.
+The subscribed topic can be of any atomic type (not just character),
+allowing integer, double, logical, complex and raw vectors to be sent
+and received.
 
 ``` r
 
@@ -540,11 +547,11 @@ ncurl("http://httpbin.org/headers")
 #>   [1] 7b 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73
 #>  [26] 74 22 3a 20 22 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22
 #>  [51] 58 2d 41 6d 7a 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31
-#>  [76] 2d 36 32 37 34 35 31 35 30 2d 32 61 62 61 34 61 31 61 36 39 63 37 36 61 66
-#> [101] 62 32 38 30 61 30 65 66 62 22 0a 20 20 7d 0a 7d 0a
+#>  [76] 2d 36 32 37 37 61 32 61 32 2d 34 39 36 62 38 32 38 61 34 38 63 35 65 61 66
+#> [101] 33 35 38 66 33 37 65 31 34 22 0a 20 20 7d 0a 7d 0a
 #> 
 #> $data
-#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-62745150-2aba4a1a69c76afb280a0efb\"\n  }\n}\n"
+#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6277a2a2-496b828a48c5eaf358f37e14\"\n  }\n}\n"
 ```
 
 For advanced use, supports additional HTTP methods such as POST or PUT.
@@ -560,7 +567,7 @@ res
 #>  - $raw for raw message
 
 call_aio(res)$data
-#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-62745150-4a03a30d6fcd147d71c51fdf\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"78.145.225.121\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
+#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6277a2a2-6ae6efe31d378db911a099f5\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"78.145.225.121\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
 ```
 
 In this respect, it may be used as a performant and lightweight method
@@ -574,30 +581,31 @@ for making REST API requests.
 communicating with raw sockets. This may be used for connecting to
 arbitrary non-NNG endpoints.
 
+The stream interface can be used to communicate with websocket servers.
+Where TLS is enabled in the NNG library, connecting to secure websockets
+is configured automatically. The argument `textframes = TRUE` can be
+specified where the websocket server uses text rather than binary
+frames.
+
 ``` r
 
-s <- stream(dial = "wss://demo.piesocket.com/v3/channel_1", textframes = TRUE)
+s <- stream(dial = "wss://stream.binance.com:9443/ws/btcusdt@kline_1m", textframes = TRUE)
 s
 #> < nanoStream >
 #>  - type: dialer 
-#>  - url: wss://demo.piesocket.com/v3/channel_1 
+#>  - url: wss://stream.binance.com:9443/ws/btcusdt@kline_1m 
 #>  - textframes: TRUE
-s |> recv()
-#> $raw
-#>  [1] 7b 22 65 72 72 6f 72 22 3a 22 4d 69 73 73 69 6e 67 20 61 70 69 4b 65 79 22
-#> [26] 7d
-#> 
-#> $data
-#> [1] "{\"error\":\"Missing apiKey\"}"
+
+s |> recv(keep.raw = FALSE)
+#> [1] "{\"e\":\"kline\",\"E\":1652007590579,\"s\":\"BTCUSDT\",\"k\":{\"t\":1652007540000,\"T\":1652007599999,\"s\":\"BTCUSDT\",\"i\":\"1m\",\"f\":1351258350,\"L\":1351258570,\"o\":\"34718.38000000\",\"c\":\"34726.74000000\",\"h\":\"34726.74000000\",\"l\":\"34717.06000000\",\"v\":\"3.78973000\",\"n\":221,\"x\":false,\"q\":\"131577.38153510\",\"V\":\"2.16208000\",\"Q\":\"75065.38564240\",\"B\":\"0\"}}"
+
+s |> recv(keep.raw = FALSE)
+#> [1] "{\"e\":\"kline\",\"E\":1652007592588,\"s\":\"BTCUSDT\",\"k\":{\"t\":1652007540000,\"T\":1652007599999,\"s\":\"BTCUSDT\",\"i\":\"1m\",\"f\":1351258350,\"L\":1351258593,\"o\":\"34718.38000000\",\"c\":\"34729.58000000\",\"h\":\"34729.58000000\",\"l\":\"34717.06000000\",\"v\":\"4.01301000\",\"n\":244,\"x\":false,\"q\":\"139331.29327650\",\"V\":\"2.27211000\",\"Q\":\"78886.44058120\",\"B\":\"0\"}}"
+
+close(s)
 ```
 
-The stream interface can be used to communicate with websocket servers.
-Where TLS is enabled in the NNG library, connecting to secure websockets
-is configured automatically. Here, the argument `textframes = TRUE` can
-be specified where the websocket server uses text rather than binary
-frames.
-
-The same API for Sockets can equally be used on Streams: `send()` and
+The same API for Sockets is available for use on Streams: `send()` and
 `recv()`, as well as their asynchronous counterparts `send_aio()` and
 `recv_aio()`. This affords a great deal of flexibility in ingesting and
 processing streaming data.
@@ -639,11 +647,11 @@ appropriately.
 Otherwise, the environment variable `Sys.setenv(NANONEXT_TLS=1)` may be
 set prior to installation if:
 
--   your system installations of ‘libnng’ (built with TLS support) and
+-   system installations of ‘libnng’ (built with TLS support) and
     ‘libmbedtls’ are in different locations; or
--   you have a system installation of ‘libmbedtls’ but not ‘libnng’ and
-    want nanonext to download and build a more recent version of
-    ‘libnng’ than available in system repositories against this.
+-   there is a system installation of ‘libmbedtls’ but not ‘libnng’ - in
+    which case nanonext will download and build the latest release of
+    ‘libnng’ against this.
 
 ### Links
 

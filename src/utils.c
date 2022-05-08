@@ -451,9 +451,7 @@ SEXP rnng_stream_close(SEXP stream) {
   nng_stream *sp = (nng_stream *) R_ExternalPtrAddr(stream);
   nng_stream_free(sp);
   R_ClearExternalPtr(stream);
-  Rf_setAttrib(stream, nano_DialerSymbol, R_NilValue);
-  Rf_setAttrib(stream, nano_ListenerSymbol, R_NilValue);
-  Rf_setAttrib(stream, nano_UrlSymbol, R_NilValue);
+  SET_ATTRIB(stream, R_NilValue);
 
   return Rf_ScalarInteger(0);
 
