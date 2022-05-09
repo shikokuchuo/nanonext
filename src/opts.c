@@ -20,7 +20,8 @@ SEXP rnng_socket_set(SEXP socket, SEXP type, SEXP opt, SEXP value) {
       xc = nng_socket_set(*sock, op, NULL, 0);
     } else {
       SEXP enc = nano_encode(value);
-      xc = nng_socket_set(*sock, op, RAW(enc), Rf_xlength(enc));
+      size_t sz = TYPEOF(value) == STRSXP ? Rf_xlength(enc) - 1 : Rf_xlength(enc);
+      xc = nng_socket_set(*sock, op, RAW(enc), sz);
     }
     break;
   case 1:

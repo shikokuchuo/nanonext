@@ -31,19 +31,20 @@ Note that if the topic was not previously subscribed to then an
 
     To use pub/sub the publisher must:
     \itemize{
-    \item{specify \code{mode = 'raw'} when sending to allow the topics to be
-    recognised by the receiving party.}
-    \item{when sending a character vector, the topic must be separated from
-    the rest of the message using e.g.
-    \code{send(socket, c("topic", "message"), mode = "raw")}}
+    \item{specify \code{mode = 'raw'} when sending.}
+    \item{ensure the sent vector starts with the topic.}
     }
+    The subscriber should then receive specifying the correct mode.
 }
 \examples{
 pub <- socket("pub", listen = "inproc://nanonext")
 sub <- socket("sub", dial = "inproc://nanonext")
 
 subscribe(sub, NULL)
+
 send(pub, c("examples", "this is an example"), mode = "raw")
+recv(sub, "character")
+send(pub, "examples will also be received", mode = "raw")
 recv(sub, "character")
 unsubscribe(sub, NULL)
 send(pub, c("examples", "this example will not be received"), mode = "raw")

@@ -395,7 +395,7 @@ aio
 #> < recvAio >
 #>  - $data for message data
 aio$data |> str()
-#>  num [1:100000000] 1.5004 -0.1919 -1.5241 0.9783 0.0144 ...
+#>  num [1:100000000] 0.983 0.386 1.337 0.243 -0.119 ...
 ```
 
 As `call_aio()` is blocking and will wait for completion, an alternative
@@ -427,9 +427,14 @@ pub <- socket("pub", listen = "inproc://nanobroadcast")
 sub <- socket("sub", dial = "inproc://nanobroadcast")
 
 sub |> subscribe(topic = "examples")
+
 pub |> send(c("examples", "this is an example"), mode = "raw", echo = FALSE)
 sub |> recv(mode = "character", keep.raw = FALSE)
 #> [1] "examples"           "this is an example"
+
+pub |> send("examples at the start of a single text message", mode = "raw", echo = FALSE)
+sub |> recv(mode = "character", keep.raw = FALSE)
+#> [1] "examples at the start of a single text message"
 
 pub |> send(c("other", "this other topic will not be received"), mode = "raw", echo = FALSE)
 sub |> recv(mode = "character", keep.raw = FALSE)
@@ -450,9 +455,9 @@ sub |> recv("character", keep.raw = FALSE)
 #> 'errorValue' int 8
 
 # however the topics explicitly subscribed to are still received
-pub |> send(c("examples", "this example will still be received"), mode = "raw", echo = FALSE)
+pub |> send(c("examples will still be received"), mode = "raw", echo = FALSE)
 sub |> recv(mode = "character", keep.raw = FALSE)
-#> [1] "examples"                            "this example will still be received"
+#> [1] "examples will still be received"
 ```
 
 The subscribed topic can be of any atomic type (not just character),
@@ -547,11 +552,11 @@ ncurl("http://httpbin.org/headers")
 #>   [1] 7b 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73
 #>  [26] 74 22 3a 20 22 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22
 #>  [51] 58 2d 41 6d 7a 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31
-#>  [76] 2d 36 32 37 38 32 66 61 64 2d 37 30 63 35 63 31 61 30 37 39 63 66 62 66 32
-#> [101] 31 37 36 65 33 34 30 65 65 22 0a 20 20 7d 0a 7d 0a
+#>  [76] 2d 36 32 37 38 63 63 63 30 2d 37 66 66 34 37 37 33 31 31 35 32 66 39 61 32
+#> [101] 34 30 65 63 37 38 30 66 37 22 0a 20 20 7d 0a 7d 0a
 #> 
 #> $data
-#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-62782fad-70c5c1a079cfbf2176e340ee\"\n  }\n}\n"
+#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6278ccc0-7ff47731152f9a240ec780f7\"\n  }\n}\n"
 ```
 
 For advanced use, supports additional HTTP methods such as POST or PUT.
@@ -567,7 +572,7 @@ res
 #>  - $raw for raw message
 
 call_aio(res)$data
-#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-62782fad-7472b2c32d5af7603e86ae7d\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"78.145.225.121\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
+#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6278ccc0-476e7d46361255b56173915a\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"79.173.189.204\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
 ```
 
 In this respect, it may be used as a performant and lightweight method
@@ -597,10 +602,10 @@ s
 #>  - textframes: TRUE
 
 s |> recv(keep.raw = FALSE)
-#> [1] "{\"e\":\"kline\",\"E\":1652043696064,\"s\":\"BTCUSDT\",\"k\":{\"t\":1652043660000,\"T\":1652043719999,\"s\":\"BTCUSDT\",\"i\":\"1m\",\"f\":1351814911,\"L\":1351815351,\"o\":\"34253.08000000\",\"c\":\"34279.21000000\",\"h\":\"34285.51000000\",\"l\":\"34253.07000000\",\"v\":\"21.53329000\",\"n\":441,\"x\":false,\"q\":\"737928.59980930\",\"V\":\"15.55859000\",\"Q\":\"533152.23838480\",\"B\":\"0\"}}"
+#> [1] "{\"e\":\"kline\",\"E\":1652083907587,\"s\":\"BTCUSDT\",\"k\":{\"t\":1652083860000,\"T\":1652083919999,\"s\":\"BTCUSDT\",\"i\":\"1m\",\"f\":1352400783,\"L\":1352401304,\"o\":\"33509.32000000\",\"c\":\"33501.05000000\",\"h\":\"33509.33000000\",\"l\":\"33492.19000000\",\"v\":\"38.29280000\",\"n\":522,\"x\":false,\"q\":\"1282941.28760590\",\"V\":\"10.68340000\",\"Q\":\"357878.51734890\",\"B\":\"0\"}}"
 
 s |> recv(keep.raw = FALSE)
-#> [1] "{\"e\":\"kline\",\"E\":1652043698106,\"s\":\"BTCUSDT\",\"k\":{\"t\":1652043660000,\"T\":1652043719999,\"s\":\"BTCUSDT\",\"i\":\"1m\",\"f\":1351814911,\"L\":1351815367,\"o\":\"34253.08000000\",\"c\":\"34281.51000000\",\"h\":\"34285.51000000\",\"l\":\"34253.07000000\",\"v\":\"21.61695000\",\"n\":457,\"x\":false,\"q\":\"740796.49099100\",\"V\":\"15.64225000\",\"Q\":\"536020.12956650\",\"B\":\"0\"}}"
+#> [1] "{\"e\":\"kline\",\"E\":1652083909700,\"s\":\"BTCUSDT\",\"k\":{\"t\":1652083860000,\"T\":1652083919999,\"s\":\"BTCUSDT\",\"i\":\"1m\",\"f\":1352400783,\"L\":1352401310,\"o\":\"33509.32000000\",\"c\":\"33501.05000000\",\"h\":\"33509.33000000\",\"l\":\"33492.19000000\",\"v\":\"38.43526000\",\"n\":528,\"x\":false,\"q\":\"1287713.84719200\",\"V\":\"10.68371000\",\"Q\":\"357888.90267750\",\"B\":\"0\"}}"
 
 close(s)
 ```

@@ -335,7 +335,11 @@ pub <- socket("pub", listen = "inproc://nanobroadcast")
 sub <- socket("sub", dial = "inproc://nanobroadcast")
 
 sub |> subscribe(topic = "examples")
+
 pub |> send(c("examples", "this is an example"), mode = "raw", echo = FALSE)
+sub |> recv(mode = "character", keep.raw = FALSE)
+
+pub |> send("examples at the start of a single text message", mode = "raw", echo = FALSE)
 sub |> recv(mode = "character", keep.raw = FALSE)
 
 pub |> send(c("other", "this other topic will not be received"), mode = "raw", echo = FALSE)
@@ -351,7 +355,7 @@ pub |> send(c("newTopic", "this topic will now not be received"), mode = "raw", 
 sub |> recv("character", keep.raw = FALSE)
 
 # however the topics explicitly subscribed to are still received
-pub |> send(c("examples", "this example will still be received"), mode = "raw", echo = FALSE)
+pub |> send(c("examples will still be received"), mode = "raw", echo = FALSE)
 sub |> recv(mode = "character", keep.raw = FALSE)
 
 ```
