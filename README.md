@@ -10,8 +10,6 @@ status](https://www.r-pkg.org/badges/version/nanonext?color=112d4e)](https://CRA
 [![nanonext status
 badge](https://shikokuchuo.r-universe.dev/badges/nanonext?color=3f72af)](https://shikokuchuo.r-universe.dev)
 [![R-CMD-check](https://github.com/shikokuchuo/nanonext/workflows/R-CMD-check/badge.svg)](https://github.com/shikokuchuo/nanonext/actions)
-[![Codecov test
-coverage](https://codecov.io/gh/shikokuchuo/nanonext/branch/main/graph/badge.svg)](https://app.codecov.io/gh/shikokuchuo/nanonext)
 <!-- badges: end -->
 
 R binding for NNG (Nanomsg Next Gen), a successor to ZeroMQ. NNG is a
@@ -44,7 +42,7 @@ Supported transports:
 -   TCP (IPv4 or IPv6)
 -   WebSocket
 
-Web tools:
+Web utilities:
 
 -   ncurl - (async) http(s) client
 -   stream - secure websockets client (and generic low-level socket
@@ -395,7 +393,7 @@ aio
 #> < recvAio >
 #>  - $data for message data
 aio$data |> str()
-#>  num [1:100000000] 0.983 0.386 1.337 0.243 -0.119 ...
+#>  num [1:100000000] 0.762 0.482 1.227 2.048 -2.218 ...
 ```
 
 As `call_aio()` is blocking and will wait for completion, an alternative
@@ -552,11 +550,11 @@ ncurl("http://httpbin.org/headers")
 #>   [1] 7b 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73
 #>  [26] 74 22 3a 20 22 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22
 #>  [51] 58 2d 41 6d 7a 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31
-#>  [76] 2d 36 32 37 38 63 63 63 30 2d 37 66 66 34 37 37 33 31 31 35 32 66 39 61 32
-#> [101] 34 30 65 63 37 38 30 66 37 22 0a 20 20 7d 0a 7d 0a
+#>  [76] 2d 36 32 37 39 66 66 64 31 2d 36 63 38 63 30 36 30 32 37 34 61 63 30 38 65
+#> [101] 66 37 32 32 35 30 66 65 63 22 0a 20 20 7d 0a 7d 0a
 #> 
 #> $data
-#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6278ccc0-7ff47731152f9a240ec780f7\"\n  }\n}\n"
+#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6279ffd1-6c8c060274ac08ef72250fec\"\n  }\n}\n"
 ```
 
 For advanced use, supports additional HTTP methods such as POST or PUT.
@@ -572,7 +570,7 @@ res
 #>  - $raw for raw message
 
 call_aio(res)$data
-#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6278ccc0-476e7d46361255b56173915a\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"79.173.189.204\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
+#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6279ffd1-110ea4df1b50ecb96a19a80f\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"78.145.225.121\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
 ```
 
 In this respect, it may be used as a performant and lightweight method
@@ -602,10 +600,10 @@ s
 #>  - textframes: TRUE
 
 s |> recv(keep.raw = FALSE)
-#> [1] "{\"e\":\"kline\",\"E\":1652083907587,\"s\":\"BTCUSDT\",\"k\":{\"t\":1652083860000,\"T\":1652083919999,\"s\":\"BTCUSDT\",\"i\":\"1m\",\"f\":1352400783,\"L\":1352401304,\"o\":\"33509.32000000\",\"c\":\"33501.05000000\",\"h\":\"33509.33000000\",\"l\":\"33492.19000000\",\"v\":\"38.29280000\",\"n\":522,\"x\":false,\"q\":\"1282941.28760590\",\"V\":\"10.68340000\",\"Q\":\"357878.51734890\",\"B\":\"0\"}}"
+#> [1] "{\"e\":\"kline\",\"E\":1652162517227,\"s\":\"BTCUSDT\",\"k\":{\"t\":1652162460000,\"T\":1652162519999,\"s\":\"BTCUSDT\",\"i\":\"1m\",\"f\":1355281603,\"L\":1355283235,\"o\":\"31840.01000000\",\"c\":\"31821.53000000\",\"h\":\"31887.25000000\",\"l\":\"31821.53000000\",\"v\":\"104.62077000\",\"n\":1633,\"x\":false,\"q\":\"3331956.61656560\",\"V\":\"49.29040000\",\"Q\":\"1569718.18064700\",\"B\":\"0\"}}"
 
 s |> recv(keep.raw = FALSE)
-#> [1] "{\"e\":\"kline\",\"E\":1652083909700,\"s\":\"BTCUSDT\",\"k\":{\"t\":1652083860000,\"T\":1652083919999,\"s\":\"BTCUSDT\",\"i\":\"1m\",\"f\":1352400783,\"L\":1352401310,\"o\":\"33509.32000000\",\"c\":\"33501.05000000\",\"h\":\"33509.33000000\",\"l\":\"33492.19000000\",\"v\":\"38.43526000\",\"n\":528,\"x\":false,\"q\":\"1287713.84719200\",\"V\":\"10.68371000\",\"Q\":\"357888.90267750\",\"B\":\"0\"}}"
+#> [1] "{\"e\":\"kline\",\"E\":1652162519242,\"s\":\"BTCUSDT\",\"k\":{\"t\":1652162460000,\"T\":1652162519999,\"s\":\"BTCUSDT\",\"i\":\"1m\",\"f\":1355281603,\"L\":1355283278,\"o\":\"31840.01000000\",\"c\":\"31820.01000000\",\"h\":\"31887.25000000\",\"l\":\"31820.00000000\",\"v\":\"107.18185000\",\"n\":1676,\"x\":false,\"q\":\"3413451.15905990\",\"V\":\"51.10822000\",\"Q\":\"1627561.59975630\",\"B\":\"0\"}}"
 
 close(s)
 ```

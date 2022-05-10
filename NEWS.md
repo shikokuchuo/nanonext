@@ -1,4 +1,6 @@
-# nanonext 0.4.0.9000 (under development)
+# nanonext 0.5.0
+
+*nanonext is now considered substantially feature-complete and API-stable*
 
 #### New Features
 

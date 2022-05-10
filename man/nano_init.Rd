@@ -38,9 +38,9 @@ Initialise global options - intended to be called immediately after package load
     generated, replacing the standard message. If non-null it is called
     irrespective of the value of option warn.}
 
-    \item{warning.length} { - sets the truncation limit in bytes for error and warning
-    messages. A non-negative integer, with allowed values 100...8170, default
-    1000.}
+    \item{warning.length} { - sets the truncation limit in bytes for error
+    and warning messages. A non-negative integer, with allowed values 100...8170,
+    default 1000.}
 
     \item{nwarnings} { - the limit for the number of warnings kept when warn = 0,
     default 50. This will discard messages if called whilst they are being

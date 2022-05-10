@@ -220,9 +220,9 @@ is_error_value <- function(x) inherits(x, "errorValue")
 #'     generated, replacing the standard message. If non-null it is called
 #'     irrespective of the value of option warn.}
 #'
-#'     \item{warning.length} { - sets the truncation limit in bytes for error and warning
-#'     messages. A non-negative integer, with allowed values 100...8170, default
-#'     1000.}
+#'     \item{warning.length} { - sets the truncation limit in bytes for error
+#'     and warning messages. A non-negative integer, with allowed values 100...8170,
+#'     default 1000.}
 #'
 #'     \item{nwarnings} { - the limit for the number of warnings kept when warn = 0,
 #'     default 50. This will discard messages if called whilst they are being
@@ -234,9 +234,10 @@ is_error_value <- function(x) inherits(x, "errorValue")
 #'
 nano_init <- function(warn = c("immediate", "deferred", "error", "none")) {
 
-  warn <- match.arg2(warn, c("immediate", "deferred", "error", "none"))
-  warn <- switch(warn, 1L, 0L, 2L, -1L)
-  if (is.null(getOption("nanonext.original.warn"))) options(nanonext.original.warn = getOption("warn"))
+  warn <- switch(match.arg2(warn, c("immediate", "deferred", "error", "none")),
+                 1L, 0L, 2L, -1L)
+  if (is.null(getOption("nanonext.original.warn")))
+    options(nanonext.original.warn = getOption("warn"))
   options(warn = warn)
   invisible(warn)
 

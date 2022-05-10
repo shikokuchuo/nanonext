@@ -19,7 +19,6 @@ knitr::opts_chunk$set(
 [![CRAN status](https://www.r-pkg.org/badges/version/nanonext?color=112d4e)](https://CRAN.R-project.org/package=nanonext)
 [![nanonext status badge](https://shikokuchuo.r-universe.dev/badges/nanonext?color=3f72af)](https://shikokuchuo.r-universe.dev) 
 [![R-CMD-check](https://github.com/shikokuchuo/nanonext/workflows/R-CMD-check/badge.svg)](https://github.com/shikokuchuo/nanonext/actions)
-[![Codecov test coverage](https://codecov.io/gh/shikokuchuo/nanonext/branch/main/graph/badge.svg)](https://app.codecov.io/gh/shikokuchuo/nanonext)
 <!-- badges: end -->
 
 R binding for NNG (Nanomsg Next Gen), a successor to ZeroMQ. NNG is a socket library providing high-performance scalability protocols, implementing a cross-platform standard for messaging and communications. Serves as a concurrency framework for building distributed applications, utilising 'Aio' objects which automatically resolve upon completion of asynchronous operations.
@@ -42,7 +41,7 @@ Supported transports:
 - TCP (IPv4 or IPv6)
 - WebSocket
 
-Web tools:
+Web utilities:
 
 - ncurl - (async) http(s) client
 - stream - secure websockets client (and generic low-level socket interface)
