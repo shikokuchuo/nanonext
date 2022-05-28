@@ -132,11 +132,10 @@ SEXP rnng_aio_result(SEXP aio) {
   if (nng_aio_busy(aiop->aio))
     return R_MissingArg;
 
-  int res = aiop->result;
-  if (res)
-    return mk_error(res);
+  if (aiop->result)
+    return mk_error(aiop->result);
 
-  return Rf_ScalarInteger(res);
+  return Rf_ScalarInteger(aiop->result);
 
 }
 
@@ -152,9 +151,8 @@ SEXP rnng_aio_get_msg(SEXP aio, SEXP mode, SEXP keep) {
   if (nng_aio_busy(raio->aio))
     return R_MissingArg;
 
-  int res = raio->result;
-  if (res)
-    return mk_error(res);
+  if (raio->result)
+    return mk_error(raio->result);
 
   const int mod = INTEGER(mode)[0], kpr = LOGICAL(keep)[0];
   unsigned char *buf = nng_msg_body(raio->data);
@@ -176,9 +174,8 @@ SEXP rnng_aio_stream_in(SEXP aio, SEXP mode, SEXP keep) {
   if (nng_aio_busy(iaio->aio))
     return R_MissingArg;
 
-  int res = iaio->result;
-  if (res)
-    return mk_error(res);
+  if (iaio->result)
+    return mk_error(iaio->result);
 
   const int mod = INTEGER(mode)[0], kpr = LOGICAL(keep)[0];
   nng_iov *iov = (nng_iov *) iaio->data;
@@ -694,9 +691,8 @@ SEXP rnng_aio_http(SEXP aio) {
   if (nng_aio_busy(haio->aio))
     return R_MissingArg;
 
-  int res = haio->result;
-  if (res)
-    return mk_error(res);
+  if (haio->result)
+    return mk_error(haio->result);
 
   nano_handle *handle = (nano_handle *) haio->data;
   uint16_t code = nng_http_res_get_status(handle->res);

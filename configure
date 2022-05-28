@@ -1,40 +1,31 @@
 #!/bin/sh
 
-# set -x
+# Library version
+LIB_VER="722bf46"
 
+# Initialise
 PKG_CFLAGS=""
 PKG_LIBS="-lnng"
-LIB_VER="722bf46"
 TLS_SUP=0
 
 # Find compiler
 CC=`${R_HOME}/bin/R CMD config CC`
 CFLAGS=`${R_HOME}/bin/R CMD config CFLAGS`
 
-# Library settings
-if [ "$NANONEXT_TLS" ]
+# Detect mbedtls
+if [ -d "/usr/local/include/mbedtls" ] || [ -d "/usr/include/mbedtls" ] || [ -d "/usr/local/opt/mbedtls" ]
+then
+  echo "found system mbedtls installation... using TLS support"
+  PKG_LIBS="$PKG_LIBS -lmbedtls -lmbedx509 -lmbedcrypto"
+  TLS_SUP=1
+elif [ "$NANONEXT_TLS" ]
 then
   echo "trying with TLS support"
   PKG_LIBS="$PKG_LIBS -lmbedtls -lmbedx509 -lmbedcrypto"
   TLS_SUP=1
-elif [ -d "/usr/local/include/mbedtls" ]
-then
-  echo "found system mbedtls installation... using TLS support"
-  PKG_LIBS="$PKG_LIBS -lmbedtls -lmbedx509 -lmbedcrypto"
-  TLS_SUP=1
-elif [ -d "/usr/include/mbedtls" ]
-then
-  echo "found system mbedtls installation... using TLS support"
-  PKG_LIBS="$PKG_LIBS -lmbedtls -lmbedx509 -lmbedcrypto"
-  TLS_SUP=1
-elif [ -d "/usr/local/opt/mbedtls" ]
-then
-  echo "found mbedtls Homebrew installation... using TLS support"
-  PKG_LIBS="$PKG_LIBS -lmbedtls -lmbedx509 -lmbedcrypto"
-  TLS_SUP=1
 fi
 
-# Detect -latomic linker flag for e.g. ARM architectures (Raspberry Pi etc.)
+# Detect -latomic linker flag for ARM architectures (Raspberry Pi etc.)
 echo "#include <stdint.h>
 uint64_t v;
 int main() {
@@ -46,6 +37,7 @@ then
   PKG_LIBS="$PKG_LIBS -latomic"
 fi
 
+# Download and build libnng
 echo "preparing to download and build libnng from source..."
 curl -L https://api.github.com/repos/nanomsg/nng/tarball/$LIB_VER -o nng.tar.gz
 gzip -dc nng.tar.gz | tar -xf -
@@ -60,9 +52,9 @@ then
 fi
 if [ "$TLS_SUP" -ne 0 ]
 then
-  cmake -DCMAKE_C_FLAGS="${CMAKE_C_FLAGS} -fPIC" -DNNG_ENABLE_TLS=1 -DNNG_ELIDE_DEPRECATED=1 -DNNG_TESTS=0 -DNNG_TOOLS=0 ..
+  cmake -DCMAKE_POSITION_INDEPENDENT_CODE=1 -DCMAKE_COLOR_MAKEFILE=0 -DNNG_ENABLE_TLS=1 -DNNG_ELIDE_DEPRECATED=1 -DNNG_TESTS=0 -DNNG_TOOLS=0 ..
 else
-  cmake -DCMAKE_C_FLAGS="${CMAKE_C_FLAGS} -fPIC" -DNNG_ELIDE_DEPRECATED=1 -DNNG_TESTS=0 -DNNG_TOOLS=0 ..
+  cmake -DCMAKE_POSITION_INDEPENDENT_CODE=1 -DCMAKE_COLOR_MAKEFILE=0 -DNNG_ELIDE_DEPRECATED=1 -DNNG_TESTS=0 -DNNG_TOOLS=0 ..
 fi
 cmake --build .
 cd ../..
@@ -72,10 +64,6 @@ mv -f nanomsg-nng-$LIB_VER/include ./
 rm -rf nanomsg-nng-$LIB_VER
 PKG_CFLAGS="-I`pwd`/include $PKG_CFLAGS"
 PKG_LIBS="-L`pwd`/lib $PKG_LIBS"
-
-# For debugging
-# echo "Using PKG_CFLAGS=$PKG_CFLAGS"
-# echo "Using PKG_LIBS=$PKG_LIBS"
 
 # Write to Makevars
 sed -e "s|@cflags@|$PKG_CFLAGS|" -e "s|@libs@|$PKG_LIBS|" src/Makevars.in > src/Makevars
