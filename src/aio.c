@@ -16,8 +16,6 @@ typedef enum nano_aio_typ {
 
 typedef struct nano_aio_s {
   nng_aio *aio;
-  nng_mtx *mtx;
-  uint8_t resolved;
   nano_aio_typ type;
   void *data;
   int result;
@@ -37,9 +35,6 @@ void saio_complete(void *arg) {
   saio->result = nng_aio_result(saio->aio);
   if (saio->result)
     nng_msg_free(nng_aio_get_msg(saio->aio));
-  nng_mtx_lock(saio->mtx);
-  saio->resolved = 1;
-  nng_mtx_unlock(saio->mtx);
 
 }
 
@@ -49,9 +44,6 @@ void raio_complete(void *arg) {
   raio->result = nng_aio_result(raio->aio);
   if(!raio->result)
     raio->data = nng_aio_get_msg(raio->aio);
-  nng_mtx_lock(raio->mtx);
-  raio->resolved = 1;
-  nng_mtx_unlock(raio->mtx);
 
 }
 
@@ -59,9 +51,6 @@ void iaio_complete(void *arg) {
 
   nano_aio *iaio = (nano_aio *) (arg);
   iaio->result = nng_aio_result(iaio->aio);
-  nng_mtx_lock(iaio->mtx);
-  iaio->resolved = 1;
-  nng_mtx_unlock(iaio->mtx);
 
 }
 
@@ -71,7 +60,6 @@ void saio_finalizer(SEXP xptr) {
     return;
   nano_aio *xp = (nano_aio *) R_ExternalPtrAddr(xptr);
   nng_aio_free(xp->aio);
-  nng_mtx_free(xp->mtx);
   R_Free(xp);
 
 }
@@ -82,7 +70,6 @@ void raio_finalizer(SEXP xptr) {
     return;
   nano_aio *xp = (nano_aio *) R_ExternalPtrAddr(xptr);
   nng_aio_free(xp->aio);
-  nng_mtx_free(xp->mtx);
   if (xp->data != NULL)
     nng_msg_free(xp->data);
   R_Free(xp);
@@ -95,7 +82,6 @@ void isaio_finalizer(SEXP xptr) {
     return;
   nano_aio *xp = (nano_aio *) R_ExternalPtrAddr(xptr);
   nng_aio_free(xp->aio);
-  nng_mtx_free(xp->mtx);
   R_Free(xp->data);
   R_Free(xp);
 
@@ -108,7 +94,6 @@ void iraio_finalizer(SEXP xptr) {
   nano_aio *xp = (nano_aio *) R_ExternalPtrAddr(xptr);
   nng_iov *iov = (nng_iov *) xp->data;
   nng_aio_free(xp->aio);
-  nng_mtx_free(xp->mtx);
   R_Free(iov->iov_buf);
   R_Free(iov);
   R_Free(xp);
@@ -122,7 +107,6 @@ void haio_finalizer(SEXP xptr) {
   nano_aio *xp = (nano_aio *) R_ExternalPtrAddr(xptr);
   nano_handle *handle = (nano_handle *) xp->data;
   nng_aio_free(xp->aio);
-  nng_mtx_free(xp->mtx);
   if (handle->cfg != NULL)
     nng_tls_config_free(handle->cfg);
   nng_http_res_free(handle->res);
@@ -143,13 +127,9 @@ SEXP rnng_aio_result(SEXP aio) {
   if (R_ExternalPtrAddr(aio) == NULL)
     error_return("object is not an active Aio");
 
-  uint8_t resolv;
   nano_aio *aiop = (nano_aio *) R_ExternalPtrAddr(aio);
 
-  nng_mtx_lock(aiop->mtx);
-  resolv = aiop->resolved;
-  nng_mtx_unlock(aiop->mtx);
-  if (!resolv)
+  if (nng_aio_busy(aiop->aio))
     return R_MissingArg;
 
   int res = aiop->result;
@@ -167,13 +147,9 @@ SEXP rnng_aio_get_msg(SEXP aio, SEXP mode, SEXP keep) {
   if (R_ExternalPtrAddr(aio) == NULL)
     error_return("object is not an active Aio");
 
-  uint8_t resolv;
   nano_aio *raio = (nano_aio *) R_ExternalPtrAddr(aio);
 
-  nng_mtx_lock(raio->mtx);
-  resolv = raio->resolved;
-  nng_mtx_unlock(raio->mtx);
-  if (!resolv)
+  if (nng_aio_busy(raio->aio))
     return R_MissingArg;
 
   int res = raio->result;
@@ -195,13 +171,9 @@ SEXP rnng_aio_stream_in(SEXP aio, SEXP mode, SEXP keep) {
   if (R_ExternalPtrAddr(aio) == NULL)
     error_return("object is not an active Aio");
 
-  uint8_t resolv;
   nano_aio *iaio = (nano_aio *) R_ExternalPtrAddr(aio);
 
-  nng_mtx_lock(iaio->mtx);
-  resolv = iaio->resolved;
-  nng_mtx_unlock(iaio->mtx);
-  if (!resolv)
+  if (nng_aio_busy(iaio->aio))
     return R_MissingArg;
 
   int res = iaio->result;
@@ -249,7 +221,6 @@ SEXP rnng_aio_stop(SEXP aio) {
   nano_aio *aiop = (nano_aio *) R_ExternalPtrAddr(coreaio);
   nng_aio_stop(aiop->aio);
   nng_aio_free(aiop->aio);
-  nng_mtx_free(aiop->mtx);
 
   nng_iov *iov;
   nano_handle *handle;
@@ -328,12 +299,6 @@ SEXP rnng_recv_aio(SEXP socket, SEXP timeout) {
     R_Free(raio);
     return mk_error(xc);
   }
-  xc = nng_mtx_alloc(&raio->mtx);
-  if (xc) {
-    nng_mtx_free(raio->mtx);
-    R_Free(raio);
-    return mk_error(xc);
-  }
 
   nng_aio_set_timeout(raio->aio, dur);
   nng_recv_aio(*sock, raio->aio);
@@ -362,12 +327,6 @@ SEXP rnng_ctx_recv_aio(SEXP context, SEXP timeout) {
 
   xc = nng_aio_alloc(&raio->aio, raio_complete, raio);
   if (xc) {
-    R_Free(raio);
-    return mk_error(xc);
-  }
-  xc = nng_mtx_alloc(&raio->mtx);
-  if (xc) {
-    nng_mtx_free(raio->mtx);
     R_Free(raio);
     return mk_error(xc);
   }
@@ -408,17 +367,9 @@ SEXP rnng_stream_recv_aio(SEXP stream, SEXP bytes, SEXP timeout) {
     R_Free(iaio);
     return mk_error(xc);
   }
-  xc = nng_mtx_alloc(&iaio->mtx);
-  if (xc) {
-    nng_aio_free(iaio->aio);
-    R_Free(iov->iov_buf);
-    R_Free(iov);
-    R_Free(iaio);
-    return mk_error(xc);
-  }
+
   xc = nng_aio_set_iov(iaio->aio, 1u, iov);
   if (xc) {
-    nng_mtx_free(iaio->mtx);
     nng_aio_free(iaio->aio);
     R_Free(iov->iov_buf);
     R_Free(iov);
@@ -472,13 +423,6 @@ SEXP rnng_send_aio(SEXP socket, SEXP data, SEXP timeout) {
     R_Free(saio);
     return Rf_ScalarInteger(xc);
   }
-  xc = nng_mtx_alloc(&saio->mtx);
-  if (xc) {
-    nng_aio_free(saio->aio);
-    nng_msg_free(msg);
-    R_Free(saio);
-    return Rf_ScalarInteger(xc);
-  }
 
   nng_aio_set_msg(saio->aio, msg);
   nng_aio_set_timeout(saio->aio, dur);
@@ -526,13 +470,6 @@ SEXP rnng_ctx_send_aio(SEXP context, SEXP data, SEXP timeout) {
     R_Free(saio);
     return Rf_ScalarInteger(xc);
   }
-  xc = nng_mtx_alloc(&saio->mtx);
-  if (xc) {
-    nng_aio_free(saio->aio);
-    nng_msg_free(msg);
-    R_Free(saio);
-    return Rf_ScalarInteger(xc);
-  }
 
   nng_aio_set_msg(saio->aio, msg);
   nng_aio_set_timeout(saio->aio, dur);
@@ -572,16 +509,9 @@ SEXP rnng_stream_send_aio(SEXP stream, SEXP data, SEXP timeout) {
     R_Free(iaio);
     return Rf_ScalarInteger(xc);
   }
-  xc = nng_mtx_alloc(&iaio->mtx);
-  if (xc) {
-    nng_aio_free(iaio->aio);
-    R_Free(iov);
-    R_Free(iaio);
-    return Rf_ScalarInteger(xc);
-  }
+
   xc = nng_aio_set_iov(iaio->aio, 1u, iov);
   if (xc) {
-    nng_mtx_free(iaio->mtx);
     nng_aio_free(iaio->aio);
     R_Free(iov);
     R_Free(iaio);
@@ -715,22 +645,10 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP method, SEXP headers, SEXP data) {
     R_Free(haio);
     return mk_error(xc);
   }
-  xc = nng_mtx_alloc(&haio->mtx);
-  if (xc) {
-    nng_aio_free(haio->aio);
-    nng_http_res_free(handle->res);
-    nng_http_req_free(handle->req);
-    nng_http_client_free(handle->cli);
-    nng_url_free(handle->url);
-    R_Free(handle);
-    R_Free(haio);
-    return mk_error(xc);
-  }
 
   if (!strcmp(handle->url->u_scheme, "https")) {
     xc = nng_tls_config_alloc(&handle->cfg, 0);
     if (xc) {
-      nng_mtx_free(haio->mtx);
       nng_aio_free(haio->aio);
       nng_http_res_free(handle->res);
       nng_http_req_free(handle->req);
@@ -743,7 +661,6 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP method, SEXP headers, SEXP data) {
     if ((xc = nng_tls_config_auth_mode(handle->cfg, 1)) ||
         (xc = nng_http_client_set_tls(handle->cli, handle->cfg))) {
       nng_tls_config_free(handle->cfg);
-      nng_mtx_free(haio->mtx);
       nng_aio_free(haio->aio);
       nng_http_res_free(handle->res);
       nng_http_req_free(handle->req);
@@ -772,13 +689,9 @@ SEXP rnng_aio_http(SEXP aio) {
   if (R_ExternalPtrAddr(aio) == NULL)
     error_return("object is not an active Aio");
 
-  uint8_t resolv;
   nano_aio *haio = (nano_aio *) R_ExternalPtrAddr(aio);
 
-  nng_mtx_lock(haio->mtx);
-  resolv = haio->resolved;
-  nng_mtx_unlock(haio->mtx);
-  if (!resolv)
+  if (nng_aio_busy(haio->aio))
     return R_MissingArg;
 
   int res = haio->result;

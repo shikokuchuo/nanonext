@@ -1,3 +1,10 @@
+# nanonext 0.5.0.9000 (development)
+
+#### Updates
+
+* Upgrades NNG library to 1.6.0 pre-release (locked to version 722bf46). This version introduces a feature that simplifies the implementation of asynchronous operations in nanonext.
+* Configure script updated to always download and build 'libnng' from source for all non-Windows platforms. The configure script will still attempt to detect a system 'mbedtls' library to link against.
+
 # nanonext 0.5.0
 
 *nanonext is now considered substantially feature-complete and API-stable*
