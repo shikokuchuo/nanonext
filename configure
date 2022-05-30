@@ -15,12 +15,12 @@ CFLAGS=`${R_HOME}/bin/R CMD config CFLAGS`
 # Detect mbedtls
 if [ -d "/usr/local/include/mbedtls" ] || [ -d "/usr/include/mbedtls" ] || [ -d "/usr/local/opt/mbedtls" ]
 then
-  echo "found system mbedtls installation... using TLS support"
+  echo "mbedtls found... proceeding with TLS support"
   PKG_LIBS="$PKG_LIBS -lmbedtls -lmbedx509 -lmbedcrypto"
   TLS_SUP=1
 elif [ "$NANONEXT_TLS" ]
 then
-  echo "trying with TLS support"
+  echo "TLS flag set... proceeding with TLS support"
   PKG_LIBS="$PKG_LIBS -lmbedtls -lmbedx509 -lmbedcrypto"
   TLS_SUP=1
 fi
@@ -38,23 +38,25 @@ then
 fi
 
 # Download and build libnng
-echo "preparing to download and build libnng from source..."
-curl -L https://api.github.com/repos/nanomsg/nng/tarball/$LIB_VER -o nng.tar.gz
+echo "downloading libnng source..."
+curl -s -L https://api.github.com/repos/nanomsg/nng/tarball/$LIB_VER -o nng.tar.gz
 gzip -dc nng.tar.gz | tar -xf -
 rm -f nng.tar.gz
 cd nanomsg-nng-$LIB_VER
 mkdir build
 cd build
+echo "using cmake..."
 which cmake
 if [ $? -ne 0 ]
 then
   export PATH=$PATH:/Applications/CMake.app/Contents/bin
 fi
+echo "compiling... this may take a moment"
 if [ "$TLS_SUP" -ne 0 ]
 then
-  cmake -DCMAKE_POSITION_INDEPENDENT_CODE=1 -DCMAKE_COLOR_MAKEFILE=0 -DNNG_ENABLE_TLS=1 -DNNG_ELIDE_DEPRECATED=1 -DNNG_TESTS=0 -DNNG_TOOLS=0 ..
+  cmake -DCMAKE_POSITION_INDEPENDENT_CODE=1 -DCMAKE_RULE_MESSAGES=0 -DNNG_ENABLE_TLS=1 -DNNG_ELIDE_DEPRECATED=1 -DNNG_TESTS=0 -DNNG_TOOLS=0 .. > /dev/null
 else
-  cmake -DCMAKE_POSITION_INDEPENDENT_CODE=1 -DCMAKE_COLOR_MAKEFILE=0 -DNNG_ELIDE_DEPRECATED=1 -DNNG_TESTS=0 -DNNG_TOOLS=0 ..
+  cmake -DCMAKE_POSITION_INDEPENDENT_CODE=1 -DCMAKE_RULE_MESSAGES=0 -DNNG_ELIDE_DEPRECATED=1 -DNNG_TESTS=0 -DNNG_TOOLS=0 .. > /dev/null
 fi
 cmake --build .
 cd ../..
