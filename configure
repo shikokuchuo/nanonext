@@ -37,35 +37,42 @@ then
   PKG_LIBS="$PKG_LIBS -latomic"
 fi
 
-# Download and build libnng
-echo "downloading libnng source..."
-curl -s -L https://api.github.com/repos/nanomsg/nng/tarball/$LIB_VER -o nng.tar.gz
-gzip -dc nng.tar.gz | tar -xf -
-rm -f nng.tar.gz
-cd nanomsg-nng-$LIB_VER
-mkdir build
-cd build
-echo "using cmake..."
-which cmake
-if [ $? -ne 0 ]
+# Use system lib or download and compile from source (default)
+if [ "$NANONEXT_SYS" ]
 then
-  export PATH=$PATH:/Applications/CMake.app/Contents/bin
-fi
-echo "compiling... this may take a moment"
-if [ "$TLS_SUP" -ne 0 ]
-then
-  cmake -DCMAKE_POSITION_INDEPENDENT_CODE=1 -DCMAKE_RULE_MESSAGES=0 -DNNG_ENABLE_TLS=1 -DNNG_ELIDE_DEPRECATED=1 -DNNG_TESTS=0 -DNNG_TOOLS=0 .. > /dev/null
+  echo "system flag set... using libnng installation in /usr/local"
+  PKG_CFLAGS="-I/usr/local/include $PKG_CFLAGS"
+  PKG_LIBS="-L/usr/local/lib $PKG_LIBS"
 else
-  cmake -DCMAKE_POSITION_INDEPENDENT_CODE=1 -DCMAKE_RULE_MESSAGES=0 -DNNG_ELIDE_DEPRECATED=1 -DNNG_TESTS=0 -DNNG_TOOLS=0 .. > /dev/null
+  echo "downloading libnng source..."
+  curl -s -L https://api.github.com/repos/nanomsg/nng/tarball/$LIB_VER -o nng.tar.gz
+  gzip -dc nng.tar.gz | tar -xf -
+  rm -f nng.tar.gz
+  cd nanomsg-nng-$LIB_VER
+  mkdir build
+  cd build
+  echo "using cmake..."
+  which cmake
+  if [ $? -ne 0 ]
+  then
+    export PATH=$PATH:/Applications/CMake.app/Contents/bin
+  fi
+  echo "compiling... this may take a moment"
+  if [ "$TLS_SUP" -ne 0 ]
+  then
+    cmake -DCMAKE_POSITION_INDEPENDENT_CODE=1 -DCMAKE_RULE_MESSAGES=0 -DNNG_ENABLE_TLS=1 -DNNG_ELIDE_DEPRECATED=1 -DNNG_TESTS=0 -DNNG_TOOLS=0 .. > /dev/null
+  else
+    cmake -DCMAKE_POSITION_INDEPENDENT_CODE=1 -DCMAKE_RULE_MESSAGES=0 -DNNG_ELIDE_DEPRECATED=1 -DNNG_TESTS=0 -DNNG_TOOLS=0 .. > /dev/null
+  fi
+  cmake --build .
+  cd ../..
+  mkdir lib
+  mv -f nanomsg-nng-$LIB_VER/build/libnng.a lib
+  mv -f nanomsg-nng-$LIB_VER/include ./
+  rm -rf nanomsg-nng-$LIB_VER
+  PKG_CFLAGS="-I`pwd`/include $PKG_CFLAGS"
+  PKG_LIBS="-L`pwd`/lib $PKG_LIBS"
 fi
-cmake --build .
-cd ../..
-mkdir lib
-mv -f nanomsg-nng-$LIB_VER/build/libnng.a lib
-mv -f nanomsg-nng-$LIB_VER/include ./
-rm -rf nanomsg-nng-$LIB_VER
-PKG_CFLAGS="-I`pwd`/include $PKG_CFLAGS"
-PKG_LIBS="-L`pwd`/lib $PKG_LIBS"
 
 # Write to Makevars
 sed -e "s|@cflags@|$PKG_CFLAGS|" -e "s|@libs@|$PKG_LIBS|" src/Makevars.in > src/Makevars

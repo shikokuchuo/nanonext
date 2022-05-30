@@ -22,7 +22,7 @@ License: GPL (>= 3)
 BugReports: https://github.com/shikokuchuo/nanonext/issues
 URL: https://shikokuchuo.net/nanonext/, https://github.com/shikokuchuo/nanonext/
 Encoding: UTF-8
-SystemRequirements: 'cmake' (to compile 'libnng' from source, only on non-Windows systems)
+SystemRequirements: 'cmake' to compile 'libnng' from source
 Depends: 
     R (>= 2.4)
 RoxygenNote: 7.2.0
