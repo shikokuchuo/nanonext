@@ -1,10 +1,26 @@
-/* nanonext - C level - Core Functions -------------------------------------- */
+// Copyright (C) 2022 Hibiki AI Limited <info@hibiki-ai.com>
+//
+// This file is part of nanonext.
+//
+// nanonext is free software: you can redistribute it and/or modify it under the
+// terms of the GNU General Public License as published by the Free Software
+// Foundation, either version 3 of the License, or (at your option) any later
+// version.
+//
+// nanonext is distributed in the hope that it will be useful, but WITHOUT ANY
+// WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+// A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License along with
+// nanonext. If not, see <https://www.gnu.org/licenses/>.
+
+// nanonext - C level - Core Functions -----------------------------------------
 
 #define NANONEXT_INTERNALS
 #define NANONEXT_PROTOCOLS
 #include "nanonext.h"
 
-/* internals ---------------------------------------------------------------- */
+// internals -------------------------------------------------------------------
 
 SEXP mk_error(const int xc) {
 
@@ -312,7 +328,7 @@ SEXP nano_decode(unsigned char *buf, size_t sz, const int mod, const int kpr) {
 
 }
 
-/* finalizers --------------------------------------------------------------- */
+// finalizers ------------------------------------------------------------------
 
 void socket_finalizer(SEXP xptr) {
 
@@ -354,7 +370,7 @@ void context_finalizer(SEXP xptr) {
 
 }
 
-/* sockets ------------------------------------------------------------------ */
+// sockets ---------------------------------------------------------------------
 
 SEXP rnng_protocol_open(SEXP protocol) {
 
@@ -444,7 +460,7 @@ SEXP rnng_close(SEXP socket) {
 
 }
 
-/* contexts ----------------------------------------------------------------- */
+// contexts --------------------------------------------------------------------
 
 SEXP rnng_ctx_open(SEXP socket) {
 
@@ -490,7 +506,7 @@ SEXP rnng_ctx_close(SEXP context) {
 
 }
 
-/* dialers and listeners ---------------------------------------------------- */
+// dialers and listeners -------------------------------------------------------
 
 SEXP rnng_dial(SEXP socket, SEXP url) {
 
@@ -686,8 +702,8 @@ SEXP rnng_listener_close(SEXP listener) {
 
 }
 
-/* send and recv ------------------------------------------------------------ */
-/* nng flags: bitmask of NNG_FLAG_ALLOC = 1u + NNG_FLAG_NONBLOCK = 2u ------- */
+// send and recv ---------------------------------------------------------------
+// nng flags: bitmask of NNG_FLAG_ALLOC = 1u + NNG_FLAG_NONBLOCK = 2u
 
 SEXP rnng_send(SEXP socket, SEXP data, SEXP block, SEXP echo) {
 

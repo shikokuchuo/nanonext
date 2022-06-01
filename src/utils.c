@@ -1,4 +1,20 @@
-/* nanonext - C level - Utilities ------------------------------------------- */
+// Copyright (C) 2022 Hibiki AI Limited <info@hibiki-ai.com>
+//
+// This file is part of nanonext.
+//
+// nanonext is free software: you can redistribute it and/or modify it under the
+// terms of the GNU General Public License as published by the Free Software
+// Foundation, either version 3 of the License, or (at your option) any later
+// version.
+//
+// nanonext is distributed in the hope that it will be useful, but WITHOUT ANY
+// WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+// A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License along with
+// nanonext. If not, see <https://www.gnu.org/licenses/>.
+
+// nanonext - C level - Utilities ----------------------------------------------
 
 #define NANONEXT_INTERNALS
 #define NANONEXT_PROTOCOLS
@@ -6,7 +22,7 @@
 #include <time.h>
 #include "nanonext.h"
 
-/* finalizers --------------------------------------------------------------- */
+// finalizers ------------------------------------------------------------------
 
 void stream_dialer_finalizer(SEXP xptr) {
 
@@ -38,7 +54,7 @@ void stream_finalizer(SEXP xptr) {
 
 }
 
-/* utils -------------------------------------------------------------------- */
+// utils -----------------------------------------------------------------------
 
 SEXP rnng_strerror(SEXP error) {
 
@@ -76,7 +92,7 @@ SEXP rnng_scm(void) {
   return R_MissingArg;
 }
 
-/* ncurl - minimalist http client ------------------------------------------- */
+// ncurl - minimalist http client ----------------------------------------------
 
 SEXP rnng_ncurl(SEXP http, SEXP method, SEXP headers, SEXP data) {
 
@@ -245,7 +261,7 @@ SEXP rnng_ncurl(SEXP http, SEXP method, SEXP headers, SEXP data) {
 
 }
 
-/* streams ------------------------------------------------------------------ */
+// streams ---------------------------------------------------------------------
 
 SEXP rnng_stream_dial(SEXP url, SEXP textframes) {
 
@@ -457,7 +473,7 @@ SEXP rnng_stream_close(SEXP stream) {
 
 }
 
-/* messenger ---------------------------------------------------------------- */
+// messenger -------------------------------------------------------------------
 
 static void thread_finalizer(SEXP xptr) {
 

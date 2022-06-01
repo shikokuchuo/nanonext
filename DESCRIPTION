@@ -17,7 +17,10 @@ Authors@R:
       person(given = "Ling", 
              family = "Li",
              role = "ctb",
-             email = "r@ling-li.com"))
+             email = "r@ling-li.com"),
+      person(given = "Hibiki AI Limited",
+             email = "info@hibiki-ai.com",
+             role = "cph"))
 License: GPL (>= 3)
 BugReports: https://github.com/shikokuchuo/nanonext/issues
 URL: https://shikokuchuo.net/nanonext/, https://github.com/shikokuchuo/nanonext/

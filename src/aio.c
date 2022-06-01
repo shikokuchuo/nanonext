@@ -1,10 +1,26 @@
-/* nanonext - C level - Core Functions -------------------------------------- */
+// Copyright (C) 2022 Hibiki AI Limited <info@hibiki-ai.com>
+//
+// This file is part of nanonext.
+//
+// nanonext is free software: you can redistribute it and/or modify it under the
+// terms of the GNU General Public License as published by the Free Software
+// Foundation, either version 3 of the License, or (at your option) any later
+// version.
+//
+// nanonext is distributed in the hope that it will be useful, but WITHOUT ANY
+// WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+// A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License along with
+// nanonext. If not, see <https://www.gnu.org/licenses/>.
+
+// nanonext - C level - Core Functions -----------------------------------------
 
 #define NANONEXT_INTERNALS
 #define NANONEXT_SUPPLEMENTALS
 #include "nanonext.h"
 
-/* definitions and statics -------------------------------------------------- */
+// definitions and statics -----------------------------------------------------
 
 typedef enum nano_aio_typ {
   SENDAIO,
@@ -118,7 +134,7 @@ void haio_finalizer(SEXP xptr) {
 
 }
 
-/* core aio ----------------------------------------------------------------- */
+// core aio --------------------------------------------------------------------
 
 SEXP rnng_aio_result(SEXP aio) {
 
@@ -275,7 +291,7 @@ SEXP rnng_unresolved(SEXP x) {
 
 }
 
-/* send recv aio functions -------------------------------------------------- */
+// send recv aio functions -----------------------------------------------------
 
 SEXP rnng_recv_aio(SEXP socket, SEXP timeout) {
 
@@ -385,7 +401,7 @@ SEXP rnng_stream_recv_aio(SEXP stream, SEXP bytes, SEXP timeout) {
 
 }
 
-/* NNG_DURATION_INFINITE (-1) NNG_DURATION_DEFAULT (-2) NNG_DURATION_ZERO (0) */
+// NNG_DURATION_INFINITE (-1) NNG_DURATION_DEFAULT (-2) NNG_DURATION_ZERO (0)
 
 SEXP rnng_send_aio(SEXP socket, SEXP data, SEXP timeout) {
 
@@ -526,7 +542,7 @@ SEXP rnng_stream_send_aio(SEXP stream, SEXP data, SEXP timeout) {
 
 }
 
-/* ncurl aio ---------------------------------------------------------------- */
+// ncurl aio -------------------------------------------------------------------
 
 SEXP rnng_ncurl_aio(SEXP http, SEXP method, SEXP headers, SEXP data) {
 

@@ -84,7 +84,7 @@ R binding for NNG (Nanomsg Next Gen), a successor to ZeroMQ. NNG is a socket
 \section{Licence notices}{
 
 
-    Copyright 2022 Charlie Gao, Ling Li.
+    Copyright (C) 2022 Hibiki AI Limited <\email{info@hibiki-ai.com}>
 
     This file is a part of nanonext.
 
