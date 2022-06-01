@@ -502,6 +502,20 @@ Otherwise, the environment variable `Sys.setenv(NANONEXT_TLS=1)` may be set prio
 - system installations of 'libnng' (built with TLS support) and 'libmbedtls' are in different locations; or
 - there is a system installation of 'libmbedtls' but not 'libnng' - in which case nanonext will download and build the latest release of 'libnng' against this.
 
+#### Development Version
+
+For the development version (to become the next CRAN release), the installation behaviour changes in the following way:
+
+- A specific pre-release version of 'libnng' 1.6.0 (722bf46) will be downloaded and built from source automatically during package installation (requiring 'cmake').
+- Windows libraries are still available pre-built (also updated to 1.6.0 pre-release).
+- Mbedtls is still detected automatically if installed in the standard filesystem locations, or if the `NANONEXT_TLS` environment variable is specified.
+
+This is as nanonext now depends on a feature not present in prior releases of 'libnng', including those currently available in system repositories.
+
+If you prefer to build your own version of 'libnng' (722bf46 or newer), specify the environment variable `Sys.setenv(NANONEXT_SYS=1)` prior to package installation:
+
+- uses a system 'libnng' installed in /usr/local instead of the download and build process.
+
 ### Links
 
 nanonext on CRAN: <https://cran.r-project.org/package=nanonext><br />

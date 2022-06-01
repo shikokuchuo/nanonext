@@ -393,7 +393,7 @@ aio
 #> < recvAio >
 #>  - $data for message data
 aio$data |> str()
-#>  num [1:100000000] 0.762 0.482 1.227 2.048 -2.218 ...
+#>  num [1:100000000] 0.53 -0.847 -0.333 -0.437 2.05 ...
 ```
 
 As `call_aio()` is blocking and will wait for completion, an alternative
@@ -550,11 +550,11 @@ ncurl("http://httpbin.org/headers")
 #>   [1] 7b 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73
 #>  [26] 74 22 3a 20 22 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22
 #>  [51] 58 2d 41 6d 7a 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31
-#>  [76] 2d 36 32 37 39 66 66 64 31 2d 36 63 38 63 30 36 30 32 37 34 61 63 30 38 65
-#> [101] 66 37 32 32 35 30 66 65 63 22 0a 20 20 7d 0a 7d 0a
+#>  [76] 2d 36 32 39 37 38 35 36 65 2d 36 65 37 65 35 63 65 63 33 39 31 62 38 38 65
+#> [101] 37 36 65 38 65 38 34 35 35 22 0a 20 20 7d 0a 7d 0a
 #> 
 #> $data
-#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6279ffd1-6c8c060274ac08ef72250fec\"\n  }\n}\n"
+#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6297856e-6e7e5cec391b88e76e8e8455\"\n  }\n}\n"
 ```
 
 For advanced use, supports additional HTTP methods such as POST or PUT.
@@ -570,7 +570,7 @@ res
 #>  - $raw for raw message
 
 call_aio(res)$data
-#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6279ffd1-110ea4df1b50ecb96a19a80f\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"78.145.225.121\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
+#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6297856f-041d8e165f7121e24b402b4e\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"146.179.207.31\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
 ```
 
 In this respect, it may be used as a performant and lightweight method
@@ -600,10 +600,10 @@ s
 #>  - textframes: TRUE
 
 s |> recv(keep.raw = FALSE)
-#> [1] "{\"e\":\"kline\",\"E\":1652162517227,\"s\":\"BTCUSDT\",\"k\":{\"t\":1652162460000,\"T\":1652162519999,\"s\":\"BTCUSDT\",\"i\":\"1m\",\"f\":1355281603,\"L\":1355283235,\"o\":\"31840.01000000\",\"c\":\"31821.53000000\",\"h\":\"31887.25000000\",\"l\":\"31821.53000000\",\"v\":\"104.62077000\",\"n\":1633,\"x\":false,\"q\":\"3331956.61656560\",\"V\":\"49.29040000\",\"Q\":\"1569718.18064700\",\"B\":\"0\"}}"
+#> [1] "{\"e\":\"kline\",\"E\":1654097265470,\"s\":\"BTCUSDT\",\"k\":{\"t\":1654097220000,\"T\":1654097279999,\"s\":\"BTCUSDT\",\"i\":\"1m\",\"f\":1388459369,\"L\":1388463489,\"o\":\"30890.81000000\",\"c\":\"30831.06000000\",\"h\":\"30899.68000000\",\"l\":\"30779.75000000\",\"v\":\"464.77697000\",\"n\":4121,\"x\":false,\"q\":\"14329927.66643360\",\"V\":\"172.44610000\",\"Q\":\"5315352.99317350\",\"B\":\"0\"}}"
 
 s |> recv(keep.raw = FALSE)
-#> [1] "{\"e\":\"kline\",\"E\":1652162519242,\"s\":\"BTCUSDT\",\"k\":{\"t\":1652162460000,\"T\":1652162519999,\"s\":\"BTCUSDT\",\"i\":\"1m\",\"f\":1355281603,\"L\":1355283278,\"o\":\"31840.01000000\",\"c\":\"31820.01000000\",\"h\":\"31887.25000000\",\"l\":\"31820.00000000\",\"v\":\"107.18185000\",\"n\":1676,\"x\":false,\"q\":\"3413451.15905990\",\"V\":\"51.10822000\",\"Q\":\"1627561.59975630\",\"B\":\"0\"}}"
+#> [1] "{\"e\":\"kline\",\"E\":1654097267474,\"s\":\"BTCUSDT\",\"k\":{\"t\":1654097220000,\"T\":1654097279999,\"s\":\"BTCUSDT\",\"i\":\"1m\",\"f\":1388459369,\"L\":1388464941,\"o\":\"30890.81000000\",\"c\":\"30789.62000000\",\"h\":\"30899.68000000\",\"l\":\"30721.00000000\",\"v\":\"586.97312000\",\"n\":5573,\"x\":false,\"q\":\"18091291.73670430\",\"V\":\"189.69816000\",\"Q\":\"5846668.39834930\",\"B\":\"0\"}}"
 
 close(s)
 ```
@@ -655,6 +655,31 @@ set prior to installation if:
 -   there is a system installation of ‘libmbedtls’ but not ‘libnng’ - in
     which case nanonext will download and build the latest release of
     ‘libnng’ against this.
+
+#### Development Version
+
+For the development version (to become the next CRAN release), the
+installation behaviour changes in the following way:
+
+-   A specific pre-release version of ‘libnng’ 1.6.0 (722bf46) will be
+    downloaded and built from source automatically during package
+    installation (requiring ‘cmake’).
+-   Windows libraries are still available pre-built (also updated to
+    1.6.0 pre-release).
+-   Mbedtls is still detected automatically if installed in the standard
+    filesystem locations, or if the `NANONEXT_TLS` environment variable
+    is specified.
+
+This is as nanonext now depends on a feature not present in prior
+releases of ‘libnng’, including those currently available in system
+repositories.
+
+If you prefer to build your own version of ‘libnng’ (722bf46 or newer),
+specify the environment variable `Sys.setenv(NANONEXT_SYS=1)` prior to
+package installation:
+
+-   uses a system ‘libnng’ installed in /usr/local instead of the
+    download and build process.
 
 ### Links
 
