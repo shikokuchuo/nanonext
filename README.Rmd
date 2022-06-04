@@ -525,3 +525,8 @@ NNG website: <https://nng.nanomsg.org/><br />
 NNG documentation: <https://nng.nanomsg.org/man/tip/><br />
 
 [&laquo; Back to ToC](#table-of-contents)
+
+--
+
+Please note that this project is released with a [Contributor Code of Conduct](https://shikokuchuo.net/nanonext/CODE_OF_CONDUCT.html). By participating in this project you agree to abide by its terms.
+

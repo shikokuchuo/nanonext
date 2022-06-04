@@ -393,7 +393,7 @@ aio
 #> < recvAio >
 #>  - $data for message data
 aio$data |> str()
-#>  num [1:100000000] 0.53 -0.847 -0.333 -0.437 2.05 ...
+#>  num [1:100000000] -1.0251 -0.2445 -0.0821 0.4433 0.715 ...
 ```
 
 As `call_aio()` is blocking and will wait for completion, an alternative
@@ -550,11 +550,11 @@ ncurl("http://httpbin.org/headers")
 #>   [1] 7b 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73
 #>  [26] 74 22 3a 20 22 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22
 #>  [51] 58 2d 41 6d 7a 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31
-#>  [76] 2d 36 32 39 37 38 35 36 65 2d 36 65 37 65 35 63 65 63 33 39 31 62 38 38 65
-#> [101] 37 36 65 38 65 38 34 35 35 22 0a 20 20 7d 0a 7d 0a
+#>  [76] 2d 36 32 39 62 36 39 32 66 2d 36 63 37 36 63 65 31 39 36 64 65 63 32 38 37
+#> [101] 62 35 31 32 61 65 66 37 34 22 0a 20 20 7d 0a 7d 0a
 #> 
 #> $data
-#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6297856e-6e7e5cec391b88e76e8e8455\"\n  }\n}\n"
+#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-629b692f-6c76ce196dec287b512aef74\"\n  }\n}\n"
 ```
 
 For advanced use, supports additional HTTP methods such as POST or PUT.
@@ -570,7 +570,7 @@ res
 #>  - $raw for raw message
 
 call_aio(res)$data
-#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6297856f-041d8e165f7121e24b402b4e\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"146.179.207.31\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
+#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-629b692f-4d488dc85044c80e70ec4405\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"185.225.45.49\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
 ```
 
 In this respect, it may be used as a performant and lightweight method
@@ -600,10 +600,10 @@ s
 #>  - textframes: TRUE
 
 s |> recv(keep.raw = FALSE)
-#> [1] "{\"e\":\"kline\",\"E\":1654097265470,\"s\":\"BTCUSDT\",\"k\":{\"t\":1654097220000,\"T\":1654097279999,\"s\":\"BTCUSDT\",\"i\":\"1m\",\"f\":1388459369,\"L\":1388463489,\"o\":\"30890.81000000\",\"c\":\"30831.06000000\",\"h\":\"30899.68000000\",\"l\":\"30779.75000000\",\"v\":\"464.77697000\",\"n\":4121,\"x\":false,\"q\":\"14329927.66643360\",\"V\":\"172.44610000\",\"Q\":\"5315352.99317350\",\"B\":\"0\"}}"
+#> [1] "{\"e\":\"kline\",\"E\":1654352177912,\"s\":\"BTCUSDT\",\"k\":{\"t\":1654352160000,\"T\":1654352219999,\"s\":\"BTCUSDT\",\"i\":\"1m\",\"f\":1391641824,\"L\":1391641974,\"o\":\"29539.29000000\",\"c\":\"29543.13000000\",\"h\":\"29549.03000000\",\"l\":\"29539.28000000\",\"v\":\"6.58161000\",\"n\":151,\"x\":false,\"q\":\"194453.44362370\",\"V\":\"3.82904000\",\"Q\":\"113123.53613320\",\"B\":\"0\"}}"
 
 s |> recv(keep.raw = FALSE)
-#> [1] "{\"e\":\"kline\",\"E\":1654097267474,\"s\":\"BTCUSDT\",\"k\":{\"t\":1654097220000,\"T\":1654097279999,\"s\":\"BTCUSDT\",\"i\":\"1m\",\"f\":1388459369,\"L\":1388464941,\"o\":\"30890.81000000\",\"c\":\"30789.62000000\",\"h\":\"30899.68000000\",\"l\":\"30721.00000000\",\"v\":\"586.97312000\",\"n\":5573,\"x\":false,\"q\":\"18091291.73670430\",\"V\":\"189.69816000\",\"Q\":\"5846668.39834930\",\"B\":\"0\"}}"
+#> [1] "{\"e\":\"kline\",\"E\":1654352180312,\"s\":\"BTCUSDT\",\"k\":{\"t\":1654352160000,\"T\":1654352219999,\"s\":\"BTCUSDT\",\"i\":\"1m\",\"f\":1391641824,\"L\":1391641980,\"o\":\"29539.29000000\",\"c\":\"29543.13000000\",\"h\":\"29549.03000000\",\"l\":\"29539.28000000\",\"v\":\"6.63752000\",\"n\":157,\"x\":false,\"q\":\"196105.20001500\",\"V\":\"3.88425000\",\"Q\":\"114754.61234050\",\"B\":\"0\"}}"
 
 close(s)
 ```
@@ -690,3 +690,9 @@ NNG website: <https://nng.nanomsg.org/><br /> NNG documentation:
 <https://nng.nanomsg.org/man/tip/><br />
 
 [« Back to ToC](#table-of-contents)
+
+–
+
+Please note that this project is released with a [Contributor Code of
+Conduct](https://shikokuchuo.net/nanonext/CODE_OF_CONDUCT.html). By
+participating in this project you agree to abide by its terms.
