@@ -2,9 +2,10 @@
 
 #### Updates
 
-* Upgrades NNG library to 1.6.0 pre-release (locked to version 722bf46). This version introduces a feature simplifying the aio implementation in nanonext.
+* Upgrades NNG library to 1.6.0 pre-release (locked to version 722bf46). This version incorporates a feature simplifying the aio implementation in nanonext.
 * Configure script updated to always download and build 'libnng' from source (except on Windows where pre-built libraries are downloaded). The script still attempts to detect a system 'mbedtls' library to link against.
 * Environment variable 'NANONEXT_SYS' introduced to permit use of a system 'libnng' install in /usr/local. Note that this is a manual setting allowing for custom NNG builds, and requires a version of NNG at least as recent as 722bf46.
+* Fixes a bug affecting aios (thanks @lionel- #3).
 
 # nanonext 0.5.0
 

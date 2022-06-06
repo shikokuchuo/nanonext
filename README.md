@@ -393,7 +393,7 @@ aio
 #> < recvAio >
 #>  - $data for message data
 aio$data |> str()
-#>  num [1:100000000] -1.0251 -0.2445 -0.0821 0.4433 0.715 ...
+#>  num [1:100000000] -0.732 0.352 -1.659 -1.353 0.439 ...
 ```
 
 As `call_aio()` is blocking and will wait for completion, an alternative
@@ -550,11 +550,11 @@ ncurl("http://httpbin.org/headers")
 #>   [1] 7b 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73
 #>  [26] 74 22 3a 20 22 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22
 #>  [51] 58 2d 41 6d 7a 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31
-#>  [76] 2d 36 32 39 62 36 39 32 66 2d 36 63 37 36 63 65 31 39 36 64 65 63 32 38 37
-#> [101] 62 35 31 32 61 65 66 37 34 22 0a 20 20 7d 0a 7d 0a
+#>  [76] 2d 36 32 39 63 65 33 62 35 2d 32 38 62 61 33 62 61 31 34 32 65 33 36 31 65
+#> [101] 34 32 30 35 61 65 35 63 66 22 0a 20 20 7d 0a 7d 0a
 #> 
 #> $data
-#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-629b692f-6c76ce196dec287b512aef74\"\n  }\n}\n"
+#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-629ce3b5-28ba3ba142e361e4205ae5cf\"\n  }\n}\n"
 ```
 
 For advanced use, supports additional HTTP methods such as POST or PUT.
@@ -570,7 +570,7 @@ res
 #>  - $raw for raw message
 
 call_aio(res)$data
-#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-629b692f-4d488dc85044c80e70ec4405\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"185.225.45.49\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
+#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-629ce3b6-7dbe033c2590b627572cbf6d\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"185.225.45.49\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
 ```
 
 In this respect, it may be used as a performant and lightweight method
@@ -600,10 +600,10 @@ s
 #>  - textframes: TRUE
 
 s |> recv(keep.raw = FALSE)
-#> [1] "{\"e\":\"kline\",\"E\":1654352177912,\"s\":\"BTCUSDT\",\"k\":{\"t\":1654352160000,\"T\":1654352219999,\"s\":\"BTCUSDT\",\"i\":\"1m\",\"f\":1391641824,\"L\":1391641974,\"o\":\"29539.29000000\",\"c\":\"29543.13000000\",\"h\":\"29549.03000000\",\"l\":\"29539.28000000\",\"v\":\"6.58161000\",\"n\":151,\"x\":false,\"q\":\"194453.44362370\",\"V\":\"3.82904000\",\"Q\":\"113123.53613320\",\"B\":\"0\"}}"
+#> [1] "{\"e\":\"kline\",\"E\":1654449081564,\"s\":\"BTCUSDT\",\"k\":{\"t\":1654449060000,\"T\":1654449119999,\"s\":\"BTCUSDT\",\"i\":\"1m\",\"f\":1392303942,\"L\":1392304058,\"o\":\"29908.82000000\",\"c\":\"29915.22000000\",\"h\":\"29915.23000000\",\"l\":\"29908.82000000\",\"v\":\"1.60871000\",\"n\":117,\"x\":false,\"q\":\"48117.40526140\",\"V\":\"1.52505000\",\"Q\":\"45615.20980110\",\"B\":\"0\"}}"
 
 s |> recv(keep.raw = FALSE)
-#> [1] "{\"e\":\"kline\",\"E\":1654352180312,\"s\":\"BTCUSDT\",\"k\":{\"t\":1654352160000,\"T\":1654352219999,\"s\":\"BTCUSDT\",\"i\":\"1m\",\"f\":1391641824,\"L\":1391641980,\"o\":\"29539.29000000\",\"c\":\"29543.13000000\",\"h\":\"29549.03000000\",\"l\":\"29539.28000000\",\"v\":\"6.63752000\",\"n\":157,\"x\":false,\"q\":\"196105.20001500\",\"V\":\"3.88425000\",\"Q\":\"114754.61234050\",\"B\":\"0\"}}"
+#> [1] "{\"e\":\"kline\",\"E\":1654449083880,\"s\":\"BTCUSDT\",\"k\":{\"t\":1654449060000,\"T\":1654449119999,\"s\":\"BTCUSDT\",\"i\":\"1m\",\"f\":1392303942,\"L\":1392304062,\"o\":\"29908.82000000\",\"c\":\"29915.21000000\",\"h\":\"29915.23000000\",\"l\":\"29908.82000000\",\"v\":\"1.62276000\",\"n\":121,\"x\":false,\"q\":\"48537.71404880\",\"V\":\"1.53374000\",\"Q\":\"45875.17306290\",\"B\":\"0\"}}"
 
 close(s)
 ```
@@ -678,8 +678,8 @@ If you prefer to build your own version of ‘libnng’ (722bf46 or newer),
 specify the environment variable `Sys.setenv(NANONEXT_SYS=1)` prior to
 package installation:
 
--   uses a system ‘libnng’ installed in /usr/local instead of the
-    download and build process.
+-   attempts to use a system ‘libnng’ installed in /usr/local instead of
+    the download and build process.
 
 ### Links
 

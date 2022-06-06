@@ -514,7 +514,7 @@ This is as nanonext now depends on a feature not present in prior releases of 'l
 
 If you prefer to build your own version of 'libnng' (722bf46 or newer), specify the environment variable `Sys.setenv(NANONEXT_SYS=1)` prior to package installation:
 
-- uses a system 'libnng' installed in /usr/local instead of the download and build process.
+- attempts to use a system 'libnng' installed in /usr/local instead of the download and build process.
 
 ### Links
 
