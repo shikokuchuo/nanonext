@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.1</span>
       </span>
     </div>
 
@@ -54,13 +54,13 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.5.0.9000" id="nanonext-0509000-development">nanonext 0.5.0.9000 (development)<a class="anchor" aria-label="anchor" href="#nanonext-0509000-development"></a></h2>
+<h2 class="page-header" data-toc-text="0.5.1" id="nanonext-051">nanonext 0.5.1<small>2022-06-10</small><a class="anchor" aria-label="anchor" href="#nanonext-051"></a></h2>
 <div class="section level5">
-<h5 id="updates-0-5-0-9000">Updates<a class="anchor" aria-label="anchor" href="#updates-0-5-0-9000"></a></h5>
+<h5 id="updates-0-5-1">Updates<a class="anchor" aria-label="anchor" href="#updates-0-5-1"></a></h5>
 <ul><li>Upgrades NNG library to 1.6.0 pre-release (locked to version 722bf46). This version incorporates a feature simplifying the aio implementation in nanonext.</li>
-<li>Configure script updated to always download and build ‘libnng’ from source (except on Windows where pre-built libraries are downloaded). The script still attempts to detect a system ‘mbedtls’ library to link against.</li>
-<li>Environment variable ‘NANONEXT_SYS’ introduced to permit use of a system ‘libnng’ install in /usr/local. Note that this is a manual setting allowing for custom NNG builds, and requires a version of NNG at least as recent as 722bf46.</li>
-<li>Fixes a bug affecting aios (thanks <a href="https://github.com/lionel-" class="external-link">@lionel-</a> <a href="https://github.com/shikokuchuo/nanonext/issues/3" class="external-link">#3</a>).</li>
+<li>Configure script updated to always download and build ‘libnng’ from source (except on Windows where pre-built libraries are downloaded). The script still attempts to detect a system ‘libmbedtls’ library to link against.</li>
+<li>Environment variable ‘NANONEXT_SYS’ introduced to permit use of a system ‘libnng’ install in <code>/usr/local</code>. Note that this is a manual setting allowing for custom NNG builds, and requires a version of NNG at least as recent as 722bf46.</li>
+<li>Fixes a bug involving the <code>unresolvedValue</code> returned by Aios (thanks <a href="https://github.com/lionel-" class="external-link">@lionel-</a> <a href="https://github.com/shikokuchuo/nanonext/issues/3" class="external-link">#3</a>).</li>
 </ul></div>
 </div>
     <div class="section level2">
