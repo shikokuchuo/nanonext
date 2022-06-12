@@ -131,7 +131,7 @@ reply <- function(context,
 
   res <- .Call(rnng_ctx_recv, context, recv_mode, timeout, FALSE)
   is_error_value(res) && return(invisible(res))
-  on.exit(expr = send_aio(context, as.raw(0L), mode = send_mode))
+  on.exit(expr = send.nanoContext(context, as.raw(0L), mode = send_mode))
   data <- execute(res, ...)
   if (.Call(rnng_serial, send_mode))
     data <- serialize(object = data, connection = NULL)
