@@ -89,7 +89,23 @@ SEXP rnng_version(void) {
 }
 
 SEXP rnng_scm(void) {
+
   return R_MissingArg;
+
+}
+
+SEXP rnng_clock(void) {
+
+  double time = (double) nng_clock();
+  return Rf_ScalarReal(time);
+
+}
+
+SEXP rnng_random(void) {
+
+  double rnd = (double) nng_random();
+  return Rf_ScalarReal(rnd);
+
 }
 
 // ncurl - minimalist http client ----------------------------------------------

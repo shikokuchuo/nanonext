@@ -1,5 +1,9 @@
 # nanonext 0.5.1.9000 (development)
 
+#### New Features
+
+* Added `nng_clock()` and `nng_random()` utilities exposing the library functions for timing and cryptographic RNG respectively.
+
 # nanonext 0.5.1
 
 #### Updates

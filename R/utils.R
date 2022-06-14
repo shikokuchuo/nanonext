@@ -93,6 +93,51 @@ nng_version <- function() .Call(rnng_version)
 #'
 nng_error <- function(xc) .Call(rnng_strerror, xc)
 
+#' NNG Clock Utility
+#'
+#' Provides the number of elapsed milliseconds since an arbitrary reference time
+#'     in the past. The reference time will be the same for a given program, but
+#'     may differ between programs.
+#'
+#' @details A convenience function for building concurrent applications. The
+#'     resolution of the clock depends on the underlying system timing facilities
+#'     and may not be particularly fine-grained. This utility should however be
+#'     faster than using base \code{Sys.time()}.
+#'
+#' @return A double.
+#'
+#' @examples
+#' time <- nng_clock(); Sys.sleep(0.1); nng_clock() - time
+#'
+#' @export
+#'
+nng_clock <- function() {
+
+  .Call(rnng_clock)
+
+}
+
+#' NNG Random Number Generator
+#'
+#' Strictly not for statistical analysis. Not reproducible as no ability to set
+#'     a seed value. Provides a random number suitable for system functions such
+#'     as cryptographic key generation. The value is obtained using
+#'     platform-specific strong cryptographic random number facilities where
+#'     available.
+#'
+#' @return A (positive) double.
+#'
+#' @examples
+#' nng_random()
+#'
+#' @export
+#'
+nng_random <- function() {
+
+  .Call(rnng_random)
+
+}
+
 #' Is Nano
 #'
 #' Is the object an object created by the nanonext package i.e. a nanoSocket,
