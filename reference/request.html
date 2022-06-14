@@ -78,31 +78,44 @@
     <h2>Arguments</h2>
     <dl><dt>context</dt>
 <dd><p>a Context.</p></dd>
+
+
 <dt>data</dt>
 <dd><p>an object (if send_mode = 'raw', a vector).</p></dd>
+
+
 <dt>send_mode</dt>
 <dd><p>[default 'serial'] whether data will be sent serialized or
 as a raw vector. Use 'serial' for sending and receiving within R to ensure
 perfect reproducibility. Use 'raw' for sending vectors of any type (will be
 converted to a raw byte vector for sending) - essential when interfacing
 with external applications.</p></dd>
+
+
 <dt>recv_mode</dt>
 <dd><p>[default 'serial'] mode of vector to be received - one of 'serial',
 'character', 'complex', 'double', 'integer', 'logical', 'numeric', or 'raw'.
 The default 'serial' means a serialised R object, for the other modes,
 the raw vector received will be converted into the respective mode.</p></dd>
+
+
 <dt>timeout</dt>
 <dd><p>(optional) integer value in milliseconds. If unspecified, the
 default of -2L uses a socket-specific default, which is usually the same
 as no timeout. Note that this applies to receiving the result.</p></dd>
+
+
 <dt>keep.raw</dt>
 <dd><p>[default TRUE] logical flag whether to keep the received raw
 vector (useful for verification e.g. via hashing). If FALSE, will return
 the converted data only.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A 'recvAio' (object of class 'recvAio').</p>
+    
+
+<p>A 'recvAio' (object of class 'recvAio').</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -151,7 +164,7 @@ the converted data only.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
       </footer></div>

@@ -104,30 +104,43 @@
     <h2>Arguments</h2>
     <dl><dt>con</dt>
 <dd><p>a Socket, Context or Stream.</p></dd>
+
+
 <dt>mode</dt>
 <dd><p>[default 'serial'] mode of vector to be received - one of 'serial',
 'character', 'complex', 'double', 'integer', 'logical', 'numeric', or 'raw'.
 The default 'serial' means a serialised R object, for the other modes,
 the raw vector received will be converted into the respective mode.
 For Streams, 'serial' is not an option and the default is 'character'.</p></dd>
+
+
 <dt>timeout</dt>
 <dd><p>(optional) integer value in milliseconds. If unspecified, the
 default of -2L uses a socket-specific default, which is usually the same
 as no timeout.</p></dd>
+
+
 <dt>keep.raw</dt>
 <dd><p>[default TRUE] logical flag whether to keep the received raw
 vector (useful for verification e.g. via hashing). If FALSE, will return
 the converted data only.</p></dd>
+
+
 <dt>...</dt>
 <dd><p>currently unused.</p></dd>
+
+
 <dt>n</dt>
 <dd><p>[default 65536L] applicable to Streams only, the maximum number of
 bytes to receive. Can be an over-estimate, but note that a buffer of this
 size is reserved.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A 'recvAio' (object of class 'recvAio').</p>
+    
+
+<p>A 'recvAio' (object of class 'recvAio').</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -198,7 +211,7 @@ size is reserved.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
       </footer></div>

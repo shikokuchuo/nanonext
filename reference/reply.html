@@ -78,21 +78,29 @@
     <h2>Arguments</h2>
     <dl><dt>context</dt>
 <dd><p>a Context.</p></dd>
+
+
 <dt>execute</dt>
 <dd><p>a function which takes the received (converted) data as its
 first argument. Can be an anonymous function of the form <code>function(x) do(x)</code>.
 Additional arguments can also be passed in through '...'.</p></dd>
+
+
 <dt>recv_mode</dt>
 <dd><p>[default 'serial'] mode of vector to be received - one of 'serial',
 'character', 'complex', 'double', 'integer', 'logical', 'numeric', or 'raw'.
 The default 'serial' means a serialised R object, for the other modes,
 the raw vector received will be converted into the respective mode.</p></dd>
+
+
 <dt>send_mode</dt>
 <dd><p>[default 'serial'] whether data will be sent serialized or
 as a raw vector. Use 'serial' for sending and receiving within R to ensure
 perfect reproducibility. Use 'raw' for sending vectors of any type (will be
 converted to a raw byte vector for sending) - essential when interfacing
 with external applications.</p></dd>
+
+
 <dt>timeout</dt>
 <dd><p>(optional) integer value in milliseconds. If unspecified, the
 default of -2L uses a socket-specific default, which is usually the same
@@ -100,12 +108,17 @@ as no timeout. Note that this applies to receiving the request. The total
 elapsed time would also include performing 'execute' on the received
 data. The timeout then also applies to sending the result (in the event
 that the requestor has become unavailable since sending the request).</p></dd>
+
+
 <dt>...</dt>
 <dd><p>additional arguments passed to the function specified by 'execute'.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>Invisibly, an integer exit code (zero on success).</p>
+    
+
+<p>Invisibly, an integer exit code (zero on success).</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -154,7 +167,7 @@ that the requestor has become unavailable since sending the request).</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
       </footer></div>

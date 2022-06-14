@@ -64,7 +64,13 @@
     <loc>https://shikokuchuo.net/nanonext/reference/ncurl.html</loc>
   </url>
   <url>
+    <loc>https://shikokuchuo.net/nanonext/reference/nng_clock.html</loc>
+  </url>
+  <url>
     <loc>https://shikokuchuo.net/nanonext/reference/nng_error.html</loc>
+  </url>
+  <url>
+    <loc>https://shikokuchuo.net/nanonext/reference/nng_random.html</loc>
   </url>
   <url>
     <loc>https://shikokuchuo.net/nanonext/reference/nng_version.html</loc>

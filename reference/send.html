@@ -75,8 +75,12 @@
     <h2>Arguments</h2>
     <dl><dt>con</dt>
 <dd><p>a Socket, Context or Stream.</p></dd>
+
+
 <dt>data</dt>
 <dd><p>an object (a vector, if mode = 'raw').</p></dd>
+
+
 <dt>mode</dt>
 <dd><p>[default 'serial'] for sending serialised R objects, or 'raw' for
 sending vectors of any type (converted to a raw byte vector for sending).
@@ -84,18 +88,25 @@ For Streams, 'raw' is the only option and any other value is ignored. Use
 'serial' for perfect reproducibility within R, although 'raw' must be used
 when interfacing with external applications that do not understand R
 serialisation.</p></dd>
+
+
 <dt>block</dt>
 <dd><p>logical TRUE to block until successful or FALSE to return
 immediately even if unsuccessful  (e.g. if no connection is available),
 or else an integer value specifying the maximum time to block in
 milliseconds, after which the operation will time out.</p></dd>
+
+
 <dt>echo</dt>
 <dd><p>[default TRUE] logical TRUE to return the raw vector of sent data,
 or FALSE to return an integer exit code (invisibly).</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>Raw vector of sent data, or (invisibly) an integer exit code (zero on
+    
+
+<p>Raw vector of sent data, or (invisibly) an integer exit code (zero on
     success) if 'echo' is set to FALSE.</p>
     </div>
     <div id="blocking">
@@ -169,7 +180,7 @@ or FALSE to return an integer exit code (invisibly).</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
       </footer></div>
