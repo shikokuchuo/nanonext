@@ -101,6 +101,13 @@ SEXP rnng_clock(void) {
 
 }
 
+SEXP rnng_sleep(SEXP msec) {
+
+  nng_msleep((nng_duration) Rf_asInteger(msec));
+  return R_NilValue;
+
+}
+
 SEXP rnng_random(void) {
 
   double rnd = (double) nng_random();

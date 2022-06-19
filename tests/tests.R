@@ -173,6 +173,7 @@ nanotest(!is_error_value(1L))
 nanotestwn(messenger("invalidURL"))
 nanotestn(tryCatch(.mirai_scm(), error = function(e) 0L))
 nanotest(is.double(nng_clock()))
+nanotest(is.null(nng_sleep(1)))
 nanotest(is.double(nng_random()))
 
 nanotest(inherits(bus <- socket(protocol = "bus"), "nanoSocket"))

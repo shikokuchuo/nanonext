@@ -112,6 +112,7 @@ extern SEXP rnng_scm(void);
 extern SEXP rnng_serial(SEXP);
 extern SEXP rnng_send(SEXP, SEXP, SEXP, SEXP);
 extern SEXP rnng_send_aio(SEXP, SEXP, SEXP);
+extern SEXP rnng_sleep(SEXP);
 extern SEXP rnng_socket_set(SEXP, SEXP, SEXP, SEXP);
 extern SEXP rnng_stream_close(SEXP);
 extern SEXP rnng_stream_dial(SEXP, SEXP);

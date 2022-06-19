@@ -21,6 +21,6 @@ A convenience function for building concurrent applications. The
     faster than using base \code{Sys.time()}.
 }
 \examples{
-time <- nng_clock(); Sys.sleep(0.1); nng_clock() - time
+time <- nng_clock(); nng_sleep(100); nng_clock() - time
 
 }

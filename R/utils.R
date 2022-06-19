@@ -107,13 +107,33 @@ nng_error <- function(xc) .Call(rnng_strerror, xc)
 #' @return A double.
 #'
 #' @examples
-#' time <- nng_clock(); Sys.sleep(0.1); nng_clock() - time
+#' time <- nng_clock(); nng_sleep(100); nng_clock() - time
 #'
 #' @export
 #'
 nng_clock <- function() {
 
   .Call(rnng_clock)
+
+}
+
+#' NNG Sleep Utility
+#'
+#' Sleep function. May block for longer than requested, with the actual wait
+#'     time determined by the capabilities of the underlying system.
+#'
+#' @param msec integer number of milliseconds to block the caller.
+#'
+#' @return Invisible NULL.
+#'
+#' @examples
+#' time <- nng_clock(); nng_sleep(100); nng_clock() - time
+#'
+#' @export
+#'
+nng_sleep <- function(msec) {
+
+  invisible(.Call(rnng_sleep, msec))
 
 }
 
