@@ -63,13 +63,14 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">socket</span><span class="op">(</span>
-  protocol <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"bus"</span>, <span class="st">"pair"</span>, <span class="st">"push"</span>, <span class="st">"pull"</span>, <span class="st">"pub"</span>, <span class="st">"sub"</span>, <span class="st">"req"</span>, <span class="st">"rep"</span>, <span class="st">"surveyor"</span>,
-    <span class="st">"respondent"</span><span class="op">)</span>,
-  dial <span class="op">=</span> <span class="cn">NULL</span>,
-  listen <span class="op">=</span> <span class="cn">NULL</span>,
-  autostart <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">socket</span><span class="op">(</span></span>
+<span>  protocol <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"bus"</span>, <span class="st">"pair"</span>, <span class="st">"push"</span>, <span class="st">"pull"</span>, <span class="st">"pub"</span>, <span class="st">"sub"</span>, <span class="st">"req"</span>, <span class="st">"rep"</span>, <span class="st">"surveyor"</span>,</span>
+<span>    <span class="st">"respondent"</span><span class="op">)</span>,</span>
+<span>  dial <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  listen <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  autostart <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  raw <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -96,6 +97,12 @@ address as a character string e.g. 'inproc://anyvalue' or
 <dd><p>[default TRUE] whether to start the dialer/listener. Set to
 FALSE if you wish to set configuration options on the dialer/listener as
 it is not generally possible to change these once started.</p></dd>
+
+
+<dt>raw</dt>
+<dd><p>[default 'FALSE'] whether to open 'raw' mode sockets. Note: not for
+general use - do not enable unless you have a specific need (refer to NNG
+documentation).</p></dd>
 
 </dl></div>
     <div id="value">
@@ -135,14 +142,14 @@ it is not generally possible to change these once started.</p></dd>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">socket</span> <span class="op">&lt;-</span> <span class="fu">socket</span><span class="op">(</span><span class="st">"pair"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">socket</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">socket</span> <span class="op">&lt;-</span> <span class="fu">socket</span><span class="op">(</span><span class="st">"pair"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">socket</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt; nanoSocket &gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - id: 32 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - state: opened </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - protocol: pair </span>
-<span class="r-in"><span class="fu"><a href="close.html">close</a></span><span class="op">(</span><span class="va">socket</span><span class="op">)</span></span>
-<span class="r-in"></span>
+<span class="r-in"><span><span class="fu"><a href="close.html">close</a></span><span class="op">(</span><span class="va">socket</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -157,7 +164,7 @@ it is not generally possible to change these once started.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

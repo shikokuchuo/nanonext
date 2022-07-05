@@ -59,7 +59,7 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">dial</span><span class="op">(</span><span class="va">socket</span>, url <span class="op">=</span> <span class="st">"inproc://nanonext"</span>, autostart <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">dial</span><span class="op">(</span><span class="va">socket</span>, url <span class="op">=</span> <span class="st">"inproc://nanonext"</span>, autostart <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -125,9 +125,9 @@ generally possible to change these once started.</p></dd>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">socket</span> <span class="op">&lt;-</span> <span class="fu"><a href="socket.html">socket</a></span><span class="op">(</span><span class="st">"rep"</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu">dial</span><span class="op">(</span><span class="va">socket</span>, url <span class="op">=</span> <span class="st">"tcp://127.0.0.1:6545"</span>, autostart <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">socket</span><span class="op">$</span><span class="va">dialer</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">socket</span> <span class="op">&lt;-</span> <span class="fu"><a href="socket.html">socket</a></span><span class="op">(</span><span class="st">"rep"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">dial</span><span class="op">(</span><span class="va">socket</span>, url <span class="op">=</span> <span class="st">"tcp://127.0.0.1:6545"</span>, autostart <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">socket</span><span class="op">$</span><span class="va">dialer</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt; nanoDialer &gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - id: 2 </span>
@@ -135,8 +135,8 @@ generally possible to change these once started.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - state: not started </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - url: tcp://127.0.0.1:6545 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"><span class="fu"><a href="start.html">start</a></span><span class="op">(</span><span class="va">socket</span><span class="op">$</span><span class="va">dialer</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">socket</span><span class="op">$</span><span class="va">dialer</span></span>
+<span class="r-in"><span><span class="fu"><a href="start.html">start</a></span><span class="op">(</span><span class="va">socket</span><span class="op">$</span><span class="va">dialer</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">socket</span><span class="op">$</span><span class="va">dialer</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt; nanoDialer &gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - id: 2 </span>
@@ -144,12 +144,12 @@ generally possible to change these once started.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - state: started </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - url: tcp://127.0.0.1:6545 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"><span class="fu"><a href="close.html">close</a></span><span class="op">(</span><span class="va">socket</span><span class="op">$</span><span class="va">dialer</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="close.html">close</a></span><span class="op">(</span><span class="va">socket</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">nano</span> <span class="op">&lt;-</span> <span class="fu"><a href="nano.html">nano</a></span><span class="op">(</span><span class="st">"bus"</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu">dial</span><span class="op">(</span><span class="va">nano</span>, url <span class="op">=</span> <span class="st">"tcp://127.0.0.1:6546"</span>, autostart <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">nano</span><span class="op">$</span><span class="va">dialer</span></span>
+<span class="r-in"><span><span class="fu"><a href="close.html">close</a></span><span class="op">(</span><span class="va">socket</span><span class="op">$</span><span class="va">dialer</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="close.html">close</a></span><span class="op">(</span><span class="va">socket</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">nano</span> <span class="op">&lt;-</span> <span class="fu"><a href="nano.html">nano</a></span><span class="op">(</span><span class="st">"bus"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">dial</span><span class="op">(</span><span class="va">nano</span>, url <span class="op">=</span> <span class="st">"tcp://127.0.0.1:6546"</span>, autostart <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">nano</span><span class="op">$</span><span class="va">dialer</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt; nanoDialer &gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - id: 3 </span>
@@ -157,8 +157,8 @@ generally possible to change these once started.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - state: not started </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - url: tcp://127.0.0.1:6546 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"><span class="fu"><a href="start.html">start</a></span><span class="op">(</span><span class="va">nano</span><span class="op">$</span><span class="va">dialer</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">nano</span><span class="op">$</span><span class="va">dialer</span></span>
+<span class="r-in"><span><span class="fu"><a href="start.html">start</a></span><span class="op">(</span><span class="va">nano</span><span class="op">$</span><span class="va">dialer</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">nano</span><span class="op">$</span><span class="va">dialer</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt; nanoDialer &gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - id: 3 </span>
@@ -166,9 +166,9 @@ generally possible to change these once started.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - state: started </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - url: tcp://127.0.0.1:6546 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"><span class="fu"><a href="close.html">close</a></span><span class="op">(</span><span class="va">nano</span><span class="op">$</span><span class="va">dialer</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">nano</span><span class="op">$</span><span class="fu">close</span><span class="op">(</span><span class="op">)</span></span>
-<span class="r-in"></span>
+<span class="r-in"><span><span class="fu"><a href="close.html">close</a></span><span class="op">(</span><span class="va">nano</span><span class="op">$</span><span class="va">dialer</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">nano</span><span class="op">$</span><span class="fu">close</span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -183,7 +183,7 @@ generally possible to change these once started.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>
