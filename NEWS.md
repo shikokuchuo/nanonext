@@ -3,6 +3,7 @@
 #### New Features
 
 * Added `nng_clock()`, `nng_sleep()` and `nng_random()` utilities exposing the library functions for timing and cryptographic RNG respectively.
+* `socket()` gains the ability to open 'raw' mode sockets. Please note: this is not for general use - do not set this argument unless you know you have a specific need (refer to NNG documentation).
 
 # nanonext 0.5.1
 

@@ -372,9 +372,10 @@ void context_finalizer(SEXP xptr) {
 
 // sockets ---------------------------------------------------------------------
 
-SEXP rnng_protocol_open(SEXP protocol) {
+SEXP rnng_protocol_open(SEXP protocol, SEXP raw) {
 
   const int pro = INTEGER(protocol)[0];
+  const int rw = LOGICAL(raw)[0];
   nng_socket *sock;
   char *pname;
   int xc;
@@ -384,43 +385,43 @@ SEXP rnng_protocol_open(SEXP protocol) {
   switch (pro) {
   case 1:
     pname = "bus";
-    xc = nng_bus0_open(sock);
+    xc = rw ? nng_bus0_open_raw(sock) : nng_bus0_open(sock);
     break;
   case 2:
     pname = "pair";
-    xc = nng_pair0_open(sock);
+    xc = rw ? nng_pair0_open_raw(sock) : nng_pair0_open(sock);
     break;
   case 3:
     pname = "push";
-    xc = nng_push0_open(sock);
+    xc = rw ? nng_push0_open_raw(sock) : nng_push0_open(sock);
     break;
   case 4:
     pname = "pull";
-    xc = nng_pull0_open(sock);
+    xc = rw ? nng_pull0_open_raw(sock) : nng_pull0_open(sock);
     break;
   case 5:
     pname = "pub";
-    xc = nng_pub0_open(sock);
+    xc = rw ? nng_pub0_open_raw(sock) : nng_pub0_open(sock);
     break;
   case 6:
     pname = "sub";
-    xc = nng_sub0_open(sock);
+    xc = rw ? nng_sub0_open_raw(sock) : nng_sub0_open(sock);
     break;
   case 7:
     pname = "req";
-    xc = nng_req0_open(sock);
+    xc = rw ? nng_req0_open_raw(sock) : nng_req0_open(sock);
     break;
   case 8:
     pname = "rep";
-    xc = nng_rep0_open(sock);
+    xc = rw ? nng_rep0_open_raw(sock) : nng_rep0_open(sock);
     break;
   case 9:
     pname = "surveyor";
-    xc = nng_surveyor0_open(sock);
+    xc = rw ? nng_surveyor0_open_raw(sock) : nng_surveyor0_open(sock);
     break;
   case 10:
     pname = "respondent";
-    xc = nng_respondent0_open(sock);
+    xc = rw ? nng_respondent0_open_raw(sock) : nng_respondent0_open(sock);
     break;
   default:
     xc = -1;
