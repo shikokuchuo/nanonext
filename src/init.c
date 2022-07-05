@@ -67,6 +67,7 @@ static const R_CallMethodDef CallEntries[] = {
   {"rnng_ctx_send", (DL_FUNC) &rnng_ctx_send, 4},
   {"rnng_ctx_send_aio", (DL_FUNC) &rnng_ctx_send_aio, 3},
   {"rnng_ctx_set", (DL_FUNC) &rnng_ctx_set, 4},
+  {"rnng_device", (DL_FUNC) &rnng_device, 2},
   {"rnng_dial", (DL_FUNC) &rnng_dial, 2},
   {"rnng_dialer_close", (DL_FUNC) &rnng_dialer_close, 1},
   {"rnng_dialer_create", (DL_FUNC) &rnng_dialer_create, 2},

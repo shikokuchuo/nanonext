@@ -158,6 +158,34 @@ nng_random <- function() {
 
 }
 
+#' Create NNG Device
+#'
+#' Creates a device which is a socket forwarder or proxy. Provides for improved
+#'     horizontal scalability, reliability, and isolation.
+#'
+#' @param s1 a raw mode Socket.
+#' @param s2 a raw mode Socket.
+#'
+#' @return This function does not return.
+#'
+#' @details Only raw mode sockets may be used with this function. Sockets s1 and
+#'     s2 must be compatible with each other, i.e. be opposite halves of a two
+#'     protocol pattern, or both the same protocol for a single protocol pattern.
+#'
+#' @section Usage:
+#'
+#'     Warning: this function is designed to be called in an isolated process
+#'     with the two sockets. Once called, it will block with no ability to
+#'     interrupt. Kill the process to terminate the device.
+#'
+#' @export
+#'
+nng_device <- function(s1, s2) {
+
+  invisible(.Call(rnng_device, s1, s2))
+
+}
+
 #' Is Nano
 #'
 #' Is the object an object created by the nanonext package i.e. a nanoSocket,

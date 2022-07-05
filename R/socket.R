@@ -34,9 +34,9 @@
 #' @param autostart [default TRUE] whether to start the dialer/listener. Set to
 #'     FALSE if you wish to set configuration options on the dialer/listener as
 #'     it is not generally possible to change these once started.
-#' @param raw [default 'FALSE'] whether to open 'raw' mode sockets. Note: not for
-#'     general use - do not enable unless you have a specific need (refer to NNG
-#'     documentation).
+#' @param raw [default FALSE] whether to open raw mode sockets. Note: not for
+#'     general use - do not enable unless you have a specific need, such as for
+#'     use with \code{\link{nng_device}} (refer to NNG documentation).
 #'
 #' @return A Socket (object of class 'nanoSocket' and 'nano').
 #'

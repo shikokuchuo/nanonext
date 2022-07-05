@@ -89,6 +89,7 @@ extern SEXP rnng_ctx_recv_aio(SEXP, SEXP);
 extern SEXP rnng_ctx_send(SEXP, SEXP, SEXP, SEXP);
 extern SEXP rnng_ctx_send_aio(SEXP, SEXP, SEXP);
 extern SEXP rnng_ctx_set(SEXP, SEXP, SEXP, SEXP);
+extern SEXP rnng_device(SEXP, SEXP);
 extern SEXP rnng_dial(SEXP, SEXP);
 extern SEXP rnng_dialer_close(SEXP);
 extern SEXP rnng_dialer_create(SEXP, SEXP);

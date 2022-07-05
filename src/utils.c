@@ -611,3 +611,21 @@ SEXP rnng_messenger(SEXP url) {
 
 }
 
+// device ----------------------------------------------------------------------
+
+SEXP rnng_device(SEXP s1, SEXP s2) {
+
+  if (R_ExternalPtrTag(s1) != nano_SocketSymbol)
+    error_return("'s1' is not a valid Socket");
+  if (R_ExternalPtrTag(s2) != nano_SocketSymbol)
+    error_return("'s2' is not a valid Socket");
+
+  int xc = nng_device(*(nng_socket *) R_ExternalPtrAddr(s1),
+                      *(nng_socket *) R_ExternalPtrAddr(s2));
+  if (xc)
+    return mk_error(xc);
+
+  return Rf_ScalarInteger(0);
+
+}
+
