@@ -83,8 +83,6 @@ socket <- function(protocol = c("bus", "pair", "push", "pull", "pub", "sub",
                    autostart = TRUE,
                    raw = FALSE) {
 
-  protocol <- match.arg2(protocol, c("bus", "pair", "push", "pull", "pub", "sub",
-                                     "req", "rep", "surveyor", "respondent"))
   sock <- .Call(rnng_protocol_open, protocol, raw)
   is.integer(sock) && return(sock)
   if (!missing(dial)) dial(sock, url = dial, autostart = autostart)

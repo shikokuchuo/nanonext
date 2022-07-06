@@ -374,57 +374,90 @@ void context_finalizer(SEXP xptr) {
 
 SEXP rnng_protocol_open(SEXP protocol, SEXP raw) {
 
-  const int pro = INTEGER(protocol)[0];
+  const char *pro = CHAR(STRING_ELT(protocol, 0));
   const int rw = LOGICAL(raw)[0];
+
+  size_t slen = strlen(pro);
+  const char *bus = "bus", *pair = "pair", *push = "push", *pull = "pull",
+    *pub = "pub", *sub = "sub", *req = "req", *rep = "rep", *sur = "surveyor",
+    *res = "respondent";
+
   nng_socket *sock;
-  char *pname;
-  int xc;
+  const char *pname;
+  int xc = -1;
   SEXP socket, klass;
 
   sock = R_Calloc(1, nng_socket);
-  switch (pro) {
+
+  switch (slen) {
   case 1:
-    pname = "bus";
-    xc = rw ? nng_bus0_open_raw(sock) : nng_bus0_open(sock);
-    break;
   case 2:
-    pname = "pair";
-    xc = rw ? nng_pair0_open_raw(sock) : nng_pair0_open(sock);
-    break;
   case 3:
-    pname = "push";
-    xc = rw ? nng_push0_open_raw(sock) : nng_push0_open(sock);
-    break;
+    if (!strncmp(bus, pro, slen)) {
+      pname = bus;
+      xc = rw ? nng_bus0_open_raw(sock) : nng_bus0_open(sock);
+      break;
+    }
+    if (slen > 2) {
+      if (!strncmp(pub, pro, slen)) {
+        pname = pub;
+        xc = rw ? nng_pub0_open_raw(sock) : nng_pub0_open(sock);
+        break;
+      }
+      if (!strncmp(sub, pro, slen)) {
+        pname = sub;
+        xc = rw ? nng_sub0_open_raw(sock) : nng_sub0_open(sock);
+        break;
+      }
+      if (!strncmp(req, pro, slen)) {
+        pname = req;
+        xc = rw ? nng_req0_open_raw(sock) : nng_req0_open(sock);
+        break;
+      }
+      if (!strncmp(rep, pro, slen)) {
+        pname = rep;
+        xc = rw ? nng_rep0_open_raw(sock) : nng_rep0_open(sock);
+        break;
+      }
+    }
   case 4:
-    pname = "pull";
-    xc = rw ? nng_pull0_open_raw(sock) : nng_pull0_open(sock);
-    break;
+    if (slen > 1) {
+      if (!strncmp(pair, pro, slen)) {
+        pname = pair;
+        xc = rw ? nng_pair0_open_raw(sock) : nng_pair0_open(sock);
+        break;
+      }
+      if (slen > 2) {
+        if (!strncmp(push, pro, slen)) {
+          pname = push;
+          xc = rw ? nng_push0_open_raw(sock) : nng_push0_open(sock);
+          break;
+        }
+        if (!strncmp(pull, pro, slen)) {
+          pname = pull;
+          xc = rw ? nng_pull0_open_raw(sock) : nng_pull0_open(sock);
+          break;
+        }
+      }
+    }
   case 5:
-    pname = "pub";
-    xc = rw ? nng_pub0_open_raw(sock) : nng_pub0_open(sock);
-    break;
   case 6:
-    pname = "sub";
-    xc = rw ? nng_sub0_open_raw(sock) : nng_sub0_open(sock);
-    break;
   case 7:
-    pname = "req";
-    xc = rw ? nng_req0_open_raw(sock) : nng_req0_open(sock);
-    break;
   case 8:
-    pname = "rep";
-    xc = rw ? nng_rep0_open_raw(sock) : nng_rep0_open(sock);
-    break;
+    if (slen > 2 && !strncmp(sur, pro, slen)) {
+      pname = sur;
+      xc = rw ? nng_surveyor0_open_raw(sock) : nng_surveyor0_open(sock);
+      break;
+    }
   case 9:
-    pname = "surveyor";
-    xc = rw ? nng_surveyor0_open_raw(sock) : nng_surveyor0_open(sock);
-    break;
   case 10:
-    pname = "respondent";
-    xc = rw ? nng_respondent0_open_raw(sock) : nng_respondent0_open(sock);
-    break;
+    if (slen > 2 && !strncmp(res, pro, slen)) {
+      pname = res;
+      xc = rw ? nng_respondent0_open_raw(sock) : nng_respondent0_open(sock);
+      break;
+    }
   default:
-    xc = -1;
+      error_return("'protocol' should be one of bus, pair, push, pull, pub, sub, req, rep, surveyor, respondent");
   }
 
   if (xc) {

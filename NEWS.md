@@ -6,6 +6,10 @@
 * `socket()` gains the ability to open 'raw' mode sockets. Please note: this is not for general use - do not set this argument unless you have a specific need, such as for use with `device()` (refer to NNG documentation).
 * Implements `device()` which creates a socket forwarder or proxy. Warning: use this in a separate process as this function blocks with no ability to interrupt.
 
+#### Updates
+
+* Internal performance optimisations.
+
 # nanonext 0.5.1
 
 #### Updates

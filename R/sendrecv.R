@@ -45,11 +45,12 @@
 #'     queued for sending. Certain protocol / transport combinations may limit
 #'     the number of messages that can be queued if they have yet to be received.
 #'
-#'     For Contexts and Streams: the default behaviour is blocking with \code{block = TRUE}.
-#'     This will wait until the send has completed. Set a timeout in this case
-#'     to ensure that the function returns under all scenarios. As the underlying
-#'     implementation uses an asynchronous send with a wait, it is recommended
-#'     to set a positive integer value for \code{block} rather than FALSE.
+#'     For Contexts and Streams: the default behaviour is blocking with
+#'     \code{block = TRUE}. This will wait until the send has completed. Set a
+#'     timeout in this case to ensure that the function returns under all scenarios.
+#'     As the underlying implementation uses an asynchronous send with a wait,
+#'     it is recommended to set a positive integer value for \code{block} rather
+#'     than FALSE.
 #'
 #' @examples
 #' pub <- socket("pub", dial = "inproc://nanonext")
