@@ -118,11 +118,12 @@ or FALSE to return an integer exit code (invisibly).</p></dd>
     This will return immediately with an error if the message could not be
     queued for sending. Certain protocol / transport combinations may limit
     the number of messages that can be queued if they have yet to be received.</p>
-<p>For Contexts and Streams: the default behaviour is blocking with <code>block = TRUE</code>.
-    This will wait until the send has completed. Set a timeout in this case
-    to ensure that the function returns under all scenarios. As the underlying
-    implementation uses an asynchronous send with a wait, it is recommended
-    to set a positive integer value for <code>block</code> rather than FALSE.</p>
+<p>For Contexts and Streams: the default behaviour is blocking with
+    <code>block = TRUE</code>. This will wait until the send has completed. Set a
+    timeout in this case to ensure that the function returns under all scenarios.
+    As the underlying implementation uses an asynchronous send with a wait,
+    it is recommended to set a positive integer value for <code>block</code> rather
+    than FALSE.</p>
     </div>
 
     <div id="ref-examples">
