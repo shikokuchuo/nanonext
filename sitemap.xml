@@ -28,6 +28,9 @@
     <loc>https://shikokuchuo.net/nanonext/reference/context.html</loc>
   </url>
   <url>
+    <loc>https://shikokuchuo.net/nanonext/reference/device.html</loc>
+  </url>
+  <url>
     <loc>https://shikokuchuo.net/nanonext/reference/dial.html</loc>
   </url>
   <url>
@@ -49,7 +52,13 @@
     <loc>https://shikokuchuo.net/nanonext/reference/listen.html</loc>
   </url>
   <url>
+    <loc>https://shikokuchuo.net/nanonext/reference/mclock.html</loc>
+  </url>
+  <url>
     <loc>https://shikokuchuo.net/nanonext/reference/messenger.html</loc>
+  </url>
+  <url>
+    <loc>https://shikokuchuo.net/nanonext/reference/msleep.html</loc>
   </url>
   <url>
     <loc>https://shikokuchuo.net/nanonext/reference/nano.html</loc>
@@ -64,19 +73,7 @@
     <loc>https://shikokuchuo.net/nanonext/reference/ncurl.html</loc>
   </url>
   <url>
-    <loc>https://shikokuchuo.net/nanonext/reference/nng_clock.html</loc>
-  </url>
-  <url>
-    <loc>https://shikokuchuo.net/nanonext/reference/nng_device.html</loc>
-  </url>
-  <url>
     <loc>https://shikokuchuo.net/nanonext/reference/nng_error.html</loc>
-  </url>
-  <url>
-    <loc>https://shikokuchuo.net/nanonext/reference/nng_random.html</loc>
-  </url>
-  <url>
-    <loc>https://shikokuchuo.net/nanonext/reference/nng_sleep.html</loc>
   </url>
   <url>
     <loc>https://shikokuchuo.net/nanonext/reference/nng_version.html</loc>
@@ -86,6 +83,9 @@
   </url>
   <url>
     <loc>https://shikokuchuo.net/nanonext/reference/protocols.html</loc>
+  </url>
+  <url>
+    <loc>https://shikokuchuo.net/nanonext/reference/random.html</loc>
   </url>
   <url>
     <loc>https://shikokuchuo.net/nanonext/reference/recv.html</loc>

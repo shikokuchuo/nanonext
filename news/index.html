@@ -57,10 +57,10 @@
 <h2 class="page-header" data-toc-text="0.5.1.9000" id="nanonext-0519000-development">nanonext 0.5.1.9000 (development)<a class="anchor" aria-label="anchor" href="#nanonext-0519000-development"></a></h2>
 <div class="section level5">
 <h5 id="new-features-0-5-1-9000">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-5-1-9000"></a></h5>
-<ul><li>Adds <code><a href="../reference/nng_clock.html">nng_clock()</a></code>, <code><a href="../reference/nng_sleep.html">nng_sleep()</a></code> and <code><a href="../reference/nng_random.html">nng_random()</a></code> utilities exposing the library functions for timing and cryptographic RNG respectively.</li>
+<ul><li>Adds <code><a href="../reference/mclock.html">mclock()</a></code>, <code><a href="../reference/msleep.html">msleep()</a></code> and <code><a href="../reference/random.html">random()</a></code> utilities exposing the library functions for timing and cryptographic RNG respectively.</li>
 <li>
-<code><a href="../reference/socket.html">socket()</a></code> gains the ability to open ‘raw’ mode sockets. Please note: this is not for general use - do not set this argument unless you have a specific need, such as for use with <code><a href="../reference/nng_device.html">nng_device()</a></code> (refer to NNG documentation).</li>
-<li>Implements <code><a href="../reference/nng_device.html">nng_device()</a></code> which creates a socket forwarder or proxy. Warning: use this in a separate process as this function blocks with no ability to interrupt.</li>
+<code><a href="../reference/socket.html">socket()</a></code> gains the ability to open ‘raw’ mode sockets. Please note: this is not for general use - do not set this argument unless you have a specific need, such as for use with <code><a href="../reference/device.html">device()</a></code> (refer to NNG documentation).</li>
+<li>Implements <code><a href="../reference/device.html">device()</a></code> which creates a socket forwarder or proxy. Warning: use this in a separate process as this function blocks with no ability to interrupt.</li>
 </ul></div>
 </div>
     <div class="section level2">
