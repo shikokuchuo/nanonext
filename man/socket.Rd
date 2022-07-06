@@ -32,7 +32,7 @@ it is not generally possible to change these once started.}
 
 \item{raw}{[default FALSE] whether to open raw mode sockets. Note: not for
 general use - do not enable unless you have a specific need, such as for
-use with \code{\link{nng_device}} (refer to NNG documentation).}
+use with \code{\link{device}} (refer to NNG documentation).}
 }
 \value{
 A Socket (object of class 'nanoSocket' and 'nano').

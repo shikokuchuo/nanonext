@@ -93,7 +93,7 @@ nng_version <- function() .Call(rnng_version)
 #'
 nng_error <- function(xc) .Call(rnng_strerror, xc)
 
-#' NNG Clock Utility
+#' Clock Utility
 #'
 #' Provides the number of elapsed milliseconds since an arbitrary reference time
 #'     in the past. The reference time will be the same for a given program, but
@@ -107,17 +107,17 @@ nng_error <- function(xc) .Call(rnng_strerror, xc)
 #' @return A double.
 #'
 #' @examples
-#' time <- nng_clock(); nng_sleep(100); nng_clock() - time
+#' time <- mclock(); msleep(100); mclock() - time
 #'
 #' @export
 #'
-nng_clock <- function() {
+mclock <- function() {
 
   .Call(rnng_clock)
 
 }
 
-#' NNG Sleep Utility
+#' Sleep Utility
 #'
 #' Sleep function. May block for longer than requested, with the actual wait
 #'     time determined by the capabilities of the underlying system.
@@ -127,11 +127,11 @@ nng_clock <- function() {
 #' @return Invisible NULL.
 #'
 #' @examples
-#' time <- nng_clock(); nng_sleep(100); nng_clock() - time
+#' time <- mclock(); msleep(100); mclock() - time
 #'
 #' @export
 #'
-nng_sleep <- function(msec) {
+msleep <- function(msec) {
 
   invisible(.Call(rnng_sleep, msec))
 
@@ -148,17 +148,17 @@ nng_sleep <- function(msec) {
 #' @return A (positive) double.
 #'
 #' @examples
-#' nng_random()
+#' random()
 #'
 #' @export
 #'
-nng_random <- function() {
+random <- function() {
 
   .Call(rnng_random)
 
 }
 
-#' Create NNG Device
+#' Create Device
 #'
 #' Creates a device which is a socket forwarder or proxy. Provides for improved
 #'     horizontal scalability, reliability, and isolation.
@@ -166,7 +166,8 @@ nng_random <- function() {
 #' @param s1 a raw mode Socket.
 #' @param s2 a raw mode Socket.
 #'
-#' @return This function does not return.
+#' @return Invisibly, an integer exit code. If the device was successfully
+#'     created, this function does not return.
 #'
 #' @details Only raw mode sockets may be used with this function. Sockets s1 and
 #'     s2 must be compatible with each other, i.e. be opposite halves of a two
@@ -180,7 +181,7 @@ nng_random <- function() {
 #'
 #' @export
 #'
-nng_device <- function(s1, s2) {
+device <- function(s1, s2) {
 
   invisible(.Call(rnng_device, s1, s2))
 
