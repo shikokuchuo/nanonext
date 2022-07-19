@@ -1,3 +1,9 @@
+# nanonext 0.5.2.9000 (development)
+
+#### Updates
+
+* Configure script provides more information by default.
+
 # nanonext 0.5.2
 
 #### New Features
