@@ -14,10 +14,6 @@ Authors@R:
              role = c("aut", "cre"),
              email = "charlie.gao@shikokuchuo.net",
              comment = c(ORCID = "0000-0002-0750-061X")),
-      person(given = "Ling", 
-             family = "Li",
-             role = "ctb",
-             email = "r@ling-li.com"),
       person(given = "Hibiki AI Limited",
              email = "info@hibiki-ai.com",
              role = "cph"))

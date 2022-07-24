@@ -3,6 +3,7 @@
 #### Updates
 
 * Configure script provides more information by default.
+* Allows integer send/recv 'mode' arguments (note: this is an undocumented performance feature with no future guarantees).
 
 # nanonext 0.5.2
 
