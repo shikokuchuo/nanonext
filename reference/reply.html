@@ -19,7 +19,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.2.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.2.9002</span>
       </span>
     </div>
 
@@ -69,7 +69,7 @@
 <span>  recv_mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"serial"</span>, <span class="st">"character"</span>, <span class="st">"complex"</span>, <span class="st">"double"</span>, <span class="st">"integer"</span>, <span class="st">"logical"</span>,</span>
 <span>    <span class="st">"numeric"</span>, <span class="st">"raw"</span><span class="op">)</span>,</span>
 <span>  send_mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"serial"</span>, <span class="st">"raw"</span><span class="op">)</span>,</span>
-<span>  timeout <span class="op">=</span> <span class="op">-</span><span class="fl">2L</span>,</span>
+<span>  timeout <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -102,12 +102,12 @@ with external applications.</p></dd>
 
 
 <dt>timeout</dt>
-<dd><p>(optional) integer value in milliseconds. If unspecified, the
-default of -2L uses a socket-specific default, which is usually the same
-as no timeout. Note that this applies to receiving the request. The total
-elapsed time would also include performing 'execute' on the received
-data. The timeout then also applies to sending the result (in the event
-that the requestor has become unavailable since sending the request).</p></dd>
+<dd><p>[default NULL] integer value in milliseconds or NULL, which
+applies a socket-specific default, usually the same as no timeout. Note
+that this applies to receiving the request. The total elapsed time would
+also include performing 'execute' on the received data. The timeout then
+also applies to sending the result (in the event that the requestor has
+become unavailable since sending the request).</p></dd>
 
 
 <dt>...</dt>
