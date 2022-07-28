@@ -1,9 +1,10 @@
-# nanonext 0.5.2.9001 (development)
+# nanonext 0.5.2.9002 (development)
 
 #### Updates
 
 * Configure script provides more information by default.
 * Allows integer send/recv 'mode' arguments (note: this is an undocumented performance feature with no future guarantees).
+* Aio 'timeout' arguments now default to NULL for applying the socket default, although non-breaking as -2L will also work.
 
 # nanonext 0.5.2
 

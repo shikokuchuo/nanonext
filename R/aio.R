@@ -23,9 +23,8 @@
 #' Send data asynchronously over a connection (Socket, Context or Stream).
 #'
 #' @inheritParams send
-#' @param timeout (optional) integer value in milliseconds. If unspecified, the
-#'     default of -2L uses a socket-specific default, which is usually the same
-#'     as no timeout.
+#' @param timeout [default NULL] integer value in milliseconds or NULL, which
+#'     applies a socket-specific default, usually the same as no timeout.
 #'
 #' @return A 'sendAio' (object of class 'sendAio').
 #'
@@ -57,13 +56,13 @@
 #' @rdname send_aio
 #' @export
 #'
-send_aio <- function(con, data, mode = c("serial", "raw"), timeout = -2L) UseMethod("send_aio")
+send_aio <- function(con, data, mode = c("serial", "raw"), timeout = NULL) UseMethod("send_aio")
 
 #' @rdname send_aio
 #' @method send_aio nanoSocket
 #' @export
 #'
-send_aio.nanoSocket <- function(con, data, mode = c("serial", "raw"), timeout = -2L) {
+send_aio.nanoSocket <- function(con, data, mode = c("serial", "raw"), timeout = NULL) {
 
   if (.Call(rnng_serial, mode))
     data <- serialize(object = data, connection = NULL)
@@ -91,7 +90,7 @@ send_aio.nanoSocket <- function(con, data, mode = c("serial", "raw"), timeout = 
 #' @method send_aio nanoContext
 #' @export
 #'
-send_aio.nanoContext <- function(con, data, mode = c("serial", "raw"), timeout = -2L) {
+send_aio.nanoContext <- function(con, data, mode = c("serial", "raw"), timeout = NULL) {
 
   if (.Call(rnng_serial, mode))
     data <- serialize(object = data, connection = NULL)
@@ -119,7 +118,7 @@ send_aio.nanoContext <- function(con, data, mode = c("serial", "raw"), timeout =
 #' @method send_aio nanoStream
 #' @export
 #'
-send_aio.nanoStream <- function(con, data, mode = "raw", timeout = -2L) {
+send_aio.nanoStream <- function(con, data, mode = "raw", timeout = NULL) {
 
   aio <- .Call(rnng_stream_send_aio, con, data, timeout)
   is.integer(aio) && return(aio)
@@ -200,7 +199,7 @@ send_aio.nanoStream <- function(con, data, mode = "raw", timeout = -2L) {
 recv_aio <- function(con,
                      mode = c("serial", "character", "complex", "double",
                               "integer", "logical", "numeric", "raw"),
-                     timeout = -2L,
+                     timeout = NULL,
                      keep.raw = TRUE,
                      ...,
                      n = 65536L) UseMethod("recv_aio")
@@ -212,7 +211,7 @@ recv_aio <- function(con,
 recv_aio.nanoSocket <- function(con,
                                 mode = c("serial", "character", "complex", "double",
                                          "integer", "logical", "numeric", "raw"),
-                                timeout = -2L,
+                                timeout = NULL,
                                 keep.raw = TRUE,
                                 ...) {
 
@@ -269,7 +268,7 @@ recv_aio.nanoSocket <- function(con,
 recv_aio.nanoContext <- function(con,
                                  mode = c("serial", "character", "complex", "double",
                                           "integer", "logical", "numeric", "raw"),
-                                 timeout = -2L,
+                                 timeout = NULL,
                                  keep.raw = TRUE,
                                  ...) {
 
@@ -326,7 +325,7 @@ recv_aio.nanoContext <- function(con,
 recv_aio.nanoStream <- function(con,
                                 mode = c("character", "complex", "double", "integer",
                                          "logical", "numeric", "raw"),
-                                timeout = -2L,
+                                timeout = NULL,
                                 keep.raw = TRUE,
                                 n = 65536L,
                                 ...) {

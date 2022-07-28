@@ -10,7 +10,7 @@ request(
   send_mode = c("serial", "raw"),
   recv_mode = c("serial", "character", "complex", "double", "integer", "logical",
     "numeric", "raw"),
-  timeout = -2L,
+  timeout = NULL,
   keep.raw = TRUE
 )
 }
@@ -30,9 +30,9 @@ with external applications.}
 The default 'serial' means a serialised R object, for the other modes,
 the raw vector received will be converted into the respective mode.}
 
-\item{timeout}{(optional) integer value in milliseconds. If unspecified, the
-default of -2L uses a socket-specific default, which is usually the same
-as no timeout. Note that this applies to receiving the result.}
+\item{timeout}{[default NULL] integer value in milliseconds or NULL, which
+applies a socket-specific default, usually the same as no timeout. Note
+that this applies to receiving the result.}
 
 \item{keep.raw}{[default TRUE] logical flag whether to keep the received raw
 vector (useful for verification e.g. via hashing). If FALSE, will return

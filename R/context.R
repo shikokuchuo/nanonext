@@ -81,12 +81,12 @@ context <- function(socket) {
 #'     'character', 'complex', 'double', 'integer', 'logical', 'numeric', or 'raw'.
 #'     The default 'serial' means a serialised R object, for the other modes,
 #'     the raw vector received will be converted into the respective mode.
-#' @param timeout (optional) integer value in milliseconds. If unspecified, the
-#'     default of -2L uses a socket-specific default, which is usually the same
-#'     as no timeout. Note that this applies to receiving the request. The total
-#'     elapsed time would also include performing 'execute' on the received
-#'     data. The timeout then also applies to sending the result (in the event
-#'     that the requestor has become unavailable since sending the request).
+#' @param timeout [default NULL] integer value in milliseconds or NULL, which
+#'     applies a socket-specific default, usually the same as no timeout. Note
+#'     that this applies to receiving the request. The total elapsed time would
+#'     also include performing 'execute' on the received data. The timeout then
+#'     also applies to sending the result (in the event that the requestor has
+#'     become unavailable since sending the request).
 #' @param ... additional arguments passed to the function specified by 'execute'.
 #'
 #' @return Invisibly, an integer exit code (zero on success).
@@ -126,7 +126,7 @@ reply <- function(context,
                   recv_mode = c("serial", "character", "complex", "double",
                                 "integer", "logical", "numeric", "raw"),
                   send_mode = c("serial", "raw"),
-                  timeout = -2L,
+                  timeout = NULL,
                   ...) {
 
   res <- .Call(rnng_ctx_recv, context, recv_mode, timeout, FALSE)
@@ -150,9 +150,9 @@ reply <- function(context,
 #' @inheritParams reply
 #' @inheritParams recv
 #' @param data an object (if send_mode = 'raw', a vector).
-#' @param timeout (optional) integer value in milliseconds. If unspecified, the
-#'     default of -2L uses a socket-specific default, which is usually the same
-#'     as no timeout. Note that this applies to receiving the result.
+#' @param timeout [default NULL] integer value in milliseconds or NULL, which
+#'     applies a socket-specific default, usually the same as no timeout. Note
+#'     that this applies to receiving the result.
 #'
 #' @return A 'recvAio' (object of class 'recvAio').
 #'
@@ -193,13 +193,13 @@ request <- function(context,
                     send_mode = c("serial", "raw"),
                     recv_mode = c("serial", "character", "complex", "double",
                                   "integer", "logical", "numeric", "raw"),
-                    timeout = -2L,
+                    timeout = NULL,
                     keep.raw = TRUE) {
 
   recv_mode <- .Call(rnng_matcharg, recv_mode)
   if (.Call(rnng_serial, send_mode))
     data <- serialize(object = data, connection = NULL)
-  res <- .Call(rnng_ctx_send_aio, context, data, -2L)
+  res <- .Call(rnng_ctx_send_aio, context, data, NULL)
   is.integer(res) && return(res)
 
   aio <- .Call(rnng_ctx_recv_aio, context, timeout)

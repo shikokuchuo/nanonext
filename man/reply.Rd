@@ -10,7 +10,7 @@ reply(
   recv_mode = c("serial", "character", "complex", "double", "integer", "logical",
     "numeric", "raw"),
   send_mode = c("serial", "raw"),
-  timeout = -2L,
+  timeout = NULL,
   ...
 )
 }
@@ -32,12 +32,12 @@ perfect reproducibility. Use 'raw' for sending vectors of any type (will be
 converted to a raw byte vector for sending) - essential when interfacing
 with external applications.}
 
-\item{timeout}{(optional) integer value in milliseconds. If unspecified, the
-default of -2L uses a socket-specific default, which is usually the same
-as no timeout. Note that this applies to receiving the request. The total
-elapsed time would also include performing 'execute' on the received
-data. The timeout then also applies to sending the result (in the event
-that the requestor has become unavailable since sending the request).}
+\item{timeout}{[default NULL] integer value in milliseconds or NULL, which
+applies a socket-specific default, usually the same as no timeout. Note
+that this applies to receiving the request. The total elapsed time would
+also include performing 'execute' on the received data. The timeout then
+also applies to sending the result (in the event that the requestor has
+become unavailable since sending the request).}
 
 \item{...}{additional arguments passed to the function specified by 'execute'.}
 }

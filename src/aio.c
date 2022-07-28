@@ -299,7 +299,7 @@ SEXP rnng_recv_aio(SEXP socket, SEXP timeout) {
     error_return("'con' is not a valid Socket");
 
   nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(socket);
-  const nng_duration dur = (nng_duration) Rf_asInteger(timeout);
+  const nng_duration dur = timeout == R_NilValue ? -2 : (nng_duration) Rf_asInteger(timeout);
   nano_aio *raio = R_Calloc(1, nano_aio);
   int xc;
   SEXP aio;
@@ -330,7 +330,7 @@ SEXP rnng_ctx_recv_aio(SEXP context, SEXP timeout) {
     error_return("'con' is not a valid Context");
 
   nng_ctx *ctxp = (nng_ctx *) R_ExternalPtrAddr(context);
-  const nng_duration dur = (nng_duration) Rf_asInteger(timeout);
+  const nng_duration dur = timeout == R_NilValue ? -2 : (nng_duration) Rf_asInteger(timeout);
   nano_aio *raio = R_Calloc(1, nano_aio);
   int xc;
   SEXP aio;
@@ -361,7 +361,7 @@ SEXP rnng_stream_recv_aio(SEXP stream, SEXP bytes, SEXP timeout) {
     error_return("'con' is not a valid Stream");
 
   nng_stream *sp = (nng_stream *) R_ExternalPtrAddr(stream);
-  const nng_duration dur = (nng_duration) Rf_asInteger(timeout);
+  const nng_duration dur = timeout == R_NilValue ? -2 : (nng_duration) Rf_asInteger(timeout);
   const size_t xlen = (size_t) Rf_asInteger(bytes);
   nano_aio *iaio = R_Calloc(1, nano_aio);
   nng_iov *iov = R_Calloc(1, nng_iov);
@@ -409,7 +409,7 @@ SEXP rnng_send_aio(SEXP socket, SEXP data, SEXP timeout) {
     error_return("'con' is not a valid Socket");
 
   nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(socket);
-  const nng_duration dur = (nng_duration) Rf_asInteger(timeout);
+  const nng_duration dur = timeout == R_NilValue ? -2 : (nng_duration) Rf_asInteger(timeout);
   nano_aio *saio = R_Calloc(1, nano_aio);
   nng_msg *msg;
   int xc;
@@ -455,7 +455,7 @@ SEXP rnng_ctx_send_aio(SEXP context, SEXP data, SEXP timeout) {
     error_return("'con' is not a valid Context");
 
   nng_ctx *ctxp = (nng_ctx *) R_ExternalPtrAddr(context);
-  const nng_duration dur = (nng_duration) Rf_asInteger(timeout);
+  const nng_duration dur = timeout == R_NilValue ? -2 : (nng_duration) Rf_asInteger(timeout);
   nano_aio *saio = R_Calloc(1, nano_aio);
   nng_msg *msg;
   int xc;
@@ -502,7 +502,7 @@ SEXP rnng_stream_send_aio(SEXP stream, SEXP data, SEXP timeout) {
     error_return("'con' is not a valid Stream");
 
   nng_stream *sp = (nng_stream *) R_ExternalPtrAddr(stream);
-  const nng_duration dur = (nng_duration) Rf_asInteger(timeout);
+  const nng_duration dur = timeout == R_NilValue ? -2 : (nng_duration) Rf_asInteger(timeout);
   const int frames = *LOGICAL(Rf_getAttrib(stream, nano_TextframesSymbol));
   nano_aio *iaio = R_Calloc(1, nano_aio);
   nng_iov *iov = R_Calloc(1, nng_iov);
