@@ -60,6 +60,8 @@
 <ul><li>Configure script provides more information by default.</li>
 <li>Allows integer send/recv ‘mode’ arguments (note: this is an undocumented performance feature with no future guarantees).</li>
 <li>Aio ‘timeout’ arguments now default to NULL for applying the socket default, although non-breaking as -2L will also work.</li>
+<li>
+<code><a href="../reference/msleep.html">msleep()</a></code> made safe (does not block) in case of non-numeric input.</li>
 </ul></div>
 </div>
     <div class="section level2">
