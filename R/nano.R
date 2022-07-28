@@ -116,7 +116,7 @@ nano <- function(protocol = c("bus", "pair", "push", "pull", "pub", "sub",
                                                               keep.raw = keep.raw)
   nano[["recv_aio"]] <- function(mode = c("serial", "character", "complex", "double",
                                           "integer", "logical", "numeric", "raw"),
-                                 timeout = -2L,
+                                 timeout = NULL,
                                  keep.raw = TRUE) recv_aio.nanoSocket(socket,
                                                                       mode = mode,
                                                                       timeout = timeout,
@@ -131,10 +131,10 @@ nano <- function(protocol = c("bus", "pair", "push", "pull", "pub", "sub",
                                                           echo = echo)
   nano[["send_aio"]] <- function(data,
                                  mode = c("serial", "raw"),
-                                 timeout = -2L) send_aio.nanoSocket(socket,
-                                                                    data = data,
-                                                                    mode = mode,
-                                                                    timeout = timeout)
+                                 timeout = NULL) send_aio.nanoSocket(socket,
+                                                                     data = data,
+                                                                     mode = mode,
+                                                                     timeout = timeout)
   nano[["socket_setopt"]] <- function(type = c("bool", "int", "ms", "size",
                                                "string", "uint64"),
                                       opt,
@@ -271,78 +271,6 @@ print.sendAio <- function(x, ...) {
 
 #' @export
 #'
-`[[.nano` <- function(x, i, exact = FALSE) {
-
-  attr(x, i, exact = exact)
-
-}
-
-#' @export
-#'
-`[.nano` <- function(x, i, exact = FALSE) {
-
-  attr(x, deparse(substitute(i)), exact = exact)
-
-}
-
-#' @export
-#'
-`$.nano` <- function(x, name) {
-
-  attr(x, name, exact = FALSE)
-
-}
-
-#' @export
-#'
-`$<-.nano` <- function(x, name, value) {
-  x
-}
-
-#' @export
-#'
-`$<-.nanoObject` <- function(x, name, value) {
-  x
-}
-
-#' @export
-#'
-`$<-.recvAio` <- function(x, name, value) {
-  x
-}
-
-#' @export
-#'
-`$<-.sendAio` <- function(x, name, value) {
-  x
-}
-
-#' @export
-#'
-.DollarNames.nano <- function(x, pattern = "") {
-
-  grep(pattern, names(attributes(x)), value = TRUE, fixed = TRUE)
-
-}
-
-#' @export
-#'
-.DollarNames.recvAio <- function(x, pattern = "") {
-
-  grep(pattern, c("data", if (.subset2(x, "keep.raw")) "raw"), value = TRUE, fixed = TRUE)
-
-}
-
-#' @export
-#'
-.DollarNames.sendAio <- function(x, pattern = "") {
-
-  grep(pattern, "result", value = TRUE, fixed = TRUE)
-
-}
-
-#' @export
-#'
 print.unresolvedValue <- function(x, ...) {
 
   cat("'unresolved' logi NA\n", file = stdout())
@@ -358,4 +286,47 @@ print.errorValue <- function(x, ...) {
   invisible(x)
 
 }
+
+#' @export
+#'
+`[[.nano` <- function(x, i, exact = FALSE) attr(x, i, exact = exact)
+
+#' @export
+#'
+`[.nano` <- function(x, i, exact = FALSE) attr(x, deparse(substitute(i)), exact = exact)
+
+#' @export
+#'
+`$.nano` <- function(x, name) attr(x, name, exact = FALSE)
+
+#' @export
+#'
+`$<-.nano` <- function(x, name, value) x
+
+#' @export
+#'
+`$<-.nanoObject` <- function(x, name, value) x
+
+#' @export
+#'
+`$<-.recvAio` <- function(x, name, value) x
+
+#' @export
+#'
+`$<-.sendAio` <- function(x, name, value) x
+
+#' @export
+#'
+.DollarNames.nano <- function(x, pattern = "") grep(pattern, names(attributes(x)),
+                                                    value = TRUE, fixed = TRUE)
+
+#' @export
+#'
+.DollarNames.recvAio <- function(x, pattern = "") grep(pattern, c("data", if (.subset2(x, "keep.raw")) "raw"),
+                                                       value = TRUE, fixed = TRUE)
+
+#' @export
+#'
+.DollarNames.sendAio <- function(x, pattern = "") grep(pattern, "result",
+                                                       value = TRUE, fixed = TRUE)
 

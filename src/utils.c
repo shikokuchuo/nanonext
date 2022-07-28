@@ -103,7 +103,15 @@ SEXP rnng_clock(void) {
 
 SEXP rnng_sleep(SEXP msec) {
 
-  nng_msleep((nng_duration) Rf_asInteger(msec));
+  switch (TYPEOF(msec)) {
+  case INTSXP:
+    nng_msleep((nng_duration) INTEGER(msec)[0]);
+    break;
+  case REALSXP:
+    nng_msleep((nng_duration) Rf_asInteger(msec));
+    break;
+  }
+
   return R_NilValue;
 
 }

@@ -111,11 +111,7 @@ nng_error <- function(xc) .Call(rnng_strerror, xc)
 #'
 #' @export
 #'
-mclock <- function() {
-
-  .Call(rnng_clock)
-
-}
+mclock <- function() .Call(rnng_clock)
 
 #' Sleep Utility
 #'
@@ -131,11 +127,7 @@ mclock <- function() {
 #'
 #' @export
 #'
-msleep <- function(msec) {
-
-  invisible(.Call(rnng_sleep, msec))
-
-}
+msleep <- function(msec) invisible(.Call(rnng_sleep, msec))
 
 #' NNG Random Number Generator
 #'
@@ -152,11 +144,7 @@ msleep <- function(msec) {
 #'
 #' @export
 #'
-random <- function() {
-
-  .Call(rnng_random)
-
-}
+random <- function() .Call(rnng_random)
 
 #' Create Device
 #'
@@ -181,11 +169,7 @@ random <- function() {
 #'
 #' @export
 #'
-device <- function(s1, s2) {
-
-  invisible(.Call(rnng_device, s1, s2))
-
-}
+device <- function(s1, s2) invisible(.Call(rnng_device, s1, s2))
 
 #' Is Nano
 #'
@@ -368,10 +352,12 @@ nano_init <- function(warn = c("immediate", "deferred", "error", "none")) {
 # nanonext - Non-exported functions --------------------------------------------
 
 match.arg2 <- function(choice, choices) {
+
   identical(choice, choices) && return(1L)
   index <- pmatch(choice[1L], choices, nomatch = 0L, duplicates.ok = TRUE)
   index || stop(sprintf("'%s' should be one of %s",
                         deparse(substitute(choice)), paste(choices, collapse = ", ")))
   index
+
 }
 

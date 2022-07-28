@@ -56,11 +56,7 @@
 #'
 #' @export
 #'
-context <- function(socket) {
-
-  .Call(rnng_ctx_open, socket)
-
-}
+context <- function(socket) .Call(rnng_ctx_open, socket)
 
 #' Reply over Context (RPC Server for Req/Rep Protocol)
 #'

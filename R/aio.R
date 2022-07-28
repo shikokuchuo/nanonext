@@ -436,11 +436,7 @@ recv_aio.nanoStream <- function(con,
 #'
 #' @export
 #'
-call_aio <- function(aio) {
-
-  invisible(.Call(rnng_aio_call, aio))
-
-}
+call_aio <- function(aio) invisible(.Call(rnng_aio_call, aio))
 
 #' Stop Asynchronous AIO Operation
 #'
@@ -460,11 +456,7 @@ call_aio <- function(aio) {
 #'
 #' @export
 #'
-stop_aio <- function(aio) {
-
-  invisible(.Call(rnng_aio_stop, aio))
-
-}
+stop_aio <- function(aio) invisible(.Call(rnng_aio_stop, aio))
 
 #' Query if an Aio is Unresolved
 #'
@@ -499,9 +491,5 @@ stop_aio <- function(aio) {
 #'
 #' @export
 #'
-unresolved <- function(aio) {
-
-  .Call(rnng_unresolved, aio)
-
-}
+unresolved <- function(aio) .Call(rnng_unresolved, aio)
 
