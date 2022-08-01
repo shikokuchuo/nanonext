@@ -328,8 +328,7 @@ is_error_value <- function(x) inherits(x, "errorValue")
 #'
 nano_init <- function(warn = c("immediate", "deferred", "error", "none")) {
 
-  warn <- switch(match.arg2(warn, c("immediate", "deferred", "error", "none")),
-                 1L, 0L, 2L, -1L)
+  warn <- .Call(rnng_matchwarn, warn)
   if (is.null(getOption("nanonext.original.warn")))
     options(nanonext.original.warn = getOption("warn"))
   options(warn = warn)
@@ -346,18 +345,6 @@ nano_init <- function(warn = c("immediate", "deferred", "error", "none")) {
   identical(parent.env(parent.env(parent.frame())), getNamespace("mirai")) ||
     stop("this function is for package internal use only")
   .Call(rnng_scm)
-
-}
-
-# nanonext - Non-exported functions --------------------------------------------
-
-match.arg2 <- function(choice, choices) {
-
-  identical(choice, choices) && return(1L)
-  index <- pmatch(choice[1L], choices, nomatch = 0L, duplicates.ok = TRUE)
-  index || stop(sprintf("'%s' should be one of %s",
-                        deparse(substitute(choice)), paste(choices, collapse = ", ")))
-  index
 
 }
 

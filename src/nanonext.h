@@ -102,6 +102,7 @@ extern SEXP rnng_listener_set(SEXP, SEXP, SEXP, SEXP);
 extern SEXP rnng_listener_start(SEXP);
 extern SEXP rnng_matcharg(SEXP);
 extern SEXP rnng_matchargs(SEXP);
+extern SEXP rnng_matchwarn(SEXP);
 extern SEXP rnng_messenger(SEXP);
 extern SEXP rnng_ncurl(SEXP, SEXP, SEXP, SEXP);
 extern SEXP rnng_ncurl_aio(SEXP, SEXP, SEXP, SEXP);

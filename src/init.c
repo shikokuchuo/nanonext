@@ -80,6 +80,7 @@ static const R_CallMethodDef CallEntries[] = {
   {"rnng_listener_start", (DL_FUNC) &rnng_listener_start, 1},
   {"rnng_matcharg", (DL_FUNC) &rnng_matcharg, 1},
   {"rnng_matchargs", (DL_FUNC) &rnng_matchargs, 1},
+  {"rnng_matchwarn", (DL_FUNC) &rnng_matchwarn, 1},
   {"rnng_messenger", (DL_FUNC) &rnng_messenger, 1},
   {"rnng_ncurl", (DL_FUNC) &rnng_ncurl, 4},
   {"rnng_ncurl_aio", (DL_FUNC) &rnng_ncurl_aio, 4},
