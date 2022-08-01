@@ -160,14 +160,14 @@
 <p>Send message from ‘nano1’:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">nano1</span><span class="op">$</span><span class="fu">send</span><span class="op">(</span><span class="st">"hello world!"</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  [1] 58 0a 00 00 00 03 00 04 02 00 00 03 05 00 00 00 00 05 55 54 46 2d 38 00 00</span></span>
+<span><span class="co">#&gt;  [1] 58 0a 00 00 00 03 00 04 02 01 00 03 05 00 00 00 00 05 55 54 46 2d 38 00 00</span></span>
 <span><span class="co">#&gt; [26] 00 10 00 00 00 01 00 04 00 09 00 00 00 0c 68 65 6c 6c 6f 20 77 6f 72 6c 64</span></span>
 <span><span class="co">#&gt; [51] 21</span></span></code></pre></div>
 <p>Receive message using ‘nano2’:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">nano2</span><span class="op">$</span><span class="fu">recv</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $raw</span></span>
-<span><span class="co">#&gt;  [1] 58 0a 00 00 00 03 00 04 02 00 00 03 05 00 00 00 00 05 55 54 46 2d 38 00 00</span></span>
+<span><span class="co">#&gt;  [1] 58 0a 00 00 00 03 00 04 02 01 00 03 05 00 00 00 00 05 55 54 46 2d 38 00 00</span></span>
 <span><span class="co">#&gt; [26] 00 10 00 00 00 01 00 04 00 09 00 00 00 0c 68 65 6c 6c 6f 20 77 6f 72 6c 64</span></span>
 <span><span class="co">#&gt; [51] 21</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -189,14 +189,14 @@
 <p>Send message from ‘socket1’:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/send.html">send</a></span><span class="op">(</span><span class="va">socket1</span>, <span class="st">"hello world!"</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  [1] 58 0a 00 00 00 03 00 04 02 00 00 03 05 00 00 00 00 05 55 54 46 2d 38 00 00</span></span>
+<span><span class="co">#&gt;  [1] 58 0a 00 00 00 03 00 04 02 01 00 03 05 00 00 00 00 05 55 54 46 2d 38 00 00</span></span>
 <span><span class="co">#&gt; [26] 00 10 00 00 00 01 00 04 00 09 00 00 00 0c 68 65 6c 6c 6f 20 77 6f 72 6c 64</span></span>
 <span><span class="co">#&gt; [51] 21</span></span></code></pre></div>
 <p>Receive message using ‘socket2’:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/recv.html">recv</a></span><span class="op">(</span><span class="va">socket2</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $raw</span></span>
-<span><span class="co">#&gt;  [1] 58 0a 00 00 00 03 00 04 02 00 00 03 05 00 00 00 00 05 55 54 46 2d 38 00 00</span></span>
+<span><span class="co">#&gt;  [1] 58 0a 00 00 00 03 00 04 02 01 00 03 05 00 00 00 00 05 55 54 46 2d 38 00 00</span></span>
 <span><span class="co">#&gt; [26] 00 10 00 00 00 01 00 04 00 09 00 00 00 0c 68 65 6c 6c 6f 20 77 6f 72 6c 64</span></span>
 <span><span class="co">#&gt; [51] 21</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -278,7 +278,7 @@
 <span><span class="co">#&gt;   a b</span></span>
 <span><span class="co">#&gt; 1 1 2</span></span>
 <span><span class="va">msg</span><span class="op">$</span><span class="va">raw</span></span>
-<span><span class="co">#&gt;   [1] 58 0a 00 00 00 03 00 04 02 00 00 03 05 00 00 00 00 05 55 54 46 2d 38 00 00</span></span>
+<span><span class="co">#&gt;   [1] 58 0a 00 00 00 03 00 04 02 01 00 03 05 00 00 00 00 05 55 54 46 2d 38 00 00</span></span>
 <span><span class="co">#&gt;  [26] 03 13 00 00 00 02 00 00 00 0e 00 00 00 01 3f f0 00 00 00 00 00 00 00 00 00</span></span>
 <span><span class="co">#&gt;  [51] 0e 00 00 00 01 40 00 00 00 00 00 00 00 00 00 04 02 00 00 00 01 00 04 00 09</span></span>
 <span><span class="co">#&gt;  [76] 00 00 00 05 6e 61 6d 65 73 00 00 00 10 00 00 00 02 00 04 00 09 00 00 00 01</span></span>
@@ -325,7 +325,7 @@
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://shikokuchuo.net/nanonext/">nanonext</a></span><span class="op">)</span></span>
 <span><span class="va">rep</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/socket.html">socket</a></span><span class="op">(</span><span class="st">"rep"</span>, listen <span class="op">=</span> <span class="st">"tcp://127.0.0.1:6546"</span><span class="op">)</span></span>
 <span><span class="va">ctxp</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/context.html">context</a></span><span class="op">(</span><span class="va">rep</span><span class="op">)</span></span>
-<span><span class="fu"><a href="reference/reply.html">reply</a></span><span class="op">(</span><span class="va">ctxp</span>, execute <span class="op">=</span> <span class="va">rnorm</span>, send_mode <span class="op">=</span> <span class="st">"raw"</span><span class="op">)</span> </span></code></pre></div>
+<span><span class="fu"><a href="reference/reply.html">reply</a></span><span class="op">(</span><span class="va">ctxp</span>, execute <span class="op">=</span> <span class="va">rnorm</span>, send_mode <span class="op">=</span> <span class="st">"raw"</span><span class="op">)</span></span></code></pre></div>
 <p>[C] Client process: <code><a href="reference/request.html">request()</a></code> performs an async send and receive request and returns immediately with a <code>recvAio</code> object.</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://shikokuchuo.net/nanonext/">nanonext</a></span><span class="op">)</span></span>
@@ -344,7 +344,7 @@
 <span><span class="co">#&gt; &lt; recvAio &gt;</span></span>
 <span><span class="co">#&gt;  - $data for message data</span></span>
 <span><span class="va">aio</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] -1.441 1.293 0.395 0.593 1.113 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] 0.7919 -0.1808 -0.0719 0.0343 0.5582 ...</span></span></code></pre></div>
 <p>As <code><a href="reference/call_aio.html">call_aio()</a></code> is blocking and will wait for completion, an alternative is to query <code>aio$data</code> directly. This will return an ‘unresolved’ logical NA value if the calculation is yet to complete.</p>
 <p>In this example the calculation is returned, but other operations may reside entirely on the server side, for example writing data to disk.</p>
 <p>In such a case, calling or querying the value confirms that the operation has completed, and provides the return value of the function, which may typically be NULL or an exit code.</p>
@@ -461,11 +461,11 @@
 <span><span class="co">#&gt;   [1] 7b 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73</span></span>
 <span><span class="co">#&gt;  [26] 74 22 3a 20 22 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22</span></span>
 <span><span class="co">#&gt;  [51] 58 2d 41 6d 7a 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31</span></span>
-<span><span class="co">#&gt;  [76] 2d 36 32 61 31 32 34 32 37 2d 36 64 63 37 32 36 65 62 31 32 39 61 36 36 31</span></span>
-<span><span class="co">#&gt; [101] 33 30 39 37 37 38 39 61 35 22 0a 20 20 7d 0a 7d 0a</span></span>
+<span><span class="co">#&gt;  [76] 2d 36 32 65 37 66 39 34 63 2d 31 61 39 34 65 38 33 62 34 32 36 32 37 61 30</span></span>
+<span><span class="co">#&gt; [101] 65 31 33 39 62 31 61 32 34 22 0a 20 20 7d 0a 7d 0a</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $data</span></span>
-<span><span class="co">#&gt; [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-62a12427-6dc726eb129a6613097789a5\"\n  }\n}\n"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-62e7f94c-1a94e83b42627a0e139b1a24\"\n  }\n}\n"</span></span></code></pre></div>
 <p>For advanced use, supports additional HTTP methods such as POST or PUT.</p>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ncurl.html">ncurl</a></span><span class="op">(</span><span class="st">"http://httpbin.org/post"</span>, async <span class="op">=</span> <span class="cn">TRUE</span>, method <span class="op">=</span> <span class="st">"POST"</span>,</span>
@@ -477,7 +477,7 @@
 <span><span class="co">#&gt;  - $raw for raw message</span></span>
 <span></span>
 <span><span class="fu"><a href="reference/call_aio.html">call_aio</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt; [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-62a12428-52fad1bb1ac5d5c008f39b82\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"185.225.45.49\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-62e7f94c-5e5cb67b46611c8f100d844d\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"213.86.169.34\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"</span></span></code></pre></div>
 <p>In this respect, it may be used as a performant and lightweight method for making REST API requests.</p>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
@@ -505,10 +505,10 @@
 <span><span class="co">#&gt; [26] 73 79 6d 62 6f 6c 73 22 3a 20 22 45 55 52 55 53 44 22 7d 00</span></span>
 <span></span>
 <span><span class="va">s</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/recv.html">recv</a></span><span class="op">(</span>keep.raw <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "{\"s\":\"EURUSD\",\"a\":1.07195,\"b\":1.07188,\"dc\":\"0.2080\",\"dd\":\"0.0022\",\"ppms\":false,\"t\":1654727723000}"</span></span>
+<span><span class="co">#&gt; [1] "{\"s\":\"EURUSD\",\"a\":1.02715,\"b\":1.02708,\"dc\":\"0.5987\",\"dd\":\"0.0062\",\"ppms\":false,\"t\":1659369805000}"</span></span>
 <span></span>
 <span><span class="va">s</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/recv.html">recv</a></span><span class="op">(</span>keep.raw <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "{\"s\":\"EURUSD\",\"a\":1.07194,\"b\":1.07187,\"dc\":\"0.2071\",\"dd\":\"0.0022\",\"ppms\":false,\"t\":1654727723000}"</span></span>
+<span><span class="co">#&gt; [1] "{\"s\":\"EURUSD\",\"a\":1.02716,\"b\":1.02709,\"dc\":\"0.5997\",\"dd\":\"0.0062\",\"ppms\":false,\"t\":1659369805000}"</span></span>
 <span></span>
 <span><span class="fu"><a href="reference/close.html">close</a></span><span class="op">(</span><span class="va">s</span><span class="op">)</span></span></code></pre></div>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
