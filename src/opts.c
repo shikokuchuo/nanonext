@@ -21,13 +21,45 @@
 
 // set options -----------------------------------------------------------------
 
+static int matchtype(SEXP type) {
+
+  if (TYPEOF(type) == INTSXP) return INTEGER(type)[0];
+
+  const char *typ = CHAR(STRING_ELT(type, 0));
+  size_t slen = strlen(typ);
+  const char *b = "bool", *i = "int", *m = "ms", *si = "size", *st = "string", *u = "uint64";
+  int xc = 0;
+
+  switch (slen) {
+  case 1:
+    if (!strcmp("s", typ))
+      Rf_error("'type' should be one of bool, int, ms, size, string, uint64");
+  case 2:
+    if (!strncmp(m, typ, slen)) { xc = 3; break; }
+  case 3:
+    if (!strncmp(i, typ, slen)) { xc = 2; break; }
+  case 4:
+    if (!strncmp(b, typ, slen)) { xc = 1; break; }
+    if (!strncmp(si, typ, slen)) { xc = 4; break; }
+  case 5:
+  case 6:
+    if (!strncmp(st, typ, slen)) { xc = 5; break; }
+    if (!strncmp(u, typ, slen)) { xc = 6; break; }
+  default:
+      Rf_error("'type' should be one of bool, int, ms, size, string, uint64");
+  }
+
+  return xc;
+
+}
+
 SEXP rnng_socket_set(SEXP socket, SEXP type, SEXP opt, SEXP value) {
 
   if (R_ExternalPtrTag(socket) != nano_SocketSymbol)
     error_return("'object' is not a valid Socket");
   nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(socket);
   const char *op = CHAR(STRING_ELT(opt, 0));
-  const int typ = INTEGER(type)[0];
+  const int typ = matchtype(type);
   int xc;
 
   switch (typ) {
@@ -77,7 +109,7 @@ SEXP rnng_dialer_set(SEXP dialer, SEXP type, SEXP opt, SEXP value) {
     error_return("'object' is not a valid Dialer");
   nng_dialer *dial = (nng_dialer *) R_ExternalPtrAddr(dialer);
   const char *op = CHAR(STRING_ELT(opt, 0));
-  const int typ = INTEGER(type)[0];
+  const int typ = matchtype(type);
   int xc;
 
   switch (typ) {
@@ -118,7 +150,7 @@ SEXP rnng_listener_set(SEXP listener, SEXP type, SEXP opt, SEXP value) {
     error_return("'object' is not a valid Listener");
   nng_listener *list = (nng_listener *) R_ExternalPtrAddr(listener);
   const char *op = CHAR(STRING_ELT(opt, 0));
-  const int typ = INTEGER(type)[0];
+  const int typ = matchtype(type);
   int xc;
 
   switch (typ) {
@@ -159,7 +191,7 @@ SEXP rnng_ctx_set(SEXP context, SEXP type, SEXP opt, SEXP value) {
     error_return("'object' is not a valid Context");
   nng_ctx *ctx = (nng_ctx *) R_ExternalPtrAddr(context);
   const char *op = CHAR(STRING_ELT(opt, 0));
-  const int typ = INTEGER(type)[0];
+  const int typ = matchtype(type);
   int xc;
 
   switch (typ) {
@@ -208,7 +240,7 @@ SEXP rnng_stream_set(SEXP stream, SEXP type, SEXP opt, SEXP value) {
     error_return("'object' is not a valid Stream");
   nng_stream *st = (nng_stream *) R_ExternalPtrAddr(stream);
   const char *op = CHAR(STRING_ELT(opt, 0));
-  const int typ = INTEGER(type)[0];
+  const int typ = matchtype(type);
   int xc;
 
   switch (typ) {

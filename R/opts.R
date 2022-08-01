@@ -59,7 +59,6 @@ setopt.nanoSocket <- function(object,
                               opt,
                               value) {
 
-  type <- match.arg2(type, c("bool", "int", "ms", "size", "string", "uint64"))
   invisible(.Call(rnng_socket_set, object, type, opt, value))
 
 }
@@ -80,7 +79,6 @@ setopt.nanoContext <- function(object,
                                opt,
                                value) {
 
-  type <- match.arg2(type, c("bool", "int", "ms", "size", "string", "uint64"))
   invisible(.Call(rnng_ctx_set, object, type, opt, value))
 
 }
@@ -100,7 +98,6 @@ setopt.nanoDialer <- function(object,
                               opt,
                               value) {
 
-  type <- match.arg2(type, c("bool", "int", "ms", "size", "string", "uint64"))
   invisible(.Call(rnng_dialer_set, object, type, opt, value))
 
 }
@@ -120,7 +117,6 @@ setopt.nanoListener <- function(object,
                                 opt,
                                 value) {
 
-  type <- match.arg2(type, c("bool", "int", "ms", "size", "string", "uint64"))
   invisible(.Call(rnng_listener_set, object, type, opt, value))
 
 }
@@ -134,7 +130,6 @@ setopt.nanoStream <- function(object,
                               opt,
                               value) {
 
-  type <- match.arg2(type, c("bool", "int", "ms", "size", "string", "uint64"))
   invisible(.Call(rnng_stream_set, object, type, opt, value))
 
 }

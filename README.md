@@ -110,7 +110,7 @@ Send message from ‘nano1’:
 
 ``` r
 nano1$send("hello world!")
-#>  [1] 58 0a 00 00 00 03 00 04 02 00 00 03 05 00 00 00 00 05 55 54 46 2d 38 00 00
+#>  [1] 58 0a 00 00 00 03 00 04 02 01 00 03 05 00 00 00 00 05 55 54 46 2d 38 00 00
 #> [26] 00 10 00 00 00 01 00 04 00 09 00 00 00 0c 68 65 6c 6c 6f 20 77 6f 72 6c 64
 #> [51] 21
 ```
@@ -120,7 +120,7 @@ Receive message using ‘nano2’:
 ``` r
 nano2$recv()
 #> $raw
-#>  [1] 58 0a 00 00 00 03 00 04 02 00 00 03 05 00 00 00 00 05 55 54 46 2d 38 00 00
+#>  [1] 58 0a 00 00 00 03 00 04 02 01 00 03 05 00 00 00 00 05 55 54 46 2d 38 00 00
 #> [26] 00 10 00 00 00 01 00 04 00 09 00 00 00 0c 68 65 6c 6c 6f 20 77 6f 72 6c 64
 #> [51] 21
 #> 
@@ -151,7 +151,7 @@ Send message from ‘socket1’:
 
 ``` r
 send(socket1, "hello world!")
-#>  [1] 58 0a 00 00 00 03 00 04 02 00 00 03 05 00 00 00 00 05 55 54 46 2d 38 00 00
+#>  [1] 58 0a 00 00 00 03 00 04 02 01 00 03 05 00 00 00 00 05 55 54 46 2d 38 00 00
 #> [26] 00 10 00 00 00 01 00 04 00 09 00 00 00 0c 68 65 6c 6c 6f 20 77 6f 72 6c 64
 #> [51] 21
 ```
@@ -161,7 +161,7 @@ Receive message using ‘socket2’:
 ``` r
 recv(socket2)
 #> $raw
-#>  [1] 58 0a 00 00 00 03 00 04 02 00 00 03 05 00 00 00 00 05 55 54 46 2d 38 00 00
+#>  [1] 58 0a 00 00 00 03 00 04 02 01 00 03 05 00 00 00 00 05 55 54 46 2d 38 00 00
 #> [26] 00 10 00 00 00 01 00 04 00 09 00 00 00 0c 68 65 6c 6c 6f 20 77 6f 72 6c 64
 #> [51] 21
 #> 
@@ -286,7 +286,7 @@ msg$data
 #>   a b
 #> 1 1 2
 msg$raw
-#>   [1] 58 0a 00 00 00 03 00 04 02 00 00 03 05 00 00 00 00 05 55 54 46 2d 38 00 00
+#>   [1] 58 0a 00 00 00 03 00 04 02 01 00 03 05 00 00 00 00 05 55 54 46 2d 38 00 00
 #>  [26] 03 13 00 00 00 02 00 00 00 0e 00 00 00 01 3f f0 00 00 00 00 00 00 00 00 00
 #>  [51] 0e 00 00 00 01 40 00 00 00 00 00 00 00 00 00 04 02 00 00 00 01 00 04 00 09
 #>  [76] 00 00 00 05 6e 61 6d 65 73 00 00 00 10 00 00 00 02 00 04 00 09 00 00 00 01
@@ -351,7 +351,7 @@ function, in this case `rnorm()`, before sending back the result.
 library(nanonext)
 rep <- socket("rep", listen = "tcp://127.0.0.1:6546")
 ctxp <- context(rep)
-reply(ctxp, execute = rnorm, send_mode = "raw") 
+reply(ctxp, execute = rnorm, send_mode = "raw")
 ```
 
 \[C\] Client process: `request()` performs an async send and receive
@@ -384,7 +384,7 @@ aio
 #> < recvAio >
 #>  - $data for message data
 aio$data |> str()
-#>  num [1:100000000] -1.441 1.293 0.395 0.593 1.113 ...
+#>  num [1:100000000] 0.7919 -0.1808 -0.0719 0.0343 0.5582 ...
 ```
 
 As `call_aio()` is blocking and will wait for completion, an alternative
@@ -537,11 +537,11 @@ ncurl("http://httpbin.org/headers")
 #>   [1] 7b 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73
 #>  [26] 74 22 3a 20 22 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22
 #>  [51] 58 2d 41 6d 7a 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31
-#>  [76] 2d 36 32 61 31 32 34 32 37 2d 36 64 63 37 32 36 65 62 31 32 39 61 36 36 31
-#> [101] 33 30 39 37 37 38 39 61 35 22 0a 20 20 7d 0a 7d 0a
+#>  [76] 2d 36 32 65 37 66 39 34 63 2d 31 61 39 34 65 38 33 62 34 32 36 32 37 61 30
+#> [101] 65 31 33 39 62 31 61 32 34 22 0a 20 20 7d 0a 7d 0a
 #> 
 #> $data
-#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-62a12427-6dc726eb129a6613097789a5\"\n  }\n}\n"
+#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-62e7f94c-1a94e83b42627a0e139b1a24\"\n  }\n}\n"
 ```
 
 For advanced use, supports additional HTTP methods such as POST or PUT.
@@ -556,7 +556,7 @@ res
 #>  - $raw for raw message
 
 call_aio(res)$data
-#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-62a12428-52fad1bb1ac5d5c008f39b82\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"185.225.45.49\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
+#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-62e7f94c-5e5cb67b46611c8f100d844d\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"213.86.169.34\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
 ```
 
 In this respect, it may be used as a performant and lightweight method
@@ -601,10 +601,10 @@ s |> send('{"action": "subscribe", "symbols": "EURUSD"}')
 #> [26] 73 79 6d 62 6f 6c 73 22 3a 20 22 45 55 52 55 53 44 22 7d 00
 
 s |> recv(keep.raw = FALSE)
-#> [1] "{\"s\":\"EURUSD\",\"a\":1.07195,\"b\":1.07188,\"dc\":\"0.2080\",\"dd\":\"0.0022\",\"ppms\":false,\"t\":1654727723000}"
+#> [1] "{\"s\":\"EURUSD\",\"a\":1.02715,\"b\":1.02708,\"dc\":\"0.5987\",\"dd\":\"0.0062\",\"ppms\":false,\"t\":1659369805000}"
 
 s |> recv(keep.raw = FALSE)
-#> [1] "{\"s\":\"EURUSD\",\"a\":1.07194,\"b\":1.07187,\"dc\":\"0.2071\",\"dd\":\"0.0022\",\"ppms\":false,\"t\":1654727723000}"
+#> [1] "{\"s\":\"EURUSD\",\"a\":1.02716,\"b\":1.02709,\"dc\":\"0.5997\",\"dd\":\"0.0062\",\"ppms\":false,\"t\":1659369805000}"
 
 close(s)
 ```
