@@ -665,7 +665,7 @@ SEXP rnng_matchwarn(SEXP warn) {
       error_return("'warn' should be one of immediate, deferred, error, none");
   }
 
-  return Rf_ScalarLogical(xc);
+  return Rf_ScalarInteger(xc);
 
 }
 
