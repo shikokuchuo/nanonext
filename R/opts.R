@@ -57,11 +57,7 @@ setopt <- function(object,
 setopt.nanoSocket <- function(object,
                               type = c("bool", "int", "ms", "size", "string", "uint64"),
                               opt,
-                              value) {
-
-  invisible(.Call(rnng_socket_set, object, type, opt, value))
-
-}
+                              value) invisible(.Call(rnng_socket_set, object, type, opt, value))
 
 #' @examples
 #' s <- socket("req")
@@ -77,11 +73,7 @@ setopt.nanoSocket <- function(object,
 setopt.nanoContext <- function(object,
                                type = c("bool", "int", "ms", "size", "string", "uint64"),
                                opt,
-                               value) {
-
-  invisible(.Call(rnng_ctx_set, object, type, opt, value))
-
-}
+                               value) invisible(.Call(rnng_ctx_set, object, type, opt, value))
 
 #' @examples
 #' s <- socket("pair", dial = "inproc://nanonext", autostart = FALSE)
@@ -96,11 +88,7 @@ setopt.nanoContext <- function(object,
 setopt.nanoDialer <- function(object,
                               type = c("bool", "int", "ms", "size", "string", "uint64"),
                               opt,
-                              value) {
-
-  invisible(.Call(rnng_dialer_set, object, type, opt, value))
-
-}
+                              value) invisible(.Call(rnng_dialer_set, object, type, opt, value))
 
 #' @examples
 #' s <- socket("pair", listen = "inproc://nanonext", autostart = FALSE)
@@ -115,11 +103,7 @@ setopt.nanoDialer <- function(object,
 setopt.nanoListener <- function(object,
                                 type = c("bool", "int", "ms", "size", "string", "uint64"),
                                 opt,
-                                value) {
-
-  invisible(.Call(rnng_listener_set, object, type, opt, value))
-
-}
+                                value) invisible(.Call(rnng_listener_set, object, type, opt, value))
 
 #' @rdname setopt
 #' @method setopt nanoStream
@@ -128,9 +112,5 @@ setopt.nanoListener <- function(object,
 setopt.nanoStream <- function(object,
                               type = c("bool", "int", "ms", "size", "string", "uint64"),
                               opt,
-                              value) {
-
-  invisible(.Call(rnng_stream_set, object, type, opt, value))
-
-}
+                              value) invisible(.Call(rnng_stream_set, object, type, opt, value))
 
