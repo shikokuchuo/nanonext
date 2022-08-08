@@ -169,7 +169,18 @@ random <- function() .Call(rnng_random)
 #'
 #' @export
 #'
-device <- function(s1, s2) invisible(.Call(rnng_device, s1, s2))
+device <- function(s1, s2) {
+
+  inherits(s1, "nanoSocket") || stop("object '", deparse(substitute(s1)), "' is not a nanoSocket")
+  inherits(s2, "nanoSocket") || stop("object '", deparse(substitute(s2)), "' is not a nanoSocket")
+  if (interactive()) {
+    r <- readline(sprintf("This function will bind sockets '%s' and '%s' and not return. Continue? [Y/n]: ",
+                  deparse(substitute(s1)), deparse(substitute(s2))))
+    if (r %in% c("n", "N")) return(invisible())
+  }
+  invisible(.Call(rnng_device, s1, s2))
+
+}
 
 #' Is Nano
 #'

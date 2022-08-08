@@ -1,3 +1,9 @@
+# nanonext 0.5.3.9000
+
+#### Updates
+
+* `device()` gains a confirmation prompt when running interactively for more safety.
+
 # nanonext 0.5.3
 
 #### Updates
