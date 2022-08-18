@@ -344,7 +344,7 @@
 <span><span class="co">#&gt; &lt; recvAio &gt;</span></span>
 <span><span class="co">#&gt;  - $data for message data</span></span>
 <span><span class="va">aio</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] -0.205 -0.621 -0.702 -1.192 -0.142 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] 0.1854 0.0923 1.1071 -1.5271 -0.2223 ...</span></span></code></pre></div>
 <p>As <code><a href="reference/call_aio.html">call_aio()</a></code> is blocking and will wait for completion, an alternative is to query <code>aio$data</code> directly. This will return an ‘unresolved’ logical NA value if the calculation is yet to complete.</p>
 <p>In this example the calculation is returned, but other operations may reside entirely on the server side, for example writing data to disk.</p>
 <p>In such a case, calling or querying the value confirms that the operation has completed, and provides the return value of the function, which may typically be NULL or an exit code.</p>
@@ -461,11 +461,11 @@
 <span><span class="co">#&gt;   [1] 7b 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73</span></span>
 <span><span class="co">#&gt;  [26] 74 22 3a 20 22 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22</span></span>
 <span><span class="co">#&gt;  [51] 58 2d 41 6d 7a 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31</span></span>
-<span><span class="co">#&gt;  [76] 2d 36 32 65 38 32 31 30 30 2d 31 62 39 34 37 37 33 37 35 61 31 65 33 38 35</span></span>
-<span><span class="co">#&gt; [101] 63 30 33 63 66 61 38 38 61 22 0a 20 20 7d 0a 7d 0a</span></span>
+<span><span class="co">#&gt;  [76] 2d 36 32 66 65 35 66 39 35 2d 35 31 38 37 39 62 64 30 37 31 64 37 33 64 32</span></span>
+<span><span class="co">#&gt; [101] 64 35 31 66 37 64 38 38 66 22 0a 20 20 7d 0a 7d 0a</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $data</span></span>
-<span><span class="co">#&gt; [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-62e82100-1b9477375a1e385c03cfa88a\"\n  }\n}\n"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-62fe5f95-51879bd071d73d2d51f7d88f\"\n  }\n}\n"</span></span></code></pre></div>
 <p>For advanced use, supports additional HTTP methods such as POST or PUT.</p>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ncurl.html">ncurl</a></span><span class="op">(</span><span class="st">"http://httpbin.org/post"</span>, async <span class="op">=</span> <span class="cn">TRUE</span>, method <span class="op">=</span> <span class="st">"POST"</span>,</span>
@@ -477,7 +477,7 @@
 <span><span class="co">#&gt;  - $raw for raw message</span></span>
 <span></span>
 <span><span class="fu"><a href="reference/call_aio.html">call_aio</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt; [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-62e82100-7fa08b262db7579c535fb263\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"185.225.45.49\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-62fe5f95-6151b7ab3194d253362f57d2\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"213.86.169.34\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"</span></span></code></pre></div>
 <p>In this respect, it may be used as a performant and lightweight method for making REST API requests.</p>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
@@ -505,10 +505,10 @@
 <span><span class="co">#&gt; [26] 73 79 6d 62 6f 6c 73 22 3a 20 22 45 55 52 55 53 44 22 7d 00</span></span>
 <span></span>
 <span><span class="va">s</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/recv.html">recv</a></span><span class="op">(</span>keep.raw <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "{\"s\":\"EURUSD\",\"a\":1.02499,\"b\":1.02497,\"dc\":\"0.3893\",\"dd\":\"0.0040\",\"ppms\":false,\"t\":1659379969000}"</span></span>
+<span><span class="co">#&gt; [1] "{\"s\":\"EURUSD\",\"a\":1.01178,\"b\":1.01177,\"dc\":\"-0.5871\",\"dd\":\"-0.0059\",\"ppms\":false,\"t\":1660837782000}"</span></span>
 <span></span>
 <span><span class="va">s</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/recv.html">recv</a></span><span class="op">(</span>keep.raw <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "{\"s\":\"EURUSD\",\"a\":1.02502,\"b\":1.025,\"dc\":\"0.3922\",\"dd\":\"0.0040\",\"ppms\":false,\"t\":1659379969000}"</span></span>
+<span><span class="co">#&gt; [1] "{\"s\":\"EURUSD\",\"a\":1.01187,\"b\":1.0118,\"dc\":\"-0.5781\",\"dd\":\"-0.0058\",\"ppms\":false,\"t\":1660837782000}"</span></span>
 <span></span>
 <span><span class="fu"><a href="reference/close.html">close</a></span><span class="op">(</span><span class="va">s</span><span class="op">)</span></span></code></pre></div>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
@@ -521,7 +521,7 @@
 </h4>
 <p>Installation from source requires ‘cmake’. A pre-release version of ‘libnng’ 1.6.0 (722bf46) is downloaded and built automatically during package installation.</p>
 <p>Setting <code>Sys.setenv(NANONEXT_SYS=1)</code> will cause installation to attempt use of a system ‘libnng’ installed in <code>/usr/local</code> instead. This allows use of a custom build of ‘libnng’ (722bf46 or newer).</p>
-<p>System ‘libnng’ installations are not used by default as versions currently in system repositories are not new enough to support nanonext &gt;= 0.5.1.</p>
+<p>System ‘libnng’ installations are not used by default as versions currently in system repositories are not new enough to support this version of nanonext.</p>
 </div>
 <div class="section level4">
 <h4 id="windows">Windows<a class="anchor" aria-label="anchor" href="#windows"></a>
