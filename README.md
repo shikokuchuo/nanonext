@@ -384,7 +384,7 @@ aio
 #> < recvAio >
 #>  - $data for message data
 aio$data |> str()
-#>  num [1:100000000] -0.205 -0.621 -0.702 -1.192 -0.142 ...
+#>  num [1:100000000] 0.1854 0.0923 1.1071 -1.5271 -0.2223 ...
 ```
 
 As `call_aio()` is blocking and will wait for completion, an alternative
@@ -537,11 +537,11 @@ ncurl("http://httpbin.org/headers")
 #>   [1] 7b 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73
 #>  [26] 74 22 3a 20 22 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22
 #>  [51] 58 2d 41 6d 7a 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31
-#>  [76] 2d 36 32 65 38 32 31 30 30 2d 31 62 39 34 37 37 33 37 35 61 31 65 33 38 35
-#> [101] 63 30 33 63 66 61 38 38 61 22 0a 20 20 7d 0a 7d 0a
+#>  [76] 2d 36 32 66 65 35 66 39 35 2d 35 31 38 37 39 62 64 30 37 31 64 37 33 64 32
+#> [101] 64 35 31 66 37 64 38 38 66 22 0a 20 20 7d 0a 7d 0a
 #> 
 #> $data
-#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-62e82100-1b9477375a1e385c03cfa88a\"\n  }\n}\n"
+#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-62fe5f95-51879bd071d73d2d51f7d88f\"\n  }\n}\n"
 ```
 
 For advanced use, supports additional HTTP methods such as POST or PUT.
@@ -556,7 +556,7 @@ res
 #>  - $raw for raw message
 
 call_aio(res)$data
-#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-62e82100-7fa08b262db7579c535fb263\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"185.225.45.49\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
+#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-62fe5f95-6151b7ab3194d253362f57d2\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"213.86.169.34\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
 ```
 
 In this respect, it may be used as a performant and lightweight method
@@ -601,10 +601,10 @@ s |> send('{"action": "subscribe", "symbols": "EURUSD"}')
 #> [26] 73 79 6d 62 6f 6c 73 22 3a 20 22 45 55 52 55 53 44 22 7d 00
 
 s |> recv(keep.raw = FALSE)
-#> [1] "{\"s\":\"EURUSD\",\"a\":1.02499,\"b\":1.02497,\"dc\":\"0.3893\",\"dd\":\"0.0040\",\"ppms\":false,\"t\":1659379969000}"
+#> [1] "{\"s\":\"EURUSD\",\"a\":1.01178,\"b\":1.01177,\"dc\":\"-0.5871\",\"dd\":\"-0.0059\",\"ppms\":false,\"t\":1660837782000}"
 
 s |> recv(keep.raw = FALSE)
-#> [1] "{\"s\":\"EURUSD\",\"a\":1.02502,\"b\":1.025,\"dc\":\"0.3922\",\"dd\":\"0.0040\",\"ppms\":false,\"t\":1659379969000}"
+#> [1] "{\"s\":\"EURUSD\",\"a\":1.01187,\"b\":1.0118,\"dc\":\"-0.5781\",\"dd\":\"-0.0058\",\"ppms\":false,\"t\":1660837782000}"
 
 close(s)
 ```
@@ -624,8 +624,8 @@ use of a system ‘libnng’ installed in `/usr/local` instead. This allows
 use of a custom build of ‘libnng’ (722bf46 or newer).
 
 System ‘libnng’ installations are not used by default as versions
-currently in system repositories are not new enough to support nanonext
-\>= 0.5.1.
+currently in system repositories are not new enough to support this
+version of nanonext.
 
 #### Windows
 

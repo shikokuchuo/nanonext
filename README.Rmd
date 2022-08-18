@@ -475,7 +475,7 @@ Installation from source requires 'cmake'. A pre-release version of 'libnng' 1.6
 
 Setting `Sys.setenv(NANONEXT_SYS=1)` will cause installation to attempt use of a system 'libnng' installed in `/usr/local` instead. This allows use of a custom build of 'libnng' (722bf46 or newer).
 
-System 'libnng' installations are not used by default as versions currently in system repositories are not new enough to support nanonext >= 0.5.1.
+System 'libnng' installations are not used by default as versions currently in system repositories are not new enough to support this version of nanonext.
 
 #### Windows
 
