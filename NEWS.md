@@ -3,6 +3,7 @@
 #### Updates
 
 * `device()` gains a confirmation prompt when running interactively for more safety.
+* `random()` gains the argument 'n' for generating a vector of random numbers.
 
 # nanonext 0.5.3
 

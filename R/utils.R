@@ -132,19 +132,23 @@ msleep <- function(msec) invisible(.Call(rnng_sleep, msec))
 #' NNG Random Number Generator
 #'
 #' Strictly not for statistical analysis. Not reproducible as no ability to set
-#'     a seed value. Provides a random number suitable for system functions such
-#'     as cryptographic key generation. The value is obtained using
+#'     a seed value. Provides random numbers suitable for system functions such
+#'     as cryptographic key generation. Random values are obtained using
 #'     platform-specific strong cryptographic random number facilities where
 #'     available.
 #'
-#' @return A (positive) double.
+#' @param n [default 1L] length of vector to return (if non-integer, will be
+#'     coerced to integer).
+#'
+#' @return A length 'n' vector of random positive doubles.
 #'
 #' @examples
 #' random()
+#' random(n = 3L)
 #'
 #' @export
 #'
-random <- function() .Call(rnng_random)
+random <- function(n = 1L) .Call(rnng_random, n)
 
 #' Create Device
 #'
@@ -174,7 +178,7 @@ device <- function(s1, s2) {
   inherits(s1, "nanoSocket") || stop("object '", deparse(substitute(s1)), "' is not a nanoSocket")
   inherits(s2, "nanoSocket") || stop("object '", deparse(substitute(s2)), "' is not a nanoSocket")
   if (interactive()) {
-    r <- readline(sprintf("This function will bind sockets '%s' and '%s' and not return. Continue? [Y/n]: ",
+    r <- readline(sprintf("Proceed to bind sockets '%s' and '%s'? (This action cannot be interrupted) [Y/n]: ",
                   deparse(substitute(s1)), deparse(substitute(s2))))
     if (r %in% c("n", "N")) return(invisible())
   }

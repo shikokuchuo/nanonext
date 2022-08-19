@@ -116,10 +116,29 @@ SEXP rnng_sleep(SEXP msec) {
 
 }
 
-SEXP rnng_random(void) {
+SEXP rnng_random(SEXP n) {
 
-  double rnd = (double) nng_random();
-  return Rf_ScalarReal(rnd);
+  SEXP vec;
+  R_xlen_t vlen;
+
+  switch (TYPEOF(n)) {
+  case INTSXP:
+  case LGLSXP:
+    vlen = (R_xlen_t) INTEGER(n)[0];
+    break;
+  case REALSXP:
+    vlen = (R_xlen_t) Rf_asInteger(n);
+    break;
+  default:
+    error_return("'n' must be integer or coercible to integer");
+  }
+
+  vec = Rf_allocVector(REALSXP, vlen);
+  double *pvec = REAL(vec);
+  for (R_xlen_t i = 0; i < vlen; i++) {
+    pvec[i] = (double) nng_random();
+  }
+  return vec;
 
 }
 
