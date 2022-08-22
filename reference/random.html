@@ -73,8 +73,7 @@
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>n</dt>
-<dd><p>[default 1L] length of vector to return (if non-integer, will be
-coerced to integer).</p></dd>
+<dd><p>[default 1L] length of vector to return.</p></dd>
 
 </dl></div>
     <div id="value">
@@ -83,13 +82,18 @@ coerced to integer).</p></dd>
 
 <p>A length 'n' vector of random positive doubles.</p>
     </div>
+    <div id="details">
+    <h2>Details</h2>
+    <p>If 'n' is non-integer, it will be coerced to integer; if a vector,
+    only the first element will be used.</p>
+    </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">random</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 7270942</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2333718170</span>
 <span class="r-in"><span><span class="fu">random</span><span class="op">(</span>n <span class="op">=</span> <span class="fl">3L</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  294389547  418430085 3553481317</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 3290429914 3467882341 3633212681</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
