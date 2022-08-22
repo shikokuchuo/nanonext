@@ -4,18 +4,21 @@
 \alias{messenger}
 \title{Messenger}
 \usage{
-messenger(url)
+messenger(url, auth = NULL)
 }
 \arguments{
 \item{url}{a URL to connect to, specifying the transport and address as
 a character string e.g. 'tcp://127.0.0.1:5555' (see \link{transports}).}
+
+\item{auth}{[default NULL] an R object (possessed by both parties) which
+serves as a pre-shared key on which to authenticate the communication.}
 }
 \value{
 Invisible NULL.
 }
 \description{
-Multi-threaded console-based 2-way instant messaging system based on NNG
-    scalability protocols.
+Multi-threaded, console-based, 2-way instant messaging system with
+    authentication, based on NNG scalability protocols.
 }
 \section{Usage}{
 
@@ -27,7 +30,11 @@ Multi-threaded console-based 2-way instant messaging system based on NNG
 
     \code{:q} is the command to quit.
 
-    NOTE: This is currently a proof of concept and should not be used for
-    critical applications.
+    Both parties must supply the same argument for 'auth', otherwise the
+    party trying to connect will receive an 'authentication error' and be
+    disconnected immediately.
+
+    NOTE: This is currently a proof of concept with rudimentary authentication
+    protocol and should not be used for critical applications.
 }
 

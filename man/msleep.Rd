@@ -16,6 +16,10 @@ Invisible NULL.
 Sleep function. May block for longer than requested, with the actual wait
     time determined by the capabilities of the underlying system.
 }
+\details{
+If 'msec' is non-integer, it will be coerced to integer. Non-numeric
+    input will be ignored and return immediately.
+}
 \examples{
 time <- mclock(); msleep(100); mclock() - time
 

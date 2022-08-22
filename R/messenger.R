@@ -18,11 +18,13 @@
 
 #' Messenger
 #'
-#' Multi-threaded console-based 2-way instant messaging system based on NNG
-#'     scalability protocols.
+#' Multi-threaded, console-based, 2-way instant messaging system with
+#'     authentication, based on NNG scalability protocols.
 #'
 #' @param url a URL to connect to, specifying the transport and address as
 #'     a character string e.g. 'tcp://127.0.0.1:5555' (see \link{transports}).
+#' @param auth [default NULL] an R object (possessed by both parties) which
+#'     serves as a pre-shared key on which to authenticate the communication.
 #'
 #' @return Invisible NULL.
 #'
@@ -35,43 +37,65 @@
 #'
 #'     \code{:q} is the command to quit.
 #'
-#'     NOTE: This is currently a proof of concept and should not be used for
-#'     critical applications.
+#'     Both parties must supply the same argument for 'auth', otherwise the
+#'     party trying to connect will receive an 'authentication error' and be
+#'     disconnected immediately.
+#'
+#'     NOTE: This is currently a proof of concept with rudimentary authentication
+#'     protocol and should not be used for critical applications.
 #'
 #' @export
 #'
-messenger <- function(url) {
+messenger <- function(url, auth = NULL) {
+
+  lock <- as.integer(`length<-`(serialize(auth, NULL), 128L))
+  comb <- order(random(64L))
+  key <- c(comb, lock[comb])
 
   sock <- .Call(rnng_messenger, url)
   is.integer(sock) && return(invisible(sock))
-  on.exit(expr = {
-    suppressWarnings(.Call(rnng_send, sock, writeBin(":d ", raw()), 0L, FALSE))
-    .Call(rnng_close, sock)
-    invisible()
-  })
 
   cat("\n", file = stdout())
   intro <- unlist(strsplit("nanonext messenger", ""))
   for (i in seq_along(intro)) {
     cat("\r", `length<-`(intro, i), sep = " ", file = stdout())
-    Sys.sleep(0.02)
+    msleep(25L)
   }
   cat(sprintf("\n| url: %s\n", url), file = stdout())
   cat("| connecting... ", file = stderr())
 
-  s <- suppressWarnings(.Call(rnng_send, sock, writeBin(":c ", raw()), 1000L, TRUE))
+  nano_init(warn = "none")
+  on.exit(expr = {
+    .Call(rnng_send, sock, writeBin(":d ", raw()), 0L, FALSE)
+    .Call(rnng_close, sock)
+    options(warn = getOption("nanonext.original.warn"))
+    options(nanonext.original.warn = NULL)
+    invisible()
+  })
+
+  s <- .Call(rnng_send, sock, writeBin(":c ", raw()), 1000L, TRUE)
   if (is.integer(s)) {
     cat(sprintf("\r| peer offline: %s\n", format.POSIXct(Sys.time())), file = stderr())
   } else {
     cat(sprintf("\r| peer online: %s\n", format.POSIXct(Sys.time())), file = stderr())
+    r <- .Call(rnng_recv, sock, 5L, TRUE, FALSE)
+    for (i in seq_len(64L)) {
+      lock[r[i]] == r[i + 64L] || {
+        cat("| authentication error\n", file = stderr())
+        return(invisible())
+      }
+    }
+    cat("| authenticated\n", file = stderr())
   }
+
+  sock <- .Call(rnng_thread_create, list(sock, key))
   cat("type your message:\n", file = stdout())
 
   repeat {
     data <- readline()
     if (identical(data, ":q")) break
     if (identical(data, "")) next
-    s <- suppressWarnings(.Call(rnng_send, sock, data, 0L, TRUE))
+    s <- .Call(rnng_send, sock, data, 0L, TRUE)
     if (is.integer(s)) {
       cat(sprintf("%*s > not sent: peer offline: %s\n", nchar(data), "", format.POSIXct(Sys.time())),
           file = stderr())

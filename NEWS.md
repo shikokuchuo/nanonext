@@ -1,9 +1,13 @@
 # nanonext 0.5.3.9000
 
+#### New Features
+
+* `messenger()` gains the argument 'auth' for authenticating communications based on a pre-shared key.
+* `random()` gains the argument 'n' for generating a vector of random numbers.
+
 #### Updates
 
 * `device()` gains a confirmation prompt when running interactively for more safety.
-* `random()` gains the argument 'n' for generating a vector of random numbers.
 
 # nanonext 0.5.3
 

@@ -537,7 +537,10 @@ static void thread_finalizer(SEXP xptr) {
 
 static void rnng_thread(void *arg) {
 
-  nng_socket *sock = (nng_socket *) arg;
+  SEXP list = (SEXP) arg;
+  SEXP socket = VECTOR_ELT(list, 0);
+  SEXP key = VECTOR_ELT(list, 1);
+  nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(socket);
   unsigned char *buf;
   size_t sz;
   time_t now;
@@ -562,6 +565,7 @@ static void rnng_thread(void *arg) {
                  tms->tm_year + 1900, tms->tm_mon + 1, tms->tm_mday,
                  tms->tm_hour, tms->tm_min, tms->tm_sec);
         nng_free(buf, sz);
+        rnng_send(socket, key, Rf_ScalarLogical(0), Rf_ScalarLogical(0));
         continue;
       }
       if (!strcmp((char *) buf, ":d ")) {
@@ -587,11 +591,10 @@ SEXP rnng_messenger(SEXP url) {
 
   const char *up = CHAR(STRING_ELT(url, 0));
   nng_socket *sock = R_Calloc(1, nng_socket);
-  nng_thread *thr;
   void *dlp;
   uint8_t dialer = 0;
   int xc;
-  SEXP socket, con, xptr;
+  SEXP socket, con;
 
   xc = nng_pair0_open(sock);
   if (xc) {
@@ -627,13 +630,24 @@ SEXP rnng_messenger(SEXP url) {
     R_RegisterCFinalizerEx(con, listener_finalizer, TRUE);
   R_MakeWeakRef(socket, con, R_NilValue, TRUE);
 
-  nng_thread_create(&thr, rnng_thread, sock);
+  UNPROTECT(2);
+  return socket;
+
+}
+
+SEXP rnng_thread_create(SEXP list) {
+
+  SEXP socket = VECTOR_ELT(list, 0);
+  nng_thread *thr;
+  SEXP xptr;
+
+  nng_thread_create(&thr, rnng_thread, list);
 
   PROTECT(xptr = R_MakeExternalPtr(thr, R_NilValue, R_NilValue));
   R_RegisterCFinalizerEx(xptr, thread_finalizer, TRUE);
   R_MakeWeakRef(socket, xptr, R_NilValue, TRUE);
 
-  UNPROTECT(3);
+  UNPROTECT(1);
   return socket;
 
 }

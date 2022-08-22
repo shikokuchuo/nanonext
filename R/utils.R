@@ -122,6 +122,9 @@ mclock <- function() .Call(rnng_clock)
 #'
 #' @return Invisible NULL.
 #'
+#' @details If 'msec' is non-integer, it will be coerced to integer. Non-numeric
+#'     input will be ignored and return immediately.
+#'
 #' @examples
 #' time <- mclock(); msleep(100); mclock() - time
 #'
@@ -137,10 +140,12 @@ msleep <- function(msec) invisible(.Call(rnng_sleep, msec))
 #'     platform-specific strong cryptographic random number facilities where
 #'     available.
 #'
-#' @param n [default 1L] length of vector to return (if non-integer, will be
-#'     coerced to integer).
+#' @param n [default 1L] length of vector to return.
 #'
 #' @return A length 'n' vector of random positive doubles.
+#'
+#' @details If 'n' is non-integer, it will be coerced to integer; if a vector,
+#'     only the first element will be used.
 #'
 #' @examples
 #' random()

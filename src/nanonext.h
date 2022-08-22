@@ -125,6 +125,7 @@ extern SEXP rnng_stream_send(SEXP, SEXP, SEXP, SEXP);
 extern SEXP rnng_stream_send_aio(SEXP, SEXP, SEXP);
 extern SEXP rnng_stream_set(SEXP, SEXP, SEXP, SEXP);
 extern SEXP rnng_strerror(SEXP);
+extern SEXP rnng_thread_create(SEXP);
 extern SEXP rnng_unresolved(SEXP);
 extern SEXP rnng_version(void);
 

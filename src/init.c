@@ -103,6 +103,7 @@ static const R_CallMethodDef CallEntries[] = {
   {"rnng_stream_send_aio", (DL_FUNC) &rnng_stream_send_aio, 3},
   {"rnng_stream_set", (DL_FUNC) &rnng_stream_set, 4},
   {"rnng_strerror", (DL_FUNC) &rnng_strerror, 1},
+  {"rnng_thread_create", (DL_FUNC) &rnng_thread_create, 1},
   {"rnng_unresolved", (DL_FUNC) &rnng_unresolved, 1},
   {"rnng_version", (DL_FUNC) &rnng_version, 0},
   {NULL, NULL, 0}

@@ -7,8 +7,7 @@
 random(n = 1L)
 }
 \arguments{
-\item{n}{[default 1L] length of vector to return (if non-integer, will be
-coerced to integer).}
+\item{n}{[default 1L] length of vector to return.}
 }
 \value{
 A length 'n' vector of random positive doubles.
@@ -19,6 +18,10 @@ Strictly not for statistical analysis. Not reproducible as no ability to set
     as cryptographic key generation. Random values are obtained using
     platform-specific strong cryptographic random number facilities where
     available.
+}
+\details{
+If 'n' is non-integer, it will be coerced to integer; if a vector,
+    only the first element will be used.
 }
 \examples{
 random()
