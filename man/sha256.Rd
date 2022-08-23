@@ -11,7 +11,7 @@ sha256(x)
 whilst other objects are serialised first.}
 }
 \value{
-A raw vector of 32 bytes.
+A 'nanoHash' object - a raw vector of 32 bytes.
 }
 \description{
 Returns a sha256 hash of the supplied R object.
@@ -24,7 +24,7 @@ Hashing capabilities rely on the 'mbedTLS' library. If the package
 \examples{
 sha256("hello world!")
 
-# To contatenate the hash into a single character string:
-paste(sha256("hello world!"), collapse = "")
+# To convert the hash into a single character string:
+as.character(sha256("hello world!"))
 
 }

@@ -23,7 +23,7 @@
 #' @param x an object. A raw vector or character string will be hashed directly
 #'     whilst other objects are serialised first.
 #'
-#' @return A raw vector of 32 bytes.
+#' @return A 'nanoHash' object - a raw vector of 32 bytes.
 #'
 #' @details Hashing capabilities rely on the 'mbedTLS' library. If the package
 #'     was not linked against 'mbedTLS' at install time, an errorValue 9 'not
@@ -32,8 +32,8 @@
 #' @examples
 #' sha256("hello world!")
 #'
-#' # To contatenate the hash into a single character string:
-#' paste(sha256("hello world!"), collapse = "")
+#' # To convert the hash into a single character string:
+#' as.character(sha256("hello world!"))
 #'
 #' @export
 #'
@@ -44,4 +44,12 @@ sha256 <- function(x) {
   .Call(rnng_sha256, x)
 
 }
+
+#' @export
+#'
+as.character.nanoHash <- function(x, ...) paste(unclass(x), collapse = "")
+
+#' @export
+#'
+print.nanoHash <- function(x, ...) cat(x)
 

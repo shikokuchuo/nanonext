@@ -28,6 +28,7 @@ int mbedtls_sha256(const unsigned char *input,
 
 SEXP rnng_sha256(SEXP x) {
 
+  SEXP out;
   int xc = 0;
   unsigned char *buf = RAW(x);
   size_t sz = Rf_xlength(x);
@@ -38,9 +39,11 @@ SEXP rnng_sha256(SEXP x) {
   if (xc)
     return mk_error(xc);
 
-  SEXP out = Rf_allocVector(RAWSXP, 32);
+  PROTECT(out = Rf_allocVector(RAWSXP, 32));
   unsigned char *outp = RAW(out);
   memcpy(outp, hash, 32);
+  Rf_classgets(out, Rf_mkString("nanoHash"));
+  UNPROTECT(1);
 
   return out;
 
