@@ -73,7 +73,7 @@ whilst other objects are serialised first.</p></dd>
     <h2>Value</h2>
     
 
-<p>A raw vector of 32 bytes.</p>
+<p>A 'nanoHash' object - a raw vector of 32 bytes.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -85,13 +85,11 @@ whilst other objects are serialised first.</p></dd>
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">sha256</span><span class="op">(</span><span class="st">"hello world!"</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>9 | Not supported</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 'errorValue' int 9 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 75 09 e5 bd a0 c7 62 d2 ba c7 f9 0d 75 8b 5b 22 63 fa 01 cc bc 54 2a b5 e3 df 16 3b e0 8e 6c a9</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># To contatenate the hash into a single character string:</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="fu">sha256</span><span class="op">(</span><span class="st">"hello world!"</span><span class="op">)</span>, collapse <span class="op">=</span> <span class="st">""</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>9 | Not supported</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "9"</span>
+<span class="r-in"><span><span class="co"># To convert the hash into a single character string:</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fu">sha256</span><span class="op">(</span><span class="st">"hello world!"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "7509e5bda0c762d2bac7f90d758b5b2263fa01ccbc542ab5e3df163be08e6ca9"</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
