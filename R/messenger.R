@@ -51,31 +51,32 @@
 #'
 messenger <- function(url, auth = NULL) {
 
-  if (is.null(lock <- sha256(auth)))
-    lock <- `length<-`(serialize(auth, NULL), 128L)
+  nano_init(warn = "none")
+  on.exit(expr = {
+    options(warn = getOption("nanonext.original.warn"))
+    options(nanonext.original.warn = NULL)
+    invisible()
+  })
+  if (is_error_value(lock <- sha256(auth)))
+    lock <- serialize(auth, NULL)[24:56]
   comb <- order(random(24L))
   key <- c(comb, as.integer(lock)[comb])
 
   sock <- .Call(rnng_messenger, url)
   is.integer(sock) && return(invisible(sock))
+  on.exit(expr = {
+    .Call(rnng_send, sock, writeBin(":d ", raw()), 0L, FALSE)
+    .Call(rnng_close, sock)
+  }, add = TRUE, after = FALSE)
 
   cat("\n", file = stdout())
   intro <- unlist(strsplit("nanonext messenger", ""))
   for (i in seq_along(intro)) {
     cat("\r", `length<-`(intro, i), sep = " ", file = stdout())
-    msleep(25L)
+    msleep(32L)
   }
   cat(sprintf("\n| url: %s\n", url), file = stdout())
   cat("| connecting... ", file = stderr())
-
-  nano_init(warn = "none")
-  on.exit(expr = {
-    .Call(rnng_send, sock, writeBin(":d ", raw()), 0L, FALSE)
-    .Call(rnng_close, sock)
-    options(warn = getOption("nanonext.original.warn"))
-    options(nanonext.original.warn = NULL)
-    invisible()
-  })
 
   s <- .Call(rnng_send, sock, writeBin(":c ", raw()), 1000L, TRUE)
   if (is.integer(s)) {

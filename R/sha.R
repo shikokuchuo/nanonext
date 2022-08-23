@@ -26,8 +26,8 @@
 #' @return A raw vector of 32 bytes.
 #'
 #' @details Hashing capabilities rely on the 'mbedTLS' library. If the package
-#'     was not linked against 'mbedTLS' at install time, an error message will
-#'     be issued and the function will return NULL.
+#'     was not linked against 'mbedTLS' at install time, an errorValue 9 'not
+#'     supported' will be returned instead.
 #'
 #' @examples
 #' sha256("hello world!")

@@ -21,6 +21,8 @@ jobs:
 
       - uses: r-lib/actions/setup-pandoc@v2
 
+      - run: sudo apt install -y libmbedtls-dev
+
       - uses: r-lib/actions/setup-r@v2
         with:
           use-public-rspm: true

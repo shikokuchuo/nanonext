@@ -16,6 +16,7 @@
 
 // nanonext - Cryptographic Hashing --------------------------------------------
 
+#define NANONEXT_INTERNALS
 #include "nanonext.h"
 
 #ifdef NANONEXT_TLS
@@ -35,7 +36,7 @@ SEXP rnng_sha256(SEXP x) {
   // param is224    0 = use SHA256, 1 = use SHA224
   xc = mbedtls_sha256(buf, sz, hash, 0);
   if (xc)
-    error_return("cryptographic error");
+    return mk_error(xc);
 
   SEXP out = Rf_allocVector(RAWSXP, 32);
   unsigned char *outp = RAW(out);
@@ -49,8 +50,7 @@ SEXP rnng_sha256(SEXP x) {
 
 SEXP rnng_sha256(SEXP x) {
 
-  REprintf("sha256() requires mbedTLS\n");
-  return R_NilValue;
+  return mk_error(9);
 
 }
 

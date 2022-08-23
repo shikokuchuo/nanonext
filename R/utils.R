@@ -24,19 +24,13 @@
 #'
 #' @section TLS Support:
 #'
-#'     Where system installations of 'libnng' and 'libmbedtls' development
-#'     headers are detected in the same location, it is assumed that NNG was
-#'     built with TLS support (using Mbed TLS) and TLS is configured appropriately.
+#'     If a system installation of Mbed TLS ‘libmbedtls’ is detected in the
+#'     standard filesystem locations, NNG will link against this and be built
+#'     with TLS support.
 #'
-#'     Otherwise, the environment variable \code{Sys.setenv(NANONEXT_TLS=1)} may
-#'     be set prior to installation if:
-#'
-#'     - your system installations of 'libnng' (built with TLS support) and
-#'     'libmbedtls' are in different locations; or
-#'
-#'     - you have a system installation of 'libmbedtls' but not 'libnng' and want
-#'     nanonext to download and build a more recent version of 'libnng' than
-#'     available in system repositories against this.
+#'     The environment variable Sys.setenv(NANONEXT_TLS=1) may also be set prior
+#'     to installation to enable TLS support if ‘libmbedtls’ is installed in a
+#'     non-standard location.
 #'
 #'     Note: this is not applicable to Windows systems.
 #'

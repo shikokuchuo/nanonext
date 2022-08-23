@@ -13,7 +13,7 @@ CC=`${R_HOME}/bin/R CMD config CC`
 CFLAGS=`${R_HOME}/bin/R CMD config CFLAGS`
 
 # Detect mbedtls
-if [ -d "/usr/local/include/mbedtls" ] || [ -d "/usr/include/mbedtls" ] || [ -d "/usr/local/opt/mbedtls" ]
+if [ -d "/usr/local/include/mbedtls" ] || [ -d "/usr/include/mbedtls0" ] || [ -d "/usr/local/opt/mbedtls" ]
 then
   echo "Found mbedtls... proceeding with TLS support"
   PKG_CFLAGS="$PKG_CFLAGS -DNANONEXT_TLS=1"

@@ -487,6 +487,8 @@ If a system installation of Mbed TLS 'libmbedtls' is detected in the standard fi
 
 The environment variable `Sys.setenv(NANONEXT_TLS=1)` may also be set prior to installation to enable TLS support if 'libmbedtls' is installed in a non-standard location.
 
+TLS support allows connection to secure 'https' and 'wss' sites, use of `sha256()` and enhances authentication in `messenger()`.
+
 ### Links
 
 nanonext on CRAN: <https://cran.r-project.org/package=nanonext><br />
