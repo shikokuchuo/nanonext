@@ -20,28 +20,33 @@
 #include "nanonext.h"
 
 #ifdef NANONEXT_TLS
+#include <mbedtls/md.h>
 
-int mbedtls_sha256(const unsigned char *input,
-                   size_t ilen,
-                   unsigned char *output,
-                   int is224);
+int mbedtls_sha256(const unsigned char *input, size_t ilen,
+                   unsigned char *output, int is224);
 
-SEXP rnng_sha256(SEXP x) {
+SEXP rnng_sha256(SEXP x, SEXP key) {
 
   SEXP out;
   int xc = 0;
   unsigned char *buf = RAW(x);
   size_t sz = Rf_xlength(x);
-  unsigned char hash[32];
-
-  // param is224    0 = use SHA256, 1 = use SHA224
-  xc = mbedtls_sha256(buf, sz, hash, 0);
-  if (xc)
-    return mk_error(xc);
 
   PROTECT(out = Rf_allocVector(RAWSXP, 32));
   unsigned char *outp = RAW(out);
-  memcpy(outp, hash, 32);
+
+  if (key == R_NilValue) {
+    xc = mbedtls_sha256(buf, sz, outp, 0);
+  } else {
+    unsigned char *kbuf = RAW(key);
+    size_t ksz = Rf_xlength(key);
+    xc = mbedtls_md_hmac(mbedtls_md_info_from_type(MBEDTLS_MD_SHA256),
+                         kbuf, ksz, buf, sz, outp);
+  }
+
+  if (xc)
+    return mk_error(xc);
+
   Rf_classgets(out, Rf_mkString("nanoHash"));
   UNPROTECT(1);
 
@@ -51,7 +56,7 @@ SEXP rnng_sha256(SEXP x) {
 
 #else
 
-SEXP rnng_sha256(SEXP x) {
+SEXP rnng_sha256(SEXP x, SEXP key) {
 
   return mk_error(9);
 

@@ -16,12 +16,17 @@
 
 # nanonext - Cryptographic Hashing ---------------------------------------------
 
-#' Cryptographic Hashing Using the sha256 Algorithm
+#' Cryptographic Hashing Using the SHA256 Algorithm
 #'
-#' Returns a sha256 hash of the supplied R object.
+#' Returns a SHA256 hash or HMAC of the supplied R object. Uses the optimised
+#'     implementation from the mbedTLS library.
 #'
 #' @param x an object. A raw vector or character string will be hashed directly
 #'     whilst other objects are serialised first.
+#' @param key [default NULL] optionally supply a secret key to generate an HMAC.
+#'     Returns the SHA256 hash of 'x' if missing or NULL. A raw vector or
+#'     character string will be used directly whilst other objects are
+#'     serialised first.
 #'
 #' @return A 'nanoHash' object - a raw vector of 32 bytes.
 #'
@@ -32,16 +37,21 @@
 #' @examples
 #' sha256("hello world!")
 #'
-#' # To convert the hash into a single character string:
+#' # Converts to a single character string:
 #' as.character(sha256("hello world!"))
+#'
+#' # Obtain HMAC:
+#' sha256("hello world!", "SECRET_KEY")
 #'
 #' @export
 #'
-sha256 <- function(x) {
+sha256 <- function(x, key = NULL) {
 
   if (!is.raw(x))
     x <- if (is.character(x)) charToRaw(x) else serialize(x, NULL)
-  .Call(rnng_sha256, x)
+  if (!is.null(key) || !is.raw(key))
+    key <- if (is.character(key)) charToRaw(key) else serialize(key, NULL)
+  .Call(rnng_sha256, x, key)
 
 }
 

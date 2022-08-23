@@ -2,19 +2,25 @@
 % Please edit documentation in R/sha.R
 \name{sha256}
 \alias{sha256}
-\title{Cryptographic Hashing Using the sha256 Algorithm}
+\title{Cryptographic Hashing Using the SHA256 Algorithm}
 \usage{
-sha256(x)
+sha256(x, key = NULL)
 }
 \arguments{
 \item{x}{an object. A raw vector or character string will be hashed directly
 whilst other objects are serialised first.}
+
+\item{key}{[default NULL] optionally supply a secret key to generate an HMAC.
+Returns the SHA256 hash of 'x' if missing or NULL. A raw vector or
+character string will be used directly whilst other objects are
+serialised first.}
 }
 \value{
 A 'nanoHash' object - a raw vector of 32 bytes.
 }
 \description{
-Returns a sha256 hash of the supplied R object.
+Returns a SHA256 hash or HMAC of the supplied R object. Uses the optimised
+    implementation from the mbedTLS library.
 }
 \details{
 Hashing capabilities rely on the 'mbedTLS' library. If the package
@@ -24,7 +30,10 @@ Hashing capabilities rely on the 'mbedTLS' library. If the package
 \examples{
 sha256("hello world!")
 
-# To convert the hash into a single character string:
+# Converts to a single character string:
 as.character(sha256("hello world!"))
+
+# Obtain HMAC:
+sha256("hello world!", "SECRET_KEY")
 
 }
