@@ -49,9 +49,18 @@ sha256 <- function(x, key = NULL) {
 
   if (!is.raw(x))
     x <- if (is.character(x)) charToRaw(x) else serialize(x, NULL)
-  if (!is.null(key) || !is.raw(key))
-    key <- if (is.character(key)) charToRaw(key) else serialize(key, NULL)
-  .Call(rnng_sha256, x, key)
+
+  if (missing(key) || is.null(key)) {
+
+    .Call(rnng_sha256, x)
+
+  } else {
+
+    if (!is.raw(key))
+      key <- if (is.character(key)) charToRaw(key) else serialize(key, NULL)
+    .Call(rnng_sha256hmac, x, key)
+
+  }
 
 }
 

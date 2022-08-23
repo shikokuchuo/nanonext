@@ -25,7 +25,7 @@
 int mbedtls_sha256(const unsigned char *input, size_t ilen,
                    unsigned char *output, int is224);
 
-SEXP rnng_sha256(SEXP x, SEXP key) {
+SEXP rnng_sha256(SEXP x) {
 
   SEXP out;
   int xc = 0;
@@ -34,16 +34,30 @@ SEXP rnng_sha256(SEXP x, SEXP key) {
 
   PROTECT(out = Rf_allocVector(RAWSXP, 32));
   unsigned char *outp = RAW(out);
+  xc = mbedtls_sha256(buf, sz, outp, 0);
+  if (xc)
+    return mk_error(xc);
 
-  if (key == R_NilValue) {
-    xc = mbedtls_sha256(buf, sz, outp, 0);
-  } else {
-    unsigned char *kbuf = RAW(key);
-    size_t ksz = Rf_xlength(key);
-    xc = mbedtls_md_hmac(mbedtls_md_info_from_type(MBEDTLS_MD_SHA256),
-                         kbuf, ksz, buf, sz, outp);
-  }
+  Rf_classgets(out, Rf_mkString("nanoHash"));
+  UNPROTECT(1);
 
+  return out;
+
+}
+
+SEXP rnng_sha256hmac(SEXP x, SEXP key) {
+
+  SEXP out;
+  int xc = 0;
+  unsigned char *buf = RAW(x);
+  size_t sz = Rf_xlength(x);
+  unsigned char *kbuf = RAW(key);
+  size_t ksz = Rf_xlength(key);
+
+  PROTECT(out = Rf_allocVector(RAWSXP, 32));
+  unsigned char *outp = RAW(out);
+  xc = mbedtls_md_hmac(mbedtls_md_info_from_type(MBEDTLS_MD_SHA256),
+                       kbuf, ksz, buf, sz, outp);
   if (xc)
     return mk_error(xc);
 
@@ -56,10 +70,12 @@ SEXP rnng_sha256(SEXP x, SEXP key) {
 
 #else
 
-SEXP rnng_sha256(SEXP x, SEXP key) {
-
+SEXP rnng_sha256(SEXP x) {
   return mk_error(9);
+}
 
+SEXP rnng_sha256hmac(SEXP x, SEXP key) {
+  return mk_error(9);
 }
 
 #endif
