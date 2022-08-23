@@ -94,11 +94,11 @@ serialised first.</p></dd>
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">sha256</span><span class="op">(</span><span class="st">"hello world!"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 89 e4 9b 30 9d f1 44 5d 8c c3 a8 45 6b 79 fe 87 02 9f cc cd 96 5f c6 9d d8 fa 9c 0a b4 d4 74 33</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 75 09 e5 bd a0 c7 62 d2 ba c7 f9 0d 75 8b 5b 22 63 fa 01 cc bc 54 2a b5 e3 df 16 3b e0 8e 6c a9</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Converts to a single character string:</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fu">sha256</span><span class="op">(</span><span class="st">"hello world!"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "89e49b309df1445d8cc3a8456b79fe87029fcccd965fc69dd8fa9c0ab4d47433"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "7509e5bda0c762d2bac7f90d758b5b2263fa01ccbc542ab5e3df163be08e6ca9"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Obtain HMAC:</span></span></span>
 <span class="r-in"><span><span class="fu">sha256</span><span class="op">(</span><span class="st">"hello world!"</span>, <span class="st">"SECRET_KEY"</span><span class="op">)</span></span></span>
