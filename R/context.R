@@ -58,6 +58,12 @@
 #'
 context <- function(socket) .Call(rnng_ctx_open, socket)
 
+#' @rdname close
+#' @method close nanoContext
+#' @export
+#'
+close.nanoContext <- function(con, ...) invisible(.Call(rnng_ctx_close, con))
+
 #' Reply over Context (RPC Server for Req/Rep Protocol)
 #'
 #' Implements an executor/server for the rep node of the req/rep protocol. Awaits

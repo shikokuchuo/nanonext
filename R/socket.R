@@ -91,3 +91,38 @@ socket <- function(protocol = c("bus", "pair", "push", "pull", "pub", "sub",
 
 }
 
+#' Close Connection
+#'
+#' Close Connection on a Socket, Context, Dialer or Listener.
+#'
+#' @param con a Socket, Context, Dialer or Listener.
+#' @param ... not used.
+#'
+#' @return Invisibly, an integer exit code (zero on success).
+#'
+#' @details Closing an object explicitly frees its resources. An object can also
+#'     be removed directly in which case its resources are freed when the object
+#'     is garbage collected.
+#'
+#'     Dialers and Listeners are implicitly closed when the socket they are
+#'     associated with is closed.
+#'
+#'     Closing a socket associated with a context also closes the context.
+#'
+#'     When closing a socket or a context: messages that have been submitted for
+#'     sending may be flushed or delivered, depending upon the transport. Closing
+#'     the socket while data is in transmission will likely lead to loss of that
+#'     data. There is no automatic linger or flush to ensure that the socket
+#'     send buffers have completely transmitted.
+#'
+#' @name close
+#' @rdname close
+#'
+NULL
+
+#' @rdname close
+#' @method close nanoSocket
+#' @export
+#'
+close.nanoSocket <- function(con, ...) invisible(.Call(rnng_close, con))
+

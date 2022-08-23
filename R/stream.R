@@ -67,3 +67,9 @@ stream <- function(dial = NULL, listen = NULL, textframes = FALSE) {
 
 }
 
+#' @rdname close
+#' @method close nanoStream
+#' @export
+#'
+close.nanoStream <- function(con, ...) invisible(.Call(rnng_stream_close, con))
+

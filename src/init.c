@@ -93,6 +93,7 @@ static const R_CallMethodDef CallEntries[] = {
   {"rnng_send_aio", (DL_FUNC) &rnng_send_aio, 3},
   {"rnng_serial", (DL_FUNC) &rnng_serial, 1},
   {"rnng_sleep", (DL_FUNC) &rnng_sleep, 1},
+  {"rnng_sha256", (DL_FUNC) &rnng_sha256, 1},
   {"rnng_socket_set", (DL_FUNC) &rnng_socket_set, 4},
   {"rnng_stream_close", (DL_FUNC) &rnng_stream_close, 1},
   {"rnng_stream_dial", (DL_FUNC) &rnng_stream_dial, 2},

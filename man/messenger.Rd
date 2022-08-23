@@ -11,7 +11,10 @@ messenger(url, auth = NULL)
 a character string e.g. 'tcp://127.0.0.1:5555' (see \link{transports}).}
 
 \item{auth}{[default NULL] an R object (possessed by both parties) which
-serves as a pre-shared key on which to authenticate the communication.}
+serves as a pre-shared key on which to authenticate the communication.
+Note: the object is never sent, only a random subset of its sha256 hash
+(where mbedTLS is not available, an integer representation of the object
+serialisation is used which is a much less secure method).}
 }
 \value{
 Invisible NULL.
@@ -34,7 +37,7 @@ Multi-threaded, console-based, 2-way instant messaging system with
     party trying to connect will receive an 'authentication error' and be
     disconnected immediately.
 
-    NOTE: This is currently a proof of concept with rudimentary authentication
-    protocol and should not be used for critical applications.
+    NOTE: This is currently a proof of concept with an experimental
+    authentication protocol and should not be used for critical applications.
 }
 

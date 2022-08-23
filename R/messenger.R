@@ -25,6 +25,9 @@
 #'     a character string e.g. 'tcp://127.0.0.1:5555' (see \link{transports}).
 #' @param auth [default NULL] an R object (possessed by both parties) which
 #'     serves as a pre-shared key on which to authenticate the communication.
+#'     Note: the object is never sent, only a random subset of its sha256 hash
+#'     (where mbedTLS is not available, an integer representation of the object
+#'     serialisation is used which is a much less secure method).
 #'
 #' @return Invisible NULL.
 #'
@@ -41,16 +44,17 @@
 #'     party trying to connect will receive an 'authentication error' and be
 #'     disconnected immediately.
 #'
-#'     NOTE: This is currently a proof of concept with rudimentary authentication
-#'     protocol and should not be used for critical applications.
+#'     NOTE: This is currently a proof of concept with an experimental
+#'     authentication protocol and should not be used for critical applications.
 #'
 #' @export
 #'
 messenger <- function(url, auth = NULL) {
 
-  lock <- as.integer(`length<-`(serialize(auth, NULL), 128L))
-  comb <- order(random(64L))
-  key <- c(comb, lock[comb])
+  if (is.null(lock <- sha256(auth)))
+    lock <- `length<-`(serialize(auth, NULL), 128L)
+  comb <- order(random(24L))
+  key <- c(comb, as.integer(lock)[comb])
 
   sock <- .Call(rnng_messenger, url)
   is.integer(sock) && return(invisible(sock))
@@ -79,8 +83,8 @@ messenger <- function(url, auth = NULL) {
   } else {
     cat(sprintf("\r| peer online: %s\n", format.POSIXct(Sys.time())), file = stderr())
     r <- .Call(rnng_recv, sock, 5L, TRUE, FALSE)
-    for (i in seq_len(64L)) {
-      lock[r[i]] == r[i + 64L] || {
+    for (i in seq_len(24L)) {
+      lock[r[i]] == r[i + 24L] || {
         cat("| authentication error\n", file = stderr())
         return(invisible())
       }

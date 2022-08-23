@@ -16,11 +16,13 @@ CFLAGS=`${R_HOME}/bin/R CMD config CFLAGS`
 if [ -d "/usr/local/include/mbedtls" ] || [ -d "/usr/include/mbedtls" ] || [ -d "/usr/local/opt/mbedtls" ]
 then
   echo "Found mbedtls... proceeding with TLS support"
+  PKG_CFLAGS="$PKG_CFLAGS -DNANONEXT_TLS=1"
   PKG_LIBS="$PKG_LIBS -lmbedtls -lmbedx509 -lmbedcrypto"
   TLS_SUP=1
 elif [ "$NANONEXT_TLS" ]
 then
   echo "TLS flag set... proceeding with TLS support"
+  PKG_CFLAGS="$PKG_CFLAGS -DNANONEXT_TLS=1"
   PKG_LIBS="$PKG_LIBS -lmbedtls -lmbedx509 -lmbedcrypto"
   TLS_SUP=1
 fi

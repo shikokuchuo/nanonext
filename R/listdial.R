@@ -221,3 +221,47 @@ listen <- function(socket,
 
 }
 
+#' Start Listener/Dialer
+#'
+#' Start a Listener/Dialer.
+#'
+#' @param x a Listener or Dialer.
+#' @param async [default TRUE] logical flag whether the connection attempt,
+#'     including any name resolution, is to be made asynchronously. This helps
+#'     an application be more resilient, but it also generally makes diagnosing
+#'     failures somewhat more difficult.  If FALSE, failure, such as if the
+#'     connection is refused, will be returned immediately, and no further
+#'     action will be taken.
+#' @param ... not used.
+#'
+#' @return Invisibly, an integer exit code (zero on success).
+#'
+#' @name start
+#' @rdname start
+#'
+NULL
+
+#' @rdname start
+#' @method start nanoListener
+#' @export
+#'
+start.nanoListener <- function(x, ...) invisible(.Call(rnng_listener_start, x))
+
+#' @rdname start
+#' @method start nanoDialer
+#' @export
+#'
+start.nanoDialer <- function(x, async = TRUE, ...) invisible(.Call(rnng_dialer_start, x, async))
+
+#' @rdname close
+#' @method close nanoDialer
+#' @export
+#'
+close.nanoDialer <- function(con, ...) invisible(.Call(rnng_dialer_close, con))
+
+#' @rdname close
+#' @method close nanoListener
+#' @export
+#'
+close.nanoListener <- function(con, ...) invisible(.Call(rnng_listener_close, con))
+

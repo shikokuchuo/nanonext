@@ -2,6 +2,7 @@
 
 #### New Features
 
+* New `sha256()` cryptographic hashing using the sha256 algorithm implemented in 'mbedTLS' (where present).
 * `messenger()` gains the argument 'auth' for authenticating communications based on a pre-shared key.
 * `random()` gains the argument 'n' for generating a vector of random numbers.
 
