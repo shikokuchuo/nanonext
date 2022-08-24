@@ -299,7 +299,7 @@ SEXP rnng_recv_aio(SEXP socket, SEXP timeout) {
     error_return("'con' is not a valid Socket");
 
   nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(socket);
-  const nng_duration dur = timeout == R_NilValue ? -2 : (nng_duration) Rf_asInteger(timeout);
+  const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) Rf_asInteger(timeout);
   nano_aio *raio = R_Calloc(1, nano_aio);
   int xc;
   SEXP aio;
@@ -330,7 +330,7 @@ SEXP rnng_ctx_recv_aio(SEXP context, SEXP timeout) {
     error_return("'con' is not a valid Context");
 
   nng_ctx *ctxp = (nng_ctx *) R_ExternalPtrAddr(context);
-  const nng_duration dur = timeout == R_NilValue ? -2 : (nng_duration) Rf_asInteger(timeout);
+  const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) Rf_asInteger(timeout);
   nano_aio *raio = R_Calloc(1, nano_aio);
   int xc;
   SEXP aio;
@@ -361,7 +361,7 @@ SEXP rnng_stream_recv_aio(SEXP stream, SEXP bytes, SEXP timeout) {
     error_return("'con' is not a valid Stream");
 
   nng_stream *sp = (nng_stream *) R_ExternalPtrAddr(stream);
-  const nng_duration dur = timeout == R_NilValue ? -2 : (nng_duration) Rf_asInteger(timeout);
+  const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) Rf_asInteger(timeout);
   const size_t xlen = (size_t) Rf_asInteger(bytes);
   nano_aio *iaio = R_Calloc(1, nano_aio);
   nng_iov *iov = R_Calloc(1, nng_iov);
@@ -401,15 +401,13 @@ SEXP rnng_stream_recv_aio(SEXP stream, SEXP bytes, SEXP timeout) {
 
 }
 
-// NNG_DURATION_INFINITE (-1) NNG_DURATION_DEFAULT (-2) NNG_DURATION_ZERO (0)
-
 SEXP rnng_send_aio(SEXP socket, SEXP data, SEXP timeout) {
 
   if (R_ExternalPtrTag(socket) != nano_SocketSymbol)
     error_return("'con' is not a valid Socket");
 
   nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(socket);
-  const nng_duration dur = timeout == R_NilValue ? -2 : (nng_duration) Rf_asInteger(timeout);
+  const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) Rf_asInteger(timeout);
   nano_aio *saio = R_Calloc(1, nano_aio);
   nng_msg *msg;
   int xc;
@@ -455,7 +453,7 @@ SEXP rnng_ctx_send_aio(SEXP context, SEXP data, SEXP timeout) {
     error_return("'con' is not a valid Context");
 
   nng_ctx *ctxp = (nng_ctx *) R_ExternalPtrAddr(context);
-  const nng_duration dur = timeout == R_NilValue ? -2 : (nng_duration) Rf_asInteger(timeout);
+  const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) Rf_asInteger(timeout);
   nano_aio *saio = R_Calloc(1, nano_aio);
   nng_msg *msg;
   int xc;
@@ -502,7 +500,7 @@ SEXP rnng_stream_send_aio(SEXP stream, SEXP data, SEXP timeout) {
     error_return("'con' is not a valid Stream");
 
   nng_stream *sp = (nng_stream *) R_ExternalPtrAddr(stream);
-  const nng_duration dur = timeout == R_NilValue ? -2 : (nng_duration) Rf_asInteger(timeout);
+  const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) Rf_asInteger(timeout);
   const int frames = *LOGICAL(Rf_getAttrib(stream, nano_TextframesSymbol));
   nano_aio *iaio = R_Calloc(1, nano_aio);
   nng_iov *iov = R_Calloc(1, nng_iov);
@@ -660,7 +658,7 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP method, SEXP headers, SEXP data) {
   }
 
   if (!strcmp(handle->url->u_scheme, "https")) {
-    xc = nng_tls_config_alloc(&handle->cfg, 0);
+    xc = nng_tls_config_alloc(&handle->cfg, NNG_TLS_MODE_CLIENT);
     if (xc) {
       nng_aio_free(haio->aio);
       nng_http_res_free(handle->res);
@@ -671,7 +669,7 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP method, SEXP headers, SEXP data) {
       R_Free(haio);
       return mk_error(xc);
     }
-    if ((xc = nng_tls_config_auth_mode(handle->cfg, 1)) ||
+    if ((xc = nng_tls_config_auth_mode(handle->cfg, NNG_TLS_AUTH_MODE_OPTIONAL)) ||
         (xc = nng_http_client_set_tls(handle->cli, handle->cfg))) {
       nng_tls_config_free(handle->cfg);
       nng_aio_free(haio->aio);

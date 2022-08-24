@@ -72,7 +72,7 @@ SEXP rnng_version(void) {
   SEXP version;
 
   ver = nng_version();
-  xc = nng_tls_config_alloc(&cfg, 0);
+  xc = nng_tls_config_alloc(&cfg, NNG_TLS_MODE_CLIENT);
   if (xc) {
     tls = "No TLS Support";
   } else{
@@ -240,7 +240,7 @@ SEXP rnng_ncurl(SEXP http, SEXP method, SEXP headers, SEXP data) {
   }
 
   if (!strcmp(url->u_scheme, "https")) {
-    xc = nng_tls_config_alloc(&cfg, 0);
+    xc = nng_tls_config_alloc(&cfg, NNG_TLS_MODE_CLIENT);
     if (xc) {
       nng_aio_free(aio);
       nng_http_res_free(res);
@@ -249,7 +249,7 @@ SEXP rnng_ncurl(SEXP http, SEXP method, SEXP headers, SEXP data) {
       nng_url_free(url);
       return mk_error(xc);
     }
-    if ((xc = nng_tls_config_auth_mode(cfg, 1)) ||
+    if ((xc = nng_tls_config_auth_mode(cfg, NNG_TLS_AUTH_MODE_OPTIONAL)) ||
         (xc = nng_http_client_set_tls(client, cfg))) {
       nng_tls_config_free(cfg);
       nng_aio_free(aio);
@@ -336,8 +336,8 @@ SEXP rnng_stream_dial(SEXP url, SEXP textframes) {
 
   if (!strcmp(up->u_scheme, "ws") || !strcmp(up->u_scheme, "wss")) {
     if (mod &&
-        ((xc = nng_stream_dialer_set_bool(dp, "ws:recv-text", 1)) ||
-        (xc = nng_stream_dialer_set_bool(dp, "ws:send-text", 1)))) {
+        ((xc = nng_stream_dialer_set_bool(dp, NNG_OPT_WS_RECV_TEXT, 1)) ||
+        (xc = nng_stream_dialer_set_bool(dp, NNG_OPT_WS_SEND_TEXT, 1)))) {
       nng_stream_dialer_free(dp);
       nng_url_free(up);
       return mk_error(xc);
@@ -346,14 +346,14 @@ SEXP rnng_stream_dial(SEXP url, SEXP textframes) {
   }
 
   if (!strcmp(up->u_scheme, "wss")) {
-    xc = nng_tls_config_alloc(&cfg, 0);
+    xc = nng_tls_config_alloc(&cfg, NNG_TLS_MODE_CLIENT);
     if (xc) {
       nng_stream_dialer_free(dp);
       nng_url_free(up);
       return mk_error(xc);
     }
-    if ((xc = nng_tls_config_auth_mode(cfg, 1)) ||
-        (xc = nng_stream_dialer_set_ptr(dp, "tls-config", cfg))) {
+    if ((xc = nng_tls_config_auth_mode(cfg, NNG_TLS_AUTH_MODE_OPTIONAL)) ||
+        (xc = nng_stream_dialer_set_ptr(dp, NNG_OPT_TLS_CONFIG, cfg))) {
       nng_tls_config_free(cfg);
       nng_stream_dialer_free(dp);
       nng_url_free(up);
@@ -429,8 +429,8 @@ SEXP rnng_stream_listen(SEXP url, SEXP textframes) {
 
   if (!strcmp(up->u_scheme, "ws") || !strcmp(up->u_scheme, "wss")) {
     if (mod &&
-        ((xc = nng_stream_listener_set_bool(lp, "ws:recv-text", 1)) ||
-        (xc = nng_stream_listener_set_bool(lp, "ws:send-text", 1)))) {
+        ((xc = nng_stream_listener_set_bool(lp, NNG_OPT_WS_RECV_TEXT, 1)) ||
+        (xc = nng_stream_listener_set_bool(lp, NNG_OPT_WS_SEND_TEXT, 1)))) {
       nng_stream_listener_free(lp);
       nng_url_free(up);
       return mk_error(xc);
@@ -439,14 +439,14 @@ SEXP rnng_stream_listen(SEXP url, SEXP textframes) {
   }
 
   if (!strcmp(up->u_scheme, "wss")) {
-    xc = nng_tls_config_alloc(&cfg, 1);
+    xc = nng_tls_config_alloc(&cfg, NNG_TLS_MODE_SERVER);
     if (xc) {
       nng_stream_listener_free(lp);
       nng_url_free(up);
       return mk_error(xc);
     }
-    if ((xc = nng_tls_config_auth_mode(cfg, 1)) ||
-        (xc = nng_stream_listener_set_ptr(lp, "tls-config", cfg))) {
+    if ((xc = nng_tls_config_auth_mode(cfg, NNG_TLS_AUTH_MODE_OPTIONAL)) ||
+        (xc = nng_stream_listener_set_ptr(lp, NNG_OPT_TLS_CONFIG, cfg))) {
       nng_tls_config_free(cfg);
       nng_stream_listener_free(lp);
       nng_url_free(up);
@@ -677,7 +677,7 @@ SEXP rnng_matchwarn(SEXP warn) {
 
   const char *w = CHAR(STRING_ELT(warn, 0));
   size_t slen = strlen(w);
-  const char *i = "immediate", *d = "deferred", *e = "error", *n = "none";
+  const char i[] = "immediate", d[] = "deferred", e[] = "error", n[] = "none";
   int xc = 0;
 
   switch (slen) {

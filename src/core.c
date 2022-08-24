@@ -44,7 +44,7 @@ SEXP rnng_serial(SEXP mode) {
 
   const char *mod = CHAR(STRING_ELT(mode, 0));
   size_t slen = strlen(mod);
-  const char *s = "serial", *r = "raw";
+  const char s[] = "serial", r[] = "raw";
   int xc = 0;
 
   switch (slen) {
@@ -153,8 +153,8 @@ SEXP rnng_matcharg(SEXP mode) {
 
   const char *mod = CHAR(STRING_ELT(mode, 0));
   size_t slen = strlen(mod);
-  const char *s = "serial", *ch = "character", *co = "complex", *d = "double",
-    *i = "integer", *l = "logical", *n = "numeric", *r = "raw";
+  const char s[] = "serial", ch[] = "character", co[] = "complex", d[] = "double",
+    i[] = "integer", l[] = "logical", n[] = "numeric", r[] = "raw";
   int xc = 0;
 
   switch (slen) {
@@ -191,8 +191,8 @@ SEXP rnng_matchargs(SEXP mode) {
 
   const char *mod = CHAR(STRING_ELT(mode, 0));
   size_t slen = strlen(mod);
-  const char *ch = "character", *co = "complex", *d = "double",
-    *i = "integer", *l = "logical", *n = "numeric", *r = "raw";
+  const char ch[] = "character", co[] = "complex", d[] = "double",
+    i[] = "integer", l[] = "logical", n[] = "numeric", r[] = "raw";
   int xc = 0;
 
   switch (slen) {
@@ -389,9 +389,9 @@ SEXP rnng_protocol_open(SEXP protocol, SEXP raw) {
   const int rw = LOGICAL(raw)[0];
 
   size_t slen = strlen(pro);
-  const char *bus = "bus", *pair = "pair", *push = "push", *pull = "pull",
-    *pub = "pub", *sub = "sub", *req = "req", *rep = "rep", *sur = "surveyor",
-    *res = "respondent";
+  const char bus[] = "bus", pair[] = "pair", push[] = "push", pull[] = "pull",
+    pub[] = "pub", sub[] = "sub", req[] = "req", rep[] = "rep", sur[] = "surveyor",
+    res[] = "respondent";
 
   nng_socket *sock;
   const char *pname;
@@ -565,7 +565,7 @@ SEXP rnng_dial(SEXP socket, SEXP url) {
   int xc;
   SEXP dialer, klass;
 
-  xc = nng_dial(*sock, up, dp, 2u);
+  xc = nng_dial(*sock, up, dp, NNG_FLAG_NONBLOCK);
   if (xc) {
     R_Free(dp);
     return mk_error(xc);
@@ -699,7 +699,7 @@ SEXP rnng_dialer_start(SEXP dialer, SEXP async) {
     error_return("'dialer' is not a valid Dialer");
   nng_dialer *dial = (nng_dialer *) R_ExternalPtrAddr(dialer);
   const Rboolean asy = Rf_asLogical(async);
-  int flags = asy == 0 ? 0 : 2u;
+  int flags = asy == 0 ? 0 : NNG_FLAG_NONBLOCK;
   int xc = nng_dialer_start(*dial, flags);
   if (xc)
     return mk_error(xc);
@@ -768,7 +768,7 @@ SEXP rnng_send(SEXP socket, SEXP data, SEXP block, SEXP echo) {
 
   if (TYPEOF(block) == LGLSXP) {
 
-    xc = blk ? nng_send(*sock, dp, xlen, 0) : nng_send(*sock, dp, xlen, 2u);
+    xc = blk ? nng_send(*sock, dp, xlen, 0) : nng_send(*sock, dp, xlen, NNG_FLAG_NONBLOCK);
 
   } else {
 
@@ -815,7 +815,7 @@ SEXP rnng_recv(SEXP socket, SEXP mode, SEXP block, SEXP keep) {
 
   if (TYPEOF(block) == LGLSXP) {
     const int blk = LOGICAL(block)[0];
-    xc = blk ? nng_recv(*sock, &buf, &sz, 1u): nng_recv(*sock, &buf, &sz, 3u);
+    xc = blk ? nng_recv(*sock, &buf, &sz, NNG_FLAG_ALLOC): nng_recv(*sock, &buf, &sz, NNG_FLAG_ALLOC + NNG_FLAG_NONBLOCK);
     if (xc)
       return mk_error(xc);
     res = nano_decode(buf, sz, mod, kpr);
@@ -860,7 +860,7 @@ SEXP rnng_ctx_send(SEXP context, SEXP data, SEXP timeout, SEXP echo) {
 
   if (TYPEOF(timeout) == LGLSXP) {
     const int blk = LOGICAL(timeout)[0];
-    dur = blk ? -2 : 0;
+    dur = blk ? NNG_DURATION_DEFAULT : NNG_DURATION_ZERO;
   } else {
     dur = (nng_duration) Rf_asInteger(timeout);
   }
@@ -910,7 +910,7 @@ SEXP rnng_ctx_recv(SEXP context, SEXP mode, SEXP timeout, SEXP keep) {
 
   if (TYPEOF(timeout) == LGLSXP) {
     const int blk = LOGICAL(timeout)[0];
-    dur = blk ? -2 : 0;
+    dur = blk ? NNG_DURATION_DEFAULT : NNG_DURATION_ZERO;
   } else {
     dur = (nng_duration) Rf_asInteger(timeout);
   }
@@ -953,7 +953,7 @@ SEXP rnng_stream_send(SEXP stream, SEXP data, SEXP timeout, SEXP echo) {
 
   if (TYPEOF(timeout) == LGLSXP) {
     const int blk = LOGICAL(timeout)[0];
-    dur = blk ? -2 : 0;
+    dur = blk ? NNG_DURATION_DEFAULT : NNG_DURATION_ZERO;
   } else {
     dur = (nng_duration) Rf_asInteger(timeout);
   }
@@ -1011,7 +1011,7 @@ SEXP rnng_stream_recv(SEXP stream, SEXP mode, SEXP timeout, SEXP keep, SEXP byte
 
   if (TYPEOF(timeout) == LGLSXP) {
     const int blk = LOGICAL(timeout)[0];
-    dur = blk ? -2 : 0;
+    dur = blk ? NNG_DURATION_DEFAULT : NNG_DURATION_ZERO;
   } else {
     dur = (nng_duration) Rf_asInteger(timeout);
   }

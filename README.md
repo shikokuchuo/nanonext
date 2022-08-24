@@ -384,7 +384,7 @@ aio
 #> < recvAio >
 #>  - $data for message data
 aio$data |> str()
-#>  num [1:100000000] -0.181 0.766 0.436 -0.932 0.207 ...
+#>  num [1:100000000] 0.1423 0.7552 -0.0453 0.4004 1.1502 ...
 ```
 
 As `call_aio()` is blocking and will wait for completion, an alternative
@@ -537,11 +537,11 @@ ncurl("http://httpbin.org/headers")
 #>   [1] 7b 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73
 #>  [26] 74 22 3a 20 22 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22
 #>  [51] 58 2d 41 6d 7a 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31
-#>  [76] 2d 36 33 30 34 65 31 65 35 2d 30 66 64 32 30 31 38 63 32 31 66 64 66 63 36
-#> [101] 30 30 66 64 32 31 34 35 61 22 0a 20 20 7d 0a 7d 0a
+#>  [76] 2d 36 33 30 35 35 63 62 65 2d 35 35 37 38 64 35 61 36 31 34 63 39 30 30 35
+#> [101] 62 33 64 37 30 62 36 65 66 22 0a 20 20 7d 0a 7d 0a
 #> 
 #> $data
-#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6304e1e5-0fd2018c21fdfc600fd2145a\"\n  }\n}\n"
+#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-63055cbe-5578d5a614c9005b3d70b6ef\"\n  }\n}\n"
 ```
 
 For advanced use, supports additional HTTP methods such as POST or PUT.
@@ -556,7 +556,7 @@ res
 #>  - $raw for raw message
 
 call_aio(res)$data
-#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6304e1e5-7177b71022dd467f34663bb6\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"213.86.169.34\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
+#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-63055cbe-1fc911a4236b97b030a86b5e\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"185.225.45.49\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
 ```
 
 In this respect, it may be used as a performant and lightweight method
@@ -601,10 +601,10 @@ s |> send('{"action": "subscribe", "symbols": "EURUSD"}')
 #> [26] 73 79 6d 62 6f 6c 73 22 3a 20 22 45 55 52 55 53 44 22 7d 00
 
 s |> recv(keep.raw = FALSE)
-#> [1] "{\"s\":\"EURUSD\",\"a\":0.99903,\"b\":0.999,\"dc\":\"0.5215\",\"dd\":\"0.0052\",\"ppms\":false,\"t\":1661264360000}"
+#> [1] "{\"s\":\"EURUSD\",\"a\":0.9974,\"b\":0.9971,\"dd\":\"0.0036\",\"dc\":\"0.3589\",\"ppms\":false,\"t\":1661295804000}"
 
 s |> recv(keep.raw = FALSE)
-#> [1] "{\"s\":\"EURUSD\",\"a\":0.99904,\"b\":0.99901,\"dc\":\"0.5225\",\"dd\":\"0.0052\",\"ppms\":false,\"t\":1661264360000}"
+#> [1] "{\"s\":\"EURUSD\",\"a\":0.99713,\"b\":0.9971,\"dc\":\"0.3320\",\"dd\":\"0.0033\",\"ppms\":false,\"t\":1661295808000}"
 
 close(s)
 ```
@@ -642,7 +642,7 @@ The environment variable `Sys.setenv(NANONEXT_TLS=1)` may also be set
 prior to installation to enable TLS support if ‘libmbedtls’ is installed
 in a non-standard location.
 
-TLS supports allows connection to secure https and wss sites, use of
+TLS support allows connection to secure ‘https’ and ‘wss’ sites, use of
 `sha256()` and enhances authentication in `messenger()`.
 
 ### Links
