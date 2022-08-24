@@ -21,9 +21,32 @@
 
 #ifdef NANONEXT_TLS
 #include <mbedtls/md.h>
+#include <mbedtls/sha256.h>
+#include <mbedtls/version.h>
 
-int mbedtls_sha256(const unsigned char *input, size_t ilen,
-                   unsigned char *output, int is224);
+#if MBEDTLS_VERSION_MAJOR < 3
+
+SEXP rnng_sha256(SEXP x) {
+
+  SEXP out;
+  int xc = 0;
+  unsigned char *buf = RAW(x);
+  size_t sz = Rf_xlength(x);
+
+  PROTECT(out = Rf_allocVector(RAWSXP, 32));
+  unsigned char *outp = RAW(out);
+  xc = mbedtls_sha256_ret(buf, sz, outp, 0);
+  if (xc)
+    return mk_error(xc);
+
+  Rf_classgets(out, Rf_mkString("nanoHash"));
+  UNPROTECT(1);
+
+  return out;
+
+}
+
+#else
 
 SEXP rnng_sha256(SEXP x) {
 
@@ -44,6 +67,8 @@ SEXP rnng_sha256(SEXP x) {
   return out;
 
 }
+
+#endif
 
 SEXP rnng_sha256hmac(SEXP x, SEXP key) {
 

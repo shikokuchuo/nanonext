@@ -21,6 +21,9 @@
 #define NANONEXT_SUPPLEMENTALS
 #include <time.h>
 #include "nanonext.h"
+#ifdef NANONEXT_TLS
+#include <mbedtls/version.h>
+#endif
 
 // finalizers ------------------------------------------------------------------
 
@@ -63,35 +66,40 @@ SEXP rnng_strerror(SEXP error) {
 
 }
 
+#ifdef NANONEXT_TLS
+
 SEXP rnng_version(void) {
 
-  const char *ver;
-  char *tls;
-  nng_tls_config *cfg;
-  int xc;
   SEXP version;
 
-  ver = nng_version();
-  xc = nng_tls_config_alloc(&cfg, NNG_TLS_MODE_CLIENT);
-  if (xc) {
-    tls = "No TLS Support";
-  } else{
-    tls = "TLS supported";
-    nng_tls_config_free(cfg);
-  }
   PROTECT(version = Rf_allocVector(STRSXP, 2));
-  SET_STRING_ELT(version, 0, Rf_mkChar(ver));
-  SET_STRING_ELT(version, 1, Rf_mkChar(tls));
-
+  SET_STRING_ELT(version, 0, Rf_mkChar(nng_version()));
+  SET_STRING_ELT(version, 1, Rf_mkChar(MBEDTLS_VERSION_STRING_FULL));
   UNPROTECT(1);
+
   return version;
 
 }
 
+#else
+
+SEXP rnng_version(void) {
+
+  SEXP version;
+
+  PROTECT(version = Rf_allocVector(STRSXP, 2));
+  SET_STRING_ELT(version, 0, Rf_mkChar(nng_version()));
+  SET_STRING_ELT(version, 1, Rf_mkChar("No TLS Support"));
+  UNPROTECT(1);
+
+  return version;
+
+}
+
+#endif
+
 SEXP rnng_scm(void) {
-
   return R_MissingArg;
-
 }
 
 SEXP rnng_clock(void) {
@@ -336,8 +344,8 @@ SEXP rnng_stream_dial(SEXP url, SEXP textframes) {
 
   if (!strcmp(up->u_scheme, "ws") || !strcmp(up->u_scheme, "wss")) {
     if (mod &&
-        ((xc = nng_stream_dialer_set_bool(dp, NNG_OPT_WS_RECV_TEXT, 1)) ||
-        (xc = nng_stream_dialer_set_bool(dp, NNG_OPT_WS_SEND_TEXT, 1)))) {
+        ((xc = nng_stream_dialer_set_bool(dp, "ws:recv-text", 1)) ||
+        (xc = nng_stream_dialer_set_bool(dp, "ws:send-text", 1)))) {
       nng_stream_dialer_free(dp);
       nng_url_free(up);
       return mk_error(xc);
@@ -429,8 +437,8 @@ SEXP rnng_stream_listen(SEXP url, SEXP textframes) {
 
   if (!strcmp(up->u_scheme, "ws") || !strcmp(up->u_scheme, "wss")) {
     if (mod &&
-        ((xc = nng_stream_listener_set_bool(lp, NNG_OPT_WS_RECV_TEXT, 1)) ||
-        (xc = nng_stream_listener_set_bool(lp, NNG_OPT_WS_SEND_TEXT, 1)))) {
+        ((xc = nng_stream_listener_set_bool(lp, "ws:recv-text", 1)) ||
+        (xc = nng_stream_listener_set_bool(lp, "ws:send-text", 1)))) {
       nng_stream_listener_free(lp);
       nng_url_free(up);
       return mk_error(xc);
@@ -446,7 +454,7 @@ SEXP rnng_stream_listen(SEXP url, SEXP textframes) {
       return mk_error(xc);
     }
     if ((xc = nng_tls_config_auth_mode(cfg, NNG_TLS_AUTH_MODE_OPTIONAL)) ||
-        (xc = nng_stream_listener_set_ptr(lp, NNG_OPT_TLS_CONFIG, cfg))) {
+        (xc = nng_stream_listener_set_ptr(lp, "tls-config", cfg))) {
       nng_tls_config_free(cfg);
       nng_stream_listener_free(lp);
       nng_url_free(up);

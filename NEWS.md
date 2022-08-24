@@ -8,6 +8,7 @@
 
 #### Updates
 
+* `nng_version()` now returns the mbedTLS library version number where TLS is supported.
 * `device()` gains a confirmation prompt when running interactively for more safety.
 
 # nanonext 0.5.3

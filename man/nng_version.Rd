@@ -10,18 +10,19 @@ nng_version()
 A character vector of length 2.
 }
 \description{
-Returns the version of 'libnng' used and whether TLS is supported.
+Returns the version of the 'libnng' library, and also 'libmbedtls' if
+    available or else "No TLS Support".
 }
 \section{TLS Support}{
 
 
-    If a system installation of Mbed TLS ‘libmbedtls’ is detected in the
+    If a system installation of Mbed TLS 'libmbedtls' is detected in the
     standard filesystem locations, NNG will link against this and be built
     with TLS support.
 
-    The environment variable Sys.setenv(NANONEXT_TLS=1) may also be set prior
-    to installation to enable TLS support if ‘libmbedtls’ is installed in a
-    non-standard location.
+    The environment variable \code{Sys.setenv(NANONEXT_TLS=1)} may also be
+    set prior to installation to enable TLS support if 'libmbedtls' is
+    installed in a non-standard location.
 
     Note: this is not applicable to Windows systems.
 }

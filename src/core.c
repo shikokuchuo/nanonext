@@ -860,7 +860,7 @@ SEXP rnng_ctx_send(SEXP context, SEXP data, SEXP timeout, SEXP echo) {
 
   if (TYPEOF(timeout) == LGLSXP) {
     const int blk = LOGICAL(timeout)[0];
-    dur = blk ? NNG_DURATION_DEFAULT : NNG_DURATION_ZERO;
+    dur = blk ? NNG_DURATION_DEFAULT : 0;
   } else {
     dur = (nng_duration) Rf_asInteger(timeout);
   }
@@ -910,7 +910,7 @@ SEXP rnng_ctx_recv(SEXP context, SEXP mode, SEXP timeout, SEXP keep) {
 
   if (TYPEOF(timeout) == LGLSXP) {
     const int blk = LOGICAL(timeout)[0];
-    dur = blk ? NNG_DURATION_DEFAULT : NNG_DURATION_ZERO;
+    dur = blk ? NNG_DURATION_DEFAULT : 0;
   } else {
     dur = (nng_duration) Rf_asInteger(timeout);
   }
@@ -953,7 +953,7 @@ SEXP rnng_stream_send(SEXP stream, SEXP data, SEXP timeout, SEXP echo) {
 
   if (TYPEOF(timeout) == LGLSXP) {
     const int blk = LOGICAL(timeout)[0];
-    dur = blk ? NNG_DURATION_DEFAULT : NNG_DURATION_ZERO;
+    dur = blk ? NNG_DURATION_DEFAULT : 0;
   } else {
     dur = (nng_duration) Rf_asInteger(timeout);
   }
@@ -1011,7 +1011,7 @@ SEXP rnng_stream_recv(SEXP stream, SEXP mode, SEXP timeout, SEXP keep, SEXP byte
 
   if (TYPEOF(timeout) == LGLSXP) {
     const int blk = LOGICAL(timeout)[0];
-    dur = blk ? NNG_DURATION_DEFAULT : NNG_DURATION_ZERO;
+    dur = blk ? NNG_DURATION_DEFAULT : 0;
   } else {
     dur = (nng_duration) Rf_asInteger(timeout);
   }
