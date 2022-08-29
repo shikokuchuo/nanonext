@@ -65,8 +65,9 @@
 </ul></div>
 <div class="section level5">
 <h5 id="updates-0-5-3-9000">Updates<a class="anchor" aria-label="anchor" href="#updates-0-5-3-9000"></a></h5>
-<ul><li>
-<code><a href="../reference/nng_version.html">nng_version()</a></code> now returns the mbedTLS library version number where TLS is supported.</li>
+<ul><li>‘libmbedtls’ is now built from source upon install so the package always has TLS support and uses the latest v3.2.1 (build 869298b). Windows binaries also updated to include TLS support.</li>
+<li>
+<code><a href="../reference/nng_version.html">nng_version()</a></code> now returns the mbedTLS library version number.</li>
 <li>
 <code><a href="../reference/device.html">device()</a></code> gains a confirmation prompt when running interactively for more safety.</li>
 </ul></div>

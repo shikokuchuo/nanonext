@@ -98,16 +98,10 @@ enables sending and receiving of TEXT frames (ignored otherwise).</p></dd>
     <p>A Stream is used for raw byte stream connections. Byte streams are
     reliable in that data will not be delivered out of order, or with portions
     missing.</p>
+<p>Can be used to dial a (secure) websocket address starting 'ws://' or
+    'wss://'. It is often the case that 'textframes' needs to be set to TRUE.</p>
 <p>Specify only one of 'dial' or 'listen'. If both are specified, 'listen'
     will be ignored.</p>
-    </div>
-    <div id="tls-support">
-    <h2>TLS Support</h2>
-    
-
-
-<p>Dialing a secure websocket address starting 'wss://' is supported if
-    <code><a href="nng_version.html">nng_version</a></code> shows 'TLS supported'.</p>
     </div>
 
     <div id="ref-examples">
