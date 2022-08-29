@@ -1,2 +1,2 @@
 #!/bin/sh
-rm -rf src/Makevars include lib
+rm -rf src/Makevars temp

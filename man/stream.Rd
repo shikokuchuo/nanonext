@@ -32,16 +32,12 @@ A Stream is used for raw byte stream connections. Byte streams are
     reliable in that data will not be delivered out of order, or with portions
     missing.
 
+    Can be used to dial a (secure) websocket address starting 'ws://' or
+    'wss://'. It is often the case that 'textframes' needs to be set to TRUE.
+
     Specify only one of 'dial' or 'listen'. If both are specified, 'listen'
     will be ignored.
 }
-\section{TLS Support}{
-
-
-    Dialing a secure websocket address starting 'wss://' is supported if
-    \code{\link{nng_version}} shows 'TLS supported'.
-}
-
 \examples{
 # will succeed only if there is an open connection at the address:
 s <- stream(dial = "tcp://127.0.0.1:5555")

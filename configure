@@ -2,30 +2,15 @@
 
 # Library version
 LIB_VER="722bf46"
+TLS_VER="869298b"
 
 # Initialise
 PKG_CFLAGS=""
-PKG_LIBS="-lnng"
-TLS_SUP=0
+PKG_LIBS="-lnng -lmbedtls -lmbedx509 -lmbedcrypto"
 
 # Find compiler
 CC=`${R_HOME}/bin/R CMD config CC`
 CFLAGS=`${R_HOME}/bin/R CMD config CFLAGS`
-
-# Detect mbedtls
-if [ -d "/usr/local/include/mbedtls" ] || [ -d "/usr/include/mbedtls" ] || [ -d "/usr/local/opt/mbedtls" ]
-then
-  echo "Found mbedtls... proceeding with TLS support"
-  PKG_CFLAGS="$PKG_CFLAGS -DNANONEXT_TLS=1"
-  PKG_LIBS="$PKG_LIBS -lmbedtls -lmbedx509 -lmbedcrypto"
-  TLS_SUP=1
-elif [ "$NANONEXT_TLS" ]
-then
-  echo "TLS flag set... proceeding with TLS support"
-  PKG_CFLAGS="$PKG_CFLAGS -DNANONEXT_TLS=1"
-  PKG_LIBS="$PKG_LIBS -lmbedtls -lmbedx509 -lmbedcrypto"
-  TLS_SUP=1
-fi
 
 # Detect -latomic linker flag for ARM architectures (Raspberry Pi etc.)
 echo "#include <stdint.h>
@@ -42,37 +27,45 @@ fi
 # Use system lib or download and compile from source (default)
 if [ "$NANONEXT_SYS" ]
 then
-  echo "System flag set... using libnng installation in /usr/local"
+  echo "System flag set... using libnng and libmbedtls installations in /usr/local"
   PKG_CFLAGS="-I/usr/local/include $PKG_CFLAGS"
   PKG_LIBS="-L/usr/local/lib $PKG_LIBS"
 else
-  echo "Downloading libnng source..."
-  curl -s -L https://api.github.com/repos/nanomsg/nng/tarball/$LIB_VER -o nng.tar.gz
-  gzip -dc nng.tar.gz | tar -xf -
-  rm -f nng.tar.gz
-  cd nanomsg-nng-$LIB_VER
-  mkdir build
-  cd build
-  echo "Compiling using cmake..."
+  echo "Finding cmake..."
   which cmake
   if [ $? -ne 0 ]
   then
     export PATH=$PATH:/Applications/CMake.app/Contents/bin
   fi
-  if [ "$TLS_SUP" -ne 0 ]
-  then
-    cmake -DCMAKE_POSITION_INDEPENDENT_CODE=1 -DCMAKE_COLOR_MAKEFILE=0 -DNNG_ENABLE_TLS=1 -DNNG_ELIDE_DEPRECATED=1 -DNNG_TESTS=0 -DNNG_TOOLS=0 ..
-  else
-    cmake -DCMAKE_POSITION_INDEPENDENT_CODE=1 -DCMAKE_COLOR_MAKEFILE=0 -DNNG_ELIDE_DEPRECATED=1 -DNNG_TESTS=0 -DNNG_TOOLS=0 ..
-  fi
+  echo "Downloading 'libmbedtls' source..."
+  curl -sL https://api.github.com/repos/Mbed-TLS/mbedtls/tarball/$TLS_VER -o mbedtls.tar.gz
+  gzip -dc mbedtls.tar.gz | tar -xf -
+  rm -f mbedtls.tar.gz
+  echo "complete. Downloading 'libnng' source..."
+  curl -sL https://api.github.com/repos/nanomsg/nng/tarball/$LIB_VER -o nng.tar.gz
+  gzip -dc nng.tar.gz | tar -xf -
+  rm -f nng.tar.gz
+  cd Mbed-TLS-mbedtls-$TLS_VER
+  mkdir build
+  cd build
+  echo "complete. Compiling 'libmbedtls' from source..."
+  cmake -DCMAKE_POSITION_INDEPENDENT_CODE=1 -DENABLE_TESTING=0 -DENABLE_PROGRAMS=0 -DCMAKE_INSTALL_PREFIX=../../temp ..
   cmake --build .
+  cmake --install .
   cd ../..
-  mkdir lib
-  mv -f nanomsg-nng-$LIB_VER/build/libnng.a lib
-  mv -f nanomsg-nng-$LIB_VER/include ./
+  rm -rf Mbed-TLS-mbedtls-$TLS_VER
+  cd nanomsg-nng-$LIB_VER
+  mkdir build
+  cd build
+  echo "complete. Compiling 'libnng' from source..."
+  cmake -DCMAKE_POSITION_INDEPENDENT_CODE=1 -DNNG_ENABLE_TLS=1 -DNNG_ELIDE_DEPRECATED=1 -DNNG_TESTS=0 -DNNG_TOOLS=0 -DCMAKE_INSTALL_PREFIX=../../temp ..
+  cmake --build .
+  cmake --install .
+  cd ../..
   rm -rf nanomsg-nng-$LIB_VER
-  PKG_CFLAGS="-I`pwd`/include $PKG_CFLAGS"
-  PKG_LIBS="-L`pwd`/lib $PKG_LIBS"
+  echo "complete."
+  PKG_CFLAGS="-I`pwd`/temp/include $PKG_CFLAGS"
+  PKG_LIBS="-L`pwd`/temp/lib $PKG_LIBS"
 fi
 
 # Write to Makevars

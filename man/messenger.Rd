@@ -12,9 +12,7 @@ a character string e.g. 'tcp://127.0.0.1:5555' (see \link{transports}).}
 
 \item{auth}{[default NULL] an R object (possessed by both parties) which
 serves as a pre-shared key on which to authenticate the communication.
-Note: the object is never sent, only a random subset of its sha256 hash
-(where mbedTLS is not available, an integer representation of the object
-serialisation is used which is a much less secure method).}
+Note: the object is never sent, only a random subset of its SHA256 hash.}
 }
 \value{
 Invisible NULL.

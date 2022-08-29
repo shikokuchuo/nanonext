@@ -19,11 +19,9 @@
 #define NANONEXT_INTERNALS
 #define NANONEXT_PROTOCOLS
 #define NANONEXT_SUPPLEMENTALS
-#include <time.h>
+#define NANONEXT_TIME
+#define NANONEXT_TLS
 #include "nanonext.h"
-#ifdef NANONEXT_TLS
-#include <mbedtls/version.h>
-#endif
 
 // finalizers ------------------------------------------------------------------
 
@@ -66,8 +64,6 @@ SEXP rnng_strerror(SEXP error) {
 
 }
 
-#ifdef NANONEXT_TLS
-
 SEXP rnng_version(void) {
 
   SEXP version;
@@ -80,23 +76,6 @@ SEXP rnng_version(void) {
   return version;
 
 }
-
-#else
-
-SEXP rnng_version(void) {
-
-  SEXP version;
-
-  PROTECT(version = Rf_allocVector(STRSXP, 2));
-  SET_STRING_ELT(version, 0, Rf_mkChar(nng_version()));
-  SET_STRING_ELT(version, 1, Rf_mkChar("No TLS Support"));
-  UNPROTECT(1);
-
-  return version;
-
-}
-
-#endif
 
 SEXP rnng_scm(void) {
   return R_MissingArg;

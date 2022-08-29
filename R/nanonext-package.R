@@ -99,7 +99,7 @@
 NULL
 
 .onUnload <- function(libpath) {
-  if (!is.null(warn <- getOption("nanonext.original.warn"))) {
+  if (length(warn <- getOption("nanonext.original.warn"))) {
     options(warn = warn)
     options(nanonext.original.warn = NULL)
   }

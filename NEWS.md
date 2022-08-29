@@ -8,7 +8,8 @@
 
 #### Updates
 
-* `nng_version()` now returns the mbedTLS library version number where TLS is supported.
+* 'libmbedtls' is now built from source upon install so the package always has TLS support and uses the latest v3.2.1 (build 869298b). Windows binaries also updated to include TLS support.
+* `nng_version()` now returns the mbedTLS library version number.
 * `device()` gains a confirmation prompt when running interactively for more safety.
 
 # nanonext 0.5.3

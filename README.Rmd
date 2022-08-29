@@ -416,7 +416,7 @@ By setting `async = TRUE`, it performs requests asynchronously, returning immedi
 For normal use, it takes just the URL. It can follow redirects.
 
 ```{r ncurl}
-ncurl("http://httpbin.org/headers")
+ncurl("https://httpbin.org/headers")
 
 ```
 
@@ -440,7 +440,7 @@ In this respect, it may be used as a performant and lightweight method for makin
 
 `stream()` exposes NNG's low-level byte stream interface for communicating with raw sockets. This may be used for connecting to arbitrary non-NNG endpoints.
 
-The stream interface can be used to communicate with websocket servers. Where TLS is enabled in the NNG library, connecting to secure websockets is configured automatically. The argument `textframes = TRUE` can be specified where the websocket server uses text rather than binary frames.
+The stream interface can be used to communicate with (secure) websocket servers. The argument `textframes = TRUE` can be specified where the websocket server uses text rather than binary frames.
 
 ```{r stream}
 # official demo API key used below
@@ -471,23 +471,17 @@ close(s)
 
 #### Linux / Mac / Solaris
 
-Installation from source requires 'cmake'. A pre-release version of 'libnng' 1.6.0 (722bf46) is downloaded and built automatically during package installation.
+Installation from source requires 'cmake'.
 
-Setting `Sys.setenv(NANONEXT_SYS=1)` will cause installation to attempt use of a system 'libnng' installed in `/usr/local` instead. This allows use of a custom build of 'libnng' (722bf46 or newer).
+A pre-release version of 'libnng' 1.6.0 (722bf46) and the latest release of 'libmbedtls' (v3.2.1) are downloaded and built automatically during package installation.
 
-System 'libnng' installations are not used by default as versions currently in system repositories are not new enough to support this version of nanonext.
+Setting `Sys.setenv(NANONEXT_SYS=1)` will cause installation to attempt use of a system 'libnng' and 'libmbedtls' installed in `/usr/local` instead. This allows use of custom builds of 'libnng' (722bf46 or newer) and 'libmbedtls' (v3 or newer).
+
+System libraries are not used by default as versions currently in system repositories are not new enough to support this version of nanonext.
 
 #### Windows
 
-Pre-built 'libnng' 1.6.0 (722bf46) libraries are downloaded automatically during the package installation process.
-
-#### TLS Support
-
-If a system installation of Mbed TLS 'libmbedtls' is detected in the standard filesystem locations, NNG will link against this and be built with TLS support.
-
-The environment variable `Sys.setenv(NANONEXT_TLS=1)` may also be set prior to installation to enable TLS support if 'libmbedtls' is installed in a non-standard location.
-
-TLS support allows connection to secure 'https' and 'wss' sites, use of `sha256()` and enhances authentication in `messenger()`.
+Pre-built 'libnng' 1.6.0 (722bf46) and 'libmbedtls' (v3.2.1) libraries are downloaded automatically during the package installation process.
 
 ### Links
 

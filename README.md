@@ -384,7 +384,7 @@ aio
 #> < recvAio >
 #>  - $data for message data
 aio$data |> str()
-#>  num [1:100000000] 1.13889 -0.06191 0.00581 -0.04252 0.60975 ...
+#>  num [1:100000000] 0.724 -0.803 0.718 -0.166 -1.309 ...
 ```
 
 As `call_aio()` is blocking and will wait for completion, an alternative
@@ -532,16 +532,16 @@ returning immediately with a ‘recvAio’.
 For normal use, it takes just the URL. It can follow redirects.
 
 ``` r
-ncurl("http://httpbin.org/headers")
+ncurl("https://httpbin.org/headers")
 #> $raw
 #>   [1] 7b 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73
 #>  [26] 74 22 3a 20 22 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22
 #>  [51] 58 2d 41 6d 7a 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31
-#>  [76] 2d 36 33 30 35 66 38 65 33 2d 34 38 38 35 66 31 34 38 31 65 31 64 34 34 62
-#> [101] 64 36 33 63 34 65 33 64 31 22 0a 20 20 7d 0a 7d 0a
+#>  [76] 2d 36 33 30 64 31 38 66 64 2d 37 38 36 35 36 66 63 61 33 32 39 30 62 63 38
+#> [101] 37 31 36 39 63 37 34 61 65 22 0a 20 20 7d 0a 7d 0a
 #> 
 #> $data
-#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6305f8e3-4885f1481e1d44bd63c4e3d1\"\n  }\n}\n"
+#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-630d18fd-78656fca3290bc87169c74ae\"\n  }\n}\n"
 ```
 
 For advanced use, supports additional HTTP methods such as POST or PUT.
@@ -556,7 +556,7 @@ res
 #>  - $raw for raw message
 
 call_aio(res)$data
-#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6305f8e3-3a5794da2e88fb832bb4c583\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"79.173.132.82\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
+#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-630d18fd-2755464c511bbcb5382e7c6f\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"185.225.45.49\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
 ```
 
 In this respect, it may be used as a performant and lightweight method
@@ -570,11 +570,9 @@ for making REST API requests.
 communicating with raw sockets. This may be used for connecting to
 arbitrary non-NNG endpoints.
 
-The stream interface can be used to communicate with websocket servers.
-Where TLS is enabled in the NNG library, connecting to secure websockets
-is configured automatically. The argument `textframes = TRUE` can be
-specified where the websocket server uses text rather than binary
-frames.
+The stream interface can be used to communicate with (secure) websocket
+servers. The argument `textframes = TRUE` can be specified where the
+websocket server uses text rather than binary frames.
 
 ``` r
 # official demo API key used below
@@ -601,10 +599,10 @@ s |> send('{"action": "subscribe", "symbols": "EURUSD"}')
 #> [26] 73 79 6d 62 6f 6c 73 22 3a 20 22 45 55 52 55 53 44 22 7d 00
 
 s |> recv(keep.raw = FALSE)
-#> [1] "{\"s\":\"EURUSD\",\"a\":0.9949,\"b\":0.9946,\"dc\":\"-0.1749\",\"dd\":\"-0.0017\",\"ppms\":false,\"t\":1661335780000}"
+#> [1] "{\"s\":\"EURUSD\",\"a\":0.9997,\"b\":0.99963,\"dc\":\"0.6122\",\"dd\":\"0.0061\",\"ppms\":false,\"t\":1661802750000}"
 
 s |> recv(keep.raw = FALSE)
-#> [1] "{\"s\":\"EURUSD\",\"a\":0.99463,\"b\":0.99462,\"dc\":\"-0.2021\",\"dd\":\"-0.0020\",\"ppms\":false,\"t\":1661335780000}"
+#> [1] "{\"s\":\"EURUSD\",\"a\":0.9997,\"b\":0.99966,\"dc\":\"0.6122\",\"dd\":\"0.0061\",\"ppms\":false,\"t\":1661802751000}"
 
 close(s)
 ```
@@ -615,35 +613,24 @@ close(s)
 
 #### Linux / Mac / Solaris
 
-Installation from source requires ‘cmake’. A pre-release version of
-‘libnng’ 1.6.0 (722bf46) is downloaded and built automatically during
+Installation from source requires ‘cmake’.
+
+A pre-release version of ‘libnng’ 1.6.0 (722bf46) and the latest release
+of ‘libmbedtls’ (v3.2.1) are downloaded and built automatically during
 package installation.
 
 Setting `Sys.setenv(NANONEXT_SYS=1)` will cause installation to attempt
-use of a system ‘libnng’ installed in `/usr/local` instead. This allows
-use of a custom build of ‘libnng’ (722bf46 or newer).
+use of a system ‘libnng’ and ‘libmbedtls’ installed in `/usr/local`
+instead. This allows use of custom builds of ‘libnng’ (722bf46 or newer)
+and ‘libmbedtls’ (v3 or newer).
 
-System ‘libnng’ installations are not used by default as versions
-currently in system repositories are not new enough to support this
-version of nanonext.
+System libraries are not used by default as versions currently in system
+repositories are not new enough to support this version of nanonext.
 
 #### Windows
 
-Pre-built ‘libnng’ 1.6.0 (722bf46) libraries are downloaded
-automatically during the package installation process.
-
-#### TLS Support
-
-If a system installation of Mbed TLS ‘libmbedtls’ is detected in the
-standard filesystem locations, NNG will link against this and be built
-with TLS support.
-
-The environment variable `Sys.setenv(NANONEXT_TLS=1)` may also be set
-prior to installation to enable TLS support if ‘libmbedtls’ is installed
-in a non-standard location.
-
-TLS support allows connection to secure ‘https’ and ‘wss’ sites, use of
-`sha256()` and enhances authentication in `messenger()`.
+Pre-built ‘libnng’ 1.6.0 (722bf46) and ‘libmbedtls’ (v3.2.1) libraries
+are downloaded automatically during the package installation process.
 
 ### Links
 

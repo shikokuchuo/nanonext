@@ -56,15 +56,8 @@ nano cURL - a minimalist http(s) client.
     string at \code{$raw} and \code{$data} will be NULL.
 }
 
-\section{TLS Support}{
-
-
-    Connecting to secure https sites is supported if \code{\link{nng_version}}
-    shows 'TLS supported'.
-}
-
 \examples{
-ncurl("http://httpbin.org/get")
+ncurl("https://httpbin.org/get")
 ncurl("http://httpbin.org/put",,,"PUT", list(Authorization = "Bearer APIKEY"), "hello world")
 ncurl("http://httpbin.org/post",,,"POST", c(`Content-Type` = "application/json"),'{"k":"v"}')
 

@@ -25,9 +25,7 @@
 #'     a character string e.g. 'tcp://127.0.0.1:5555' (see \link{transports}).
 #' @param auth [default NULL] an R object (possessed by both parties) which
 #'     serves as a pre-shared key on which to authenticate the communication.
-#'     Note: the object is never sent, only a random subset of its sha256 hash
-#'     (where mbedTLS is not available, an integer representation of the object
-#'     serialisation is used which is a much less secure method).
+#'     Note: the object is never sent, only a random subset of its SHA256 hash.
 #'
 #' @return Invisible NULL.
 #'
@@ -57,8 +55,7 @@ messenger <- function(url, auth = NULL) {
     options(nanonext.original.warn = NULL)
     invisible()
   })
-  if (is_error_value(lock <- sha256(auth)))
-    lock <- serialize(auth, NULL)[24:56]
+  lock <- sha256(auth)
   comb <- order(random(24L))
   key <- c(comb, as.integer(lock)[comb])
 

@@ -19,6 +19,10 @@
 #ifndef NANONEXT_H
 #define NANONEXT_H
 
+#ifdef NANONEXT_TIME
+#include <time.h>
+#endif
+
 #ifdef NANONEXT_INTERNALS
 #include <nng/nng.h>
 #endif
@@ -40,6 +44,12 @@
 #include <nng/supplemental/http/http.h>
 #include <nng/supplemental/tls/tls.h>
 #include <nng/supplemental/util/platform.h>
+#endif
+
+#ifdef NANONEXT_TLS
+#include <mbedtls/md.h>
+#include <mbedtls/sha256.h>
+#include <mbedtls/version.h>
 #endif
 
 #define R_NO_REMAP
