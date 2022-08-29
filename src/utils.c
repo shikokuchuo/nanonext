@@ -689,3 +689,48 @@ SEXP rnng_matchwarn(SEXP warn) {
 
 }
 
+// sha256 ----------------------------------------------------------------------
+
+SEXP rnng_sha256(SEXP x) {
+
+  SEXP out;
+  int xc = 0;
+  unsigned char *buf = RAW(x);
+  size_t sz = Rf_xlength(x);
+
+  PROTECT(out = Rf_allocVector(RAWSXP, 32));
+  unsigned char *outp = RAW(out);
+  xc = mbedtls_sha256(buf, sz, outp, 0);
+  if (xc)
+    return mk_error(xc);
+
+  Rf_classgets(out, Rf_mkString("nanoHash"));
+  UNPROTECT(1);
+
+  return out;
+
+}
+
+SEXP rnng_sha256hmac(SEXP x, SEXP key) {
+
+  SEXP out;
+  int xc = 0;
+  unsigned char *buf = RAW(x);
+  size_t sz = Rf_xlength(x);
+  unsigned char *kbuf = RAW(key);
+  size_t ksz = Rf_xlength(key);
+
+  PROTECT(out = Rf_allocVector(RAWSXP, 32));
+  unsigned char *outp = RAW(out);
+  xc = mbedtls_md_hmac(mbedtls_md_info_from_type(MBEDTLS_MD_SHA256),
+                       kbuf, ksz, buf, sz, outp);
+  if (xc)
+    return mk_error(xc);
+
+  Rf_classgets(out, Rf_mkString("nanoHash"));
+  UNPROTECT(1);
+
+  return out;
+
+}
+

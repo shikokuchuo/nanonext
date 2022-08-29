@@ -19,20 +19,17 @@
 #' Cryptographic Hashing Using the SHA256 Algorithm
 #'
 #' Returns a SHA256 hash or HMAC of the supplied R object. Uses the optimised
-#'     implementation from the mbedTLS library.
+#'     implementation from the Mbed TLS library.
 #'
-#' @param x an object. A raw vector or character string will be hashed directly
-#'     whilst other objects are serialised first.
+#' @param x an object.
 #' @param key [default NULL] optionally supply a secret key to generate an HMAC.
-#'     Returns the SHA256 hash of 'x' if missing or NULL. A raw vector or
-#'     character string will be used directly whilst other objects are
-#'     serialised first.
+#'     Returns the SHA256 hash of 'x' if missing or NULL.
 #'
 #' @return A 'nanoHash' object - a raw vector of 32 bytes.
 #'
-#' @details Hashing capabilities rely on the 'mbedTLS' library. If the package
-#'     was not linked against 'mbedTLS' at install time, an errorValue 9 'not
-#'     supported' will be returned instead.
+#' @details For arguments 'x' and 'key', a raw vector is hashed directly, a
+#'     character string is converted using \code{\link{charToRaw}}, whilst other
+#'     objects are serialised first.
 #'
 #' @examples
 #' sha256("hello world!")

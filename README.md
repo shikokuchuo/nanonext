@@ -384,7 +384,7 @@ aio
 #> < recvAio >
 #>  - $data for message data
 aio$data |> str()
-#>  num [1:100000000] 0.724 -0.803 0.718 -0.166 -1.309 ...
+#>  num [1:100000000] 2.076 -1.221 -0.203 -0.586 -0.154 ...
 ```
 
 As `call_aio()` is blocking and will wait for completion, an alternative
@@ -537,11 +537,11 @@ ncurl("https://httpbin.org/headers")
 #>   [1] 7b 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73
 #>  [26] 74 22 3a 20 22 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22
 #>  [51] 58 2d 41 6d 7a 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31
-#>  [76] 2d 36 33 30 64 31 38 66 64 2d 37 38 36 35 36 66 63 61 33 32 39 30 62 63 38
-#> [101] 37 31 36 39 63 37 34 61 65 22 0a 20 20 7d 0a 7d 0a
+#>  [76] 2d 36 33 30 64 33 65 33 36 2d 36 31 63 39 37 63 33 62 34 66 62 32 34 61 30
+#> [101] 32 30 64 32 62 31 64 63 65 22 0a 20 20 7d 0a 7d 0a
 #> 
 #> $data
-#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-630d18fd-78656fca3290bc87169c74ae\"\n  }\n}\n"
+#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-630d3e36-61c97c3b4fb24a020d2b1dce\"\n  }\n}\n"
 ```
 
 For advanced use, supports additional HTTP methods such as POST or PUT.
@@ -556,7 +556,7 @@ res
 #>  - $raw for raw message
 
 call_aio(res)$data
-#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-630d18fd-2755464c511bbcb5382e7c6f\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"185.225.45.49\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
+#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-630d3e36-1e796a943d8190666a331a18\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"185.225.45.49\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
 ```
 
 In this respect, it may be used as a performant and lightweight method
@@ -599,10 +599,10 @@ s |> send('{"action": "subscribe", "symbols": "EURUSD"}')
 #> [26] 73 79 6d 62 6f 6c 73 22 3a 20 22 45 55 52 55 53 44 22 7d 00
 
 s |> recv(keep.raw = FALSE)
-#> [1] "{\"s\":\"EURUSD\",\"a\":0.9997,\"b\":0.99963,\"dc\":\"0.6122\",\"dd\":\"0.0061\",\"ppms\":false,\"t\":1661802750000}"
+#> [1] "{\"s\":\"EURUSD\",\"a\":1.0002,\"b\":0.9999,\"dc\":\"0.6619\",\"dd\":\"0.0066\",\"ppms\":false,\"t\":1661812280000}"
 
 s |> recv(keep.raw = FALSE)
-#> [1] "{\"s\":\"EURUSD\",\"a\":0.9997,\"b\":0.99966,\"dc\":\"0.6122\",\"dd\":\"0.0061\",\"ppms\":false,\"t\":1661802751000}"
+#> [1] "{\"s\":\"EURUSD\",\"a\":0.99996,\"b\":0.9999,\"dc\":\"0.6380\",\"dd\":\"0.0064\",\"ppms\":false,\"t\":1661812281000}"
 
 close(s)
 ```
@@ -615,9 +615,9 @@ close(s)
 
 Installation from source requires ‘cmake’.
 
-A pre-release version of ‘libnng’ 1.6.0 (722bf46) and the latest release
-of ‘libmbedtls’ (v3.2.1) are downloaded and built automatically during
-package installation.
+A pre-release version of ‘libnng’ v1.6.0 (722bf46) and the latest
+release of ‘libmbedtls’ v3.2.1 are downloaded and built automatically
+during package installation.
 
 Setting `Sys.setenv(NANONEXT_SYS=1)` will cause installation to attempt
 use of a system ‘libnng’ and ‘libmbedtls’ installed in `/usr/local`
@@ -629,7 +629,7 @@ repositories are not new enough to support this version of nanonext.
 
 #### Windows
 
-Pre-built ‘libnng’ 1.6.0 (722bf46) and ‘libmbedtls’ (v3.2.1) libraries
+Pre-built ‘libnng’ v1.6.0 (722bf46) and ‘libmbedtls’ v3.2.1 libraries
 are downloaded automatically during the package installation process.
 
 ### Links
@@ -637,8 +637,8 @@ are downloaded automatically during the package installation process.
 nanonext on CRAN: <https://cran.r-project.org/package=nanonext><br />
 Package website: <https://shikokuchuo.net/nanonext/><br />
 
-NNG website: <https://nng.nanomsg.org/><br /> NNG documentation:
-<https://nng.nanomsg.org/man/tip/><br />
+NNG website: <https://nng.nanomsg.org/><br /> Mbed TLS website:
+<https://tls.mbed.org/><br />
 
 [« Back to ToC](#table-of-contents)
 

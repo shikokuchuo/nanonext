@@ -78,7 +78,8 @@ R binding for NNG (Nanomsg Next Gen), a successor to ZeroMQ. NNG is a socket
     nanonext website: \url{https://shikokuchuo.net/nanonext/} \cr
     nanonext on CRAN: \url{https://cran.r-project.org/package=nanonext}
 
-    NNG website: \url{https://nng.nanomsg.org/}
+    NNG website: \url{https://nng.nanomsg.org/} \cr
+    Mbed TLS website: \url{https://tls.mbed.org/}
 }
 
 \author{

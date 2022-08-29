@@ -49,7 +49,7 @@ else
   mkdir build
   cd build
   echo "complete. Compiling 'libmbedtls' from source..."
-  cmake -DCMAKE_POSITION_INDEPENDENT_CODE=1 -DENABLE_TESTING=0 -DENABLE_PROGRAMS=0 -DCMAKE_INSTALL_PREFIX=../../temp ..
+  cmake -DCMAKE_POSITION_INDEPENDENT_CODE=1 -DENABLE_TESTING=0 -DENABLE_PROGRAMS=0 -DCMAKE_INSTALL_PREFIX=../../temp -DCMAKE_INSTALL_MESSAGE=NEVER ..
   cmake --build .
   cmake --install .
   cd ../..
@@ -58,7 +58,7 @@ else
   mkdir build
   cd build
   echo "complete. Compiling 'libnng' from source..."
-  cmake -DCMAKE_POSITION_INDEPENDENT_CODE=1 -DNNG_ENABLE_TLS=1 -DNNG_ELIDE_DEPRECATED=1 -DNNG_TESTS=0 -DNNG_TOOLS=0 -DCMAKE_INSTALL_PREFIX=../../temp ..
+  cmake -DCMAKE_POSITION_INDEPENDENT_CODE=1 -DNNG_ENABLE_TLS=1 -DNNG_ELIDE_DEPRECATED=1 -DNNG_TESTS=0 -DNNG_TOOLS=0 -DCMAKE_INSTALL_PREFIX=../../temp -DCMAKE_INSTALL_MESSAGE=NEVER ..
   cmake --build .
   cmake --install .
   cd ../..
