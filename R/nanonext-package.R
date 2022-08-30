@@ -84,7 +84,7 @@
 #'     nanonext on CRAN: \url{https://cran.r-project.org/package=nanonext}
 #'
 #'     NNG website: \url{https://nng.nanomsg.org/} \cr
-#'     MbedTLS website: \url{https://tls.mbed.org/}
+#'     Mbed TLS website: \url{https://tls.mbed.org/}
 #'
 #' @encoding UTF-8
 #' @author Charlie Gao \email{charlie.gao@@shikokuchuo.net}

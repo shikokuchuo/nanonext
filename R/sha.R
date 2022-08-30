@@ -19,11 +19,11 @@
 #' Cryptographic Hashing Using the SHA256 Algorithm
 #'
 #' Returns a SHA256 hash or HMAC of the supplied R object. Uses the optimised
-#'     implementation from the MbedTLS library.
+#'     implementation from the Mbed TLS library.
 #'
 #' @param x an object.
-#' @param key [default NULL] optionally supply a secret key to generate an HMAC.
-#'     Returns the SHA256 hash of 'x' if missing or NULL.
+#' @param key (optional) supply a secret key to generate an HMAC. If missing or
+#'     NULL, the SHA256 hash of 'x' is returned.
 #'
 #' @return A 'nanoHash' object - a raw vector of 32 bytes.
 #'

@@ -116,7 +116,7 @@ msleep <- function(msec) invisible(.Call(rnng_sleep, msec))
 
 #' NNG Random Number Generator
 #'
-#' Strictly not for statistical analysis. Not reproducible as no ability to set
+#' Strictly not for statistical analysis. Not reproducible. No ability to set
 #'     a seed value. Provides random numbers suitable for system functions such
 #'     as cryptographic key generation. Random values are obtained using
 #'     platform-specific strong cryptographic random number facilities where

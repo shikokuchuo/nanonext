@@ -2,14 +2,15 @@
 
 #### New Features
 
-* New `sha256()` fast, optimised cryptographic hash and HMAC generation using the 'MbedTLS' library.
+* New `sha256()` fast, optimised cryptographic hash and HMAC generation using the 'Mbed TLS' library.
+* `ncurl()` and `stream()` gain the argmument 'ca_file' for optionally specifying a certificate authority certificate chain file when connecting to secure sites.
 * `messenger()` gains the argument 'auth' for authenticating communications based on a pre-shared key.
 * `random()` gains the argument 'n' for generating a vector of random numbers.
 
 #### Updates
 
 * 'libmbedtls' is now built from source upon install so the package always has TLS support and uses the latest v3.2.1 (build 869298b). Windows binaries also updated to include TLS support.
-* `nng_version()` now returns the mbedTLS library version number.
+* `nng_version()` now returns the 'Mbed TLS' library version number.
 * `device()` gains a confirmation prompt when running interactively for more safety.
 
 # nanonext 0.5.3

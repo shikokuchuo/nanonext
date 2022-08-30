@@ -10,7 +10,8 @@ ncurl(
   convert = TRUE,
   method = NULL,
   headers = NULL,
-  data = NULL
+  data = NULL,
+  ca_file = NULL
 )
 }
 \arguments{
@@ -28,6 +29,11 @@ HTTP request headers e.g. \code{list(`Content-Type` = "text/plain")} or
 \code{c(Authorization = "Bearer APIKEY")}.}
 
 \item{data}{(optional) the request data to be submitted.}
+
+\item{ca_file}{(optional) applicable to secure HTTPS sites only. The path to
+a file containing X.509 certificate(s) in PEM format, comprising the
+certificate authority certificate chain. If missing or NULL, certificates
+are not validated.}
 }
 \value{
 Named list of 2 elements:

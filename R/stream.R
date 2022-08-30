@@ -31,6 +31,10 @@
 #'     (not all transports are supported).
 #' @param textframes [default FALSE] applicable to the websocket transport only,
 #'     enables sending and receiving of TEXT frames (ignored otherwise).
+#' @param ca_file (optional) applicable to secure websockets only. The path to a
+#'     file containing X.509 certificate(s) in PEM format, comprising the
+#'     certificate authority certificate chain. If missing or NULL, certificates
+#'     are not validated.
 #'
 #' @return A Stream (object of class 'nanoStream' and 'nano').
 #'
@@ -50,17 +54,16 @@
 #'
 #' @export
 #'
-stream <- function(dial = NULL, listen = NULL, textframes = FALSE) {
+stream <- function(dial = NULL, listen = NULL, textframes = FALSE, ca_file = NULL) {
 
-  textframes <- !missing(textframes) && isTRUE(textframes)
   if (missing(dial)) {
     if (missing(listen)) {
       stop("specify a URL for either 'dial' or 'listen'")
     } else {
-      .Call(rnng_stream_listen, listen, textframes)
+      .Call(rnng_stream_listen, listen, textframes, ca_file)
     }
   } else {
-    .Call(rnng_stream_dial, dial, textframes)
+    .Call(rnng_stream_dial, dial, textframes, ca_file)
   }
 
 }

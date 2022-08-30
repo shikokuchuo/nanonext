@@ -384,7 +384,7 @@ aio
 #> < recvAio >
 #>  - $data for message data
 aio$data |> str()
-#>  num [1:100000000] -0.242 -1.434 0.939 -1.093 1.177 ...
+#>  num [1:100000000] 1.531 0.167 -0.689 -0.619 1.451 ...
 ```
 
 As `call_aio()` is blocking and will wait for completion, an alternative
@@ -537,11 +537,11 @@ ncurl("https://httpbin.org/headers")
 #>   [1] 7b 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73
 #>  [26] 74 22 3a 20 22 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22
 #>  [51] 58 2d 41 6d 7a 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31
-#>  [76] 2d 36 33 30 64 65 65 39 63 2d 34 64 64 61 63 38 32 30 34 65 62 34 65 38 62
-#> [101] 39 35 38 35 38 65 33 37 35 22 0a 20 20 7d 0a 7d 0a
+#>  [76] 2d 36 33 30 65 38 33 36 38 2d 36 33 64 35 66 65 30 31 32 33 65 32 33 36 34
+#> [101] 32 34 37 30 35 62 35 63 30 22 0a 20 20 7d 0a 7d 0a
 #> 
 #> $data
-#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-630dee9c-4ddac8204eb4e8b95858e375\"\n  }\n}\n"
+#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-630e8368-63d5fe0123e236424705b5c0\"\n  }\n}\n"
 ```
 
 For advanced use, supports additional HTTP methods such as POST or PUT.
@@ -556,7 +556,7 @@ res
 #>  - $raw for raw message
 
 call_aio(res)$data
-#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-630dee9c-4f6cd4da07a203596404ca5d\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"212.161.55.98\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
+#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-630e8369-6dadfb4917077d153d623f45\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"185.225.45.49\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
 ```
 
 In this respect, it may be used as a performant and lightweight method
@@ -599,10 +599,10 @@ s |> send('{"action": "subscribe", "symbols": "EURUSD"}')
 #> [26] 73 79 6d 62 6f 6c 73 22 3a 20 22 45 55 52 55 53 44 22 7d 00
 
 s |> recv(keep.raw = FALSE)
-#> [1] "{\"s\":\"EURUSD\",\"a\":1.00371,\"b\":1.00369,\"dc\":\"0.2640\",\"dd\":\"0.0027\",\"ppms\":false,\"t\":1661857437000}"
+#> [1] "{\"s\":\"EURUSD\",\"a\":1.0017,\"b\":1.0014,\"dc\":\"0.0639\",\"dd\":\"0.0006\",\"ppms\":false,\"t\":1661895535000}"
 
 s |> recv(keep.raw = FALSE)
-#> [1] "{\"s\":\"EURUSD\",\"a\":1.00371,\"b\":1.00364,\"dc\":\"0.2640\",\"dd\":\"0.0027\",\"ppms\":false,\"t\":1661857437000}"
+#> [1] "{\"s\":\"EURUSD\",\"a\":1.0018,\"b\":1.0015,\"dc\":\"0.0739\",\"dd\":\"0.0007\",\"ppms\":false,\"t\":1661895540000}"
 
 close(s)
 ```
@@ -637,7 +637,7 @@ are downloaded automatically during the package installation process.
 nanonext on CRAN: <https://cran.r-project.org/package=nanonext><br />
 Package website: <https://shikokuchuo.net/nanonext/><br />
 
-NNG website: <https://nng.nanomsg.org/><br /> MbedTLS website:
+NNG website: <https://nng.nanomsg.org/><br /> Mbed TLS website:
 <https://tls.mbed.org/><br />
 
 [« Back to ToC](#table-of-contents)

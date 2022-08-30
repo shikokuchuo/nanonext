@@ -29,6 +29,10 @@
 #'     HTTP request headers e.g. \code{list(`Content-Type` = "text/plain")} or
 #'     \code{c(Authorization = "Bearer APIKEY")}.
 #' @param data (optional) the request data to be submitted.
+#' @param ca_file (optional) applicable to secure HTTPS sites only. The path to
+#'     a file containing X.509 certificate(s) in PEM format, comprising the
+#'     certificate authority certificate chain. If missing or NULL, certificates
+#'     are not validated.
 #'
 #' @return Named list of 2 elements:
 #'     \itemize{
@@ -63,13 +67,14 @@ ncurl <- function(url,
                   convert = TRUE,
                   method = NULL,
                   headers = NULL,
-                  data = NULL) {
+                  data = NULL,
+                  ca_file = NULL) {
 
   data <- if (!missing(data)) writeBin(object = data, con = raw())
 
   if (missing(async) || !isTRUE(async)) {
 
-    res <- .Call(rnng_ncurl, url, method, headers, data)
+    res <- .Call(rnng_ncurl, url, method, headers, data, ca_file)
     is.integer(res) && return(res)
 
     if (is.character(res)) {
@@ -84,7 +89,7 @@ ncurl <- function(url,
 
   } else {
 
-    aio <- .Call(rnng_ncurl_aio, url, method, headers, data)
+    aio <- .Call(rnng_ncurl_aio, url, method, headers, data, ca_file)
     is.integer(aio) && return(aio)
 
     convert <- missing(convert) || isTRUE(convert)

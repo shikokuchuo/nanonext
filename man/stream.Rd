@@ -4,7 +4,7 @@
 \alias{stream}
 \title{Open Stream}
 \usage{
-stream(dial = NULL, listen = NULL, textframes = FALSE)
+stream(dial = NULL, listen = NULL, textframes = FALSE, ca_file = NULL)
 }
 \arguments{
 \item{dial}{a URL to dial, specifying the transport and address as a character
@@ -17,6 +17,11 @@ character string e.g. 'ipc:///tmp/anyvalue' or 'tcp://127.0.0.1:5555'
 
 \item{textframes}{[default FALSE] applicable to the websocket transport only,
 enables sending and receiving of TEXT frames (ignored otherwise).}
+
+\item{ca_file}{(optional) applicable to secure websockets only. The path to a
+file containing X.509 certificate(s) in PEM format, comprising the
+certificate authority certificate chain. If missing or NULL, certificates
+are not validated.}
 }
 \value{
 A Stream (object of class 'nanoStream' and 'nano').

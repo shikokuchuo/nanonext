@@ -542,7 +542,7 @@ SEXP rnng_stream_send_aio(SEXP stream, SEXP data, SEXP timeout) {
 
 // ncurl aio -------------------------------------------------------------------
 
-SEXP rnng_ncurl_aio(SEXP http, SEXP method, SEXP headers, SEXP data) {
+SEXP rnng_ncurl_aio(SEXP http, SEXP method, SEXP headers, SEXP data, SEXP ca_file) {
 
   const char *httr = CHAR(STRING_ELT(http, 0));
   nano_aio *haio = R_Calloc(1, nano_aio);
@@ -575,6 +575,7 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP method, SEXP headers, SEXP data) {
     R_Free(haio);
     return mk_error(xc);
   }
+
   if (method != R_NilValue) {
     const char *met = CHAR(STRING_ELT(method, 0));
     xc = nng_http_req_set_method(handle->req, met);
@@ -587,6 +588,7 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP method, SEXP headers, SEXP data) {
       return mk_error(xc);
     }
   }
+
   if (headers != R_NilValue) {
     R_xlen_t hlen = Rf_xlength(headers);
     SEXP names = Rf_getAttrib(headers, R_NamesSymbol);
@@ -623,6 +625,7 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP method, SEXP headers, SEXP data) {
       break;
     }
   }
+
   if (data != R_NilValue) {
     unsigned char *dp = RAW(data);
     const size_t dlen = Rf_xlength(data) - 1;
@@ -636,6 +639,7 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP method, SEXP headers, SEXP data) {
       return mk_error(xc);
     }
   }
+
   xc = nng_http_res_alloc(&handle->res);
   if (xc) {
     nng_http_req_free(handle->req);
@@ -658,6 +662,7 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP method, SEXP headers, SEXP data) {
   }
 
   if (!strcmp(handle->url->u_scheme, "https")) {
+
     xc = nng_tls_config_alloc(&handle->cfg, NNG_TLS_MODE_CLIENT);
     if (xc) {
       nng_aio_free(haio->aio);
@@ -669,18 +674,35 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP method, SEXP headers, SEXP data) {
       R_Free(haio);
       return mk_error(xc);
     }
-    if ((xc = nng_tls_config_auth_mode(handle->cfg, NNG_TLS_AUTH_MODE_OPTIONAL)) ||
-        (xc = nng_http_client_set_tls(handle->cli, handle->cfg))) {
-      nng_tls_config_free(handle->cfg);
-      nng_aio_free(haio->aio);
-      nng_http_res_free(handle->res);
-      nng_http_req_free(handle->req);
-      nng_http_client_free(handle->cli);
-      nng_url_free(handle->url);
-      R_Free(handle);
-      R_Free(haio);
-      return mk_error(xc);
+    if (ca_file == R_NilValue) {
+      if ((xc = nng_tls_config_auth_mode(handle->cfg, NNG_TLS_AUTH_MODE_NONE)) ||
+          (xc = nng_http_client_set_tls(handle->cli, handle->cfg))) {
+        nng_tls_config_free(handle->cfg);
+        nng_aio_free(haio->aio);
+        nng_http_res_free(handle->res);
+        nng_http_req_free(handle->req);
+        nng_http_client_free(handle->cli);
+        nng_url_free(handle->url);
+        R_Free(handle);
+        R_Free(haio);
+        return mk_error(xc);
+      }
+    } else {
+      if ((xc = nng_tls_config_auth_mode(handle->cfg, NNG_TLS_AUTH_MODE_REQUIRED)) ||
+          (xc = nng_tls_config_ca_file(handle->cfg, CHAR(STRING_ELT(ca_file, 0)))) ||
+          (xc = nng_http_client_set_tls(handle->cli, handle->cfg))) {
+        nng_tls_config_free(handle->cfg);
+        nng_aio_free(haio->aio);
+        nng_http_res_free(handle->res);
+        nng_http_req_free(handle->req);
+        nng_http_client_free(handle->cli);
+        nng_url_free(handle->url);
+        R_Free(handle);
+        R_Free(haio);
+        return mk_error(xc);
+      }
     }
+
   }
 
   nng_http_client_transact(handle->cli, handle->req, handle->res, haio->aio);

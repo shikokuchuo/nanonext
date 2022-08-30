@@ -9,15 +9,15 @@ sha256(x, key = NULL)
 \arguments{
 \item{x}{an object.}
 
-\item{key}{[default NULL] optionally supply a secret key to generate an HMAC.
-Returns the SHA256 hash of 'x' if missing or NULL.}
+\item{key}{(optional) supply a secret key to generate an HMAC. If missing or
+NULL, the SHA256 hash of 'x' is returned.}
 }
 \value{
 A 'nanoHash' object - a raw vector of 32 bytes.
 }
 \description{
 Returns a SHA256 hash or HMAC of the supplied R object. Uses the optimised
-    implementation from the MbedTLS library.
+    implementation from the Mbed TLS library.
 }
 \details{
 For arguments 'x' and 'key', a raw vector is hashed directly, a
