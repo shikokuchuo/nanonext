@@ -344,7 +344,7 @@
 <span><span class="co">#&gt; &lt; recvAio &gt;</span></span>
 <span><span class="co">#&gt;  - $data for message data</span></span>
 <span><span class="va">aio</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] 2.076 -1.221 -0.203 -0.586 -0.154 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] -0.242 -1.434 0.939 -1.093 1.177 ...</span></span></code></pre></div>
 <p>As <code><a href="reference/call_aio.html">call_aio()</a></code> is blocking and will wait for completion, an alternative is to query <code>aio$data</code> directly. This will return an ‘unresolved’ logical NA value if the calculation is yet to complete.</p>
 <p>In this example the calculation is returned, but other operations may reside entirely on the server side, for example writing data to disk.</p>
 <p>In such a case, calling or querying the value confirms that the operation has completed, and provides the return value of the function, which may typically be NULL or an exit code.</p>
@@ -461,11 +461,11 @@
 <span><span class="co">#&gt;   [1] 7b 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73</span></span>
 <span><span class="co">#&gt;  [26] 74 22 3a 20 22 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22</span></span>
 <span><span class="co">#&gt;  [51] 58 2d 41 6d 7a 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31</span></span>
-<span><span class="co">#&gt;  [76] 2d 36 33 30 64 33 65 33 36 2d 36 31 63 39 37 63 33 62 34 66 62 32 34 61 30</span></span>
-<span><span class="co">#&gt; [101] 32 30 64 32 62 31 64 63 65 22 0a 20 20 7d 0a 7d 0a</span></span>
+<span><span class="co">#&gt;  [76] 2d 36 33 30 64 65 65 39 63 2d 34 64 64 61 63 38 32 30 34 65 62 34 65 38 62</span></span>
+<span><span class="co">#&gt; [101] 39 35 38 35 38 65 33 37 35 22 0a 20 20 7d 0a 7d 0a</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $data</span></span>
-<span><span class="co">#&gt; [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-630d3e36-61c97c3b4fb24a020d2b1dce\"\n  }\n}\n"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-630dee9c-4ddac8204eb4e8b95858e375\"\n  }\n}\n"</span></span></code></pre></div>
 <p>For advanced use, supports additional HTTP methods such as POST or PUT.</p>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ncurl.html">ncurl</a></span><span class="op">(</span><span class="st">"http://httpbin.org/post"</span>, async <span class="op">=</span> <span class="cn">TRUE</span>, method <span class="op">=</span> <span class="st">"POST"</span>,</span>
@@ -477,7 +477,7 @@
 <span><span class="co">#&gt;  - $raw for raw message</span></span>
 <span></span>
 <span><span class="fu"><a href="reference/call_aio.html">call_aio</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt; [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-630d3e36-1e796a943d8190666a331a18\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"185.225.45.49\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-630dee9c-4f6cd4da07a203596404ca5d\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"212.161.55.98\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"</span></span></code></pre></div>
 <p>In this respect, it may be used as a performant and lightweight method for making REST API requests.</p>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
@@ -505,10 +505,10 @@
 <span><span class="co">#&gt; [26] 73 79 6d 62 6f 6c 73 22 3a 20 22 45 55 52 55 53 44 22 7d 00</span></span>
 <span></span>
 <span><span class="va">s</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/recv.html">recv</a></span><span class="op">(</span>keep.raw <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "{\"s\":\"EURUSD\",\"a\":1.0002,\"b\":0.9999,\"dc\":\"0.6619\",\"dd\":\"0.0066\",\"ppms\":false,\"t\":1661812280000}"</span></span>
+<span><span class="co">#&gt; [1] "{\"s\":\"EURUSD\",\"a\":1.00371,\"b\":1.00369,\"dc\":\"0.2640\",\"dd\":\"0.0027\",\"ppms\":false,\"t\":1661857437000}"</span></span>
 <span></span>
 <span><span class="va">s</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/recv.html">recv</a></span><span class="op">(</span>keep.raw <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "{\"s\":\"EURUSD\",\"a\":0.99996,\"b\":0.9999,\"dc\":\"0.6380\",\"dd\":\"0.0064\",\"ppms\":false,\"t\":1661812281000}"</span></span>
+<span><span class="co">#&gt; [1] "{\"s\":\"EURUSD\",\"a\":1.00371,\"b\":1.00364,\"dc\":\"0.2640\",\"dd\":\"0.0027\",\"ppms\":false,\"t\":1661857437000}"</span></span>
 <span></span>
 <span><span class="fu"><a href="reference/close.html">close</a></span><span class="op">(</span><span class="va">s</span><span class="op">)</span></span></code></pre></div>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
@@ -534,7 +534,7 @@
 <h3 id="links">Links<a class="anchor" aria-label="anchor" href="#links"></a>
 </h3>
 <p>nanonext on CRAN: <a href="https://cran.r-project.org/package=nanonext" class="external-link uri">https://cran.r-project.org/package=nanonext</a><br> Package website: <a href="https://shikokuchuo.net/nanonext/" class="uri">https://shikokuchuo.net/nanonext/</a><br></p>
-<p>NNG website: <a href="https://nng.nanomsg.org/" class="external-link uri">https://nng.nanomsg.org/</a><br> Mbed TLS website: <a href="https://tls.mbed.org/" class="external-link uri">https://tls.mbed.org/</a><br></p>
+<p>NNG website: <a href="https://nng.nanomsg.org/" class="external-link uri">https://nng.nanomsg.org/</a><br> MbedTLS website: <a href="https://tls.mbed.org/" class="external-link uri">https://tls.mbed.org/</a><br></p>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
 <p>–</p>
 <p>Please note that this project is released with a <a href="https://shikokuchuo.net/nanonext/CODE_OF_CONDUCT.html">Contributor Code of Conduct</a>. By participating in this project you agree to abide by its terms.</p>
