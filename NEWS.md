@@ -2,7 +2,7 @@
 
 #### New Features
 
-* New `sha256()` fast, optimised cryptographic hash and HMAC generation using the 'mbedTLS' library.
+* New `sha256()` fast, optimised cryptographic hash and HMAC generation using the 'MbedTLS' library.
 * `messenger()` gains the argument 'auth' for authenticating communications based on a pre-shared key.
 * `random()` gains the argument 'n' for generating a vector of random numbers.
 

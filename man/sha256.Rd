@@ -17,17 +17,20 @@ A 'nanoHash' object - a raw vector of 32 bytes.
 }
 \description{
 Returns a SHA256 hash or HMAC of the supplied R object. Uses the optimised
-    implementation from the Mbed TLS library.
+    implementation from the MbedTLS library.
 }
 \details{
 For arguments 'x' and 'key', a raw vector is hashed directly, a
     character string is converted using \code{\link{charToRaw}}, whilst other
     objects are serialised first.
+
+    Use \code{as.character()} to convert the returned raw vector to a single
+    character string.
 }
 \examples{
 sha256("hello world!")
 
-# Converts to a single character string:
+# Converts to a character string:
 as.character(sha256("hello world!"))
 
 # Obtain HMAC:

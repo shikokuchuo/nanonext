@@ -489,7 +489,7 @@ nanonext on CRAN: <https://cran.r-project.org/package=nanonext><br />
 Package website: <https://shikokuchuo.net/nanonext/><br />
 
 NNG website: <https://nng.nanomsg.org/><br />
-Mbed TLS website: <https://tls.mbed.org/><br />
+MbedTLS website: <https://tls.mbed.org/><br />
 
 [&laquo; Back to ToC](#table-of-contents)
 

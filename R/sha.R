@@ -19,7 +19,7 @@
 #' Cryptographic Hashing Using the SHA256 Algorithm
 #'
 #' Returns a SHA256 hash or HMAC of the supplied R object. Uses the optimised
-#'     implementation from the Mbed TLS library.
+#'     implementation from the MbedTLS library.
 #'
 #' @param x an object.
 #' @param key [default NULL] optionally supply a secret key to generate an HMAC.
@@ -31,10 +31,13 @@
 #'     character string is converted using \code{\link{charToRaw}}, whilst other
 #'     objects are serialised first.
 #'
+#'     Use \code{as.character()} to convert the returned raw vector to a single
+#'     character string.
+#'
 #' @examples
 #' sha256("hello world!")
 #'
-#' # Converts to a single character string:
+#' # Converts to a character string:
 #' as.character(sha256("hello world!"))
 #'
 #' # Obtain HMAC:
