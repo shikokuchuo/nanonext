@@ -109,7 +109,16 @@
     <loc>https://shikokuchuo.net/nanonext/reference/setopt.html</loc>
   </url>
   <url>
+    <loc>https://shikokuchuo.net/nanonext/reference/sha224.html</loc>
+  </url>
+  <url>
     <loc>https://shikokuchuo.net/nanonext/reference/sha256.html</loc>
+  </url>
+  <url>
+    <loc>https://shikokuchuo.net/nanonext/reference/sha384.html</loc>
+  </url>
+  <url>
+    <loc>https://shikokuchuo.net/nanonext/reference/sha512.html</loc>
   </url>
   <url>
     <loc>https://shikokuchuo.net/nanonext/reference/socket.html</loc>

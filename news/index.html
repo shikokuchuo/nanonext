@@ -57,7 +57,7 @@
 <h2 class="page-header" data-toc-text="0.5.3.9000" id="nanonext-0539000">nanonext 0.5.3.9000<a class="anchor" aria-label="anchor" href="#nanonext-0539000"></a></h2>
 <div class="section level5">
 <h5 id="new-features-0-5-3-9000">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-5-3-9000"></a></h5>
-<ul><li>New <code><a href="../reference/sha256.html">sha256()</a></code> fast, optimised cryptographic hash and HMAC generation using the ‘Mbed TLS’ library.</li>
+<ul><li>Implements <code><a href="../reference/sha224.html">sha224()</a></code>, <code><a href="../reference/sha256.html">sha256()</a></code>, <code><a href="../reference/sha384.html">sha384()</a></code> and <code><a href="../reference/sha512.html">sha512()</a></code> series of fast, optimised cryptographic hash and HMAC generation functions using the ‘Mbed TLS’ library.</li>
 <li>
 <code><a href="../reference/ncurl.html">ncurl()</a></code> and <code><a href="../reference/stream.html">stream()</a></code> gain the argmument ‘ca_file’ for optionally specifying a certificate authority certificate chain file when connecting to secure sites.</li>
 <li>
@@ -67,7 +67,7 @@
 </ul></div>
 <div class="section level5">
 <h5 id="updates-0-5-3-9000">Updates<a class="anchor" aria-label="anchor" href="#updates-0-5-3-9000"></a></h5>
-<ul><li>‘libmbedtls’ is now built from source upon install so the package always has TLS support and uses the latest v3.2.1 (build 869298b). Windows binaries also updated to include TLS support.</li>
+<ul><li>‘libmbedtls’ is now built from source upon install so the package always has TLS support and uses the latest v3.2.1 release. Windows binaries also updated to include TLS support.</li>
 <li>
 <code><a href="../reference/nng_version.html">nng_version()</a></code> now returns the ‘Mbed TLS’ library version number.</li>
 <li>
