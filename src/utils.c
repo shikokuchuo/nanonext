@@ -20,7 +20,6 @@
 #define NANONEXT_PROTOCOLS
 #define NANONEXT_SUPPLEMENTALS
 #define NANONEXT_TIME
-#define NANONEXT_TLS
 #include "nanonext.h"
 
 // finalizers ------------------------------------------------------------------
@@ -61,19 +60,6 @@ SEXP rnng_strerror(SEXP error) {
 
   const int xc = Rf_asInteger(error);
   return Rf_mkString(nng_strerror(xc));
-
-}
-
-SEXP rnng_version(void) {
-
-  SEXP version;
-
-  PROTECT(version = Rf_allocVector(STRSXP, 2));
-  SET_STRING_ELT(version, 0, Rf_mkChar(nng_version()));
-  SET_STRING_ELT(version, 1, Rf_mkChar(MBEDTLS_VERSION_STRING_FULL));
-  UNPROTECT(1);
-
-  return version;
 
 }
 
@@ -725,51 +711,6 @@ SEXP rnng_matchwarn(SEXP warn) {
   }
 
   return Rf_ScalarInteger(xc);
-
-}
-
-// sha256 ----------------------------------------------------------------------
-
-SEXP rnng_sha256(SEXP x) {
-
-  SEXP out;
-  int xc = 0;
-  unsigned char *buf = RAW(x);
-  size_t sz = Rf_xlength(x);
-
-  PROTECT(out = Rf_allocVector(RAWSXP, 32));
-  unsigned char *outp = RAW(out);
-  xc = mbedtls_sha256(buf, sz, outp, 0);
-  if (xc)
-    return mk_error(xc);
-
-  Rf_classgets(out, Rf_mkString("nanoHash"));
-  UNPROTECT(1);
-
-  return out;
-
-}
-
-SEXP rnng_sha256hmac(SEXP x, SEXP key) {
-
-  SEXP out;
-  int xc = 0;
-  unsigned char *buf = RAW(x);
-  size_t sz = Rf_xlength(x);
-  unsigned char *kbuf = RAW(key);
-  size_t ksz = Rf_xlength(key);
-
-  PROTECT(out = Rf_allocVector(RAWSXP, 32));
-  unsigned char *outp = RAW(out);
-  xc = mbedtls_md_hmac(mbedtls_md_info_from_type(MBEDTLS_MD_SHA256),
-                       kbuf, ksz, buf, sz, outp);
-  if (xc)
-    return mk_error(xc);
-
-  Rf_classgets(out, Rf_mkString("nanoHash"));
-  UNPROTECT(1);
-
-  return out;
 
 }
 
