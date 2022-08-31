@@ -675,7 +675,8 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP method, SEXP headers, SEXP data, SEXP ca_fil
       return mk_error(xc);
     }
     if (ca_file == R_NilValue) {
-      if ((xc = nng_tls_config_auth_mode(handle->cfg, NNG_TLS_AUTH_MODE_NONE)) ||
+      if ((xc = nng_tls_config_server_name(handle->cfg, handle->url->u_hostname)) ||
+          (xc = nng_tls_config_auth_mode(handle->cfg, NNG_TLS_AUTH_MODE_NONE)) ||
           (xc = nng_http_client_set_tls(handle->cli, handle->cfg))) {
         nng_tls_config_free(handle->cfg);
         nng_aio_free(haio->aio);
@@ -688,8 +689,9 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP method, SEXP headers, SEXP data, SEXP ca_fil
         return mk_error(xc);
       }
     } else {
-      if ((xc = nng_tls_config_auth_mode(handle->cfg, NNG_TLS_AUTH_MODE_REQUIRED)) ||
+      if ((xc = nng_tls_config_server_name(handle->cfg, handle->url->u_hostname)) ||
           (xc = nng_tls_config_ca_file(handle->cfg, CHAR(STRING_ELT(ca_file, 0)))) ||
+          (xc = nng_tls_config_auth_mode(handle->cfg, NNG_TLS_AUTH_MODE_REQUIRED)) ||
           (xc = nng_http_client_set_tls(handle->cli, handle->cfg))) {
         nng_tls_config_free(handle->cfg);
         nng_aio_free(haio->aio);

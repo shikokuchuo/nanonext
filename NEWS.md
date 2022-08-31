@@ -12,6 +12,7 @@
 * 'libmbedtls' is now built from source upon install so the package always has TLS support and uses the latest v3.2.1 release. Windows binaries also updated to include TLS support.
 * `nng_version()` now returns the 'Mbed TLS' library version number.
 * `device()` gains a confirmation prompt when running interactively for more safety.
+* Fixes issue with `ncurl()` that caused a 26 cryptography error with certain secure sites using SNI.
 
 # nanonext 0.5.3
 
