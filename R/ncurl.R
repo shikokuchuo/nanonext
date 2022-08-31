@@ -34,8 +34,9 @@
 #'     certificate authority certificate chain. If missing or NULL, certificates
 #'     are not validated.
 #'
-#' @return Named list of 2 elements:
+#' @return Named list of 3 elements:
 #'     \itemize{
+#'     \item{\code{$status}} {- integer HTTP repsonse status code (200 - OK)}
 #'     \item{\code{$raw}} {- raw vector of the received resource (use
 #'     \code{\link{writeBin}} to save to a file).}
 #'     \item{\code{$data}} {- converted character string (if \code{'convert' = TRUE}
@@ -43,7 +44,8 @@
 #'     can be used to further parse this as html, json, xml etc. if required.}
 #'     }
 #'
-#'     Or else, if \code{async = TRUE}, a 'recvAio' (object of class 'recvAio').
+#'     Or else, if \code{async = TRUE}, an 'ncurlAio' (object of class 'ncurlAio'
+#'     and 'recvAio').
 #'
 #' @section Redirects:
 #'
@@ -72,30 +74,31 @@ ncurl <- function(url,
 
   data <- if (!missing(data)) writeBin(object = data, con = raw())
 
-  if (missing(async) || !isTRUE(async)) {
-
-    res <- .Call(rnng_ncurl, url, method, headers, data, ca_file)
-    is.integer(res) && return(res)
-
-    if (is.character(res)) {
-      continue <- if (interactive()) readline(sprintf("Follow redirect to <%s>? [Y/n] ", res)) else "n"
-      continue %in% c("n", "N", "no", "NO") && return(res)
-      return(ncurl(res))
-    }
-
-    data <- if (missing(convert) || isTRUE(convert)) tryCatch(rawToChar(res), error = function(e) NULL)
-
-    list(raw = res, data = data)
-
-  } else {
+  if (async) {
 
     aio <- .Call(rnng_ncurl_aio, url, method, headers, data, ca_file)
     is.integer(aio) && return(aio)
 
     convert <- missing(convert) || isTRUE(convert)
-    data <- raw <- NULL
+    status <- raw <- data <- NULL
     unresolv <- TRUE
     env <- new.env(hash = FALSE)
+    makeActiveBinding(sym = "status", fun = function(x) {
+      if (unresolv) {
+        res <- .Call(rnng_aio_http, aio)
+        missing(res) && return(.Call(rnng_aio_unresolv))
+        if (is.integer(res)) {
+          data <<- raw <<- res
+        } else {
+          status <<- res[[1L]]
+          raw <<- res[[2L]]
+          data <<- if (convert) tryCatch(rawToChar(raw), error = function(e) NULL)
+        }
+        aio <<- env[["aio"]] <<- NULL
+        unresolv <<- FALSE
+      }
+      status
+    }, env = env)
     makeActiveBinding(sym = "raw", fun = function(x) {
       if (unresolv) {
         res <- .Call(rnng_aio_http, aio)
@@ -103,8 +106,9 @@ ncurl <- function(url,
         if (is.integer(res)) {
           data <<- raw <<- res
         } else {
-          raw <<- res
-          data <<- if (convert) tryCatch(rawToChar(res), error = function(e) NULL)
+          status <<- res[[1L]]
+          raw <<- res[[2L]]
+          data <<- if (convert) tryCatch(rawToChar(raw), error = function(e) NULL)
         }
         aio <<- env[["aio"]] <<- NULL
         unresolv <<- FALSE
@@ -118,15 +122,30 @@ ncurl <- function(url,
         if (is.integer(res)) {
           data <<- raw <<- res
         } else {
-          raw <<- res
-          data <<- if (convert) tryCatch(rawToChar(res), error = function(e) NULL)
+          status <<- res[[1L]]
+          raw <<- res[[2L]]
+          data <<- if (convert) tryCatch(rawToChar(raw), error = function(e) NULL)
         }
         aio <<- env[["aio"]] <<- NULL
         unresolv <<- FALSE
       }
       data
     }, env = env)
-    `class<-`(`[[<-`(`[[<-`(env, "keep.raw", TRUE), "aio", aio), "recvAio")
+
+    `class<-`(`[[<-`(env, "aio", aio), c("ncurlAio", "recvAio"))
+
+  } else {
+
+    res <- .Call(rnng_ncurl, url, convert, method, headers, data, ca_file)
+
+    is.integer(res) && return(res)
+    is.character(res) && {
+      continue <- if (interactive()) readline(sprintf("Follow redirect to <%s>? [Y/n] ", res)) else "n"
+      continue %in% c("n", "N", "no", "NO") && return(res)
+      return(ncurl(res))
+    }
+
+    res
 
   }
 }

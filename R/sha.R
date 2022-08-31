@@ -49,18 +49,9 @@ sha224 <- function(x, key = NULL) {
 
   if (!is.raw(x))
     x <- if (is.character(x)) charToRaw(x) else serialize(x, NULL)
-
-  if (missing(key) || is.null(key)) {
-
-    .Call(rnng_sha224, x)
-
-  } else {
-
-    if (!is.raw(key))
-      key <- if (is.character(key)) charToRaw(key) else serialize(key, NULL)
-    .Call(rnng_sha224hmac, x, key)
-
-  }
+  if (!is.null(key) && !is.raw(key))
+    key <- if (is.character(key)) charToRaw(key) else serialize(key, NULL)
+  .Call(rnng_sha224, x, key)
 
 }
 
@@ -97,18 +88,9 @@ sha256 <- function(x, key = NULL) {
 
   if (!is.raw(x))
     x <- if (is.character(x)) charToRaw(x) else serialize(x, NULL)
-
-  if (missing(key) || is.null(key)) {
-
-    .Call(rnng_sha256, x)
-
-  } else {
-
-    if (!is.raw(key))
+  if (!is.null(key) && !is.raw(key))
       key <- if (is.character(key)) charToRaw(key) else serialize(key, NULL)
-    .Call(rnng_sha256hmac, x, key)
-
-  }
+  .Call(rnng_sha256, x, key)
 
 }
 
@@ -145,18 +127,9 @@ sha384 <- function(x, key = NULL) {
 
   if (!is.raw(x))
     x <- if (is.character(x)) charToRaw(x) else serialize(x, NULL)
-
-  if (missing(key) || is.null(key)) {
-
-    .Call(rnng_sha384, x)
-
-  } else {
-
-    if (!is.raw(key))
-      key <- if (is.character(key)) charToRaw(key) else serialize(key, NULL)
-    .Call(rnng_sha384hmac, x, key)
-
-  }
+  if (!is.null(key) && !is.raw(key))
+    key <- if (is.character(key)) charToRaw(key) else serialize(key, NULL)
+  .Call(rnng_sha384, x, key)
 
 }
 
@@ -193,18 +166,9 @@ sha512 <- function(x, key = NULL) {
 
   if (!is.raw(x))
     x <- if (is.character(x)) charToRaw(x) else serialize(x, NULL)
-
-  if (missing(key) || is.null(key)) {
-
-    .Call(rnng_sha512, x)
-
-  } else {
-
-    if (!is.raw(key))
-      key <- if (is.character(key)) charToRaw(key) else serialize(key, NULL)
-    .Call(rnng_sha512hmac, x, key)
-
-  }
+  if (!is.null(key) && !is.raw(key))
+    key <- if (is.character(key)) charToRaw(key) else serialize(key, NULL)
+  .Call(rnng_sha512, x, key)
 
 }
 

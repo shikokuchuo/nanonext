@@ -37,40 +37,30 @@ SEXP rnng_version(void) {
 
 // sha224 ----------------------------------------------------------------------
 
-SEXP rnng_sha224(SEXP x) {
+#define SHA224_KEY_SIZE 28
+
+SEXP rnng_sha224(SEXP x, SEXP key) {
 
   SEXP out;
-  unsigned char *buf = RAW(x);
+  int xc = 0;
+  const unsigned char *buf = RAW(x);
   size_t sz = Rf_xlength(x);
+  unsigned char output[SHA224_KEY_SIZE];
 
-  PROTECT(out = Rf_allocVector(RAWSXP, 28));
-  unsigned char *outp = RAW(out);
-  int xc = mbedtls_sha256(buf, sz, outp, 1);
+  if (key == R_NilValue) {
+    xc = mbedtls_sha256(buf, sz, output, 1);
+  } else {
+    const unsigned char *kbuf = RAW(key);
+    size_t ksz = Rf_xlength(key);
+    xc = mbedtls_md_hmac(mbedtls_md_info_from_type(MBEDTLS_MD_SHA224),
+                         kbuf, ksz, buf, sz, output);
+  }
+
   if (xc)
     return mk_error(xc);
 
-  Rf_classgets(out, Rf_mkString("nanoHash"));
-  UNPROTECT(1);
-
-  return out;
-
-}
-
-SEXP rnng_sha224hmac(SEXP x, SEXP key) {
-
-  SEXP out;
-  unsigned char *buf = RAW(x);
-  size_t sz = Rf_xlength(x);
-  unsigned char *kbuf = RAW(key);
-  size_t ksz = Rf_xlength(key);
-
-  PROTECT(out = Rf_allocVector(RAWSXP, 28));
-  unsigned char *outp = RAW(out);
-  int xc = mbedtls_md_hmac(mbedtls_md_info_from_type(MBEDTLS_MD_SHA224),
-                           kbuf, ksz, buf, sz, outp);
-  if (xc)
-    return mk_error(xc);
-
+  PROTECT(out = Rf_allocVector(RAWSXP, SHA224_KEY_SIZE));
+  memcpy(RAW(out), output, SHA224_KEY_SIZE);
   Rf_classgets(out, Rf_mkString("nanoHash"));
   UNPROTECT(1);
 
@@ -80,40 +70,30 @@ SEXP rnng_sha224hmac(SEXP x, SEXP key) {
 
 // sha256 ----------------------------------------------------------------------
 
-SEXP rnng_sha256(SEXP x) {
+#define SHA256_KEY_SIZE 32
+
+SEXP rnng_sha256(SEXP x, SEXP key) {
 
   SEXP out;
-  unsigned char *buf = RAW(x);
+  int xc = 0;
+  const unsigned char *buf = RAW(x);
   size_t sz = Rf_xlength(x);
+  unsigned char output[SHA256_KEY_SIZE];
 
-  PROTECT(out = Rf_allocVector(RAWSXP, 32));
-  unsigned char *outp = RAW(out);
-  int xc = mbedtls_sha256(buf, sz, outp, 0);
+  if (key == R_NilValue) {
+    xc = mbedtls_sha256(buf, sz, output, 0);
+  } else {
+    const unsigned char *kbuf = RAW(key);
+    size_t ksz = Rf_xlength(key);
+    xc = mbedtls_md_hmac(mbedtls_md_info_from_type(MBEDTLS_MD_SHA256),
+                         kbuf, ksz, buf, sz, output);
+  }
+
   if (xc)
     return mk_error(xc);
 
-  Rf_classgets(out, Rf_mkString("nanoHash"));
-  UNPROTECT(1);
-
-  return out;
-
-}
-
-SEXP rnng_sha256hmac(SEXP x, SEXP key) {
-
-  SEXP out;
-  unsigned char *buf = RAW(x);
-  size_t sz = Rf_xlength(x);
-  unsigned char *kbuf = RAW(key);
-  size_t ksz = Rf_xlength(key);
-
-  PROTECT(out = Rf_allocVector(RAWSXP, 32));
-  unsigned char *outp = RAW(out);
-  int xc = mbedtls_md_hmac(mbedtls_md_info_from_type(MBEDTLS_MD_SHA256),
-                           kbuf, ksz, buf, sz, outp);
-  if (xc)
-    return mk_error(xc);
-
+  PROTECT(out = Rf_allocVector(RAWSXP, SHA256_KEY_SIZE));
+  memcpy(RAW(out), output, SHA256_KEY_SIZE);
   Rf_classgets(out, Rf_mkString("nanoHash"));
   UNPROTECT(1);
 
@@ -123,40 +103,30 @@ SEXP rnng_sha256hmac(SEXP x, SEXP key) {
 
 // sha384 ----------------------------------------------------------------------
 
-SEXP rnng_sha384(SEXP x) {
+#define SHA384_KEY_SIZE 48
+
+SEXP rnng_sha384(SEXP x, SEXP key) {
 
   SEXP out;
-  unsigned char *buf = RAW(x);
+  int xc = 0;
+  const unsigned char *buf = RAW(x);
   size_t sz = Rf_xlength(x);
+  unsigned char output[SHA384_KEY_SIZE];
 
-  PROTECT(out = Rf_allocVector(RAWSXP, 48));
-  unsigned char *outp = RAW(out);
-  int xc = mbedtls_sha512(buf, sz, outp, 1);
+  if (key == R_NilValue) {
+    xc = mbedtls_sha512(buf, sz, output, 1);
+  } else {
+    const unsigned char *kbuf = RAW(key);
+    size_t ksz = Rf_xlength(key);
+    xc = mbedtls_md_hmac(mbedtls_md_info_from_type(MBEDTLS_MD_SHA384),
+                         kbuf, ksz, buf, sz, output);
+  }
+
   if (xc)
     return mk_error(xc);
 
-  Rf_classgets(out, Rf_mkString("nanoHash"));
-  UNPROTECT(1);
-
-  return out;
-
-}
-
-SEXP rnng_sha384hmac(SEXP x, SEXP key) {
-
-  SEXP out;
-  unsigned char *buf = RAW(x);
-  size_t sz = Rf_xlength(x);
-  unsigned char *kbuf = RAW(key);
-  size_t ksz = Rf_xlength(key);
-
-  PROTECT(out = Rf_allocVector(RAWSXP, 48));
-  unsigned char *outp = RAW(out);
-  int xc = mbedtls_md_hmac(mbedtls_md_info_from_type(MBEDTLS_MD_SHA384),
-                           kbuf, ksz, buf, sz, outp);
-  if (xc)
-    return mk_error(xc);
-
+  PROTECT(out = Rf_allocVector(RAWSXP, SHA384_KEY_SIZE));
+  memcpy(RAW(out), output, SHA384_KEY_SIZE);
   Rf_classgets(out, Rf_mkString("nanoHash"));
   UNPROTECT(1);
 
@@ -166,40 +136,30 @@ SEXP rnng_sha384hmac(SEXP x, SEXP key) {
 
 // sha512 ----------------------------------------------------------------------
 
-SEXP rnng_sha512(SEXP x) {
+#define SHA512_KEY_SIZE 64
+
+SEXP rnng_sha512(SEXP x, SEXP key) {
 
   SEXP out;
-  unsigned char *buf = RAW(x);
+  int xc = 0;
+  const unsigned char *buf = RAW(x);
   size_t sz = Rf_xlength(x);
+  unsigned char output[SHA512_KEY_SIZE];
 
-  PROTECT(out = Rf_allocVector(RAWSXP, 64));
-  unsigned char *outp = RAW(out);
-  int xc = mbedtls_sha512(buf, sz, outp, 0);
+  if (key == R_NilValue) {
+    xc = mbedtls_sha512(buf, sz, output, 0);
+  } else {
+    const unsigned char *kbuf = RAW(key);
+    size_t ksz = Rf_xlength(key);
+    xc = mbedtls_md_hmac(mbedtls_md_info_from_type(MBEDTLS_MD_SHA512),
+                         kbuf, ksz, buf, sz, output);
+  }
+
   if (xc)
     return mk_error(xc);
 
-  Rf_classgets(out, Rf_mkString("nanoHash"));
-  UNPROTECT(1);
-
-  return out;
-
-}
-
-SEXP rnng_sha512hmac(SEXP x, SEXP key) {
-
-  SEXP out;
-  unsigned char *buf = RAW(x);
-  size_t sz = Rf_xlength(x);
-  unsigned char *kbuf = RAW(key);
-  size_t ksz = Rf_xlength(key);
-
-  PROTECT(out = Rf_allocVector(RAWSXP, 64));
-  unsigned char *outp = RAW(out);
-  int xc = mbedtls_md_hmac(mbedtls_md_info_from_type(MBEDTLS_MD_SHA512),
-                           kbuf, ksz, buf, sz, outp);
-  if (xc)
-    return mk_error(xc);
-
+  PROTECT(out = Rf_allocVector(RAWSXP, SHA512_KEY_SIZE));
+  memcpy(RAW(out), output, SHA512_KEY_SIZE);
   Rf_classgets(out, Rf_mkString("nanoHash"));
   UNPROTECT(1);
 

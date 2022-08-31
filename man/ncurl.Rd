@@ -36,8 +36,9 @@ certificate authority certificate chain. If missing or NULL, certificates
 are not validated.}
 }
 \value{
-Named list of 2 elements:
+Named list of 3 elements:
     \itemize{
+    \item{\code{$status}} {- integer HTTP repsonse status code (200 - OK)}
     \item{\code{$raw}} {- raw vector of the received resource (use
     \code{\link{writeBin}} to save to a file).}
     \item{\code{$data}} {- converted character string (if \code{'convert' = TRUE}
@@ -45,7 +46,8 @@ Named list of 2 elements:
     can be used to further parse this as html, json, xml etc. if required.}
     }
 
-    Or else, if \code{async = TRUE}, a 'recvAio' (object of class 'recvAio').
+    Or else, if \code{async = TRUE}, an 'ncurlAio' (object of class 'ncurlAio'
+    and 'recvAio').
 }
 \description{
 nano cURL - a minimalist http(s) client.

@@ -411,7 +411,7 @@ Above it can be seen that the final value resolves into a timeout, which is an i
 
 `ncurl()` is a minimalist http(s) client.
 
-By setting `async = TRUE`, it performs requests asynchronously, returning immediately with a 'recvAio'.
+By setting `async = TRUE`, it performs requests asynchronously, returning immediately with an 'ncurlAio'.
 
 For normal use, it takes just the URL. It can follow redirects.
 

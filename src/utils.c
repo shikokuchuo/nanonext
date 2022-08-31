@@ -117,7 +117,7 @@ SEXP rnng_random(SEXP n) {
 
 // ncurl - minimalist http client ----------------------------------------------
 
-SEXP rnng_ncurl(SEXP http, SEXP method, SEXP headers, SEXP data, SEXP ca_file) {
+SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP data, SEXP ca_file) {
 
   nng_url *url;
   nng_http_client *client;
@@ -128,6 +128,7 @@ SEXP rnng_ncurl(SEXP http, SEXP method, SEXP headers, SEXP data, SEXP ca_file) {
   int xc;
   uint16_t code;
 
+  const int conv = LOGICAL(convert)[0];
   xc = nng_url_parse(&url, CHAR(STRING_ELT(http, 0)));
   if (xc)
     return mk_error(xc);
@@ -282,9 +283,14 @@ SEXP rnng_ncurl(SEXP http, SEXP method, SEXP headers, SEXP data, SEXP ca_file) {
 
   void *dat;
   size_t sz;
-  SEXP vec;
+  SEXP out, vec, cvec = R_NilValue;
 
   nng_http_res_get_data(res, &dat, &sz);
+
+  const char *names[] = {"status", "raw", "data", ""};
+  PROTECT(out = Rf_mkNamed(VECSXP, names));
+
+  SET_VECTOR_ELT(out, 0, Rf_ScalarInteger(code));
 
   vec = Rf_allocVector(RAWSXP, sz);
   memcpy(RAW(vec), dat, sz);
@@ -295,7 +301,20 @@ SEXP rnng_ncurl(SEXP http, SEXP method, SEXP headers, SEXP data, SEXP ca_file) {
   nng_http_client_free(client);
   nng_url_free(url);
 
-  return vec;
+  SET_VECTOR_ELT(out, 1, vec);
+
+  if (conv) {
+    int tryErr = 0;
+    SEXP expr;
+    PROTECT(expr = Rf_lang2(nano_RtcSymbol, vec));
+    cvec = R_tryEvalSilent(expr, R_BaseEnv, &tryErr);
+    UNPROTECT(1);
+  }
+
+  SET_VECTOR_ELT(out, 2, cvec);
+
+  UNPROTECT(1);
+  return out;
 
 }
 

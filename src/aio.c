@@ -742,13 +742,17 @@ SEXP rnng_aio_http(SEXP aio) {
 
   void *dat;
   size_t sz;
-  SEXP vec;
+  SEXP out, vec;
 
+  PROTECT(out = Rf_allocVector(VECSXP, 2));
+  SET_VECTOR_ELT(out, 0, Rf_ScalarInteger(code));
   nng_http_res_get_data(handle->res, &dat, &sz);
   vec = Rf_allocVector(RAWSXP, sz);
   memcpy(RAW(vec), dat, sz);
+  SET_VECTOR_ELT(out, 1, vec);
 
-  return vec;
+  UNPROTECT(1);
+  return out;
 
 }
 

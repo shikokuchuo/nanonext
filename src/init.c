@@ -26,6 +26,7 @@ SEXP nano_IdSymbol;
 SEXP nano_ListenerSymbol;
 SEXP nano_ProtocolSymbol;
 SEXP nano_ResultSymbol;
+SEXP nano_RtcSymbol;
 SEXP nano_SocketSymbol;
 SEXP nano_StateSymbol;
 SEXP nano_StreamSymbol;
@@ -42,6 +43,7 @@ static void RegisterSymbols(void) {
   nano_ListenerSymbol = Rf_install("listener");
   nano_ProtocolSymbol = Rf_install("protocol");
   nano_ResultSymbol = Rf_install("result");
+  nano_RtcSymbol = Rf_install("rawToChar");
   nano_SocketSymbol = Rf_install("socket");
   nano_StateSymbol = Rf_install("state");
   nano_StreamSymbol = Rf_install("stream");
@@ -82,7 +84,7 @@ static const R_CallMethodDef CallEntries[] = {
   {"rnng_matchargs", (DL_FUNC) &rnng_matchargs, 1},
   {"rnng_matchwarn", (DL_FUNC) &rnng_matchwarn, 1},
   {"rnng_messenger", (DL_FUNC) &rnng_messenger, 1},
-  {"rnng_ncurl", (DL_FUNC) &rnng_ncurl, 5},
+  {"rnng_ncurl", (DL_FUNC) &rnng_ncurl, 6},
   {"rnng_ncurl_aio", (DL_FUNC) &rnng_ncurl_aio, 5},
   {"rnng_protocol_open", (DL_FUNC) &rnng_protocol_open, 2},
   {"rnng_random", (DL_FUNC) &rnng_random, 1},
@@ -93,14 +95,10 @@ static const R_CallMethodDef CallEntries[] = {
   {"rnng_send_aio", (DL_FUNC) &rnng_send_aio, 3},
   {"rnng_serial", (DL_FUNC) &rnng_serial, 1},
   {"rnng_sleep", (DL_FUNC) &rnng_sleep, 1},
-  {"rnng_sha224", (DL_FUNC) &rnng_sha224, 1},
-  {"rnng_sha224hmac", (DL_FUNC) &rnng_sha224hmac, 2},
-  {"rnng_sha256", (DL_FUNC) &rnng_sha256, 1},
-  {"rnng_sha256hmac", (DL_FUNC) &rnng_sha256hmac, 2},
-  {"rnng_sha384", (DL_FUNC) &rnng_sha384, 1},
-  {"rnng_sha384hmac", (DL_FUNC) &rnng_sha384hmac, 2},
-  {"rnng_sha512", (DL_FUNC) &rnng_sha512, 1},
-  {"rnng_sha512hmac", (DL_FUNC) &rnng_sha512hmac, 2},
+  {"rnng_sha224", (DL_FUNC) &rnng_sha224, 2},
+  {"rnng_sha256", (DL_FUNC) &rnng_sha256, 2},
+  {"rnng_sha384", (DL_FUNC) &rnng_sha384, 2},
+  {"rnng_sha512", (DL_FUNC) &rnng_sha512, 2},
   {"rnng_socket_set", (DL_FUNC) &rnng_socket_set, 4},
   {"rnng_stream_close", (DL_FUNC) &rnng_stream_close, 1},
   {"rnng_stream_dial", (DL_FUNC) &rnng_stream_dial, 3},
