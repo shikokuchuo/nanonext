@@ -65,7 +65,7 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">stream</span><span class="op">(</span>dial <span class="op">=</span> <span class="cn">NULL</span>, listen <span class="op">=</span> <span class="cn">NULL</span>, textframes <span class="op">=</span> <span class="cn">FALSE</span>, ca_file <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">stream</span><span class="op">(</span>dial <span class="op">=</span> <span class="cn">NULL</span>, listen <span class="op">=</span> <span class="cn">NULL</span>, textframes <span class="op">=</span> <span class="cn">FALSE</span>, pem <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -87,11 +87,11 @@ character string e.g. 'ipc:///tmp/anyvalue' or 'tcp://127.0.0.1:5555'
 enables sending and receiving of TEXT frames (ignored otherwise).</p></dd>
 
 
-<dt>ca_file</dt>
+<dt>pem</dt>
 <dd><p>(optional) applicable to secure websockets only. The path to a
 file containing X.509 certificate(s) in PEM format, comprising the
-certificate authority certificate chain. If missing or NULL, certificates
-are not validated.</p></dd>
+certificate authority certificate chain (and revocation list if present).
+If missing or NULL, certificates are not validated.</p></dd>
 
 </dl></div>
     <div id="value">
