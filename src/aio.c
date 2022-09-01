@@ -554,39 +554,17 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP method, SEXP headers, SEXP data, SEXP pem) {
   haio->data = handle;
   handle->cfg = NULL;
 
-  xc = nng_url_parse(&handle->url, httr);
-  if (xc) {
-    R_Free(handle);
-    R_Free(haio);
-    return mk_error(xc);
-  }
-  xc = nng_http_client_alloc(&handle->cli, handle->url);
-  if (xc) {
-    nng_url_free(handle->url);
-    R_Free(handle);
-    R_Free(haio);
-    return mk_error(xc);
-  }
-  xc = nng_http_req_alloc(&handle->req, handle->url);
-  if (xc) {
-    nng_http_client_free(handle->cli);
-    nng_url_free(handle->url);
-    R_Free(handle);
-    R_Free(haio);
-    return mk_error(xc);
-  }
+  if ((xc = nng_url_parse(&handle->url, httr)))
+    goto exitlevel1;
+  if ((xc = nng_http_client_alloc(&handle->cli, handle->url)))
+    goto exitlevel2;
+  if ((xc = nng_http_req_alloc(&handle->req, handle->url)))
+    goto exitlevel3;
 
   if (method != R_NilValue) {
     const char *met = CHAR(STRING_ELT(method, 0));
-    xc = nng_http_req_set_method(handle->req, met);
-    if (xc) {
-      nng_http_req_free(handle->req);
-      nng_http_client_free(handle->cli);
-      nng_url_free(handle->url);
-      R_Free(handle);
-      R_Free(haio);
-      return mk_error(xc);
-    }
+    if ((xc = nng_http_req_set_method(handle->req, met)))
+      goto exitlevel4;
   }
 
   if (headers != R_NilValue) {
@@ -597,30 +575,16 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP method, SEXP headers, SEXP data, SEXP pem) {
       for (R_xlen_t i = 0; i < hlen; i++) {
         const char *head = CHAR(STRING_ELT(headers, i));
         const char *name = CHAR(STRING_ELT(names, i));
-        xc = nng_http_req_set_header(handle->req, name, head);
-        if (xc) {
-          nng_http_req_free(handle->req);
-          nng_http_client_free(handle->cli);
-          nng_url_free(handle->url);
-          R_Free(handle);
-          R_Free(haio);
-          return mk_error(xc);
-        }
+        if ((xc = nng_http_req_set_header(handle->req, name, head)))
+          goto exitlevel4;
       }
       break;
     case VECSXP:
       for (R_xlen_t i = 0; i < hlen; i++) {
         const char *head = CHAR(STRING_ELT(VECTOR_ELT(headers, i), 0));
         const char *name = CHAR(STRING_ELT(names, i));
-        xc = nng_http_req_set_header(handle->req, name, head);
-        if (xc) {
-          nng_http_req_free(handle->req);
-          nng_http_client_free(handle->cli);
-          nng_url_free(handle->url);
-          R_Free(handle);
-          R_Free(haio);
-          return mk_error(xc);
-        }
+        if ((xc = nng_http_req_set_header(handle->req, name, head)))
+          goto exitlevel4;
       }
       break;
     }
@@ -629,80 +593,32 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP method, SEXP headers, SEXP data, SEXP pem) {
   if (data != R_NilValue) {
     unsigned char *dp = RAW(data);
     const size_t dlen = Rf_xlength(data) - 1;
-    xc = nng_http_req_set_data(handle->req, dp, dlen);
-    if (xc) {
-      nng_http_req_free(handle->req);
-      nng_http_client_free(handle->cli);
-      nng_url_free(handle->url);
-      R_Free(handle);
-      R_Free(haio);
-      return mk_error(xc);
-    }
+    if ((xc = nng_http_req_set_data(handle->req, dp, dlen)))
+      goto exitlevel4;
   }
 
-  xc = nng_http_res_alloc(&handle->res);
-  if (xc) {
-    nng_http_req_free(handle->req);
-    nng_http_client_free(handle->cli);
-    nng_url_free(handle->url);
-    R_Free(handle);
-    R_Free(haio);
-    return mk_error(xc);
-  }
+  if ((xc = nng_http_res_alloc(&handle->res)))
+    goto exitlevel4;
 
-  xc = nng_aio_alloc(&haio->aio, iaio_complete, haio);
-  if (xc) {
-    nng_http_res_free(handle->res);
-    nng_http_req_free(handle->req);
-    nng_http_client_free(handle->cli);
-    nng_url_free(handle->url);
-    R_Free(handle);
-    R_Free(haio);
-    return mk_error(xc);
-  }
+  if ((xc = nng_aio_alloc(&haio->aio, iaio_complete, haio)))
+    goto exitlevel5;
 
   if (!strcmp(handle->url->u_scheme, "https")) {
 
-    xc = nng_tls_config_alloc(&handle->cfg, NNG_TLS_MODE_CLIENT);
-    if (xc) {
-      nng_aio_free(haio->aio);
-      nng_http_res_free(handle->res);
-      nng_http_req_free(handle->req);
-      nng_http_client_free(handle->cli);
-      nng_url_free(handle->url);
-      R_Free(handle);
-      R_Free(haio);
-      return mk_error(xc);
-    }
+    if ((xc = nng_tls_config_alloc(&handle->cfg, NNG_TLS_MODE_CLIENT)))
+      goto exitlevel6;
+
     if (pem == R_NilValue) {
       if ((xc = nng_tls_config_server_name(handle->cfg, handle->url->u_hostname)) ||
           (xc = nng_tls_config_auth_mode(handle->cfg, NNG_TLS_AUTH_MODE_NONE)) ||
-          (xc = nng_http_client_set_tls(handle->cli, handle->cfg))) {
-        nng_tls_config_free(handle->cfg);
-        nng_aio_free(haio->aio);
-        nng_http_res_free(handle->res);
-        nng_http_req_free(handle->req);
-        nng_http_client_free(handle->cli);
-        nng_url_free(handle->url);
-        R_Free(handle);
-        R_Free(haio);
-        return mk_error(xc);
-      }
+          (xc = nng_http_client_set_tls(handle->cli, handle->cfg)))
+        goto exitlevel7;
     } else {
       if ((xc = nng_tls_config_server_name(handle->cfg, handle->url->u_hostname)) ||
           (xc = nng_tls_config_ca_file(handle->cfg, CHAR(STRING_ELT(pem, 0)))) ||
           (xc = nng_tls_config_auth_mode(handle->cfg, NNG_TLS_AUTH_MODE_REQUIRED)) ||
-          (xc = nng_http_client_set_tls(handle->cli, handle->cfg))) {
-        nng_tls_config_free(handle->cfg);
-        nng_aio_free(haio->aio);
-        nng_http_res_free(handle->res);
-        nng_http_req_free(handle->req);
-        nng_http_client_free(handle->cli);
-        nng_url_free(handle->url);
-        R_Free(handle);
-        R_Free(haio);
-        return mk_error(xc);
-      }
+          (xc = nng_http_client_set_tls(handle->cli, handle->cfg)))
+        goto exitlevel7;
     }
 
   }
@@ -714,6 +630,23 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP method, SEXP headers, SEXP data, SEXP pem) {
 
   UNPROTECT(1);
   return aio;
+
+  exitlevel7:
+  nng_tls_config_free(handle->cfg);
+  exitlevel6:
+  nng_aio_free(haio->aio);
+  exitlevel5:
+  nng_http_res_free(handle->res);
+  exitlevel4:
+  nng_http_req_free(handle->req);
+  exitlevel3:
+  nng_http_client_free(handle->cli);
+  exitlevel2:
+  nng_url_free(handle->url);
+  exitlevel1:
+  R_Free(handle);
+  R_Free(haio);
+  return mk_error(xc);
 
 }
 
@@ -736,8 +669,14 @@ SEXP rnng_aio_http(SEXP aio) {
   uint16_t code = nng_http_res_get_status(handle->res);
   if (code != 200) {
     REprintf("HTTP Server Response: %d %s\n", code, nng_http_res_get_reason(handle->res));
-    if (code >= 300 && code < 400)
-      return Rf_mkString(nng_http_res_get_header(handle->res, "Location"));
+    if (code >= 300 && code < 400) {
+      SEXP out;
+      PROTECT(out = Rf_allocVector(VECSXP, 2));
+      SET_VECTOR_ELT(out, 0, Rf_ScalarInteger(code));
+      SET_VECTOR_ELT(out, 1, Rf_mkString(nng_http_res_get_header(handle->res, "Location")));
+      UNPROTECT(1);
+      return out;
+    }
   }
 
   void *dat;

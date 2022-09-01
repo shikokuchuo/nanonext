@@ -138,11 +138,10 @@ ncurl <- function(url,
 
     res <- .Call(rnng_ncurl, url, convert, method, headers, data, pem)
 
-    is.integer(res) && return(res)
     is.character(res) && {
       continue <- if (interactive()) readline(sprintf("Follow redirect to <%s>? [Y/n] ", res)) else "n"
       continue %in% c("n", "N", "no", "NO") && return(res)
-      return(ncurl(res))
+      return(eval(`[[<-`(match.call(), 2L, res)))
     }
 
     res
