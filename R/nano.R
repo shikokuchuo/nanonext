@@ -273,7 +273,7 @@ print.sendAio <- function(x, ...) {
 #'
 print.ncurlAio <- function(x, ...) {
 
-  cat("< ncurlAio >\n - $status for status code\n - $raw for raw message\n - $data for message data\n", file = stdout())
+  cat("< ncurlAio >\n - $code for response status code\n - $time for server date header\n - $raw for raw message\n - $data for message data\n", file = stdout())
   invisible(x)
 
 }
@@ -341,5 +341,5 @@ print.errorValue <- function(x, ...) {
 
 #' @export
 #'
-.DollarNames.ncurlAio <- function(x, pattern = "") grep(pattern, c("status", "raw", "data"),
+.DollarNames.ncurlAio <- function(x, pattern = "") grep(pattern, c("code", "time", "raw", "data"),
                                                         value = TRUE, fixed = TRUE)

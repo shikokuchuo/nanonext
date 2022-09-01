@@ -36,9 +36,10 @@ certificate authority certificate chain (and revocation list if present).
 If missing or NULL, certificates are not validated.}
 }
 \value{
-Named list of 3 elements:
+Named list of 4 elements:
     \itemize{
-    \item{\code{$status}} {- integer HTTP repsonse status code (200 - OK)}
+    \item{\code{$code}} {- integer HTTP repsonse status code (200 - OK).}
+    \item{\code{$time}} {- character server response header 'Date'.}
     \item{\code{$raw}} {- raw vector of the received resource (use
     \code{\link{writeBin}} to save to a file).}
     \item{\code{$data}} {- converted character string (if \code{'convert' = TRUE}

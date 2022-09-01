@@ -4,7 +4,7 @@
 
 * Implements `sha224()`, `sha256()`, `sha384()` and `sha512()` series of fast, optimised cryptographic hash and HMAC generation functions using the 'Mbed TLS' library.
 * `ncurl()` and `stream()` gain the argmument 'pem' for optionally specifying a certificate authority certificate chain PEM file for authenticating secure sites.
-* `ncurl()` now returns an additional `$status` field.
+* `ncurl()` now returns additional `$code` (response status code) and `$time` (server date header) fields.
 * `messenger()` gains the argument 'auth' for authenticating communications based on a pre-shared key.
 * `random()` gains the argument 'n' for generating a vector of random numbers.
 

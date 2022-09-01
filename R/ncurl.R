@@ -34,9 +34,10 @@
 #'     certificate authority certificate chain (and revocation list if present).
 #'     If missing or NULL, certificates are not validated.
 #'
-#' @return Named list of 3 elements:
+#' @return Named list of 4 elements:
 #'     \itemize{
-#'     \item{\code{$status}} {- integer HTTP repsonse status code (200 - OK)}
+#'     \item{\code{$code}} {- integer HTTP repsonse status code (200 - OK).}
+#'     \item{\code{$time}} {- character server response header 'Date'.}
 #'     \item{\code{$raw}} {- raw vector of the received resource (use
 #'     \code{\link{writeBin}} to save to a file).}
 #'     \item{\code{$data}} {- converted character string (if \code{'convert' = TRUE}
@@ -80,24 +81,42 @@ ncurl <- function(url,
     is.integer(aio) && return(aio)
 
     convert <- missing(convert) || isTRUE(convert)
-    status <- raw <- data <- NULL
+    code <- time <- raw <- data <- NULL
     unresolv <- TRUE
     env <- new.env(hash = FALSE)
-    makeActiveBinding(sym = "status", fun = function(x) {
+    makeActiveBinding(sym = "code", fun = function(x) {
       if (unresolv) {
         res <- .Call(rnng_aio_http, aio)
         missing(res) && return(.Call(rnng_aio_unresolv))
         if (is.integer(res)) {
           data <<- raw <<- res
         } else {
-          status <<- res[[1L]]
-          raw <<- res[[2L]]
+          code <<- res[[1L]]
+          time <<- res[[2L]]
+          raw <<- res[[3L]]
           data <<- if (convert) tryCatch(rawToChar(raw), error = function(e) NULL)
         }
         aio <<- env[["aio"]] <<- NULL
         unresolv <<- FALSE
       }
-      status
+      code
+    }, env = env)
+    makeActiveBinding(sym = "time", fun = function(x) {
+      if (unresolv) {
+        res <- .Call(rnng_aio_http, aio)
+        missing(res) && return(.Call(rnng_aio_unresolv))
+        if (is.integer(res)) {
+          data <<- raw <<- res
+        } else {
+          code <<- res[[1L]]
+          time <<- res[[2L]]
+          raw <<- res[[3L]]
+          data <<- if (convert) tryCatch(rawToChar(raw), error = function(e) NULL)
+        }
+        aio <<- env[["aio"]] <<- NULL
+        unresolv <<- FALSE
+      }
+      time
     }, env = env)
     makeActiveBinding(sym = "raw", fun = function(x) {
       if (unresolv) {
@@ -106,8 +125,9 @@ ncurl <- function(url,
         if (is.integer(res)) {
           data <<- raw <<- res
         } else {
-          status <<- res[[1L]]
-          raw <<- res[[2L]]
+          code <<- res[[1L]]
+          time <<- res[[2L]]
+          raw <<- res[[3L]]
           data <<- if (convert) tryCatch(rawToChar(raw), error = function(e) NULL)
         }
         aio <<- env[["aio"]] <<- NULL
@@ -122,8 +142,9 @@ ncurl <- function(url,
         if (is.integer(res)) {
           data <<- raw <<- res
         } else {
-          status <<- res[[1L]]
-          raw <<- res[[2L]]
+          code <<- res[[1L]]
+          time <<- res[[2L]]
+          raw <<- res[[3L]]
           data <<- if (convert) tryCatch(rawToChar(raw), error = function(e) NULL)
         }
         aio <<- env[["aio"]] <<- NULL

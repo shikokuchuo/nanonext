@@ -220,14 +220,15 @@ SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP data, S
 
   nng_http_res_get_data(res, &dat, &sz);
 
-  const char *names[] = {"status", "raw", "data", ""};
+  const char *names[] = {"code", "time", "raw", "data", ""};
   PROTECT(out = Rf_mkNamed(VECSXP, names));
 
   SET_VECTOR_ELT(out, 0, Rf_ScalarInteger(code));
+  SET_VECTOR_ELT(out, 1, Rf_mkString(nng_http_res_get_header(res, "Date")));
 
   vec = Rf_allocVector(RAWSXP, sz);
   memcpy(RAW(vec), dat, sz);
-  SET_VECTOR_ELT(out, 1, vec);
+  SET_VECTOR_ELT(out, 2, vec);
 
   if (Rf_asLogical(convert)) {
     SEXP expr;
@@ -235,7 +236,7 @@ SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP data, S
     cvec = R_tryEvalSilent(expr, R_BaseEnv, &xc);
     UNPROTECT(1);
   }
-  SET_VECTOR_ELT(out, 2, cvec);
+  SET_VECTOR_ELT(out, 3, cvec);
 
   nng_http_res_free(res);
   nng_http_req_free(req);
