@@ -20,6 +20,7 @@
 
 SEXP nano_AioSymbol;
 SEXP nano_ContextSymbol;
+SEXP nano_CtrSymbol;
 SEXP nano_DataSymbol;
 SEXP nano_DialerSymbol;
 SEXP nano_IdSymbol;
@@ -27,6 +28,7 @@ SEXP nano_ListenerSymbol;
 SEXP nano_ProtocolSymbol;
 SEXP nano_ResultSymbol;
 SEXP nano_RtcSymbol;
+SEXP nano_SerialSymbol;
 SEXP nano_SocketSymbol;
 SEXP nano_StateSymbol;
 SEXP nano_StreamSymbol;
@@ -37,6 +39,7 @@ SEXP nano_UrlSymbol;
 static void RegisterSymbols(void) {
   nano_AioSymbol = Rf_install("aio");
   nano_ContextSymbol = Rf_install("context");
+  nano_CtrSymbol = Rf_install("charToRaw");
   nano_DataSymbol = Rf_install("data");
   nano_DialerSymbol = Rf_install("dialer");
   nano_IdSymbol = Rf_install("id");
@@ -44,6 +47,7 @@ static void RegisterSymbols(void) {
   nano_ProtocolSymbol = Rf_install("protocol");
   nano_ResultSymbol = Rf_install("result");
   nano_RtcSymbol = Rf_install("rawToChar");
+  nano_SerialSymbol = Rf_install("serialize");
   nano_SocketSymbol = Rf_install("socket");
   nano_StateSymbol = Rf_install("state");
   nano_StreamSymbol = Rf_install("stream");
@@ -75,6 +79,7 @@ static const R_CallMethodDef CallEntries[] = {
   {"rnng_dialer_create", (DL_FUNC) &rnng_dialer_create, 2},
   {"rnng_dialer_set", (DL_FUNC) &rnng_dialer_set, 4},
   {"rnng_dialer_start", (DL_FUNC) &rnng_dialer_start, 2},
+  {"rnng_hashToChar", (DL_FUNC) &rnng_hashToChar, 1},
   {"rnng_listen", (DL_FUNC) &rnng_listen, 2},
   {"rnng_listener_close", (DL_FUNC) &rnng_listener_close, 1},
   {"rnng_listener_create", (DL_FUNC) &rnng_listener_create, 2},

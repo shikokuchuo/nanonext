@@ -45,15 +45,7 @@
 #'
 #' @export
 #'
-sha224 <- function(x, key = NULL) {
-
-  if (!is.raw(x))
-    x <- if (is.character(x)) charToRaw(x) else serialize(x, NULL)
-  if (!is.null(key) && !is.raw(key))
-    key <- if (is.character(key)) charToRaw(key) else serialize(key, NULL)
-  .Call(rnng_sha224, x, key)
-
-}
+sha224 <- function(x, key = NULL) .Call(rnng_sha224, x, key)
 
 #' Cryptographic Hashing Using the SHA-256 Algorithm
 #'
@@ -84,15 +76,7 @@ sha224 <- function(x, key = NULL) {
 #'
 #' @export
 #'
-sha256 <- function(x, key = NULL) {
-
-  if (!is.raw(x))
-    x <- if (is.character(x)) charToRaw(x) else serialize(x, NULL)
-  if (!is.null(key) && !is.raw(key))
-      key <- if (is.character(key)) charToRaw(key) else serialize(key, NULL)
-  .Call(rnng_sha256, x, key)
-
-}
+sha256 <- function(x, key = NULL) .Call(rnng_sha256, x, key)
 
 #' Cryptographic Hashing Using the SHA-384 Algorithm
 #'
@@ -123,15 +107,7 @@ sha256 <- function(x, key = NULL) {
 #'
 #' @export
 #'
-sha384 <- function(x, key = NULL) {
-
-  if (!is.raw(x))
-    x <- if (is.character(x)) charToRaw(x) else serialize(x, NULL)
-  if (!is.null(key) && !is.raw(key))
-    key <- if (is.character(key)) charToRaw(key) else serialize(key, NULL)
-  .Call(rnng_sha384, x, key)
-
-}
+sha384 <- function(x, key = NULL) .Call(rnng_sha384, x, key)
 
 #' Cryptographic Hashing Using the SHA-512 Algorithm
 #'
@@ -162,19 +138,11 @@ sha384 <- function(x, key = NULL) {
 #'
 #' @export
 #'
-sha512 <- function(x, key = NULL) {
-
-  if (!is.raw(x))
-    x <- if (is.character(x)) charToRaw(x) else serialize(x, NULL)
-  if (!is.null(key) && !is.raw(key))
-    key <- if (is.character(key)) charToRaw(key) else serialize(key, NULL)
-  .Call(rnng_sha512, x, key)
-
-}
+sha512 <- function(x, key = NULL) .Call(rnng_sha512, x, key)
 
 #' @export
 #'
-as.character.nanoHash <- function(x, ...) paste(unclass(x), collapse = "")
+as.character.nanoHash <- function(x, ...) .Call(rnng_hashToChar, x)
 
 #' @export
 #'
