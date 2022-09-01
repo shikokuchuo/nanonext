@@ -748,7 +748,6 @@ SEXP rnng_listener_close(SEXP listener) {
 }
 
 // send and recv ---------------------------------------------------------------
-// nng flags: bitmask of NNG_FLAG_ALLOC = 1u + NNG_FLAG_NONBLOCK = 2u
 
 SEXP rnng_send(SEXP socket, SEXP data, SEXP block, SEXP echo) {
 

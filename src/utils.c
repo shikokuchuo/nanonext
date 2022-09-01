@@ -117,7 +117,7 @@ SEXP rnng_random(SEXP n) {
 
 // ncurl - minimalist http client ----------------------------------------------
 
-SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP data, SEXP ca_file) {
+SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP data, SEXP pem) {
 
   nng_url *url;
   nng_http_client *client;
@@ -222,7 +222,7 @@ SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP data, S
       return mk_error(xc);
     }
 
-    if (ca_file == R_NilValue) {
+    if (pem == R_NilValue) {
       if ((xc = nng_tls_config_server_name(cfg, url->u_hostname)) ||
           (xc = nng_tls_config_auth_mode(cfg, NNG_TLS_AUTH_MODE_NONE)) ||
           (xc = nng_http_client_set_tls(client, cfg))) {
@@ -236,7 +236,7 @@ SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP data, S
       }
     } else {
       if ((xc = nng_tls_config_server_name(cfg, url->u_hostname)) ||
-          (xc = nng_tls_config_ca_file(cfg, CHAR(STRING_ELT(ca_file, 0)))) ||
+          (xc = nng_tls_config_ca_file(cfg, CHAR(STRING_ELT(pem, 0)))) ||
           (xc = nng_tls_config_auth_mode(cfg, NNG_TLS_AUTH_MODE_REQUIRED)) ||
           (xc = nng_http_client_set_tls(client, cfg))) {
         nng_tls_config_free(cfg);
@@ -320,7 +320,7 @@ SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP data, S
 
 // streams ---------------------------------------------------------------------
 
-SEXP rnng_stream_dial(SEXP url, SEXP textframes, SEXP ca_file) {
+SEXP rnng_stream_dial(SEXP url, SEXP textframes, SEXP pem) {
 
   const char *add = CHAR(STRING_ELT(url, 0));
   const int mod = LOGICAL(textframes)[0];
@@ -360,7 +360,7 @@ SEXP rnng_stream_dial(SEXP url, SEXP textframes, SEXP ca_file) {
       return mk_error(xc);
     }
 
-    if (ca_file == R_NilValue) {
+    if (pem == R_NilValue) {
       if ((xc = nng_tls_config_server_name(cfg, up->u_hostname)) ||
           (xc = nng_tls_config_auth_mode(cfg, NNG_TLS_AUTH_MODE_NONE)) ||
           (xc = nng_stream_dialer_set_ptr(dp, NNG_OPT_TLS_CONFIG, cfg))) {
@@ -371,7 +371,7 @@ SEXP rnng_stream_dial(SEXP url, SEXP textframes, SEXP ca_file) {
       }
     } else {
       if ((xc = nng_tls_config_server_name(cfg, up->u_hostname)) ||
-          (xc = nng_tls_config_ca_file(cfg, CHAR(STRING_ELT(ca_file, 0)))) ||
+          (xc = nng_tls_config_ca_file(cfg, CHAR(STRING_ELT(pem, 0)))) ||
           (xc = nng_tls_config_auth_mode(cfg, NNG_TLS_AUTH_MODE_REQUIRED)) ||
           (xc = nng_stream_dialer_set_ptr(dp, NNG_OPT_TLS_CONFIG, cfg))) {
         nng_tls_config_free(cfg);
@@ -429,7 +429,7 @@ SEXP rnng_stream_dial(SEXP url, SEXP textframes, SEXP ca_file) {
 
 }
 
-SEXP rnng_stream_listen(SEXP url, SEXP textframes, SEXP ca_file) {
+SEXP rnng_stream_listen(SEXP url, SEXP textframes, SEXP pem) {
 
   const char *add = CHAR(STRING_ELT(url, 0));
   const int mod = LOGICAL(textframes)[0];
@@ -468,7 +468,7 @@ SEXP rnng_stream_listen(SEXP url, SEXP textframes, SEXP ca_file) {
       nng_url_free(up);
       return mk_error(xc);
     }
-    if (ca_file == R_NilValue) {
+    if (pem == R_NilValue) {
       if ((xc = nng_tls_config_server_name(cfg, up->u_hostname)) ||
           (xc = nng_tls_config_auth_mode(cfg, NNG_TLS_AUTH_MODE_NONE)) ||
           (xc = nng_stream_listener_set_ptr(lp, "tls-config", cfg))) {
@@ -479,7 +479,7 @@ SEXP rnng_stream_listen(SEXP url, SEXP textframes, SEXP ca_file) {
       }
     } else {
       if ((xc = nng_tls_config_server_name(cfg, up->u_hostname)) ||
-          (xc = nng_tls_config_ca_file(cfg, CHAR(STRING_ELT(ca_file, 0)))) ||
+          (xc = nng_tls_config_ca_file(cfg, CHAR(STRING_ELT(pem, 0)))) ||
           (xc = nng_tls_config_auth_mode(cfg, NNG_TLS_AUTH_MODE_REQUIRED)) ||
           (xc = nng_stream_listener_set_ptr(lp, "tls-config", cfg))) {
         nng_tls_config_free(cfg);
