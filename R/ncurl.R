@@ -36,8 +36,8 @@
 #'
 #' @return Named list of 4 elements:
 #'     \itemize{
-#'     \item{\code{$code}} {- integer HTTP repsonse status code (200 - OK).}
-#'     \item{\code{$time}} {- character server response header 'Date'.}
+#'     \item{\code{$status}} {- integer HTTP repsonse status code (200 - OK).}
+#'     \item{\code{$time}} {- character 'Date' server response header.}
 #'     \item{\code{$raw}} {- raw vector of the received resource (use
 #'     \code{\link{writeBin}} to save to a file).}
 #'     \item{\code{$data}} {- converted character string (if \code{'convert' = TRUE}
@@ -81,17 +81,17 @@ ncurl <- function(url,
     is.integer(aio) && return(aio)
 
     convert <- missing(convert) || isTRUE(convert)
-    code <- time <- raw <- data <- NULL
+    status <- time <- raw <- data <- NULL
     unresolv <- TRUE
     env <- new.env(hash = FALSE)
-    makeActiveBinding(sym = "code", fun = function(x) {
+    makeActiveBinding(sym = "status", fun = function(x) {
       if (unresolv) {
         res <- .Call(rnng_aio_http, aio)
         missing(res) && return(.Call(rnng_aio_unresolv))
         if (is.integer(res)) {
           data <<- raw <<- res
         } else {
-          code <<- res[[1L]]
+          status <<- res[[1L]]
           time <<- res[[2L]]
           raw <<- res[[3L]]
           data <<- if (convert) tryCatch(rawToChar(raw), error = function(e) NULL)
@@ -99,7 +99,7 @@ ncurl <- function(url,
         aio <<- env[["aio"]] <<- NULL
         unresolv <<- FALSE
       }
-      code
+      status
     }, env = env)
     makeActiveBinding(sym = "time", fun = function(x) {
       if (unresolv) {
@@ -108,7 +108,7 @@ ncurl <- function(url,
         if (is.integer(res)) {
           data <<- raw <<- res
         } else {
-          code <<- res[[1L]]
+          status <<- res[[1L]]
           time <<- res[[2L]]
           raw <<- res[[3L]]
           data <<- if (convert) tryCatch(rawToChar(raw), error = function(e) NULL)
@@ -125,7 +125,7 @@ ncurl <- function(url,
         if (is.integer(res)) {
           data <<- raw <<- res
         } else {
-          code <<- res[[1L]]
+          status <<- res[[1L]]
           time <<- res[[2L]]
           raw <<- res[[3L]]
           data <<- if (convert) tryCatch(rawToChar(raw), error = function(e) NULL)
@@ -142,7 +142,7 @@ ncurl <- function(url,
         if (is.integer(res)) {
           data <<- raw <<- res
         } else {
-          code <<- res[[1L]]
+          status <<- res[[1L]]
           time <<- res[[2L]]
           raw <<- res[[3L]]
           data <<- if (convert) tryCatch(rawToChar(raw), error = function(e) NULL)

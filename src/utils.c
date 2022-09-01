@@ -214,17 +214,18 @@ SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP data, S
     }
   }
 
+  const char *date = nng_http_res_get_header(res, "Date");
   void *dat;
   size_t sz;
   SEXP out, vec, cvec = R_NilValue;
 
   nng_http_res_get_data(res, &dat, &sz);
 
-  const char *names[] = {"code", "time", "raw", "data", ""};
+  const char *names[] = {"status", "time", "raw", "data", ""};
   PROTECT(out = Rf_mkNamed(VECSXP, names));
 
   SET_VECTOR_ELT(out, 0, Rf_ScalarInteger(code));
-  SET_VECTOR_ELT(out, 1, Rf_mkString(nng_http_res_get_header(res, "Date")));
+  SET_VECTOR_ELT(out, 1, Rf_mkString(date == NULL ? "" : date));
 
   vec = Rf_allocVector(RAWSXP, sz);
   memcpy(RAW(vec), dat, sz);

@@ -667,13 +667,15 @@ SEXP rnng_aio_http(SEXP aio) {
 
   nano_handle *handle = (nano_handle *) haio->data;
   uint16_t code = nng_http_res_get_status(handle->res);
+  const char *date = nng_http_res_get_header(handle->res, "Date");
+
   if (code != 200) {
     REprintf("HTTP Server Response: %d %s\n", code, nng_http_res_get_reason(handle->res));
     if (code >= 300 && code < 400) {
       SEXP out;
       PROTECT(out = Rf_allocVector(VECSXP, 3));
       SET_VECTOR_ELT(out, 0, Rf_ScalarInteger(code));
-      SET_VECTOR_ELT(out, 1, Rf_mkString(nng_http_res_get_header(handle->res, "Date")));
+      SET_VECTOR_ELT(out, 1, Rf_mkString(date == NULL ? "" : date));
       SET_VECTOR_ELT(out, 2, Rf_mkString(nng_http_res_get_header(handle->res, "Location")));
       UNPROTECT(1);
       return out;
@@ -686,7 +688,7 @@ SEXP rnng_aio_http(SEXP aio) {
 
   PROTECT(out = Rf_allocVector(VECSXP, 3));
   SET_VECTOR_ELT(out, 0, Rf_ScalarInteger(code));
-  SET_VECTOR_ELT(out, 1, Rf_mkString(nng_http_res_get_header(handle->res, "Date")));
+  SET_VECTOR_ELT(out, 1, Rf_mkString(date == NULL ? "" : date));
   nng_http_res_get_data(handle->res, &dat, &sz);
   vec = Rf_allocVector(RAWSXP, sz);
   memcpy(RAW(vec), dat, sz);
