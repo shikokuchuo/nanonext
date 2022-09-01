@@ -29,6 +29,10 @@
 #'     HTTP request headers e.g. \code{list(`Content-Type` = "text/plain")} or
 #'     \code{c(Authorization = "Bearer APIKEY")}.
 #' @param data (optional) the request data to be submitted.
+#' @param request (optional) a character vector or list specifying the response
+#'     headers to return e.g. \code{c("Date", "Server")} or
+#'     \code{list("date", "server")}. These are case-insensitive and will return
+#'     NULL if not present.
 #' @param pem (optional) applicable to secure HTTPS sites only. The path to a
 #'     file containing X.509 certificate(s) in PEM format, comprising the
 #'     certificate authority certificate chain (and revocation list if present).
@@ -37,7 +41,7 @@
 #' @return Named list of 4 elements:
 #'     \itemize{
 #'     \item{\code{$status}} {- integer HTTP repsonse status code (200 - OK).}
-#'     \item{\code{$time}} {- character 'Date' server response header.}
+#'     \item{\code{$headers}} {- list of requested response headers.}
 #'     \item{\code{$raw}} {- raw vector of the received resource (use
 #'     \code{\link{writeBin}} to save to a file).}
 #'     \item{\code{$data}} {- converted character string (if \code{'convert' = TRUE}
@@ -59,7 +63,7 @@
 #'     string at \code{$raw} and \code{$data} will be NULL.
 #'
 #' @examples
-#' ncurl("https://httpbin.org/get")
+#' ncurl("https://httpbin.org/get", request = c("Date", "Server"))
 #' ncurl("http://httpbin.org/put",,,"PUT", list(Authorization = "Bearer APIKEY"), "hello world")
 #' ncurl("http://httpbin.org/post",,,"POST", c(`Content-Type` = "application/json"),'{"k":"v"}')
 #'
@@ -71,6 +75,7 @@ ncurl <- function(url,
                   method = NULL,
                   headers = NULL,
                   data = NULL,
+                  request = NULL,
                   pem = NULL) {
 
   data <- if (!missing(data)) writeBin(object = data, con = raw())
@@ -80,55 +85,56 @@ ncurl <- function(url,
     aio <- .Call(rnng_ncurl_aio, url, method, headers, data, pem)
     is.integer(aio) && return(aio)
 
-    convert <- missing(convert) || isTRUE(convert)
-    status <- time <- raw <- data <- NULL
+    force(convert)
+    force(request)
+    status <- headers <- raw <- data <- NULL
     unresolv <- TRUE
     env <- new.env(hash = FALSE)
     makeActiveBinding(sym = "status", fun = function(x) {
       if (unresolv) {
-        res <- .Call(rnng_aio_http, aio)
+        res <- .Call(rnng_aio_http, aio, convert, request)
         missing(res) && return(.Call(rnng_aio_unresolv))
         if (is.integer(res)) {
           data <<- raw <<- res
         } else {
           status <<- res[[1L]]
-          time <<- res[[2L]]
+          headers <<- res[[2L]]
           raw <<- res[[3L]]
-          data <<- if (convert) tryCatch(rawToChar(raw), error = function(e) NULL)
+          data <<- res[[4L]]
         }
         aio <<- env[["aio"]] <<- NULL
         unresolv <<- FALSE
       }
       status
     }, env = env)
-    makeActiveBinding(sym = "time", fun = function(x) {
+    makeActiveBinding(sym = "headers", fun = function(x) {
       if (unresolv) {
-        res <- .Call(rnng_aio_http, aio)
+        res <- .Call(rnng_aio_http, aio, convert, request)
         missing(res) && return(.Call(rnng_aio_unresolv))
         if (is.integer(res)) {
           data <<- raw <<- res
         } else {
           status <<- res[[1L]]
-          time <<- res[[2L]]
+          headers <<- res[[2L]]
           raw <<- res[[3L]]
-          data <<- if (convert) tryCatch(rawToChar(raw), error = function(e) NULL)
+          data <<- res[[4L]]
         }
         aio <<- env[["aio"]] <<- NULL
         unresolv <<- FALSE
       }
-      time
+      headers
     }, env = env)
     makeActiveBinding(sym = "raw", fun = function(x) {
       if (unresolv) {
-        res <- .Call(rnng_aio_http, aio)
+        res <- .Call(rnng_aio_http, aio, convert, request)
         missing(res) && return(.Call(rnng_aio_unresolv))
         if (is.integer(res)) {
           data <<- raw <<- res
         } else {
           status <<- res[[1L]]
-          time <<- res[[2L]]
+          headers <<- res[[2L]]
           raw <<- res[[3L]]
-          data <<- if (convert) tryCatch(rawToChar(raw), error = function(e) NULL)
+          data <<- res[[4L]]
         }
         aio <<- env[["aio"]] <<- NULL
         unresolv <<- FALSE
@@ -137,15 +143,15 @@ ncurl <- function(url,
     }, env = env)
     makeActiveBinding(sym = "data", fun = function(x) {
       if (unresolv) {
-        res <- .Call(rnng_aio_http, aio)
+        res <- .Call(rnng_aio_http, aio, convert, request)
         missing(res) && return(.Call(rnng_aio_unresolv))
         if (is.integer(res)) {
           data <<- raw <<- res
         } else {
           status <<- res[[1L]]
-          time <<- res[[2L]]
+          headers <<- res[[2L]]
           raw <<- res[[3L]]
-          data <<- if (convert) tryCatch(rawToChar(raw), error = function(e) NULL)
+          data <<- res[[4L]]
         }
         aio <<- env[["aio"]] <<- NULL
         unresolv <<- FALSE
@@ -157,7 +163,7 @@ ncurl <- function(url,
 
   } else {
 
-    res <- .Call(rnng_ncurl, url, convert, method, headers, data, pem)
+    res <- .Call(rnng_ncurl, url, convert, method, headers, data, request, pem)
 
     is.character(res) && {
       continue <- if (interactive()) readline(sprintf("Follow redirect to <%s>? [Y/n] ", res)) else "n"

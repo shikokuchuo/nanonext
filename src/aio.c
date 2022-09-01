@@ -650,7 +650,7 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP method, SEXP headers, SEXP data, SEXP pem) {
 
 }
 
-SEXP rnng_aio_http(SEXP aio) {
+SEXP rnng_aio_http(SEXP aio, SEXP convert, SEXP request) {
 
   if (R_ExternalPtrTag(aio) != nano_AioSymbol)
     error_return("object is not a valid Aio");
@@ -667,16 +667,16 @@ SEXP rnng_aio_http(SEXP aio) {
 
   nano_handle *handle = (nano_handle *) haio->data;
   uint16_t code = nng_http_res_get_status(handle->res);
-  const char *date = nng_http_res_get_header(handle->res, "Date");
 
   if (code != 200) {
     REprintf("HTTP Server Response: %d %s\n", code, nng_http_res_get_reason(handle->res));
     if (code >= 300 && code < 400) {
       SEXP out;
-      PROTECT(out = Rf_allocVector(VECSXP, 3));
+      PROTECT(out = Rf_allocVector(VECSXP, 4));
       SET_VECTOR_ELT(out, 0, Rf_ScalarInteger(code));
-      SET_VECTOR_ELT(out, 1, Rf_mkString(date == NULL ? "" : date));
+      SET_VECTOR_ELT(out, 1, R_NilValue);
       SET_VECTOR_ELT(out, 2, Rf_mkString(nng_http_res_get_header(handle->res, "Location")));
+      SET_VECTOR_ELT(out, 3, R_NilValue);
       UNPROTECT(1);
       return out;
     }
@@ -684,15 +684,53 @@ SEXP rnng_aio_http(SEXP aio) {
 
   void *dat;
   size_t sz;
-  SEXP out, vec;
+  SEXP out, vec, cvec = R_NilValue, rvec = R_NilValue;
 
-  PROTECT(out = Rf_allocVector(VECSXP, 3));
+  PROTECT(out = Rf_allocVector(VECSXP, 4));
   SET_VECTOR_ELT(out, 0, Rf_ScalarInteger(code));
-  SET_VECTOR_ELT(out, 1, Rf_mkString(date == NULL ? "" : date));
+
+  if (request != R_NilValue) {
+    const R_xlen_t rlen = Rf_xlength(request);
+    PROTECT(rvec = Rf_allocVector(VECSXP, rlen));
+    SEXP rnames;
+
+    switch (TYPEOF(request)) {
+    case STRSXP:
+      for (R_xlen_t i = 0; i < rlen; i++) {
+        const char *r = nng_http_res_get_header(handle->res, CHAR(STRING_ELT(request, i)));
+        SET_VECTOR_ELT(rvec, i, r == NULL ? R_NilValue : Rf_mkString(r));
+      }
+      Rf_namesgets(rvec, request);
+      break;
+    case VECSXP:
+      PROTECT(rnames = Rf_allocVector(STRSXP, rlen));
+      for (R_xlen_t i = 0; i < rlen; i++) {
+        SEXP rname = STRING_ELT(VECTOR_ELT(request, i), 0);
+        SET_STRING_ELT(rnames, i, rname);
+        const char *r = nng_http_res_get_header(handle->res, CHAR(rname));
+        SET_VECTOR_ELT(rvec, i, r == NULL ? R_NilValue : Rf_mkString(r));
+      }
+      Rf_namesgets(rvec, rnames);
+      UNPROTECT(1);
+      break;
+    }
+    UNPROTECT(1);
+  }
+  SET_VECTOR_ELT(out, 1, rvec);
+
   nng_http_res_get_data(handle->res, &dat, &sz);
   vec = Rf_allocVector(RAWSXP, sz);
   memcpy(RAW(vec), dat, sz);
   SET_VECTOR_ELT(out, 2, vec);
+
+  if (Rf_asLogical(convert)) {
+    SEXP expr;
+    int xc;
+    PROTECT(expr = Rf_lang2(nano_RtcSymbol, vec));
+    cvec = R_tryEvalSilent(expr, R_BaseEnv, &xc);
+    UNPROTECT(1);
+  }
+  SET_VECTOR_ELT(out, 3, cvec);
 
   UNPROTECT(1);
   return out;

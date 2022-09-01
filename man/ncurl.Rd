@@ -11,6 +11,7 @@ ncurl(
   method = NULL,
   headers = NULL,
   data = NULL,
+  request = NULL,
   pem = NULL
 )
 }
@@ -30,6 +31,11 @@ HTTP request headers e.g. \code{list(`Content-Type` = "text/plain")} or
 
 \item{data}{(optional) the request data to be submitted.}
 
+\item{request}{(optional) a character vector or list specifying the response
+headers to return e.g. \code{c("Date", "Server")} or
+\code{list("date", "server")}. These are case-insensitive and will return
+NULL if not present.}
+
 \item{pem}{(optional) applicable to secure HTTPS sites only. The path to a
 file containing X.509 certificate(s) in PEM format, comprising the
 certificate authority certificate chain (and revocation list if present).
@@ -39,7 +45,7 @@ If missing or NULL, certificates are not validated.}
 Named list of 4 elements:
     \itemize{
     \item{\code{$status}} {- integer HTTP repsonse status code (200 - OK).}
-    \item{\code{$time}} {- character 'Date' server response header.}
+    \item{\code{$headers}} {- list of requested response headers.}
     \item{\code{$raw}} {- raw vector of the received resource (use
     \code{\link{writeBin}} to save to a file).}
     \item{\code{$data}} {- converted character string (if \code{'convert' = TRUE}
@@ -66,7 +72,7 @@ nano cURL - a minimalist http(s) client.
 }
 
 \examples{
-ncurl("https://httpbin.org/get")
+ncurl("https://httpbin.org/get", request = c("Date", "Server"))
 ncurl("http://httpbin.org/put",,,"PUT", list(Authorization = "Bearer APIKEY"), "hello world")
 ncurl("http://httpbin.org/post",,,"POST", c(`Content-Type` = "application/json"),'{"k":"v"}')
 

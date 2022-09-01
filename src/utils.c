@@ -117,7 +117,8 @@ SEXP rnng_random(SEXP n) {
 
 // ncurl - minimalist http client ----------------------------------------------
 
-SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP data, SEXP pem) {
+SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP data,
+                SEXP request, SEXP pem) {
 
   nng_url *url;
   nng_http_client *client;
@@ -214,18 +215,45 @@ SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP data, S
     }
   }
 
-  const char *date = nng_http_res_get_header(res, "Date");
   void *dat;
   size_t sz;
-  SEXP out, vec, cvec = R_NilValue;
+  SEXP out, vec, cvec = R_NilValue, rvec = R_NilValue;
 
   nng_http_res_get_data(res, &dat, &sz);
 
-  const char *names[] = {"status", "time", "raw", "data", ""};
+  const char *names[] = {"status", "headers", "raw", "data", ""};
   PROTECT(out = Rf_mkNamed(VECSXP, names));
 
   SET_VECTOR_ELT(out, 0, Rf_ScalarInteger(code));
-  SET_VECTOR_ELT(out, 1, Rf_mkString(date == NULL ? "" : date));
+
+  if (request != R_NilValue) {
+    const R_xlen_t rlen = Rf_xlength(request);
+    PROTECT(rvec = Rf_allocVector(VECSXP, rlen));
+    SEXP rnames;
+
+    switch (TYPEOF(request)) {
+    case STRSXP:
+      for (R_xlen_t i = 0; i < rlen; i++) {
+        const char *r = nng_http_res_get_header(res, CHAR(STRING_ELT(request, i)));
+        SET_VECTOR_ELT(rvec, i, r == NULL ? R_NilValue : Rf_mkString(r));
+      }
+      Rf_namesgets(rvec, request);
+      break;
+    case VECSXP:
+      PROTECT(rnames = Rf_allocVector(STRSXP, rlen));
+      for (R_xlen_t i = 0; i < rlen; i++) {
+        SEXP rname = STRING_ELT(VECTOR_ELT(request, i), 0);
+        SET_STRING_ELT(rnames, i, rname);
+        const char *r = nng_http_res_get_header(res, CHAR(rname));
+        SET_VECTOR_ELT(rvec, i, r == NULL ? R_NilValue : Rf_mkString(r));
+      }
+      Rf_namesgets(rvec, rnames);
+      UNPROTECT(1);
+      break;
+    }
+    UNPROTECT(1);
+  }
+  SET_VECTOR_ELT(out, 1, rvec);
 
   vec = Rf_allocVector(RAWSXP, sz);
   memcpy(RAW(vec), dat, sz);

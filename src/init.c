@@ -59,7 +59,7 @@ static void RegisterSymbols(void) {
 static const R_CallMethodDef CallEntries[] = {
   {"rnng_aio_call", (DL_FUNC) &rnng_aio_call, 1},
   {"rnng_aio_get_msg", (DL_FUNC) &rnng_aio_get_msg, 3},
-  {"rnng_aio_http", (DL_FUNC) &rnng_aio_http, 1},
+  {"rnng_aio_http", (DL_FUNC) &rnng_aio_http, 3},
   {"rnng_aio_result", (DL_FUNC) &rnng_aio_result, 1},
   {"rnng_aio_stop", (DL_FUNC) &rnng_aio_stop, 1},
   {"rnng_aio_stream_in", (DL_FUNC) &rnng_aio_stream_in, 3},
@@ -89,7 +89,7 @@ static const R_CallMethodDef CallEntries[] = {
   {"rnng_matchargs", (DL_FUNC) &rnng_matchargs, 1},
   {"rnng_matchwarn", (DL_FUNC) &rnng_matchwarn, 1},
   {"rnng_messenger", (DL_FUNC) &rnng_messenger, 1},
-  {"rnng_ncurl", (DL_FUNC) &rnng_ncurl, 6},
+  {"rnng_ncurl", (DL_FUNC) &rnng_ncurl, 7},
   {"rnng_ncurl_aio", (DL_FUNC) &rnng_ncurl_aio, 5},
   {"rnng_protocol_open", (DL_FUNC) &rnng_protocol_open, 2},
   {"rnng_random", (DL_FUNC) &rnng_random, 1},

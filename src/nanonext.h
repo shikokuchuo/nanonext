@@ -89,7 +89,7 @@ extern SEXP nano_UrlSymbol;
 
 extern SEXP rnng_aio_call(SEXP);
 extern SEXP rnng_aio_get_msg(SEXP, SEXP, SEXP);
-extern SEXP rnng_aio_http(SEXP);
+extern SEXP rnng_aio_http(SEXP, SEXP, SEXP);
 extern SEXP rnng_aio_result(SEXP);
 extern SEXP rnng_aio_stop(SEXP);
 extern SEXP rnng_aio_stream_in(SEXP, SEXP, SEXP);
@@ -119,7 +119,7 @@ extern SEXP rnng_matcharg(SEXP);
 extern SEXP rnng_matchargs(SEXP);
 extern SEXP rnng_matchwarn(SEXP);
 extern SEXP rnng_messenger(SEXP);
-extern SEXP rnng_ncurl(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
+extern SEXP rnng_ncurl(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 extern SEXP rnng_ncurl_aio(SEXP, SEXP, SEXP, SEXP, SEXP);
 extern SEXP rnng_protocol_open(SEXP, SEXP);
 extern SEXP rnng_random(SEXP);
