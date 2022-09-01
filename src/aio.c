@@ -420,19 +420,19 @@ SEXP rnng_send_aio(SEXP socket, SEXP data, SEXP timeout) {
   xc = nng_msg_alloc(&msg, 0);
   if (xc) {
     R_Free(saio);
-    return Rf_ScalarInteger(xc);
+    return mk_error(xc);
   }
   xc = nng_msg_append(msg, dp, xlen);
   if (xc) {
     nng_msg_free(msg);
     R_Free(saio);
-    return Rf_ScalarInteger(xc);
+    return mk_error(xc);
   }
   xc = nng_aio_alloc(&saio->aio, saio_complete, saio);
   if (xc) {
     nng_msg_free(msg);
     R_Free(saio);
-    return Rf_ScalarInteger(xc);
+    return mk_error(xc);
   }
 
   nng_aio_set_msg(saio->aio, msg);
@@ -466,20 +466,20 @@ SEXP rnng_ctx_send_aio(SEXP context, SEXP data, SEXP timeout) {
   xc = nng_msg_alloc(&msg, 0);
   if (xc) {
     R_Free(saio);
-    return Rf_ScalarInteger(xc);
+    return mk_error(xc);
   }
 
   xc = nng_msg_append(msg, dp, xlen);
   if (xc) {
     nng_msg_free(msg);
     R_Free(saio);
-    return Rf_ScalarInteger(xc);
+    return mk_error(xc);
   }
   xc = nng_aio_alloc(&saio->aio, saio_complete, saio);
   if (xc) {
     nng_msg_free(msg);
     R_Free(saio);
-    return Rf_ScalarInteger(xc);
+    return mk_error(xc);
   }
 
   nng_aio_set_msg(saio->aio, msg);
@@ -518,7 +518,7 @@ SEXP rnng_stream_send_aio(SEXP stream, SEXP data, SEXP timeout) {
   if (xc) {
     R_Free(iov);
     R_Free(iaio);
-    return Rf_ScalarInteger(xc);
+    return mk_error(xc);
   }
 
   xc = nng_aio_set_iov(iaio->aio, 1u, iov);
@@ -526,7 +526,7 @@ SEXP rnng_stream_send_aio(SEXP stream, SEXP data, SEXP timeout) {
     nng_aio_free(iaio->aio);
     R_Free(iov);
     R_Free(iaio);
-    return Rf_ScalarInteger(xc);
+    return mk_error(xc);
   }
 
   nng_aio_set_timeout(iaio->aio, dur);
