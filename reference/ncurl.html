@@ -66,6 +66,7 @@
 <span>  method <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  headers <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  data <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  request <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  pem <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -99,6 +100,13 @@ HTTP request headers e.g. <code>list(`Content-Type` = "text/plain")</code> or
 <dd><p>(optional) the request data to be submitted.</p></dd>
 
 
+<dt>request</dt>
+<dd><p>(optional) a character vector or list specifying the response
+headers to return e.g. <code>c("Date", "Server")</code> or
+<code>list("date", "server")</code>. These are case-insensitive and will return
+NULL if not present.</p></dd>
+
+
 <dt>pem</dt>
 <dd><p>(optional) applicable to secure HTTPS sites only. The path to a
 file containing X.509 certificate(s) in PEM format, comprising the
@@ -113,7 +121,7 @@ If missing or NULL, certificates are not validated.</p></dd>
 <p>Named list of 4 elements:</p>
 <p></p>
 <ul><li><p><code>$status</code> - integer HTTP repsonse status code (200 - OK).</p></li>
-<li><p><code>$time</code> - character 'Date' server response header.</p></li>
+<li><p><code>$headers</code> - list of requested response headers.</p></li>
 <li><p><code>$raw</code> - raw vector of the received resource (use
     <code><a href="https://rdrr.io/r/base/readBin.html" class="external-link">writeBin</a></code> to save to a file).</p></li>
 <li><p><code>$data</code> - converted character string (if <code>'convert' = TRUE</code>
@@ -136,32 +144,37 @@ If missing or NULL, certificates are not validated.</p></dd>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">ncurl</span><span class="op">(</span><span class="st">"https://httpbin.org/get"</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">ncurl</span><span class="op">(</span><span class="st">"https://httpbin.org/get"</span>, request <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Date"</span>, <span class="st">"Server"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $status</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 200</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $time</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Thu, 01 Sep 2022 18:28:19 GMT"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $headers</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $headers$Date</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Thu, 01 Sep 2022 22:16:35 GMT"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $headers$Server</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "gunicorn/19.9.0"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $raw</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   [1] 7b 0a 20 20 22 61 72 67 73 22 3a 20 7b 7d 2c 20 0a 20 20 22 68 65 61 64 65</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [26] 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73 74 22 3a 20 22 68 74 74 70 62</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [51] 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22 58 2d 41 6d 7a 6e 2d 54 72 61</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [76] 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31 2d 36 33 31 30 66 39 63 33 2d</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [101] 32 31 31 63 61 32 36 65 31 64 61 30 39 63 37 34 34 32 62 39 34 64 30 64 22</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [126] 0a 20 20 7d 2c 20 0a 20 20 22 6f 72 69 67 69 6e 22 3a 20 22 32 33 2e 39 36</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [151] 2e 34 39 2e 31 35 37 22 2c 20 0a 20 20 22 75 72 6c 22 3a 20 22 68 74 74 70</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [76] 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31 2d 36 33 31 31 32 66 34 33 2d</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [101] 37 65 64 35 62 32 63 66 37 34 63 33 36 62 36 39 33 61 33 31 65 32 34 35 22</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [126] 0a 20 20 7d 2c 20 0a 20 20 22 6f 72 69 67 69 6e 22 3a 20 22 32 30 2e 32 32</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [151] 35 2e 34 31 2e 35 36 22 2c 20 0a 20 20 22 75 72 6c 22 3a 20 22 68 74 74 70</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [176] 73 3a 2f 2f 68 74 74 70 62 69 6e 2e 6f 72 67 2f 67 65 74 22 0a 7d 0a</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $data</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "{\n  \"args\": {}, \n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6310f9c3-211ca26e1da09c7442b94d0d\"\n  }, \n  \"origin\": \"23.96.49.157\", \n  \"url\": \"https://httpbin.org/get\"\n}\n"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "{\n  \"args\": {}, \n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-63112f43-7ed5b2cf74c36b693a31e245\"\n  }, \n  \"origin\": \"20.225.41.56\", \n  \"url\": \"https://httpbin.org/get\"\n}\n"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span><span class="fu">ncurl</span><span class="op">(</span><span class="st">"http://httpbin.org/put"</span>,,,<span class="st">"PUT"</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>Authorization <span class="op">=</span> <span class="st">"Bearer APIKEY"</span><span class="op">)</span>, <span class="st">"hello world"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $status</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 200</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $time</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Thu, 01 Sep 2022 18:28:19 GMT"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $headers</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $raw</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   [1] 7b 0a 20 20 22 61 72 67 73 22 3a 20 7b 7d 2c 20 0a 20 20 22 64 61 74 61 22</span>
@@ -172,22 +185,22 @@ If missing or NULL, certificates are not validated.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [126] 2c 20 0a 20 20 20 20 22 43 6f 6e 74 65 6e 74 2d 4c 65 6e 67 74 68 22 3a 20</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [151] 22 31 31 22 2c 20 0a 20 20 20 20 22 48 6f 73 74 22 3a 20 22 68 74 74 70 62</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [176] 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22 58 2d 41 6d 7a 6e 2d 54 72 61</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [201] 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31 2d 36 33 31 30 66 39 63 33 2d</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [226] 31 35 35 65 62 36 38 38 36 31 39 36 30 38 63 38 35 62 62 38 36 36 35 34 22</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [201] 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31 2d 36 33 31 31 32 66 34 33 2d</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [226] 35 33 34 39 31 65 34 31 31 65 39 38 38 31 39 30 36 62 61 34 63 37 66 36 22</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [251] 0a 20 20 7d 2c 20 0a 20 20 22 6a 73 6f 6e 22 3a 20 6e 75 6c 6c 2c 20 0a 20</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [276] 20 22 6f 72 69 67 69 6e 22 3a 20 22 32 33 2e 39 36 2e 34 39 2e 31 35 37 22</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [276] 20 22 6f 72 69 67 69 6e 22 3a 20 22 32 30 2e 32 32 35 2e 34 31 2e 35 36 22</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [301] 2c 20 0a 20 20 22 75 72 6c 22 3a 20 22 68 74 74 70 3a 2f 2f 68 74 74 70 62</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [326] 69 6e 2e 6f 72 67 2f 70 75 74 22 0a 7d 0a</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $data</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "{\n  \"args\": {}, \n  \"data\": \"hello world\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"11\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6310f9c3-155eb688619608c85bb86654\"\n  }, \n  \"json\": null, \n  \"origin\": \"23.96.49.157\", \n  \"url\": \"http://httpbin.org/put\"\n}\n"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "{\n  \"args\": {}, \n  \"data\": \"hello world\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"11\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-63112f43-53491e411e9881906ba4c7f6\"\n  }, \n  \"json\": null, \n  \"origin\": \"20.225.41.56\", \n  \"url\": \"http://httpbin.org/put\"\n}\n"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span><span class="fu">ncurl</span><span class="op">(</span><span class="st">"http://httpbin.org/post"</span>,,,<span class="st">"POST"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>`Content-Type` <span class="op">=</span> <span class="st">"application/json"</span><span class="op">)</span>,<span class="st">'{"k":"v"}'</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $status</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 200</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $time</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Thu, 01 Sep 2022 18:28:19 GMT"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $headers</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $raw</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   [1] 7b 0a 20 20 22 61 72 67 73 22 3a 20 7b 7d 2c 20 0a 20 20 22 64 61 74 61 22</span>
@@ -198,16 +211,16 @@ If missing or NULL, certificates are not validated.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [126] 6f 6e 74 65 6e 74 2d 54 79 70 65 22 3a 20 22 61 70 70 6c 69 63 61 74 69 6f</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [151] 6e 2f 6a 73 6f 6e 22 2c 20 0a 20 20 20 20 22 48 6f 73 74 22 3a 20 22 68 74</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [176] 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22 58 2d 41 6d 7a 6e 2d</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [201] 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31 2d 36 33 31 30 66 39</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [226] 63 33 2d 30 33 61 39 35 36 37 36 30 65 62 37 34 33 39 36 36 61 33 34 61 39</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [251] 36 65 22 0a 20 20 7d 2c 20 0a 20 20 22 6a 73 6f 6e 22 3a 20 7b 0a 20 20 20</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [201] 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31 2d 36 33 31 31 32 66</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [226] 34 33 2d 37 31 37 38 39 64 36 31 30 66 66 63 34 63 61 64 33 63 36 66 31 38</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [251] 39 65 22 0a 20 20 7d 2c 20 0a 20 20 22 6a 73 6f 6e 22 3a 20 7b 0a 20 20 20</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [276] 20 22 6b 22 3a 20 22 76 22 0a 20 20 7d 2c 20 0a 20 20 22 6f 72 69 67 69 6e</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [301] 22 3a 20 22 32 33 2e 39 36 2e 34 39 2e 31 35 37 22 2c 20 0a 20 20 22 75 72</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [301] 22 3a 20 22 32 30 2e 32 32 35 2e 34 31 2e 35 36 22 2c 20 0a 20 20 22 75 72</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [326] 6c 22 3a 20 22 68 74 74 70 3a 2f 2f 68 74 74 70 62 69 6e 2e 6f 72 67 2f 70</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [351] 6f 73 74 22 0a 7d 0a</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $data</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"k\\\":\\\"v\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Content-Length\": \"9\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6310f9c3-03a956760eb743966a34a96e\"\n  }, \n  \"json\": {\n    \"k\": \"v\"\n  }, \n  \"origin\": \"23.96.49.157\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"k\\\":\\\"v\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Content-Length\": \"9\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-63112f43-71789d610ffc4cad3c6f189e\"\n  }, \n  \"json\": {\n    \"k\": \"v\"\n  }, \n  \"origin\": \"20.225.41.56\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
