@@ -30,7 +30,14 @@ then
   echo "NANONEXT_SYS flag set"
   echo "Using 'libnng' and 'libmbedtls' installed in '/usr/local' ..."
   PKG_CFLAGS="-I/usr/local/include $PKG_CFLAGS"
-  PKG_LIBS="-L/usr/local/lib $PKG_LIBS"
+  if [ -d "/usr/local/lib64" ]
+  then
+    PKG_LIBS="-L/usr/local/lib64 $PKG_LIBS"
+  fi
+  if [ -d "/usr/local/lib" ]
+  then
+    PKG_LIBS="-L/usr/local/lib $PKG_LIBS"
+  fi
 else
   echo "Detecting cmake..."
   which cmake
@@ -65,7 +72,14 @@ else
   cd ../..
   rm -rf nanomsg-nng-$LIB_VER
   PKG_CFLAGS="-I`pwd`/temp/include $PKG_CFLAGS"
-  PKG_LIBS="-L`pwd`/temp/lib $PKG_LIBS"
+  if [ -d "temp/lib64" ]
+  then
+    PKG_LIBS="-L`pwd`/temp/lib64 $PKG_LIBS"
+  fi
+  if [ -d "temp/lib" ]
+  then
+    PKG_LIBS="-L`pwd`/temp/lib $PKG_LIBS"
+  fi
 fi
 
 # Write to Makevars

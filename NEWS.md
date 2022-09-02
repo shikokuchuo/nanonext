@@ -1,5 +1,9 @@
 # nanonext 0.5.4.9000 (development)
 
+#### Updates
+
+* Fixes installation under certain Linux distributions where library path uses 'lib64' rather than 'lib'.
+
 # nanonext 0.5.4
 
 #### New Features
