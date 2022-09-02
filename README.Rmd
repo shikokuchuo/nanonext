@@ -45,7 +45,8 @@ Web utilities:
 
 - ncurl - (async) http(s) client
 - stream - secure websockets client (and generic low-level socket interface)
-- messenger - console-based instant messaging
+- messenger - console-based instant messaging with authentication
+- sha[224|256|384|512] - cryptographic hash and HMAC algorithms
 
 ### Table of Contents
 
@@ -475,7 +476,7 @@ close(s)
 
 Functions performing hashing using the SHA-2 series of algorithms is included: `sha224()`, `sha256()`, `sha384()` and `sha512()`.
 
-These call the secure, optimized implementations from the 'Mbed TLS' library and return a hash as a raw vector of class "nanoHash". The default print method displays the hash value. For use in authentication, raw vectors can be compared directly.
+These call the secure, optimized implementations from the 'Mbed TLS' library and return a hash as a raw vector of class 'nanoHash'. The default print method displays the hash value. For use in authentication, raw vectors can be compared directly.
 
 If a character string of the hash value is required, use `as.character()` on the 'nanoHash' object. A fast, optimised method is implemented.
 
