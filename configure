@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Library version
+# Library versions
 LIB_VER="722bf46"
 TLS_VER="869298b"
 
@@ -27,11 +27,12 @@ fi
 # Use system lib or download and compile from source (default)
 if [ "$NANONEXT_SYS" ]
 then
-  echo "System flag set... using libnng and libmbedtls installations in /usr/local"
+  echo "NANONEXT_SYS flag set"
+  echo "Using 'libnng' and 'libmbedtls' installed in '/usr/local' ..."
   PKG_CFLAGS="-I/usr/local/include $PKG_CFLAGS"
   PKG_LIBS="-L/usr/local/lib $PKG_LIBS"
 else
-  echo "Finding cmake..."
+  echo "Detecting cmake..."
   which cmake
   if [ $? -ne 0 ]
   then
@@ -41,14 +42,14 @@ else
   curl -sL https://api.github.com/repos/Mbed-TLS/mbedtls/tarball/$TLS_VER -o mbedtls.tar.gz
   gzip -dc mbedtls.tar.gz | tar -xf -
   rm -f mbedtls.tar.gz
-  echo "complete. Downloading 'libnng' source..."
+  echo "Downloading 'libnng' source..."
   curl -sL https://api.github.com/repos/nanomsg/nng/tarball/$LIB_VER -o nng.tar.gz
   gzip -dc nng.tar.gz | tar -xf -
   rm -f nng.tar.gz
   cd Mbed-TLS-mbedtls-$TLS_VER
   mkdir build
   cd build
-  echo "complete. Compiling 'libmbedtls' from source..."
+  echo "Compiling 'libmbedtls' from source..."
   cmake -DCMAKE_POSITION_INDEPENDENT_CODE=1 -DENABLE_TESTING=0 -DENABLE_PROGRAMS=0 -DCMAKE_INSTALL_PREFIX=../../temp -DCMAKE_INSTALL_MESSAGE=NEVER ..
   cmake --build .
   cmake --install .
@@ -57,13 +58,12 @@ else
   cd nanomsg-nng-$LIB_VER
   mkdir build
   cd build
-  echo "complete. Compiling 'libnng' from source..."
+  echo "Compiling 'libnng' from source..."
   cmake -DCMAKE_POSITION_INDEPENDENT_CODE=1 -DNNG_ENABLE_TLS=1 -DNNG_ELIDE_DEPRECATED=1 -DNNG_TESTS=0 -DNNG_TOOLS=0 -DCMAKE_INSTALL_PREFIX=../../temp -DCMAKE_INSTALL_MESSAGE=NEVER ..
   cmake --build .
   cmake --install .
   cd ../..
   rm -rf nanomsg-nng-$LIB_VER
-  echo "complete."
   PKG_CFLAGS="-I`pwd`/temp/include $PKG_CFLAGS"
   PKG_LIBS="-L`pwd`/temp/lib $PKG_LIBS"
 fi

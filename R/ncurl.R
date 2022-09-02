@@ -30,9 +30,8 @@
 #'     \code{c(Authorization = "Bearer APIKEY")}.
 #' @param data (optional) the request data to be submitted.
 #' @param request (optional) a character vector or list specifying the response
-#'     headers to return e.g. \code{c("Date", "Server")} or
-#'     \code{list("date", "server")}. These are case-insensitive and will return
-#'     NULL if not present.
+#'     headers to request e.g. \code{c("date", "server")} or \code{list("Date", "Server")}.
+#'     These are case-insensitive and will return NULL if not present.
 #' @param pem (optional) applicable to secure HTTPS sites only. The path to a
 #'     file containing X.509 certificate(s) in PEM format, comprising the
 #'     certificate authority certificate chain (and revocation list if present).
@@ -41,7 +40,8 @@
 #' @return Named list of 4 elements:
 #'     \itemize{
 #'     \item{\code{$status}} {- integer HTTP repsonse status code (200 - OK).}
-#'     \item{\code{$headers}} {- list of requested response headers.}
+#'     \item{\code{$headers}} {- named list of response headers supplied in
+#'     'request' or NULL if unspecified.}
 #'     \item{\code{$raw}} {- raw vector of the received resource (use
 #'     \code{\link{writeBin}} to save to a file).}
 #'     \item{\code{$data}} {- converted character string (if \code{'convert' = TRUE}
@@ -63,7 +63,7 @@
 #'     string at \code{$raw} and \code{$data} will be NULL.
 #'
 #' @examples
-#' ncurl("https://httpbin.org/get", request = c("Date", "Server"))
+#' ncurl("https://httpbin.org/get", request = c("date", "server"))
 #' ncurl("http://httpbin.org/put",,,"PUT", list(Authorization = "Bearer APIKEY"), "hello world")
 #' ncurl("http://httpbin.org/post",,,"POST", c(`Content-Type` = "application/json"),'{"k":"v"}')
 #'
