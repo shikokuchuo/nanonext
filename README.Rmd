@@ -58,8 +58,9 @@ Web utilities:
 7. [Surveyor / Respondent Model](#surveyor-respondent-model)
 8. [ncurl: (Async) HTTP Client](#ncurl-async-http-client)
 9. [stream: Websocket Client](#stream-websocket-client)
-10. [Building from source](#building-from-source)
-11. [Links](#links)
+10. [Cryptographic Hashing](#cryptographic-hashing)
+11. [Building from Source](#building-from-source)
+12. [Links](#links)
 
 ### Installation
 
@@ -470,7 +471,28 @@ close(s)
 
 [&laquo; Back to ToC](#table-of-contents)
 
-### Building from source
+### Cryptographic Hashing
+
+Functions performing hashing using the SHA-2 series of algorithms is included: `sha224()`, `sha256()`, `sha384()` and `sha512()`.
+
+These call the secure, optimized implementations from the 'Mbed TLS' library and return a hash as a raw vector of class "nanoHash". The default print method displays the hash value. For use in authentication, raw vectors can be compared directly.
+
+If a character string of the hash value is required, use `as.character()` on the 'nanoHash' object. A fast, optimised method is implemented.
+
+To generate an HMAC (hash-based message authentication code), simply supply the value 'key' to use as the secret key.
+
+```{r sha}
+sha256("hello world!")
+
+as.character(sha256("hello world!"))
+
+sha256("hello world!", key = "MY_SECRET")
+
+```
+
+[&laquo; Back to ToC](#table-of-contents)
+
+### Building from Source
 
 #### Linux / Mac / Solaris
 
@@ -486,6 +508,8 @@ System libraries are not used by default as versions currently in system reposit
 
 Pre-built 'libnng' v1.6.0 (722bf46) and 'libmbedtls' v3.2.1 libraries are downloaded automatically during the package installation process.
 
+[&laquo; Back to ToC](#table-of-contents)
+
 ### Links
 
 nanonext on CRAN: <https://cran.r-project.org/package=nanonext><br />
@@ -493,8 +517,6 @@ Package website: <https://shikokuchuo.net/nanonext/><br />
 
 NNG website: <https://nng.nanomsg.org/><br />
 Mbed TLS website: <https://www.trustedfirmware.org/projects/mbed-tls/><br />
-
-[&laquo; Back to ToC](#table-of-contents)
 
 --
 
