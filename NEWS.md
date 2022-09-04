@@ -2,7 +2,7 @@
 
 #### Updates
 
-* Fixes installation under certain Linux distributions where library path uses 'lib64' rather than 'lib'.
+* Installation succeeds under Linux where library path uses 'lib64' instead of 'lib'.
 
 # nanonext 0.5.4
 

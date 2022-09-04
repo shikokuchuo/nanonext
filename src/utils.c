@@ -67,6 +67,10 @@ SEXP rnng_scm(void) {
   return R_MissingArg;
 }
 
+SEXP rnng_scm2(void) {
+  return R_UnboundValue;
+}
+
 SEXP rnng_clock(void) {
 
   double time = (double) nng_clock();

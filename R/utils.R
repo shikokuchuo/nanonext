@@ -350,3 +350,13 @@ nano_init <- function(warn = c("immediate", "deferred", "error", "none")) {
 
 }
 
+#' @export
+#'
+.mirai_scm2 <- function() {
+
+  identical(parent.env(parent.env(parent.frame())), getNamespace("mirai")) ||
+    stop("this function is for package internal use only")
+  .Call(rnng_scm2)
+
+}
+
