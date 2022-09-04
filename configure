@@ -44,6 +44,12 @@ else
   if [ $? -ne 0 ]
   then
     export PATH=$PATH:/Applications/CMake.app/Contents/bin
+    which cmake
+    if [ $? -ne 0 ]
+    then
+      echo "'cmake' is required but is not found"
+      exit 1
+    fi
   fi
   echo "Downloading 'libmbedtls' source..."
   curl -sL https://api.github.com/repos/Mbed-TLS/mbedtls/tarball/$TLS_VER -o mbedtls.tar.gz
@@ -57,7 +63,8 @@ else
   mkdir build
   cd build
   echo "Compiling 'libmbedtls' from source..."
-  cmake -DCMAKE_POSITION_INDEPENDENT_CODE=1 -DENABLE_TESTING=0 -DENABLE_PROGRAMS=0 -DCMAKE_INSTALL_PREFIX=../../temp -DCMAKE_INSTALL_MESSAGE=NEVER ..
+  cmake -DCMAKE_POSITION_INDEPENDENT_CODE=1 -DENABLE_TESTING=0 -DENABLE_PROGRAMS=0 \
+    -DCMAKE_INSTALL_PREFIX=../../temp -DCMAKE_INSTALL_MESSAGE=NEVER ..
   cmake --build .
   cmake --install .
   cd ../..
@@ -66,7 +73,9 @@ else
   mkdir build
   cd build
   echo "Compiling 'libnng' from source..."
-  cmake -DCMAKE_POSITION_INDEPENDENT_CODE=1 -DNNG_ENABLE_TLS=1 -DNNG_ELIDE_DEPRECATED=1 -DNNG_TESTS=0 -DNNG_TOOLS=0 -DCMAKE_INSTALL_PREFIX=../../temp -DCMAKE_INSTALL_MESSAGE=NEVER ..
+  cmake -DCMAKE_POSITION_INDEPENDENT_CODE=1 -DNNG_ENABLE_TLS=1 \
+    -DNNG_ELIDE_DEPRECATED=1 -DNNG_TESTS=0 -DNNG_TOOLS=0 \
+    -DCMAKE_INSTALL_PREFIX=../../temp -DCMAKE_INSTALL_MESSAGE=NEVER ..
   cmake --build .
   cmake --install .
   cd ../..
