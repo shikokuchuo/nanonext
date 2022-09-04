@@ -142,7 +142,7 @@ sha512 <- function(x, key = NULL) .Call(rnng_sha512, x, key)
 
 #' @export
 #'
-as.character.nanoHash <- function(x, ...) .Call(rnng_hashToChar, x)
+as.character.nanoHash <- function(x, ...) paste0(unclass(x), collapse = "")
 
 #' @export
 #'

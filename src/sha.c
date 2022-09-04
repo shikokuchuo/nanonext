@@ -366,15 +366,3 @@ SEXP rnng_sha512(SEXP x, SEXP key) {
 
 }
 
-SEXP rnng_hashToChar(SEXP x) {
-
-  const unsigned char *hash = RAW(x);
-  R_xlen_t xlen = Rf_xlength(x);
-  char conv[xlen * 2];
-  for (int i = 0, a = 0; i < xlen; i++, a += 2)
-    sprintf(&conv[a], "%.2x", (int) hash[i]);
-
-  return Rf_mkString(conv);
-
-}
-
