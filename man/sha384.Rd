@@ -21,8 +21,8 @@ Returns a SHA-384 hash or HMAC of the supplied R object. Uses the optimised
 }
 \details{
 For arguments 'x' and 'key', a raw vector is hashed directly, a
-    character string is converted using \code{\link{charToRaw}}, whilst other
-    objects are serialised first.
+    scalar character string is translated to raw without serialisation,
+    whilst all other objects are serialised first.
 
     Use \code{as.character()} to convert the returned raw vector to a single
     character string.

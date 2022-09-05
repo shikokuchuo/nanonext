@@ -1,3 +1,9 @@
+# nanonext 0.5.5.9000 (development)
+
+#### Updates
+
+* `sha224()`, `sha256()`, `sha384()` and `sha512()` functions now take character vectors by serialising them rather than only taking the first element, whilst also being faster for character scalars.
+
 # nanonext 0.5.5
 
 #### Updates

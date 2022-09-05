@@ -28,8 +28,8 @@
 #' @return A 'nanoHash' object - raw vector of length 28.
 #'
 #' @details For arguments 'x' and 'key', a raw vector is hashed directly, a
-#'     character string is converted using \code{\link{charToRaw}}, whilst other
-#'     objects are serialised first.
+#'     scalar character string is translated to raw without serialisation,
+#'     whilst all other objects are serialised first.
 #'
 #'     Use \code{as.character()} to convert the returned raw vector to a single
 #'     character string.
@@ -59,8 +59,8 @@ sha224 <- function(x, key = NULL) .Call(rnng_sha224, x, key)
 #' @return A 'nanoHash' object - raw vector of length 32.
 #'
 #' @details For arguments 'x' and 'key', a raw vector is hashed directly, a
-#'     character string is converted using \code{\link{charToRaw}}, whilst other
-#'     objects are serialised first.
+#'     scalar character string is translated to raw without serialisation,
+#'     whilst all other objects are serialised first.
 #'
 #'     Use \code{as.character()} to convert the returned raw vector to a single
 #'     character string.
@@ -90,8 +90,8 @@ sha256 <- function(x, key = NULL) .Call(rnng_sha256, x, key)
 #' @return A 'nanoHash' object - raw vector of length 48.
 #'
 #' @details For arguments 'x' and 'key', a raw vector is hashed directly, a
-#'     character string is converted using \code{\link{charToRaw}}, whilst other
-#'     objects are serialised first.
+#'     scalar character string is translated to raw without serialisation,
+#'     whilst all other objects are serialised first.
 #'
 #'     Use \code{as.character()} to convert the returned raw vector to a single
 #'     character string.
@@ -121,8 +121,8 @@ sha384 <- function(x, key = NULL) .Call(rnng_sha384, x, key)
 #' @return A 'nanoHash' object - raw vector of length 64.
 #'
 #' @details For arguments 'x' and 'key', a raw vector is hashed directly, a
-#'     character string is converted using \code{\link{charToRaw}}, whilst other
-#'     objects are serialised first.
+#'     scalar character string is translated to raw without serialisation,
+#'     whilst all other objects are serialised first.
 #'
 #'     Use \code{as.character()} to convert the returned raw vector to a single
 #'     character string.

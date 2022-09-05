@@ -71,7 +71,6 @@ extern void listener_finalizer(SEXP);
 
 extern SEXP nano_AioSymbol;
 extern SEXP nano_ContextSymbol;
-extern SEXP nano_CtrSymbol;
 extern SEXP nano_DataSymbol;
 extern SEXP nano_DialerSymbol;
 extern SEXP nano_IdSymbol;

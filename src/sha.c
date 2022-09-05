@@ -42,72 +42,65 @@ SEXP rnng_version(void) {
 #define SHA384_KEY_SIZE 48
 #define SHA512_KEY_SIZE 64
 
-SEXP rnng_sha224(SEXP x, SEXP key) {
+typedef struct nano_hash_s {
+  unsigned char *buf;
+  R_xlen_t sz;
+  SEXP vec;
+} nano_hash;
 
-  const unsigned char *buf;
-  size_t sz;
-  SEXP expr, vec;
+static nano_hash hash_encode(SEXP x) {
+
+  nano_hash hash;
+  SEXP expr;
 
   switch (TYPEOF(x)) {
   case RAWSXP:
-    buf = RAW(x);
-    sz = Rf_xlength(x);
-    PROTECT(vec = R_NilValue);
+    hash.buf = RAW(x);
+    hash.sz = Rf_xlength(x);
+    hash.vec = R_NilValue;
     break;
   case STRSXP:
-    PROTECT(expr = Rf_lang2(nano_CtrSymbol, x));
-    PROTECT(vec = Rf_eval(expr, R_BaseEnv));
-    UNPROTECT(1);
-    buf = RAW(vec);
-    sz = Rf_xlength(vec);
+    if (Rf_xlength(x) == 1) {
+      hash.sz = Rf_xlength(STRING_ELT(x, 0));
+      hash.vec = Rf_allocVector(RAWSXP, hash.sz);
+      hash.buf = RAW(hash.vec);
+      memcpy(hash.buf, CHAR(STRING_ELT(x, 0)), hash.sz);
+    } else {
+      PROTECT(expr = Rf_lang3(nano_SerialSymbol, x, R_NilValue));
+      hash.vec = Rf_eval(expr, R_BaseEnv);
+      UNPROTECT(1);
+      hash.buf = RAW(hash.vec);
+      hash.sz = Rf_xlength(hash.vec);
+    }
     break;
   default:
     PROTECT(expr = Rf_lang3(nano_SerialSymbol, x, R_NilValue));
-    PROTECT(vec = Rf_eval(expr, R_BaseEnv));
+    hash.vec = Rf_eval(expr, R_BaseEnv);
     UNPROTECT(1);
-    buf = RAW(vec);
-    sz = Rf_xlength(vec);
+    hash.buf = RAW(hash.vec);
+    hash.sz = Rf_xlength(hash.vec);
   }
+
+  return hash;
+}
+
+SEXP rnng_sha224(SEXP x, SEXP key) {
 
   SEXP out;
   int xc = 0;
   unsigned char output[SHA224_KEY_SIZE];
 
+  nano_hash xhash = hash_encode(x);
+
   if (key == R_NilValue) {
 
-    xc = mbedtls_sha256(buf, sz, output, 1);
-    UNPROTECT(1);
+    xc = mbedtls_sha256(xhash.buf, xhash.sz, output, 1);
 
   } else {
 
-    const unsigned char *kbuf;
-    size_t ksz;
-    SEXP kexpr, kvec;
-
-    switch (TYPEOF(key)) {
-    case RAWSXP:
-      kbuf = RAW(key);
-      ksz = Rf_xlength(key);
-      PROTECT(kvec = R_NilValue);
-      break;
-    case STRSXP:
-      PROTECT(kexpr = Rf_lang2(nano_CtrSymbol, key));
-      PROTECT(kvec = Rf_eval(kexpr, R_BaseEnv));
-      UNPROTECT(1);
-      kbuf = RAW(kvec);
-      ksz = Rf_xlength(kvec);
-      break;
-    default:
-      PROTECT(kexpr = Rf_lang3(nano_SerialSymbol, key, R_NilValue));
-      PROTECT(kvec = Rf_eval(kexpr, R_BaseEnv));
-      UNPROTECT(1);
-      kbuf = RAW(kvec);
-      ksz = Rf_xlength(kvec);
-    }
-
+    nano_hash khash = hash_encode(key);
     xc = mbedtls_md_hmac(mbedtls_md_info_from_type(MBEDTLS_MD_SHA224),
-                         kbuf, ksz, buf, sz, output);
-    UNPROTECT(2);
+                         khash.buf, khash.sz, xhash.buf, xhash.sz, output);
 
   }
 
@@ -117,78 +110,29 @@ SEXP rnng_sha224(SEXP x, SEXP key) {
   PROTECT(out = Rf_allocVector(RAWSXP, SHA224_KEY_SIZE));
   memcpy(RAW(out), output, SHA224_KEY_SIZE);
   Rf_classgets(out, Rf_mkString("nanoHash"));
-
   UNPROTECT(1);
+
   return out;
 
 }
 
 SEXP rnng_sha256(SEXP x, SEXP key) {
 
-  const unsigned char *buf;
-  size_t sz;
-  SEXP expr, vec;
-
-  switch (TYPEOF(x)) {
-  case RAWSXP:
-    buf = RAW(x);
-    sz = Rf_xlength(x);
-    PROTECT(vec = R_NilValue);
-    break;
-  case STRSXP:
-    PROTECT(expr = Rf_lang2(nano_CtrSymbol, x));
-    PROTECT(vec = Rf_eval(expr, R_BaseEnv));
-    UNPROTECT(1);
-    buf = RAW(vec);
-    sz = Rf_xlength(vec);
-    break;
-  default:
-    PROTECT(expr = Rf_lang3(nano_SerialSymbol, x, R_NilValue));
-    PROTECT(vec = Rf_eval(expr, R_BaseEnv));
-    UNPROTECT(1);
-    buf = RAW(vec);
-    sz = Rf_xlength(vec);
-  }
-
   SEXP out;
   int xc = 0;
   unsigned char output[SHA256_KEY_SIZE];
 
+  nano_hash xhash = hash_encode(x);
+
   if (key == R_NilValue) {
 
-    xc = mbedtls_sha256(buf, sz, output, 0);
-    UNPROTECT(1);
+    xc = mbedtls_sha256(xhash.buf, xhash.sz, output, 0);
 
   } else {
 
-    const unsigned char *kbuf;
-    size_t ksz;
-    SEXP kexpr, kvec;
-
-    switch (TYPEOF(key)) {
-    case RAWSXP:
-      kbuf = RAW(key);
-      ksz = Rf_xlength(key);
-      PROTECT(kvec = R_NilValue);
-      break;
-    case STRSXP:
-      PROTECT(kexpr = Rf_lang2(nano_CtrSymbol, key));
-      PROTECT(kvec = Rf_eval(kexpr, R_BaseEnv));
-      UNPROTECT(1);
-      kbuf = RAW(kvec);
-      ksz = Rf_xlength(kvec);
-      break;
-    default:
-      PROTECT(kexpr = Rf_lang3(nano_SerialSymbol, key, R_NilValue));
-      PROTECT(kvec = Rf_eval(kexpr, R_BaseEnv));
-      UNPROTECT(1);
-      kbuf = RAW(kvec);
-      ksz = Rf_xlength(kvec);
-    }
-
+    nano_hash khash = hash_encode(key);
     xc = mbedtls_md_hmac(mbedtls_md_info_from_type(MBEDTLS_MD_SHA256),
-                         kbuf, ksz, buf, sz, output);
-    UNPROTECT(2);
+                         khash.buf, khash.sz, xhash.buf, xhash.sz, output);
 
   }
 
@@ -198,78 +142,29 @@ SEXP rnng_sha256(SEXP x, SEXP key) {
   PROTECT(out = Rf_allocVector(RAWSXP, SHA256_KEY_SIZE));
   memcpy(RAW(out), output, SHA256_KEY_SIZE);
   Rf_classgets(out, Rf_mkString("nanoHash"));
-
   UNPROTECT(1);
+
   return out;
 
 }
 
 SEXP rnng_sha384(SEXP x, SEXP key) {
 
-  const unsigned char *buf;
-  size_t sz;
-  SEXP expr, vec;
-
-  switch (TYPEOF(x)) {
-  case RAWSXP:
-    buf = RAW(x);
-    sz = Rf_xlength(x);
-    PROTECT(vec = R_NilValue);
-    break;
-  case STRSXP:
-    PROTECT(expr = Rf_lang2(nano_CtrSymbol, x));
-    PROTECT(vec = Rf_eval(expr, R_BaseEnv));
-    UNPROTECT(1);
-    buf = RAW(vec);
-    sz = Rf_xlength(vec);
-    break;
-  default:
-    PROTECT(expr = Rf_lang3(nano_SerialSymbol, x, R_NilValue));
-    PROTECT(vec = Rf_eval(expr, R_BaseEnv));
-    UNPROTECT(1);
-    buf = RAW(vec);
-    sz = Rf_xlength(vec);
-  }
-
   SEXP out;
   int xc = 0;
   unsigned char output[SHA384_KEY_SIZE];
 
+  nano_hash xhash = hash_encode(x);
+
   if (key == R_NilValue) {
 
-    xc = mbedtls_sha512(buf, sz, output, 1);
-    UNPROTECT(1);
+    xc = mbedtls_sha512(xhash.buf, xhash.sz, output, 1);
 
   } else {
 
-    const unsigned char *kbuf;
-    size_t ksz;
-    SEXP kexpr, kvec;
-
-    switch (TYPEOF(key)) {
-    case RAWSXP:
-      kbuf = RAW(key);
-      ksz = Rf_xlength(key);
-      PROTECT(kvec = R_NilValue);
-      break;
-    case STRSXP:
-      PROTECT(kexpr = Rf_lang2(nano_CtrSymbol, key));
-      PROTECT(kvec = Rf_eval(kexpr, R_BaseEnv));
-      UNPROTECT(1);
-      kbuf = RAW(kvec);
-      ksz = Rf_xlength(kvec);
-      break;
-    default:
-      PROTECT(kexpr = Rf_lang3(nano_SerialSymbol, key, R_NilValue));
-      PROTECT(kvec = Rf_eval(kexpr, R_BaseEnv));
-      UNPROTECT(1);
-      kbuf = RAW(kvec);
-      ksz = Rf_xlength(kvec);
-    }
-
+    nano_hash khash = hash_encode(key);
     xc = mbedtls_md_hmac(mbedtls_md_info_from_type(MBEDTLS_MD_SHA384),
-                         kbuf, ksz, buf, sz, output);
-    UNPROTECT(2);
+                         khash.buf, khash.sz, xhash.buf, xhash.sz, output);
 
   }
 
@@ -279,78 +174,29 @@ SEXP rnng_sha384(SEXP x, SEXP key) {
   PROTECT(out = Rf_allocVector(RAWSXP, SHA384_KEY_SIZE));
   memcpy(RAW(out), output, SHA384_KEY_SIZE);
   Rf_classgets(out, Rf_mkString("nanoHash"));
-
   UNPROTECT(1);
+
   return out;
 
 }
 
 SEXP rnng_sha512(SEXP x, SEXP key) {
 
-  const unsigned char *buf;
-  size_t sz;
-  SEXP expr, vec;
-
-  switch (TYPEOF(x)) {
-  case RAWSXP:
-    buf = RAW(x);
-    sz = Rf_xlength(x);
-    PROTECT(vec = R_NilValue);
-    break;
-  case STRSXP:
-    PROTECT(expr = Rf_lang2(nano_CtrSymbol, x));
-    PROTECT(vec = Rf_eval(expr, R_BaseEnv));
-    UNPROTECT(1);
-    buf = RAW(vec);
-    sz = Rf_xlength(vec);
-    break;
-  default:
-    PROTECT(expr = Rf_lang3(nano_SerialSymbol, x, R_NilValue));
-    PROTECT(vec = Rf_eval(expr, R_BaseEnv));
-    UNPROTECT(1);
-    buf = RAW(vec);
-    sz = Rf_xlength(vec);
-  }
-
   SEXP out;
   int xc = 0;
   unsigned char output[SHA512_KEY_SIZE];
 
+  nano_hash xhash = hash_encode(x);
+
   if (key == R_NilValue) {
 
-    xc = mbedtls_sha512(buf, sz, output, 0);
-    UNPROTECT(1);
+    xc = mbedtls_sha512(xhash.buf, xhash.sz, output, 0);
 
   } else {
 
-    const unsigned char *kbuf;
-    size_t ksz;
-    SEXP kexpr, kvec;
-
-    switch (TYPEOF(key)) {
-    case RAWSXP:
-      kbuf = RAW(key);
-      ksz = Rf_xlength(key);
-      PROTECT(kvec = R_NilValue);
-      break;
-    case STRSXP:
-      PROTECT(kexpr = Rf_lang2(nano_CtrSymbol, key));
-      PROTECT(kvec = Rf_eval(kexpr, R_BaseEnv));
-      UNPROTECT(1);
-      kbuf = RAW(kvec);
-      ksz = Rf_xlength(kvec);
-      break;
-    default:
-      PROTECT(kexpr = Rf_lang3(nano_SerialSymbol, key, R_NilValue));
-      PROTECT(kvec = Rf_eval(kexpr, R_BaseEnv));
-      UNPROTECT(1);
-      kbuf = RAW(kvec);
-      ksz = Rf_xlength(kvec);
-    }
-
+    nano_hash khash = hash_encode(key);
     xc = mbedtls_md_hmac(mbedtls_md_info_from_type(MBEDTLS_MD_SHA512),
-                         kbuf, ksz, buf, sz, output);
-    UNPROTECT(2);
+                         khash.buf, khash.sz, xhash.buf, xhash.sz, output);
 
   }
 
@@ -360,8 +206,8 @@ SEXP rnng_sha512(SEXP x, SEXP key) {
   PROTECT(out = Rf_allocVector(RAWSXP, SHA512_KEY_SIZE));
   memcpy(RAW(out), output, SHA512_KEY_SIZE);
   Rf_classgets(out, Rf_mkString("nanoHash"));
-
   UNPROTECT(1);
+
   return out;
 
 }

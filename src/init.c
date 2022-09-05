@@ -20,7 +20,6 @@
 
 SEXP nano_AioSymbol;
 SEXP nano_ContextSymbol;
-SEXP nano_CtrSymbol;
 SEXP nano_DataSymbol;
 SEXP nano_DialerSymbol;
 SEXP nano_IdSymbol;
@@ -39,7 +38,6 @@ SEXP nano_UrlSymbol;
 static void RegisterSymbols(void) {
   nano_AioSymbol = Rf_install("aio");
   nano_ContextSymbol = Rf_install("context");
-  nano_CtrSymbol = Rf_install("charToRaw");
   nano_DataSymbol = Rf_install("data");
   nano_DialerSymbol = Rf_install("dialer");
   nano_IdSymbol = Rf_install("id");
