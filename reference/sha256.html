@@ -18,7 +18,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.5.9000</span>
       </span>
     </div>
 
@@ -84,8 +84,8 @@ NULL, the SHA-256 hash of 'x' is returned.</p></dd>
     <div id="details">
     <h2>Details</h2>
     <p>For arguments 'x' and 'key', a raw vector is hashed directly, a
-    character string is converted using <code><a href="https://rdrr.io/r/base/rawConversion.html" class="external-link">charToRaw</a></code>, whilst other
-    objects are serialised first.</p>
+    scalar character string is translated to raw without serialisation,
+    whilst all other objects are serialised first.</p>
 <p>Use <code><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character()</a></code> to convert the returned raw vector to a single
     character string.</p>
     </div>
