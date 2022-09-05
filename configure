@@ -39,7 +39,7 @@ then
     PKG_LIBS="-L/usr/local/lib $PKG_LIBS"
   fi
 else
-  echo "Detecting cmake..."
+  echo "Detecting 'cmake'..."
   which cmake
   if [ $? -ne 0 ]
   then
