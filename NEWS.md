@@ -3,6 +3,7 @@
 #### Updates
 
 * `sha224()`, `sha256()`, `sha384()` and `sha512()` functions now take character vectors by serialising them rather than only taking the first element, whilst also being faster for character scalars.
+* Implements optimised `as.character.nanoHash()` method for generating hex strings from hashed objects.
 
 # nanonext 0.5.5
 

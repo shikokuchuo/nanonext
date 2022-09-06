@@ -212,3 +212,16 @@ SEXP rnng_sha512(SEXP x, SEXP key) {
 
 }
 
+SEXP rnng_hashToChar(SEXP hash) {
+
+  const unsigned char *buf = RAW(hash);
+  const R_xlen_t sz = Rf_xlength(hash);
+  char out[sz * 2 + 1];
+
+  for (R_xlen_t i = 0; i < sz; i++)
+    sprintf(&out[i * 2], "%.2x", buf[i]);
+
+  return Rf_mkString(out);
+
+}
+

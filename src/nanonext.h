@@ -108,6 +108,7 @@ extern SEXP rnng_dialer_close(SEXP);
 extern SEXP rnng_dialer_create(SEXP, SEXP);
 extern SEXP rnng_dialer_set(SEXP, SEXP, SEXP, SEXP);
 extern SEXP rnng_dialer_start(SEXP, SEXP);
+extern SEXP rnng_hashToChar(SEXP);
 extern SEXP rnng_listen(SEXP, SEXP);
 extern SEXP rnng_listener_close(SEXP);
 extern SEXP rnng_listener_create(SEXP, SEXP);

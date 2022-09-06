@@ -77,6 +77,7 @@ static const R_CallMethodDef CallEntries[] = {
   {"rnng_dialer_create", (DL_FUNC) &rnng_dialer_create, 2},
   {"rnng_dialer_set", (DL_FUNC) &rnng_dialer_set, 4},
   {"rnng_dialer_start", (DL_FUNC) &rnng_dialer_start, 2},
+  {"rnng_hashToChar", (DL_FUNC) &rnng_hashToChar, 1},
   {"rnng_listen", (DL_FUNC) &rnng_listen, 2},
   {"rnng_listener_close", (DL_FUNC) &rnng_listener_close, 1},
   {"rnng_listener_create", (DL_FUNC) &rnng_listener_create, 2},
