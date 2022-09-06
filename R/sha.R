@@ -45,6 +45,16 @@
 #' # Obtain HMAC:
 #' sha256("hello world!", "SECRET_KEY")
 #'
+#' # Hashing a file:
+#' tempfile <- tempfile()
+#' cat(rep(letters, 256), file = tempfile)
+#' con <- file(tempfile, open = "rb")
+#' vec <- NULL
+#' while (length(upd <- readBin(con, raw(), 8192))) vec <- c(vec, upd)
+#' sha256(vec)
+#' close(con)
+#' unlink(tempfile)
+#'
 #' @export
 #'
 sha256 <- function(x, key = NULL) .Call(rnng_sha256, x, key)
@@ -52,12 +62,6 @@ sha256 <- function(x, key = NULL) .Call(rnng_sha256, x, key)
 #' @examples
 #' # SHA-224 hash:
 #' sha224("hello world!")
-#'
-#' # Convert to character string:
-#' as.character(sha224("hello world!"))
-#'
-#' # Obtain HMAC:
-#' sha224("hello world!", "SECRET_KEY")
 #'
 #' @rdname sha256
 #' @export
@@ -68,12 +72,6 @@ sha224 <- function(x, key = NULL) .Call(rnng_sha224, x, key)
 #' # SHA-384 hash:
 #' sha384("hello world!")
 #'
-#' # Convert to character string:
-#' as.character(sha384("hello world!"))
-#'
-#' # Obtain HMAC:
-#' sha384("hello world!", "SECRET_KEY")
-#'
 #' @rdname sha256
 #' @export
 #'
@@ -82,12 +80,6 @@ sha384 <- function(x, key = NULL) .Call(rnng_sha384, x, key)
 #' @examples
 #' # SHA-512 hash:
 #' sha512("hello world!")
-#'
-#' # Convert to character string:
-#' as.character(sha512("hello world!"))
-#'
-#' # Obtain HMAC:
-#' sha512("hello world!", "SECRET_KEY")
 #'
 #' @rdname sha256
 #' @export
