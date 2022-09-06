@@ -111,41 +111,28 @@ NULL, the SHA-256/224/384/512 hash of 'x' is returned.</p></dd>
 <span class="r-in"><span><span class="fu">sha256</span><span class="op">(</span><span class="st">"hello world!"</span>, <span class="st">"SECRET_KEY"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 7f b6 77 26 fa 6d d0 51 04 b5 02 91 06 49 cb 7a e3 54 a1 d6 74 40 0d 7b 12 b5 a5 bb f3 98 26 95</span>
 <span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Hashing a file:</span></span></span>
+<span class="r-in"><span><span class="va">tempfile</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="va">letters</span>, <span class="fl">256</span><span class="op">)</span>, file <span class="op">=</span> <span class="va">tempfile</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">con</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/connections.html" class="external-link">file</a></span><span class="op">(</span><span class="va">tempfile</span>, open <span class="op">=</span> <span class="st">"rb"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">vec</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span></span>
+<span class="r-in"><span><span class="kw">while</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">upd</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readBin.html" class="external-link">readBin</a></span><span class="op">(</span><span class="va">con</span>, <span class="fu"><a href="https://rdrr.io/r/base/raw.html" class="external-link">raw</a></span><span class="op">(</span><span class="op">)</span>, <span class="fl">8192</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="va">vec</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">vec</span>, <span class="va">upd</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">sha256</span><span class="op">(</span><span class="va">vec</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> a5 75 e3 64 87 c8 c1 3d d1 9d a6 0a 10 77 d2 c1 0e c8 a5 cc d2 e5 ee db 17 80 2b cd 40 97 f5 45</span>
+<span class="r-in"><span><span class="fu"><a href="close.html">close</a></span><span class="op">(</span><span class="va">con</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/unlink.html" class="external-link">unlink</a></span><span class="op">(</span><span class="va">tempfile</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># SHA-224 hash:</span></span></span>
 <span class="r-in"><span><span class="fu">sha224</span><span class="op">(</span><span class="st">"hello world!"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 42 8c 16 b4 30 9e 82 4c fa 87 4f e2 4c e2 af 28 94 fc af 8d 72 af 4a 36 8d 49 2e 34</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Convert to character string:</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fu">sha224</span><span class="op">(</span><span class="st">"hello world!"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "428c16b4309e824cfa874fe24ce2af2894fcaf8d72af4a368d492e34"</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Obtain HMAC:</span></span></span>
-<span class="r-in"><span><span class="fu">sha224</span><span class="op">(</span><span class="st">"hello world!"</span>, <span class="st">"SECRET_KEY"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> bb d5 5d 45 78 8e 14 57 00 07 cc b6 f5 71 8c f0 64 59 f1 75 2a 24 43 0c 17 2d 3d fb</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># SHA-384 hash:</span></span></span>
 <span class="r-in"><span><span class="fu">sha384</span><span class="op">(</span><span class="st">"hello world!"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> d3 3d 40 f7 01 0c e3 4a a8 6e fd 35 36 30 30 9e d5 c3 d7 ff ac 66 d9 88 82 5c f6 99 f4 80 3c cd f3 f0 33 23 06 12 f0 94 53 32 fb 58 0d 8a f8 05</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Convert to character string:</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fu">sha384</span><span class="op">(</span><span class="st">"hello world!"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "d33d40f7010ce34aa86efd353630309ed5c3d7ffac66d988825cf699f4803ccdf3f033230612f0945332fb580d8af805"</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Obtain HMAC:</span></span></span>
-<span class="r-in"><span><span class="fu">sha384</span><span class="op">(</span><span class="st">"hello world!"</span>, <span class="st">"SECRET_KEY"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> f4 4e 6c 74 9a 79 e9 ad ab d1 69 1f f7 de 05 f0 be e7 5b cd f5 7b f6 b0 b2 46 98 33 68 3b 5d 93 e7 0d 6c 8f 7e a3 a9 f9 80 27 b9 5d 04 e7 49 4e</span>
-<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># SHA-512 hash:</span></span></span>
 <span class="r-in"><span><span class="fu">sha512</span><span class="op">(</span><span class="st">"hello world!"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> db 9b 1c d3 26 2d ee 37 75 6a 09 b9 06 49 73 58 98 47 ca a8 e5 3d 31 a9 d1 42 ea 27 01 b1 b2 8a bd 97 83 8b b9 a2 70 68 ba 30 5d c8 d0 4a 45 a1 fc f0 79 de 54 d6 07 66 69 96 b3 cc 54 f6 b6 7c</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Convert to character string:</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fu">sha512</span><span class="op">(</span><span class="st">"hello world!"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "db9b1cd3262dee37756a09b9064973589847caa8e53d31a9d142ea2701b1b28abd97838bb9a27068ba305dc8d04a45a1fcf079de54d607666996b3cc54f6b67c"</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Obtain HMAC:</span></span></span>
-<span class="r-in"><span><span class="fu">sha512</span><span class="op">(</span><span class="st">"hello world!"</span>, <span class="st">"SECRET_KEY"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 65 f2 94 47 2e 69 85 ff 29 05 11 bc 10 41 56 82 25 61 1d 71 2c a5 7b 54 e8 b7 1f 3a c4 23 de dc 0d 5b 19 30 18 6d cf 85 90 a6 16 16 0b ac 65 84 4c d4 5c 1d 70 8c 40 2f b8 8d 9b 9c 16 71 61 e0</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
