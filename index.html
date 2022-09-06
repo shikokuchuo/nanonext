@@ -346,7 +346,7 @@
 <span><span class="co">#&gt; &lt; recvAio &gt;</span></span>
 <span><span class="co">#&gt;  - $data for message data</span></span>
 <span><span class="va">aio</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] -0.411 -1.236 -0.307 -0.339 0.984 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] -0.165 1.111 -0.996 -2.7 1.285 ...</span></span></code></pre></div>
 <p>As <code><a href="reference/call_aio.html">call_aio()</a></code> is blocking and will wait for completion, an alternative is to query <code>aio$data</code> directly. This will return an ‘unresolved’ logical NA value if the calculation is yet to complete.</p>
 <p>In this example the calculation is returned, but other operations may reside entirely on the server side, for example writing data to disk.</p>
 <p>In such a case, calling or querying the value confirms that the operation has completed, and provides the return value of the function, which may typically be NULL or an exit code.</p>
@@ -469,11 +469,11 @@
 <span><span class="co">#&gt;   [1] 7b 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73</span></span>
 <span><span class="co">#&gt;  [26] 74 22 3a 20 22 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22</span></span>
 <span><span class="co">#&gt;  [51] 58 2d 41 6d 7a 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31</span></span>
-<span><span class="co">#&gt;  [76] 2d 36 33 31 32 30 39 32 38 2d 36 33 33 36 36 61 64 63 32 32 66 33 62 35 63</span></span>
-<span><span class="co">#&gt; [101] 33 34 38 34 37 66 61 36 36 22 0a 20 20 7d 0a 7d 0a</span></span>
+<span><span class="co">#&gt;  [76] 2d 36 33 31 37 30 62 38 38 2d 34 34 30 34 30 35 64 33 37 65 61 63 62 62 39</span></span>
+<span><span class="co">#&gt; [101] 37 32 61 32 65 61 31 64 34 22 0a 20 20 7d 0a 7d 0a</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $data</span></span>
-<span><span class="co">#&gt; [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-63120928-63366adc22f3b5c34847fa66\"\n  }\n}\n"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-63170b88-440405d37eacbb972a2ea1d4\"\n  }\n}\n"</span></span></code></pre></div>
 <p>For advanced use, supports additional HTTP methods such as POST or PUT.</p>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ncurl.html">ncurl</a></span><span class="op">(</span><span class="st">"http://httpbin.org/post"</span>, async <span class="op">=</span> <span class="cn">TRUE</span>, method <span class="op">=</span> <span class="st">"POST"</span>,</span>
@@ -489,13 +489,13 @@
 <span></span>
 <span><span class="fu"><a href="reference/call_aio.html">call_aio</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span><span class="op">$</span><span class="va">headers</span></span>
 <span><span class="co">#&gt; $Date</span></span>
-<span><span class="co">#&gt; [1] "Fri, 02 Sep 2022 13:46:16 GMT"</span></span>
+<span><span class="co">#&gt; [1] "Tue, 06 Sep 2022 08:57:44 GMT"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $Server</span></span>
 <span><span class="co">#&gt; [1] "gunicorn/19.9.0"</span></span>
 <span></span>
 <span><span class="va">res</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt; [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-63120928-1caef5b315853c0a48ef0217\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"213.86.169.34\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-63170b88-3788784809d2e6ad7fe535aa\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"213.86.169.34\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"</span></span></code></pre></div>
 <p>In this respect, it may be used as a performant and lightweight method for making REST API requests.</p>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
@@ -523,10 +523,10 @@
 <span><span class="co">#&gt; [26] 73 79 6d 62 6f 6c 73 22 3a 20 22 45 55 52 55 53 44 22 7d 00</span></span>
 <span></span>
 <span><span class="va">s</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/recv.html">recv</a></span><span class="op">(</span>keep.raw <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "{\"s\":\"EURUSD\",\"a\":1.00066,\"b\":1.00059,\"dc\":\"0.5476\",\"dd\":\"0.0055\",\"ppms\":false,\"t\":1662126377000}"</span></span>
+<span><span class="co">#&gt; [1] "{\"s\":\"EURUSD\",\"a\":0.99593,\"b\":0.99591,\"dc\":\"0.0934\",\"dd\":\"0.0009\",\"ppms\":false,\"t\":1662454665000}"</span></span>
 <span></span>
 <span><span class="va">s</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/recv.html">recv</a></span><span class="op">(</span>keep.raw <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "{\"s\":\"EURUSD\",\"a\":1.00067,\"b\":1.0006,\"dc\":\"0.5486\",\"dd\":\"0.0055\",\"ppms\":false,\"t\":1662126378000}"</span></span>
+<span><span class="co">#&gt; [1] "{\"s\":\"EURUSD\",\"a\":0.99592,\"b\":0.9959,\"dc\":\"0.0924\",\"dd\":\"0.0009\",\"ppms\":false,\"t\":1662454665000}"</span></span>
 <span></span>
 <span><span class="fu"><a href="reference/close.html">close</a></span><span class="op">(</span><span class="va">s</span><span class="op">)</span></span></code></pre></div>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
@@ -534,7 +534,7 @@
 <div class="section level3">
 <h3 id="cryptographic-hashing">Cryptographic Hashing<a class="anchor" aria-label="anchor" href="#cryptographic-hashing"></a>
 </h3>
-<p>Functions performing hashing using the SHA-2 series of algorithms is included: <code><a href="reference/sha224.html">sha224()</a></code>, <code><a href="reference/sha256.html">sha256()</a></code>, <code><a href="reference/sha384.html">sha384()</a></code> and <code><a href="reference/sha512.html">sha512()</a></code>.</p>
+<p>Functions performing hashing using the SHA-2 series of algorithms is included: <code><a href="reference/sha256.html">sha224()</a></code>, <code><a href="reference/sha256.html">sha256()</a></code>, <code><a href="reference/sha256.html">sha384()</a></code> and <code><a href="reference/sha256.html">sha512()</a></code>.</p>
 <p>These call the secure, optimized implementations from the ‘Mbed TLS’ library and return a hash as a raw vector of class ‘nanoHash’. The default print method displays the hash value. For use in authentication, raw vectors can be compared directly.</p>
 <p>If a character string of the hash value is required, use <code><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character()</a></code> on the ‘nanoHash’ object. A fast, optimised method is implemented.</p>
 <p>To generate an HMAC (hash-based message authentication code), simply supply the value ‘key’ to use as the secret key.</p>
