@@ -35,12 +35,8 @@ SEXP mk_error(const int xc) {
 
 SEXP rnng_serial(SEXP mode) {
 
-  if (TYPEOF(mode) == INTSXP) {
-    switch (INTEGER(mode)[0]) {
-    case 1: return Rf_ScalarLogical(1);
-    default: return Rf_ScalarLogical(0);
-    }
-  }
+  if (TYPEOF(mode) == INTSXP)
+    return INTEGER(mode)[0] == 1 ? Rf_ScalarLogical(1) : Rf_ScalarLogical(0);
 
   const char *mod = CHAR(STRING_ELT(mode, 0));
   size_t slen = strlen(mod);
@@ -149,7 +145,8 @@ SEXP rawOneString(unsigned char *bytes, R_xlen_t nbytes, R_xlen_t *np) {
 
 SEXP rnng_matcharg(SEXP mode) {
 
-  if (TYPEOF(mode) == INTSXP) return mode;
+  if (TYPEOF(mode) == INTSXP)
+    return mode;
 
   const char *mod = CHAR(STRING_ELT(mode, 0));
   size_t slen = strlen(mod);
@@ -187,7 +184,8 @@ SEXP rnng_matcharg(SEXP mode) {
 
 SEXP rnng_matchargs(SEXP mode) {
 
-  if (TYPEOF(mode) == INTSXP) return mode;
+  if (TYPEOF(mode) == INTSXP)
+    return mode;
 
   const char *mod = CHAR(STRING_ELT(mode, 0));
   size_t slen = strlen(mod);
@@ -371,7 +369,7 @@ void listener_finalizer(SEXP xptr) {
 
 }
 
-void context_finalizer(SEXP xptr) {
+static void context_finalizer(SEXP xptr) {
 
   if (R_ExternalPtrAddr(xptr) == NULL)
     return;

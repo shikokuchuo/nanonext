@@ -2,22 +2,32 @@
 % Please edit documentation in R/sha.R
 \name{sha256}
 \alias{sha256}
-\title{Cryptographic Hashing Using the SHA-256 Algorithm}
+\alias{sha224}
+\alias{sha384}
+\alias{sha512}
+\title{Cryptographic Hashing Using the SHA-2 Algorithms}
 \usage{
 sha256(x, key = NULL)
+
+sha224(x, key = NULL)
+
+sha384(x, key = NULL)
+
+sha512(x, key = NULL)
 }
 \arguments{
 \item{x}{an object.}
 
 \item{key}{(optional) supply a secret key to generate an HMAC. If missing or
-NULL, the SHA-256 hash of 'x' is returned.}
+NULL, the SHA-256/224/384/512 hash of 'x' is returned.}
 }
 \value{
-A 'nanoHash' object - raw vector of length 32.
+A 'nanoHash' object - raw vector of length 32 for SHA-256,
+    28 for SHA-224, 48 for SHA-384, and 64 for SHA-512.
 }
 \description{
-Returns a SHA-256 hash or HMAC of the supplied R object. Uses the optimised
-    implementation from the Mbed TLS library.
+Returns a SHA-256, SHA-224, SHA-384, or SHA-512 hash or HMAC of the supplied
+    R object. Uses the optimised implementation from the Mbed TLS library.
 }
 \details{
 For arguments 'x' and 'key', a raw vector is hashed directly, a
@@ -28,12 +38,40 @@ For arguments 'x' and 'key', a raw vector is hashed directly, a
     character string.
 }
 \examples{
+# SHA-256 hash:
 sha256("hello world!")
 
-# Converts to a character string:
+# Convert to character string:
 as.character(sha256("hello world!"))
 
 # Obtain HMAC:
 sha256("hello world!", "SECRET_KEY")
+
+# SHA-224 hash:
+sha224("hello world!")
+
+# Convert to character string:
+as.character(sha224("hello world!"))
+
+# Obtain HMAC:
+sha224("hello world!", "SECRET_KEY")
+
+# SHA-384 hash:
+sha384("hello world!")
+
+# Convert to character string:
+as.character(sha384("hello world!"))
+
+# Obtain HMAC:
+sha384("hello world!", "SECRET_KEY")
+
+# SHA-512 hash:
+sha512("hello world!")
+
+# Convert to character string:
+as.character(sha512("hello world!"))
+
+# Obtain HMAC:
+sha512("hello world!", "SECRET_KEY")
 
 }

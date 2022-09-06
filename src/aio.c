@@ -45,7 +45,7 @@ typedef struct nano_handle_s {
   nng_tls_config *cfg;
 } nano_handle;
 
-void saio_complete(void *arg) {
+static void saio_complete(void *arg) {
 
   nano_aio *saio = (nano_aio *) (arg);
   saio->result = nng_aio_result(saio->aio);
@@ -54,7 +54,7 @@ void saio_complete(void *arg) {
 
 }
 
-void raio_complete(void *arg) {
+static void raio_complete(void *arg) {
 
   nano_aio *raio = (nano_aio *) (arg);
   raio->result = nng_aio_result(raio->aio);
@@ -63,14 +63,14 @@ void raio_complete(void *arg) {
 
 }
 
-void iaio_complete(void *arg) {
+static void iaio_complete(void *arg) {
 
   nano_aio *iaio = (nano_aio *) (arg);
   iaio->result = nng_aio_result(iaio->aio);
 
 }
 
-void saio_finalizer(SEXP xptr) {
+static void saio_finalizer(SEXP xptr) {
 
   if (R_ExternalPtrAddr(xptr) == NULL)
     return;
@@ -80,7 +80,7 @@ void saio_finalizer(SEXP xptr) {
 
 }
 
-void raio_finalizer(SEXP xptr) {
+static void raio_finalizer(SEXP xptr) {
 
   if (R_ExternalPtrAddr(xptr) == NULL)
     return;
@@ -92,7 +92,7 @@ void raio_finalizer(SEXP xptr) {
 
 }
 
-void isaio_finalizer(SEXP xptr) {
+static void isaio_finalizer(SEXP xptr) {
 
   if (R_ExternalPtrAddr(xptr) == NULL)
     return;
@@ -103,7 +103,7 @@ void isaio_finalizer(SEXP xptr) {
 
 }
 
-void iraio_finalizer(SEXP xptr) {
+static void iraio_finalizer(SEXP xptr) {
 
   if (R_ExternalPtrAddr(xptr) == NULL)
     return;
@@ -116,7 +116,7 @@ void iraio_finalizer(SEXP xptr) {
 
 }
 
-void haio_finalizer(SEXP xptr) {
+static void haio_finalizer(SEXP xptr) {
 
   if (R_ExternalPtrAddr(xptr) == NULL)
     return;

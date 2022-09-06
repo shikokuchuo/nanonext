@@ -24,7 +24,7 @@
 
 // finalizers ------------------------------------------------------------------
 
-void stream_dialer_finalizer(SEXP xptr) {
+static void stream_dialer_finalizer(SEXP xptr) {
 
   if (R_ExternalPtrAddr(xptr) == NULL)
     return;
@@ -34,7 +34,7 @@ void stream_dialer_finalizer(SEXP xptr) {
 
 }
 
-void stream_listener_finalizer(SEXP xptr) {
+static void stream_listener_finalizer(SEXP xptr) {
 
   if (R_ExternalPtrAddr(xptr) == NULL)
     return;
@@ -44,7 +44,7 @@ void stream_listener_finalizer(SEXP xptr) {
 
 }
 
-void stream_finalizer(SEXP xptr) {
+static void stream_finalizer(SEXP xptr) {
 
   if (R_ExternalPtrAddr(xptr) == NULL)
     return;

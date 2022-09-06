@@ -48,7 +48,7 @@ typedef struct nano_hash_s {
   SEXP vec;
 } nano_hash;
 
-static nano_hash hash_encode(SEXP x) {
+static nano_hash nano_anytoraw(SEXP x) {
 
   nano_hash hash;
   SEXP expr;
@@ -90,7 +90,7 @@ SEXP rnng_sha224(SEXP x, SEXP key) {
   int xc = 0;
   unsigned char output[SHA224_KEY_SIZE];
 
-  nano_hash xhash = hash_encode(x);
+  nano_hash xhash = nano_anytoraw(x);
 
   if (key == R_NilValue) {
 
@@ -98,7 +98,7 @@ SEXP rnng_sha224(SEXP x, SEXP key) {
 
   } else {
 
-    nano_hash khash = hash_encode(key);
+    nano_hash khash = nano_anytoraw(key);
     xc = mbedtls_md_hmac(mbedtls_md_info_from_type(MBEDTLS_MD_SHA224),
                          khash.buf, khash.sz, xhash.buf, xhash.sz, output);
 
@@ -122,7 +122,7 @@ SEXP rnng_sha256(SEXP x, SEXP key) {
   int xc = 0;
   unsigned char output[SHA256_KEY_SIZE];
 
-  nano_hash xhash = hash_encode(x);
+  nano_hash xhash = nano_anytoraw(x);
 
   if (key == R_NilValue) {
 
@@ -130,7 +130,7 @@ SEXP rnng_sha256(SEXP x, SEXP key) {
 
   } else {
 
-    nano_hash khash = hash_encode(key);
+    nano_hash khash = nano_anytoraw(key);
     xc = mbedtls_md_hmac(mbedtls_md_info_from_type(MBEDTLS_MD_SHA256),
                          khash.buf, khash.sz, xhash.buf, xhash.sz, output);
 
@@ -154,7 +154,7 @@ SEXP rnng_sha384(SEXP x, SEXP key) {
   int xc = 0;
   unsigned char output[SHA384_KEY_SIZE];
 
-  nano_hash xhash = hash_encode(x);
+  nano_hash xhash = nano_anytoraw(x);
 
   if (key == R_NilValue) {
 
@@ -162,7 +162,7 @@ SEXP rnng_sha384(SEXP x, SEXP key) {
 
   } else {
 
-    nano_hash khash = hash_encode(key);
+    nano_hash khash = nano_anytoraw(key);
     xc = mbedtls_md_hmac(mbedtls_md_info_from_type(MBEDTLS_MD_SHA384),
                          khash.buf, khash.sz, xhash.buf, xhash.sz, output);
 
@@ -186,7 +186,7 @@ SEXP rnng_sha512(SEXP x, SEXP key) {
   int xc = 0;
   unsigned char output[SHA512_KEY_SIZE];
 
-  nano_hash xhash = hash_encode(x);
+  nano_hash xhash = nano_anytoraw(x);
 
   if (key == R_NilValue) {
 
@@ -194,7 +194,7 @@ SEXP rnng_sha512(SEXP x, SEXP key) {
 
   } else {
 
-    nano_hash khash = hash_encode(key);
+    nano_hash khash = nano_anytoraw(key);
     xc = mbedtls_md_hmac(mbedtls_md_info_from_type(MBEDTLS_MD_SHA512),
                          khash.buf, khash.sz, xhash.buf, xhash.sz, output);
 
