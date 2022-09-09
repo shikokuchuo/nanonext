@@ -47,6 +47,7 @@
 #endif
 
 #ifdef NANONEXT_TLS
+#include <mbedtls/base64.h>
 #include <mbedtls/md.h>
 #include <mbedtls/sha256.h>
 #include <mbedtls/sha512.h>
@@ -93,6 +94,8 @@ extern SEXP rnng_aio_result(SEXP);
 extern SEXP rnng_aio_stop(SEXP);
 extern SEXP rnng_aio_stream_in(SEXP, SEXP, SEXP);
 extern SEXP rnng_aio_unresolv(void);
+extern SEXP rnng_base64dec(SEXP, SEXP);
+extern SEXP rnng_base64enc(SEXP, SEXP);
 extern SEXP rnng_clock(void);
 extern SEXP rnng_close(SEXP);
 extern SEXP rnng_ctx_close(SEXP);
@@ -108,7 +111,6 @@ extern SEXP rnng_dialer_close(SEXP);
 extern SEXP rnng_dialer_create(SEXP, SEXP);
 extern SEXP rnng_dialer_set(SEXP, SEXP, SEXP, SEXP);
 extern SEXP rnng_dialer_start(SEXP, SEXP);
-extern SEXP rnng_hashToChar(SEXP);
 extern SEXP rnng_listen(SEXP, SEXP);
 extern SEXP rnng_listener_close(SEXP);
 extern SEXP rnng_listener_create(SEXP, SEXP);
@@ -129,10 +131,10 @@ extern SEXP rnng_scm2(void);
 extern SEXP rnng_serial(SEXP);
 extern SEXP rnng_send(SEXP, SEXP, SEXP, SEXP);
 extern SEXP rnng_send_aio(SEXP, SEXP, SEXP);
-extern SEXP rnng_sha224(SEXP, SEXP);
-extern SEXP rnng_sha256(SEXP, SEXP);
-extern SEXP rnng_sha384(SEXP, SEXP);
-extern SEXP rnng_sha512(SEXP, SEXP);
+extern SEXP rnng_sha224(SEXP, SEXP, SEXP);
+extern SEXP rnng_sha256(SEXP, SEXP, SEXP);
+extern SEXP rnng_sha384(SEXP, SEXP, SEXP);
+extern SEXP rnng_sha512(SEXP, SEXP, SEXP);
 extern SEXP rnng_sleep(SEXP);
 extern SEXP rnng_socket_set(SEXP, SEXP, SEXP, SEXP);
 extern SEXP rnng_stream_close(SEXP);

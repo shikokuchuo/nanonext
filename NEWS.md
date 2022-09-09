@@ -1,9 +1,12 @@
 # nanonext 0.5.5.9000 (development)
 
+#### New Features
+
+* Implements `base64enc()` and `base64dec()` base64 encoding and decoding using the 'Mbed TLS' library.
+
 #### Updates
 
-* `sha224()`, `sha256()`, `sha384()` and `sha512()` functions now take character vectors by serialising them rather than only taking the first element, whilst also being faster for character scalars.
-* Implements optimised `as.character.nanoHash()` method for generating hex strings from hashed objects.
+* `sha224()`, `sha256()`, `sha384()` and `sha512()` functions now take character vectors by serialising them rather than only taking the first element, whilst also being faster for character scalars. These functions also gain an argument 'convert' to control whether to return a raw vector or character string, instead of returning 'nanoHash' objects.
 
 # nanonext 0.5.5
 

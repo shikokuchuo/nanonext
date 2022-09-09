@@ -49,6 +49,7 @@ Web utilities:
     interface)
 -   messenger - console-based instant messaging with authentication
 -   sha\[224\|256\|384\|512\] - cryptographic hash and HMAC algorithms
+-   base64\[enc\|dec\] - base64 encoding and decoding
 
 ### Table of Contents
 
@@ -386,7 +387,7 @@ aio
 #> < recvAio >
 #>  - $data for message data
 aio$data |> str()
-#>  num [1:100000000] 0.303 -0.98 -0.524 0.326 0.828 ...
+#>  num [1:100000000] 0.541 -0.269 -1.369 -0.706 -0.257 ...
 ```
 
 As `call_aio()` is blocking and will wait for completion, an alternative
@@ -545,11 +546,11 @@ ncurl("https://httpbin.org/headers")
 #>   [1] 7b 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73
 #>  [26] 74 22 3a 20 22 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22
 #>  [51] 58 2d 41 6d 7a 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31
-#>  [76] 2d 36 33 31 37 31 64 31 30 2d 34 39 32 34 64 31 65 34 31 30 38 65 38 39 32
-#> [101] 64 32 38 64 63 37 39 38 65 22 0a 20 20 7d 0a 7d 0a
+#>  [76] 2d 36 33 31 62 61 64 36 37 2d 34 37 63 37 36 31 66 30 36 38 37 66 32 61 64
+#> [101] 31 32 37 62 36 66 33 39 65 22 0a 20 20 7d 0a 7d 0a
 #> 
 #> $data
-#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-63171d10-4924d1e4108e892d28dc798e\"\n  }\n}\n"
+#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-631bad67-47c761f0687f2ad127b6f39e\"\n  }\n}\n"
 ```
 
 For advanced use, supports additional HTTP methods such as POST or PUT.
@@ -568,13 +569,13 @@ res
 
 call_aio(res)$headers
 #> $Date
-#> [1] "Tue, 06 Sep 2022 10:12:33 GMT"
+#> [1] "Fri, 09 Sep 2022 21:17:28 GMT"
 #> 
 #> $Server
 #> [1] "gunicorn/19.9.0"
 
 res$data
-#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-63171d11-6b5add67462a19d51251c1f7\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"213.86.169.34\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
+#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-631bad68-421d92ff2cbbbb4160c68dae\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"185.225.45.49\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
 ```
 
 In this respect, it may be used as a performant and lightweight method
@@ -617,10 +618,10 @@ s |> send('{"action": "subscribe", "symbols": "EURUSD"}')
 #> [26] 73 79 6d 62 6f 6c 73 22 3a 20 22 45 55 52 55 53 44 22 7d 00
 
 s |> recv(keep.raw = FALSE)
-#> [1] "{\"s\":\"EURUSD\",\"a\":0.99505,\"b\":0.99503,\"dc\":\"0.0050\",\"dd\":\"0.0000\",\"ppms\":false,\"t\":1662459153000}"
+#> [1] "{\"s\":\"EURUSD\",\"a\":1.0102,\"b\":1.0099,\"dc\":\"0.9147\",\"dd\":\"0.0092\",\"ppms\":false,\"t\":1662758253000}"
 
 s |> recv(keep.raw = FALSE)
-#> [1] "{\"s\":\"EURUSD\",\"a\":0.99504,\"b\":0.99502,\"dc\":\"0.0040\",\"dd\":\"0.0000\",\"ppms\":false,\"t\":1662459154000}"
+#> [1] "{\"s\":\"EURUSD\",\"a\":1.0103,\"b\":1.01,\"dc\":\"0.9245\",\"dd\":\"0.0093\",\"ppms\":false,\"t\":1662758270000}"
 
 close(s)
 ```
@@ -633,26 +634,34 @@ Functions performing hashing using the SHA-2 series of algorithms is
 included: `sha224()`, `sha256()`, `sha384()` and `sha512()`.
 
 These call the secure, optimized implementations from the ‘Mbed TLS’
-library and return a hash as a raw vector of class ‘nanoHash’. The
-default print method displays the hash value. For use in authentication,
-raw vectors can be compared directly.
-
-If a character string of the hash value is required, use
-`as.character()` on the ‘nanoHash’ object. A fast, optimised method is
-implemented.
+library and return a hash either directly as a raw vector or converted
+to a character string. For use in authentication, raw vectors can be
+compared directly for the highest performance.
 
 To generate an HMAC (hash-based message authentication code), simply
 supply the value ‘key’ to use as the secret key.
 
 ``` r
 sha256("hello world!")
-#> 75 09 e5 bd a0 c7 62 d2 ba c7 f9 0d 75 8b 5b 22 63 fa 01 cc bc 54 2a b5 e3 df 16 3b e0 8e 6c a9
-
-as.character(sha256("hello world!"))
 #> [1] "7509e5bda0c762d2bac7f90d758b5b2263fa01ccbc542ab5e3df163be08e6ca9"
 
+sha256("hello world!", convert = FALSE)
+#>  [1] 75 09 e5 bd a0 c7 62 d2 ba c7 f9 0d 75 8b 5b 22 63 fa 01 cc bc 54 2a b5 e3
+#> [26] df 16 3b e0 8e 6c a9
+
 sha256("hello world!", key = "MY_SECRET")
-#> d8 f0 e2 d3 68 ff 63 26 82 d5 5e 2c 1c cd 49 c1 5f 8a 6a 38 62 d8 eb 68 f1 90 6b 6e e6 58 89 0a
+#> [1] "d8f0e2d368ff632682d55e2c1ccd49c15f8a6a3862d8eb68f1906b6ee658890a"
+```
+
+Optimised functions for base64 encoding and decoding from the ‘Mbed TLS’
+library are also provided:
+
+``` r
+base64enc("hello world!")
+#> [1] "aGVsbG8gd29ybGQh"
+
+base64dec(base64enc("hello world!"))
+#> [1] "hello world!"
 ```
 
 [« Back to ToC](#table-of-contents)

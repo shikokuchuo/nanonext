@@ -47,6 +47,7 @@ Web utilities:
 - stream - secure websockets client (and generic low-level socket interface)
 - messenger - console-based instant messaging with authentication
 - sha[224|256|384|512] - cryptographic hash and HMAC algorithms
+- base64[enc|dec] - base64 encoding and decoding
 
 ### Table of Contents
 
@@ -476,18 +477,25 @@ close(s)
 
 Functions performing hashing using the SHA-2 series of algorithms is included: `sha224()`, `sha256()`, `sha384()` and `sha512()`.
 
-These call the secure, optimized implementations from the 'Mbed TLS' library and return a hash as a raw vector of class 'nanoHash'. The default print method displays the hash value. For use in authentication, raw vectors can be compared directly.
-
-If a character string of the hash value is required, use `as.character()` on the 'nanoHash' object. A fast, optimised method is implemented.
+These call the secure, optimized implementations from the 'Mbed TLS' library and return a hash either directly as a raw vector or converted to a character string. For use in authentication, raw vectors can be compared directly for the highest performance.
 
 To generate an HMAC (hash-based message authentication code), simply supply the value 'key' to use as the secret key.
 
 ```{r sha}
 sha256("hello world!")
 
-as.character(sha256("hello world!"))
+sha256("hello world!", convert = FALSE)
 
 sha256("hello world!", key = "MY_SECRET")
+
+```
+
+Optimised functions for base64 encoding and decoding from the 'Mbed TLS' library are also provided:
+
+```{r b64}
+base64enc("hello world!")
+
+base64dec(base64enc("hello world!"))
 
 ```
 

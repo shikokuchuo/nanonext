@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License along with
 // nanonext. If not, see <https://www.gnu.org/licenses/>.
 
-// nanonext - C level - Mbed TLS Hashing Algorithms ----------------------------
+// nanonext - C level - Mbed TLS Functions -------------------------------------
 
 #define NANONEXT_INTERNALS
 #define NANONEXT_TLS
@@ -35,7 +35,7 @@ SEXP rnng_version(void) {
 
 }
 
-// SHA-2 Algorithms ------------------------------------------------------------
+// Definitions and Statics -----------------------------------------------------
 
 #define SHA224_KEY_SIZE 28
 #define SHA256_KEY_SIZE 32
@@ -84,7 +84,32 @@ static nano_hash nano_anytoraw(SEXP x) {
   return hash;
 }
 
-SEXP rnng_sha224(SEXP x, SEXP key) {
+static SEXP nano_rawToChar(SEXP x) {
+
+  R_xlen_t i, j, nc = Rf_xlength(x);
+  for (i = 0, j = -1; i < nc; i++) if (RAW(x)[i]) j = i;
+  SEXP out = Rf_mkCharLenCE((const char *) RAW(x), j+1, CE_NATIVE);
+
+  return Rf_ScalarString(out);
+
+}
+
+static SEXP nano_hashToChar(SEXP hash) {
+
+  const unsigned char *buf = RAW(hash);
+  const R_xlen_t sz = Rf_xlength(hash);
+  char out[sz * 2 + 1];
+
+  for (R_xlen_t i = 0; i < sz; i++)
+    sprintf(&out[i * 2], "%.2x", buf[i]);
+
+  return Rf_mkString(out);
+
+}
+
+// SHA-2 Cryptographic Hash Algorithms -----------------------------------------
+
+SEXP rnng_sha224(SEXP x, SEXP key, SEXP convert) {
 
   SEXP out;
   int xc = 0;
@@ -105,18 +130,28 @@ SEXP rnng_sha224(SEXP x, SEXP key) {
   }
 
   if (xc)
-    return mk_error(xc);
+    Rf_error("mbedtls error");
 
-  PROTECT(out = Rf_allocVector(RAWSXP, SHA224_KEY_SIZE));
-  memcpy(RAW(out), output, SHA224_KEY_SIZE);
-  Rf_classgets(out, Rf_mkString("nanoHash"));
-  UNPROTECT(1);
+  if (Rf_asLogical(convert)) {
+
+    SEXP vec;
+    PROTECT(vec = Rf_allocVector(RAWSXP, SHA224_KEY_SIZE));
+    memcpy(RAW(vec), output, SHA224_KEY_SIZE);
+    out = nano_hashToChar(vec);
+    UNPROTECT(1);
+
+  } else {
+
+    out = Rf_allocVector(RAWSXP, SHA224_KEY_SIZE);
+    memcpy(RAW(out), output, SHA224_KEY_SIZE);
+
+  }
 
   return out;
 
 }
 
-SEXP rnng_sha256(SEXP x, SEXP key) {
+SEXP rnng_sha256(SEXP x, SEXP key, SEXP convert) {
 
   SEXP out;
   int xc = 0;
@@ -137,18 +172,28 @@ SEXP rnng_sha256(SEXP x, SEXP key) {
   }
 
   if (xc)
-    return mk_error(xc);
+    Rf_error("mbedtls error");
 
-  PROTECT(out = Rf_allocVector(RAWSXP, SHA256_KEY_SIZE));
-  memcpy(RAW(out), output, SHA256_KEY_SIZE);
-  Rf_classgets(out, Rf_mkString("nanoHash"));
-  UNPROTECT(1);
+  if (Rf_asLogical(convert)) {
+
+    SEXP vec;
+    PROTECT(vec = Rf_allocVector(RAWSXP, SHA256_KEY_SIZE));
+    memcpy(RAW(vec), output, SHA256_KEY_SIZE);
+    out = nano_hashToChar(vec);
+    UNPROTECT(1);
+
+  } else {
+
+    out = Rf_allocVector(RAWSXP, SHA256_KEY_SIZE);
+    memcpy(RAW(out), output, SHA256_KEY_SIZE);
+
+  }
 
   return out;
 
 }
 
-SEXP rnng_sha384(SEXP x, SEXP key) {
+SEXP rnng_sha384(SEXP x, SEXP key, SEXP convert) {
 
   SEXP out;
   int xc = 0;
@@ -169,18 +214,28 @@ SEXP rnng_sha384(SEXP x, SEXP key) {
   }
 
   if (xc)
-    return mk_error(xc);
+    Rf_error("mbedtls error");
 
-  PROTECT(out = Rf_allocVector(RAWSXP, SHA384_KEY_SIZE));
-  memcpy(RAW(out), output, SHA384_KEY_SIZE);
-  Rf_classgets(out, Rf_mkString("nanoHash"));
-  UNPROTECT(1);
+  if (Rf_asLogical(convert)) {
+
+    SEXP vec;
+    PROTECT(vec = Rf_allocVector(RAWSXP, SHA384_KEY_SIZE));
+    memcpy(RAW(vec), output, SHA384_KEY_SIZE);
+    out = nano_hashToChar(vec);
+    UNPROTECT(1);
+
+  } else {
+
+    out = Rf_allocVector(RAWSXP, SHA384_KEY_SIZE);
+    memcpy(RAW(out), output, SHA384_KEY_SIZE);
+
+  }
 
   return out;
 
 }
 
-SEXP rnng_sha512(SEXP x, SEXP key) {
+SEXP rnng_sha512(SEXP x, SEXP key, SEXP convert) {
 
   SEXP out;
   int xc = 0;
@@ -201,27 +256,94 @@ SEXP rnng_sha512(SEXP x, SEXP key) {
   }
 
   if (xc)
-    return mk_error(xc);
+    Rf_error("mbedtls error");
 
-  PROTECT(out = Rf_allocVector(RAWSXP, SHA512_KEY_SIZE));
-  memcpy(RAW(out), output, SHA512_KEY_SIZE);
-  Rf_classgets(out, Rf_mkString("nanoHash"));
-  UNPROTECT(1);
+  if (Rf_asLogical(convert)) {
+
+    SEXP vec;
+    PROTECT(vec = Rf_allocVector(RAWSXP, SHA512_KEY_SIZE));
+    memcpy(RAW(vec), output, SHA512_KEY_SIZE);
+    out = nano_hashToChar(vec);
+    UNPROTECT(1);
+
+  } else {
+
+    out = Rf_allocVector(RAWSXP, SHA512_KEY_SIZE);
+    memcpy(RAW(out), output, SHA512_KEY_SIZE);
+
+  }
 
   return out;
 
 }
 
-SEXP rnng_hashToChar(SEXP hash) {
+// Base64 encoding decoding ----------------------------------------------------
 
-  const unsigned char *buf = RAW(hash);
-  const R_xlen_t sz = Rf_xlength(hash);
-  char out[sz * 2 + 1];
+SEXP rnng_base64enc(SEXP x, SEXP convert) {
 
-  for (R_xlen_t i = 0; i < sz; i++)
-    sprintf(&out[i * 2], "%.2x", buf[i]);
+  SEXP out;
+  int xc = 0;
+  size_t olen;
 
-  return Rf_mkString(out);
+  nano_hash hash = nano_anytoraw(x);
+
+  xc = mbedtls_base64_encode(NULL, 0, &olen, hash.buf, hash.sz);
+  unsigned char output[olen];
+  xc = mbedtls_base64_encode(output, olen, &olen, hash.buf, hash.sz);
+
+  if (xc)
+    Rf_error("invalid input");
+
+  if (Rf_asLogical(convert)) {
+
+    SEXP vec;
+    PROTECT(vec = Rf_allocVector(RAWSXP, olen));
+    memcpy(RAW(vec), output, olen);
+    out = nano_rawToChar(vec);
+    UNPROTECT(1);
+
+  } else {
+
+    out = Rf_allocVector(RAWSXP, olen);
+    memcpy(RAW(out), output, olen);
+
+  }
+
+  return out;
+
+}
+
+SEXP rnng_base64dec(SEXP x, SEXP convert) {
+
+  SEXP out;
+  int xc = 0;
+  size_t olen;
+
+  nano_hash hash = nano_anytoraw(x);
+
+  xc = mbedtls_base64_decode(NULL, 0, &olen, hash.buf, hash.sz);
+  unsigned char output[olen];
+  xc = mbedtls_base64_decode(output, olen, &olen, hash.buf, hash.sz);
+
+  if (xc)
+    Rf_error("invalid input");
+
+  if (Rf_asLogical(convert)) {
+
+    SEXP vec;
+    vec = PROTECT(Rf_allocVector(RAWSXP, olen));
+    memcpy(RAW(vec), output, olen);
+    out = nano_rawToChar(vec);
+    UNPROTECT(1);
+
+  } else {
+
+    out = Rf_allocVector(RAWSXP, olen);
+    memcpy(RAW(out), output, olen);
+
+  }
+
+  return out;
 
 }
 
