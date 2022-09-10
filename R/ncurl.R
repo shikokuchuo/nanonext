@@ -85,12 +85,11 @@ ncurl <- function(url,
     aio <- .Call(rnng_ncurl_aio, url, method, headers, data, pem)
     is.integer(aio) && return(aio)
 
-    force(convert)
-    force(request)
+    convert
+    request
     status <- headers <- raw <- data <- NULL
     unresolv <- TRUE
-    env <- new.env(hash = FALSE)
-    makeActiveBinding(sym = "status", fun = function(x) {
+    env <- .Call(rnng_new_naio, aio, function(x) {
       if (unresolv) {
         res <- .Call(rnng_aio_http, aio, convert, request)
         missing(res) && return(.Call(rnng_aio_unresolv))
@@ -106,8 +105,7 @@ ncurl <- function(url,
         unresolv <<- FALSE
       }
       status
-    }, env = env)
-    makeActiveBinding(sym = "headers", fun = function(x) {
+    }, function(x) {
       if (unresolv) {
         res <- .Call(rnng_aio_http, aio, convert, request)
         missing(res) && return(.Call(rnng_aio_unresolv))
@@ -123,8 +121,7 @@ ncurl <- function(url,
         unresolv <<- FALSE
       }
       headers
-    }, env = env)
-    makeActiveBinding(sym = "raw", fun = function(x) {
+    }, function(x) {
       if (unresolv) {
         res <- .Call(rnng_aio_http, aio, convert, request)
         missing(res) && return(.Call(rnng_aio_unresolv))
@@ -140,8 +137,7 @@ ncurl <- function(url,
         unresolv <<- FALSE
       }
       raw
-    }, env = env)
-    makeActiveBinding(sym = "data", fun = function(x) {
+    }, function(x) {
       if (unresolv) {
         res <- .Call(rnng_aio_http, aio, convert, request)
         missing(res) && return(.Call(rnng_aio_unresolv))
@@ -157,9 +153,9 @@ ncurl <- function(url,
         unresolv <<- FALSE
       }
       data
-    }, env = env)
+    })
 
-    `class<-`(`[[<-`(env, "aio", aio), c("ncurlAio", "recvAio"))
+    env
 
   } else {
 

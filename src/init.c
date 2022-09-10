@@ -22,14 +22,18 @@ SEXP nano_AioSymbol;
 SEXP nano_ContextSymbol;
 SEXP nano_DataSymbol;
 SEXP nano_DialerSymbol;
+SEXP nano_HeadersSymbol;
 SEXP nano_IdSymbol;
 SEXP nano_ListenerSymbol;
+SEXP nano_NewEnvSymbol;
 SEXP nano_ProtocolSymbol;
+SEXP nano_RawSymbol;
 SEXP nano_ResultSymbol;
 SEXP nano_RtcSymbol;
 SEXP nano_SerialSymbol;
 SEXP nano_SocketSymbol;
 SEXP nano_StateSymbol;
+SEXP nano_StatusSymbol;
 SEXP nano_StreamSymbol;
 SEXP nano_TextframesSymbol;
 SEXP nano_UnserSymbol;
@@ -40,14 +44,18 @@ static void RegisterSymbols(void) {
   nano_ContextSymbol = Rf_install("context");
   nano_DataSymbol = Rf_install("data");
   nano_DialerSymbol = Rf_install("dialer");
+  nano_HeadersSymbol = Rf_install("headers");
   nano_IdSymbol = Rf_install("id");
   nano_ListenerSymbol = Rf_install("listener");
+  nano_NewEnvSymbol = Rf_install("new.env");
   nano_ProtocolSymbol = Rf_install("protocol");
+  nano_RawSymbol = Rf_install("raw");
   nano_ResultSymbol = Rf_install("result");
   nano_RtcSymbol = Rf_install("rawToChar");
   nano_SerialSymbol = Rf_install("serialize");
   nano_SocketSymbol = Rf_install("socket");
   nano_StateSymbol = Rf_install("state");
+  nano_StatusSymbol = Rf_install("status");
   nano_StreamSymbol = Rf_install("stream");
   nano_TextframesSymbol = Rf_install("textframes");
   nano_UnserSymbol = Rf_install("unserialize");
@@ -88,6 +96,9 @@ static const R_CallMethodDef CallEntries[] = {
   {"rnng_matchargs", (DL_FUNC) &rnng_matchargs, 1},
   {"rnng_matchwarn", (DL_FUNC) &rnng_matchwarn, 1},
   {"rnng_messenger", (DL_FUNC) &rnng_messenger, 1},
+  {"rnng_new_naio", (DL_FUNC) &rnng_new_naio, 5},
+  {"rnng_new_raio", (DL_FUNC) &rnng_new_raio, 4},
+  {"rnng_new_saio", (DL_FUNC) &rnng_new_saio, 2},
   {"rnng_ncurl", (DL_FUNC) &rnng_ncurl, 7},
   {"rnng_ncurl_aio", (DL_FUNC) &rnng_ncurl_aio, 5},
   {"rnng_protocol_open", (DL_FUNC) &rnng_protocol_open, 2},

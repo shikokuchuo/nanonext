@@ -170,7 +170,7 @@ SEXP rnng_aio_get_msg(SEXP aio, SEXP mode, SEXP keep) {
   if (raio->result)
     return mk_error(raio->result);
 
-  const int mod = INTEGER(mode)[0], kpr = LOGICAL(keep)[0];
+  const int mod = INTEGER(mode)[0], kpr = Rf_asLogical(keep);
   unsigned char *buf = nng_msg_body(raio->data);
   size_t sz = nng_msg_len(raio->data);
 
@@ -193,7 +193,7 @@ SEXP rnng_aio_stream_in(SEXP aio, SEXP mode, SEXP keep) {
   if (iaio->result)
     return mk_error(iaio->result);
 
-  const int mod = INTEGER(mode)[0], kpr = LOGICAL(keep)[0];
+  const int mod = INTEGER(mode)[0], kpr = Rf_asLogical(keep);
   nng_iov *iov = (nng_iov *) iaio->data;
   unsigned char *buf = iov->iov_buf;
   size_t sz = nng_aio_count(iaio->aio);
@@ -288,6 +288,77 @@ SEXP rnng_unresolved(SEXP x) {
     return Rf_ScalarLogical(1);
 
   return Rf_ScalarLogical(0);
+
+}
+
+// aio creation ----------------------------------------------------------------
+
+SEXP rnng_new_saio(SEXP aio, SEXP fun) {
+
+  SEXP env;
+#if defined(R_VERSION) && R_VERSION >= R_Version(4, 1, 0)
+  PROTECT(env = R_NewEnv(R_GetCurrentEnv(), 0, 2));
+#else
+  SEXP expr;
+  PROTECT(expr = Rf_lang2(nano_NewEnvSymbol, Rf_ScalarLogical(0)));
+  PROTECT(env = Rf_eval(expr, R_GetCurrentEnv()));
+  UNPROTECT(1);
+#endif
+  Rf_defineVar(nano_AioSymbol, aio, env);
+  R_MakeActiveBinding(nano_ResultSymbol, fun, env);
+  Rf_classgets(env, Rf_mkString("sendAio"));
+
+  UNPROTECT(1);
+  return env;
+
+}
+
+SEXP rnng_new_raio(SEXP aio, SEXP keep, SEXP rawfun, SEXP datafun) {
+
+  SEXP env;
+#if defined(R_VERSION) && R_VERSION >= R_Version(4, 1, 0)
+  PROTECT(env = R_NewEnv(R_GetCurrentEnv(), 0, 3));
+#else
+  SEXP expr;
+  PROTECT(expr = Rf_lang2(nano_NewEnvSymbol, Rf_ScalarLogical(0)));
+  PROTECT(env = Rf_eval(expr, R_GetCurrentEnv()));
+  UNPROTECT(1);
+#endif
+  Rf_defineVar(nano_AioSymbol, aio, env);
+  if (Rf_asLogical(keep))
+    R_MakeActiveBinding(nano_RawSymbol, rawfun, env);
+  R_MakeActiveBinding(nano_DataSymbol, datafun, env);
+  Rf_classgets(env, Rf_mkString("recvAio"));
+
+  UNPROTECT(1);
+  return env;
+
+}
+
+SEXP rnng_new_naio(SEXP aio, SEXP statusfun, SEXP headersfun, SEXP rawfun, SEXP datafun) {
+
+  SEXP env;
+#if defined(R_VERSION) && R_VERSION >= R_Version(4, 1, 0)
+  PROTECT(env = R_NewEnv(R_GetCurrentEnv(), 0, 5));
+#else
+  SEXP expr;
+  PROTECT(expr = Rf_lang2(nano_NewEnvSymbol, Rf_ScalarLogical(0)));
+  PROTECT(env = Rf_eval(expr, R_GetCurrentEnv()));
+  UNPROTECT(1);
+#endif
+  Rf_defineVar(nano_AioSymbol, aio, env);
+  R_MakeActiveBinding(nano_StatusSymbol, statusfun, env);
+  R_MakeActiveBinding(nano_HeadersSymbol, headersfun, env);
+  R_MakeActiveBinding(nano_RawSymbol, rawfun, env);
+  R_MakeActiveBinding(nano_DataSymbol, datafun, env);
+  SEXP klass;
+  PROTECT(klass = Rf_allocVector(STRSXP, 2));
+  SET_STRING_ELT(klass, 0, Rf_mkChar("ncurlAio"));
+  SET_STRING_ELT(klass, 1, Rf_mkChar("recvAio"));
+  Rf_classgets(env, klass);
+
+  UNPROTECT(2);
+  return env;
 
 }
 

@@ -58,6 +58,7 @@
 #define STRICT_R_HEADERS
 #include <R.h>
 #include <Rinternals.h>
+#include <Rversion.h>
 #include <R_ext/Visibility.h>
 
 #ifdef NANONEXT_INTERNALS
@@ -74,14 +75,18 @@ extern SEXP nano_AioSymbol;
 extern SEXP nano_ContextSymbol;
 extern SEXP nano_DataSymbol;
 extern SEXP nano_DialerSymbol;
+extern SEXP nano_HeadersSymbol;
 extern SEXP nano_IdSymbol;
 extern SEXP nano_ListenerSymbol;
+extern SEXP nano_NewEnvSymbol;
 extern SEXP nano_ProtocolSymbol;
+extern SEXP nano_RawSymbol;
 extern SEXP nano_ResultSymbol;
 extern SEXP nano_RtcSymbol;
 extern SEXP nano_SerialSymbol;
 extern SEXP nano_SocketSymbol;
 extern SEXP nano_StateSymbol;
+extern SEXP nano_StatusSymbol;
 extern SEXP nano_StreamSymbol;
 extern SEXP nano_TextframesSymbol;
 extern SEXP nano_UnserSymbol;
@@ -120,6 +125,9 @@ extern SEXP rnng_matcharg(SEXP);
 extern SEXP rnng_matchargs(SEXP);
 extern SEXP rnng_matchwarn(SEXP);
 extern SEXP rnng_messenger(SEXP);
+extern SEXP rnng_new_naio(SEXP, SEXP, SEXP, SEXP, SEXP);
+extern SEXP rnng_new_raio(SEXP, SEXP, SEXP, SEXP);
+extern SEXP rnng_new_saio(SEXP, SEXP);
 extern SEXP rnng_ncurl(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 extern SEXP rnng_ncurl_aio(SEXP, SEXP, SEXP, SEXP, SEXP);
 extern SEXP rnng_protocol_open(SEXP, SEXP);
