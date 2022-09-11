@@ -64,9 +64,7 @@ send_aio <- function(con, data, mode = c("serial", "raw"), timeout = NULL) UseMe
 #'
 send_aio.nanoSocket <- function(con, data, mode = c("serial", "raw"), timeout = NULL) {
 
-  if (.Call(rnng_serial, mode))
-    data <- serialize(object = data, connection = NULL)
-  aio <- .Call(rnng_send_aio, con, data, timeout)
+  aio <- .Call(rnng_send_aio, con, data, mode, timeout)
   is.integer(aio) && return(aio)
 
   data <- result <- NULL
@@ -91,9 +89,7 @@ send_aio.nanoSocket <- function(con, data, mode = c("serial", "raw"), timeout = 
 #'
 send_aio.nanoContext <- function(con, data, mode = c("serial", "raw"), timeout = NULL) {
 
-  if (.Call(rnng_serial, mode))
-    data <- serialize(object = data, connection = NULL)
-  aio <- .Call(rnng_ctx_send_aio, con, data, timeout)
+  aio <- .Call(rnng_ctx_send_aio, con, data, mode, timeout)
   is.integer(aio) && return(aio)
 
   data <- result <- NULL

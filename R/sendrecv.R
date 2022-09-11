@@ -91,9 +91,7 @@ send.nanoSocket <- function(con,
                             block = FALSE,
                             echo = TRUE) {
 
-  if (.Call(rnng_serial, mode))
-    data <- serialize(object = data, connection = NULL)
-  res <- .Call(rnng_send, con, data, block, echo)
+  res <- .Call(rnng_send, con, data, mode, block, echo)
   if (echo) res else invisible(res)
 
 }
@@ -108,9 +106,7 @@ send.nanoContext <- function(con,
                              block = TRUE,
                              echo = TRUE) {
 
-  if (.Call(rnng_serial, mode))
-    data <- serialize(object = data, connection = NULL)
-  res <- .Call(rnng_ctx_send, con, data, block, echo)
+  res <- .Call(rnng_ctx_send, con, data, mode, block, echo)
   if (echo) res else invisible(res)
 
 }

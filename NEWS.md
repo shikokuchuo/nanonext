@@ -7,7 +7,8 @@
 #### Updates
 
 * `sha224()`, `sha256()`, `sha384()` and `sha512()` functions now take character vectors by serialising them rather than only taking the first element, whilst also being faster for character scalars. These functions also gain an argument 'convert' to control whether to return a raw vector or character string, instead of returning 'nanoHash' objects.
-* Internal performance enhancements to aio functions.
+* Internal performance enhancements to aio and send functions.
+* Minimum  supported version of MbedTLS lowered to v2.5.0.
 
 # nanonext 0.5.5
 

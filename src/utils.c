@@ -64,7 +64,9 @@ SEXP rnng_strerror(SEXP error) {
 }
 
 SEXP rnng_scm(void) {
+
   return R_MissingArg;
+
 }
 
 SEXP rnng_clock(void) {
@@ -103,7 +105,7 @@ SEXP rnng_random(SEXP n) {
     vlen = (R_xlen_t) Rf_asInteger(n);
     break;
   default:
-    error_return("'n' must be integer or coercible to integer");
+    Rf_error("'n' must be integer or coercible to integer");
   }
 
   vec = Rf_allocVector(REALSXP, vlen);
@@ -485,9 +487,9 @@ SEXP rnng_stream_listen(SEXP url, SEXP textframes, SEXP pem) {
 SEXP rnng_stream_close(SEXP stream) {
 
   if (R_ExternalPtrTag(stream) != nano_StreamSymbol)
-    error_return("'stream' is not a valid stream");
+    Rf_error("'stream' is not a valid stream");
   if (R_ExternalPtrAddr(stream) == NULL)
-    error_return("'stream' is not an active stream");
+    Rf_error("'stream' is not an active stream");
   nng_stream *sp = (nng_stream *) R_ExternalPtrAddr(stream);
   nng_stream_free(sp);
   R_ClearExternalPtr(stream);
@@ -514,6 +516,7 @@ static void rnng_thread(void *arg) {
   SEXP list = (SEXP) arg;
   SEXP socket = VECTOR_ELT(list, 0);
   SEXP key = VECTOR_ELT(list, 1);
+  SEXP two = VECTOR_ELT(list, 2);
   nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(socket);
   unsigned char *buf;
   size_t sz;
@@ -539,7 +542,7 @@ static void rnng_thread(void *arg) {
                  tms->tm_year + 1900, tms->tm_mon + 1, tms->tm_mday,
                  tms->tm_hour, tms->tm_min, tms->tm_sec);
         nng_free(buf, sz);
-        rnng_send(socket, key, Rf_ScalarLogical(0), Rf_ScalarLogical(0));
+        rnng_send(socket, key, two, Rf_ScalarLogical(0), Rf_ScalarLogical(0));
         continue;
       }
       if (!strcmp((char *) buf, ":d ")) {
@@ -631,9 +634,9 @@ SEXP rnng_thread_create(SEXP list) {
 SEXP rnng_device(SEXP s1, SEXP s2) {
 
   if (R_ExternalPtrTag(s1) != nano_SocketSymbol)
-    error_return("'s1' is not a valid Socket");
+    Rf_error("'s1' is not a valid Socket");
   if (R_ExternalPtrTag(s2) != nano_SocketSymbol)
-    error_return("'s2' is not a valid Socket");
+    Rf_error("'s2' is not a valid Socket");
 
   int xc = nng_device(*(nng_socket *) R_ExternalPtrAddr(s1),
                       *(nng_socket *) R_ExternalPtrAddr(s2));
@@ -669,7 +672,7 @@ SEXP rnng_matchwarn(SEXP warn) {
   case 9:
     if (!strncmp(i, w, slen)) { xc = 1; break; }
   default:
-      error_return("'warn' should be one of immediate, deferred, error, none");
+    Rf_error("'warn' should be one of immediate, deferred, error, none");
   }
 
   return Rf_ScalarInteger(xc);

@@ -55,14 +55,14 @@ messenger <- function(url, auth = NULL) {
     options(nanonext.original.warn = NULL)
     invisible()
   })
-  lock <- sha256(auth)
+  lock <- sha256(auth, convert = FALSE)
   comb <- order(random(24L))
   key <- c(comb, as.integer(lock)[comb])
 
   sock <- .Call(rnng_messenger, url)
   is.integer(sock) && return(invisible(sock))
   on.exit(expr = {
-    .Call(rnng_send, sock, writeBin(":d ", raw()), 0L, FALSE)
+    .Call(rnng_send, sock, writeBin(":d ", raw()), 2L, FALSE, FALSE)
     .Call(rnng_close, sock)
   }, add = TRUE, after = FALSE)
 
@@ -75,7 +75,7 @@ messenger <- function(url, auth = NULL) {
   cat(sprintf("\n| url: %s\n", url), file = stdout())
   cat("| connecting... ", file = stderr())
 
-  s <- .Call(rnng_send, sock, writeBin(":c ", raw()), 1000L, TRUE)
+  s <- .Call(rnng_send, sock, writeBin(":c ", raw()), 2L, 1000L, TRUE)
   if (is.integer(s)) {
     cat(sprintf("\r| peer offline: %s\n", format.POSIXct(Sys.time())), file = stderr())
   } else {
@@ -90,14 +90,14 @@ messenger <- function(url, auth = NULL) {
     cat("| authenticated\n", file = stderr())
   }
 
-  sock <- .Call(rnng_thread_create, list(sock, key))
+  sock <- .Call(rnng_thread_create, list(sock, key, 2L))
   cat("type your message:\n", file = stdout())
 
   repeat {
     data <- readline()
     if (identical(data, ":q")) break
     if (identical(data, "")) next
-    s <- .Call(rnng_send, sock, data, 0L, TRUE)
+    s <- .Call(rnng_send, sock, data, 2L, FALSE, TRUE)
     if (is.integer(s)) {
       cat(sprintf("%*s > not sent: peer offline: %s\n", nchar(data), "", format.POSIXct(Sys.time())),
           file = stderr())

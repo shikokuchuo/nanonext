@@ -46,7 +46,7 @@ static int matchtype(SEXP type) {
     if (!strncmp(st, typ, slen)) { xc = 5; break; }
     if (!strncmp(u, typ, slen)) { xc = 6; break; }
   default:
-      Rf_error("'type' should be one of bool, int, ms, size, string, uint64");
+    Rf_error("'type' should be one of bool, int, ms, size, string, uint64");
   }
 
   return xc;
@@ -56,7 +56,7 @@ static int matchtype(SEXP type) {
 SEXP rnng_socket_set(SEXP socket, SEXP type, SEXP opt, SEXP value) {
 
   if (R_ExternalPtrTag(socket) != nano_SocketSymbol)
-    error_return("'object' is not a valid Socket");
+    Rf_error("'object' is not a valid Socket");
   nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(socket);
   const char *op = CHAR(STRING_ELT(opt, 0));
   const int typ = matchtype(type);
@@ -106,7 +106,7 @@ SEXP rnng_socket_set(SEXP socket, SEXP type, SEXP opt, SEXP value) {
 SEXP rnng_dialer_set(SEXP dialer, SEXP type, SEXP opt, SEXP value) {
 
   if (R_ExternalPtrTag(dialer) != nano_DialerSymbol)
-    error_return("'object' is not a valid Dialer");
+    Rf_error("'object' is not a valid Dialer");
   nng_dialer *dial = (nng_dialer *) R_ExternalPtrAddr(dialer);
   const char *op = CHAR(STRING_ELT(opt, 0));
   const int typ = matchtype(type);
@@ -147,7 +147,7 @@ SEXP rnng_dialer_set(SEXP dialer, SEXP type, SEXP opt, SEXP value) {
 SEXP rnng_listener_set(SEXP listener, SEXP type, SEXP opt, SEXP value) {
 
   if (R_ExternalPtrTag(listener) != nano_ListenerSymbol)
-    error_return("'object' is not a valid Listener");
+    Rf_error("'object' is not a valid Listener");
   nng_listener *list = (nng_listener *) R_ExternalPtrAddr(listener);
   const char *op = CHAR(STRING_ELT(opt, 0));
   const int typ = matchtype(type);
@@ -188,7 +188,7 @@ SEXP rnng_listener_set(SEXP listener, SEXP type, SEXP opt, SEXP value) {
 SEXP rnng_ctx_set(SEXP context, SEXP type, SEXP opt, SEXP value) {
 
   if (R_ExternalPtrTag(context) != nano_ContextSymbol)
-    error_return("'object' is not a valid Context");
+    Rf_error("'object' is not a valid Context");
   nng_ctx *ctx = (nng_ctx *) R_ExternalPtrAddr(context);
   const char *op = CHAR(STRING_ELT(opt, 0));
   const int typ = matchtype(type);
@@ -237,7 +237,7 @@ SEXP rnng_ctx_set(SEXP context, SEXP type, SEXP opt, SEXP value) {
 SEXP rnng_stream_set(SEXP stream, SEXP type, SEXP opt, SEXP value) {
 
   if (R_ExternalPtrTag(stream) != nano_StreamSymbol)
-    error_return("'object' is not a valid Stream");
+    Rf_error("'object' is not a valid Stream");
   nng_stream *st = (nng_stream *) R_ExternalPtrAddr(stream);
   const char *op = CHAR(STRING_ELT(opt, 0));
   const int typ = matchtype(type);

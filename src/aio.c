@@ -139,9 +139,9 @@ static void haio_finalizer(SEXP xptr) {
 SEXP rnng_aio_result(SEXP aio) {
 
   if (R_ExternalPtrTag(aio) != nano_AioSymbol)
-    error_return("object is not a valid Aio");
+    Rf_error("object is not a valid Aio");
   if (R_ExternalPtrAddr(aio) == NULL)
-    error_return("object is not an active Aio");
+    Rf_error("object is not an active Aio");
 
   nano_aio *aiop = (nano_aio *) R_ExternalPtrAddr(aio);
 
@@ -158,9 +158,9 @@ SEXP rnng_aio_result(SEXP aio) {
 SEXP rnng_aio_get_msg(SEXP aio, SEXP mode, SEXP keep) {
 
   if (R_ExternalPtrTag(aio) != nano_AioSymbol)
-    error_return("object is not a valid Aio");
+    Rf_error("object is not a valid Aio");
   if (R_ExternalPtrAddr(aio) == NULL)
-    error_return("object is not an active Aio");
+    Rf_error("object is not an active Aio");
 
   nano_aio *raio = (nano_aio *) R_ExternalPtrAddr(aio);
 
@@ -181,9 +181,9 @@ SEXP rnng_aio_get_msg(SEXP aio, SEXP mode, SEXP keep) {
 SEXP rnng_aio_stream_in(SEXP aio, SEXP mode, SEXP keep) {
 
   if (R_ExternalPtrTag(aio) != nano_AioSymbol)
-    error_return("object is not a valid Aio");
+    Rf_error("object is not a valid Aio");
   if (R_ExternalPtrAddr(aio) == NULL)
-    error_return("object is not an active Aio");
+    Rf_error("object is not an active Aio");
 
   nano_aio *iaio = (nano_aio *) R_ExternalPtrAddr(aio);
 
@@ -367,7 +367,7 @@ SEXP rnng_new_naio(SEXP aio, SEXP statusfun, SEXP headersfun, SEXP rawfun, SEXP 
 SEXP rnng_recv_aio(SEXP socket, SEXP timeout) {
 
   if (R_ExternalPtrTag(socket) != nano_SocketSymbol)
-    error_return("'con' is not a valid Socket");
+    Rf_error("'con' is not a valid Socket");
 
   nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(socket);
   const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) Rf_asInteger(timeout);
@@ -398,7 +398,7 @@ SEXP rnng_recv_aio(SEXP socket, SEXP timeout) {
 SEXP rnng_ctx_recv_aio(SEXP context, SEXP timeout) {
 
   if (R_ExternalPtrTag(context) != nano_ContextSymbol)
-    error_return("'con' is not a valid Context");
+    Rf_error("'con' is not a valid Context");
 
   nng_ctx *ctxp = (nng_ctx *) R_ExternalPtrAddr(context);
   const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) Rf_asInteger(timeout);
@@ -429,7 +429,7 @@ SEXP rnng_ctx_recv_aio(SEXP context, SEXP timeout) {
 SEXP rnng_stream_recv_aio(SEXP stream, SEXP bytes, SEXP timeout) {
 
   if (R_ExternalPtrTag(stream) != nano_StreamSymbol)
-    error_return("'con' is not a valid Stream");
+    Rf_error("'con' is not a valid Stream");
 
   nng_stream *sp = (nng_stream *) R_ExternalPtrAddr(stream);
   const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) Rf_asInteger(timeout);
@@ -472,17 +472,18 @@ SEXP rnng_stream_recv_aio(SEXP stream, SEXP bytes, SEXP timeout) {
 
 }
 
-SEXP rnng_send_aio(SEXP socket, SEXP data, SEXP timeout) {
+SEXP rnng_send_aio(SEXP socket, SEXP data, SEXP mode, SEXP timeout) {
 
   if (R_ExternalPtrTag(socket) != nano_SocketSymbol)
-    error_return("'con' is not a valid Socket");
+    Rf_error("'con' is not a valid Socket");
 
   nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(socket);
   const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) Rf_asInteger(timeout);
   nano_aio *saio = R_Calloc(1, nano_aio);
   nng_msg *msg;
   int xc;
-  SEXP aio, enc = nano_encode(data);
+
+  SEXP aio, enc = nano_encodes(data, mode);
   const R_xlen_t xlen = Rf_xlength(enc);
   unsigned char *dp = RAW(enc);
 
@@ -518,17 +519,18 @@ SEXP rnng_send_aio(SEXP socket, SEXP data, SEXP timeout) {
 
 }
 
-SEXP rnng_ctx_send_aio(SEXP context, SEXP data, SEXP timeout) {
+SEXP rnng_ctx_send_aio(SEXP context, SEXP data, SEXP mode, SEXP timeout) {
 
   if (R_ExternalPtrTag(context) != nano_ContextSymbol)
-    error_return("'con' is not a valid Context");
+    Rf_error("'con' is not a valid Context");
 
   nng_ctx *ctxp = (nng_ctx *) R_ExternalPtrAddr(context);
   const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) Rf_asInteger(timeout);
   nano_aio *saio = R_Calloc(1, nano_aio);
   nng_msg *msg;
   int xc;
-  SEXP aio, enc = nano_encode(data);
+
+  SEXP aio, enc = nano_encodes(data, mode);
   const R_xlen_t xlen = Rf_xlength(enc);
   unsigned char *dp = RAW(enc);
 
@@ -568,7 +570,7 @@ SEXP rnng_ctx_send_aio(SEXP context, SEXP data, SEXP timeout) {
 SEXP rnng_stream_send_aio(SEXP stream, SEXP data, SEXP timeout) {
 
   if (R_ExternalPtrTag(stream) != nano_StreamSymbol)
-    error_return("'con' is not a valid Stream");
+    Rf_error("'con' is not a valid Stream");
 
   nng_stream *sp = (nng_stream *) R_ExternalPtrAddr(stream);
   const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) Rf_asInteger(timeout);
@@ -724,9 +726,9 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP method, SEXP headers, SEXP data, SEXP pem) {
 SEXP rnng_aio_http(SEXP aio, SEXP convert, SEXP request) {
 
   if (R_ExternalPtrTag(aio) != nano_AioSymbol)
-    error_return("object is not a valid Aio");
+    Rf_error("object is not a valid Aio");
   if (R_ExternalPtrAddr(aio) == NULL)
-    error_return("object is not an active Aio");
+    Rf_error("object is not an active Aio");
 
   nano_aio *haio = (nano_aio *) R_ExternalPtrAddr(aio);
 

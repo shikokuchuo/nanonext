@@ -135,11 +135,9 @@ reply <- function(context,
   is_error_value(res) && return(invisible(res))
   on.exit(expr = send.nanoContext(context, as.raw(0L), mode = send_mode))
   data <- execute(res, ...)
-  if (.Call(rnng_serial, send_mode))
-    data <- serialize(object = data, connection = NULL)
-  res <- .Call(rnng_ctx_send, context, data, timeout, FALSE)
+  res <- .Call(rnng_ctx_send, context, data, send_mode, timeout, FALSE)
   on.exit()
-  if (missing(res)) invisible(0L) else invisible(res)
+  invisible(res)
 
 }
 
@@ -199,9 +197,7 @@ request <- function(context,
                     keep.raw = TRUE) {
 
   recv_mode <- .Call(rnng_matcharg, recv_mode)
-  if (.Call(rnng_serial, send_mode))
-    data <- serialize(object = data, connection = NULL)
-  res <- .Call(rnng_ctx_send_aio, context, data, NULL)
+  res <- .Call(rnng_ctx_send_aio, context, data, send_mode, NULL)
   is.integer(res) && return(res)
 
   aio <- .Call(rnng_ctx_recv_aio, context, timeout)
@@ -210,25 +206,21 @@ request <- function(context,
   keep.raw <- missing(keep.raw) || isTRUE(keep.raw)
   data <- raw <- NULL
   unresolv <- TRUE
-  env <- new.env(hash = FALSE)
-  if (keep.raw) {
-    makeActiveBinding(sym = "raw", fun = function(x) {
-      if (unresolv) {
-        res <- .Call(rnng_aio_get_msg, aio, recv_mode, keep.raw)
-        missing(res) && return(.Call(rnng_aio_unresolv))
-        if (is_error_value(res)) {
-          data <<- raw <<- res
-        } else {
-          raw <<- .subset2(res, "raw")
-          data <<- .subset2(res, "data")
-        }
-        aio <<- env[["aio"]] <<- NULL
-        unresolv <<- FALSE
+  env <- .Call(rnng_new_raio, aio, keep.raw, function(x) {
+    if (unresolv) {
+      res <- .Call(rnng_aio_get_msg, aio, recv_mode, keep.raw)
+      missing(res) && return(.Call(rnng_aio_unresolv))
+      if (is_error_value(res)) {
+        data <<- raw <<- res
+      } else {
+        raw <<- .subset2(res, "raw")
+        data <<- .subset2(res, "data")
       }
-      raw
-    }, env = env)
-  }
-  makeActiveBinding(sym = "data", fun = function(x) {
+      aio <<- env[["aio"]] <<- NULL
+      unresolv <<- FALSE
+    }
+    raw
+  }, function(x) {
     if (unresolv) {
       res <- .Call(rnng_aio_get_msg, aio, recv_mode, keep.raw)
       missing(res) && return(.Call(rnng_aio_unresolv))
@@ -244,8 +236,8 @@ request <- function(context,
       unresolv <<- FALSE
     }
     data
-  }, env = env)
-  `class<-`(`[[<-`(`[[<-`(env, "keep.raw", keep.raw), "aio", aio), "recvAio")
+  })
+  env
 
 }
 
