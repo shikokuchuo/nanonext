@@ -791,8 +791,8 @@ SEXP rnng_send(SEXP socket, SEXP data, SEXP block, SEXP echo) {
 
   if (ech)
     return enc;
-  else
-    return R_MissingArg;
+
+  return Rf_ScalarInteger(0);
 
 }
 
@@ -880,13 +880,14 @@ SEXP rnng_ctx_send(SEXP context, SEXP data, SEXP timeout, SEXP echo) {
   nng_aio_wait(aiop);
   xc = nng_aio_result(aiop);
   nng_aio_free(aiop);
+
   if (xc)
     return mk_error(xc);
 
   if (ech)
     return enc;
-  else
-    return R_MissingArg;
+
+  return Rf_ScalarInteger(0);
 
 }
 
@@ -984,8 +985,8 @@ SEXP rnng_stream_send(SEXP stream, SEXP data, SEXP timeout, SEXP echo) {
 
   if (ech)
     return enc;
-  else
-    return R_MissingArg;
+
+  return Rf_ScalarInteger(0);
 
 }
 
