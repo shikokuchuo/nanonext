@@ -106,7 +106,6 @@ static const R_CallMethodDef CallEntries[] = {
   {"rnng_recv", (DL_FUNC) &rnng_recv, 4},
   {"rnng_recv_aio", (DL_FUNC) &rnng_recv_aio, 2},
   {"rnng_scm", (DL_FUNC) &rnng_scm, 0},
-  {"rnng_scm2", (DL_FUNC) &rnng_scm2, 0},
   {"rnng_send", (DL_FUNC) &rnng_send, 4},
   {"rnng_send_aio", (DL_FUNC) &rnng_send_aio, 3},
   {"rnng_serial", (DL_FUNC) &rnng_serial, 1},

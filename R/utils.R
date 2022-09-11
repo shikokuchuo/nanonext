@@ -338,7 +338,7 @@ nano_init <- function(warn = c("immediate", "deferred", "error", "none")) {
 
 }
 
-# nanonext - Limited scope exported functions ----------------------------------
+# nanonext - Limited scope exported functions - for compatibility only ---------
 
 #' @export
 #'
@@ -347,16 +347,6 @@ nano_init <- function(warn = c("immediate", "deferred", "error", "none")) {
   identical(parent.env(parent.env(parent.frame())), getNamespace("mirai")) ||
     stop("this function is for package internal use only")
   .Call(rnng_scm)
-
-}
-
-#' @export
-#'
-.mirai_scm2 <- function() {
-
-  identical(parent.env(parent.env(parent.frame())), getNamespace("mirai")) ||
-    stop("this function is for package internal use only")
-  .Call(rnng_scm2)
 
 }
 
