@@ -92,7 +92,8 @@ send.nanoSocket <- function(con,
                             echo = TRUE) {
 
   res <- .Call(rnng_send, con, data, mode, block, echo)
-  if (echo) res else invisible(res)
+  echo && return(res)
+  invisible(res)
 
 }
 
@@ -107,7 +108,8 @@ send.nanoContext <- function(con,
                              echo = TRUE) {
 
   res <- .Call(rnng_ctx_send, con, data, mode, block, echo)
-  if (echo) res else invisible(res)
+  echo && return(res)
+  invisible(res)
 
 }
 
@@ -122,7 +124,8 @@ send.nanoStream <- function(con,
                             echo = TRUE) {
 
   res <- .Call(rnng_stream_send, con, data, block, echo)
-  if (echo) res else invisible(res)
+  echo && return(res)
+  invisible(res)
 
 }
 
@@ -225,11 +228,7 @@ recv.nanoSocket <- function(con,
                                      "integer", "logical", "numeric", "raw"),
                             block = FALSE,
                             keep.raw = TRUE,
-                            ...) {
-
-  .Call(rnng_recv, con, mode, block, keep.raw)
-
-}
+                            ...) .Call(rnng_recv, con, mode, block, keep.raw)
 
 #' @rdname recv
 #' @method recv nanoContext
@@ -240,11 +239,7 @@ recv.nanoContext <- function(con,
                                       "integer", "logical", "numeric", "raw"),
                              block = TRUE,
                              keep.raw = TRUE,
-                             ...) {
-
-  .Call(rnng_ctx_recv, con, mode, block, keep.raw)
-
-}
+                             ...) .Call(rnng_ctx_recv, con, mode, block, keep.raw)
 
 #' @rdname recv
 #' @method recv nanoStream
@@ -256,9 +251,5 @@ recv.nanoStream <- function(con,
                             block = TRUE,
                             keep.raw = TRUE,
                             n = 65536L,
-                            ...) {
-
-  .Call(rnng_stream_recv, con, mode, block, keep.raw, n)
-
-}
+                            ...) .Call(rnng_stream_recv, con, mode, block, keep.raw, n)
 

@@ -387,7 +387,7 @@ aio
 #> < recvAio >
 #>  - $data for message data
 aio$data |> str()
-#>  num [1:100000000] 0.541 -0.269 -1.369 -0.706 -0.257 ...
+#>  num [1:100000000] -0.0588 -0.4009 -0.3877 0.1486 0.5064 ...
 ```
 
 As `call_aio()` is blocking and will wait for completion, an alternative
@@ -546,11 +546,11 @@ ncurl("https://httpbin.org/headers")
 #>   [1] 7b 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73
 #>  [26] 74 22 3a 20 22 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22
 #>  [51] 58 2d 41 6d 7a 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31
-#>  [76] 2d 36 33 31 62 61 64 36 37 2d 34 37 63 37 36 31 66 30 36 38 37 66 32 61 64
-#> [101] 31 32 37 62 36 66 33 39 65 22 0a 20 20 7d 0a 7d 0a
+#>  [76] 2d 36 33 31 66 30 35 34 66 2d 32 39 35 64 39 30 38 36 34 61 35 32 35 33 64
+#> [101] 38 37 63 32 33 63 61 38 64 22 0a 20 20 7d 0a 7d 0a
 #> 
 #> $data
-#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-631bad67-47c761f0687f2ad127b6f39e\"\n  }\n}\n"
+#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-631f054f-295d90864a5253d87c23ca8d\"\n  }\n}\n"
 ```
 
 For advanced use, supports additional HTTP methods such as POST or PUT.
@@ -569,13 +569,13 @@ res
 
 call_aio(res)$headers
 #> $Date
-#> [1] "Fri, 09 Sep 2022 21:17:28 GMT"
+#> [1] "Mon, 12 Sep 2022 10:09:19 GMT"
 #> 
 #> $Server
 #> [1] "gunicorn/19.9.0"
 
 res$data
-#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-631bad68-421d92ff2cbbbb4160c68dae\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"185.225.45.49\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
+#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-631f054f-09293e360a8d6f6d7ae75544\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"79.173.129.2\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
 ```
 
 In this respect, it may be used as a performant and lightweight method
@@ -618,10 +618,10 @@ s |> send('{"action": "subscribe", "symbols": "EURUSD"}')
 #> [26] 73 79 6d 62 6f 6c 73 22 3a 20 22 45 55 52 55 53 44 22 7d 00
 
 s |> recv(keep.raw = FALSE)
-#> [1] "{\"s\":\"EURUSD\",\"a\":1.0102,\"b\":1.0099,\"dc\":\"0.9147\",\"dd\":\"0.0092\",\"ppms\":false,\"t\":1662758253000}"
+#> [1] "{\"s\":\"EURUSD\",\"a\":1.0131,\"b\":1.01308,\"dc\":\"0.6001\",\"dd\":\"0.0061\",\"ppms\":false,\"t\":1662977362000}"
 
 s |> recv(keep.raw = FALSE)
-#> [1] "{\"s\":\"EURUSD\",\"a\":1.0103,\"b\":1.01,\"dc\":\"0.9245\",\"dd\":\"0.0093\",\"ppms\":false,\"t\":1662758270000}"
+#> [1] "{\"s\":\"EURUSD\",\"a\":1.01308,\"b\":1.01306,\"dc\":\"0.5982\",\"dd\":\"0.0061\",\"ppms\":false,\"t\":1662977362000}"
 
 close(s)
 ```
@@ -679,7 +679,7 @@ during package installation.
 Setting `Sys.setenv(NANONEXT_SYS=1)` will cause installation to attempt
 use of a system ‘libnng’ and ‘libmbedtls’ installed in `/usr/local`
 instead. This allows use of custom builds of ‘libnng’ (722bf46 or newer)
-and ‘libmbedtls’ (v3 or newer).
+and ‘libmbedtls’ (v2.5.0 or newer).
 
 System libraries are not used by default as versions currently in system
 repositories are not new enough to support this version of nanonext.
