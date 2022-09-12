@@ -31,11 +31,11 @@ To view all Dialers bound to a socket use \code{$dialer} on the
     Dialer (e.g. to set options on it), index into the list e.g.
     \code{$dialer[[1]]} to return the first Dialer.
 
-    This function may be used to bind a new Dialer to a Socket,
-    or else a nano object. If called on a nano object, the dialer is
-    attached to the object rather than the socket for ease of access, e.g.
-    \code{$dialer[[1]]} rather than \code{$socket$dialer[[1]]}, but is
-    otherwise equivalent to calling \code{dial()} on the object's socket directly.
+    This function may be used to bind a new Dialer to a Socket, or else a
+    nano object. If called on a nano object, the dialer is attached to the
+    object rather than the socket for ease of access, e.g. \code{$dialer[[1]]}
+    rather than \code{$socket$dialer[[1]]}, but is otherwise equivalent to
+    calling \code{dial()} on the object's socket directly.
 
     A Dialer is an external pointer to a dialer object, which creates a
     single outgoing connection at a time. If the connection is broken, or

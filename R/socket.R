@@ -85,8 +85,8 @@ socket <- function(protocol = c("bus", "pair", "push", "pull", "pub", "sub",
 
   sock <- .Call(rnng_protocol_open, protocol, raw)
   is.integer(sock) && return(sock)
-  if (!missing(dial)) dial(sock, url = dial, autostart = autostart)
-  if (!missing(listen)) listen(sock, url = listen, autostart = autostart)
+  if (length(dial)) dial(sock, url = dial, autostart = autostart)
+  if (length(listen)) listen(sock, url = listen, autostart = autostart)
   sock
 
 }

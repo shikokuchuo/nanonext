@@ -28,15 +28,14 @@ Creates a new Listener and binds it to a Socket.
 \details{
 To view all Listeners bound to a socket use \code{$listener} on the
     socket, which returns a list of Listener objects. To access any individual
-    Listener (e.g. to set options on it), index into the list
-    e.g. \code{$listener[[1]]} to return the first Listener.
+    Listener (e.g. to set options on it), index into the list e.g.
+    \code{$listener[[1]]} to return the first Listener.
 
-    This function may be used to bind a new Listener to a Socket,
-    or else a nano object. If called on a nano object, the listener is
-    attached to the object rather than the socket for ease of access, e.g.
-    \code{$listener[[1]]} rather than \code{$socket$listener[[1]]}, but is
-    otherwise equivalent to calling \code{listen()} on the object's socket
-    directly.
+    This function may be used to bind a new Listener to a Socket, or else a
+    nano object. If called on a nano object, the listener is attached to the
+    object rather than the socket for ease of access, e.g. \code{$listener[[1]]}
+    rather than \code{$socket$listener[[1]]}, but is otherwise equivalent to
+    calling \code{listen()} on the object's socket directly.
 
     A listener is an external pointer to a listener object, which accepts
     incoming connections. A given listener object may have many connections

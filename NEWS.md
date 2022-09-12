@@ -1,4 +1,4 @@
-# nanonext 0.5.5.9000 (development)
+# nanonext 0.5.5.9001 (development)
 
 #### New Features
 
@@ -7,6 +7,7 @@
 #### Updates
 
 * `sha224()`, `sha256()`, `sha384()` and `sha512()` functions now take character vectors by serialising them rather than only taking the first element, whilst also being faster for character scalars. These functions also gain an argument 'convert' to control whether to return a raw vector or character string, instead of returning 'nanoHash' objects.
+* `socket()` and `nano()` now accept non-missing NULL 'listen' and 'dial' arguments, allowing easier programmatic use.
 * Internal performance enhancements to aio and send functions.
 * Minimum  supported version of MbedTLS lowered to v2.5.0.
 

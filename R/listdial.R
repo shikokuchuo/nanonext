@@ -37,11 +37,11 @@
 #'     Dialer (e.g. to set options on it), index into the list e.g.
 #'     \code{$dialer[[1]]} to return the first Dialer.
 #'
-#'     This function may be used to bind a new Dialer to a Socket,
-#'     or else a nano object. If called on a nano object, the dialer is
-#'     attached to the object rather than the socket for ease of access, e.g.
-#'     \code{$dialer[[1]]} rather than \code{$socket$dialer[[1]]}, but is
-#'     otherwise equivalent to calling \code{dial()} on the object's socket directly.
+#'     This function may be used to bind a new Dialer to a Socket, or else a
+#'     nano object. If called on a nano object, the dialer is attached to the
+#'     object rather than the socket for ease of access, e.g. \code{$dialer[[1]]}
+#'     rather than \code{$socket$dialer[[1]]}, but is otherwise equivalent to
+#'     calling \code{dial()} on the object's socket directly.
 #'
 #'     A Dialer is an external pointer to a dialer object, which creates a
 #'     single outgoing connection at a time. If the connection is broken, or
@@ -89,11 +89,7 @@ dial <- function(socket,
                  url = "inproc://nanonext",
                  autostart = TRUE) {
 
-  res <- if (missing(autostart) || isTRUE(autostart)) {
-    .Call(rnng_dial, socket, url)
-  } else {
-    .Call(rnng_dialer_create, socket, url)
-  }
+  res <- if (autostart) .Call(rnng_dial, socket, url) else .Call(rnng_dialer_create, socket, url)
   is.integer(res) && return(res)
 
   if (is.environment(socket)) {
@@ -134,17 +130,16 @@ dial <- function(socket,
 #'     (object of class 'nanoListener' and 'nano') is created and bound to the
 #'     Socket or nano object if successful.
 #'
-#' @details  To view all Listeners bound to a socket use \code{$listener} on the
+#' @details To view all Listeners bound to a socket use \code{$listener} on the
 #'     socket, which returns a list of Listener objects. To access any individual
-#'     Listener (e.g. to set options on it), index into the list
-#'     e.g. \code{$listener[[1]]} to return the first Listener.
+#'     Listener (e.g. to set options on it), index into the list e.g.
+#'     \code{$listener[[1]]} to return the first Listener.
 #'
-#'     This function may be used to bind a new Listener to a Socket,
-#'     or else a nano object. If called on a nano object, the listener is
-#'     attached to the object rather than the socket for ease of access, e.g.
-#'     \code{$listener[[1]]} rather than \code{$socket$listener[[1]]}, but is
-#'     otherwise equivalent to calling \code{listen()} on the object's socket
-#'     directly.
+#'     This function may be used to bind a new Listener to a Socket, or else a
+#'     nano object. If called on a nano object, the listener is attached to the
+#'     object rather than the socket for ease of access, e.g. \code{$listener[[1]]}
+#'     rather than \code{$socket$listener[[1]]}, but is otherwise equivalent to
+#'     calling \code{listen()} on the object's socket directly.
 #'
 #'     A listener is an external pointer to a listener object, which accepts
 #'     incoming connections. A given listener object may have many connections
@@ -192,11 +187,7 @@ listen <- function(socket,
                    url = "inproc://nanonext",
                    autostart = TRUE) {
 
-  res <- if (missing(autostart) || isTRUE(autostart)) {
-    .Call(rnng_listen, socket, url)
-  } else {
-    .Call(rnng_listener_create, socket, url)
-  }
+  res <- if (autostart) .Call(rnng_listen, socket, url) else .Call(rnng_listener_create, socket, url)
   is.integer(res) && return(res)
 
   if (is.environment(socket)) {
