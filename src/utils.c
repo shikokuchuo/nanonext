@@ -158,6 +158,7 @@ SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP data,
     }
   }
   if (data != R_NilValue) {
+    data = nano_encode(data);
     unsigned char *dp = RAW(data);
     const size_t dlen = Rf_xlength(data) - 1;
     if ((xc = nng_http_req_set_data(req, dp, dlen)))

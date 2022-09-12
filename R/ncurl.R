@@ -78,8 +78,6 @@ ncurl <- function(url,
                   request = NULL,
                   pem = NULL) {
 
-  data <- if (!missing(data)) writeBin(object = data, con = raw())
-
   if (async) {
 
     aio <- .Call(rnng_ncurl_aio, url, method, headers, data, pem)
@@ -155,20 +153,18 @@ ncurl <- function(url,
       data
     })
 
-    env
-
   } else {
 
-    res <- .Call(rnng_ncurl, url, convert, method, headers, data, request, pem)
-
-    is.character(res) && {
-      continue <- if (interactive()) readline(sprintf("Follow redirect to <%s>? [Y/n] ", res)) else "n"
-      continue %in% c("n", "N", "no", "NO") && return(res)
-      return(eval(`[[<-`(match.call(), 2L, res)))
+    env <- .Call(rnng_ncurl, url, convert, method, headers, data, request, pem)
+    is.character(env) && {
+      continue <- if (interactive()) readline(sprintf("Follow redirect to <%s>? [Y/n] ", env)) else "n"
+      continue %in% c("n", "N", "no", "NO") && return(env)
+      return(eval(`[[<-`(match.call(), 2L, env)))
     }
 
-    res
-
   }
+
+  env
+
 }
 

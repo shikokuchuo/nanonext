@@ -654,6 +654,7 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP method, SEXP headers, SEXP data, SEXP pem) {
   }
 
   if (data != R_NilValue) {
+    data = nano_encode(data);
     unsigned char *dp = RAW(data);
     const size_t dlen = Rf_xlength(data) - 1;
     if ((xc = nng_http_req_set_data(handle->req, dp, dlen)))
