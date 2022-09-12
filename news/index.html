@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.5.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.5.9001</span>
       </span>
     </div>
 
@@ -54,14 +54,16 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.5.5.9000" id="nanonext-0559000-development">nanonext 0.5.5.9000 (development)<a class="anchor" aria-label="anchor" href="#nanonext-0559000-development"></a></h2>
+<h2 class="page-header" data-toc-text="0.5.5.9001" id="nanonext-0559001-development">nanonext 0.5.5.9001 (development)<a class="anchor" aria-label="anchor" href="#nanonext-0559001-development"></a></h2>
 <div class="section level5">
-<h5 id="new-features-0-5-5-9000">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-5-5-9000"></a></h5>
+<h5 id="new-features-0-5-5-9001">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-5-5-9001"></a></h5>
 <ul><li>Implements <code><a href="../reference/base64enc.html">base64enc()</a></code> and <code><a href="../reference/base64enc.html">base64dec()</a></code> base64 encoding and decoding using the ‘Mbed TLS’ library.</li></ul></div>
 <div class="section level5">
-<h5 id="updates-0-5-5-9000">Updates<a class="anchor" aria-label="anchor" href="#updates-0-5-5-9000"></a></h5>
+<h5 id="updates-0-5-5-9001">Updates<a class="anchor" aria-label="anchor" href="#updates-0-5-5-9001"></a></h5>
 <ul><li>
 <code><a href="../reference/sha256.html">sha224()</a></code>, <code><a href="../reference/sha256.html">sha256()</a></code>, <code><a href="../reference/sha256.html">sha384()</a></code> and <code><a href="../reference/sha256.html">sha512()</a></code> functions now take character vectors by serialising them rather than only taking the first element, whilst also being faster for character scalars. These functions also gain an argument ‘convert’ to control whether to return a raw vector or character string, instead of returning ‘nanoHash’ objects.</li>
+<li>
+<code><a href="../reference/socket.html">socket()</a></code> and <code><a href="../reference/nano.html">nano()</a></code> now accept non-missing NULL ‘listen’ and ‘dial’ arguments, allowing easier programmatic use.</li>
 <li>Internal performance enhancements to aio and send functions.</li>
 <li>Minimum supported version of MbedTLS lowered to v2.5.0.</li>
 </ul></div>
