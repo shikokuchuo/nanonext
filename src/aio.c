@@ -270,16 +270,6 @@ SEXP rnng_aio_stop(SEXP aio) {
 
 }
 
-SEXP rnng_aio_unresolv(void) {
-
-  SEXP res;
-  PROTECT(res = Rf_shallow_duplicate(Rf_ScalarLogical(NA_LOGICAL)));
-  Rf_classgets(res, Rf_mkString("unresolvedValue"));
-  UNPROTECT(1);
-  return res;
-
-}
-
 SEXP rnng_unresolved(SEXP x) {
 
   if (Rf_inherits(x, "unresolvedValue") ||

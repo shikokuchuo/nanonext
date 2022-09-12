@@ -209,7 +209,7 @@ request <- function(context,
   env <- .Call(rnng_new_raio, aio, keep.raw, function(x) {
     if (unresolv) {
       res <- .Call(rnng_aio_get_msg, aio, recv_mode, keep.raw)
-      missing(res) && return(.Call(rnng_aio_unresolv))
+      missing(res) && return(.__unresolvedValue__.)
       if (is_error_value(res)) {
         data <<- raw <<- res
       } else {
@@ -223,7 +223,7 @@ request <- function(context,
   }, function(x) {
     if (unresolv) {
       res <- .Call(rnng_aio_get_msg, aio, recv_mode, keep.raw)
-      missing(res) && return(.Call(rnng_aio_unresolv))
+      missing(res) && return(.__unresolvedValue__.)
       if (is_error_value(res)) {
         data <<- raw <<- res
       } else if (keep.raw) {

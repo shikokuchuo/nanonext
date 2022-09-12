@@ -69,7 +69,6 @@ static const R_CallMethodDef CallEntries[] = {
   {"rnng_aio_result", (DL_FUNC) &rnng_aio_result, 1},
   {"rnng_aio_stop", (DL_FUNC) &rnng_aio_stop, 1},
   {"rnng_aio_stream_in", (DL_FUNC) &rnng_aio_stream_in, 3},
-  {"rnng_aio_unresolv", (DL_FUNC) &rnng_aio_unresolv, 0},
   {"rnng_clock", (DL_FUNC) &rnng_clock, 0},
   {"rnng_close", (DL_FUNC) &rnng_close, 1},
   {"rnng_ctx_close", (DL_FUNC) &rnng_ctx_close, 1},

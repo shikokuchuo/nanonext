@@ -72,7 +72,7 @@ send_aio.nanoSocket <- function(con, data, mode = c("serial", "raw"), timeout = 
   env <- .Call(rnng_new_saio, aio, function(x) {
     if (unresolv) {
       res <- .Call(rnng_aio_result, aio)
-      missing(res) && return(.Call(rnng_aio_unresolv))
+      missing(res) && return(.__unresolvedValue__.)
       result <<- res
       aio <<- env[["aio"]] <<- NULL
       unresolv <<- FALSE
@@ -97,7 +97,7 @@ send_aio.nanoContext <- function(con, data, mode = c("serial", "raw"), timeout =
   env <- .Call(rnng_new_saio, aio, function(x) {
     if (unresolv) {
       res <- .Call(rnng_aio_result, aio)
-      missing(res) && return(.Call(rnng_aio_unresolv))
+      missing(res) && return(.__unresolvedValue__.)
       result <<- res
       aio <<- env[["aio"]] <<- NULL
       unresolv <<- FALSE
@@ -122,7 +122,7 @@ send_aio.nanoStream <- function(con, data, mode = "raw", timeout = NULL) {
   env <- .Call(rnng_new_saio, aio, function(x) {
     if (unresolv) {
       res <- .Call(rnng_aio_result, aio)
-      missing(res) && return(.Call(rnng_aio_unresolv))
+      missing(res) && return(.__unresolvedValue__.)
       result <<- res
       aio <<- env[["aio"]] <<- NULL
       unresolv <<- FALSE
@@ -217,7 +217,7 @@ recv_aio.nanoSocket <- function(con,
   env <- .Call(rnng_new_raio, aio, keep.raw, function(x) {
     if (unresolv) {
       res <- .Call(rnng_aio_get_msg, aio, mode, keep.raw)
-      missing(res) && return(.Call(rnng_aio_unresolv))
+      missing(res) && return(.__unresolvedValue__.)
       if (is_error_value(res)) {
         data <<- raw <<- res
       } else {
@@ -231,7 +231,7 @@ recv_aio.nanoSocket <- function(con,
   }, function(x) {
     if (unresolv) {
       res <- .Call(rnng_aio_get_msg, aio, mode, keep.raw)
-      missing(res) && return(.Call(rnng_aio_unresolv))
+      missing(res) && return(.__unresolvedValue__.)
       if (is_error_value(res)) {
         data <<- raw <<- res
       } else if (keep.raw) {
@@ -269,7 +269,7 @@ recv_aio.nanoContext <- function(con,
   env <- .Call(rnng_new_raio, aio, keep.raw, function(x) {
     if (unresolv) {
       res <- .Call(rnng_aio_get_msg, aio, mode, keep.raw)
-      missing(res) && return(.Call(rnng_aio_unresolv))
+      missing(res) && return(.__unresolvedValue__.)
       if (is_error_value(res)) {
         data <<- raw <<- res
       } else {
@@ -283,7 +283,7 @@ recv_aio.nanoContext <- function(con,
   }, function(x) {
     if (unresolv) {
       res <- .Call(rnng_aio_get_msg, aio, mode, keep.raw)
-      missing(res) && return(.Call(rnng_aio_unresolv))
+      missing(res) && return(.__unresolvedValue__.)
       if (is_error_value(res)) {
         data <<- raw <<- res
       } else if (keep.raw) {
@@ -322,7 +322,7 @@ recv_aio.nanoStream <- function(con,
   env <- .Call(rnng_new_raio, aio, keep.raw, function(x) {
     if (unresolv) {
       res <- .Call(rnng_aio_stream_in, aio, mode, keep.raw)
-      missing(res) && return(.Call(rnng_aio_unresolv))
+      missing(res) && return(.__unresolvedValue__.)
       if (is_error_value(res)) {
         data <<- raw <<- res
       } else {
@@ -336,7 +336,7 @@ recv_aio.nanoStream <- function(con,
   }, function(x) {
     if (unresolv) {
       res <- .Call(rnng_aio_stream_in, aio, mode, keep.raw)
-      missing(res) && return(.Call(rnng_aio_unresolv))
+      missing(res) && return(.__unresolvedValue__.)
       if (is_error_value(res)) {
         data <<- raw <<- res
       } else if (keep.raw) {

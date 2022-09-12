@@ -92,7 +92,7 @@ ncurl <- function(url,
     env <- .Call(rnng_new_naio, aio, function(x) {
       if (unresolv) {
         res <- .Call(rnng_aio_http, aio, convert, request)
-        missing(res) && return(.Call(rnng_aio_unresolv))
+        missing(res) && return(.__unresolvedValue__.)
         if (is.integer(res)) {
           data <<- raw <<- res
         } else {
@@ -108,7 +108,7 @@ ncurl <- function(url,
     }, function(x) {
       if (unresolv) {
         res <- .Call(rnng_aio_http, aio, convert, request)
-        missing(res) && return(.Call(rnng_aio_unresolv))
+        missing(res) && return(.__unresolvedValue__.)
         if (is.integer(res)) {
           data <<- raw <<- res
         } else {
@@ -124,7 +124,7 @@ ncurl <- function(url,
     }, function(x) {
       if (unresolv) {
         res <- .Call(rnng_aio_http, aio, convert, request)
-        missing(res) && return(.Call(rnng_aio_unresolv))
+        missing(res) && return(.__unresolvedValue__.)
         if (is.integer(res)) {
           data <<- raw <<- res
         } else {
@@ -140,7 +140,7 @@ ncurl <- function(url,
     }, function(x) {
       if (unresolv) {
         res <- .Call(rnng_aio_http, aio, convert, request)
-        missing(res) && return(.Call(rnng_aio_unresolv))
+        missing(res) && return(.__unresolvedValue__.)
         if (is.integer(res)) {
           data <<- raw <<- res
         } else {

@@ -107,3 +107,5 @@ NULL
   invisible()
 }
 
+.__unresolvedValue__. <- `class<-`(NA, "unresolvedValue")
+

@@ -99,7 +99,6 @@ extern SEXP rnng_aio_http(SEXP, SEXP, SEXP);
 extern SEXP rnng_aio_result(SEXP);
 extern SEXP rnng_aio_stop(SEXP);
 extern SEXP rnng_aio_stream_in(SEXP, SEXP, SEXP);
-extern SEXP rnng_aio_unresolv(void);
 extern SEXP rnng_base64dec(SEXP, SEXP);
 extern SEXP rnng_base64enc(SEXP, SEXP);
 extern SEXP rnng_clock(void);
