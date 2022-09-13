@@ -38,6 +38,7 @@ then
   then
     PKG_LIBS="-L/usr/local/lib $PKG_LIBS"
   fi
+
 else
   echo "Detecting 'cmake'..."
   which cmake
@@ -51,35 +52,36 @@ else
       exit 1
     fi
   fi
+
   echo "Downloading 'libmbedtls' source..."
   curl -sL https://api.github.com/repos/Mbed-TLS/mbedtls/tarball/$TLS_VER -o mbedtls.tar.gz
   gzip -dc mbedtls.tar.gz | tar -xf -
   rm -f mbedtls.tar.gz
+
   echo "Downloading 'libnng' source..."
   curl -sL https://api.github.com/repos/nanomsg/nng/tarball/$LIB_VER -o nng.tar.gz
   gzip -dc nng.tar.gz | tar -xf -
   rm -f nng.tar.gz
+
   cd Mbed-TLS-mbedtls-$TLS_VER
-  mkdir build
-  cd build
   echo "Compiling 'libmbedtls' from source..."
   cmake -DCMAKE_POSITION_INDEPENDENT_CODE=1 -DENABLE_TESTING=0 -DENABLE_PROGRAMS=0 \
-    -DCMAKE_INSTALL_PREFIX=../../temp -DCMAKE_INSTALL_MESSAGE=NEVER ..
+    -DMBEDTLS_FATAL_WARNINGS=0 -DCMAKE_INSTALL_PREFIX=../temp -DCMAKE_INSTALL_MESSAGE=NEVER .
   cmake --build .
   cmake --install .
-  cd ../..
+  cd ..
   rm -rf Mbed-TLS-mbedtls-$TLS_VER
+
   cd nanomsg-nng-$LIB_VER
-  mkdir build
-  cd build
   echo "Compiling 'libnng' from source..."
   cmake -DCMAKE_POSITION_INDEPENDENT_CODE=1 -DNNG_ENABLE_TLS=1 \
     -DNNG_ELIDE_DEPRECATED=1 -DNNG_TESTS=0 -DNNG_TOOLS=0 \
-    -DCMAKE_INSTALL_PREFIX=../../temp -DCMAKE_INSTALL_MESSAGE=NEVER ..
+    -DCMAKE_INSTALL_PREFIX=../temp -DCMAKE_INSTALL_MESSAGE=NEVER .
   cmake --build .
   cmake --install .
-  cd ../..
+  cd ..
   rm -rf nanomsg-nng-$LIB_VER
+
   PKG_CFLAGS="-I`pwd`/temp/include $PKG_CFLAGS"
   if [ -d "temp/lib64" ]
   then

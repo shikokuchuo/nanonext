@@ -1,0 +1,42 @@
+# Library versions
+LIB_VER="722bf4621703ef238fa81018f8c3e68bcef91354"
+TLS_VER="3.2.1"
+
+echo "Detecting 'cmake'..."
+which cmake
+if [ $? -ne 0 ]
+then
+  echo "'cmake' is required but is not found"
+  exit 1
+fi
+
+echo "Downloading 'libmbedtls' source..."
+curl -sL https://github.com/Mbed-TLS/mbedtls/archive/refs/tags/v$TLS_VER.zip -o mbedtls.zip
+unzip -q mbedtls.zip
+rm -f mbedtls.zip
+echo "Downloading 'libnng' source..."
+curl -sL https://github.com/nanomsg/nng/archive/$LIB_VER.zip -o nng.zip
+unzip -q nng.zip
+rm -f nng.zip
+
+cd mbedtls-$TLS_VER
+echo "Compiling 'libmbedtls' from source..."
+cmake -DCMAKE_POSITION_INDEPENDENT_CODE=1 -DENABLE_TESTING=0 -DENABLE_PROGRAMS=0 \
+  -DMBEDTLS_FATAL_WARNINGS=0 -DCMAKE_INSTALL_PREFIX=../temp -DCMAKE_INSTALL_MESSAGE=NEVER .
+cmake --build .
+cmake --install .
+cd ..
+rm -rf mbedtls-$TLS_VER
+
+cd nng-$LIB_VER
+echo "Compiling 'libnng' from source..."
+cmake -DCMAKE_POSITION_INDEPENDENT_CODE=1 -DNNG_ENABLE_TLS=1 -DNNG_ELIDE_DEPRECATED=1 \
+  -DNNG_TESTS=0 -DNNG_TOOLS=0 -DCMAKE_INSTALL_PREFIX=../temp -DCMAKE_INSTALL_MESSAGE=NEVER .
+cmake --build .
+cmake --install .
+cd ..
+rm -rf nng-$LIB_VER
+
+# Success
+exit 0
+
