@@ -151,7 +151,7 @@ SEXP rnng_aio_result(SEXP aio) {
   if (aiop->result)
     return mk_error(aiop->result);
 
-  return Rf_ScalarInteger(aiop->result);
+  return nano_success;
 
 }
 

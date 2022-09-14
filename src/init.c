@@ -38,6 +38,7 @@ SEXP nano_StreamSymbol;
 SEXP nano_TextframesSymbol;
 SEXP nano_UnserSymbol;
 SEXP nano_UrlSymbol;
+SEXP nano_success;
 
 static void RegisterSymbols(void) {
   nano_AioSymbol = Rf_install("aio");
@@ -129,8 +130,13 @@ static const R_CallMethodDef CallEntries[] = {
 
 void attribute_visible R_init_nanonext(DllInfo* dll) {
   RegisterSymbols();
+  R_PreserveObject(nano_success = Rf_ScalarInteger(0));
   R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
   R_useDynamicSymbols(dll, FALSE);
   R_forceSymbols(dll, TRUE);
+}
+
+void attribute_visible R_unload_nanonext(DllInfo *info) {
+  R_ReleaseObject(nano_success);
 }
 

@@ -490,7 +490,7 @@ SEXP rnng_stream_close(SEXP stream) {
   R_ClearExternalPtr(stream);
   SET_ATTRIB(stream, R_NilValue);
 
-  return Rf_ScalarInteger(0);
+  return nano_success;
 
 }
 
@@ -637,7 +637,8 @@ SEXP rnng_device(SEXP s1, SEXP s2) {
                       *(nng_socket *) R_ExternalPtrAddr(s2));
   if (xc)
     return mk_error(xc);
-  return Rf_ScalarInteger(xc);
+
+  return nano_success;
 
 }
 
