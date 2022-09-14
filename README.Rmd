@@ -515,7 +515,9 @@ System libraries are not used by default as versions currently in system reposit
 
 #### Windows
 
-Pre-built 'libnng' v1.6.0 (722bf46) and 'libmbedtls' v3.2.1 libraries are downloaded automatically during the package installation process.
+For R >= 4.2 using the rtools42 toolchain, selecting source package installation will allow the sources to be downloaded and built as on Unix-alikes.
+
+For previous R versions, pre-compiled 'libnng' v1.6.0 (722bf46) and 'libmbedtls' v3.2.1 libraries are used instead.
 
 [&laquo; Back to ToC](#table-of-contents)
 

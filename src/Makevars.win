@@ -1,2 +1,9 @@
-PKG_CFLAGS=-DNNG_STATIC_LIB -I../temp/include $(C_VISIBILITY)
-PKG_LIBS=-L../temp/lib -lnng -lmbedtls -lmbedx509 -lmbedcrypto -lws2_32
+RWINLIB = ../windows/rwinlib-1.6.0_3.2.1
+
+PKG_CFLAGS=-I${RWINLIB}/include -DNNG_STATIC_LIB $(C_VISIBILITY)
+PKG_LIBS=-L${RWINLIB}/lib${R_ARCH} -lnng -lmbedtls -lmbedx509 -lmbedcrypto -lws2_32
+
+all: winlibs
+
+winlibs:
+	"${R_HOME}/bin${R_ARCH_BIN}/Rscript.exe" "../tools/winlibs.R"

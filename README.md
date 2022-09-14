@@ -387,7 +387,7 @@ aio
 #> < recvAio >
 #>  - $data for message data
 aio$data |> str()
-#>  num [1:100000000] -0.0588 -0.4009 -0.3877 0.1486 0.5064 ...
+#>  num [1:100000000] -1.02 1.9 -1.06 1.48 -2.11 ...
 ```
 
 As `call_aio()` is blocking and will wait for completion, an alternative
@@ -546,11 +546,11 @@ ncurl("https://httpbin.org/headers")
 #>   [1] 7b 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73
 #>  [26] 74 22 3a 20 22 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22
 #>  [51] 58 2d 41 6d 7a 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31
-#>  [76] 2d 36 33 31 66 30 35 34 66 2d 32 39 35 64 39 30 38 36 34 61 35 32 35 33 64
-#> [101] 38 37 63 32 33 63 61 38 64 22 0a 20 20 7d 0a 7d 0a
+#>  [76] 2d 36 33 32 31 64 33 65 32 2d 31 62 66 39 35 36 61 63 31 30 66 62 66 37 61
+#> [101] 65 36 39 32 62 38 36 64 35 22 0a 20 20 7d 0a 7d 0a
 #> 
 #> $data
-#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-631f054f-295d90864a5253d87c23ca8d\"\n  }\n}\n"
+#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6321d3e2-1bf956ac10fbf7ae692b86d5\"\n  }\n}\n"
 ```
 
 For advanced use, supports additional HTTP methods such as POST or PUT.
@@ -569,13 +569,13 @@ res
 
 call_aio(res)$headers
 #> $Date
-#> [1] "Mon, 12 Sep 2022 10:09:19 GMT"
+#> [1] "Wed, 14 Sep 2022 13:15:15 GMT"
 #> 
 #> $Server
 #> [1] "gunicorn/19.9.0"
 
 res$data
-#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-631f054f-09293e360a8d6f6d7ae75544\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"79.173.129.2\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
+#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6321d3e3-4495f41061a6e4d8545dd415\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"79.173.129.2\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
 ```
 
 In this respect, it may be used as a performant and lightweight method
@@ -618,10 +618,10 @@ s |> send('{"action": "subscribe", "symbols": "EURUSD"}')
 #> [26] 73 79 6d 62 6f 6c 73 22 3a 20 22 45 55 52 55 53 44 22 7d 00
 
 s |> recv(keep.raw = FALSE)
-#> [1] "{\"s\":\"EURUSD\",\"a\":1.0131,\"b\":1.01308,\"dc\":\"0.6001\",\"dd\":\"0.0061\",\"ppms\":false,\"t\":1662977362000}"
+#> [1] "{\"s\":\"EURUSD\",\"a\":1.00022,\"b\":1.0002,\"dc\":\"0.2419\",\"dd\":\"0.0024\",\"ppms\":false,\"t\":1663161316000}"
 
 s |> recv(keep.raw = FALSE)
-#> [1] "{\"s\":\"EURUSD\",\"a\":1.01308,\"b\":1.01306,\"dc\":\"0.5982\",\"dd\":\"0.0061\",\"ppms\":false,\"t\":1662977362000}"
+#> [1] "{\"s\":\"EURUSD\",\"a\":1.00025,\"b\":1.00017,\"dc\":\"0.2449\",\"dd\":\"0.0025\",\"ppms\":false,\"t\":1663161316000}"
 
 close(s)
 ```
@@ -686,8 +686,12 @@ repositories are not new enough to support this version of nanonext.
 
 #### Windows
 
-Pre-built ‘libnng’ v1.6.0 (722bf46) and ‘libmbedtls’ v3.2.1 libraries
-are downloaded automatically during the package installation process.
+For R \>= 4.2 using the rtools42 toolchain, selecting source package
+installation will allow the sources to be downloaded and built as on
+Unix-alikes.
+
+For previous R versions, pre-compiled ‘libnng’ v1.6.0 (722bf46) and
+‘libmbedtls’ v3.2.1 libraries are used instead.
 
 [« Back to ToC](#table-of-contents)
 

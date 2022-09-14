@@ -1,0 +1,2 @@
+PKG_CFLAGS=-I../temp/include -DNNG_STATIC_LIB $(C_VISIBILITY)
+PKG_LIBS=-L../temp/lib -lnng -lmbedtls -lmbedx509 -lmbedcrypto -lws2_32
