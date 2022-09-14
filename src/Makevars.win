@@ -1,9 +1,16 @@
-RWINLIB = ../windows/rwinlib-1.6.0_3.2.1
+ifeq "$(WIN)" "64"
+    ARC="x64"
+else
+    ARC="i386"
+endif
 
-PKG_CFLAGS=-I${RWINLIB}/include -DNNG_STATIC_LIB $(C_VISIBILITY)
-PKG_LIBS=-L${RWINLIB}/lib${R_ARCH} -lnng -lmbedtls -lmbedx509 -lmbedcrypto -lws2_32
+PKG_CFLAGS=-I../src-${ARC}/rwinlib-1.6.0_3.2.1/include -DNNG_STATIC_LIB $(C_VISIBILITY)
+PKG_LIBS=-L../src-${ARC}/rwinlib-1.6.0_3.2.1/lib${R_ARCH} -lnng -lmbedtls -lmbedx509 -lmbedcrypto -lws2_32
 
 all: winlibs
 
 winlibs:
-	"${R_HOME}/bin${R_ARCH_BIN}/Rscript.exe" "../tools/winlibs.R"
+	curl -sL https://github.com/shikokuchuo/rwinlib/archive/refs/tags/v1.6.0_3.2.1.zip -o nng.zip
+	unzip -q nng.zip
+	rm -f nng.zip
+

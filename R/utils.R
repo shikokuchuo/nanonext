@@ -338,15 +338,3 @@ nano_init <- function(warn = c("immediate", "deferred", "error", "none")) {
 
 }
 
-# nanonext - required for older versions of mirai only -------------------------
-
-#' @export
-#'
-.mirai_scm <- function() {
-
-  identical(parent.env(parent.env(parent.frame())), getNamespace("mirai")) ||
-    stop("this function is for package internal use only")
-  .subset2(alist(. =), ".")
-
-}
-
