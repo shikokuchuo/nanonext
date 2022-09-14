@@ -38,7 +38,12 @@ SEXP nano_StreamSymbol;
 SEXP nano_TextframesSymbol;
 SEXP nano_UnserSymbol;
 SEXP nano_UrlSymbol;
+
 SEXP nano_success;
+SEXP nano_errorValue;
+SEXP nano_sendAio;
+SEXP nano_recvAio;
+SEXP nano_ncurlAio;
 
 static void RegisterSymbols(void) {
   nano_AioSymbol = Rf_install("aio");
@@ -61,6 +66,24 @@ static void RegisterSymbols(void) {
   nano_TextframesSymbol = Rf_install("textframes");
   nano_UnserSymbol = Rf_install("unserialize");
   nano_UrlSymbol = Rf_install("url");
+}
+
+static void PreserveObjects(void) {
+  R_PreserveObject(nano_success = Rf_ScalarInteger(0));
+  R_PreserveObject(nano_errorValue = Rf_mkString("errorValue"));
+  R_PreserveObject(nano_sendAio = Rf_mkString("sendAio"));
+  R_PreserveObject(nano_recvAio = Rf_mkString("recvAio"));
+  R_PreserveObject(nano_ncurlAio = Rf_allocVector(STRSXP, 2));
+  SET_STRING_ELT(nano_ncurlAio, 0, Rf_mkChar("ncurlAio"));
+  SET_STRING_ELT(nano_ncurlAio, 1, Rf_mkChar("recvAio"));
+}
+
+static void ReleaseObjects(void) {
+  R_ReleaseObject(nano_success);
+  R_ReleaseObject(nano_errorValue);
+  R_ReleaseObject(nano_sendAio);
+  R_ReleaseObject(nano_recvAio);
+  R_ReleaseObject(nano_ncurlAio);
 }
 
 static const R_CallMethodDef CallEntries[] = {
@@ -130,13 +153,13 @@ static const R_CallMethodDef CallEntries[] = {
 
 void attribute_visible R_init_nanonext(DllInfo* dll) {
   RegisterSymbols();
-  R_PreserveObject(nano_success = Rf_ScalarInteger(0));
+  PreserveObjects();
   R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
   R_useDynamicSymbols(dll, FALSE);
   R_forceSymbols(dll, TRUE);
 }
 
 void attribute_visible R_unload_nanonext(DllInfo *info) {
-  R_ReleaseObject(nano_success);
+  ReleaseObjects();
 }
 

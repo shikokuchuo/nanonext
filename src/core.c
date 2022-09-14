@@ -26,7 +26,7 @@ SEXP mk_error(const int xc) {
 
   SEXP err;
   PROTECT(err = Rf_ScalarInteger(xc));
-  Rf_classgets(err, Rf_mkString("errorValue"));
+  Rf_classgets(err, nano_errorValue);
   Rf_warning("%d | %s", xc, nng_strerror(xc));
   UNPROTECT(1);
   return err;

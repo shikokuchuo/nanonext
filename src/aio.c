@@ -296,7 +296,7 @@ SEXP rnng_new_saio(SEXP aio, SEXP fun) {
 #endif
   Rf_defineVar(nano_AioSymbol, aio, env);
   R_MakeActiveBinding(nano_ResultSymbol, fun, env);
-  Rf_classgets(env, Rf_mkString("sendAio"));
+  Rf_classgets(env, nano_sendAio);
 
   UNPROTECT(1);
   return env;
@@ -318,7 +318,7 @@ SEXP rnng_new_raio(SEXP aio, SEXP keep, SEXP rawfun, SEXP datafun) {
   if (Rf_asLogical(keep))
     R_MakeActiveBinding(nano_RawSymbol, rawfun, env);
   R_MakeActiveBinding(nano_DataSymbol, datafun, env);
-  Rf_classgets(env, Rf_mkString("recvAio"));
+  Rf_classgets(env, nano_recvAio);
 
   UNPROTECT(1);
   return env;
@@ -341,13 +341,9 @@ SEXP rnng_new_naio(SEXP aio, SEXP statusfun, SEXP headersfun, SEXP rawfun, SEXP 
   R_MakeActiveBinding(nano_HeadersSymbol, headersfun, env);
   R_MakeActiveBinding(nano_RawSymbol, rawfun, env);
   R_MakeActiveBinding(nano_DataSymbol, datafun, env);
-  SEXP klass;
-  PROTECT(klass = Rf_allocVector(STRSXP, 2));
-  SET_STRING_ELT(klass, 0, Rf_mkChar("ncurlAio"));
-  SET_STRING_ELT(klass, 1, Rf_mkChar("recvAio"));
-  Rf_classgets(env, klass);
+  Rf_classgets(env, nano_ncurlAio);
 
-  UNPROTECT(2);
+  UNPROTECT(1);
   return env;
 
 }

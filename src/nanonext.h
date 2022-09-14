@@ -92,7 +92,12 @@ extern SEXP nano_StreamSymbol;
 extern SEXP nano_TextframesSymbol;
 extern SEXP nano_UnserSymbol;
 extern SEXP nano_UrlSymbol;
+
 extern SEXP nano_success;
+extern SEXP nano_errorValue;
+extern SEXP nano_sendAio;
+extern SEXP nano_recvAio;
+extern SEXP nano_ncurlAio;
 
 extern SEXP rnng_aio_call(SEXP);
 extern SEXP rnng_aio_get_msg(SEXP, SEXP, SEXP);
@@ -155,8 +160,6 @@ extern SEXP rnng_strerror(SEXP);
 extern SEXP rnng_thread_create(SEXP);
 extern SEXP rnng_unresolved(SEXP);
 extern SEXP rnng_version(void);
-extern SEXP rnng_return_zero(void);
-extern SEXP rnng_return_newzero(void);
 
 #endif
 
