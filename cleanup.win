@@ -1,1 +1,1 @@
-rm -rf src/Makevars temp
+rm -rf temp
