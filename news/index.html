@@ -64,9 +64,11 @@
 <code><a href="../reference/sha256.html">sha224()</a></code>, <code><a href="../reference/sha256.html">sha256()</a></code>, <code><a href="../reference/sha256.html">sha384()</a></code> and <code><a href="../reference/sha256.html">sha512()</a></code> functions now take character vectors by serialising them rather than only taking the first element, whilst also being faster for character scalars. These functions also gain an argument ‘convert’ to control whether to return a raw vector or character string, instead of returning ‘nanoHash’ objects.</li>
 <li>
 <code><a href="../reference/socket.html">socket()</a></code> and <code><a href="../reference/nano.html">nano()</a></code> now accept non-missing NULL ‘listen’ and ‘dial’ arguments, allowing easier programmatic use.</li>
-<li>Internal performance enhancements.</li>
+<li>
+<code><a href="../reference/send.html">send()</a></code> and <code><a href="../reference/recv.html">recv()</a></code> are no longer S3 generics for performance reasons.</li>
 <li>Package now builds ‘libnng’ and ‘libmbedtls’ from source on Windows for R &gt;= 4.2 using the rtools42 toolchain. Pre-compiled libraries are still used for previous R versions.</li>
 <li>Minimum supported version of MbedTLS lowered to v2.5.0.</li>
+<li>Internal performance enhancements.</li>
 </ul></div>
 </div>
     <div class="section level2">

@@ -59,16 +59,7 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">send</span><span class="op">(</span><span class="va">con</span>, <span class="va">data</span>, mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"serial"</span>, <span class="st">"raw"</span><span class="op">)</span>, <span class="va">block</span>, echo <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># S3 method for nanoSocket</span></span>
-<span><span class="fu">send</span><span class="op">(</span><span class="va">con</span>, <span class="va">data</span>, mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"serial"</span>, <span class="st">"raw"</span><span class="op">)</span>, block <span class="op">=</span> <span class="cn">FALSE</span>, echo <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># S3 method for nanoContext</span></span>
-<span><span class="fu">send</span><span class="op">(</span><span class="va">con</span>, <span class="va">data</span>, mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"serial"</span>, <span class="st">"raw"</span><span class="op">)</span>, block <span class="op">=</span> <span class="cn">TRUE</span>, echo <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># S3 method for nanoStream</span></span>
-<span><span class="fu">send</span><span class="op">(</span><span class="va">con</span>, <span class="va">data</span>, mode <span class="op">=</span> <span class="st">"raw"</span>, block <span class="op">=</span> <span class="cn">TRUE</span>, echo <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">send</span><span class="op">(</span><span class="va">con</span>, <span class="va">data</span>, mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"serial"</span>, <span class="st">"raw"</span><span class="op">)</span>, block <span class="op">=</span> <span class="cn">NULL</span>, echo <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -84,17 +75,18 @@
 <dt>mode</dt>
 <dd><p>[default 'serial'] for sending serialised R objects, or 'raw' for
 sending vectors of any type (converted to a raw byte vector for sending).
-For Streams, 'raw' is the only option and any other value is ignored. Use
+For Streams, 'raw' is the only option and this argument is ignored. Use
 'serial' for perfect reproducibility within R, although 'raw' must be used
 when interfacing with external applications that do not understand R
 serialisation.</p></dd>
 
 
 <dt>block</dt>
-<dd><p>logical TRUE to block until successful or FALSE to return
-immediately even if unsuccessful  (e.g. if no connection is available),
-or else an integer value specifying the maximum time to block in
-milliseconds, after which the operation will time out.</p></dd>
+<dd><p>[default NULL] which applies the connection default (see section
+'Blocking' below). Specify logical TRUE to block until successful or FALSE
+to return immediately even if unsuccessful (e.g. if no connection is
+available), or else an integer value specifying the maximum time to block
+in milliseconds, after which the operation will time out.</p></dd>
 
 
 <dt>echo</dt>
