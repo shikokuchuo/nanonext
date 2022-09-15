@@ -196,10 +196,10 @@ request <- function(context,
                     timeout = NULL,
                     keep.raw = TRUE) {
 
-  res <- .Call(rnng_ctx_send_aio, context, data, send_mode, NULL)
+  res <- .Call(rnng_send_aio, context, data, send_mode, NULL)
   is.integer(res) && return(res)
 
-  aio <- .Call(rnng_ctx_recv_aio, context, recv_mode, timeout)
+  aio <- .Call(rnng_recv_aio, context, recv_mode, timeout, NULL)
   is_error_value(aio) && return(aio)
 
   data <- raw <- NULL

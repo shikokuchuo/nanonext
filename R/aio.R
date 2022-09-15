@@ -53,68 +53,11 @@
 #'
 #' close(pub)
 #'
-#' @rdname send_aio
 #' @export
 #'
-send_aio <- function(con, data, mode = c("serial", "raw"), timeout = NULL) UseMethod("send_aio")
-
-#' @rdname send_aio
-#' @method send_aio nanoSocket
-#' @export
-#'
-send_aio.nanoSocket <- function(con, data, mode = c("serial", "raw"), timeout = NULL) {
+send_aio <- function(con, data, mode = c("serial", "raw"), timeout = NULL) {
 
   aio <- .Call(rnng_send_aio, con, data, mode, timeout)
-  is.integer(aio) && return(aio)
-
-  data <- result <- NULL
-  unresolv <- TRUE
-  env <- .Call(rnng_new_saio, aio, function(x) {
-    if (unresolv) {
-      res <- .Call(rnng_aio_result, aio)
-      missing(res) && return(.__unresolvedValue__.)
-      result <<- res
-      aio <<- env[["aio"]] <<- NULL
-      unresolv <<- FALSE
-    }
-    result
-  })
-  env
-
-}
-
-#' @rdname send_aio
-#' @method send_aio nanoContext
-#' @export
-#'
-send_aio.nanoContext <- function(con, data, mode = c("serial", "raw"), timeout = NULL) {
-
-  aio <- .Call(rnng_ctx_send_aio, con, data, mode, timeout)
-  is.integer(aio) && return(aio)
-
-  data <- result <- NULL
-  unresolv <- TRUE
-  env <- .Call(rnng_new_saio, aio, function(x) {
-    if (unresolv) {
-      res <- .Call(rnng_aio_result, aio)
-      missing(res) && return(.__unresolvedValue__.)
-      result <<- res
-      aio <<- env[["aio"]] <<- NULL
-      unresolv <<- FALSE
-    }
-    result
-  })
-  env
-
-}
-
-#' @rdname send_aio
-#' @method send_aio nanoStream
-#' @export
-#'
-send_aio.nanoStream <- function(con, data, mode = "raw", timeout = NULL) {
-
-  aio <- .Call(rnng_stream_send_aio, con, data, timeout)
   is.integer(aio) && return(aio)
 
   data <- result <- NULL
@@ -139,7 +82,6 @@ send_aio.nanoStream <- function(con, data, mode = "raw", timeout = NULL) {
 #'
 #' @inheritParams recv
 #' @inheritParams send_aio
-#' @param ... not used.
 #'
 #' @return A 'recvAio' (object of class 'recvAio').
 #'
@@ -195,21 +137,9 @@ recv_aio <- function(con,
                               "integer", "logical", "numeric", "raw"),
                      timeout = NULL,
                      keep.raw = TRUE,
-                     ...,
-                     n = 65536L) UseMethod("recv_aio")
+                     n = 65536L) {
 
-#' @rdname recv_aio
-#' @method recv_aio nanoSocket
-#' @export
-#'
-recv_aio.nanoSocket <- function(con,
-                                mode = c("serial", "character", "complex", "double",
-                                         "integer", "logical", "numeric", "raw"),
-                                timeout = NULL,
-                                keep.raw = TRUE,
-                                ...) {
-
-  aio <- .Call(rnng_recv_aio, con, mode, timeout)
+  aio <- .Call(rnng_recv_aio, con, mode, timeout, n)
   is.integer(aio) && return(aio)
 
   data <- raw <- NULL
@@ -231,109 +161,6 @@ recv_aio.nanoSocket <- function(con,
   }, function(x) {
     if (unresolv) {
       res <- .Call(rnng_aio_get_msg, aio, keep.raw)
-      missing(res) && return(.__unresolvedValue__.)
-      if (is_error_value(res)) {
-        data <<- raw <<- res
-      } else if (keep.raw) {
-        raw <<- .subset2(res, "raw")
-        data <<- .subset2(res, "data")
-      } else {
-        data <<- res
-      }
-      aio <<- env[["aio"]] <<- NULL
-      unresolv <<- FALSE
-    }
-    data
-  })
-  env
-
-}
-
-#' @rdname recv_aio
-#' @method recv_aio nanoContext
-#' @export
-#'
-recv_aio.nanoContext <- function(con,
-                                 mode = c("serial", "character", "complex", "double",
-                                          "integer", "logical", "numeric", "raw"),
-                                 timeout = NULL,
-                                 keep.raw = TRUE,
-                                 ...) {
-
-  aio <- .Call(rnng_ctx_recv_aio, con, mode, timeout)
-  is.integer(aio) && return(aio)
-
-  data <- raw <- NULL
-  unresolv <- TRUE
-  env <- .Call(rnng_new_raio, aio, keep.raw, function(x) {
-    if (unresolv) {
-      res <- .Call(rnng_aio_get_msg, aio, keep.raw)
-      missing(res) && return(.__unresolvedValue__.)
-      if (is_error_value(res)) {
-        data <<- raw <<- res
-      } else {
-        raw <<- .subset2(res, "raw")
-        data <<- .subset2(res, "data")
-      }
-      aio <<- env[["aio"]] <<- NULL
-      unresolv <<- FALSE
-    }
-    raw
-  }, function(x) {
-    if (unresolv) {
-      res <- .Call(rnng_aio_get_msg, aio, keep.raw)
-      missing(res) && return(.__unresolvedValue__.)
-      if (is_error_value(res)) {
-        data <<- raw <<- res
-      } else if (keep.raw) {
-        raw <<- .subset2(res, "raw")
-        data <<- .subset2(res, "data")
-      } else {
-        data <<- res
-      }
-      aio <<- env[["aio"]] <<- NULL
-      unresolv <<- FALSE
-    }
-    data
-  })
-  env
-
-}
-
-#' @rdname recv_aio
-#' @method recv_aio nanoStream
-#' @export
-#'
-recv_aio.nanoStream <- function(con,
-                                mode = c("character", "complex", "double", "integer",
-                                         "logical", "numeric", "raw"),
-                                timeout = NULL,
-                                keep.raw = TRUE,
-                                n = 65536L,
-                                ...) {
-
-  aio <- .Call(rnng_stream_recv_aio, con, mode, timeout, n)
-  is.integer(aio) && return(aio)
-
-  data <- raw <- NULL
-  unresolv <- TRUE
-  env <- .Call(rnng_new_raio, aio, keep.raw, function(x) {
-    if (unresolv) {
-      res <- .Call(rnng_aio_stream_in, aio, keep.raw)
-      missing(res) && return(.__unresolvedValue__.)
-      if (is_error_value(res)) {
-        data <<- raw <<- res
-      } else {
-        raw <<- .subset2(res, "raw")
-        data <<- .subset2(res, "data")
-      }
-      aio <<- env[["aio"]] <<- NULL
-      unresolv <<- FALSE
-    }
-    raw
-  }, function(x) {
-    if (unresolv) {
-      res <- .Call(rnng_aio_stream_in, aio, keep.raw)
       missing(res) && return(.__unresolvedValue__.)
       if (is_error_value(res)) {
         data <<- raw <<- res

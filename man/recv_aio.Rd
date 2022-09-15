@@ -2,9 +2,6 @@
 % Please edit documentation in R/aio.R
 \name{recv_aio}
 \alias{recv_aio}
-\alias{recv_aio.nanoSocket}
-\alias{recv_aio.nanoContext}
-\alias{recv_aio.nanoStream}
 \title{Receive Async}
 \usage{
 recv_aio(
@@ -13,35 +10,7 @@ recv_aio(
     "raw"),
   timeout = NULL,
   keep.raw = TRUE,
-  ...,
   n = 65536L
-)
-
-\method{recv_aio}{nanoSocket}(
-  con,
-  mode = c("serial", "character", "complex", "double", "integer", "logical", "numeric",
-    "raw"),
-  timeout = NULL,
-  keep.raw = TRUE,
-  ...
-)
-
-\method{recv_aio}{nanoContext}(
-  con,
-  mode = c("serial", "character", "complex", "double", "integer", "logical", "numeric",
-    "raw"),
-  timeout = NULL,
-  keep.raw = TRUE,
-  ...
-)
-
-\method{recv_aio}{nanoStream}(
-  con,
-  mode = c("character", "complex", "double", "integer", "logical", "numeric", "raw"),
-  timeout = NULL,
-  keep.raw = TRUE,
-  n = 65536L,
-  ...
 )
 }
 \arguments{
@@ -59,8 +28,6 @@ applies a socket-specific default, usually the same as no timeout.}
 \item{keep.raw}{[default TRUE] logical flag whether to keep the received raw
 vector (useful for verification e.g. via hashing). If FALSE, will return
 the converted data only.}
-
-\item{...}{not used.}
 
 \item{n}{[default 65536L] applicable to Streams only, the maximum number of
 bytes to receive. Can be an over-estimate, but note that a buffer of this

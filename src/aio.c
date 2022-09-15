@@ -172,32 +172,17 @@ SEXP rnng_aio_get_msg(SEXP aio, SEXP keep) {
     return mk_error(raio->result);
 
   const int mod = raio->mode, kpr = Rf_asLogical(keep);
-  unsigned char *buf = nng_msg_body(raio->data);
-  size_t sz = nng_msg_len(raio->data);
+  unsigned char *buf;
+  size_t sz;
 
-  return nano_decode(buf, sz, mod, kpr);
-
-}
-
-SEXP rnng_aio_stream_in(SEXP aio, SEXP keep) {
-
-  if (R_ExternalPtrTag(aio) != nano_AioSymbol)
-    Rf_error("object is not a valid Aio");
-  if (R_ExternalPtrAddr(aio) == NULL)
-    Rf_error("object is not an active Aio");
-
-  nano_aio *iaio = (nano_aio *) R_ExternalPtrAddr(aio);
-
-  if (nng_aio_busy(iaio->aio))
-    return R_MissingArg;
-
-  if (iaio->result)
-    return mk_error(iaio->result);
-
-  const int mod = iaio->mode, kpr = Rf_asLogical(keep);
-  nng_iov *iov = (nng_iov *) iaio->data;
-  unsigned char *buf = iov->iov_buf;
-  size_t sz = nng_aio_count(iaio->aio);
+  if (raio->type == IOV_RECVAIO) {
+    nng_iov *iov = (nng_iov *) raio->data;
+    buf = iov->iov_buf;
+    sz = nng_aio_count(raio->aio);
+  } else {
+    buf = nng_msg_body(raio->data);
+    sz = nng_msg_len(raio->data);
+  }
 
   return nano_decode(buf, sz, mod, kpr);
 
@@ -351,254 +336,233 @@ SEXP rnng_new_naio(SEXP aio, SEXP statusfun, SEXP headersfun, SEXP rawfun, SEXP 
 
 // send recv aio functions -----------------------------------------------------
 
-SEXP rnng_recv_aio(SEXP socket, SEXP mode, SEXP timeout) {
+SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout) {
 
-  if (R_ExternalPtrTag(socket) != nano_SocketSymbol)
-    Rf_error("'con' is not a valid Socket");
+  if (TYPEOF(con) != EXTPTRSXP)
+    Rf_error("'con' is not a valid Socket, Context or Stream");
 
-  nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(socket);
-  const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) Rf_asInteger(timeout);
-  nano_aio *raio = R_Calloc(1, nano_aio);
-  int xc;
   SEXP aio;
+  int xc;
 
-  raio->type = RECVAIO;
-  raio->mode = nano_matcharg(mode);
-  raio->data = NULL;
+  if (R_ExternalPtrTag(con) == nano_SocketSymbol) {
 
-  xc = nng_aio_alloc(&raio->aio, raio_complete, raio);
-  if (xc) {
-    R_Free(raio);
-    return mk_error(xc);
+    nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(con);
+    const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) Rf_asInteger(timeout);
+    nano_aio *saio = R_Calloc(1, nano_aio);
+    nng_msg *msg;
+
+    SEXP enc = nano_encodes(data, mode);
+    const R_xlen_t xlen = Rf_xlength(enc);
+    unsigned char *dp = RAW(enc);
+
+    saio->type = SENDAIO;
+
+    xc = nng_msg_alloc(&msg, 0);
+    if (xc) {
+      R_Free(saio);
+      return mk_error(xc);
+    }
+    xc = nng_msg_append(msg, dp, xlen);
+    if (xc) {
+      nng_msg_free(msg);
+      R_Free(saio);
+      return mk_error(xc);
+    }
+    xc = nng_aio_alloc(&saio->aio, saio_complete, saio);
+    if (xc) {
+      nng_msg_free(msg);
+      R_Free(saio);
+      return mk_error(xc);
+    }
+
+    nng_aio_set_msg(saio->aio, msg);
+    nng_aio_set_timeout(saio->aio, dur);
+    nng_send_aio(*sock, saio->aio);
+
+    PROTECT(aio = R_MakeExternalPtr(saio, nano_AioSymbol, R_NilValue));
+    R_RegisterCFinalizerEx(aio, saio_finalizer, TRUE);
+    UNPROTECT(1);
+
+  } else if (R_ExternalPtrTag(con) == nano_ContextSymbol) {
+
+    nng_ctx *ctxp = (nng_ctx *) R_ExternalPtrAddr(con);
+    const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) Rf_asInteger(timeout);
+    nano_aio *saio = R_Calloc(1, nano_aio);
+    nng_msg *msg;
+
+    SEXP enc = nano_encodes(data, mode);
+    const R_xlen_t xlen = Rf_xlength(enc);
+    unsigned char *dp = RAW(enc);
+
+    saio->type = SENDAIO;
+
+    xc = nng_msg_alloc(&msg, 0);
+    if (xc) {
+      R_Free(saio);
+      return mk_error(xc);
+    }
+
+    xc = nng_msg_append(msg, dp, xlen);
+    if (xc) {
+      nng_msg_free(msg);
+      R_Free(saio);
+      return mk_error(xc);
+    }
+    xc = nng_aio_alloc(&saio->aio, saio_complete, saio);
+    if (xc) {
+      nng_msg_free(msg);
+      R_Free(saio);
+      return mk_error(xc);
+    }
+
+    nng_aio_set_msg(saio->aio, msg);
+    nng_aio_set_timeout(saio->aio, dur);
+    nng_ctx_send(*ctxp, saio->aio);
+
+    PROTECT(aio = R_MakeExternalPtr(saio, nano_AioSymbol, R_NilValue));
+    R_RegisterCFinalizerEx(aio, saio_finalizer, TRUE);
+    UNPROTECT(1);
+
+  } else if (R_ExternalPtrTag(con) == nano_StreamSymbol) {
+
+    nng_stream *sp = (nng_stream *) R_ExternalPtrAddr(con);
+    const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) Rf_asInteger(timeout);
+    const int frames = LOGICAL(Rf_getAttrib(con, nano_TextframesSymbol))[0];
+    nano_aio *iaio = R_Calloc(1, nano_aio);
+    nng_iov *iov = R_Calloc(1, nng_iov);
+    SEXP enc = nano_encode(data);
+    const R_xlen_t xlen = Rf_xlength(enc);
+    unsigned char *dp = RAW(enc);
+
+    iaio->type = IOV_SENDAIO;
+    iaio->data = iov;
+    iov->iov_len = frames == 1 ? xlen - 1 : xlen;
+    iov->iov_buf = dp;
+
+    xc = nng_aio_alloc(&iaio->aio, iaio_complete, iaio);
+    if (xc) {
+      R_Free(iov);
+      R_Free(iaio);
+      return mk_error(xc);
+    }
+
+    xc = nng_aio_set_iov(iaio->aio, 1u, iov);
+    if (xc) {
+      nng_aio_free(iaio->aio);
+      R_Free(iov);
+      R_Free(iaio);
+      return mk_error(xc);
+    }
+
+    nng_aio_set_timeout(iaio->aio, dur);
+    nng_stream_send(sp, iaio->aio);
+
+    PROTECT(aio = R_MakeExternalPtr(iaio, nano_AioSymbol, R_NilValue));
+    R_RegisterCFinalizerEx(aio, isaio_finalizer, TRUE);
+    UNPROTECT(1);
+
+  } else {
+    Rf_error("'con' is not a valid Socket, Context or Stream");
   }
 
-  nng_aio_set_timeout(raio->aio, dur);
-  nng_recv_aio(*sock, raio->aio);
-
-  PROTECT(aio = R_MakeExternalPtr(raio, nano_AioSymbol, R_NilValue));
-  R_RegisterCFinalizerEx(aio, raio_finalizer, TRUE);
-
-  UNPROTECT(1);
   return aio;
 
 }
 
-SEXP rnng_ctx_recv_aio(SEXP context, SEXP mode, SEXP timeout) {
+SEXP rnng_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP bytes) {
 
-  if (R_ExternalPtrTag(context) != nano_ContextSymbol)
-    Rf_error("'con' is not a valid Context");
+  if (TYPEOF(con) != EXTPTRSXP)
+    Rf_error("'con' is not a valid Socket, Context or Stream");
 
-  nng_ctx *ctxp = (nng_ctx *) R_ExternalPtrAddr(context);
   const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) Rf_asInteger(timeout);
-  nano_aio *raio = R_Calloc(1, nano_aio);
-  int xc;
   SEXP aio;
-
-  raio->type = RECVAIO;
-  raio->mode = nano_matcharg(mode);
-  raio->data = NULL;
-
-  xc = nng_aio_alloc(&raio->aio, raio_complete, raio);
-  if (xc) {
-    R_Free(raio);
-    return mk_error(xc);
-  }
-
-  nng_aio_set_timeout(raio->aio, dur);
-  nng_ctx_recv(*ctxp, raio->aio);
-
-  PROTECT(aio = R_MakeExternalPtr(raio, nano_AioSymbol, R_NilValue));
-  R_RegisterCFinalizerEx(aio, raio_finalizer, TRUE);
-
-  UNPROTECT(1);
-  return aio;
-
-}
-
-SEXP rnng_stream_recv_aio(SEXP stream, SEXP mode, SEXP timeout, SEXP bytes) {
-
-  if (R_ExternalPtrTag(stream) != nano_StreamSymbol)
-    Rf_error("'con' is not a valid Stream");
-
-  nng_stream *sp = (nng_stream *) R_ExternalPtrAddr(stream);
-  const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) Rf_asInteger(timeout);
-  const size_t xlen = (size_t) Rf_asInteger(bytes);
-  nano_aio *iaio = R_Calloc(1, nano_aio);
-  nng_iov *iov = R_Calloc(1, nng_iov);
-  int xc;
-  SEXP aio;
-
-  iaio->type = IOV_RECVAIO;
-  iaio->mode = nano_matchargs(mode);
-  iaio->data = iov;
-  iov->iov_len = xlen;
-  iov->iov_buf = R_Calloc(xlen, unsigned char);
-
-  xc = nng_aio_alloc(&iaio->aio, iaio_complete, iaio);
-  if (xc) {
-    R_Free(iov->iov_buf);
-    R_Free(iov);
-    R_Free(iaio);
-    return mk_error(xc);
-  }
-
-  xc = nng_aio_set_iov(iaio->aio, 1u, iov);
-  if (xc) {
-    nng_aio_free(iaio->aio);
-    R_Free(iov->iov_buf);
-    R_Free(iov);
-    R_Free(iaio);
-    return mk_error(xc);
-  }
-
-  nng_aio_set_timeout(iaio->aio, dur);
-  nng_stream_recv(sp, iaio->aio);
-
-  PROTECT(aio = R_MakeExternalPtr(iaio, nano_AioSymbol, R_NilValue));
-  R_RegisterCFinalizerEx(aio, iraio_finalizer, TRUE);
-
-  UNPROTECT(1);
-  return aio;
-
-}
-
-SEXP rnng_send_aio(SEXP socket, SEXP data, SEXP mode, SEXP timeout) {
-
-  if (R_ExternalPtrTag(socket) != nano_SocketSymbol)
-    Rf_error("'con' is not a valid Socket");
-
-  nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(socket);
-  const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) Rf_asInteger(timeout);
-  nano_aio *saio = R_Calloc(1, nano_aio);
-  nng_msg *msg;
   int xc;
 
-  SEXP aio, enc = nano_encodes(data, mode);
-  const R_xlen_t xlen = Rf_xlength(enc);
-  unsigned char *dp = RAW(enc);
+  if (R_ExternalPtrTag(con) == nano_SocketSymbol) {
 
-  saio->type = SENDAIO;
+    nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(con);
+    nano_aio *raio = R_Calloc(1, nano_aio);
 
-  xc = nng_msg_alloc(&msg, 0);
-  if (xc) {
-    R_Free(saio);
-    return mk_error(xc);
-  }
-  xc = nng_msg_append(msg, dp, xlen);
-  if (xc) {
-    nng_msg_free(msg);
-    R_Free(saio);
-    return mk_error(xc);
-  }
-  xc = nng_aio_alloc(&saio->aio, saio_complete, saio);
-  if (xc) {
-    nng_msg_free(msg);
-    R_Free(saio);
-    return mk_error(xc);
-  }
+    raio->type = RECVAIO;
+    raio->mode = nano_matcharg(mode);
+    raio->data = NULL;
 
-  nng_aio_set_msg(saio->aio, msg);
-  nng_aio_set_timeout(saio->aio, dur);
-  nng_send_aio(*sock, saio->aio);
+    xc = nng_aio_alloc(&raio->aio, raio_complete, raio);
+    if (xc) {
+      R_Free(raio);
+      return mk_error(xc);
+    }
 
-  PROTECT(aio = R_MakeExternalPtr(saio, nano_AioSymbol, R_NilValue));
-  R_RegisterCFinalizerEx(aio, saio_finalizer, TRUE);
+    nng_aio_set_timeout(raio->aio, dur);
+    nng_recv_aio(*sock, raio->aio);
 
-  UNPROTECT(1);
-  return aio;
+    PROTECT(aio = R_MakeExternalPtr(raio, nano_AioSymbol, R_NilValue));
+    R_RegisterCFinalizerEx(aio, raio_finalizer, TRUE);
+    UNPROTECT(1);
 
-}
+  } else if (R_ExternalPtrTag(con) == nano_ContextSymbol) {
 
-SEXP rnng_ctx_send_aio(SEXP context, SEXP data, SEXP mode, SEXP timeout) {
+    nng_ctx *ctxp = (nng_ctx *) R_ExternalPtrAddr(con);
+    nano_aio *raio = R_Calloc(1, nano_aio);
 
-  if (R_ExternalPtrTag(context) != nano_ContextSymbol)
-    Rf_error("'con' is not a valid Context");
+    raio->type = RECVAIO;
+    raio->mode = nano_matcharg(mode);
+    raio->data = NULL;
 
-  nng_ctx *ctxp = (nng_ctx *) R_ExternalPtrAddr(context);
-  const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) Rf_asInteger(timeout);
-  nano_aio *saio = R_Calloc(1, nano_aio);
-  nng_msg *msg;
-  int xc;
+    xc = nng_aio_alloc(&raio->aio, raio_complete, raio);
+    if (xc) {
+      R_Free(raio);
+      return mk_error(xc);
+    }
 
-  SEXP aio, enc = nano_encodes(data, mode);
-  const R_xlen_t xlen = Rf_xlength(enc);
-  unsigned char *dp = RAW(enc);
+    nng_aio_set_timeout(raio->aio, dur);
+    nng_ctx_recv(*ctxp, raio->aio);
 
-  saio->type = SENDAIO;
+    PROTECT(aio = R_MakeExternalPtr(raio, nano_AioSymbol, R_NilValue));
+    R_RegisterCFinalizerEx(aio, raio_finalizer, TRUE);
+    UNPROTECT(1);
 
-  xc = nng_msg_alloc(&msg, 0);
-  if (xc) {
-    R_Free(saio);
-    return mk_error(xc);
-  }
+  } else if (R_ExternalPtrTag(con) == nano_StreamSymbol) {
 
-  xc = nng_msg_append(msg, dp, xlen);
-  if (xc) {
-    nng_msg_free(msg);
-    R_Free(saio);
-    return mk_error(xc);
-  }
-  xc = nng_aio_alloc(&saio->aio, saio_complete, saio);
-  if (xc) {
-    nng_msg_free(msg);
-    R_Free(saio);
-    return mk_error(xc);
-  }
+    nng_stream *sp = (nng_stream *) R_ExternalPtrAddr(con);
+    const size_t xlen = (size_t) Rf_asInteger(bytes);
+    nano_aio *iaio = R_Calloc(1, nano_aio);
+    nng_iov *iov = R_Calloc(1, nng_iov);
 
-  nng_aio_set_msg(saio->aio, msg);
-  nng_aio_set_timeout(saio->aio, dur);
-  nng_ctx_send(*ctxp, saio->aio);
+    iaio->type = IOV_RECVAIO;
+    iaio->mode = nano_matchargs(mode);
+    iaio->data = iov;
+    iov->iov_len = xlen;
+    iov->iov_buf = R_Calloc(xlen, unsigned char);
 
-  PROTECT(aio = R_MakeExternalPtr(saio, nano_AioSymbol, R_NilValue));
-  R_RegisterCFinalizerEx(aio, saio_finalizer, TRUE);
+    xc = nng_aio_alloc(&iaio->aio, iaio_complete, iaio);
+    if (xc) {
+      R_Free(iov->iov_buf);
+      R_Free(iov);
+      R_Free(iaio);
+      return mk_error(xc);
+    }
 
-  UNPROTECT(1);
-  return aio;
+    xc = nng_aio_set_iov(iaio->aio, 1u, iov);
+    if (xc) {
+      nng_aio_free(iaio->aio);
+      R_Free(iov->iov_buf);
+      R_Free(iov);
+      R_Free(iaio);
+      return mk_error(xc);
+    }
 
-}
+    nng_aio_set_timeout(iaio->aio, dur);
+    nng_stream_recv(sp, iaio->aio);
 
-SEXP rnng_stream_send_aio(SEXP stream, SEXP data, SEXP timeout) {
+    PROTECT(aio = R_MakeExternalPtr(iaio, nano_AioSymbol, R_NilValue));
+    R_RegisterCFinalizerEx(aio, iraio_finalizer, TRUE);
+    UNPROTECT(1);
 
-  if (R_ExternalPtrTag(stream) != nano_StreamSymbol)
-    Rf_error("'con' is not a valid Stream");
-
-  nng_stream *sp = (nng_stream *) R_ExternalPtrAddr(stream);
-  const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) Rf_asInteger(timeout);
-  const int frames = *LOGICAL(Rf_getAttrib(stream, nano_TextframesSymbol));
-  nano_aio *iaio = R_Calloc(1, nano_aio);
-  nng_iov *iov = R_Calloc(1, nng_iov);
-  int xc;
-  SEXP aio, enc = nano_encode(data);
-  const R_xlen_t xlen = Rf_xlength(enc);
-  unsigned char *dp = RAW(enc);
-
-  iaio->type = IOV_SENDAIO;
-  iaio->data = iov;
-  iov->iov_len = frames == 1 ? xlen - 1 : xlen;
-  iov->iov_buf = dp;
-
-  xc = nng_aio_alloc(&iaio->aio, iaio_complete, iaio);
-  if (xc) {
-    R_Free(iov);
-    R_Free(iaio);
-    return mk_error(xc);
+  } else {
+    Rf_error("'con' is not a valid Socket, Context or Stream");
   }
 
-  xc = nng_aio_set_iov(iaio->aio, 1u, iov);
-  if (xc) {
-    nng_aio_free(iaio->aio);
-    R_Free(iov);
-    R_Free(iaio);
-    return mk_error(xc);
-  }
-
-  nng_aio_set_timeout(iaio->aio, dur);
-  nng_stream_send(sp, iaio->aio);
-
-  PROTECT(aio = R_MakeExternalPtr(iaio, nano_AioSymbol, R_NilValue));
-  R_RegisterCFinalizerEx(aio, isaio_finalizer, TRUE);
-
-  UNPROTECT(1);
   return aio;
 
 }
