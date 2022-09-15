@@ -65,7 +65,7 @@
 <li>
 <code><a href="../reference/socket.html">socket()</a></code> and <code><a href="../reference/nano.html">nano()</a></code> now accept non-missing NULL ‘listen’ and ‘dial’ arguments, allowing easier programmatic use.</li>
 <li>
-<code><a href="../reference/send.html">send()</a></code> and <code><a href="../reference/recv.html">recv()</a></code> are no longer S3 generics for performance reasons.</li>
+<code><a href="../reference/send.html">send()</a></code>, <code><a href="../reference/recv.html">recv()</a></code>, <code><a href="../reference/send_aio.html">send_aio()</a></code> and <code><a href="../reference/recv_aio.html">recv_aio()</a></code> are no longer S3 generics for enhanced performance.</li>
 <li>Package now builds ‘libnng’ and ‘libmbedtls’ from source on Windows for R &gt;= 4.2 using the rtools42 toolchain. Pre-compiled libraries are still used for previous R versions.</li>
 <li>Minimum supported version of MbedTLS lowered to v2.5.0.</li>
 <li>Internal performance enhancements.</li>
