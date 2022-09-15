@@ -24,14 +24,15 @@
 #' @param data an object (a vector, if mode = 'raw').
 #' @param mode [default 'serial'] for sending serialised R objects, or 'raw' for
 #'     sending vectors of any type (converted to a raw byte vector for sending).
-#'     For Streams, 'raw' is the only option and any other value is ignored. Use
+#'     For Streams, 'raw' is the only option and this argument is ignored. Use
 #'     'serial' for perfect reproducibility within R, although 'raw' must be used
 #'     when interfacing with external applications that do not understand R
 #'     serialisation.
-#' @param block logical TRUE to block until successful or FALSE to return
-#'     immediately even if unsuccessful  (e.g. if no connection is available),
-#'     or else an integer value specifying the maximum time to block in
-#'     milliseconds, after which the operation will time out.
+#' @param block [default NULL] which applies the connection default (see section
+#'     'Blocking' below). Specify logical TRUE to block until successful or FALSE
+#'     to return immediately even if unsuccessful (e.g. if no connection is
+#'     available), or else an integer value specifying the maximum time to block
+#'     in milliseconds, after which the operation will time out.
 #' @param echo [default TRUE] logical TRUE to return the raw vector of sent data,
 #'     or FALSE to return an integer exit code (invisibly).
 #'
@@ -72,58 +73,15 @@
 #' close(req)
 #' close(rep)
 #'
-#' @rdname send
 #' @export
 #'
 send <- function(con,
                  data,
                  mode = c("serial", "raw"),
-                 block,
-                 echo = TRUE) UseMethod("send")
-
-#' @rdname send
-#' @method send nanoSocket
-#' @export
-#'
-send.nanoSocket <- function(con,
-                            data,
-                            mode = c("serial", "raw"),
-                            block = FALSE,
-                            echo = TRUE) {
+                 block = NULL,
+                 echo = TRUE) {
 
   res <- .Call(rnng_send, con, data, mode, block, echo)
-  echo && return(res)
-  invisible(res)
-
-}
-
-#' @rdname send
-#' @method send nanoContext
-#' @export
-#'
-send.nanoContext <- function(con,
-                             data,
-                             mode = c("serial", "raw"),
-                             block = TRUE,
-                             echo = TRUE) {
-
-  res <- .Call(rnng_ctx_send, con, data, mode, block, echo)
-  echo && return(res)
-  invisible(res)
-
-}
-
-#' @method send nanoStream
-#' @rdname send
-#' @export
-#'
-send.nanoStream <- function(con,
-                            data,
-                            mode = "raw",
-                            block = TRUE,
-                            echo = TRUE) {
-
-  res <- .Call(rnng_stream_send, con, data, block, echo)
   echo && return(res)
   invisible(res)
 
@@ -139,17 +97,13 @@ send.nanoStream <- function(con,
 #'     The default 'serial' means a serialised R object, for the other modes,
 #'     the raw vector received will be converted into the respective mode.
 #'     For Streams, 'serial' is not an option and the default is 'character'.
-#' @param block logical TRUE to block until successful or FALSE to return
-#'     immediately even if unsuccessful  (e.g. if no messages are available),
-#'     or else an integer value specifying the maximum time to block in
-#'     milliseconds, after which the operation will time out.
 #' @param keep.raw [default TRUE] logical flag whether to keep the received raw
 #'     vector (useful for verification e.g. via hashing). If FALSE, will return
 #'     the converted data only.
 #' @param n [default 65536L] applicable to Streams only, the maximum number of
 #'     bytes to receive. Can be an over-estimate, but note that a buffer of this
 #'     size is reserved.
-#' @param ... currently unused.
+#' @inheritParams send
 #'
 #' @return Named list of 2 elements: 'raw' containing the received raw vector
 #'     and 'data' containing the converted object, or else the converted object
@@ -208,48 +162,12 @@ send.nanoStream <- function(con,
 #' close(req)
 #' close(rep)
 #'
-#' @rdname recv
 #' @export
 #'
 recv <- function(con,
                  mode = c("serial", "character", "complex", "double",
                           "integer", "logical", "numeric", "raw"),
-                 block,
+                 block = NULL,
                  keep.raw = TRUE,
-                 ...,
-                 n = 65536L) UseMethod("recv")
-
-#' @rdname recv
-#' @method recv nanoSocket
-#' @export
-#'
-recv.nanoSocket <- function(con,
-                            mode = c("serial", "character", "complex", "double",
-                                     "integer", "logical", "numeric", "raw"),
-                            block = FALSE,
-                            keep.raw = TRUE,
-                            ...) .Call(rnng_recv, con, mode, block, keep.raw)
-
-#' @rdname recv
-#' @method recv nanoContext
-#' @export
-#'
-recv.nanoContext <- function(con,
-                             mode = c("serial", "character", "complex", "double",
-                                      "integer", "logical", "numeric", "raw"),
-                             block = TRUE,
-                             keep.raw = TRUE,
-                             ...) .Call(rnng_ctx_recv, con, mode, block, keep.raw)
-
-#' @rdname recv
-#' @method recv nanoStream
-#' @export
-#'
-recv.nanoStream <- function(con,
-                            mode = c("character", "complex", "double", "integer",
-                                     "logical", "numeric", "raw"),
-                            block = TRUE,
-                            keep.raw = TRUE,
-                            n = 65536L,
-                            ...) .Call(rnng_stream_recv, con, mode, block, keep.raw, n)
+                 n = 65536L) .Call(rnng_recv, con, mode, block, keep.raw, n)
 

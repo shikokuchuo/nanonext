@@ -131,11 +131,11 @@ reply <- function(context,
                   timeout = NULL,
                   ...) {
 
-  res <- .Call(rnng_ctx_recv, context, recv_mode, timeout, FALSE)
+  res <- .Call(rnng_recv, context, recv_mode, timeout, FALSE, NULL)
   is_error_value(res) && return(invisible(res))
-  on.exit(expr = send.nanoContext(context, as.raw(0L), mode = send_mode))
+  on.exit(expr = send(context, as.raw(0L), mode = send_mode))
   data <- execute(res, ...)
-  res <- .Call(rnng_ctx_send, context, data, send_mode, timeout, FALSE)
+  res <- .Call(rnng_send, context, data, send_mode, timeout, FALSE)
   on.exit()
   invisible(res)
 

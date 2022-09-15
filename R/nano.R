@@ -111,38 +111,38 @@ nano <- function(protocol = c("bus", "pair", "push", "pull", "pub", "sub",
   nano[["recv"]] <- function(mode = c("serial", "character", "complex", "double",
                                       "integer", "logical", "numeric", "raw"),
                              block = FALSE,
-                             keep.raw = TRUE) recv.nanoSocket(socket,
-                                                              mode = mode,
-                                                              block = block,
-                                                              keep.raw = keep.raw)
+                             keep.raw = TRUE) recv(socket,
+                                                   mode = mode,
+                                                   block = block,
+                                                   keep.raw = keep.raw)
   nano[["recv_aio"]] <- function(mode = c("serial", "character", "complex", "double",
                                           "integer", "logical", "numeric", "raw"),
                                  timeout = NULL,
-                                 keep.raw = TRUE) recv_aio.nanoSocket(socket,
-                                                                      mode = mode,
-                                                                      timeout = timeout,
-                                                                      keep.raw = keep.raw)
+                                 keep.raw = TRUE) recv_aio(socket,
+                                                           mode = mode,
+                                                           timeout = timeout,
+                                                           keep.raw = keep.raw)
   nano[["send"]] <- function(data,
                              mode = c("serial", "raw"),
                              block = FALSE,
-                             echo = TRUE) send.nanoSocket(socket,
-                                                          data = data,
-                                                          mode = mode,
-                                                          block = block,
-                                                          echo = echo)
+                             echo = TRUE) send(socket,
+                                               data = data,
+                                               mode = mode,
+                                               block = block,
+                                               echo = echo)
   nano[["send_aio"]] <- function(data,
                                  mode = c("serial", "raw"),
-                                 timeout = NULL) send_aio.nanoSocket(socket,
-                                                                     data = data,
-                                                                     mode = mode,
-                                                                     timeout = timeout)
+                                 timeout = NULL) send_aio(socket,
+                                                          data = data,
+                                                          mode = mode,
+                                                          timeout = timeout)
   nano[["socket_setopt"]] <- function(type = c("bool", "int", "ms", "size",
                                                "string", "uint64"),
                                       opt,
-                                      value) setopt.nanoSocket(socket,
-                                                               type = type,
-                                                               opt = opt,
-                                                               value = value)
+                                      value) setopt(socket,
+                                                    type = type,
+                                                    opt = opt,
+                                                    value = value)
 
   switch(protocol,
          req =,
@@ -344,3 +344,4 @@ print.errorValue <- function(x, ...) {
 #'
 .DollarNames.ncurlAio <- function(x, pattern = "") grep(pattern, c("status", "headers", "raw", "data"),
                                                         value = TRUE, fixed = TRUE)
+

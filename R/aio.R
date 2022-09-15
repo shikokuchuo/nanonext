@@ -139,6 +139,7 @@ send_aio.nanoStream <- function(con, data, mode = "raw", timeout = NULL) {
 #'
 #' @inheritParams recv
 #' @inheritParams send_aio
+#' @param ... not used.
 #'
 #' @return A 'recvAio' (object of class 'recvAio').
 #'

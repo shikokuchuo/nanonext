@@ -2,18 +2,9 @@
 % Please edit documentation in R/sendrecv.R
 \name{send}
 \alias{send}
-\alias{send.nanoSocket}
-\alias{send.nanoContext}
-\alias{send.nanoStream}
 \title{Send}
 \usage{
-send(con, data, mode = c("serial", "raw"), block, echo = TRUE)
-
-\method{send}{nanoSocket}(con, data, mode = c("serial", "raw"), block = FALSE, echo = TRUE)
-
-\method{send}{nanoContext}(con, data, mode = c("serial", "raw"), block = TRUE, echo = TRUE)
-
-\method{send}{nanoStream}(con, data, mode = "raw", block = TRUE, echo = TRUE)
+send(con, data, mode = c("serial", "raw"), block = NULL, echo = TRUE)
 }
 \arguments{
 \item{con}{a Socket, Context or Stream.}
@@ -22,15 +13,16 @@ send(con, data, mode = c("serial", "raw"), block, echo = TRUE)
 
 \item{mode}{[default 'serial'] for sending serialised R objects, or 'raw' for
 sending vectors of any type (converted to a raw byte vector for sending).
-For Streams, 'raw' is the only option and any other value is ignored. Use
+For Streams, 'raw' is the only option and this argument is ignored. Use
 'serial' for perfect reproducibility within R, although 'raw' must be used
 when interfacing with external applications that do not understand R
 serialisation.}
 
-\item{block}{logical TRUE to block until successful or FALSE to return
-immediately even if unsuccessful  (e.g. if no connection is available),
-or else an integer value specifying the maximum time to block in
-milliseconds, after which the operation will time out.}
+\item{block}{[default NULL] which applies the connection default (see section
+'Blocking' below). Specify logical TRUE to block until successful or FALSE
+to return immediately even if unsuccessful (e.g. if no connection is
+available), or else an integer value specifying the maximum time to block
+in milliseconds, after which the operation will time out.}
 
 \item{echo}{[default TRUE] logical TRUE to return the raw vector of sent data,
 or FALSE to return an integer exit code (invisibly).}

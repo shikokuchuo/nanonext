@@ -22,7 +22,7 @@ send_aio(con, data, mode = c("serial", "raw"), timeout = NULL)
 
 \item{mode}{[default 'serial'] for sending serialised R objects, or 'raw' for
 sending vectors of any type (converted to a raw byte vector for sending).
-For Streams, 'raw' is the only option and any other value is ignored. Use
+For Streams, 'raw' is the only option and this argument is ignored. Use
 'serial' for perfect reproducibility within R, although 'raw' must be used
 when interfacing with external applications that do not understand R
 serialisation.}

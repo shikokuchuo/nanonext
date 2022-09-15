@@ -387,7 +387,7 @@ aio
 #> < recvAio >
 #>  - $data for message data
 aio$data |> str()
-#>  num [1:100000000] -1.02 1.9 -1.06 1.48 -2.11 ...
+#>  num [1:100000000] -0.23 -1.239 0.776 -0.637 -0.104 ...
 ```
 
 As `call_aio()` is blocking and will wait for completion, an alternative
@@ -429,8 +429,7 @@ sub |> recv(mode = "character", keep.raw = FALSE)
 
 pub |> send(c("other", "this other topic will not be received"), mode = "raw", echo = FALSE)
 sub |> recv(mode = "character", keep.raw = FALSE)
-#> Warning in recv.nanoSocket(sub, mode = "character", keep.raw = FALSE): 8 | Try
-#> again
+#> Warning in recv(sub, mode = "character", keep.raw = FALSE): 8 | Try again
 #> 'errorValue' int 8
 
 # specify NULL to subscribe to ALL topics
@@ -442,7 +441,7 @@ sub |> recv("character", keep.raw = FALSE)
 sub |> unsubscribe(topic = NULL)
 pub |> send(c("newTopic", "this topic will now not be received"), mode = "raw", echo = FALSE)
 sub |> recv("character", keep.raw = FALSE)
-#> Warning in recv.nanoSocket(sub, "character", keep.raw = FALSE): 8 | Try again
+#> Warning in recv(sub, "character", keep.raw = FALSE): 8 | Try again
 #> 'errorValue' int 8
 
 # however the topics explicitly subscribed to are still received
@@ -546,11 +545,11 @@ ncurl("https://httpbin.org/headers")
 #>   [1] 7b 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73
 #>  [26] 74 22 3a 20 22 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22
 #>  [51] 58 2d 41 6d 7a 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31
-#>  [76] 2d 36 33 32 31 64 33 65 32 2d 31 62 66 39 35 36 61 63 31 30 66 62 66 37 61
-#> [101] 65 36 39 32 62 38 36 64 35 22 0a 20 20 7d 0a 7d 0a
+#>  [76] 2d 36 33 32 33 34 65 35 33 2d 35 34 32 39 30 62 36 31 34 62 61 32 66 61 36
+#> [101] 34 34 34 62 37 62 62 34 62 22 0a 20 20 7d 0a 7d 0a
 #> 
 #> $data
-#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6321d3e2-1bf956ac10fbf7ae692b86d5\"\n  }\n}\n"
+#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-63234e53-54290b614ba2fa6444b7bb4b\"\n  }\n}\n"
 ```
 
 For advanced use, supports additional HTTP methods such as POST or PUT.
@@ -569,13 +568,13 @@ res
 
 call_aio(res)$headers
 #> $Date
-#> [1] "Wed, 14 Sep 2022 13:15:15 GMT"
+#> [1] "Thu, 15 Sep 2022 16:09:55 GMT"
 #> 
 #> $Server
 #> [1] "gunicorn/19.9.0"
 
 res$data
-#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6321d3e3-4495f41061a6e4d8545dd415\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"79.173.129.2\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
+#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-63234e53-61983e160c0a75dd4be0f7dd\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"193.117.169.106\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
 ```
 
 In this respect, it may be used as a performant and lightweight method
@@ -618,10 +617,10 @@ s |> send('{"action": "subscribe", "symbols": "EURUSD"}')
 #> [26] 73 79 6d 62 6f 6c 73 22 3a 20 22 45 55 52 55 53 44 22 7d 00
 
 s |> recv(keep.raw = FALSE)
-#> [1] "{\"s\":\"EURUSD\",\"a\":1.00022,\"b\":1.0002,\"dc\":\"0.2419\",\"dd\":\"0.0024\",\"ppms\":false,\"t\":1663161316000}"
+#> [1] "{\"s\":\"EURUSD\",\"a\":0.99882,\"b\":0.9988,\"dc\":\"0.0631\",\"dd\":\"0.0006\",\"ppms\":false,\"t\":1663258198000}"
 
 s |> recv(keep.raw = FALSE)
-#> [1] "{\"s\":\"EURUSD\",\"a\":1.00025,\"b\":1.00017,\"dc\":\"0.2449\",\"dd\":\"0.0025\",\"ppms\":false,\"t\":1663161316000}"
+#> [1] "{\"s\":\"EURUSD\",\"a\":0.99885,\"b\":0.99883,\"dc\":\"0.0661\",\"dd\":\"0.0007\",\"ppms\":false,\"t\":1663258198000}"
 
 close(s)
 ```

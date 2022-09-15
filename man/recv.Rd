@@ -2,46 +2,15 @@
 % Please edit documentation in R/sendrecv.R
 \name{recv}
 \alias{recv}
-\alias{recv.nanoSocket}
-\alias{recv.nanoContext}
-\alias{recv.nanoStream}
 \title{Receive}
 \usage{
 recv(
   con,
   mode = c("serial", "character", "complex", "double", "integer", "logical", "numeric",
     "raw"),
-  block,
+  block = NULL,
   keep.raw = TRUE,
-  ...,
   n = 65536L
-)
-
-\method{recv}{nanoSocket}(
-  con,
-  mode = c("serial", "character", "complex", "double", "integer", "logical", "numeric",
-    "raw"),
-  block = FALSE,
-  keep.raw = TRUE,
-  ...
-)
-
-\method{recv}{nanoContext}(
-  con,
-  mode = c("serial", "character", "complex", "double", "integer", "logical", "numeric",
-    "raw"),
-  block = TRUE,
-  keep.raw = TRUE,
-  ...
-)
-
-\method{recv}{nanoStream}(
-  con,
-  mode = c("character", "complex", "double", "integer", "logical", "numeric", "raw"),
-  block = TRUE,
-  keep.raw = TRUE,
-  n = 65536L,
-  ...
 )
 }
 \arguments{
@@ -53,16 +22,15 @@ The default 'serial' means a serialised R object, for the other modes,
 the raw vector received will be converted into the respective mode.
 For Streams, 'serial' is not an option and the default is 'character'.}
 
-\item{block}{logical TRUE to block until successful or FALSE to return
-immediately even if unsuccessful  (e.g. if no messages are available),
-or else an integer value specifying the maximum time to block in
-milliseconds, after which the operation will time out.}
+\item{block}{[default NULL] which applies the connection default (see section
+'Blocking' below). Specify logical TRUE to block until successful or FALSE
+to return immediately even if unsuccessful (e.g. if no connection is
+available), or else an integer value specifying the maximum time to block
+in milliseconds, after which the operation will time out.}
 
 \item{keep.raw}{[default TRUE] logical flag whether to keep the received raw
 vector (useful for verification e.g. via hashing). If FALSE, will return
 the converted data only.}
-
-\item{...}{currently unused.}
 
 \item{n}{[default 65536L] applicable to Streams only, the maximum number of
 bytes to receive. Can be an over-estimate, but note that a buffer of this

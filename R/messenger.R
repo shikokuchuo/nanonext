@@ -80,7 +80,7 @@ messenger <- function(url, auth = NULL) {
     cat(sprintf("\r| peer offline: %s\n", format.POSIXct(Sys.time())), file = stderr())
   } else {
     cat(sprintf("\r| peer online: %s\n", format.POSIXct(Sys.time())), file = stderr())
-    r <- .Call(rnng_recv, sock, 5L, TRUE, FALSE)
+    r <- .Call(rnng_recv, sock, 5L, TRUE, FALSE, NULL)
     for (i in seq_len(24L)) {
       lock[r[i]] == r[i + 24L] || {
         cat("| authentication error\n", file = stderr())

@@ -60,7 +60,7 @@ applies a socket-specific default, usually the same as no timeout.}
 vector (useful for verification e.g. via hashing). If FALSE, will return
 the converted data only.}
 
-\item{...}{currently unused.}
+\item{...}{not used.}
 
 \item{n}{[default 65536L] applicable to Streams only, the maximum number of
 bytes to receive. Can be an over-estimate, but note that a buffer of this
