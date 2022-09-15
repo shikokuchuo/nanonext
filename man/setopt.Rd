@@ -2,12 +2,7 @@
 % Please edit documentation in R/opts.R
 \name{setopt}
 \alias{setopt}
-\alias{setopt.nanoSocket}
-\alias{setopt.nanoContext}
-\alias{setopt.nanoDialer}
-\alias{setopt.nanoListener}
-\alias{setopt.nanoStream}
-\title{Set Option on Socket, Context, Dialer, Listener or Stream}
+\title{Set Option on Socket, Context, Stream, Listener or Dialer}
 \usage{
 setopt(
   object,
@@ -15,44 +10,9 @@ setopt(
   opt,
   value
 )
-
-\method{setopt}{nanoSocket}(
-  object,
-  type = c("bool", "int", "ms", "size", "string", "uint64"),
-  opt,
-  value
-)
-
-\method{setopt}{nanoContext}(
-  object,
-  type = c("bool", "int", "ms", "size", "string", "uint64"),
-  opt,
-  value
-)
-
-\method{setopt}{nanoDialer}(
-  object,
-  type = c("bool", "int", "ms", "size", "string", "uint64"),
-  opt,
-  value
-)
-
-\method{setopt}{nanoListener}(
-  object,
-  type = c("bool", "int", "ms", "size", "string", "uint64"),
-  opt,
-  value
-)
-
-\method{setopt}{nanoStream}(
-  object,
-  type = c("bool", "int", "ms", "size", "string", "uint64"),
-  opt,
-  value
-)
 }
 \arguments{
-\item{object}{a Socket, Context, Listener, Dialer or Stream.}
+\item{object}{a Socket, Context, Stream, Listener or Dialer.}
 
 \item{type}{[default 'bool'] type of option - either 'bool', 'int', 'ms'
 (duration), 'size', 'string' or 'uint64'.}
@@ -66,7 +26,7 @@ See \link{opts}.}
 Invisibly, an integer exit code (zero on success).
 }
 \description{
-Set \link{opts} on a Socket, Context, Dialer, Listener or Stream.
+Set \link{opts} on a Socket, Context, Stream, Listener or Dialer.
 }
 \details{
 Note: once a dialer or listener has started, it is not generally

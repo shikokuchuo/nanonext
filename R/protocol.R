@@ -54,30 +54,9 @@
 #' close(pub)
 #' close(sub)
 #'
-#' @rdname subscribe
 #' @export
 #'
-subscribe <- function(con, topic = NULL) UseMethod("subscribe")
-
-#' @rdname subscribe
-#' @method subscribe nanoSocket
-#' @export
-#'
-subscribe.nanoSocket <- function(con, topic = NULL) {
-
-  invisible(.Call(rnng_socket_set, con, 0L, "sub:subscribe", topic))
-
-}
-
-#' @rdname subscribe
-#' @method subscribe nanoContext
-#' @export
-#'
-subscribe.nanoContext <- function(con, topic = NULL) {
-
-  invisible(.Call(rnng_ctx_set, con, 0L, "sub:subscribe", topic))
-
-}
+subscribe <- function(con, topic = NULL) invisible(.Call(rnng_set_opt, con, 0L, "sub:subscribe", topic))
 
 #' Unsubscribe Topic
 #'
@@ -121,30 +100,9 @@ subscribe.nanoContext <- function(con, topic = NULL) {
 #' close(pub)
 #' close(sub)
 #'
-#' @rdname unsubscribe
 #' @export
 #'
-unsubscribe <- function(con, topic = NULL) UseMethod("unsubscribe")
-
-#' @rdname unsubscribe
-#' @method unsubscribe nanoSocket
-#' @export
-#'
-unsubscribe.nanoSocket <- function(con, topic = NULL) {
-
-  invisible(.Call(rnng_socket_set, con, 0L, "sub:unsubscribe", topic))
-
-}
-
-#' @rdname unsubscribe
-#' @method unsubscribe nanoContext
-#' @export
-#'
-unsubscribe.nanoContext <- function(con, topic = NULL) {
-
-  invisible(.Call(rnng_ctx_set, con, 0L, "sub:unsubscribe", topic))
-
-}
+unsubscribe <- function(con, topic = NULL) invisible(.Call(rnng_set_opt, con, 0L, "sub:unsubscribe", topic))
 
 #' Set Survey Time
 #'
@@ -187,28 +145,7 @@ unsubscribe.nanoContext <- function(con, topic = NULL) {
 #' close(sur)
 #' close(res)
 #'
-#' @rdname survey_time
 #' @export
 #'
-survey_time <- function(con, time) UseMethod("survey_time")
-
-#' @rdname survey_time
-#' @method survey_time nanoSocket
-#' @export
-#'
-survey_time.nanoSocket <- function(con, time) {
-
-  invisible(.Call(rnng_socket_set, con, 3L, "surveyor:survey-time", time))
-
-}
-
-#' @rdname survey_time
-#' @method survey_time nanoContext
-#' @export
-#'
-survey_time.nanoContext <- function(con, time) {
-
-  invisible(.Call(rnng_ctx_set, con, 3L, "surveyor:survey-time", time))
-
-}
+survey_time <- function(con, time) invisible(.Call(rnng_set_opt, con, 3L, "surveyor:survey-time", time))
 

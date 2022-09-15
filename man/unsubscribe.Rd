@@ -2,15 +2,9 @@
 % Please edit documentation in R/protocol.R
 \name{unsubscribe}
 \alias{unsubscribe}
-\alias{unsubscribe.nanoSocket}
-\alias{unsubscribe.nanoContext}
 \title{Unsubscribe Topic}
 \usage{
 unsubscribe(con, topic = NULL)
-
-\method{unsubscribe}{nanoSocket}(con, topic = NULL)
-
-\method{unsubscribe}{nanoContext}(con, topic = NULL)
 }
 \arguments{
 \item{con}{a Socket or Context using the 'sub' protocol.}

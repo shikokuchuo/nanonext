@@ -2,15 +2,9 @@
 % Please edit documentation in R/protocol.R
 \name{survey_time}
 \alias{survey_time}
-\alias{survey_time.nanoSocket}
-\alias{survey_time.nanoContext}
 \title{Set Survey Time}
 \usage{
 survey_time(con, time)
-
-\method{survey_time}{nanoSocket}(con, time)
-
-\method{survey_time}{nanoContext}(con, time)
 }
 \arguments{
 \item{con}{a Socket or Context using the 'surveyor' protocol.}

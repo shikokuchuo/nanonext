@@ -2,15 +2,9 @@
 % Please edit documentation in R/protocol.R
 \name{subscribe}
 \alias{subscribe}
-\alias{subscribe.nanoSocket}
-\alias{subscribe.nanoContext}
 \title{Subscribe Topic}
 \usage{
 subscribe(con, topic = NULL)
-
-\method{subscribe}{nanoSocket}(con, topic = NULL)
-
-\method{subscribe}{nanoContext}(con, topic = NULL)
 }
 \arguments{
 \item{con}{a Socket or Context using the 'sub' protocol.}
