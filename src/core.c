@@ -152,10 +152,10 @@ SEXP rawOneString(unsigned char *bytes, R_xlen_t nbytes, R_xlen_t *np) {
 
 }
 
-SEXP rnng_matcharg(SEXP mode) {
+int nano_matcharg(SEXP mode) {
 
   if (TYPEOF(mode) == INTSXP)
-    return mode;
+    return INTEGER(mode)[0];
 
   const char *mod = CHAR(STRING_ELT(mode, 0));
   size_t slen = strlen(mod);
@@ -187,14 +187,14 @@ SEXP rnng_matcharg(SEXP mode) {
     Rf_error("'mode' should be one of serial, character, complex, double, integer, logical, numeric, raw");
   }
 
-  return Rf_ScalarInteger(xc);
+  return xc;
 
 }
 
-SEXP rnng_matchargs(SEXP mode) {
+int nano_matchargs(SEXP mode) {
 
   if (TYPEOF(mode) == INTSXP)
-    return mode;
+    return INTEGER(mode)[0];
 
   const char *mod;
   if (Rf_xlength(mode) == 8) {
@@ -231,7 +231,7 @@ SEXP rnng_matchargs(SEXP mode) {
     Rf_error("'mode' should be one of character, complex, double, integer, logical, numeric, raw");
   }
 
-  return Rf_ScalarInteger(xc);
+  return xc;
 
 }
 
@@ -930,8 +930,7 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP keep, SEXP bytes) {
   if (R_ExternalPtrTag(con) == nano_SocketSymbol) {
 
     nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(con);
-    mode = rnng_matcharg(mode);
-    const int mod = INTEGER(mode)[0], kpr = LOGICAL(keep)[0];
+    const int mod = nano_matcharg(mode), kpr = LOGICAL(keep)[0];
     nng_aio *aiop;
 
     if (block == R_NilValue) {
@@ -975,10 +974,9 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP keep, SEXP bytes) {
   } else if (R_ExternalPtrTag(con) == nano_ContextSymbol) {
 
     nng_ctx *ctxp = (nng_ctx *) R_ExternalPtrAddr(con);
+    const int mod = nano_matcharg(mode), kpr = LOGICAL(keep)[0];
     nng_aio *aiop;
     nng_duration dur;
-    mode = rnng_matcharg(mode);
-    const int mod = INTEGER(mode)[0], kpr = LOGICAL(keep)[0];
 
     if (block == R_NilValue) {
       dur = NNG_DURATION_DEFAULT;
@@ -1011,9 +1009,7 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP keep, SEXP bytes) {
   } else if (R_ExternalPtrTag(con) == nano_StreamSymbol) {
 
     nng_stream *sp = (nng_stream *) R_ExternalPtrAddr(con);
-
-    mode = rnng_matchargs(mode);
-    const int mod = INTEGER(mode)[0], kpr = LOGICAL(keep)[0];
+    const int mod = nano_matchargs(mode), kpr = LOGICAL(keep)[0];
     const size_t xlen = (size_t) Rf_asInteger(bytes);
     nng_duration dur;
     nng_iov iov;

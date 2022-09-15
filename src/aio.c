@@ -33,8 +33,9 @@ typedef enum nano_aio_typ {
 typedef struct nano_aio_s {
   nng_aio *aio;
   nano_aio_typ type;
-  void *data;
+  int mode;
   int result;
+  void *data;
 } nano_aio;
 
 typedef struct nano_handle_s {
@@ -155,7 +156,7 @@ SEXP rnng_aio_result(SEXP aio) {
 
 }
 
-SEXP rnng_aio_get_msg(SEXP aio, SEXP mode, SEXP keep) {
+SEXP rnng_aio_get_msg(SEXP aio, SEXP keep) {
 
   if (R_ExternalPtrTag(aio) != nano_AioSymbol)
     Rf_error("object is not a valid Aio");
@@ -170,7 +171,7 @@ SEXP rnng_aio_get_msg(SEXP aio, SEXP mode, SEXP keep) {
   if (raio->result)
     return mk_error(raio->result);
 
-  const int mod = INTEGER(mode)[0], kpr = Rf_asLogical(keep);
+  const int mod = raio->mode, kpr = Rf_asLogical(keep);
   unsigned char *buf = nng_msg_body(raio->data);
   size_t sz = nng_msg_len(raio->data);
 
@@ -178,7 +179,7 @@ SEXP rnng_aio_get_msg(SEXP aio, SEXP mode, SEXP keep) {
 
 }
 
-SEXP rnng_aio_stream_in(SEXP aio, SEXP mode, SEXP keep) {
+SEXP rnng_aio_stream_in(SEXP aio, SEXP keep) {
 
   if (R_ExternalPtrTag(aio) != nano_AioSymbol)
     Rf_error("object is not a valid Aio");
@@ -193,7 +194,7 @@ SEXP rnng_aio_stream_in(SEXP aio, SEXP mode, SEXP keep) {
   if (iaio->result)
     return mk_error(iaio->result);
 
-  const int mod = INTEGER(mode)[0], kpr = Rf_asLogical(keep);
+  const int mod = iaio->mode, kpr = Rf_asLogical(keep);
   nng_iov *iov = (nng_iov *) iaio->data;
   unsigned char *buf = iov->iov_buf;
   size_t sz = nng_aio_count(iaio->aio);
@@ -350,7 +351,7 @@ SEXP rnng_new_naio(SEXP aio, SEXP statusfun, SEXP headersfun, SEXP rawfun, SEXP 
 
 // send recv aio functions -----------------------------------------------------
 
-SEXP rnng_recv_aio(SEXP socket, SEXP timeout) {
+SEXP rnng_recv_aio(SEXP socket, SEXP mode, SEXP timeout) {
 
   if (R_ExternalPtrTag(socket) != nano_SocketSymbol)
     Rf_error("'con' is not a valid Socket");
@@ -362,6 +363,7 @@ SEXP rnng_recv_aio(SEXP socket, SEXP timeout) {
   SEXP aio;
 
   raio->type = RECVAIO;
+  raio->mode = nano_matcharg(mode);
   raio->data = NULL;
 
   xc = nng_aio_alloc(&raio->aio, raio_complete, raio);
@@ -381,7 +383,7 @@ SEXP rnng_recv_aio(SEXP socket, SEXP timeout) {
 
 }
 
-SEXP rnng_ctx_recv_aio(SEXP context, SEXP timeout) {
+SEXP rnng_ctx_recv_aio(SEXP context, SEXP mode, SEXP timeout) {
 
   if (R_ExternalPtrTag(context) != nano_ContextSymbol)
     Rf_error("'con' is not a valid Context");
@@ -393,6 +395,7 @@ SEXP rnng_ctx_recv_aio(SEXP context, SEXP timeout) {
   SEXP aio;
 
   raio->type = RECVAIO;
+  raio->mode = nano_matcharg(mode);
   raio->data = NULL;
 
   xc = nng_aio_alloc(&raio->aio, raio_complete, raio);
@@ -412,7 +415,7 @@ SEXP rnng_ctx_recv_aio(SEXP context, SEXP timeout) {
 
 }
 
-SEXP rnng_stream_recv_aio(SEXP stream, SEXP bytes, SEXP timeout) {
+SEXP rnng_stream_recv_aio(SEXP stream, SEXP mode, SEXP timeout, SEXP bytes) {
 
   if (R_ExternalPtrTag(stream) != nano_StreamSymbol)
     Rf_error("'con' is not a valid Stream");
@@ -426,6 +429,7 @@ SEXP rnng_stream_recv_aio(SEXP stream, SEXP bytes, SEXP timeout) {
   SEXP aio;
 
   iaio->type = IOV_RECVAIO;
+  iaio->mode = nano_matchargs(mode);
   iaio->data = iov;
   iov->iov_len = xlen;
   iov->iov_buf = R_Calloc(xlen, unsigned char);

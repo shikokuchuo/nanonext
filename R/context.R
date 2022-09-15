@@ -196,19 +196,17 @@ request <- function(context,
                     timeout = NULL,
                     keep.raw = TRUE) {
 
-  recv_mode <- .Call(rnng_matcharg, recv_mode)
   res <- .Call(rnng_ctx_send_aio, context, data, send_mode, NULL)
   is.integer(res) && return(res)
 
-  aio <- .Call(rnng_ctx_recv_aio, context, timeout)
+  aio <- .Call(rnng_ctx_recv_aio, context, recv_mode, timeout)
   is_error_value(aio) && return(aio)
 
-  keep.raw <- missing(keep.raw) || isTRUE(keep.raw)
   data <- raw <- NULL
   unresolv <- TRUE
   env <- .Call(rnng_new_raio, aio, keep.raw, function(x) {
     if (unresolv) {
-      res <- .Call(rnng_aio_get_msg, aio, recv_mode, keep.raw)
+      res <- .Call(rnng_aio_get_msg, aio, keep.raw)
       missing(res) && return(.__unresolvedValue__.)
       if (is_error_value(res)) {
         data <<- raw <<- res
@@ -222,7 +220,7 @@ request <- function(context,
     raw
   }, function(x) {
     if (unresolv) {
-      res <- .Call(rnng_aio_get_msg, aio, recv_mode, keep.raw)
+      res <- .Call(rnng_aio_get_msg, aio, keep.raw)
       missing(res) && return(.__unresolvedValue__.)
       if (is_error_value(res)) {
         data <<- raw <<- res
