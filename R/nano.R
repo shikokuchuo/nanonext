@@ -274,7 +274,7 @@ print.sendAio <- function(x, ...) {
 #'
 print.ncurlAio <- function(x, ...) {
 
-  cat("< ncurlAio >\n - $status for response status code\n - $headers for requested response headers\n - $raw for raw message\n - $data for message data\n", file = stdout())
+  cat("< ncurlAio >\n - $status for response status code\n - $headers for response headers\n - $raw for raw message\n - $data for message data\n", file = stdout())
   invisible(x)
 
 }

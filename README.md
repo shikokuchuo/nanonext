@@ -387,7 +387,7 @@ aio
 #> < recvAio >
 #>  - $data for message data
 aio$data |> str()
-#>  num [1:100000000] 0.188 1.172 0.532 0.855 1.007 ...
+#>  num [1:100000000] 0.537 -0.369 -0.808 -0.853 -2.007 ...
 ```
 
 As `call_aio()` is blocking and will wait for completion, an alternative
@@ -545,36 +545,38 @@ ncurl("https://httpbin.org/headers")
 #>   [1] 7b 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73
 #>  [26] 74 22 3a 20 22 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22
 #>  [51] 58 2d 41 6d 7a 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31
-#>  [76] 2d 36 33 32 34 38 31 62 32 2d 32 38 66 35 34 32 64 64 37 31 35 36 64 38 30
-#> [101] 31 36 38 37 62 62 34 61 61 22 0a 20 20 7d 0a 7d 0a
+#>  [76] 2d 36 33 32 34 61 36 30 63 2d 30 66 39 38 36 63 38 38 32 63 33 31 38 65 61
+#> [101] 63 37 31 31 38 30 62 35 65 22 0a 20 20 7d 0a 7d 0a
 #> 
 #> $data
-#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-632481b2-28f542dd7156d801687bb4aa\"\n  }\n}\n"
+#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6324a60c-0f986c882c318eac71180b5e\"\n  }\n}\n"
 ```
 
 For advanced use, supports additional HTTP methods such as POST or PUT.
 
 ``` r
-res <- ncurl("http://httpbin.org/post", async = TRUE, method = "POST",
+res <- ncurl("http://httpbin.org/post",
+             async = TRUE,
+             method = "POST",
              headers = c(`Content-Type` = "application/json", Authorization = "Bearer APIKEY"),
              data = '{"key": "value"}',
-             request = c("Date", "Server"))
+             response = c("Date", "Server"))
 res
 #> < ncurlAio >
 #>  - $status for response status code
-#>  - $headers for requested response headers
+#>  - $headers for response headers
 #>  - $raw for raw message
 #>  - $data for message data
 
 call_aio(res)$headers
 #> $Date
-#> [1] "Fri, 16 Sep 2022 14:01:23 GMT"
+#> [1] "Fri, 16 Sep 2022 16:36:29 GMT"
 #> 
 #> $Server
 #> [1] "gunicorn/19.9.0"
 
 res$data
-#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-632481b3-766979f85bcb39fc23c6c661\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"185.225.45.49\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
+#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6324a60d-3631d6206dee4992051b427a\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"185.225.45.49\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
 ```
 
 In this respect, it may be used as a performant and lightweight method
@@ -617,10 +619,10 @@ s |> send('{"action": "subscribe", "symbols": "EURUSD"}')
 #> [26] 73 79 6d 62 6f 6c 73 22 3a 20 22 45 55 52 55 53 44 22 7d 00
 
 s |> recv(keep.raw = FALSE)
-#> [1] "{\"s\":\"EURUSD\",\"a\":0.9979,\"b\":0.99783,\"dc\":\"-0.0832\",\"dd\":\"-0.0008\",\"ppms\":false,\"t\":1663336884000}"
+#> [1] "{\"s\":\"EURUSD\",\"a\":1.00055,\"b\":1.00048,\"dc\":\"0.1819\",\"dd\":\"0.0018\",\"ppms\":false,\"t\":1663346191000}"
 
 s |> recv(keep.raw = FALSE)
-#> [1] "{\"s\":\"EURUSD\",\"a\":0.99788,\"b\":0.99781,\"dc\":\"-0.0852\",\"dd\":\"-0.0009\",\"ppms\":false,\"t\":1663336884000}"
+#> [1] "{\"s\":\"EURUSD\",\"a\":1.00056,\"b\":1.00049,\"dc\":\"0.1829\",\"dd\":\"0.0018\",\"ppms\":false,\"t\":1663346191000}"
 
 close(s)
 ```

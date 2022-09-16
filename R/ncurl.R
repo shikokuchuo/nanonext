@@ -29,8 +29,8 @@
 #'     HTTP request headers e.g. \code{list(`Content-Type` = "text/plain")} or
 #'     \code{c(Authorization = "Bearer APIKEY")}.
 #' @param data (optional) the request data to be submitted.
-#' @param request (optional) a character vector or list specifying the response
-#'     headers to request e.g. \code{c("date", "server")} or \code{list("Date", "Server")}.
+#' @param response (optional) a character vector or list specifying the response
+#'     headers to return e.g. \code{c("date", "server")} or \code{list("Date", "Server")}.
 #'     These are case-insensitive and will return NULL if not present.
 #' @param pem (optional) applicable to secure HTTPS sites only. The path to a
 #'     file containing X.509 certificate(s) in PEM format, comprising the
@@ -41,7 +41,7 @@
 #'     \itemize{
 #'     \item{\code{$status}} {- integer HTTP repsonse status code (200 - OK).}
 #'     \item{\code{$headers}} {- named list of response headers supplied in
-#'     'request' or NULL if unspecified.}
+#'     'response' or NULL if unspecified.}
 #'     \item{\code{$raw}} {- raw vector of the received resource (use
 #'     \code{\link{writeBin}} to save to a file).}
 #'     \item{\code{$data}} {- converted character string (if \code{'convert' = TRUE}
@@ -63,7 +63,7 @@
 #'     string at \code{$raw} and \code{$data} will be NULL.
 #'
 #' @examples
-#' ncurl("https://httpbin.org/get", request = c("date", "server"))
+#' ncurl("https://httpbin.org/get", response = c("date", "server"))
 #' ncurl("http://httpbin.org/put",,,"PUT", list(Authorization = "Bearer APIKEY"), "hello world")
 #' ncurl("http://httpbin.org/post",,,"POST", c(`Content-Type` = "application/json"),'{"k":"v"}')
 #'
@@ -75,7 +75,7 @@ ncurl <- function(url,
                   method = NULL,
                   headers = NULL,
                   data = NULL,
-                  request = NULL,
+                  response = NULL,
                   pem = NULL) {
 
   if (async) {
@@ -83,12 +83,12 @@ ncurl <- function(url,
     aio <- .Call(rnng_ncurl_aio, url, convert, method, headers, data, pem)
     is.integer(aio) && return(aio)
 
-    request
+    response
     status <- headers <- raw <- data <- NULL
     unresolv <- TRUE
     env <- .Call(rnng_new_naio, aio, function(x) {
       if (unresolv) {
-        res <- .Call(rnng_aio_http, aio, request)
+        res <- .Call(rnng_aio_http, aio, response)
         missing(res) && return(.__unresolvedValue__.)
         if (is.integer(res)) {
           data <<- raw <<- res
@@ -104,7 +104,7 @@ ncurl <- function(url,
       status
     }, function(x) {
       if (unresolv) {
-        res <- .Call(rnng_aio_http, aio, request)
+        res <- .Call(rnng_aio_http, aio, response)
         missing(res) && return(.__unresolvedValue__.)
         if (is.integer(res)) {
           data <<- raw <<- res
@@ -120,7 +120,7 @@ ncurl <- function(url,
       headers
     }, function(x) {
       if (unresolv) {
-        res <- .Call(rnng_aio_http, aio, request)
+        res <- .Call(rnng_aio_http, aio, response)
         missing(res) && return(.__unresolvedValue__.)
         if (is.integer(res)) {
           data <<- raw <<- res
@@ -136,7 +136,7 @@ ncurl <- function(url,
       raw
     }, function(x) {
       if (unresolv) {
-        res <- .Call(rnng_aio_http, aio, request)
+        res <- .Call(rnng_aio_http, aio, response)
         missing(res) && return(.__unresolvedValue__.)
         if (is.integer(res)) {
           data <<- raw <<- res
@@ -154,7 +154,7 @@ ncurl <- function(url,
 
   } else {
 
-    env <- .Call(rnng_ncurl, url, convert, method, headers, data, request, pem)
+    env <- .Call(rnng_ncurl, url, convert, method, headers, data, response, pem)
     is.character(env) && {
       continue <- if (interactive()) readline(sprintf("Follow redirect to <%s>? [Y/n] ", env)) else "n"
       continue %in% c("n", "N", "no", "NO") && return(env)

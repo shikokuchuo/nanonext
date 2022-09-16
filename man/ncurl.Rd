@@ -11,7 +11,7 @@ ncurl(
   method = NULL,
   headers = NULL,
   data = NULL,
-  request = NULL,
+  response = NULL,
   pem = NULL
 )
 }
@@ -31,8 +31,8 @@ HTTP request headers e.g. \code{list(`Content-Type` = "text/plain")} or
 
 \item{data}{(optional) the request data to be submitted.}
 
-\item{request}{(optional) a character vector or list specifying the response
-headers to request e.g. \code{c("date", "server")} or \code{list("Date", "Server")}.
+\item{response}{(optional) a character vector or list specifying the response
+headers to return e.g. \code{c("date", "server")} or \code{list("Date", "Server")}.
 These are case-insensitive and will return NULL if not present.}
 
 \item{pem}{(optional) applicable to secure HTTPS sites only. The path to a
@@ -45,7 +45,7 @@ Named list of 4 elements:
     \itemize{
     \item{\code{$status}} {- integer HTTP repsonse status code (200 - OK).}
     \item{\code{$headers}} {- named list of response headers supplied in
-    'request' or NULL if unspecified.}
+    'response' or NULL if unspecified.}
     \item{\code{$raw}} {- raw vector of the received resource (use
     \code{\link{writeBin}} to save to a file).}
     \item{\code{$data}} {- converted character string (if \code{'convert' = TRUE}
@@ -72,7 +72,7 @@ nano cURL - a minimalist http(s) client.
 }
 
 \examples{
-ncurl("https://httpbin.org/get", request = c("date", "server"))
+ncurl("https://httpbin.org/get", response = c("date", "server"))
 ncurl("http://httpbin.org/put",,,"PUT", list(Authorization = "Bearer APIKEY"), "hello world")
 ncurl("http://httpbin.org/post",,,"POST", c(`Content-Type` = "application/json"),'{"k":"v"}')
 

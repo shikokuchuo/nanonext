@@ -1,4 +1,4 @@
-# nanonext 0.5.5.9005 (development)
+# nanonext 0.5.5.9006 (to be 0.6.0)
 
 #### New Features
 
@@ -7,12 +7,12 @@
 #### Updates
 
 * `sha224()`, `sha256()`, `sha384()` and `sha512()` functions now take character vectors by serialising them rather than only taking the first element, whilst also being faster for character scalars. These functions also gain an argument 'convert' to control whether to return a raw vector or character string, instead of returning 'nanoHash' objects.
+* `ncurl()` argument 'request' renamed to 'response' for specifying response headers to return (to avoid confusion).
 * `socket()` and `nano()` now accept non-missing NULL 'listen' and 'dial' arguments, allowing easier programmatic use.
-* Core functions `send()`, `recv()`, `send_aio()` and `recv_aio()` are no longer S3 generics for enhanced performance.
-* Options setters `setopt()`, `subscribe()`, `unsubscribe()` and `survey_time()` are no longer S3 generics for enhanced performance.
-* Package now builds 'libnng' and 'libmbedtls' from source on Windows for R >= 4.2 using the rtools42 toolchain. Pre-compiled libraries are still used for previous R versions.
-* Minimum supported version of MbedTLS lowered to v2.5.0.
+* Functions `send()`, `recv()`, `send_aio()`, `recv_aio()`, `setopt()`, `subscribe()`, `unsubscribe()` and `survey_time()` are no longer S3 generics for enhanced performance.
+* Now possibe to build 'libnng' and 'libmbedtls' from source on Windows for R >= 4.2 using the rtools42 toolchain, falling back to pre-compiled libraries for old R releases.
 * Minimum supported R version increased to v3.6.0.
+* Minimum supported version of MbedTLS lowered to v2.5.0.
 * Internal performance enhancements.
 
 # nanonext 0.5.5

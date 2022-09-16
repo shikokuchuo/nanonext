@@ -162,7 +162,7 @@ SEXP rnng_matchwarn(SEXP warn) {
 // ncurl - minimalist http client ----------------------------------------------
 
 SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP data,
-                SEXP request, SEXP pem) {
+                SEXP response, SEXP pem) {
 
   nng_url *url;
   nng_http_client *client;
@@ -271,23 +271,23 @@ SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP data,
 
   SET_VECTOR_ELT(out, 0, Rf_ScalarInteger(code));
 
-  if (request != R_NilValue) {
-    const R_xlen_t rlen = Rf_xlength(request);
+  if (response != R_NilValue) {
+    const R_xlen_t rlen = Rf_xlength(response);
     PROTECT(rvec = Rf_allocVector(VECSXP, rlen));
     SEXP rnames;
 
-    switch (TYPEOF(request)) {
+    switch (TYPEOF(response)) {
     case STRSXP:
       for (R_xlen_t i = 0; i < rlen; i++) {
-        const char *r = nng_http_res_get_header(res, CHAR(STRING_ELT(request, i)));
+        const char *r = nng_http_res_get_header(res, CHAR(STRING_ELT(response, i)));
         SET_VECTOR_ELT(rvec, i, r == NULL ? R_NilValue : Rf_mkString(r));
       }
-      Rf_namesgets(rvec, request);
+      Rf_namesgets(rvec, response);
       break;
     case VECSXP:
       PROTECT(rnames = Rf_allocVector(STRSXP, rlen));
       for (R_xlen_t i = 0; i < rlen; i++) {
-        SEXP rname = STRING_ELT(VECTOR_ELT(request, i), 0);
+        SEXP rname = STRING_ELT(VECTOR_ELT(response, i), 0);
         SET_STRING_ELT(rnames, i, rname);
         const char *r = nng_http_res_get_header(res, CHAR(rname));
         SET_VECTOR_ELT(rvec, i, r == NULL ? R_NilValue : Rf_mkString(r));

@@ -426,10 +426,12 @@ ncurl("https://httpbin.org/headers")
 For advanced use, supports additional HTTP methods such as POST or PUT.
 
 ```{r ncurladv}
-res <- ncurl("http://httpbin.org/post", async = TRUE, method = "POST",
+res <- ncurl("http://httpbin.org/post",
+             async = TRUE,
+             method = "POST",
              headers = c(`Content-Type` = "application/json", Authorization = "Bearer APIKEY"),
              data = '{"key": "value"}',
-             request = c("Date", "Server"))
+             response = c("Date", "Server"))
 res
 
 call_aio(res)$headers

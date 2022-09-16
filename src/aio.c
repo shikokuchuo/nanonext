@@ -675,7 +675,7 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP dat
 
 }
 
-SEXP rnng_aio_http(SEXP aio, SEXP request) {
+SEXP rnng_aio_http(SEXP aio, SEXP response) {
 
   if (R_ExternalPtrTag(aio) != nano_AioSymbol)
     Rf_error("object is not a valid Aio");
@@ -714,23 +714,23 @@ SEXP rnng_aio_http(SEXP aio, SEXP request) {
   PROTECT(out = Rf_allocVector(VECSXP, 4));
   SET_VECTOR_ELT(out, 0, Rf_ScalarInteger(code));
 
-  if (request != R_NilValue) {
-    const R_xlen_t rlen = Rf_xlength(request);
+  if (response != R_NilValue) {
+    const R_xlen_t rlen = Rf_xlength(response);
     PROTECT(rvec = Rf_allocVector(VECSXP, rlen));
     SEXP rnames;
 
-    switch (TYPEOF(request)) {
+    switch (TYPEOF(response)) {
     case STRSXP:
       for (R_xlen_t i = 0; i < rlen; i++) {
-        const char *r = nng_http_res_get_header(handle->res, CHAR(STRING_ELT(request, i)));
+        const char *r = nng_http_res_get_header(handle->res, CHAR(STRING_ELT(response, i)));
         SET_VECTOR_ELT(rvec, i, r == NULL ? R_NilValue : Rf_mkString(r));
       }
-      Rf_namesgets(rvec, request);
+      Rf_namesgets(rvec, response);
       break;
     case VECSXP:
       PROTECT(rnames = Rf_allocVector(STRSXP, rlen));
       for (R_xlen_t i = 0; i < rlen; i++) {
-        SEXP rname = STRING_ELT(VECTOR_ELT(request, i), 0);
+        SEXP rname = STRING_ELT(VECTOR_ELT(response, i), 0);
         SET_STRING_ELT(rnames, i, rname);
         const char *r = nng_http_res_get_header(handle->res, CHAR(rname));
         SET_VECTOR_ELT(rvec, i, r == NULL ? R_NilValue : Rf_mkString(r));
