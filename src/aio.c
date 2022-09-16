@@ -338,13 +338,11 @@ SEXP rnng_new_naio(SEXP aio, SEXP statusfun, SEXP headersfun, SEXP rawfun, SEXP 
 
 SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout) {
 
-  if (TYPEOF(con) != EXTPTRSXP)
-    Rf_error("'con' is not a valid Socket, Context or Stream");
-
   SEXP aio;
   int xc;
 
-  if (R_ExternalPtrTag(con) == nano_SocketSymbol) {
+  SEXP ptrtag = R_ExternalPtrTag(con);
+  if (ptrtag == nano_SocketSymbol) {
 
     nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(con);
     const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) Rf_asInteger(timeout);
@@ -383,7 +381,7 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout) {
     R_RegisterCFinalizerEx(aio, saio_finalizer, TRUE);
     UNPROTECT(1);
 
-  } else if (R_ExternalPtrTag(con) == nano_ContextSymbol) {
+  } else if (ptrtag == nano_ContextSymbol) {
 
     nng_ctx *ctxp = (nng_ctx *) R_ExternalPtrAddr(con);
     const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) Rf_asInteger(timeout);
@@ -423,7 +421,7 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout) {
     R_RegisterCFinalizerEx(aio, saio_finalizer, TRUE);
     UNPROTECT(1);
 
-  } else if (R_ExternalPtrTag(con) == nano_StreamSymbol) {
+  } else if (ptrtag == nano_StreamSymbol) {
 
     nng_stream *sp = (nng_stream *) R_ExternalPtrAddr(con);
     const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) Rf_asInteger(timeout);
@@ -471,14 +469,12 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout) {
 
 SEXP rnng_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP bytes) {
 
-  if (TYPEOF(con) != EXTPTRSXP)
-    Rf_error("'con' is not a valid Socket, Context or Stream");
-
   const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) Rf_asInteger(timeout);
   SEXP aio;
   int xc;
 
-  if (R_ExternalPtrTag(con) == nano_SocketSymbol) {
+  SEXP ptrtag = R_ExternalPtrTag(con);
+  if (ptrtag == nano_SocketSymbol) {
 
     nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(con);
     nano_aio *raio = R_Calloc(1, nano_aio);
@@ -500,7 +496,7 @@ SEXP rnng_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP bytes) {
     R_RegisterCFinalizerEx(aio, raio_finalizer, TRUE);
     UNPROTECT(1);
 
-  } else if (R_ExternalPtrTag(con) == nano_ContextSymbol) {
+  } else if (ptrtag == nano_ContextSymbol) {
 
     nng_ctx *ctxp = (nng_ctx *) R_ExternalPtrAddr(con);
     nano_aio *raio = R_Calloc(1, nano_aio);
@@ -522,7 +518,7 @@ SEXP rnng_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP bytes) {
     R_RegisterCFinalizerEx(aio, raio_finalizer, TRUE);
     UNPROTECT(1);
 
-  } else if (R_ExternalPtrTag(con) == nano_StreamSymbol) {
+  } else if (ptrtag == nano_StreamSymbol) {
 
     nng_stream *sp = (nng_stream *) R_ExternalPtrAddr(con);
     const size_t xlen = (size_t) Rf_asInteger(bytes);
@@ -569,7 +565,7 @@ SEXP rnng_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP bytes) {
 
 // ncurl aio -------------------------------------------------------------------
 
-SEXP rnng_ncurl_aio(SEXP http, SEXP method, SEXP headers, SEXP data, SEXP pem) {
+SEXP rnng_ncurl_aio(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP data, SEXP pem) {
 
   const char *httr = CHAR(STRING_ELT(http, 0));
   nano_aio *haio = R_Calloc(1, nano_aio);
@@ -579,6 +575,7 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP method, SEXP headers, SEXP data, SEXP pem) {
 
   haio->type = HTTP_AIO;
   haio->data = handle;
+  haio->mode = Rf_asLogical(convert);
   handle->cfg = NULL;
 
   if ((xc = nng_url_parse(&handle->url, httr)))
@@ -678,7 +675,7 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP method, SEXP headers, SEXP data, SEXP pem) {
 
 }
 
-SEXP rnng_aio_http(SEXP aio, SEXP convert, SEXP request) {
+SEXP rnng_aio_http(SEXP aio, SEXP request) {
 
   if (R_ExternalPtrTag(aio) != nano_AioSymbol)
     Rf_error("object is not a valid Aio");
@@ -751,7 +748,7 @@ SEXP rnng_aio_http(SEXP aio, SEXP convert, SEXP request) {
   memcpy(RAW(vec), dat, sz);
   SET_VECTOR_ELT(out, 2, vec);
 
-  if (Rf_asLogical(convert)) {
+  if (haio->mode) {
     SEXP expr;
     int xc;
     PROTECT(expr = Rf_lang2(nano_RtcSymbol, vec));

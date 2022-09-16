@@ -103,7 +103,7 @@ extern SEXP nano_ncurlAio;
 
 extern SEXP rnng_aio_call(SEXP);
 extern SEXP rnng_aio_get_msg(SEXP, SEXP);
-extern SEXP rnng_aio_http(SEXP, SEXP, SEXP);
+extern SEXP rnng_aio_http(SEXP, SEXP);
 extern SEXP rnng_aio_result(SEXP);
 extern SEXP rnng_aio_stop(SEXP);
 extern SEXP rnng_base64dec(SEXP, SEXP);
@@ -127,7 +127,7 @@ extern SEXP rnng_new_naio(SEXP, SEXP, SEXP, SEXP, SEXP);
 extern SEXP rnng_new_raio(SEXP, SEXP, SEXP, SEXP);
 extern SEXP rnng_new_saio(SEXP, SEXP);
 extern SEXP rnng_ncurl(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
-extern SEXP rnng_ncurl_aio(SEXP, SEXP, SEXP, SEXP, SEXP);
+extern SEXP rnng_ncurl_aio(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 extern SEXP rnng_protocol_open(SEXP, SEXP);
 extern SEXP rnng_random(SEXP);
 extern SEXP rnng_recv(SEXP, SEXP, SEXP, SEXP, SEXP);

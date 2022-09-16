@@ -80,16 +80,15 @@ ncurl <- function(url,
 
   if (async) {
 
-    aio <- .Call(rnng_ncurl_aio, url, method, headers, data, pem)
+    aio <- .Call(rnng_ncurl_aio, url, convert, method, headers, data, pem)
     is.integer(aio) && return(aio)
 
-    convert
     request
     status <- headers <- raw <- data <- NULL
     unresolv <- TRUE
     env <- .Call(rnng_new_naio, aio, function(x) {
       if (unresolv) {
-        res <- .Call(rnng_aio_http, aio, convert, request)
+        res <- .Call(rnng_aio_http, aio, request)
         missing(res) && return(.__unresolvedValue__.)
         if (is.integer(res)) {
           data <<- raw <<- res
@@ -105,7 +104,7 @@ ncurl <- function(url,
       status
     }, function(x) {
       if (unresolv) {
-        res <- .Call(rnng_aio_http, aio, convert, request)
+        res <- .Call(rnng_aio_http, aio, request)
         missing(res) && return(.__unresolvedValue__.)
         if (is.integer(res)) {
           data <<- raw <<- res
@@ -121,7 +120,7 @@ ncurl <- function(url,
       headers
     }, function(x) {
       if (unresolv) {
-        res <- .Call(rnng_aio_http, aio, convert, request)
+        res <- .Call(rnng_aio_http, aio, request)
         missing(res) && return(.__unresolvedValue__.)
         if (is.integer(res)) {
           data <<- raw <<- res
@@ -137,7 +136,7 @@ ncurl <- function(url,
       raw
     }, function(x) {
       if (unresolv) {
-        res <- .Call(rnng_aio_http, aio, convert, request)
+        res <- .Call(rnng_aio_http, aio, request)
         missing(res) && return(.__unresolvedValue__.)
         if (is.integer(res)) {
           data <<- raw <<- res

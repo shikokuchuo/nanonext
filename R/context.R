@@ -131,13 +131,12 @@ reply <- function(context,
                   timeout = NULL,
                   ...) {
 
-  res <- .Call(rnng_recv, context, recv_mode, timeout, FALSE, NULL)
-  is_error_value(res) && return(invisible(res))
-  on.exit(expr = send(context, as.raw(0L), mode = send_mode))
+  res <- recv(context, mode = recv_mode, block = timeout, keep.raw = FALSE)
+  is_error_value(res) && return(res)
+  on.exit(expr = send(context, data = as.raw(0L), mode = send_mode, echo = FALSE))
   data <- execute(res, ...)
-  res <- .Call(rnng_send, context, data, send_mode, timeout, FALSE)
   on.exit()
-  invisible(res)
+  send(context, data = data, mode = send_mode, block = timeout, echo = FALSE)
 
 }
 
@@ -198,44 +197,7 @@ request <- function(context,
 
   res <- .Call(rnng_send_aio, context, data, send_mode, NULL)
   is.integer(res) && return(res)
-
-  aio <- .Call(rnng_recv_aio, context, recv_mode, timeout, NULL)
-  is_error_value(aio) && return(aio)
-
-  data <- raw <- NULL
-  unresolv <- TRUE
-  env <- .Call(rnng_new_raio, aio, keep.raw, function(x) {
-    if (unresolv) {
-      res <- .Call(rnng_aio_get_msg, aio, keep.raw)
-      missing(res) && return(.__unresolvedValue__.)
-      if (is_error_value(res)) {
-        data <<- raw <<- res
-      } else {
-        raw <<- .subset2(res, "raw")
-        data <<- .subset2(res, "data")
-      }
-      aio <<- env[["aio"]] <<- NULL
-      unresolv <<- FALSE
-    }
-    raw
-  }, function(x) {
-    if (unresolv) {
-      res <- .Call(rnng_aio_get_msg, aio, keep.raw)
-      missing(res) && return(.__unresolvedValue__.)
-      if (is_error_value(res)) {
-        data <<- raw <<- res
-      } else if (keep.raw) {
-        raw <<- .subset2(res, "raw")
-        data <<- .subset2(res, "data")
-      } else {
-        data <<- res
-      }
-      aio <<- env[["aio"]] <<- NULL
-      unresolv <<- FALSE
-    }
-    data
-  })
-  env
+  recv_aio(context, mode = recv_mode, timeout = timeout, keep.raw = keep.raw)
 
 }
 

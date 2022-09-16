@@ -19,7 +19,6 @@
 #define NANONEXT_INTERNALS
 #define NANONEXT_PROTOCOLS
 #define NANONEXT_SUPPLEMENTALS
-#define NANONEXT_TIME
 #include "nanonext.h"
 
 // finalizers ------------------------------------------------------------------
@@ -108,6 +107,55 @@ SEXP rnng_random(SEXP n) {
     pvec[i] = (double) nng_random();
   }
   return vec;
+
+}
+
+SEXP rnng_device(SEXP s1, SEXP s2) {
+
+  if (R_ExternalPtrTag(s1) != nano_SocketSymbol)
+    Rf_error("'s1' is not a valid Socket");
+  if (R_ExternalPtrTag(s2) != nano_SocketSymbol)
+    Rf_error("'s2' is not a valid Socket");
+
+  int xc = nng_device(*(nng_socket *) R_ExternalPtrAddr(s1),
+                      *(nng_socket *) R_ExternalPtrAddr(s2));
+  if (xc)
+    return mk_error(xc);
+
+  return nano_success;
+
+}
+
+// nano_init -------------------------------------------------------------------
+
+SEXP rnng_matchwarn(SEXP warn) {
+
+  if (TYPEOF(warn) == INTSXP) return warn;
+
+  const char *w = CHAR(STRING_ELT(warn, 0));
+  size_t slen = strlen(w);
+  const char i[] = "immediate", d[] = "deferred", e[] = "error", n[] = "none";
+  int xc = 0;
+
+  switch (slen) {
+  case 1:
+  case 2:
+  case 3:
+  case 4:
+    if (!strncmp(n, w, slen)) { xc = -1; break; }
+  case 5:
+    if (!strncmp(e, w, slen)) { xc = 2; break; }
+  case 6:
+  case 7:
+  case 8:
+    if (!strncmp(d, w, slen)) { xc = 0; break; }
+  case 9:
+    if (!strncmp(i, w, slen)) { xc = 1; break; }
+  default:
+      Rf_error("'warn' should be one of immediate, deferred, error, none");
+  }
+
+  return Rf_ScalarInteger(xc);
 
 }
 
@@ -491,187 +539,6 @@ SEXP rnng_stream_close(SEXP stream) {
   SET_ATTRIB(stream, R_NilValue);
 
   return nano_success;
-
-}
-
-// messenger -------------------------------------------------------------------
-
-static void thread_finalizer(SEXP xptr) {
-
-  if (R_ExternalPtrAddr(xptr) == NULL)
-    return;
-  nng_thread *xp = (nng_thread *) R_ExternalPtrAddr(xptr);
-  nng_thread_destroy(xp);
-  R_ClearExternalPtr(xptr);
-
-}
-
-static void rnng_thread(void *arg) {
-
-  SEXP list = (SEXP) arg;
-  SEXP socket = VECTOR_ELT(list, 0);
-  SEXP key = VECTOR_ELT(list, 1);
-  SEXP two = VECTOR_ELT(list, 2);
-  nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(socket);
-  unsigned char *buf;
-  size_t sz;
-  time_t now;
-  struct tm *tms;
-  int xc;
-
-  while (1) {
-    xc = nng_recv(*sock, &buf, &sz, 1u);
-    time(&now);
-    tms = localtime(&now);
-
-    if (xc) {
-      REprintf("| messenger session ended: %d-%02d-%02d %02d:%02d:%02d\n",
-               tms->tm_year + 1900, tms->tm_mon + 1, tms->tm_mday,
-               tms->tm_hour, tms->tm_min, tms->tm_sec);
-      break;
-    }
-
-    if (!strncmp((char *) buf, ":", 1)) {
-      if (!strcmp((char *) buf, ":c ")) {
-        REprintf("| <- peer connected: %d-%02d-%02d %02d:%02d:%02d\n",
-                 tms->tm_year + 1900, tms->tm_mon + 1, tms->tm_mday,
-                 tms->tm_hour, tms->tm_min, tms->tm_sec);
-        nng_free(buf, sz);
-        rnng_send(socket, key, two, Rf_ScalarLogical(0), Rf_ScalarLogical(0));
-        continue;
-      }
-      if (!strcmp((char *) buf, ":d ")) {
-        REprintf("| -> peer disconnected: %d-%02d-%02d %02d:%02d:%02d\n",
-                 tms->tm_year + 1900, tms->tm_mon + 1, tms->tm_mday,
-                 tms->tm_hour, tms->tm_min, tms->tm_sec);
-        nng_free(buf, sz);
-        continue;
-      }
-    }
-
-    Rprintf("%s\n%*s< %d-%02d-%02d %02d:%02d:%02d\n",
-            (char *) buf, (int) sz, "",
-            tms->tm_year + 1900, tms->tm_mon + 1, tms->tm_mday,
-            tms->tm_hour, tms->tm_min, tms->tm_sec);
-    nng_free(buf, sz);
-
-  }
-
-}
-
-SEXP rnng_messenger(SEXP url) {
-
-  const char *up = CHAR(STRING_ELT(url, 0));
-  nng_socket *sock = R_Calloc(1, nng_socket);
-  void *dlp;
-  uint8_t dialer = 0;
-  int xc;
-  SEXP socket, con;
-
-  xc = nng_pair0_open(sock);
-  if (xc) {
-    R_Free(sock);
-    return mk_error(xc);
-  }
-  dlp = R_Calloc(1, nng_listener);
-  xc = nng_listen(*sock, up, dlp, 0);
-  if (xc == 10 || xc == 15) {
-    R_Free(dlp);
-    dlp = R_Calloc(1, nng_dialer);
-    xc = nng_dial(*sock, up, dlp, 2u);
-    if (xc) {
-      R_Free(dlp);
-      R_Free(sock);
-      return mk_error(xc);
-    }
-    dialer = 1;
-
-  } else if (xc) {
-    R_Free(dlp);
-    R_Free(sock);
-    return mk_error(xc);
-  }
-
-  PROTECT(socket = R_MakeExternalPtr(sock, nano_SocketSymbol, R_NilValue));
-  R_RegisterCFinalizerEx(socket, socket_finalizer, TRUE);
-
-  PROTECT(con = R_MakeExternalPtr(dlp, R_NilValue, R_NilValue));
-  if (dialer)
-    R_RegisterCFinalizerEx(con, dialer_finalizer, TRUE);
-  else
-    R_RegisterCFinalizerEx(con, listener_finalizer, TRUE);
-  R_MakeWeakRef(socket, con, R_NilValue, TRUE);
-
-  UNPROTECT(2);
-  return socket;
-
-}
-
-SEXP rnng_thread_create(SEXP list) {
-
-  SEXP socket = VECTOR_ELT(list, 0);
-  nng_thread *thr;
-  SEXP xptr;
-
-  nng_thread_create(&thr, rnng_thread, list);
-
-  PROTECT(xptr = R_MakeExternalPtr(thr, R_NilValue, R_NilValue));
-  R_RegisterCFinalizerEx(xptr, thread_finalizer, TRUE);
-  R_MakeWeakRef(socket, xptr, R_NilValue, TRUE);
-
-  UNPROTECT(1);
-  return socket;
-
-}
-
-// device ----------------------------------------------------------------------
-
-SEXP rnng_device(SEXP s1, SEXP s2) {
-
-  if (R_ExternalPtrTag(s1) != nano_SocketSymbol)
-    Rf_error("'s1' is not a valid Socket");
-  if (R_ExternalPtrTag(s2) != nano_SocketSymbol)
-    Rf_error("'s2' is not a valid Socket");
-
-  int xc = nng_device(*(nng_socket *) R_ExternalPtrAddr(s1),
-                      *(nng_socket *) R_ExternalPtrAddr(s2));
-  if (xc)
-    return mk_error(xc);
-
-  return nano_success;
-
-}
-
-// nano_init -------------------------------------------------------------------
-
-SEXP rnng_matchwarn(SEXP warn) {
-
-  if (TYPEOF(warn) == INTSXP) return warn;
-
-  const char *w = CHAR(STRING_ELT(warn, 0));
-  size_t slen = strlen(w);
-  const char i[] = "immediate", d[] = "deferred", e[] = "error", n[] = "none";
-  int xc = 0;
-
-  switch (slen) {
-  case 1:
-  case 2:
-  case 3:
-  case 4:
-    if (!strncmp(n, w, slen)) { xc = -1; break; }
-  case 5:
-    if (!strncmp(e, w, slen)) { xc = 2; break; }
-  case 6:
-  case 7:
-  case 8:
-    if (!strncmp(d, w, slen)) { xc = 0; break; }
-  case 9:
-    if (!strncmp(i, w, slen)) { xc = 1; break; }
-  default:
-    Rf_error("'warn' should be one of immediate, deferred, error, none");
-  }
-
-  return Rf_ScalarInteger(xc);
 
 }
 

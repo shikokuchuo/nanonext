@@ -51,8 +51,7 @@ messenger <- function(url, auth = NULL) {
 
   nano_init(warn = "none")
   on.exit(expr = {
-    options(warn = getOption("nanonext.original.warn"))
-    options(nanonext.original.warn = NULL)
+    options(warn = getOption("nanonext.original.warn"), nanonext.original.warn = NULL)
     invisible()
   })
   lock <- sha256(auth, convert = FALSE)
@@ -62,7 +61,7 @@ messenger <- function(url, auth = NULL) {
   sock <- .Call(rnng_messenger, url)
   is.integer(sock) && return(invisible(sock))
   on.exit(expr = {
-    .Call(rnng_send, sock, writeBin(":d ", raw()), 2L, FALSE, FALSE)
+    send(sock, data = writeBin(":d ", raw()), mode = 2L, block = FALSE, echo = FALSE)
     .Call(rnng_close, sock)
   }, add = TRUE, after = FALSE)
 
@@ -80,7 +79,7 @@ messenger <- function(url, auth = NULL) {
     cat(sprintf("\r| peer offline: %s\n", format.POSIXct(Sys.time())), file = stderr())
   } else {
     cat(sprintf("\r| peer online: %s\n", format.POSIXct(Sys.time())), file = stderr())
-    r <- .Call(rnng_recv, sock, 5L, TRUE, FALSE, NULL)
+    r <- recv(sock, mode = 5L, block = TRUE, keep.raw = FALSE)
     for (i in seq_len(24L)) {
       lock[r[i]] == r[i + 24L] || {
         cat("| authentication error\n", file = stderr())
@@ -97,8 +96,8 @@ messenger <- function(url, auth = NULL) {
     data <- readline()
     if (identical(data, ":q")) break
     if (identical(data, "")) next
-    s <- .Call(rnng_send, sock, data, 2L, FALSE, TRUE)
-    if (is.integer(s)) {
+    s <- send(sock, data = data, mode = 2L, block = FALSE, echo = FALSE)
+    if (s) {
       cat(sprintf("%*s > not sent: peer offline: %s\n", nchar(data), "", format.POSIXct(Sys.time())),
           file = stderr())
     } else {

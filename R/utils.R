@@ -145,8 +145,8 @@ random <- function(n = 1L) .Call(rnng_random, n)
 #' @param s1 a raw mode Socket.
 #' @param s2 a raw mode Socket.
 #'
-#' @return Invisibly, an integer exit code. If the device was successfully
-#'     created, this function does not return.
+#' @return An integer exit code. If the device was successfully created, this
+#'     function does not return.
 #'
 #' @details Only raw mode sockets may be used with this function. Sockets s1 and
 #'     s2 must be compatible with each other, i.e. be opposite halves of a two
@@ -162,14 +162,12 @@ random <- function(n = 1L) .Call(rnng_random, n)
 #'
 device <- function(s1, s2) {
 
-  inherits(s1, "nanoSocket") || stop("object '", deparse(substitute(s1)), "' is not a nanoSocket")
-  inherits(s2, "nanoSocket") || stop("object '", deparse(substitute(s2)), "' is not a nanoSocket")
   if (interactive()) {
     r <- readline(sprintf("Proceed to bind sockets '%s' and '%s'? (This action cannot be interrupted) [Y/n]: ",
                   deparse(substitute(s1)), deparse(substitute(s2))))
     if (r %in% c("n", "N")) return(invisible())
   }
-  invisible(.Call(rnng_device, s1, s2))
+  .Call(rnng_device, s1, s2)
 
 }
 

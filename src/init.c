@@ -89,7 +89,7 @@ static void ReleaseObjects(void) {
 static const R_CallMethodDef CallEntries[] = {
   {"rnng_aio_call", (DL_FUNC) &rnng_aio_call, 1},
   {"rnng_aio_get_msg", (DL_FUNC) &rnng_aio_get_msg, 2},
-  {"rnng_aio_http", (DL_FUNC) &rnng_aio_http, 3},
+  {"rnng_aio_http", (DL_FUNC) &rnng_aio_http, 2},
   {"rnng_aio_result", (DL_FUNC) &rnng_aio_result, 1},
   {"rnng_aio_stop", (DL_FUNC) &rnng_aio_stop, 1},
   {"rnng_clock", (DL_FUNC) &rnng_clock, 0},
@@ -113,7 +113,7 @@ static const R_CallMethodDef CallEntries[] = {
   {"rnng_new_raio", (DL_FUNC) &rnng_new_raio, 4},
   {"rnng_new_saio", (DL_FUNC) &rnng_new_saio, 2},
   {"rnng_ncurl", (DL_FUNC) &rnng_ncurl, 7},
-  {"rnng_ncurl_aio", (DL_FUNC) &rnng_ncurl_aio, 5},
+  {"rnng_ncurl_aio", (DL_FUNC) &rnng_ncurl_aio, 6},
   {"rnng_protocol_open", (DL_FUNC) &rnng_protocol_open, 2},
   {"rnng_random", (DL_FUNC) &rnng_random, 1},
   {"rnng_recv", (DL_FUNC) &rnng_recv, 5},
