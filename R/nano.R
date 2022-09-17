@@ -73,7 +73,6 @@ nano <- function(protocol = c("bus", "pair", "push", "pull", "pub", "sub",
                  listen = NULL,
                  autostart = TRUE) {
 
-  protocol <- match.arg(protocol)
   nano <- `class<-`(new.env(hash = FALSE), "nanoObject")
   socket <- .Call(rnng_protocol_open, protocol, FALSE)
   is.integer(socket) && return(socket)
@@ -144,7 +143,7 @@ nano <- function(protocol = c("bus", "pair", "push", "pull", "pub", "sub",
                                                     opt = opt,
                                                     value = value)
 
-  switch(protocol,
+  switch(attr(socket, "protocol"),
          req =,
          rep = {
            nano[["context"]] <- function() context(socket)
