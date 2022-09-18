@@ -274,8 +274,6 @@ stop_aio <- function(aio) invisible(.Call(rnng_aio_stop, aio))
 #' @details Returns TRUE for unresolved Aios or Aio values, FALSE otherwise.
 #'     Suitable for use in control flow statements such as \code{while} or \code{if}.
 #'
-#'     Note: querying resolution may cause a previously unresolved Aio to resolve.
-#'
 #' @examples
 #' s1 <- socket("pair", listen = "inproc://nanonext")
 #' aio <- send_aio(s1, "test", timeout = 100)

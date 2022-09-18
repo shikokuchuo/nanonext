@@ -7,6 +7,7 @@
 #### Updates
 
 * `sha224()`, `sha256()`, `sha384()` and `sha512()` functions now take character vectors by serialising them rather than only taking the first element, whilst also being faster for character scalars. These functions also gain an argument 'convert' to control whether to return a raw vector or character string, instead of returning 'nanoHash' objects.
+* `unresolved()` is faster and no longer forces resolution of the 'aio'. This allows the completion of an asynchronous operation to be checked without retrieving its value. For normal usage there is no behavioural difference, but in the special case where resolution is confirmed and the aio then stopped using `stop_aio()`, the values will not be available at `$raw` or `$data` as before.
 * `ncurl()` argument 'request' renamed to 'response' for specifying response headers to return (to avoid confusion).
 * `socket()` and `nano()` now accept non-missing NULL 'listen' and 'dial' arguments, allowing easier programmatic use.
 * Functions `send()`, `recv()`, `send_aio()`, `recv_aio()`, `setopt()`, `subscribe()`, `unsubscribe()` and `survey_time()` are no longer S3 generics for enhanced performance.

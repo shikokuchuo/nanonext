@@ -51,7 +51,6 @@ typedef struct nano_hash_s {
 static nano_hash nano_anytoraw(SEXP x) {
 
   nano_hash hash;
-  SEXP expr;
 
   switch (TYPEOF(x)) {
   case RAWSXP:
@@ -66,6 +65,7 @@ static nano_hash nano_anytoraw(SEXP x) {
       hash.buf = RAW(hash.vec);
       memcpy(hash.buf, CHAR(STRING_ELT(x, 0)), hash.sz);
     } else {
+      SEXP expr;
       PROTECT(expr = Rf_lang3(nano_SerialSymbol, x, R_NilValue));
       hash.vec = Rf_eval(expr, R_BaseEnv);
       UNPROTECT(1);
@@ -73,7 +73,8 @@ static nano_hash nano_anytoraw(SEXP x) {
       hash.sz = Rf_xlength(hash.vec);
     }
     break;
-  default:
+  default: ;
+    SEXP expr;
     PROTECT(expr = Rf_lang3(nano_SerialSymbol, x, R_NilValue));
     hash.vec = Rf_eval(expr, R_BaseEnv);
     UNPROTECT(1);

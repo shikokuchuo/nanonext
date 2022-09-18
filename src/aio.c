@@ -208,7 +208,6 @@ SEXP rnng_aio_call(SEXP aio) {
   case SENDAIO:
   case IOV_SENDAIO:
     Rf_findVarInFrame(aio, nano_ResultSymbol);
-  default:
     break;
   }
 
@@ -232,6 +231,8 @@ SEXP rnng_aio_stop(SEXP aio) {
   nng_iov *iov;
   nano_handle *handle;
   switch (aiop->type) {
+  case SENDAIO:
+    break;
   case RECVAIO:
     if (aiop->data != NULL)
       nng_msg_free(aiop->data);
@@ -254,8 +255,6 @@ SEXP rnng_aio_stop(SEXP aio) {
     nng_url_free(handle->url);
     R_Free(handle);
     break;
-  default:
-    break;
   }
   R_Free(aiop);
   R_ClearExternalPtr(coreaio);
@@ -266,12 +265,23 @@ SEXP rnng_aio_stop(SEXP aio) {
 
 SEXP rnng_unresolved(SEXP x) {
 
-  if (Rf_inherits(x, "unresolvedValue") ||
-      (Rf_inherits(x, "recvAio") && Rf_inherits(Rf_findVarInFrame(x, nano_DataSymbol), "unresolvedValue")) ||
-      (Rf_inherits(x, "sendAio") && Rf_inherits(Rf_findVarInFrame(x, nano_ResultSymbol), "unresolvedValue")))
-    return Rf_ScalarLogical(1);
+  int xc = 0;
+  switch (TYPEOF(x)) {
+  case ENVSXP: ;
+    SEXP coreaio = Rf_findVarInFrame(x, nano_AioSymbol);
+    if (R_ExternalPtrTag(coreaio) == nano_AioSymbol && R_ExternalPtrAddr(coreaio) != NULL) {
+      nano_aio *aiop = (nano_aio *) R_ExternalPtrAddr(coreaio);
+      if (nng_aio_busy(aiop->aio))
+        xc = 1;
+    }
+    break;
+  case LGLSXP:
+    if (Rf_inherits(x, "unresolvedValue"))
+      xc = 1;
+    break;
+  }
 
-  return Rf_ScalarLogical(0);
+  return Rf_ScalarLogical(xc);
 
 }
 
@@ -725,7 +735,6 @@ SEXP rnng_aio_http(SEXP aio, SEXP response) {
   if (response != R_NilValue) {
     const R_xlen_t rlen = Rf_xlength(response);
     PROTECT(rvec = Rf_allocVector(VECSXP, rlen));
-    SEXP rnames;
 
     switch (TYPEOF(response)) {
     case STRSXP:
@@ -735,7 +744,8 @@ SEXP rnng_aio_http(SEXP aio, SEXP response) {
       }
       Rf_namesgets(rvec, response);
       break;
-    case VECSXP:
+    case VECSXP: ;
+      SEXP rnames;
       PROTECT(rnames = Rf_allocVector(STRSXP, rlen));
       for (R_xlen_t i = 0; i < rlen; i++) {
         SEXP rname = STRING_ELT(VECTOR_ELT(response, i), 0);

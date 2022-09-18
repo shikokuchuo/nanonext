@@ -274,8 +274,6 @@ SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP data,
   if (response != R_NilValue) {
     const R_xlen_t rlen = Rf_xlength(response);
     PROTECT(rvec = Rf_allocVector(VECSXP, rlen));
-    SEXP rnames;
-
     switch (TYPEOF(response)) {
     case STRSXP:
       for (R_xlen_t i = 0; i < rlen; i++) {
@@ -284,7 +282,8 @@ SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP data,
       }
       Rf_namesgets(rvec, response);
       break;
-    case VECSXP:
+    case VECSXP: ;
+      SEXP rnames;
       PROTECT(rnames = Rf_allocVector(STRSXP, rlen));
       for (R_xlen_t i = 0; i < rlen; i++) {
         SEXP rname = STRING_ELT(VECTOR_ELT(response, i), 0);
