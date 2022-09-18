@@ -199,10 +199,18 @@ SEXP rnng_aio_call(SEXP aio) {
 
   nano_aio *aiop = (nano_aio *) R_ExternalPtrAddr(coreaio);
   nng_aio_wait(aiop->aio);
-  if (Rf_inherits(aio, "recvAio"))
+  switch (aiop->type) {
+  case RECVAIO:
+  case IOV_RECVAIO:
+  case HTTP_AIO:
     Rf_findVarInFrame(aio, nano_DataSymbol);
-  else
+    break;
+  case SENDAIO:
+  case IOV_SENDAIO:
     Rf_findVarInFrame(aio, nano_ResultSymbol);
+  default:
+    break;
+  }
 
   return aio;
 
