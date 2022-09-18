@@ -63,6 +63,8 @@
 <ul><li>
 <code><a href="../reference/sha256.html">sha224()</a></code>, <code><a href="../reference/sha256.html">sha256()</a></code>, <code><a href="../reference/sha256.html">sha384()</a></code> and <code><a href="../reference/sha256.html">sha512()</a></code> functions now take character vectors by serialising them rather than only taking the first element, whilst also being faster for character scalars. These functions also gain an argument ‘convert’ to control whether to return a raw vector or character string, instead of returning ‘nanoHash’ objects.</li>
 <li>
+<code><a href="../reference/unresolved.html">unresolved()</a></code> is faster and no longer forces resolution of the ‘aio’. This allows the completion of an asynchronous operation to be checked without retrieving its value. For normal usage there is no behavioural difference, but in the special case where resolution is confirmed and the aio then stopped using <code><a href="../reference/stop_aio.html">stop_aio()</a></code>, the values will not be available at <code>$raw</code> or <code>$data</code> as before.</li>
+<li>
 <code><a href="../reference/ncurl.html">ncurl()</a></code> argument ‘request’ renamed to ‘response’ for specifying response headers to return (to avoid confusion).</li>
 <li>
 <code><a href="../reference/socket.html">socket()</a></code> and <code><a href="../reference/nano.html">nano()</a></code> now accept non-missing NULL ‘listen’ and ‘dial’ arguments, allowing easier programmatic use.</li>
