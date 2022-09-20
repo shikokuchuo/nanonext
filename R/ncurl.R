@@ -32,6 +32,9 @@
 #' @param response (optional) a character vector or list specifying the response
 #'     headers to return e.g. \code{c("date", "server")} or \code{list("Date", "Server")}.
 #'     These are case-insensitive and will return NULL if not present.
+#' @param follow (optional) logical TRUE or FALSE whether to automatically
+#'     follow redirects. If missing or NULL, the default is not to follow
+#'     redirects, or prompt in interactive environments.
 #' @param pem (optional) applicable to secure HTTPS sites only. The path to a
 #'     file containing X.509 certificate(s) in PEM format, comprising the
 #'     certificate authority certificate chain (and revocation list if present).
@@ -59,6 +62,9 @@
 #'
 #'     In non-interactive sessions: redirects are never followed.
 #'
+#'     Override these default behaviours by specifying TRUE or FALSE for the
+#'     argument 'follow'.
+#'
 #'     For async requests, the redirect address will be returned as a character
 #'     string at \code{$raw} and \code{$data} will be NULL.
 #'
@@ -76,6 +82,7 @@ ncurl <- function(url,
                   headers = NULL,
                   data = NULL,
                   response = NULL,
+                  follow = NULL,
                   pem = NULL) {
 
   if (async) {
@@ -155,12 +162,14 @@ ncurl <- function(url,
   } else {
 
     env <- .Call(rnng_ncurl, url, convert, method, headers, data, response, pem)
-    is.character(env) && {
-      continue <- if (interactive()) readline(sprintf("Follow redirect to <%s>? [Y/n] ", env)) else "n"
-      continue %in% c("n", "N", "no", "NO") && return(env)
-      return(eval(`[[<-`(match.call(), 2L, env)))
+    if (is.character(env)) {
+      if (length(follow)) {
+        follow && return(eval(`[[<-`(match.call(), 2L, env)))
+      } else if (interactive()) {
+        continue <- readline(sprintf("Follow redirect to <%s>? [Y/n] ", env))
+        continue %in% c("n", "N", "no", "NO") || return(eval(`[[<-`(match.call(), 2L, env)))
+      }
     }
-
   }
 
   env

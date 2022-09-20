@@ -12,6 +12,7 @@ ncurl(
   headers = NULL,
   data = NULL,
   response = NULL,
+  follow = NULL,
   pem = NULL
 )
 }
@@ -34,6 +35,10 @@ HTTP request headers e.g. \code{list(`Content-Type` = "text/plain")} or
 \item{response}{(optional) a character vector or list specifying the response
 headers to return e.g. \code{c("date", "server")} or \code{list("Date", "Server")}.
 These are case-insensitive and will return NULL if not present.}
+
+\item{follow}{(optional) logical TRUE or FALSE whether to automatically
+follow redirects. If missing or NULL, the default is not to follow
+redirects, or prompt in interactive environments.}
 
 \item{pem}{(optional) applicable to secure HTTPS sites only. The path to a
 file containing X.509 certificate(s) in PEM format, comprising the
@@ -66,6 +71,9 @@ nano cURL - a minimalist http(s) client.
     whether to follow or not (default: yes).
 
     In non-interactive sessions: redirects are never followed.
+
+    Override these default behaviours by specifying TRUE or FALSE for the
+    argument 'follow'.
 
     For async requests, the redirect address will be returned as a character
     string at \code{$raw} and \code{$data} will be NULL.
