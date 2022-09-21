@@ -86,7 +86,7 @@ else
   PKG_CFLAGS="-I`pwd`/install/include $PKG_CFLAGS"
   if [ -d "install/lib64" ]
   then
-    PKG_LIBS="-L`pwd`/temp/lib64 $PKG_LIBS"
+    PKG_LIBS="-L`pwd`/install/lib64 $PKG_LIBS"
   fi
   if [ -d "install/lib" ]
   then
