@@ -1,2 +1,2 @@
 #!/bin/sh
-rm -rf src/Makevars temp
+rm -rf src/Makevars install

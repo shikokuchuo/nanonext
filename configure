@@ -67,7 +67,7 @@ else
   echo "Compiling 'libmbedtls' from source..."
   cmake -DCMAKE_POSITION_INDEPENDENT_CODE=1 -DCMAKE_BUILD_TYPE=Release \
     -DENABLE_TESTING=0 -DENABLE_PROGRAMS=0 \
-    -DCMAKE_INSTALL_PREFIX=../temp -DCMAKE_INSTALL_MESSAGE=NEVER .
+    -DCMAKE_INSTALL_PREFIX=../install -DCMAKE_INSTALL_MESSAGE=NEVER .
   cmake --build .
   cmake --install .
   cd ..
@@ -77,20 +77,20 @@ else
   echo "Compiling 'libnng' from source..."
   cmake -DCMAKE_POSITION_INDEPENDENT_CODE=1 -DNNG_ENABLE_TLS=1 \
     -DNNG_ELIDE_DEPRECATED=1 -DNNG_TESTS=0 -DNNG_TOOLS=0 \
-    -DCMAKE_INSTALL_PREFIX=../temp -DCMAKE_INSTALL_MESSAGE=NEVER .
+    -DCMAKE_INSTALL_PREFIX=../install -DCMAKE_INSTALL_MESSAGE=NEVER .
   cmake --build .
   cmake --install .
   cd ..
   rm -rf nanomsg-nng-$LIB_VER
 
-  PKG_CFLAGS="-I`pwd`/temp/include $PKG_CFLAGS"
-  if [ -d "temp/lib64" ]
+  PKG_CFLAGS="-I`pwd`/install/include $PKG_CFLAGS"
+  if [ -d "install/lib64" ]
   then
     PKG_LIBS="-L`pwd`/temp/lib64 $PKG_LIBS"
   fi
-  if [ -d "temp/lib" ]
+  if [ -d "install/lib" ]
   then
-    PKG_LIBS="-L`pwd`/temp/lib $PKG_LIBS"
+    PKG_LIBS="-L`pwd`/install/lib $PKG_LIBS"
   fi
 fi
 

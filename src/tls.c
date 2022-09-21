@@ -120,10 +120,10 @@ SEXP rnng_sha224(SEXP x, SEXP key, SEXP convert) {
 
   if (key == R_NilValue) {
 
-#if defined(MBEDTLS_VERSION_MAJOR) && MBEDTLS_VERSION_MAJOR == 2
-    xc = mbedtls_sha256_ret(xhash.buf, xhash.sz, output, 1);
-#else
+#if defined(MBEDTLS_VERSION_MAJOR) && MBEDTLS_VERSION_MAJOR >= 3
     xc = mbedtls_sha256(xhash.buf, xhash.sz, output, 1);
+#else
+    xc = mbedtls_sha256_ret(xhash.buf, xhash.sz, output, 1);
 #endif
   } else {
 
@@ -165,10 +165,10 @@ SEXP rnng_sha256(SEXP x, SEXP key, SEXP convert) {
 
   if (key == R_NilValue) {
 
-#if defined(MBEDTLS_VERSION_MAJOR) && MBEDTLS_VERSION_MAJOR == 2
-    xc = mbedtls_sha256_ret(xhash.buf, xhash.sz, output, 0);
-#else
+#if defined(MBEDTLS_VERSION_MAJOR) && MBEDTLS_VERSION_MAJOR >= 3
     xc = mbedtls_sha256(xhash.buf, xhash.sz, output, 0);
+#else
+    xc = mbedtls_sha256_ret(xhash.buf, xhash.sz, output, 0);
 #endif
 
   } else {
@@ -211,10 +211,10 @@ SEXP rnng_sha384(SEXP x, SEXP key, SEXP convert) {
 
   if (key == R_NilValue) {
 
-#if defined(MBEDTLS_VERSION_MAJOR) && MBEDTLS_VERSION_MAJOR == 2
-    xc = mbedtls_sha512_ret(xhash.buf, xhash.sz, output, 1);
-#else
+#if defined(MBEDTLS_VERSION_MAJOR) && MBEDTLS_VERSION_MAJOR >= 3
     xc = mbedtls_sha512(xhash.buf, xhash.sz, output, 1);
+#else
+    xc = mbedtls_sha512_ret(xhash.buf, xhash.sz, output, 1);
 #endif
 
   } else {
@@ -257,10 +257,10 @@ SEXP rnng_sha512(SEXP x, SEXP key, SEXP convert) {
 
   if (key == R_NilValue) {
 
-#if defined(MBEDTLS_VERSION_MAJOR) && MBEDTLS_VERSION_MAJOR == 2
-    xc = mbedtls_sha512_ret(xhash.buf, xhash.sz, output, 0);
-#else
+#if defined(MBEDTLS_VERSION_MAJOR) && MBEDTLS_VERSION_MAJOR >= 3
     xc = mbedtls_sha512(xhash.buf, xhash.sz, output, 0);
+#else
+    xc = mbedtls_sha512_ret(xhash.buf, xhash.sz, output, 0);
 #endif
 
   } else {

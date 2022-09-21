@@ -72,8 +72,10 @@ nano cURL - a minimalist http(s) client.
 
     In non-interactive sessions: redirects are never followed.
 
-    Override these default behaviours by specifying TRUE or FALSE for the
+    The above defaults can be overridden by specifying TRUE or FALSE for the
     argument 'follow'.
+
+    If not followed, the redirect address is returned as a character string.
 
     For async requests, the redirect address will be returned as a character
     string at \code{$raw} and \code{$data} will be NULL.
