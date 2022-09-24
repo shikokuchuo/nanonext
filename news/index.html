@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.5.9006</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.5.9007</span>
       </span>
     </div>
 
@@ -54,27 +54,32 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.5.5.9006" id="nanonext-0559006-to-be-060">nanonext 0.5.5.9006 (to be 0.6.0)<a class="anchor" aria-label="anchor" href="#nanonext-0559006-to-be-060"></a></h2>
+<h2 class="page-header" data-toc-text="0.5.5.9007" id="nanonext-0559007-to-be-060">nanonext 0.5.5.9007 (to be 0.6.0)<a class="anchor" aria-label="anchor" href="#nanonext-0559007-to-be-060"></a></h2>
 <div class="section level5">
-<h5 id="new-features-0-5-5-9006">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-5-5-9006"></a></h5>
+<h5 id="new-features-0-5-5-9007">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-5-5-9007"></a></h5>
 <ul><li>Implements <code><a href="../reference/base64enc.html">base64enc()</a></code> and <code><a href="../reference/base64enc.html">base64dec()</a></code> base64 encoding and decoding using the ‘Mbed TLS’ library.</li>
 <li>
 <code><a href="../reference/ncurl.html">ncurl()</a></code> gains the optional argument ‘follow’ to control whether redirects are automatically followed.</li>
 </ul></div>
 <div class="section level5">
-<h5 id="updates-0-5-5-9006">Updates<a class="anchor" aria-label="anchor" href="#updates-0-5-5-9006"></a></h5>
+<h5 id="updates-0-5-5-9007">Updates<a class="anchor" aria-label="anchor" href="#updates-0-5-5-9007"></a></h5>
+<p><em>Potentially breaking changes:</em></p>
 <ul><li>
-<code><a href="../reference/sha256.html">sha224()</a></code>, <code><a href="../reference/sha256.html">sha256()</a></code>, <code><a href="../reference/sha256.html">sha384()</a></code> and <code><a href="../reference/sha256.html">sha512()</a></code> functions now take character vectors by serialising them rather than only taking the first element, whilst also being faster for character scalars. These functions also gain an argument ‘convert’ to control whether to return a raw vector or character string, instead of returning ‘nanoHash’ objects.</li>
-<li>
-<code><a href="../reference/unresolved.html">unresolved()</a></code> is faster and no longer forces resolution of the ‘aio’. This allows the completion of an asynchronous operation to be checked without retrieving its value. For normal usage there is no behavioural difference, but in the special case where resolution is confirmed and the aio then stopped using <code><a href="../reference/stop_aio.html">stop_aio()</a></code>, the values will not be available at <code>$raw</code> or <code>$data</code> as before.</li>
+<code><a href="../reference/send.html">send()</a></code> now returns an integer exit code in all cases, with the ‘echo’ argument no longer having any effect.</li>
 <li>
 <code><a href="../reference/ncurl.html">ncurl()</a></code> argument ‘request’ renamed to ‘response’ for specifying response headers to return (to avoid confusion); the ‘pem’ argument is also moved after the new argument ‘follow’.</li>
 <li>
+<code><a href="../reference/sha256.html">sha224()</a></code>, <code><a href="../reference/sha256.html">sha256()</a></code>, <code><a href="../reference/sha256.html">sha384()</a></code> and <code><a href="../reference/sha256.html">sha512()</a></code> functions now take character vectors by serialising them rather than only taking the first element, whilst also being faster for character scalars. These functions also gain an argument ‘convert’ to control whether to return a raw vector or character string, instead of returning ‘nanoHash’ objects.</li>
+<li>
+<code><a href="../reference/unresolved.html">unresolved()</a></code> is faster and no longer forces resolution of the ‘aio’. This allows the completion of an asynchronous operation to be checked without retrieving its value. For normal usage there is no behavioural difference, but in the special case where resolution is confirmed and the aio then stopped using <code><a href="../reference/stop_aio.html">stop_aio()</a></code>, the values will not be available at <code>$raw</code> or <code>$data</code> as before.</li>
+</ul><p><em>Other changes:</em></p>
+<ul><li>
 <code><a href="../reference/socket.html">socket()</a></code> and <code><a href="../reference/nano.html">nano()</a></code> now accept non-missing NULL ‘listen’ and ‘dial’ arguments, allowing easier programmatic use.</li>
 <li>Functions <code><a href="../reference/send.html">send()</a></code>, <code><a href="../reference/recv.html">recv()</a></code>, <code><a href="../reference/send_aio.html">send_aio()</a></code>, <code><a href="../reference/recv_aio.html">recv_aio()</a></code>, <code><a href="../reference/setopt.html">setopt()</a></code>, <code><a href="../reference/subscribe.html">subscribe()</a></code>, <code><a href="../reference/unsubscribe.html">unsubscribe()</a></code> and <code><a href="../reference/survey_time.html">survey_time()</a></code> are no longer S3 generics for enhanced performance.</li>
-<li>Now possibe to build ‘libnng’ and ‘libmbedtls’ from source on Windows for R &gt;= 4.2 using the rtools42 toolchain, falling back to pre-compiled libraries for old R releases.</li>
+<li>The source code of ‘libnng’ is now bundled instead of downloaded (more efficient as excludes unused portions).</li>
+<li>Detects and uses a system ‘libmbedtls’ where available and only downloads and builds from source if not found. Supports any MbedTLS version greater than v2.5.0.</li>
+<li>On Windows with R &gt;= 4.2, the bundled ‘libnng’ and a downloaded ‘libmbedtls’ v3.2.1 release is now built from source using the rtools42 toolchain. Installation falls back to pre-compiled libraries for older R releases.</li>
 <li>Minimum supported R version increased to v3.6.0.</li>
-<li>Minimum supported version of MbedTLS lowered to v2.5.0.</li>
 <li>Internal performance enhancements.</li>
 </ul></div>
 </div>
