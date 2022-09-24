@@ -101,11 +101,13 @@ SEXP rnng_random(SEXP n) {
     Rf_error("'n' must be integer or coercible to integer");
   }
 
-  vec = Rf_allocVector(REALSXP, vlen);
+  PROTECT(vec = Rf_allocVector(REALSXP, vlen));
   double *pvec = REAL(vec);
   for (R_xlen_t i = 0; i < vlen; i++) {
     pvec[i] = (double) nng_random();
   }
+
+  UNPROTECT(1);
   return vec;
 
 }
@@ -251,11 +253,13 @@ SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP data,
   if (code != 200) {
     REprintf("HTTP Server Response: %d %s\n", code, nng_http_res_get_reason(res));
     if (code >= 300 && code < 400) {
-      SEXP ret = Rf_mkString(nng_http_res_get_header(res, "Location"));
+      SEXP ret;
+      PROTECT(ret = Rf_mkString(nng_http_res_get_header(res, "Location")));
       nng_http_res_free(res);
       nng_http_req_free(req);
       nng_http_client_free(client);
       nng_url_free(url);
+      UNPROTECT(1);
       return ret;
     }
   }

@@ -669,10 +669,11 @@ SEXP rnng_listener_close(SEXP listener) {
 
 // send and recv ---------------------------------------------------------------
 
-SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block, SEXP echo) {
+SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
 
-  const int ech = LOGICAL(echo)[0];
   SEXP enc;
+  R_xlen_t xlen;
+  unsigned char *dp;
   int xc;
 
   SEXP ptrtag = R_ExternalPtrTag(con);
@@ -681,8 +682,6 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block, SEXP echo) {
     nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(con);
     nng_msg *msgp;
     nng_aio *aiop;
-    R_xlen_t xlen;
-    unsigned char *dp;
 
     if (block == R_NilValue) {
 
@@ -706,14 +705,14 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block, SEXP echo) {
       xlen = Rf_xlength(enc);
       dp = RAW(enc);
 
-      xc = nng_msg_alloc(&msgp, 0);
-      if (xc)
+      if ((xc = nng_msg_alloc(&msgp, 0)))
         return mk_error(xc);
       if ((xc = nng_msg_append(msgp, dp, xlen)) ||
           (xc = nng_aio_alloc(&aiop, NULL, NULL))) {
         nng_msg_free(msgp);
         return mk_error(xc);
       }
+
       nng_aio_set_msg(aiop, msgp);
       nng_aio_set_timeout(aiop, dur);
       nng_send_aio(*sock, aiop);
@@ -738,21 +737,20 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block, SEXP echo) {
       dur = (nng_duration) Rf_asInteger(block);
     }
     enc = nano_encodes(data, mode);
-    const R_xlen_t xlen = Rf_xlength(enc);
-    unsigned char *dp = RAW(enc);
+    xlen = Rf_xlength(enc);
+    dp = RAW(enc);
 
-    xc = nng_msg_alloc(&msgp, 0);
-    if (xc)
+    if ((xc = nng_msg_alloc(&msgp, 0)))
       return mk_error(xc);
     if ((xc = nng_msg_append(msgp, dp, xlen)) ||
         (xc = nng_aio_alloc(&aiop, NULL, NULL))) {
       nng_msg_free(msgp);
       return mk_error(xc);
     }
+
     nng_aio_set_msg(aiop, msgp);
     nng_aio_set_timeout(aiop, dur);
     nng_ctx_send(*ctxp, aiop);
-
     nng_aio_wait(aiop);
     xc = nng_aio_result(aiop);
     nng_aio_free(aiop);
@@ -772,26 +770,23 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block, SEXP echo) {
       dur = (nng_duration) Rf_asInteger(block);
     }
     enc = nano_encode(data);
-    const R_xlen_t xlen = Rf_xlength(enc);
-    unsigned char *dp = RAW(enc);
+    xlen = Rf_xlength(enc);
+    dp = RAW(enc);
 
     const int frames = LOGICAL(Rf_getAttrib(con, nano_TextframesSymbol))[0];
     iov.iov_len = frames == 1 ? xlen - 1 : xlen;
     iov.iov_buf = dp;
 
-    xc = nng_aio_alloc(&aiop, NULL, NULL);
-    if (xc)
+    if ((xc = nng_aio_alloc(&aiop, NULL, NULL)))
       return mk_error(xc);
 
-    xc = nng_aio_set_iov(aiop, 1, &iov);
-    if (xc) {
+    if ((xc = nng_aio_set_iov(aiop, 1, &iov))) {
       nng_aio_free(aiop);
       return mk_error(xc);
     }
 
     nng_aio_set_timeout(aiop, dur);
     nng_stream_send(sp, aiop);
-
     nng_aio_wait(aiop);
     xc = nng_aio_result(aiop);
     nng_aio_free(aiop);
@@ -802,9 +797,6 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block, SEXP echo) {
 
   if (xc)
     return mk_error(xc);
-
-  if (ech)
-    return enc;
 
   return nano_success;
 
@@ -843,23 +835,21 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP keep, SEXP bytes) {
 
     } else {
       nng_duration dur = (nng_duration) Rf_asInteger(block);
-      xc = nng_aio_alloc(&aiop, NULL, NULL);
-      if (xc)
+      if ((xc = nng_aio_alloc(&aiop, NULL, NULL)))
         return mk_error(xc);
       nng_aio_set_timeout(aiop, dur);
       nng_recv_aio(*sock, aiop);
       nng_aio_wait(aiop);
-      xc = nng_aio_result(aiop);
-      if (xc) {
+      if ((xc = nng_aio_result(aiop))) {
         nng_aio_free(aiop);
         return mk_error(xc);
       }
       nng_msg *msgp = nng_aio_get_msg(aiop);
+      nng_aio_free(aiop);
       buf = nng_msg_body(msgp);
       sz = nng_msg_len(msgp);
       res = nano_decode(buf, sz, mod, kpr);
       nng_msg_free(msgp);
-      nng_aio_free(aiop);
     }
 
   } else if (ptrtag == nano_ContextSymbol) {
@@ -877,25 +867,23 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP keep, SEXP bytes) {
       dur = (nng_duration) Rf_asInteger(block);
     }
 
-    xc = nng_aio_alloc(&aiop, NULL, NULL);
-    if (xc)
+    if ((xc = nng_aio_alloc(&aiop, NULL, NULL)))
       return mk_error(xc);
     nng_aio_set_timeout(aiop, dur);
     nng_ctx_recv(*ctxp, aiop);
 
     nng_aio_wait(aiop);
-    xc = nng_aio_result(aiop);
-    if (xc) {
+    if ((xc = nng_aio_result(aiop))) {
       nng_aio_free(aiop);
       return mk_error(xc);
     }
 
     nng_msg *msgp = nng_aio_get_msg(aiop);
+    nng_aio_free(aiop);
     buf = nng_msg_body(msgp);
     sz = nng_msg_len(msgp);
     res = nano_decode(buf, sz, mod, kpr);
     nng_msg_free(msgp);
-    nng_aio_free(aiop);
 
   } else if (ptrtag == nano_StreamSymbol) {
 
@@ -917,14 +905,12 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP keep, SEXP bytes) {
     iov.iov_len = xlen;
     iov.iov_buf = R_Calloc(xlen, unsigned char);
 
-    xc = nng_aio_alloc(&aiop, NULL, NULL);
-    if (xc) {
+    if ((xc = nng_aio_alloc(&aiop, NULL, NULL))) {
       R_Free(iov.iov_buf);
       return mk_error(xc);
     }
 
-    xc = nng_aio_set_iov(aiop, 1, &iov);
-    if (xc) {
+    if ((xc = nng_aio_set_iov(aiop, 1, &iov))) {
       nng_aio_free(aiop);
       R_Free(iov.iov_buf);
       return mk_error(xc);
@@ -934,8 +920,7 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP keep, SEXP bytes) {
     nng_stream_recv(sp, aiop);
 
     nng_aio_wait(aiop);
-    xc = nng_aio_result(aiop);
-    if (xc) {
+    if ((xc = nng_aio_result(aiop))) {
       nng_aio_free(aiop);
       R_Free(iov.iov_buf);
       return mk_error(xc);
@@ -943,8 +928,8 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP keep, SEXP bytes) {
 
     buf = iov.iov_buf;
     sz = nng_aio_count(aiop);
-    res = nano_decode(buf, sz, mod, kpr);
     nng_aio_free(aiop);
+    res = nano_decode(buf, sz, mod, kpr);
     R_Free(iov.iov_buf);
 
   } else {

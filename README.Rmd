@@ -509,11 +509,11 @@ base64dec(base64enc("hello world!"))
 
 Installation from source requires 'cmake'.
 
-A pre-release version of 'libnng' v1.6.0 (722bf46) and the latest release of 'libmbedtls' v3.2.1 are downloaded and built automatically during package installation.
+A pre-release version of 'libnng' v1.6.0 (722bf46) is bundled built automatically during package installation.
 
-Setting `Sys.setenv(NANONEXT_SYS=1)` will cause installation to attempt use of a system 'libnng' and 'libmbedtls' installed in `/usr/local` instead. This allows use of custom builds of 'libnng' (722bf46 or newer) and 'libmbedtls' (v2.5.0 or newer).
+A system installation of 'libmbedtls' will be used where detected in the usual filesystem locations. Mbed TLS versions v2.5.0 or newer are supported.
 
-System libraries are not used by default as versions currently in system repositories are not new enough to support this version of nanonext.
+'INCLUDE_DIR' and 'LIB_DIR' environment variables may be specified prior to package install to specify custom locations.
 
 #### Windows
 

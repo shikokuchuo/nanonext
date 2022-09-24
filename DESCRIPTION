@@ -1,7 +1,7 @@
 Package: nanonext
 Type: Package
 Title: NNG (Nanomsg Next Gen) Lightweight Messaging Library
-Version: 0.5.5.9006
+Version: 0.5.5.9007
 Description: R binding for NNG (Nanomsg Next Gen), a successor to ZeroMQ. NNG is 
     a socket library providing high-performance scalability protocols,
     implementing a cross-platform standard for messaging and communications.
@@ -21,7 +21,7 @@ License: GPL (>= 3)
 BugReports: https://github.com/shikokuchuo/nanonext/issues
 URL: https://shikokuchuo.net/nanonext/, https://github.com/shikokuchuo/nanonext/
 Encoding: UTF-8
-SystemRequirements: 'cmake' to compile 'libnng' and 'libmbedtls' from source
+SystemRequirements: 'cmake' to compile 'libnng' included in package sources
 Depends: 
     R (>= 3.6)
 RoxygenNote: 7.2.1

@@ -4,7 +4,7 @@
 \alias{send}
 \title{Send}
 \usage{
-send(con, data, mode = c("serial", "raw"), block = NULL, echo = TRUE)
+send(con, data, mode = c("serial", "raw"), block = NULL, ...)
 }
 \arguments{
 \item{con}{a Socket, Context or Stream.}
@@ -24,12 +24,10 @@ to return immediately even if unsuccessful (e.g. if no connection is
 available), or else an integer value specifying the maximum time to block
 in milliseconds, after which the operation will time out.}
 
-\item{echo}{[default TRUE] logical TRUE to return the raw vector of sent data,
-or FALSE to return an integer exit code (invisibly).}
+\item{...}{not used.}
 }
 \value{
-Raw vector of sent data, or (invisibly) an integer exit code (zero on
-    success) if 'echo' is set to FALSE.
+Invisibly, an integer exit code (zero on success).
 }
 \description{
 Send data over a connection (Socket, Context or Stream).

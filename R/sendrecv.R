@@ -33,11 +33,9 @@
 #'     to return immediately even if unsuccessful (e.g. if no connection is
 #'     available), or else an integer value specifying the maximum time to block
 #'     in milliseconds, after which the operation will time out.
-#' @param echo [default TRUE] logical TRUE to return the raw vector of sent data,
-#'     or FALSE to return an integer exit code (invisibly).
+#' @param ... not used.
 #'
-#' @return Raw vector of sent data, or (invisibly) an integer exit code (zero on
-#'     success) if 'echo' is set to FALSE.
+#' @return Invisibly, an integer exit code (zero on success).
 #'
 #' @section Blocking:
 #'
@@ -79,13 +77,7 @@ send <- function(con,
                  data,
                  mode = c("serial", "raw"),
                  block = NULL,
-                 echo = TRUE) {
-
-  res <- .Call(rnng_send, con, data, mode, block, echo)
-  echo && return(res)
-  invisible(res)
-
-}
+                 ...) invisible(.Call(rnng_send, con, data, mode, block))
 
 #' Receive
 #'

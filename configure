@@ -5,12 +5,26 @@ LIB_VER="722bf46"
 TLS_VER="869298b"
 
 # Initialise
-PKG_CFLAGS=""
+PKG_CFLAGS="-I../install/include"
 PKG_LIBS="-lnng -lmbedtls -lmbedx509 -lmbedcrypto"
 
 # Find compiler
 CC=`${R_HOME}/bin/R CMD config CC`
 CFLAGS=`${R_HOME}/bin/R CMD config CFLAGS`
+
+# Detect cmake
+echo "Detecting 'cmake'..."
+which cmake
+if [ $? -ne 0 ]
+then
+  export PATH=$PATH:/Applications/CMake.app/Contents/bin
+  which cmake
+  if [ $? -ne 0 ]
+  then
+    echo "'cmake' is required but is not found"
+    exit 1
+  fi
+fi
 
 # Detect -latomic linker flag for ARM architectures (Raspberry Pi etc.)
 echo "#include <stdint.h>
@@ -20,51 +34,41 @@ int main() {
 }" | ${CC} -x c - -o /dev/null > /dev/null 2>&1
 if [ $? -ne 0 ]
 then
-  echo "Adding -latomic linker flag"
+  echo "Adding -latomic linker flag ..."
   PKG_LIBS="$PKG_LIBS -latomic"
 fi
 
-# Use system lib or download and compile from source (default)
-if [ "$NANONEXT_SYS" ]
+# Check for mbedtls
+if [ "$INCLUDE_DIR" ] || [ "$LIB_DIR" ]
 then
-  echo "NANONEXT_SYS flag set"
-  echo "Using 'libnng' and 'libmbedtls' installed in '/usr/local' ..."
+  echo "Found INCLUDE_DIR and/or LIB_DIR ..."
+  PKG_CFLAGS="-I$INCLUDE_DIR $PKG_CFLAGS"
+
+elif [ -d "/usr/local/include/mbedtls" ]
+then
+  echo "Found 'libmbedtls' in /usr/local ..."
   PKG_CFLAGS="-I/usr/local/include $PKG_CFLAGS"
-  if [ -d "/usr/local/lib64" ]
-  then
-    PKG_LIBS="-L/usr/local/lib64 $PKG_LIBS"
-  fi
-  if [ -d "/usr/local/lib" ]
-  then
-    PKG_LIBS="-L/usr/local/lib $PKG_LIBS"
-  fi
+  LIB_DIR="/usr/local/lib"
+
+elif [ -d "/usr/include/mbedtls" ]
+then
+  echo "Found 'libmbedtls' in /usr ..."
+  PKG_CFLAGS="-I/usr/include $PKG_CFLAGS"
+  LIB_DIR="/usr/lib"
+
+elif [ -d "/usr/local/opt/mbedtls" ]; then
+  echo "Found 'libmbedtls' in /usr/local/opt ..."
+  PKG_CFLAGS="-I/usr/local/opt/mbedtls/include $PKG_CFLAGS"
+  LIB_DIR="/usr/local/opt/mbedtls/lib"
 
 else
-  echo "Detecting 'cmake'..."
-  which cmake
-  if [ $? -ne 0 ]
-  then
-    export PATH=$PATH:/Applications/CMake.app/Contents/bin
-    which cmake
-    if [ $? -ne 0 ]
-    then
-      echo "'cmake' is required but is not found"
-      exit 1
-    fi
-  fi
-
-  echo "Downloading 'libnng' source..."
-  curl -sL https://api.github.com/repos/nanomsg/nng/tarball/$LIB_VER -o nng.tar.gz
-  gzip -dc nng.tar.gz | tar -xf -
-  rm -f nng.tar.gz
-
-  echo "Downloading 'libmbedtls' source..."
+  echo "Existing installation of 'libmbedtls' not found"
+  echo "Downloading 'libmbedtls' source ..."
   curl -sL https://api.github.com/repos/Mbed-TLS/mbedtls/tarball/$TLS_VER -o mbedtls.tar.gz
   gzip -dc mbedtls.tar.gz | tar -xf -
   rm -f mbedtls.tar.gz
-
   cd Mbed-TLS-mbedtls-$TLS_VER
-  echo "Compiling 'libmbedtls' from source..."
+  echo "Compiling 'libmbedtls' from source ..."
   cmake -DCMAKE_POSITION_INDEPENDENT_CODE=1 -DCMAKE_BUILD_TYPE=Release \
     -DENABLE_TESTING=0 -DENABLE_PROGRAMS=0 \
     -DCMAKE_INSTALL_PREFIX=../install -DCMAKE_INSTALL_MESSAGE=NEVER .
@@ -73,25 +77,32 @@ else
   cd ..
   rm -rf Mbed-TLS-mbedtls-$TLS_VER
 
-  cd nanomsg-nng-$LIB_VER
-  echo "Compiling 'libnng' from source..."
-  cmake -DCMAKE_POSITION_INDEPENDENT_CODE=1 -DNNG_ENABLE_TLS=1 \
-    -DNNG_ELIDE_DEPRECATED=1 -DNNG_TESTS=0 -DNNG_TOOLS=0 \
-    -DCMAKE_INSTALL_PREFIX=../install -DCMAKE_INSTALL_MESSAGE=NEVER .
-  cmake --build .
-  cmake --install .
-  cd ..
-  rm -rf nanomsg-nng-$LIB_VER
+fi
 
-  PKG_CFLAGS="-I`pwd`/install/include $PKG_CFLAGS"
-  if [ -d "install/lib64" ]
-  then
-    PKG_LIBS="-L`pwd`/install/lib64 $PKG_LIBS"
-  fi
-  if [ -d "install/lib" ]
-  then
-    PKG_LIBS="-L`pwd`/install/lib $PKG_LIBS"
-  fi
+# Build NNG
+
+mkdir nng-build
+cd nng-build
+echo "Compiling 'libnng' from source ..."
+cmake -DCMAKE_POSITION_INDEPENDENT_CODE=1 -DCMAKE_INSTALL_PREFIX=../install \
+  -DCMAKE_INSTALL_MESSAGE=NEVER ../inst/nng-$LIB_VER
+cmake --build .
+cmake --install .
+cd ..
+rm -rf nng-build
+
+if [ -d "install/lib64" ]
+then
+  PKG_LIBS="-L../install/lib64 $PKG_LIBS"
+fi
+if [ -d "install/lib" ]
+then
+  PKG_LIBS="-L../install/lib $PKG_LIBS"
+fi
+
+if [ "$LIB_DIR" ]
+then
+  PKG_LIBS="-L$LIB_DIR $PKG_LIBS"
 fi
 
 # Write to Makevars

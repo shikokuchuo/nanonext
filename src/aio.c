@@ -224,6 +224,7 @@ SEXP rnng_aio_stop(SEXP aio) {
   if (R_ExternalPtrTag(coreaio) != nano_AioSymbol || R_ExternalPtrAddr(coreaio) == NULL)
     return R_NilValue;
 
+  PROTECT(coreaio);
   nano_aio *aiop = (nano_aio *) R_ExternalPtrAddr(coreaio);
   nng_aio_stop(aiop->aio);
   nng_aio_free(aiop->aio);
@@ -259,6 +260,7 @@ SEXP rnng_aio_stop(SEXP aio) {
   R_Free(aiop);
   R_ClearExternalPtr(coreaio);
 
+  UNPROTECT(1);
   return R_NilValue;
 
 }
@@ -373,19 +375,12 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout) {
 
     saio->type = SENDAIO;
 
-    xc = nng_msg_alloc(&msg, 0);
-    if (xc) {
+    if ((xc = nng_msg_alloc(&msg, 0))) {
       R_Free(saio);
       return mk_error(xc);
     }
-    xc = nng_msg_append(msg, dp, xlen);
-    if (xc) {
-      nng_msg_free(msg);
-      R_Free(saio);
-      return mk_error(xc);
-    }
-    xc = nng_aio_alloc(&saio->aio, saio_complete, saio);
-    if (xc) {
+    if ((xc = nng_msg_append(msg, dp, xlen)) ||
+        (xc = nng_aio_alloc(&saio->aio, saio_complete, saio))) {
       nng_msg_free(msg);
       R_Free(saio);
       return mk_error(xc);
@@ -412,20 +407,13 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout) {
 
     saio->type = SENDAIO;
 
-    xc = nng_msg_alloc(&msg, 0);
-    if (xc) {
+    if ((xc = nng_msg_alloc(&msg, 0))) {
       R_Free(saio);
       return mk_error(xc);
     }
 
-    xc = nng_msg_append(msg, dp, xlen);
-    if (xc) {
-      nng_msg_free(msg);
-      R_Free(saio);
-      return mk_error(xc);
-    }
-    xc = nng_aio_alloc(&saio->aio, saio_complete, saio);
-    if (xc) {
+    if ((xc = nng_msg_append(msg, dp, xlen)) ||
+        (xc = nng_aio_alloc(&saio->aio, saio_complete, saio))) {
       nng_msg_free(msg);
       R_Free(saio);
       return mk_error(xc);
@@ -455,15 +443,13 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout) {
     iov->iov_len = frames == 1 ? xlen - 1 : xlen;
     iov->iov_buf = dp;
 
-    xc = nng_aio_alloc(&iaio->aio, iaio_complete, iaio);
-    if (xc) {
+    if ((xc = nng_aio_alloc(&iaio->aio, iaio_complete, iaio))) {
       R_Free(iov);
       R_Free(iaio);
       return mk_error(xc);
     }
 
-    xc = nng_aio_set_iov(iaio->aio, 1u, iov);
-    if (xc) {
+    if ((xc = nng_aio_set_iov(iaio->aio, 1u, iov))) {
       nng_aio_free(iaio->aio);
       R_Free(iov);
       R_Free(iaio);
@@ -501,8 +487,7 @@ SEXP rnng_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP bytes) {
     raio->mode = nano_matcharg(mode);
     raio->data = NULL;
 
-    xc = nng_aio_alloc(&raio->aio, raio_complete, raio);
-    if (xc) {
+    if ((xc = nng_aio_alloc(&raio->aio, raio_complete, raio))) {
       R_Free(raio);
       return mk_error(xc);
     }
@@ -523,8 +508,7 @@ SEXP rnng_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP bytes) {
     raio->mode = nano_matcharg(mode);
     raio->data = NULL;
 
-    xc = nng_aio_alloc(&raio->aio, raio_complete, raio);
-    if (xc) {
+    if ((xc = nng_aio_alloc(&raio->aio, raio_complete, raio))) {
       R_Free(raio);
       return mk_error(xc);
     }
@@ -549,16 +533,14 @@ SEXP rnng_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP bytes) {
     iov->iov_len = xlen;
     iov->iov_buf = R_Calloc(xlen, unsigned char);
 
-    xc = nng_aio_alloc(&iaio->aio, iaio_complete, iaio);
-    if (xc) {
+    if ((xc = nng_aio_alloc(&iaio->aio, iaio_complete, iaio))) {
       R_Free(iov->iov_buf);
       R_Free(iov);
       R_Free(iaio);
       return mk_error(xc);
     }
 
-    xc = nng_aio_set_iov(iaio->aio, 1u, iov);
-    if (xc) {
+    if ((xc = nng_aio_set_iov(iaio->aio, 1u, iov))) {
       nng_aio_free(iaio->aio);
       R_Free(iov->iov_buf);
       R_Free(iov);

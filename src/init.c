@@ -118,7 +118,7 @@ static const R_CallMethodDef CallEntries[] = {
   {"rnng_random", (DL_FUNC) &rnng_random, 1},
   {"rnng_recv", (DL_FUNC) &rnng_recv, 5},
   {"rnng_recv_aio", (DL_FUNC) &rnng_recv_aio, 4},
-  {"rnng_send", (DL_FUNC) &rnng_send, 5},
+  {"rnng_send", (DL_FUNC) &rnng_send, 4},
   {"rnng_send_aio", (DL_FUNC) &rnng_send_aio, 4},
   {"rnng_set_opt", (DL_FUNC) &rnng_set_opt, 4},
   {"rnng_sleep", (DL_FUNC) &rnng_sleep, 1},

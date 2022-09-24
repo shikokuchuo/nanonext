@@ -114,7 +114,11 @@ SEXP rnng_sha224(SEXP x, SEXP key, SEXP convert) {
 
   SEXP out;
   int xc = 0;
+#if defined(MBEDTLS_VERSION_MAJOR) && MBEDTLS_VERSION_MAJOR >= 3
   unsigned char output[SHA224_KEY_SIZE];
+#else
+  unsigned char output[SHA256_KEY_SIZE];
+#endif
 
   nano_hash xhash = nano_anytoraw(x);
 
@@ -205,7 +209,11 @@ SEXP rnng_sha384(SEXP x, SEXP key, SEXP convert) {
 
   SEXP out;
   int xc = 0;
+#if defined(MBEDTLS_VERSION_MAJOR) && MBEDTLS_VERSION_MAJOR >= 3
   unsigned char output[SHA384_KEY_SIZE];
+#else
+  unsigned char output[SHA512_KEY_SIZE];
+#endif
 
   nano_hash xhash = nano_anytoraw(x);
 

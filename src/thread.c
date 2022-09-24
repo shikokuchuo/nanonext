@@ -65,7 +65,7 @@ static void rnng_thread(void *arg) {
                  tms->tm_year + 1900, tms->tm_mon + 1, tms->tm_mday,
                  tms->tm_hour, tms->tm_min, tms->tm_sec);
         nng_free(buf, sz);
-        rnng_send(socket, key, two, Rf_ScalarLogical(0), Rf_ScalarLogical(0));
+        rnng_send(socket, key, two, Rf_ScalarLogical(0));
         continue;
       }
       if (!strcmp((char *) buf, ":d ")) {
