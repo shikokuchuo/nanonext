@@ -26,7 +26,7 @@ For Streams, 'serial' is not an option and the default is 'character'.}
 applies a socket-specific default, usually the same as no timeout.}
 
 \item{keep.raw}{[default TRUE] logical flag whether to keep the received raw
-vector (useful for verification e.g. via hashing). If FALSE, will return
+vector (useful in case conversion from raw fails). If FALSE, will return
 the converted data only.}
 
 \item{n}{[default 65536L] applicable to Streams only, the maximum number of

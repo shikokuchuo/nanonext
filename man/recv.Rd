@@ -30,7 +30,7 @@ available), or else an integer value specifying the maximum time to block
 in milliseconds, after which the operation will time out.}
 
 \item{keep.raw}{[default TRUE] logical flag whether to keep the received raw
-vector (useful for verification e.g. via hashing). If FALSE, will return
+vector (useful in case conversion from raw fails). If FALSE, will return
 the converted data only.}
 
 \item{...}{not used.}

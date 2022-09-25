@@ -509,17 +509,17 @@ base64dec(base64enc("hello world!"))
 
 Installation from source requires 'cmake'.
 
-A pre-release version of 'libnng' v1.6.0 (722bf46) is bundled built automatically during package installation.
+A pre-release version of 'libnng' v1.6.0 (722bf46) is included within the package sources and built automatically during installation. This version includes features implemented specifically for 'nanonext' and is not yet available in system repositories.
 
-A system installation of 'libmbedtls' will be used where detected in the usual filesystem locations. Mbed TLS versions v2.5.0 or newer are supported.
+A system installation of 'libmbedtls' will be used where detected in the usual filesystem locations (MbedTLS v2 and v3 are supported). Otherwise, v3.2.1 release will be downloaded and built automatically during installation.
 
-'INCLUDE_DIR' and 'LIB_DIR' environment variables may be specified prior to package install to specify custom locations.
+'INCLUDE_DIR' and 'LIB_DIR' environment variables may be set prior to package install to specify a custom location for 'libmbedtls'.
 
 #### Windows
 
-For R >= 4.2 using the 'rtools42' toolchain, selecting source installation will allow the library sources to be downloaded and built as on Unix-alikes.
+For R >= 4.2 using the 'rtools42' toolchain, selecting source installation will build 'libnng' included within the package sources and download and build MbedTLS v3.2.1 automatically during installation.
 
-For previous R versions, pre-compiled 'libnng' v1.6.0 (722bf46) and 'libmbedtls' v3.2.1 libraries are downloaded and used instead.
+For previous R versions, pre-compiled 'libnng' v1.6.0 (722bf46) and 'libmbedtls' v3.2.1 libraries are downloaded and used for installation instead.
 
 [&laquo; Back to ToC](#table-of-contents)
 

@@ -19,8 +19,9 @@
 * `socket()` and `nano()` now accept non-missing NULL 'listen' and 'dial' arguments, allowing easier programmatic use.
 * Functions `send()`, `recv()`, `send_aio()`, `recv_aio()`, `setopt()`, `subscribe()`, `unsubscribe()` and `survey_time()` are no longer S3 generics for enhanced performance.
 * The source code of 'libnng' is now bundled instead of downloaded (more efficient as excludes unused portions).
-* Detects and uses a system 'libmbedtls' where available and only downloads and builds from source if not found. Supports any MbedTLS version greater than v2.5.0.
+* Detects system installations of 'libmbedtls' and only downloads and builds from source where not available.
 * On Windows with R >= 4.2, the bundled 'libnng' and a downloaded 'libmbedtls' v3.2.1 release is now built from source using the rtools42 toolchain. Installation falls back to pre-compiled libraries for older R releases.
+* Now supports any version of MbedTLS v2 or v3.
 * Minimum supported R version increased to v3.6.0.
 * Internal performance enhancements.
 

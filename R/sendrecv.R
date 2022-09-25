@@ -90,7 +90,7 @@ send <- function(con,
 #'     the raw vector received will be converted into the respective mode.
 #'     For Streams, 'serial' is not an option and the default is 'character'.
 #' @param keep.raw [default TRUE] logical flag whether to keep the received raw
-#'     vector (useful for verification e.g. via hashing). If FALSE, will return
+#'     vector (useful in case conversion from raw fails). If FALSE, will return
 #'     the converted data only.
 #' @param n [default 65536L] applicable to Streams only, the maximum number of
 #'     bytes to receive. Can be an over-estimate, but note that a buffer of this
