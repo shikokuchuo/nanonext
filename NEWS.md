@@ -1,4 +1,4 @@
-# nanonext 0.5.5.9007 (to be 0.6.0)
+# nanonext 0.5.5.9008 (to be 0.6.0)
 
 #### New Features
 
@@ -9,7 +9,7 @@
 
 *Potentially breaking changes:*
 
-* `send()` now returns an integer exit code in all cases, with the 'echo' argument no longer having any effect.
+* `send()` now returns an integer exit code in all cases. The 'echo' argument has been replaced by '...', and specifying 'echo' no longer has any effect.
 * `ncurl()` argument 'request' renamed to 'response' for specifying response headers to return (to avoid confusion); the 'pem' argument is also moved after the new argument 'follow'.
 * `sha224()`, `sha256()`, `sha384()` and `sha512()` functions now take character vectors by serialising them rather than only taking the first element, whilst also being faster for character scalars. These functions also gain an argument 'convert' to control whether to return a raw vector or character string, instead of returning 'nanoHash' objects.
 

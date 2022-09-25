@@ -113,9 +113,6 @@ Send message from ‘nano1’:
 
 ``` r
 nano1$send("hello world!")
-#>  [1] 58 0a 00 00 00 03 00 04 02 01 00 03 05 00 00 00 00 05 55 54 46 2d 38 00 00
-#> [26] 00 10 00 00 00 01 00 04 00 09 00 00 00 0c 68 65 6c 6c 6f 20 77 6f 72 6c 64
-#> [51] 21
 ```
 
 Receive message using ‘nano2’:
@@ -154,9 +151,6 @@ Send message from ‘socket1’:
 
 ``` r
 send(socket1, "hello world!")
-#>  [1] 58 0a 00 00 00 03 00 04 02 01 00 03 05 00 00 00 00 05 55 54 46 2d 38 00 00
-#> [26] 00 10 00 00 00 01 00 04 00 09 00 00 00 0c 68 65 6c 6c 6f 20 77 6f 72 6c 64
-#> [51] 21
 ```
 
 Receive message using ‘socket2’:
@@ -208,8 +202,6 @@ Create nano object in R using {nanonext}, then send a vector of
 library(nanonext)
 n <- nano("pair", dial = "ipc:///tmp/nanonext.socket")
 n$send(c(1.1, 2.2, 3.3, 4.4, 5.5), mode = "raw")
-#>  [1] 9a 99 99 99 99 99 f1 3f 9a 99 99 99 99 99 01 40 66 66 66 66 66 66 0a 40 9a
-#> [26] 99 99 99 99 99 11 40 00 00 00 00 00 00 16 40
 ```
 
 Receive in Python as a NumPy array of ‘floats’, and send back to R:
@@ -387,7 +379,7 @@ aio
 #> < recvAio >
 #>  - $data for message data
 aio$data |> str()
-#>  num [1:100000000] -0.8 0.27 -0.383 -0.291 -0.13 ...
+#>  num [1:100000000] 0.0179 -1.0288 0.1653 -0.0988 0.6253 ...
 ```
 
 As `call_aio()` is blocking and will wait for completion, an alternative
@@ -419,33 +411,33 @@ sub <- socket("sub", dial = "inproc://nanobroadcast")
 
 sub |> subscribe(topic = "examples")
 
-pub |> send(c("examples", "this is an example"), mode = "raw", echo = FALSE)
+pub |> send(c("examples", "this is an example"), mode = "raw")
 sub |> recv(mode = "character", keep.raw = FALSE)
 #> [1] "examples"           "this is an example"
 
-pub |> send("examples at the start of a single text message", mode = "raw", echo = FALSE)
+pub |> send("examples at the start of a single text message", mode = "raw")
 sub |> recv(mode = "character", keep.raw = FALSE)
 #> [1] "examples at the start of a single text message"
 
-pub |> send(c("other", "this other topic will not be received"), mode = "raw", echo = FALSE)
+pub |> send(c("other", "this other topic will not be received"), mode = "raw")
 sub |> recv(mode = "character", keep.raw = FALSE)
 #> Warning in recv(sub, mode = "character", keep.raw = FALSE): 8 | Try again
 #> 'errorValue' int 8
 
 # specify NULL to subscribe to ALL topics
 sub |> subscribe(topic = NULL)
-pub |> send(c("newTopic", "this is a new topic"), mode = "raw", echo = FALSE)
+pub |> send(c("newTopic", "this is a new topic"), mode = "raw")
 sub |> recv("character", keep.raw = FALSE)
 #> [1] "newTopic"            "this is a new topic"
 
 sub |> unsubscribe(topic = NULL)
-pub |> send(c("newTopic", "this topic will now not be received"), mode = "raw", echo = FALSE)
+pub |> send(c("newTopic", "this topic will now not be received"), mode = "raw")
 sub |> recv("character", keep.raw = FALSE)
 #> Warning in recv(sub, "character", keep.raw = FALSE): 8 | Try again
 #> 'errorValue' int 8
 
 # however the topics explicitly subscribed to are still received
-pub |> send(c("examples will still be received"), mode = "raw", echo = FALSE)
+pub |> send(c("examples will still be received"), mode = "raw")
 sub |> recv(mode = "character", keep.raw = FALSE)
 #> [1] "examples will still be received"
 ```
@@ -456,7 +448,7 @@ and received.
 
 ``` r
 sub |> subscribe(topic = 1)
-pub |> send(c(1, 10, 10, 20), mode = "raw", echo = FALSE)
+pub |> send(c(1, 10, 10, 20), mode = "raw")
 sub |> recv(mode = "double", keep.raw = FALSE)
 #> [1]  1 10 10 20
 
@@ -485,7 +477,7 @@ res2 <- socket("respondent", dial = "inproc://nanoservice")
 sur |> survey_time(500)
 
 # sur sends a message and then requests 2 async receives
-sur |> send("service check", echo = FALSE)
+sur |> send("service check")
 aio1 <- sur |> recv_aio()
 aio2 <- sur |> recv_aio()
 
@@ -545,11 +537,11 @@ ncurl("https://httpbin.org/headers")
 #>   [1] 7b 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73
 #>  [26] 74 22 3a 20 22 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22
 #>  [51] 58 2d 41 6d 7a 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31
-#>  [76] 2d 36 33 32 39 38 66 37 61 2d 36 30 66 36 35 64 66 38 33 37 30 61 30 39 35
-#> [101] 63 33 62 63 61 65 31 36 36 22 0a 20 20 7d 0a 7d 0a
+#>  [76] 2d 36 33 33 30 65 32 38 38 2d 36 39 38 63 39 66 66 35 32 62 66 33 32 66 36
+#> [101] 63 37 33 30 63 33 63 34 34 22 0a 20 20 7d 0a 7d 0a
 #> 
 #> $data
-#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-63298f7a-60f65df8370a095c3bcae166\"\n  }\n}\n"
+#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6330e288-698c9ff52bf32f6c730c3c44\"\n  }\n}\n"
 ```
 
 For advanced use, supports additional HTTP methods such as POST or PUT.
@@ -570,13 +562,13 @@ res
 
 call_aio(res)$headers
 #> $Date
-#> [1] "Tue, 20 Sep 2022 10:01:30 GMT"
+#> [1] "Sun, 25 Sep 2022 23:21:44 GMT"
 #> 
 #> $Server
 #> [1] "gunicorn/19.9.0"
 
 res$data
-#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-63298f7a-1be20ef15963e287173e6fc1\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"79.173.135.242\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
+#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6330e288-538dba5a3d23dc83036bafc1\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"185.225.45.49\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
 ```
 
 In this respect, it may be used as a performant and lightweight method
@@ -615,14 +607,12 @@ s |> recv(keep.raw = FALSE)
 #> [1] "{\"status_code\":200,\"message\":\"Authorized\"}"
 
 s |> send('{"action": "subscribe", "symbols": "EURUSD"}')
-#>  [1] 7b 22 61 63 74 69 6f 6e 22 3a 20 22 73 75 62 73 63 72 69 62 65 22 2c 20 22
-#> [26] 73 79 6d 62 6f 6c 73 22 3a 20 22 45 55 52 55 53 44 22 7d 00
 
 s |> recv(keep.raw = FALSE)
-#> [1] "{\"s\":\"EURUSD\",\"a\":1.0006,\"b\":1.0003,\"dc\":\"-0.2379\",\"dd\":\"-0.0024\",\"ppms\":false,\"t\":1663668091000}"
+#> [1] "{\"s\":\"EURUSD\",\"a\":0.96935,\"b\":0.96926,\"dc\":\"0.0464\",\"dd\":\"0.0005\",\"ppms\":true,\"t\":1664148105000}"
 
 s |> recv(keep.raw = FALSE)
-#> [1] "{\"s\":\"EURUSD\",\"a\":1.00056,\"b\":1.00054,\"dc\":\"-0.2419\",\"dd\":\"-0.0024\",\"ppms\":false,\"t\":1663668092000}"
+#> [1] "{\"s\":\"EURUSD\",\"a\":0.96935,\"b\":0.96927,\"dc\":\"0.0464\",\"dd\":\"0.0005\",\"ppms\":true,\"t\":1664148105000}"
 
 close(s)
 ```
@@ -673,26 +663,28 @@ base64dec(base64enc("hello world!"))
 
 Installation from source requires ‘cmake’.
 
-A pre-release version of ‘libnng’ v1.6.0 (722bf46) and the latest
-release of ‘libmbedtls’ v3.2.1 are downloaded and built automatically
-during package installation.
+A pre-release version of ‘libnng’ v1.6.0 (722bf46) is included within
+the package sources and built automatically during installation. This
+version includes features implemented specifically for ‘nanonext’ and is
+not yet available in system repositories.
 
-Setting `Sys.setenv(NANONEXT_SYS=1)` will cause installation to attempt
-use of a system ‘libnng’ and ‘libmbedtls’ installed in `/usr/local`
-instead. This allows use of custom builds of ‘libnng’ (722bf46 or newer)
-and ‘libmbedtls’ (v2.5.0 or newer).
+A system installation of ‘libmbedtls’ will be used where detected in the
+usual filesystem locations (MbedTLS v2 and v3 are supported). Otherwise,
+v3.2.1 release will be downloaded and built automatically during
+installation.
 
-System libraries are not used by default as versions currently in system
-repositories are not new enough to support this version of nanonext.
+‘INCLUDE_DIR’ and ‘LIB_DIR’ environment variables may be set prior to
+package install to specify a custom location for ‘libmbedtls’.
 
 #### Windows
 
-For R \>= 4.2 using the ‘rtools42’ toolchain, selecting source
-installation will allow the library sources to be downloaded and built
-as on Unix-alikes.
+For R \>= 4.2 using the ‘rtools42’ toolchain, ‘libnng’ v1.6.0 (722bf46)
+will be built from the package sources and ‘libmbedtls’ v3.2.1 will be
+downloaded and built automatically during installation.
 
 For previous R versions, pre-compiled ‘libnng’ v1.6.0 (722bf46) and
-‘libmbedtls’ v3.2.1 libraries are downloaded and used instead.
+‘libmbedtls’ v3.2.1 libraries are downloaded and used for installation
+instead.
 
 [« Back to ToC](#table-of-contents)
 

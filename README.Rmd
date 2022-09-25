@@ -328,26 +328,26 @@ sub <- socket("sub", dial = "inproc://nanobroadcast")
 
 sub |> subscribe(topic = "examples")
 
-pub |> send(c("examples", "this is an example"), mode = "raw", echo = FALSE)
+pub |> send(c("examples", "this is an example"), mode = "raw")
 sub |> recv(mode = "character", keep.raw = FALSE)
 
-pub |> send("examples at the start of a single text message", mode = "raw", echo = FALSE)
+pub |> send("examples at the start of a single text message", mode = "raw")
 sub |> recv(mode = "character", keep.raw = FALSE)
 
-pub |> send(c("other", "this other topic will not be received"), mode = "raw", echo = FALSE)
+pub |> send(c("other", "this other topic will not be received"), mode = "raw")
 sub |> recv(mode = "character", keep.raw = FALSE)
 
 # specify NULL to subscribe to ALL topics
 sub |> subscribe(topic = NULL)
-pub |> send(c("newTopic", "this is a new topic"), mode = "raw", echo = FALSE)
+pub |> send(c("newTopic", "this is a new topic"), mode = "raw")
 sub |> recv("character", keep.raw = FALSE)
 
 sub |> unsubscribe(topic = NULL)
-pub |> send(c("newTopic", "this topic will now not be received"), mode = "raw", echo = FALSE)
+pub |> send(c("newTopic", "this topic will now not be received"), mode = "raw")
 sub |> recv("character", keep.raw = FALSE)
 
 # however the topics explicitly subscribed to are still received
-pub |> send(c("examples will still be received"), mode = "raw", echo = FALSE)
+pub |> send(c("examples will still be received"), mode = "raw")
 sub |> recv(mode = "character", keep.raw = FALSE)
 
 ```
@@ -356,7 +356,7 @@ The subscribed topic can be of any atomic type (not just character), allowing in
 
 ```{r pub2}
 sub |> subscribe(topic = 1)
-pub |> send(c(1, 10, 10, 20), mode = "raw", echo = FALSE)
+pub |> send(c(1, 10, 10, 20), mode = "raw")
 sub |> recv(mode = "double", keep.raw = FALSE)
 
 close(pub)
@@ -381,7 +381,7 @@ res2 <- socket("respondent", dial = "inproc://nanoservice")
 sur |> survey_time(500)
 
 # sur sends a message and then requests 2 async receives
-sur |> send("service check", echo = FALSE)
+sur |> send("service check")
 aio1 <- sur |> recv_aio()
 aio2 <- sur |> recv_aio()
 
@@ -517,7 +517,7 @@ A system installation of 'libmbedtls' will be used where detected in the usual f
 
 #### Windows
 
-For R >= 4.2 using the 'rtools42' toolchain, selecting source installation will build 'libnng' included within the package sources and download and build MbedTLS v3.2.1 automatically during installation.
+For R >= 4.2 using the 'rtools42' toolchain, 'libnng' v1.6.0 (722bf46) will be built from the package sources and 'libmbedtls' v3.2.1 will be downloaded and built automatically during installation.
 
 For previous R versions, pre-compiled 'libnng' v1.6.0 (722bf46) and 'libmbedtls' v3.2.1 libraries are downloaded and used for installation instead.
 

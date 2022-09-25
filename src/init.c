@@ -86,7 +86,7 @@ static void ReleaseObjects(void) {
   R_ReleaseObject(nano_ncurlAio);
 }
 
-static const R_CallMethodDef CallEntries[] = {
+static const R_CallMethodDef callMethods[] = {
   {"rnng_aio_call", (DL_FUNC) &rnng_aio_call, 1},
   {"rnng_aio_get_msg", (DL_FUNC) &rnng_aio_get_msg, 2},
   {"rnng_aio_http", (DL_FUNC) &rnng_aio_http, 2},
@@ -139,7 +139,7 @@ static const R_CallMethodDef CallEntries[] = {
 void attribute_visible R_init_nanonext(DllInfo* dll) {
   RegisterSymbols();
   PreserveObjects();
-  R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
+  R_registerRoutines(dll, NULL, callMethods, NULL, NULL);
   R_useDynamicSymbols(dll, FALSE);
   R_forceSymbols(dll, TRUE);
 }
