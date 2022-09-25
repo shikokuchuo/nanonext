@@ -70,8 +70,8 @@ else
   cd Mbed-TLS-mbedtls-$TLS_VER
   echo "Compiling 'libmbedtls' from source ..."
   cmake -DCMAKE_POSITION_INDEPENDENT_CODE=1 -DCMAKE_BUILD_TYPE=Release \
-    -DENABLE_TESTING=0 -DENABLE_PROGRAMS=0 \
-    -DCMAKE_INSTALL_PREFIX=../install -DCMAKE_INSTALL_MESSAGE=NEVER .
+    -DENABLE_TESTING=0 -DENABLE_PROGRAMS=0 -DCMAKE_COLOR_MAKEFILE=0 \
+    -DCMAKE_INSTALL_MESSAGE=NEVER -DCMAKE_INSTALL_PREFIX=../install .
   cmake --build .
   cmake --install .
   cd ..
@@ -80,16 +80,15 @@ else
 fi
 
 # Build NNG
-
-mkdir nng-build
-cd nng-build
+tar -xf inst/nng-$LIB_VER.tar.xz
+cd nng-$LIB_VER
 echo "Compiling 'libnng' from source ..."
-cmake -DCMAKE_POSITION_INDEPENDENT_CODE=1 -DCMAKE_INSTALL_PREFIX=../install \
-  -DCMAKE_INSTALL_MESSAGE=NEVER ../inst/nng-$LIB_VER
+cmake -DCMAKE_POSITION_INDEPENDENT_CODE=1 -DCMAKE_COLOR_MAKEFILE=0 \
+  -DCMAKE_INSTALL_MESSAGE=NEVER -DCMAKE_INSTALL_PREFIX=../install .
 cmake --build .
 cmake --install .
 cd ..
-rm -rf nng-build
+rm -rf nng-$LIB_VER
 
 if [ -d "install/lib64" ]
 then

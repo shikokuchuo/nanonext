@@ -10,6 +10,7 @@ recv(
     "raw"),
   block = NULL,
   keep.raw = TRUE,
+  ...,
   n = 65536L
 )
 }
@@ -31,6 +32,8 @@ in milliseconds, after which the operation will time out.}
 \item{keep.raw}{[default TRUE] logical flag whether to keep the received raw
 vector (useful for verification e.g. via hashing). If FALSE, will return
 the converted data only.}
+
+\item{...}{not used.}
 
 \item{n}{[default 65536L] applicable to Streams only, the maximum number of
 bytes to receive. Can be an over-estimate, but note that a buffer of this

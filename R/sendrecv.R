@@ -161,5 +161,6 @@ recv <- function(con,
                           "integer", "logical", "numeric", "raw"),
                  block = NULL,
                  keep.raw = TRUE,
+                 ...,
                  n = 65536L) .Call(rnng_recv, con, mode, block, keep.raw, n)
 

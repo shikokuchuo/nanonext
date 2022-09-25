@@ -123,12 +123,10 @@ nano <- function(protocol = c("bus", "pair", "push", "pull", "pub", "sub",
                                                            keep.raw = keep.raw)
   nano[["send"]] <- function(data,
                              mode = c("serial", "raw"),
-                             block = FALSE,
-                             echo = TRUE) send(socket,
-                                               data = data,
-                                               mode = mode,
-                                               block = block,
-                                               echo = echo)
+                             block = FALSE) send(socket,
+                                                 data = data,
+                                                 mode = mode,
+                                                 block = block)
   nano[["send_aio"]] <- function(data,
                                  mode = c("serial", "raw"),
                                  timeout = NULL) send_aio(socket,
