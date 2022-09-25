@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.5.9007</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.5.9008</span>
       </span>
     </div>
 
@@ -54,18 +54,18 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.5.5.9007" id="nanonext-0559007-to-be-060">nanonext 0.5.5.9007 (to be 0.6.0)<a class="anchor" aria-label="anchor" href="#nanonext-0559007-to-be-060"></a></h2>
+<h2 class="page-header" data-toc-text="0.5.5.9008" id="nanonext-0559008-to-be-060">nanonext 0.5.5.9008 (to be 0.6.0)<a class="anchor" aria-label="anchor" href="#nanonext-0559008-to-be-060"></a></h2>
 <div class="section level5">
-<h5 id="new-features-0-5-5-9007">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-5-5-9007"></a></h5>
+<h5 id="new-features-0-5-5-9008">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-5-5-9008"></a></h5>
 <ul><li>Implements <code><a href="../reference/base64enc.html">base64enc()</a></code> and <code><a href="../reference/base64enc.html">base64dec()</a></code> base64 encoding and decoding using the ‘Mbed TLS’ library.</li>
 <li>
 <code><a href="../reference/ncurl.html">ncurl()</a></code> gains the optional argument ‘follow’ to control whether redirects are automatically followed.</li>
 </ul></div>
 <div class="section level5">
-<h5 id="updates-0-5-5-9007">Updates<a class="anchor" aria-label="anchor" href="#updates-0-5-5-9007"></a></h5>
+<h5 id="updates-0-5-5-9008">Updates<a class="anchor" aria-label="anchor" href="#updates-0-5-5-9008"></a></h5>
 <p><em>Potentially breaking changes:</em></p>
 <ul><li>
-<code><a href="../reference/send.html">send()</a></code> now returns an integer exit code in all cases, with the ‘echo’ argument no longer having any effect.</li>
+<code><a href="../reference/send.html">send()</a></code> now returns an integer exit code in all cases. The ‘echo’ argument has been replaced by ‘…’, and specifying ‘echo’ no longer has any effect.</li>
 <li>
 <code><a href="../reference/ncurl.html">ncurl()</a></code> argument ‘request’ renamed to ‘response’ for specifying response headers to return (to avoid confusion); the ‘pem’ argument is also moved after the new argument ‘follow’.</li>
 <li>
