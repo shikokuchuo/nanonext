@@ -9,7 +9,7 @@ recv_aio(
   mode = c("serial", "character", "complex", "double", "integer", "logical", "numeric",
     "raw"),
   timeout = NULL,
-  keep.raw = TRUE,
+  keep.raw = FALSE,
   n = 65536L
 )
 }
@@ -25,9 +25,9 @@ For Streams, 'serial' is not an option and the default is 'character'.}
 \item{timeout}{[default NULL] integer value in milliseconds or NULL, which
 applies a socket-specific default, usually the same as no timeout.}
 
-\item{keep.raw}{[default TRUE] logical flag whether to keep the received raw
-vector (useful in case conversion from raw fails). If FALSE, will return
-the converted data only.}
+\item{keep.raw}{[default FALSE] logical flag whether to keep the received raw
+vector. If TRUE, will return a list of the received raw vector as well as
+the converted data.}
 
 \item{n}{[default 65536L] applicable to Streams only, the maximum number of
 bytes to receive. Can be an over-estimate, but note that a buffer of this

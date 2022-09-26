@@ -11,7 +11,7 @@ request(
   recv_mode = c("serial", "character", "complex", "double", "integer", "logical",
     "numeric", "raw"),
   timeout = NULL,
-  keep.raw = TRUE
+  keep.raw = FALSE
 )
 }
 \arguments{
@@ -34,9 +34,9 @@ the raw vector received will be converted into the respective mode.}
 applies a socket-specific default, usually the same as no timeout. Note
 that this applies to receiving the result.}
 
-\item{keep.raw}{[default TRUE] logical flag whether to keep the received raw
-vector (useful in case conversion from raw fails). If FALSE, will return
-the converted data only.}
+\item{keep.raw}{[default FALSE] logical flag whether to keep the received raw
+vector. If TRUE, will return a list of the received raw vector as well as
+the converted data.}
 }
 \value{
 A 'recvAio' (object of class 'recvAio').

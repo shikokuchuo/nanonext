@@ -9,7 +9,7 @@ recv(
   mode = c("serial", "character", "complex", "double", "integer", "logical", "numeric",
     "raw"),
   block = NULL,
-  keep.raw = TRUE,
+  keep.raw = FALSE,
   ...,
   n = 65536L
 )
@@ -29,9 +29,9 @@ to return immediately even if unsuccessful (e.g. if no connection is
 available), or else an integer value specifying the maximum time to block
 in milliseconds, after which the operation will time out.}
 
-\item{keep.raw}{[default TRUE] logical flag whether to keep the received raw
-vector (useful in case conversion from raw fails). If FALSE, will return
-the converted data only.}
+\item{keep.raw}{[default FALSE] logical flag whether to keep the received raw
+vector. If TRUE, will return a list of the received raw vector as well as
+the converted data.}
 
 \item{...}{not used.}
 
@@ -40,9 +40,9 @@ bytes to receive. Can be an over-estimate, but note that a buffer of this
 size is reserved.}
 }
 \value{
-Named list of 2 elements: 'raw' containing the received raw vector
-    and 'data' containing the converted object, or else the converted object
-    if 'keep.raw' is set to FALSE.
+Depending on the value of 'keep.raw', either a named list of 2
+    elements if TRUE: 'raw' containing the received raw vector and 'data'
+    containing the converted object, or else the converted object if FALSE.
 }
 \description{
 Receive data over a connection (Socket, Context or Stream).

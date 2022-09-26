@@ -119,12 +119,6 @@ Receive message using ‘nano2’:
 
 ``` r
 nano2$recv()
-#> $raw
-#>  [1] 58 0a 00 00 00 03 00 04 02 01 00 03 05 00 00 00 00 05 55 54 46 2d 38 00 00
-#> [26] 00 10 00 00 00 01 00 04 00 09 00 00 00 0c 68 65 6c 6c 6f 20 77 6f 72 6c 64
-#> [51] 21
-#> 
-#> $data
 #> [1] "hello world!"
 ```
 
@@ -157,12 +151,6 @@ Receive message using ‘socket2’:
 
 ``` r
 recv(socket2)
-#> $raw
-#>  [1] 58 0a 00 00 00 03 00 04 02 01 00 03 05 00 00 00 00 05 55 54 46 2d 38 00 00
-#> [26] 00 10 00 00 00 01 00 04 00 09 00 00 00 0c 68 65 6c 6c 6f 20 77 6f 72 6c 64
-#> [51] 21
-#> 
-#> $data
 #> [1] "hello world!"
 ```
 
@@ -219,11 +207,6 @@ Receive in R, specifying the receive mode as ‘double’:
 
 ``` r
 n$recv(mode = "double")
-#> $raw
-#>  [1] 9a 99 99 99 99 99 f1 3f 9a 99 99 99 99 99 01 40 66 66 66 66 66 66 0a 40 9a
-#> [26] 99 99 99 99 99 11 40 00 00 00 00 00 00 16 40
-#> 
-#> $data
 #> [1] 1.1 2.2 3.3 4.4 5.5
 ```
 
@@ -248,7 +231,7 @@ complete.
 
 ``` r
 # an async receive is requested, but no messages are waiting (yet to be sent)
-msg <- recv_aio(s2)
+msg <- recv_aio(s2, keep.raw = TRUE)
 msg
 #> < recvAio >
 #>  - $data for message data
@@ -356,7 +339,7 @@ request and returns immediately with a `recvAio` object.
 library(nanonext)
 req <- socket("req", dial = "tcp://127.0.0.1:6546")
 ctxq <- context(req)
-aio <- request(ctxq, data = 1e8, recv_mode = "double", keep.raw = FALSE)
+aio <- request(ctxq, data = 1e8, recv_mode = "double")
 ```
 
 At this point, the client can run additional code concurrent with the
@@ -379,7 +362,7 @@ aio
 #> < recvAio >
 #>  - $data for message data
 aio$data |> str()
-#>  num [1:100000000] 0.0179 -1.0288 0.1653 -0.0988 0.6253 ...
+#>  num [1:100000000] 0.795 0.883 0.327 0.16 -0.781 ...
 ```
 
 As `call_aio()` is blocking and will wait for completion, an alternative
@@ -412,33 +395,33 @@ sub <- socket("sub", dial = "inproc://nanobroadcast")
 sub |> subscribe(topic = "examples")
 
 pub |> send(c("examples", "this is an example"), mode = "raw")
-sub |> recv(mode = "character", keep.raw = FALSE)
+sub |> recv(mode = "character")
 #> [1] "examples"           "this is an example"
 
 pub |> send("examples at the start of a single text message", mode = "raw")
-sub |> recv(mode = "character", keep.raw = FALSE)
+sub |> recv(mode = "character")
 #> [1] "examples at the start of a single text message"
 
 pub |> send(c("other", "this other topic will not be received"), mode = "raw")
-sub |> recv(mode = "character", keep.raw = FALSE)
-#> Warning in recv(sub, mode = "character", keep.raw = FALSE): 8 | Try again
+sub |> recv(mode = "character")
+#> Warning in recv(sub, mode = "character"): 8 | Try again
 #> 'errorValue' int 8
 
 # specify NULL to subscribe to ALL topics
 sub |> subscribe(topic = NULL)
 pub |> send(c("newTopic", "this is a new topic"), mode = "raw")
-sub |> recv("character", keep.raw = FALSE)
+sub |> recv("character")
 #> [1] "newTopic"            "this is a new topic"
 
 sub |> unsubscribe(topic = NULL)
 pub |> send(c("newTopic", "this topic will now not be received"), mode = "raw")
-sub |> recv("character", keep.raw = FALSE)
-#> Warning in recv(sub, "character", keep.raw = FALSE): 8 | Try again
+sub |> recv("character")
+#> Warning in recv(sub, "character"): 8 | Try again
 #> 'errorValue' int 8
 
 # however the topics explicitly subscribed to are still received
 pub |> send(c("examples will still be received"), mode = "raw")
-sub |> recv(mode = "character", keep.raw = FALSE)
+sub |> recv(mode = "character")
 #> [1] "examples will still be received"
 ```
 
@@ -449,7 +432,7 @@ and received.
 ``` r
 sub |> subscribe(topic = 1)
 pub |> send(c(1, 10, 10, 20), mode = "raw")
-sub |> recv(mode = "double", keep.raw = FALSE)
+sub |> recv(mode = "double")
 #> [1]  1 10 10 20
 
 close(pub)
@@ -482,14 +465,14 @@ aio1 <- sur |> recv_aio()
 aio2 <- sur |> recv_aio()
 
 # res1 receives the message and replies using an aio send function
-res1 |> recv(keep.raw = FALSE)
+res1 |> recv()
 #> [1] "service check"
 res1 |> send_aio("res1")
 #> < sendAio >
 #>  - $result for send result
 
 # res2 receives the message but fails to reply
-res2 |> recv(keep.raw = FALSE)
+res2 |> recv()
 #> [1] "service check"
 
 # checking the aio - only the first will have resolved
@@ -537,11 +520,11 @@ ncurl("https://httpbin.org/headers")
 #>   [1] 7b 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73
 #>  [26] 74 22 3a 20 22 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22
 #>  [51] 58 2d 41 6d 7a 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31
-#>  [76] 2d 36 33 33 30 65 32 38 38 2d 36 39 38 63 39 66 66 35 32 62 66 33 32 66 36
-#> [101] 63 37 33 30 63 33 63 34 34 22 0a 20 20 7d 0a 7d 0a
+#>  [76] 2d 36 33 33 31 37 31 61 37 2d 37 65 62 39 37 63 38 34 36 62 35 31 30 65 61
+#> [101] 31 37 34 65 66 63 31 66 66 22 0a 20 20 7d 0a 7d 0a
 #> 
 #> $data
-#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6330e288-698c9ff52bf32f6c730c3c44\"\n  }\n}\n"
+#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-633171a7-7eb97c846b510ea174efc1ff\"\n  }\n}\n"
 ```
 
 For advanced use, supports additional HTTP methods such as POST or PUT.
@@ -562,13 +545,13 @@ res
 
 call_aio(res)$headers
 #> $Date
-#> [1] "Sun, 25 Sep 2022 23:21:44 GMT"
+#> [1] "Mon, 26 Sep 2022 09:32:23 GMT"
 #> 
 #> $Server
 #> [1] "gunicorn/19.9.0"
 
 res$data
-#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6330e288-538dba5a3d23dc83036bafc1\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"185.225.45.49\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
+#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-633171a7-1ed1f75f53984f06113f1e9c\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"185.225.45.49\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
 ```
 
 In this respect, it may be used as a performant and lightweight method
@@ -603,16 +586,16 @@ Sockets. This affords a great deal of flexibility in ingesting and
 processing streaming data.
 
 ``` r
-s |> recv(keep.raw = FALSE)
+s |> recv()
 #> [1] "{\"status_code\":200,\"message\":\"Authorized\"}"
 
 s |> send('{"action": "subscribe", "symbols": "EURUSD"}')
 
-s |> recv(keep.raw = FALSE)
-#> [1] "{\"s\":\"EURUSD\",\"a\":0.96935,\"b\":0.96926,\"dc\":\"0.0464\",\"dd\":\"0.0005\",\"ppms\":true,\"t\":1664148105000}"
+s |> recv()
+#> [1] "{\"s\":\"EURUSD\",\"a\":0.96828,\"b\":0.96821,\"dc\":\"-0.0279\",\"dd\":\"-0.0003\",\"ppms\":false,\"t\":1664184744000}"
 
-s |> recv(keep.raw = FALSE)
-#> [1] "{\"s\":\"EURUSD\",\"a\":0.96935,\"b\":0.96927,\"dc\":\"0.0464\",\"dd\":\"0.0005\",\"ppms\":true,\"t\":1664148105000}"
+s |> recv()
+#> [1] "{\"s\":\"EURUSD\",\"a\":0.96834,\"b\":0.96827,\"dc\":\"-0.0217\",\"dd\":\"-0.0002\",\"ppms\":false,\"t\":1664184744000}"
 
 close(s)
 ```

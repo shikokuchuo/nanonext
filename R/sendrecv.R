@@ -89,17 +89,17 @@ send <- function(con,
 #'     The default 'serial' means a serialised R object, for the other modes,
 #'     the raw vector received will be converted into the respective mode.
 #'     For Streams, 'serial' is not an option and the default is 'character'.
-#' @param keep.raw [default TRUE] logical flag whether to keep the received raw
-#'     vector (useful in case conversion from raw fails). If FALSE, will return
-#'     the converted data only.
+#' @param keep.raw [default FALSE] logical flag whether to keep the received raw
+#'     vector. If TRUE, will return a list of the received raw vector as well as
+#'     the converted data.
 #' @param n [default 65536L] applicable to Streams only, the maximum number of
 #'     bytes to receive. Can be an over-estimate, but note that a buffer of this
 #'     size is reserved.
 #' @inheritParams send
 #'
-#' @return Named list of 2 elements: 'raw' containing the received raw vector
-#'     and 'data' containing the converted object, or else the converted object
-#'     if 'keep.raw' is set to FALSE.
+#' @return Depending on the value of 'keep.raw', either a named list of 2
+#'     elements if TRUE: 'raw' containing the received raw vector and 'data'
+#'     containing the converted object, or else the converted object if FALSE.
 #'
 #' @details In case of an error, an integer 'errorValue' is returned (to be
 #'     distiguishable from an integer message value). This can be verified using
@@ -160,7 +160,7 @@ recv <- function(con,
                  mode = c("serial", "character", "complex", "double",
                           "integer", "logical", "numeric", "raw"),
                  block = NULL,
-                 keep.raw = TRUE,
+                 keep.raw = FALSE,
                  ...,
                  n = 65536L) .Call(rnng_recv, con, mode, block, keep.raw, n)
 

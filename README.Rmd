@@ -204,7 +204,7 @@ An 'Aio' object returns an unresolved value whilst its asynchronous operation is
 
 ```{r async4}
 # an async receive is requested, but no messages are waiting (yet to be sent)
-msg <- recv_aio(s2)
+msg <- recv_aio(s2, keep.raw = TRUE)
 msg
 msg$data
 
@@ -286,7 +286,7 @@ reply(ctxp, execute = rnorm, send_mode = "raw")
 library(nanonext)
 req <- socket("req", dial = "tcp://127.0.0.1:6546")
 ctxq <- context(req)
-aio <- request(ctxq, data = 1e8, recv_mode = "double", keep.raw = FALSE)
+aio <- request(ctxq, data = 1e8, recv_mode = "double")
 
 ```
 
@@ -329,26 +329,26 @@ sub <- socket("sub", dial = "inproc://nanobroadcast")
 sub |> subscribe(topic = "examples")
 
 pub |> send(c("examples", "this is an example"), mode = "raw")
-sub |> recv(mode = "character", keep.raw = FALSE)
+sub |> recv(mode = "character")
 
 pub |> send("examples at the start of a single text message", mode = "raw")
-sub |> recv(mode = "character", keep.raw = FALSE)
+sub |> recv(mode = "character")
 
 pub |> send(c("other", "this other topic will not be received"), mode = "raw")
-sub |> recv(mode = "character", keep.raw = FALSE)
+sub |> recv(mode = "character")
 
 # specify NULL to subscribe to ALL topics
 sub |> subscribe(topic = NULL)
 pub |> send(c("newTopic", "this is a new topic"), mode = "raw")
-sub |> recv("character", keep.raw = FALSE)
+sub |> recv("character")
 
 sub |> unsubscribe(topic = NULL)
 pub |> send(c("newTopic", "this topic will now not be received"), mode = "raw")
-sub |> recv("character", keep.raw = FALSE)
+sub |> recv("character")
 
 # however the topics explicitly subscribed to are still received
 pub |> send(c("examples will still be received"), mode = "raw")
-sub |> recv(mode = "character", keep.raw = FALSE)
+sub |> recv(mode = "character")
 
 ```
 
@@ -357,7 +357,7 @@ The subscribed topic can be of any atomic type (not just character), allowing in
 ```{r pub2}
 sub |> subscribe(topic = 1)
 pub |> send(c(1, 10, 10, 20), mode = "raw")
-sub |> recv(mode = "double", keep.raw = FALSE)
+sub |> recv(mode = "double")
 
 close(pub)
 close(sub)
@@ -386,11 +386,11 @@ aio1 <- sur |> recv_aio()
 aio2 <- sur |> recv_aio()
 
 # res1 receives the message and replies using an aio send function
-res1 |> recv(keep.raw = FALSE)
+res1 |> recv()
 res1 |> send_aio("res1")
 
 # res2 receives the message but fails to reply
-res2 |> recv(keep.raw = FALSE)
+res2 |> recv()
 
 # checking the aio - only the first will have resolved
 aio1$data
@@ -461,13 +461,13 @@ s
 `send()` and `recv()`, as well as their asynchronous counterparts `send_aio()` and `recv_aio()` can be used on Streams in the same way as Sockets. This affords a great deal of flexibility in ingesting and processing streaming data.
 
 ```{r stream2}
-s |> recv(keep.raw = FALSE)
+s |> recv()
 
 s |> send('{"action": "subscribe", "symbols": "EURUSD"}')
 
-s |> recv(keep.raw = FALSE)
+s |> recv()
 
-s |> recv(keep.raw = FALSE)
+s |> recv()
 
 close(s)
 

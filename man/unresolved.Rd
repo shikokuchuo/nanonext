@@ -20,6 +20,8 @@ Query whether an Aio or Aio value remains unresolved. Unlike
 \details{
 Returns TRUE for unresolved Aios or Aio values, FALSE otherwise.
     Suitable for use in control flow statements such as \code{while} or \code{if}.
+
+    Note: querying resolution may cause a previously unresolved Aio to resolve.
 }
 \examples{
 s1 <- socket("pair", listen = "inproc://nanonext")

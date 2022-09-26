@@ -136,7 +136,7 @@ recv_aio <- function(con,
                      mode = c("serial", "character", "complex", "double",
                               "integer", "logical", "numeric", "raw"),
                      timeout = NULL,
-                     keep.raw = TRUE,
+                     keep.raw = FALSE,
                      n = 65536L) {
 
   aio <- .Call(rnng_recv_aio, con, mode, timeout, n)
@@ -273,6 +273,8 @@ stop_aio <- function(aio) invisible(.Call(rnng_aio_stop, aio))
 #'
 #' @details Returns TRUE for unresolved Aios or Aio values, FALSE otherwise.
 #'     Suitable for use in control flow statements such as \code{while} or \code{if}.
+#'
+#'     Note: querying resolution may cause a previously unresolved Aio to resolve.
 #'
 #' @examples
 #' s1 <- socket("pair", listen = "inproc://nanonext")

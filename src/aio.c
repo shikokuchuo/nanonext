@@ -269,13 +269,10 @@ SEXP rnng_unresolved(SEXP x) {
 
   int xc = 0;
   switch (TYPEOF(x)) {
-  case ENVSXP: ;
-    SEXP coreaio = Rf_findVarInFrame(x, nano_AioSymbol);
-    if (R_ExternalPtrTag(coreaio) == nano_AioSymbol && R_ExternalPtrAddr(coreaio) != NULL) {
-      nano_aio *aiop = (nano_aio *) R_ExternalPtrAddr(coreaio);
-      if (nng_aio_busy(aiop->aio))
-        xc = 1;
-    }
+  case ENVSXP:
+    if ((Rf_inherits(x, "recvAio") && Rf_inherits(Rf_findVarInFrame(x, nano_DataSymbol), "unresolvedValue")) ||
+        (Rf_inherits(x, "sendAio") && Rf_inherits(Rf_findVarInFrame(x, nano_ResultSymbol), "unresolvedValue")))
+      xc = 1;
     break;
   case LGLSXP:
     if (Rf_inherits(x, "unresolvedValue"))

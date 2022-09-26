@@ -133,10 +133,10 @@ reply <- function(context,
 
   res <- recv(context, mode = recv_mode, block = timeout, keep.raw = FALSE)
   is_error_value(res) && return(res)
-  on.exit(expr = send(context, data = as.raw(0L), mode = send_mode, echo = FALSE))
+  on.exit(expr = send(context, data = as.raw(0L), mode = send_mode))
   data <- execute(res, ...)
   on.exit()
-  send(context, data = data, mode = send_mode, block = timeout, echo = FALSE)
+  send(context, data = data, mode = send_mode, block = timeout)
 
 }
 
@@ -193,7 +193,7 @@ request <- function(context,
                     recv_mode = c("serial", "character", "complex", "double",
                                   "integer", "logical", "numeric", "raw"),
                     timeout = NULL,
-                    keep.raw = TRUE) {
+                    keep.raw = FALSE) {
 
   res <- .Call(rnng_send_aio, context, data, send_mode, NULL)
   is.integer(res) && return(res)
