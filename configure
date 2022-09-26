@@ -57,7 +57,8 @@ then
   PKG_CFLAGS="-I/usr/include $PKG_CFLAGS"
   PKG_LIBS="-L/usr/lib $PKG_LIBS"
 
-elif [ -d "/usr/local/opt/mbedtls" ]; then
+elif [ -d "/usr/local/opt/mbedtls" ]
+then
   echo "Found 'libmbedtls' in /usr/local/opt ..."
   PKG_CFLAGS="-I/usr/local/opt/mbedtls/include $PKG_CFLAGS"
   PKG_LIBS="-L/usr/local/opt/mbedtls/lib $PKG_LIBS"
@@ -81,7 +82,13 @@ else
 fi
 
 # Build NNG
-xz -dc inst/nng-$LIB_VER.tar.xz | tar -xf -
+
+if [ `uname` = "SunOS" ]
+then
+  xz -dc inst/nng-$LIB_VER.tar.xz | tar -xf -
+else
+  tar -xf inst/nng-$LIB_VER.tar.xz
+fi
 cd nng-$LIB_VER
 echo "Compiling 'libnng' from source ..."
 cmake -DCMAKE_POSITION_INDEPENDENT_CODE=1 -DCMAKE_COLOR_MAKEFILE=0 \
