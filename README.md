@@ -362,7 +362,7 @@ aio
 #> < recvAio >
 #>  - $data for message data
 aio$data |> str()
-#>  num [1:100000000] -0.978 -3.275 1.761 1.073 -0.626 ...
+#>  num [1:100000000] 0.559 -0.153 0.436 0.813 0.528 ...
 ```
 
 As `call_aio()` is blocking and will wait for completion, an alternative
@@ -520,11 +520,11 @@ ncurl("https://httpbin.org/headers")
 #>   [1] 7b 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73
 #>  [26] 74 22 3a 20 22 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22
 #>  [51] 58 2d 41 6d 7a 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31
-#>  [76] 2d 36 33 33 31 39 64 39 37 2d 35 62 63 32 32 36 32 62 35 36 64 66 38 61 34
-#> [101] 61 33 64 33 34 63 63 34 31 22 0a 20 20 7d 0a 7d 0a
+#>  [76] 2d 36 33 33 32 30 38 37 61 2d 36 31 63 34 36 65 37 30 37 36 64 36 61 35 62
+#> [101] 35 31 39 35 66 66 61 33 61 22 0a 20 20 7d 0a 7d 0a
 #> 
 #> $data
-#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-63319d97-5bc2262b56df8a4a3d34cc41\"\n  }\n}\n"
+#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6332087a-61c46e7076d6a5b5195ffa3a\"\n  }\n}\n"
 ```
 
 For advanced use, supports additional HTTP methods such as POST or PUT.
@@ -545,13 +545,13 @@ res
 
 call_aio(res)$headers
 #> $Date
-#> [1] "Mon, 26 Sep 2022 12:39:51 GMT"
+#> [1] "Mon, 26 Sep 2022 20:15:54 GMT"
 #> 
 #> $Server
 #> [1] "gunicorn/19.9.0"
 
 res$data
-#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-63319d97-7d9a347936776c5e6727a393\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"80.169.103.218\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
+#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6332087a-6ae2f8b30cbe5d58721db794\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"185.225.45.49\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
 ```
 
 In this respect, it may be used as a performant and lightweight method
@@ -592,10 +592,10 @@ s |> recv()
 s |> send('{"action": "subscribe", "symbols": "EURUSD"}')
 
 s |> recv()
-#> [1] "{\"s\":\"EURUSD\",\"a\":0.96685,\"b\":0.96683,\"dc\":\"-0.1758\",\"dd\":\"-0.0017\",\"ppms\":false,\"t\":1664195992000}"
+#> [1] "{\"s\":\"EURUSD\",\"a\":0.96108,\"b\":0.96102,\"dc\":\"-0.7773\",\"dd\":\"-0.0075\",\"ppms\":false,\"t\":1664223355000}"
 
 s |> recv()
-#> [1] "{\"s\":\"EURUSD\",\"a\":0.96684,\"b\":0.96682,\"dc\":\"-0.1769\",\"dd\":\"-0.0017\",\"ppms\":false,\"t\":1664195992000}"
+#> [1] "{\"s\":\"EURUSD\",\"a\":0.96108,\"b\":0.96102,\"dd\":\"-0.0075\",\"dc\":\"-0.7773\",\"ppms\":false,\"t\":1664223355000}"
 
 close(s)
 ```
@@ -658,6 +658,11 @@ installation.
 
 ‘INCLUDE_DIR’ and ‘LIB_DIR’ environment variables may be set prior to
 package install to specify a custom location for ‘libmbedtls’.
+
+*Additional requirements for Solaris: (i) the ‘xz’ package - available
+on OpenCSW, and (ii) a more recent version of ‘cmake’ than that
+available on OpenCSW - see the ‘cmake’ website for the latest source
+file which can be built with just a C compiler.*
 
 #### Windows
 

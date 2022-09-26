@@ -21,8 +21,8 @@
 * Functions `send()`, `recv()`, `send_aio()`, `recv_aio()`, `setopt()`, `subscribe()`, `unsubscribe()` and `survey_time()` are no longer S3 generics for enhanced performance.
 * The source code of 'libnng' (1.6.0 pre-release 722bf46) is now bundled instead of downloaded - more efficient as excludes unused portions such as test code and deprecated interfaces.
 * Detects system installations of 'libmbedtls' and only downloads and builds from source where not available.
-* On Windows with R >= 4.2, the bundled 'libnng' and a downloaded 'libmbedtls' v3.2.1 release is now built from source using the rtools42 toolchain. Installation falls back to pre-compiled libraries for older R releases.
 * Any version of MbedTLS v2 or v3 is now supported.
+* On Windows with R >= 4.2, the bundled 'libnng' and a downloaded 'libmbedtls' v3.2.1 release is now built from source using the rtools42 toolchain. Installation falls back to pre-compiled libraries for older R releases.
 * Minimum supported R version increased to v3.6.0 due to use of optimised C code to create environments.
 * Internal performance enhancements.
 

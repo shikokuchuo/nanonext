@@ -515,6 +515,8 @@ A system installation of 'libmbedtls' will be used where detected in the usual f
 
 'INCLUDE_DIR' and 'LIB_DIR' environment variables may be set prior to package install to specify a custom location for 'libmbedtls'.
 
+*Additional requirements for Solaris: (i) the 'xz' package - available on OpenCSW, and (ii) a more recent version of 'cmake' than that available on OpenCSW - see the 'cmake' website for the latest source file which can be built with just a C compiler.*
+
 #### Windows
 
 For R >= 4.2 using the 'rtools42' toolchain, 'libnng' v1.6.0 (722bf46) will be built from the package sources and 'libmbedtls' v3.2.1 will be downloaded and built automatically during installation.
