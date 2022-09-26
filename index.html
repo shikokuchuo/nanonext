@@ -46,7 +46,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.5.9009</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.5.9010</span>
       </span>
     </div>
 
@@ -322,7 +322,7 @@
 <span><span class="co">#&gt; &lt; recvAio &gt;</span></span>
 <span><span class="co">#&gt;  - $data for message data</span></span>
 <span><span class="va">aio</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] 0.795 0.883 0.327 0.16 -0.781 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] -0.978 -3.275 1.761 1.073 -0.626 ...</span></span></code></pre></div>
 <p>As <code><a href="reference/call_aio.html">call_aio()</a></code> is blocking and will wait for completion, an alternative is to query <code>aio$data</code> directly. This will return an ‘unresolved’ logical NA value if the calculation is yet to complete.</p>
 <p>In this example the calculation is returned, but other operations may reside entirely on the server side, for example writing data to disk.</p>
 <p>In such a case, calling or querying the value confirms that the operation has completed, and provides the return value of the function, which may typically be NULL or an exit code.</p>
@@ -444,11 +444,11 @@
 <span><span class="co">#&gt;   [1] 7b 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73</span></span>
 <span><span class="co">#&gt;  [26] 74 22 3a 20 22 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22</span></span>
 <span><span class="co">#&gt;  [51] 58 2d 41 6d 7a 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31</span></span>
-<span><span class="co">#&gt;  [76] 2d 36 33 33 31 37 31 61 37 2d 37 65 62 39 37 63 38 34 36 62 35 31 30 65 61</span></span>
-<span><span class="co">#&gt; [101] 31 37 34 65 66 63 31 66 66 22 0a 20 20 7d 0a 7d 0a</span></span>
+<span><span class="co">#&gt;  [76] 2d 36 33 33 31 39 64 39 37 2d 35 62 63 32 32 36 32 62 35 36 64 66 38 61 34</span></span>
+<span><span class="co">#&gt; [101] 61 33 64 33 34 63 63 34 31 22 0a 20 20 7d 0a 7d 0a</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $data</span></span>
-<span><span class="co">#&gt; [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-633171a7-7eb97c846b510ea174efc1ff\"\n  }\n}\n"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-63319d97-5bc2262b56df8a4a3d34cc41\"\n  }\n}\n"</span></span></code></pre></div>
 <p>For advanced use, supports additional HTTP methods such as POST or PUT.</p>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ncurl.html">ncurl</a></span><span class="op">(</span><span class="st">"http://httpbin.org/post"</span>,</span>
@@ -466,13 +466,13 @@
 <span></span>
 <span><span class="fu"><a href="reference/call_aio.html">call_aio</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span><span class="op">$</span><span class="va">headers</span></span>
 <span><span class="co">#&gt; $Date</span></span>
-<span><span class="co">#&gt; [1] "Mon, 26 Sep 2022 09:32:23 GMT"</span></span>
+<span><span class="co">#&gt; [1] "Mon, 26 Sep 2022 12:39:51 GMT"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $Server</span></span>
 <span><span class="co">#&gt; [1] "gunicorn/19.9.0"</span></span>
 <span></span>
 <span><span class="va">res</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt; [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-633171a7-1ed1f75f53984f06113f1e9c\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"185.225.45.49\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-63319d97-7d9a347936776c5e6727a393\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"80.169.103.218\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"</span></span></code></pre></div>
 <p>In this respect, it may be used as a performant and lightweight method for making REST API requests.</p>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
@@ -498,10 +498,10 @@
 <span><span class="va">s</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/send.html">send</a></span><span class="op">(</span><span class="st">'{"action": "subscribe", "symbols": "EURUSD"}'</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">s</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/recv.html">recv</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "{\"s\":\"EURUSD\",\"a\":0.96828,\"b\":0.96821,\"dc\":\"-0.0279\",\"dd\":\"-0.0003\",\"ppms\":false,\"t\":1664184744000}"</span></span>
+<span><span class="co">#&gt; [1] "{\"s\":\"EURUSD\",\"a\":0.96685,\"b\":0.96683,\"dc\":\"-0.1758\",\"dd\":\"-0.0017\",\"ppms\":false,\"t\":1664195992000}"</span></span>
 <span></span>
 <span><span class="va">s</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/recv.html">recv</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "{\"s\":\"EURUSD\",\"a\":0.96834,\"b\":0.96827,\"dc\":\"-0.0217\",\"dd\":\"-0.0002\",\"ppms\":false,\"t\":1664184744000}"</span></span>
+<span><span class="co">#&gt; [1] "{\"s\":\"EURUSD\",\"a\":0.96684,\"b\":0.96682,\"dc\":\"-0.1769\",\"dd\":\"-0.0017\",\"ppms\":false,\"t\":1664195992000}"</span></span>
 <span></span>
 <span><span class="fu"><a href="reference/close.html">close</a></span><span class="op">(</span><span class="va">s</span><span class="op">)</span></span></code></pre></div>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
