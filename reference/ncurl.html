@@ -160,7 +160,7 @@ If missing or NULL, certificates are not validated.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $headers</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $headers$date</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Mon, 26 Sep 2022 20:46:23 GMT"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Mon, 26 Sep 2022 22:57:44 GMT"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $headers$server</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "gunicorn/19.9.0"</span>
@@ -170,14 +170,14 @@ If missing or NULL, certificates are not validated.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   [1] 7b 0a 20 20 22 61 72 67 73 22 3a 20 7b 7d 2c 20 0a 20 20 22 68 65 61 64 65</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [26] 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73 74 22 3a 20 22 68 74 74 70 62</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [51] 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22 58 2d 41 6d 7a 6e 2d 54 72 61</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [76] 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31 2d 36 33 33 32 30 66 39 66 2d</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [101] 30 65 39 61 64 65 66 62 33 32 62 33 31 33 35 33 34 31 34 63 30 33 31 62 22</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [126] 0a 20 20 7d 2c 20 0a 20 20 22 6f 72 69 67 69 6e 22 3a 20 22 32 30 2e 31 31</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [151] 39 2e 34 31 2e 35 34 22 2c 20 0a 20 20 22 75 72 6c 22 3a 20 22 68 74 74 70</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [176] 73 3a 2f 2f 68 74 74 70 62 69 6e 2e 6f 72 67 2f 67 65 74 22 0a 7d 0a</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [76] 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31 2d 36 33 33 32 32 65 36 38 2d</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [101] 30 31 64 35 33 61 38 64 34 65 66 33 33 66 38 39 34 32 32 39 61 31 66 38 22</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [126] 0a 20 20 7d 2c 20 0a 20 20 22 6f 72 69 67 69 6e 22 3a 20 22 32 30 2e 31 32</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [151] 2e 32 2e 39 36 22 2c 20 0a 20 20 22 75 72 6c 22 3a 20 22 68 74 74 70 73 3a</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [176] 2f 2f 68 74 74 70 62 69 6e 2e 6f 72 67 2f 67 65 74 22 0a 7d 0a</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $data</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "{\n  \"args\": {}, \n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-63320f9f-0e9adefb32b31353414c031b\"\n  }, \n  \"origin\": \"20.119.41.54\", \n  \"url\": \"https://httpbin.org/get\"\n}\n"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "{\n  \"args\": {}, \n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-63322e68-01d53a8d4ef33f894229a1f8\"\n  }, \n  \"origin\": \"20.12.2.96\", \n  \"url\": \"https://httpbin.org/get\"\n}\n"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span><span class="fu">ncurl</span><span class="op">(</span><span class="st">"http://httpbin.org/put"</span>,,,<span class="st">"PUT"</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>Authorization <span class="op">=</span> <span class="st">"Bearer APIKEY"</span><span class="op">)</span>, <span class="st">"hello world"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $status</span>
@@ -195,15 +195,15 @@ If missing or NULL, certificates are not validated.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [126] 2c 20 0a 20 20 20 20 22 43 6f 6e 74 65 6e 74 2d 4c 65 6e 67 74 68 22 3a 20</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [151] 22 31 31 22 2c 20 0a 20 20 20 20 22 48 6f 73 74 22 3a 20 22 68 74 74 70 62</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [176] 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22 58 2d 41 6d 7a 6e 2d 54 72 61</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [201] 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31 2d 36 33 33 32 30 66 39 66 2d</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [226] 33 64 65 63 61 31 38 36 33 30 34 31 64 62 31 33 30 37 32 62 64 66 61 63 22</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [201] 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31 2d 36 33 33 32 32 65 36 38 2d</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [226] 34 62 63 37 62 63 37 63 33 66 64 37 34 66 61 37 32 33 35 35 61 36 38 35 22</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [251] 0a 20 20 7d 2c 20 0a 20 20 22 6a 73 6f 6e 22 3a 20 6e 75 6c 6c 2c 20 0a 20</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [276] 20 22 6f 72 69 67 69 6e 22 3a 20 22 32 30 2e 31 31 39 2e 34 31 2e 35 34 22</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [301] 2c 20 0a 20 20 22 75 72 6c 22 3a 20 22 68 74 74 70 3a 2f 2f 68 74 74 70 62</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [326] 69 6e 2e 6f 72 67 2f 70 75 74 22 0a 7d 0a</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [276] 20 22 6f 72 69 67 69 6e 22 3a 20 22 32 30 2e 31 32 2e 32 2e 39 36 22 2c 20</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [301] 0a 20 20 22 75 72 6c 22 3a 20 22 68 74 74 70 3a 2f 2f 68 74 74 70 62 69 6e</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [326] 2e 6f 72 67 2f 70 75 74 22 0a 7d 0a</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $data</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "{\n  \"args\": {}, \n  \"data\": \"hello world\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"11\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-63320f9f-3deca1863041db13072bdfac\"\n  }, \n  \"json\": null, \n  \"origin\": \"20.119.41.54\", \n  \"url\": \"http://httpbin.org/put\"\n}\n"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "{\n  \"args\": {}, \n  \"data\": \"hello world\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"11\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-63322e68-4bc7bc7c3fd74fa72355a685\"\n  }, \n  \"json\": null, \n  \"origin\": \"20.12.2.96\", \n  \"url\": \"http://httpbin.org/put\"\n}\n"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span><span class="fu">ncurl</span><span class="op">(</span><span class="st">"http://httpbin.org/post"</span>,,,<span class="st">"POST"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>`Content-Type` <span class="op">=</span> <span class="st">"application/json"</span><span class="op">)</span>,<span class="st">'{"k":"v"}'</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $status</span>
@@ -221,16 +221,16 @@ If missing or NULL, certificates are not validated.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [126] 6f 6e 74 65 6e 74 2d 54 79 70 65 22 3a 20 22 61 70 70 6c 69 63 61 74 69 6f</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [151] 6e 2f 6a 73 6f 6e 22 2c 20 0a 20 20 20 20 22 48 6f 73 74 22 3a 20 22 68 74</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [176] 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22 58 2d 41 6d 7a 6e 2d</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [201] 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31 2d 36 33 33 32 30 66</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [226] 39 66 2d 31 62 62 36 37 61 33 32 34 63 38 39 32 64 63 39 31 36 30 39 35 32</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [251] 33 30 22 0a 20 20 7d 2c 20 0a 20 20 22 6a 73 6f 6e 22 3a 20 7b 0a 20 20 20</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [201] 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31 2d 36 33 33 32 32 65</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [226] 36 38 2d 36 30 61 63 34 33 37 36 36 61 32 35 66 37 35 33 33 30 63 37 66 64</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [251] 66 66 22 0a 20 20 7d 2c 20 0a 20 20 22 6a 73 6f 6e 22 3a 20 7b 0a 20 20 20</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [276] 20 22 6b 22 3a 20 22 76 22 0a 20 20 7d 2c 20 0a 20 20 22 6f 72 69 67 69 6e</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [301] 22 3a 20 22 32 30 2e 31 31 39 2e 34 31 2e 35 34 22 2c 20 0a 20 20 22 75 72</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [326] 6c 22 3a 20 22 68 74 74 70 3a 2f 2f 68 74 74 70 62 69 6e 2e 6f 72 67 2f 70</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [351] 6f 73 74 22 0a 7d 0a</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [301] 22 3a 20 22 32 30 2e 31 32 2e 32 2e 39 36 22 2c 20 0a 20 20 22 75 72 6c 22</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [326] 3a 20 22 68 74 74 70 3a 2f 2f 68 74 74 70 62 69 6e 2e 6f 72 67 2f 70 6f 73</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [351] 74 22 0a 7d 0a</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $data</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"k\\\":\\\"v\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Content-Length\": \"9\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-63320f9f-1bb67a324c892dc916095230\"\n  }, \n  \"json\": {\n    \"k\": \"v\"\n  }, \n  \"origin\": \"20.119.41.54\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"k\\\":\\\"v\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Content-Length\": \"9\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-63322e68-60ac43766a25f75330c7fdff\"\n  }, \n  \"json\": {\n    \"k\": \"v\"\n  }, \n  \"origin\": \"20.12.2.96\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
