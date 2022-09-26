@@ -74,12 +74,12 @@ messenger <- function(url, auth = NULL) {
   cat(sprintf("\n| url: %s\n", url), file = stdout())
   cat("| connecting... ", file = stderr())
 
-  s <- .Call(rnng_send, sock, writeBin(":c ", raw()), 2L, 1000L)
+  s <- send(sock, data = writeBin(":c ", raw()), mode = 2L, block = 1000L)
   if (s) {
     cat(sprintf("\r| peer offline: %s\n", format.POSIXct(Sys.time())), file = stderr())
   } else {
     cat(sprintf("\r| peer online: %s\n", format.POSIXct(Sys.time())), file = stderr())
-    r <- recv(sock, mode = 5L, block = TRUE, keep.raw = FALSE)
+    r <- recv(sock, mode = 5L, block = TRUE)
     for (i in seq_len(24L)) {
       lock[r[i]] == r[i + 24L] || {
         cat("| authentication error\n", file = stderr())

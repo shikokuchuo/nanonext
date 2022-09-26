@@ -34,9 +34,8 @@ the raw vector received will be converted into the respective mode.}
 applies a socket-specific default, usually the same as no timeout. Note
 that this applies to receiving the result.}
 
-\item{keep.raw}{[default FALSE] logical flag whether to keep the received raw
-vector. If TRUE, will return a list of the received raw vector as well as
-the converted data.}
+\item{keep.raw}{[default FALSE] logical flag whether to keep and return the
+received raw vector along with the converted data.}
 }
 \value{
 A 'recvAio' (object of class 'recvAio').

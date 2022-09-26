@@ -101,7 +101,7 @@ send_aio <- function(con, data, mode = c("serial", "raw"), timeout = NULL) {
 #'     distiguishable from an integer message value). This can be verified using
 #'     \code{\link{is_error_value}}.
 #'
-#'     If the raw data was successfully received but an error occurred in
+#'     If the raw message was successfully received but an error occurred in
 #'     unserialisation or data conversion (for example if the incorrect mode was
 #'     specified), the received raw vector will be stored at \code{$data} to
 #'     allow for the data to be recovered.

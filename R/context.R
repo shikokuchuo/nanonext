@@ -131,7 +131,7 @@ reply <- function(context,
                   timeout = NULL,
                   ...) {
 
-  res <- recv(context, mode = recv_mode, block = timeout, keep.raw = FALSE)
+  res <- recv(context, mode = recv_mode, block = timeout)
   is_error_value(res) && return(res)
   on.exit(expr = send(context, data = as.raw(0L), mode = send_mode))
   data <- execute(res, ...)

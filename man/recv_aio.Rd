@@ -25,9 +25,8 @@ For Streams, 'serial' is not an option and the default is 'character'.}
 \item{timeout}{[default NULL] integer value in milliseconds or NULL, which
 applies a socket-specific default, usually the same as no timeout.}
 
-\item{keep.raw}{[default FALSE] logical flag whether to keep the received raw
-vector. If TRUE, will return a list of the received raw vector as well as
-the converted data.}
+\item{keep.raw}{[default FALSE] logical flag whether to keep and return the
+received raw vector along with the converted data.}
 
 \item{n}{[default 65536L] applicable to Streams only, the maximum number of
 bytes to receive. Can be an over-estimate, but note that a buffer of this
@@ -56,7 +55,7 @@ Async receive is always non-blocking and returns a 'recvAio'
     distiguishable from an integer message value). This can be verified using
     \code{\link{is_error_value}}.
 
-    If the raw data was successfully received but an error occurred in
+    If the raw message was successfully received but an error occurred in
     unserialisation or data conversion (for example if the incorrect mode was
     specified), the received raw vector will be stored at \code{$data} to
     allow for the data to be recovered.

@@ -1,8 +1,9 @@
-# nanonext 0.5.5.9009 (to be 0.6.0)
+# nanonext 0.5.5.9010 (to be 0.6.0)
 
 #### New Features
 
 * Implements `base64enc()` and `base64dec()` base64 encoding and decoding using the 'Mbed TLS' library.
+* `sha224()`, `sha256()`, `sha384()` and `sha512()` functions gain an argument 'convert' to control whether to return a raw vector or character string.
 * `ncurl()` gains the optional argument 'follow' to control whether redirects are automatically followed.
 
 #### Updates
@@ -12,17 +13,17 @@
 * `send()` now returns an integer exit code in all cases. The 'echo' argument has been replaced by '...', and specifying 'echo' no longer has any effect.
 * `recv()`, `recv_aio()` and `request()` now set 'keep.raw' to FALSE as default to return only the originally sent object.
 * `ncurl()` argument 'request' renamed to 'response' for specifying response headers to return (to avoid confusion); the 'pem' argument is also moved after the new argument 'follow'.
-* `sha224()`, `sha256()`, `sha384()` and `sha512()` functions now take character vectors by serialising them rather than only taking the first element, whilst also being faster for character scalars. These functions also gain an argument 'convert' to control whether to return a raw vector or character string, instead of returning 'nanoHash' objects.
+* `sha224()`, `sha256()`, `sha384()` and `sha512()` functions no longer return 'nanoHash' objects, but a raw vector or character string depending on the new argument 'convert'.
 
 *Other changes:*
 
 * `socket()` and `nano()` now accept non-missing NULL 'listen' and 'dial' arguments, allowing easier programmatic use.
 * Functions `send()`, `recv()`, `send_aio()`, `recv_aio()`, `setopt()`, `subscribe()`, `unsubscribe()` and `survey_time()` are no longer S3 generics for enhanced performance.
-* The source code of 'libnng' is now bundled instead of downloaded (more efficient as excludes unused portions).
+* The source code of 'libnng' (1.6.0 pre-release 722bf46) is now bundled instead of downloaded - more efficient as excludes unused portions such as test code and deprecated interfaces.
 * Detects system installations of 'libmbedtls' and only downloads and builds from source where not available.
 * On Windows with R >= 4.2, the bundled 'libnng' and a downloaded 'libmbedtls' v3.2.1 release is now built from source using the rtools42 toolchain. Installation falls back to pre-compiled libraries for older R releases.
-* Now supports any version of MbedTLS v2 or v3.
-* Minimum supported R version increased to v3.6.0.
+* Any version of MbedTLS v2 or v3 is now supported.
+* Minimum supported R version increased to v3.6.0 due to use of optimised C code to create environments.
 * Internal performance enhancements.
 
 # nanonext 0.5.5
