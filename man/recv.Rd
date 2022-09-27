@@ -10,7 +10,6 @@ recv(
     "raw"),
   block = NULL,
   keep.raw = FALSE,
-  ...,
   n = 65536L
 )
 }
@@ -32,16 +31,14 @@ in milliseconds, after which the operation will time out.}
 \item{keep.raw}{[default FALSE] logical flag whether to keep and return the
 received raw vector along with the converted data.}
 
-\item{...}{not used.}
-
 \item{n}{[default 65536L] applicable to Streams only, the maximum number of
 bytes to receive. Can be an over-estimate, but note that a buffer of this
 size is reserved.}
 }
 \value{
 Depending on the value of 'keep.raw': if TRUE, a named list of 2
-    elements - 'raw' containing the received raw vector and 'data' containing
-    the converted object, or if FALSE, the converted object.
+    elements - \code{$raw} containing the received raw vector and \code{$data}
+    containing the converted data, or if FALSE, the converted data.
 }
 \description{
 Receive data over a connection (Socket, Context or Stream).

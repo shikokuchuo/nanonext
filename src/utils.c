@@ -64,7 +64,7 @@ SEXP rnng_strerror(SEXP error) {
 
 SEXP rnng_clock(void) {
 
-  double time = (double) nng_clock();
+  const double time = (double) nng_clock();
   return Rf_ScalarReal(time);
 
 }
@@ -119,8 +119,8 @@ SEXP rnng_device(SEXP s1, SEXP s2) {
   if (R_ExternalPtrTag(s2) != nano_SocketSymbol)
     Rf_error("'s2' is not a valid Socket");
 
-  int xc = nng_device(*(nng_socket *) R_ExternalPtrAddr(s1),
-                      *(nng_socket *) R_ExternalPtrAddr(s2));
+  const int xc = nng_device(*(nng_socket *) R_ExternalPtrAddr(s1),
+                            *(nng_socket *) R_ExternalPtrAddr(s2));
   if (xc)
     return mk_error(xc);
 

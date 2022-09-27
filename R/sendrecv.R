@@ -97,8 +97,8 @@ send <- function(con,
 #' @inheritParams send
 #'
 #' @return Depending on the value of 'keep.raw': if TRUE, a named list of 2
-#'     elements - 'raw' containing the received raw vector and 'data' containing
-#'     the converted object, or if FALSE, the converted object.
+#'     elements - \code{$raw} containing the received raw vector and \code{$data}
+#'     containing the converted data, or if FALSE, the converted data.
 #'
 #' @details In case of an error, an integer 'errorValue' is returned (to be
 #'     distiguishable from an integer message value). This can be verified using
@@ -160,6 +160,5 @@ recv <- function(con,
                           "integer", "logical", "numeric", "raw"),
                  block = NULL,
                  keep.raw = FALSE,
-                 ...,
                  n = 65536L) .Call(rnng_recv, con, mode, block, keep.raw, n)
 

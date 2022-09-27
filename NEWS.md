@@ -11,7 +11,7 @@
 *Please review the following potentially breaking changes, and only update when ready:*
 
 * `send()` now returns an integer exit code in all cases. The 'echo' argument has been replaced by '...', and specifying 'echo' no longer has any effect.
-* `recv()`, `recv_aio()` and `request()` now set 'keep.raw' to FALSE as default to return only the originally sent object.
+* `recv()`, `recv_aio()` and `request()` now default to 'keep.raw' = FALSE to return only the sent object.
 * `ncurl()` argument 'request' renamed to 'response' for specifying response headers to return (to avoid confusion); the 'pem' argument is also moved after the new argument 'follow'.
 * `sha224()`, `sha256()`, `sha384()` and `sha512()` functions no longer return 'nanoHash' objects, but a raw vector or character string depending on the new argument 'convert'.
 

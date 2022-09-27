@@ -46,7 +46,7 @@ SEXP rnng_protocol_open(SEXP protocol, SEXP raw) {
 
   nng_socket *sock;
   const char *pname;
-  int xc = -1;
+  int xc = 0;
   SEXP socket, klass;
 
   sock = R_Calloc(1, nng_socket);
@@ -148,7 +148,7 @@ SEXP rnng_close(SEXP socket) {
   if (R_ExternalPtrTag(socket) != nano_SocketSymbol)
     Rf_error("'socket' is not a valid Socket");
   nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(socket);
-  int xc = nng_close(*sock);
+  const int xc = nng_close(*sock);
 
   if (xc)
     return mk_error(xc);

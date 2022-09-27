@@ -89,7 +89,7 @@ static SEXP nano_rawToChar(SEXP x) {
 
   R_xlen_t i, j, nc = Rf_xlength(x);
   for (i = 0, j = -1; i < nc; i++) if (RAW(x)[i]) j = i;
-  SEXP out = Rf_mkCharLenCE((const char *) RAW(x), j+1, CE_NATIVE);
+  SEXP out = Rf_mkCharLenCE((const char *) RAW(x), j + 1, CE_NATIVE);
 
   return Rf_ScalarString(out);
 
