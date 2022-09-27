@@ -509,17 +509,15 @@ base64dec(base64enc("hello world!"))
 
 Installation from source requires 'libnng', either:
 
-- a system installation of 'libnng' newer than v1.6.0 pre-release (722bf46), or
-- 'cmake' to compile 'libnng' v1.6.0 (722bf46) included within the package sources 
+- a system installation of 'libnng' newer than v1.6.0 pre-release (722bf46) - note: not yet available in system repositories, or
+- 'cmake' to compile 'libnng' v1.6.0 (722bf46) included within the package sources
 
-Note: the required version of NNG is not yet available in system repositories and includes features implemented specifically for 'nanonext'.
-
-'libmbedtls' is also required:
+Also required is 'libmbedtls', either:
 
 - a system installation of 'libmbedtls' >= 2: libmbedtls-dev (deb) or libmbedtls-devel (rpm), or
 - 'libmbedtls' v3.2.1 release will be automatically downloaded and compiled from source
 
-Detection and required configuration/compilation is performed automatically during package installation. 
+Detection and required configuration/compilation is performed automatically during package installation. If no system libraries are pre-installed, the only requirement is 'cmake' to compile them from source.
 
 The 'INCLUDE_DIR' and 'LIB_DIR' environment variables may be set prior to package installation to specify a custom location for the 'libmbedtls' or 'libnng' libraries other than the standard filesystem locations.
 
