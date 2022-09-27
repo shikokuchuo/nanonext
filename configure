@@ -5,66 +5,63 @@ LIB_VER="722bf46"
 TLS_VER="869298b"
 
 # Initialise
-PKG_CFLAGS="-I../install/include"
+PKG_CFLAGS=""
 PKG_LIBS="-lnng -lmbedtls -lmbedx509 -lmbedcrypto"
+NNG_CFLAGS=""
+NNG_LIBS=""
 
 # Find compiler
 CC=`${R_HOME}/bin/R CMD config CC`
 CFLAGS=`${R_HOME}/bin/R CMD config CFLAGS`
-
-# Detect cmake
-echo "Detecting 'cmake'..."
-which cmake
-if [ $? -ne 0 ]
-then
-  export PATH=$PATH:/Applications/CMake.app/Contents/bin
-  which cmake
-  if [ $? -ne 0 ]
-  then
-    echo "Required 'cmake' not found"
-    exit 1
-  fi
-fi
 
 # Detect -latomic linker flag for ARM architectures (Raspberry Pi etc.)
 echo "#include <stdint.h>
 uint64_t v;
 int main() {
     return (int)__atomic_load_n(&v, __ATOMIC_ACQUIRE);
-}" | ${CC} -x c - -o /dev/null > /dev/null 2>&1
+}" | ${CC} -xc - -o /dev/null > /dev/null 2>&1
 if [ $? -ne 0 ]
 then
   echo "Adding -latomic linker flag ..."
   PKG_LIBS="$PKG_LIBS -latomic"
 fi
 
-# Check for mbedtls
+# Check for MbedTLS
 if [ "$INCLUDE_DIR" ] || [ "$LIB_DIR" ]
 then
-  echo "Found INCLUDE_DIR and/or LIB_DIR ..."
   PKG_CFLAGS="-I$INCLUDE_DIR $PKG_CFLAGS"
   PKG_LIBS="-L$LIB_DIR $PKG_LIBS"
-
+  echo "Found INCLUDE_DIR $INCLUDE_DIR"
+  echo "Found LIB_DIR $LIB_DIR"
 elif [ -d "/usr/local/include/mbedtls" ]
 then
-  echo "Found 'libmbedtls' in /usr/local ..."
   PKG_CFLAGS="-I/usr/local/include $PKG_CFLAGS"
   PKG_LIBS="-L/usr/local/lib $PKG_LIBS"
-
+  echo "Found 'libmbedtls' $PKG_CFLAGS"
 elif [ -d "/usr/include/mbedtls" ]
 then
-  echo "Found 'libmbedtls' in /usr ..."
   PKG_CFLAGS="-I/usr/include $PKG_CFLAGS"
   PKG_LIBS="-L/usr/lib $PKG_LIBS"
-
+  echo "Found 'libmbedtls' $PKG_CFLAGS"
 elif [ -d "/usr/local/opt/mbedtls" ]
 then
-  echo "Found 'libmbedtls' in /usr/local/opt ..."
   PKG_CFLAGS="-I/usr/local/opt/mbedtls/include $PKG_CFLAGS"
   PKG_LIBS="-L/usr/local/opt/mbedtls/lib $PKG_LIBS"
-
+  echo "Found 'libmbedtls' $PKG_CFLAGS"
 else
   echo "No existing 'libmbedtls' found"
+  echo "Detecting 'cmake'..."
+  which cmake
+  if [ $? -ne 0 ]
+  then
+    export PATH=$PATH:/Applications/CMake.app/Contents/bin
+    which cmake
+    if [ $? -ne 0 ]
+    then
+      echo "Required 'cmake' not found"
+      exit 1
+    fi
+  fi
   echo "Downloading 'libmbedtls' source ..."
   curl -sL https://api.github.com/repos/Mbed-TLS/mbedtls/tarball/$TLS_VER -o mbedtls.tar.gz
   gzip -dc mbedtls.tar.gz | tar -xf -
@@ -78,38 +75,82 @@ else
   cmake --install .
   cd ..
   rm -rf Mbed-TLS-mbedtls-$TLS_VER
-
 fi
 
-# Build NNG
-echo "Detecting 'xz'..."
-which xz
+# Check for NNG
+if [ "$INCLUDE_DIR" ] || [ "$LIB_DIR" ]
+then
+  NNG_CFLAGS="-I$INCLUDE_DIR"
+  NNG_LIBS="-L$LIB_DIR"
+elif [ -d "/usr/local/include/nng" ]
+then
+  NNG_CFLAGS="-I/usr/local/include"
+  NNG_LIBS="-L/usr/local/lib"
+elif [ -d "/usr/include/nng" ]
+then
+  NNG_CFLAGS="-I/usr/include"
+  NNG_LIBS="-L/usr/lib"
+elif [ -d "/usr/local/opt/nng" ]
+then
+  NNG_CFLAGS="-I/usr/local/opt/nng/include"
+  NNG_LIBS="-L/usr/local/opt/nng/lib"
+fi
+
+echo "#include <nng/nng.h>
+int main() {
+    bool test = nng_aio_busy;
+    return 0;
+}" | ${CC} ${NNG_CFLAGS} -xc - -o /dev/null > /dev/null 2>&1
 if [ $? -ne 0 ]
 then
-  tar -xf inst/nng-$LIB_VER.tar.xz
+  echo "No suitable existing 'libnng' found"
+  echo "Detecting 'cmake'..."
+  which cmake
   if [ $? -ne 0 ]
   then
-    echo "No 'xz' command found"
-    exit 1
+    export PATH=$PATH:/Applications/CMake.app/Contents/bin
+    which cmake
+    if [ $? -ne 0 ]
+    then
+      echo "Required 'cmake' not found"
+      exit 1
+    fi
   fi
+  echo "Detecting 'xz'..."
+  which xz
+  if [ $? -ne 0 ]
+  then
+    tar -xf inst/nng-$LIB_VER.tar.xz
+    if [ $? -ne 0 ]
+    then
+      echo "No 'xz' command found"
+      exit 1
+    fi
+  else
+    xz -dc inst/nng-$LIB_VER.tar.xz | tar -xf -
+  fi
+  cd nng-$LIB_VER
+  echo "Compiling 'libnng' from source ..."
+  cmake -DCMAKE_POSITION_INDEPENDENT_CODE=1 -DCMAKE_COLOR_MAKEFILE=0 \
+    -DCMAKE_INSTALL_MESSAGE=NEVER -DCMAKE_INSTALL_PREFIX=../install .
+  cmake --build .
+  cmake --install .
+  cd ..
+  rm -rf nng-$LIB_VER
 else
-  xz -dc inst/nng-$LIB_VER.tar.xz | tar -xf -
+  echo "Found 'libnng' $NNG_CFLAGS"
+  PKG_CFLAGS="$NNG_CFLAGS $PKG_CFLAGS"
+  PKG_LIBS="$NNG_LIBS $PKG_LIBS"
 fi
-cd nng-$LIB_VER
-echo "Compiling 'libnng' from source ..."
-cmake -DCMAKE_POSITION_INDEPENDENT_CODE=1 -DCMAKE_COLOR_MAKEFILE=0 \
-  -DCMAKE_INSTALL_MESSAGE=NEVER -DCMAKE_INSTALL_PREFIX=../install .
-cmake --build .
-cmake --install .
-cd ..
-rm -rf nng-$LIB_VER
 
 if [ -d "install/lib64" ]
 then
+  PKG_CFLAGS="-I../install/include $PKG_CFLAGS"
   PKG_LIBS="-L../install/lib64 $PKG_LIBS"
 fi
 if [ -d "install/lib" ]
 then
+  PKG_CFLAGS="-I../install/include $PKG_CFLAGS"
   PKG_LIBS="-L../install/lib $PKG_LIBS"
 fi
 

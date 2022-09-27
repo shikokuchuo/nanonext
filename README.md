@@ -362,7 +362,7 @@ aio
 #> < recvAio >
 #>  - $data for message data
 aio$data |> str()
-#>  num [1:100000000] 2.646 1.509 2.241 -0.799 -1.543 ...
+#>  num [1:100000000] -0.2329 1.7992 0.0851 0.7574 -1.4027 ...
 ```
 
 As `call_aio()` is blocking and will wait for completion, an alternative
@@ -520,11 +520,11 @@ ncurl("https://httpbin.org/headers")
 #>   [1] 7b 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73
 #>  [26] 74 22 3a 20 22 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22
 #>  [51] 58 2d 41 6d 7a 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31
-#>  [76] 2d 36 33 33 32 62 39 65 64 2d 37 61 64 34 64 35 63 62 36 30 39 62 36 32 66
-#> [101] 30 36 35 63 62 31 34 31 33 22 0a 20 20 7d 0a 7d 0a
+#>  [76] 2d 36 33 33 32 65 30 63 32 2d 31 37 32 37 37 30 66 30 37 62 30 34 39 64 64
+#> [101] 39 31 30 35 38 63 63 35 62 22 0a 20 20 7d 0a 7d 0a
 #> 
 #> $data
-#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6332b9ed-7ad4d5cb609b62f065cb1413\"\n  }\n}\n"
+#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6332e0c2-172770f07b049dd91058cc5b\"\n  }\n}\n"
 ```
 
 For advanced use, supports additional HTTP methods such as POST or PUT.
@@ -545,13 +545,13 @@ res
 
 call_aio(res)$headers
 #> $Date
-#> [1] "Tue, 27 Sep 2022 08:53:02 GMT"
+#> [1] "Tue, 27 Sep 2022 11:38:42 GMT"
 #> 
 #> $Server
 #> [1] "gunicorn/19.9.0"
 
 res$data
-#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6332b9ee-0de5aaeb70dc7685226043d7\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"195.167.132.122\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
+#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6332e0c2-1ee89d1513b06817129271c3\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"195.167.132.122\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
 ```
 
 In this respect, it may be used as a performant and lightweight method
@@ -592,10 +592,10 @@ s |> recv()
 s |> send('{"action": "subscribe", "symbols": "EURUSD"}')
 
 s |> recv()
-#> [1] "{\"s\":\"EURUSD\",\"a\":0.96386,\"b\":0.96379,\"dc\":\"0.1950\",\"dd\":\"0.0019\",\"ppms\":false,\"t\":1664268783000}"
+#> [1] "{\"s\":\"EURUSD\",\"a\":0.96428,\"b\":0.96426,\"dc\":\"0.2385\",\"dd\":\"0.0023\",\"ppms\":false,\"t\":1664278723000}"
 
 s |> recv()
-#> [1] "{\"s\":\"EURUSD\",\"a\":0.96382,\"b\":0.96375,\"dc\":\"0.1909\",\"dd\":\"0.0018\",\"ppms\":false,\"t\":1664268783000}"
+#> [1] "{\"s\":\"EURUSD\",\"a\":0.96434,\"b\":0.96427,\"dc\":\"0.2447\",\"dd\":\"0.0024\",\"ppms\":false,\"t\":1664278726000}"
 
 close(s)
 ```
@@ -644,20 +644,31 @@ base64dec(base64enc("hello world!"))
 
 #### Linux / Mac / Solaris
 
-Installation from source requires ‘cmake’.
+Installation from source requires ‘libnng’, either:
 
-A pre-release version of ‘libnng’ v1.6.0 (722bf46) is included within
-the package sources and built automatically during installation. This
-version includes features implemented specifically for ‘nanonext’ and is
-not yet available in system repositories.
+-   a system installation of ‘libnng’ newer than v1.6.0 pre-release
+    (722bf46), or
+-   ‘cmake’ to compile ‘libnng’ v1.6.0 (722bf46) included within the
+    package sources
 
-A system installation of ‘libmbedtls’ will be used where detected in the
-usual filesystem locations (MbedTLS v2 and v3 are supported). Otherwise,
-v3.2.1 release will be downloaded and built automatically during
-installation.
+Note: the required version of NNG is not yet available in system
+repositories and includes features implemented specifically for
+‘nanonext’.
 
-‘INCLUDE_DIR’ and ‘LIB_DIR’ environment variables may be set prior to
-package install to specify a custom location for ‘libmbedtls’.
+‘libmbedtls’ is also required:
+
+-   a system installation of ‘libmbedtls’ \>= 2: libmbedtls-dev (deb) or
+    libmbedtls-devel (rpm), or
+-   ‘libmbedtls’ v3.2.1 release will be automatically downloaded and
+    compiled from source
+
+Detection and required configuration/compilation is performed
+automatically during package installation.
+
+The ‘INCLUDE_DIR’ and ‘LIB_DIR’ environment variables may be set prior
+to package installation to specify a custom location for the
+‘libmbedtls’ or ‘libnng’ libraries other than the standard filesystem
+locations.
 
 *Additional requirements for Solaris: (i) the ‘xz’ package - available
 on OpenCSW, and (ii) a more recent version of ‘cmake’ than that

@@ -19,11 +19,11 @@
 
 * `socket()` and `nano()` now accept non-missing NULL 'listen' and 'dial' arguments, allowing easier programmatic use.
 * Functions `send()`, `recv()`, `send_aio()`, `recv_aio()`, `setopt()`, `subscribe()`, `unsubscribe()` and `survey_time()` are no longer S3 generics for enhanced performance.
-* The source code of 'libnng' (1.6.0 pre-release 722bf46) is now bundled instead of downloaded - more efficient as excludes unused portions such as test code and deprecated interfaces.
-* Detects system installations of 'libmbedtls' and only downloads and builds from source where not available.
-* Any version of MbedTLS v2 or v3 is now supported.
-* On Windows with R >= 4.2, the bundled 'libnng' and a downloaded 'libmbedtls' v3.2.1 release is now built from source using the rtools42 toolchain. Installation falls back to pre-compiled libraries for older R releases.
-* Minimum supported R version increased to v3.6.0 due to use of optimised C code to create environments.
+* The source code of 'libnng' (1.6.0 pre-release 722bf46) is now bundled instead of downloaded, which is much more efficient as unused portions have been stripped out.
+* Detects and uses system installations of 'libnng' newer than 1.6.0 pre-release 722bf46 instead of compiling from source. 
+* Detects and uses system installations of 'libmbedtls' where available instead of downloading and compiling from source - supports any version of MbedTLS v2 or v3.
+* On Windows with R >= 4.2, the bundled 'libnng' and a downloaded 'libmbedtls' v3.2.1 release is now compiled from source using the rtools42 toolchain. Installation falls back to pre-compiled libraries for older R releases.
+* Minimum supported R version increased to v3.6.0 due to use of C code to create environments.
 * Internal performance enhancements.
 
 # nanonext 0.5.5

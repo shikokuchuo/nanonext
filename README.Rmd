@@ -507,13 +507,21 @@ base64dec(base64enc("hello world!"))
 
 #### Linux / Mac / Solaris
 
-Installation from source requires 'cmake'.
+Installation from source requires 'libnng', either:
 
-A pre-release version of 'libnng' v1.6.0 (722bf46) is included within the package sources and built automatically during installation. This version includes features implemented specifically for 'nanonext' and is not yet available in system repositories.
+- a system installation of 'libnng' newer than v1.6.0 pre-release (722bf46), or
+- 'cmake' to compile 'libnng' v1.6.0 (722bf46) included within the package sources 
 
-A system installation of 'libmbedtls' will be used where detected in the usual filesystem locations (MbedTLS v2 and v3 are supported). Otherwise, v3.2.1 release will be downloaded and built automatically during installation.
+Note: the required version of NNG is not yet available in system repositories and includes features implemented specifically for 'nanonext'.
 
-'INCLUDE_DIR' and 'LIB_DIR' environment variables may be set prior to package install to specify a custom location for 'libmbedtls'.
+'libmbedtls' is also required:
+
+- a system installation of 'libmbedtls' >= 2: libmbedtls-dev (deb) or libmbedtls-devel (rpm), or
+- 'libmbedtls' v3.2.1 release will be automatically downloaded and compiled from source
+
+Detection and required configuration/compilation is performed automatically during package installation. 
+
+The 'INCLUDE_DIR' and 'LIB_DIR' environment variables may be set prior to package installation to specify a custom location for the 'libmbedtls' or 'libnng' libraries other than the standard filesystem locations.
 
 *Additional requirements for Solaris: (i) the 'xz' package - available on OpenCSW, and (ii) a more recent version of 'cmake' than that available on OpenCSW - see the 'cmake' website for the latest source file which can be built with just a C compiler.*
 
