@@ -322,7 +322,7 @@
 <span><span class="co">#&gt; &lt; recvAio &gt;</span></span>
 <span><span class="co">#&gt;  - $data for message data</span></span>
 <span><span class="va">aio</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] -0.2329 1.7992 0.0851 0.7574 -1.4027 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] 0.481 1.296 -0.117 0.469 -0.466 ...</span></span></code></pre></div>
 <p>As <code><a href="reference/call_aio.html">call_aio()</a></code> is blocking and will wait for completion, an alternative is to query <code>aio$data</code> directly. This will return an ‘unresolved’ logical NA value if the calculation is yet to complete.</p>
 <p>In this example the calculation is returned, but other operations may reside entirely on the server side, for example writing data to disk.</p>
 <p>In such a case, calling or querying the value confirms that the operation has completed, and provides the return value of the function, which may typically be NULL or an exit code.</p>
@@ -444,11 +444,11 @@
 <span><span class="co">#&gt;   [1] 7b 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73</span></span>
 <span><span class="co">#&gt;  [26] 74 22 3a 20 22 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22</span></span>
 <span><span class="co">#&gt;  [51] 58 2d 41 6d 7a 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31</span></span>
-<span><span class="co">#&gt;  [76] 2d 36 33 33 32 65 30 63 32 2d 31 37 32 37 37 30 66 30 37 62 30 34 39 64 64</span></span>
-<span><span class="co">#&gt; [101] 39 31 30 35 38 63 63 35 62 22 0a 20 20 7d 0a 7d 0a</span></span>
+<span><span class="co">#&gt;  [76] 2d 36 33 33 32 65 35 36 33 2d 31 65 35 63 33 37 61 63 35 32 30 63 63 31 61</span></span>
+<span><span class="co">#&gt; [101] 31 37 32 65 32 36 63 37 64 22 0a 20 20 7d 0a 7d 0a</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $data</span></span>
-<span><span class="co">#&gt; [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6332e0c2-172770f07b049dd91058cc5b\"\n  }\n}\n"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6332e563-1e5c37ac520cc1a172e26c7d\"\n  }\n}\n"</span></span></code></pre></div>
 <p>For advanced use, supports additional HTTP methods such as POST or PUT.</p>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ncurl.html">ncurl</a></span><span class="op">(</span><span class="st">"http://httpbin.org/post"</span>,</span>
@@ -466,13 +466,13 @@
 <span></span>
 <span><span class="fu"><a href="reference/call_aio.html">call_aio</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span><span class="op">$</span><span class="va">headers</span></span>
 <span><span class="co">#&gt; $Date</span></span>
-<span><span class="co">#&gt; [1] "Tue, 27 Sep 2022 11:38:42 GMT"</span></span>
+<span><span class="co">#&gt; [1] "Tue, 27 Sep 2022 11:58:28 GMT"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $Server</span></span>
 <span><span class="co">#&gt; [1] "gunicorn/19.9.0"</span></span>
 <span></span>
 <span><span class="va">res</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt; [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6332e0c2-1ee89d1513b06817129271c3\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"195.167.132.122\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6332e564-4954db54619a603f26bcbdfc\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"195.167.132.122\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"</span></span></code></pre></div>
 <p>In this respect, it may be used as a performant and lightweight method for making REST API requests.</p>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
@@ -498,10 +498,10 @@
 <span><span class="va">s</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/send.html">send</a></span><span class="op">(</span><span class="st">'{"action": "subscribe", "symbols": "EURUSD"}'</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">s</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/recv.html">recv</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "{\"s\":\"EURUSD\",\"a\":0.96428,\"b\":0.96426,\"dc\":\"0.2385\",\"dd\":\"0.0023\",\"ppms\":false,\"t\":1664278723000}"</span></span>
+<span><span class="co">#&gt; [1] "{\"s\":\"EURUSD\",\"a\":0.96428,\"b\":0.96426,\"dc\":\"0.2385\",\"dd\":\"0.0023\",\"ppms\":false,\"t\":1664279908000}"</span></span>
 <span></span>
 <span><span class="va">s</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/recv.html">recv</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "{\"s\":\"EURUSD\",\"a\":0.96434,\"b\":0.96427,\"dc\":\"0.2447\",\"dd\":\"0.0024\",\"ppms\":false,\"t\":1664278726000}"</span></span>
+<span><span class="co">#&gt; [1] "{\"s\":\"EURUSD\",\"a\":0.96428,\"b\":0.96426,\"dc\":\"0.2385\",\"dd\":\"0.0023\",\"ppms\":false,\"t\":1664279909000}"</span></span>
 <span></span>
 <span><span class="fu"><a href="reference/close.html">close</a></span><span class="op">(</span><span class="va">s</span><span class="op">)</span></span></code></pre></div>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
@@ -539,16 +539,15 @@
 </h4>
 <p>Installation from source requires ‘libnng’, either:</p>
 <ul>
-<li>a system installation of ‘libnng’ newer than v1.6.0 pre-release (722bf46), or</li>
+<li>a system installation of ‘libnng’ newer than v1.6.0 pre-release (722bf46) - note: not yet available in system repositories, or</li>
 <li>‘cmake’ to compile ‘libnng’ v1.6.0 (722bf46) included within the package sources</li>
 </ul>
-<p>Note: the required version of NNG is not yet available in system repositories and includes features implemented specifically for ‘nanonext’.</p>
-<p>‘libmbedtls’ is also required:</p>
+<p>Also required is ‘libmbedtls’, either:</p>
 <ul>
 <li>a system installation of ‘libmbedtls’ &gt;= 2: libmbedtls-dev (deb) or libmbedtls-devel (rpm), or</li>
 <li>‘libmbedtls’ v3.2.1 release will be automatically downloaded and compiled from source</li>
 </ul>
-<p>Detection and required configuration/compilation is performed automatically during package installation.</p>
+<p>Detection and required configuration/compilation is performed automatically during package installation. If no system libraries are pre-installed, the only requirement is ‘cmake’ to compile them from source.</p>
 <p>The ‘INCLUDE_DIR’ and ‘LIB_DIR’ environment variables may be set prior to package installation to specify a custom location for the ‘libmbedtls’ or ‘libnng’ libraries other than the standard filesystem locations.</p>
 <p><em>Additional requirements for Solaris: (i) the ‘xz’ package - available on OpenCSW, and (ii) a more recent version of ‘cmake’ than that available on OpenCSW - see the ‘cmake’ website for the latest source file which can be built with just a C compiler.</em></p>
 </div>
