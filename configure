@@ -21,7 +21,7 @@ then
   which cmake
   if [ $? -ne 0 ]
   then
-    echo "'cmake' is required but is not found"
+    echo "Required 'cmake' not found"
     exit 1
   fi
 fi
@@ -64,7 +64,7 @@ then
   PKG_LIBS="-L/usr/local/opt/mbedtls/lib $PKG_LIBS"
 
 else
-  echo "Existing installation of 'libmbedtls' not found"
+  echo "No existing 'libmbedtls' found"
   echo "Downloading 'libmbedtls' source ..."
   curl -sL https://api.github.com/repos/Mbed-TLS/mbedtls/tarball/$TLS_VER -o mbedtls.tar.gz
   gzip -dc mbedtls.tar.gz | tar -xf -
@@ -82,12 +82,18 @@ else
 fi
 
 # Build NNG
-
-if [ `uname` = "SunOS" ]
+echo "Detecting 'xz'..."
+which xz
+if [ $? -ne 0 ]
 then
-  xz -dc inst/nng-$LIB_VER.tar.xz | tar -xf -
-else
   tar -xf inst/nng-$LIB_VER.tar.xz
+  if [ $? -ne 0 ]
+  then
+    echo "No 'xz' command found"
+    exit 1
+  fi
+else
+  xz -dc inst/nng-$LIB_VER.tar.xz | tar -xf -
 fi
 cd nng-$LIB_VER
 echo "Compiling 'libnng' from source ..."

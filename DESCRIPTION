@@ -23,7 +23,7 @@ URL: https://shikokuchuo.net/nanonext/, https://github.com/shikokuchuo/nanonext/
 Encoding: UTF-8
 SystemRequirements: 'cmake' to compile 'libnng' included in package sources,
     'libmbedtls' : libmbedtls-dev (deb) or libmbedtls-devel (rpm) if available
-    or else will be downloaded and built from source
+    or else will be downloaded and compiled from source
 Depends: 
     R (>= 3.6)
 RoxygenNote: 7.2.1
