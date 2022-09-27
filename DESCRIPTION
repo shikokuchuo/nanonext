@@ -21,7 +21,9 @@ License: GPL (>= 3)
 BugReports: https://github.com/shikokuchuo/nanonext/issues
 URL: https://shikokuchuo.net/nanonext/, https://github.com/shikokuchuo/nanonext/
 Encoding: UTF-8
-SystemRequirements: 'cmake' to compile 'libnng' included in package sources
+SystemRequirements: 'cmake' to compile 'libnng' included in package sources,
+    'libmbedtls' : libmbedtls-dev (deb) or libmbedtls-devel (rpm) or will be 
+    downloaded and compiled from source
 Depends: 
     R (>= 3.6)
 RoxygenNote: 7.2.1
