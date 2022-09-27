@@ -69,7 +69,7 @@
 <ul><li>
 <code><a href="../reference/send.html">send()</a></code> now returns an integer exit code in all cases. The ‘echo’ argument has been replaced by ‘…’, and specifying ‘echo’ no longer has any effect.</li>
 <li>
-<code><a href="../reference/recv.html">recv()</a></code>, <code><a href="../reference/recv_aio.html">recv_aio()</a></code> and <code><a href="../reference/request.html">request()</a></code> now set ‘keep.raw’ to FALSE as default to return only the originally sent object.</li>
+<code><a href="../reference/recv.html">recv()</a></code>, <code><a href="../reference/recv_aio.html">recv_aio()</a></code> and <code><a href="../reference/request.html">request()</a></code> now default to ‘keep.raw’ = FALSE to return only the sent object.</li>
 <li>
 <code><a href="../reference/ncurl.html">ncurl()</a></code> argument ‘request’ renamed to ‘response’ for specifying response headers to return (to avoid confusion); the ‘pem’ argument is also moved after the new argument ‘follow’.</li>
 <li>

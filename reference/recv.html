@@ -65,7 +65,6 @@
 <span>    <span class="st">"raw"</span><span class="op">)</span>,</span>
 <span>  block <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  keep.raw <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  <span class="va">...</span>,</span>
 <span>  n <span class="op">=</span> <span class="fl">65536L</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -97,10 +96,6 @@ in milliseconds, after which the operation will time out.</p></dd>
 received raw vector along with the converted data.</p></dd>
 
 
-<dt>...</dt>
-<dd><p>not used.</p></dd>
-
-
 <dt>n</dt>
 <dd><p>[default 65536L] applicable to Streams only, the maximum number of
 bytes to receive. Can be an over-estimate, but note that a buffer of this
@@ -112,8 +107,10 @@ size is reserved.</p></dd>
     
 
 <p>Depending on the value of 'keep.raw': if TRUE, a named list of 2
-    elements - 'raw' containing the received raw vector and 'data' containing
-    the converted object, or if FALSE, the converted object.</p>
+    elements - <code>$raw</code> containing the received raw vector and <code>$data</code></p>
+
+
+<p>containing the converted data, or if FALSE, the converted data.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
