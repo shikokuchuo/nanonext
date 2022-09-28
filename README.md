@@ -362,7 +362,7 @@ aio
 #> < recvAio >
 #>  - $data for message data
 aio$data |> str()
-#>  num [1:100000000] 0.481 1.296 -0.117 0.469 -0.466 ...
+#>  num [1:100000000] 1.286 -1.107 -0.575 2.319 -0.683 ...
 ```
 
 As `call_aio()` is blocking and will wait for completion, an alternative
@@ -520,11 +520,11 @@ ncurl("https://httpbin.org/headers")
 #>   [1] 7b 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73
 #>  [26] 74 22 3a 20 22 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22
 #>  [51] 58 2d 41 6d 7a 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31
-#>  [76] 2d 36 33 33 32 65 35 36 33 2d 31 65 35 63 33 37 61 63 35 32 30 63 63 31 61
-#> [101] 31 37 32 65 32 36 63 37 64 22 0a 20 20 7d 0a 7d 0a
+#>  [76] 2d 36 33 33 34 35 39 63 32 2d 32 39 31 39 37 39 39 31 35 35 37 63 31 31 38
+#> [101] 36 37 61 35 39 65 33 62 36 22 0a 20 20 7d 0a 7d 0a
 #> 
 #> $data
-#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6332e563-1e5c37ac520cc1a172e26c7d\"\n  }\n}\n"
+#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-633459c2-29197991557c11867a59e3b6\"\n  }\n}\n"
 ```
 
 For advanced use, supports additional HTTP methods such as POST or PUT.
@@ -545,13 +545,13 @@ res
 
 call_aio(res)$headers
 #> $Date
-#> [1] "Tue, 27 Sep 2022 11:58:28 GMT"
+#> [1] "Wed, 28 Sep 2022 14:27:14 GMT"
 #> 
 #> $Server
 #> [1] "gunicorn/19.9.0"
 
 res$data
-#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6332e564-4954db54619a603f26bcbdfc\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"195.167.132.122\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
+#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-633459c2-7984de550b7ebf07102f74d2\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"80.169.103.218\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
 ```
 
 In this respect, it may be used as a performant and lightweight method
@@ -592,10 +592,10 @@ s |> recv()
 s |> send('{"action": "subscribe", "symbols": "EURUSD"}')
 
 s |> recv()
-#> [1] "{\"s\":\"EURUSD\",\"a\":0.96428,\"b\":0.96426,\"dc\":\"0.2385\",\"dd\":\"0.0023\",\"ppms\":false,\"t\":1664279908000}"
+#> [1] "{\"s\":\"EURUSD\",\"a\":0.96147,\"b\":0.9614,\"dc\":\"0.2039\",\"dd\":\"0.0020\",\"ppms\":false,\"t\":1664375237000}"
 
 s |> recv()
-#> [1] "{\"s\":\"EURUSD\",\"a\":0.96428,\"b\":0.96426,\"dc\":\"0.2385\",\"dd\":\"0.0023\",\"ppms\":false,\"t\":1664279909000}"
+#> [1] "{\"s\":\"EURUSD\",\"a\":0.96155,\"b\":0.96148,\"dc\":\"0.2122\",\"dd\":\"0.0020\",\"ppms\":false,\"t\":1664375237000}"
 
 close(s)
 ```
@@ -644,29 +644,20 @@ base64dec(base64enc("hello world!"))
 
 #### Linux / Mac / Solaris
 
-Installation from source requires ‘libnng’, either:
+Installation from source requires ‘libnng’ \>= v1.6.0 and ‘libmbedtls’
+\>= 2 - suitable installations are automatically detected - or else
+‘cmake’ to compile ‘libnng’ v1.6.0 pre-release (722bf46) and
+‘libmbedtls’ v3.2.1 included within the package sources.
 
--   a system installation of ‘libnng’ newer than v1.6.0 pre-release
-    (722bf46) - note: not yet available in system repositories, or
--   ‘cmake’ to compile ‘libnng’ v1.6.0 (722bf46) included within the
-    package sources
-
-Also required is ‘libmbedtls’, either:
-
--   a system installation of ‘libmbedtls’ \>= 2: libmbedtls-dev (deb) or
-    libmbedtls-devel (rpm), or
--   ‘libmbedtls’ v3.2.1 release will be automatically downloaded and
-    compiled from source
-
-Detection and required configuration/compilation is performed
-automatically during package installation. If no system libraries are
-pre-installed, the only requirement is ‘cmake’ to compile them from
-source.
+Note: ‘libnng’ v1.6.0 is not yet available in system repositories;
+‘libmbedtls’ is available as libmbedtls-dev (deb) or libmbedtls-devel
+(rpm).
 
 The ‘INCLUDE_DIR’ and ‘LIB_DIR’ environment variables may be set prior
-to package installation to specify a custom location for the
-‘libmbedtls’ or ‘libnng’ libraries other than the standard filesystem
-locations.
+to package installation to specify a custom location for ‘libmbedtls’ or
+‘libnng’ other than the standard filesystem locations.
+
+Package installation will automatically build the libraries if required.
 
 *Additional requirements for Solaris: (i) the ‘xz’ package - available
 on OpenCSW, and (ii) a more recent version of ‘cmake’ than that
@@ -676,8 +667,8 @@ file which can be built with just a C compiler.*
 #### Windows
 
 For R \>= 4.2 using the ‘rtools42’ toolchain, ‘libnng’ v1.6.0 (722bf46)
-will be built from the package sources and ‘libmbedtls’ v3.2.1 will be
-downloaded and built automatically during installation.
+and ‘libmbedtls’ v3.2.1 will be automatically compiled from the package
+sources during installation.
 
 For previous R versions, pre-compiled ‘libnng’ v1.6.0 (722bf46) and
 ‘libmbedtls’ v3.2.1 libraries are downloaded and used for installation

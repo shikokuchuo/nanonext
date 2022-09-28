@@ -26,7 +26,7 @@ then
   PKG_LIBS="$PKG_LIBS -latomic"
 fi
 
-# Check for MbedTLS
+# Prepare MbedTLS library
 if [ "$INCLUDE_DIR" ] || [ "$LIB_DIR" ]
 then
   PKG_CFLAGS="-I$INCLUDE_DIR $PKG_CFLAGS"
@@ -48,8 +48,19 @@ then
   PKG_CFLAGS="-I/usr/local/opt/mbedtls/include $PKG_CFLAGS"
   PKG_LIBS="-L/usr/local/opt/mbedtls/lib $PKG_LIBS"
   echo "Found 'libmbedtls' $PKG_CFLAGS"
-else
-  echo "No existing 'libmbedtls' found"
+fi
+
+echo "#include <mbedtls/version.h>
+int main() {
+#if MBEDTLS_VERSION_MAJOR >= 2
+      return 0;
+#else
+      error;
+#endif
+}" | ${CC} ${PKG_CFLAGS} -xc - -o /dev/null > /dev/null 2>&1
+if [ $? -ne 0 ]
+then
+  echo "No existing 'libmbedtls' >= 2 found"
   echo "Detecting 'cmake'..."
   which cmake
   if [ $? -ne 0 ]
@@ -62,11 +73,20 @@ else
       exit 1
     fi
   fi
-  echo "Downloading 'libmbedtls' source ..."
-  curl -sL https://api.github.com/repos/Mbed-TLS/mbedtls/tarball/$TLS_VER -o mbedtls.tar.gz
-  gzip -dc mbedtls.tar.gz | tar -xf -
-  rm -f mbedtls.tar.gz
-  cd Mbed-TLS-mbedtls-$TLS_VER
+  echo "Detecting 'xz'..."
+  which xz
+  if [ $? -ne 0 ]
+  then
+    tar -xf inst/mbedtls-$TLS_VER.tar.xz
+    if [ $? -ne 0 ]
+    then
+      echo "No 'xz' command found"
+      exit 1
+    fi
+  else
+    xz -dc inst/mbedtls-$TLS_VER.tar.xz | tar -xf -
+  fi
+  cd mbedtls-$TLS_VER
   echo "Compiling 'libmbedtls' from source ..."
   cmake -DCMAKE_POSITION_INDEPENDENT_CODE=1 -DCMAKE_BUILD_TYPE=Release \
     -DENABLE_TESTING=0 -DENABLE_PROGRAMS=0 -DCMAKE_COLOR_MAKEFILE=0 \
@@ -74,10 +94,10 @@ else
   cmake --build .
   cmake --install .
   cd ..
-  rm -rf Mbed-TLS-mbedtls-$TLS_VER
+  rm -rf mbedtls-$TLS_VER
 fi
 
-# Check for NNG
+# Prepare NNG library
 if [ "$INCLUDE_DIR" ] || [ "$LIB_DIR" ]
 then
   NNG_CFLAGS="-I$INCLUDE_DIR"
@@ -103,7 +123,7 @@ int main() {
 }" | ${CC} ${NNG_CFLAGS} -xc - -o /dev/null > /dev/null 2>&1
 if [ $? -ne 0 ]
 then
-  echo "No suitable existing 'libnng' found"
+  echo "No existing 'libnng' >= 1.6.0 found"
   echo "Detecting 'cmake'..."
   which cmake
   if [ $? -ne 0 ]
