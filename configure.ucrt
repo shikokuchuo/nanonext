@@ -6,9 +6,8 @@ tar -xf inst/mbedtls-$TLS_VER.tar.xz
 cd mbedtls-$TLS_VER
 echo "Compiling 'libmbedtls' from source ..."
 cmake -G "Unix Makefiles" -DCMAKE_C_FLAGS="${CMAKE_C_FLAGS} -w" \
-  -DCMAKE_POSITION_INDEPENDENT_CODE=1 -DCMAKE_BUILD_TYPE=Release \
-  -DCMAKE_COLOR_MAKEFILE=0 -DCMAKE_INSTALL_MESSAGE=NEVER \
-  -DCMAKE_INSTALL_PREFIX=../install .
+  -DCMAKE_POSITION_INDEPENDENT_CODE=1 -DCMAKE_COLOR_MAKEFILE=0 \
+  -DCMAKE_INSTALL_MESSAGE=NEVER -DCMAKE_INSTALL_PREFIX=../install .
 cmake --build .
 cmake --install .
 cd ..
