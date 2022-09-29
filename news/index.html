@@ -61,7 +61,7 @@
 <li>
 <code><a href="../reference/sha256.html">sha224()</a></code>, <code><a href="../reference/sha256.html">sha256()</a></code>, <code><a href="../reference/sha256.html">sha384()</a></code> and <code><a href="../reference/sha256.html">sha512()</a></code> functions gain an argument ‘convert’ to control whether to return a raw vector or character string.</li>
 <li>
-<code><a href="../reference/ncurl.html">ncurl()</a></code> gains the optional argument ‘follow’ to control whether redirects are automatically followed.</li>
+<code><a href="../reference/ncurl.html">ncurl()</a></code> gains the argument ‘follow’ (default FALSE) to control whether redirects are automatically followed.</li>
 </ul></div>
 <div class="section level5">
 <h5 id="updates-0-5-5-9010">Updates<a class="anchor" aria-label="anchor" href="#updates-0-5-5-9010"></a></h5>
@@ -71,7 +71,7 @@
 <li>
 <code><a href="../reference/recv.html">recv()</a></code>, <code><a href="../reference/recv_aio.html">recv_aio()</a></code> and <code><a href="../reference/request.html">request()</a></code> now default to ‘keep.raw’ = FALSE to return only the sent object.</li>
 <li>
-<code><a href="../reference/ncurl.html">ncurl()</a></code> argument ‘request’ renamed to ‘response’ for specifying response headers to return (to avoid confusion); the ‘pem’ argument is also moved after the new argument ‘follow’.</li>
+<code><a href="../reference/ncurl.html">ncurl()</a></code> argument ‘request’ renamed to ‘response’ for specifying response headers to return (to avoid confusion); new argument ‘follow’ (placed between ‘convert’ and ‘method’) controls whether redirects are followed, and there is no longer a user prompt in interactive environments.</li>
 <li>
 <code><a href="../reference/sha256.html">sha224()</a></code>, <code><a href="../reference/sha256.html">sha256()</a></code>, <code><a href="../reference/sha256.html">sha384()</a></code> and <code><a href="../reference/sha256.html">sha512()</a></code> functions no longer return ‘nanoHash’ objects, but a raw vector or character string depending on the new argument ‘convert’.</li>
 </ul><p><em>Other changes:</em></p>
