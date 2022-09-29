@@ -4,7 +4,7 @@
 
 * Implements `base64enc()` and `base64dec()` base64 encoding and decoding using the 'Mbed TLS' library.
 * `sha224()`, `sha256()`, `sha384()` and `sha512()` functions gain an argument 'convert' to control whether to return a raw vector or character string.
-* `ncurl()` gains the optional argument 'follow' to control whether redirects are automatically followed.
+* `ncurl()` gains the argument 'follow' (default FALSE) to control whether redirects are automatically followed.
 
 #### Updates
 
@@ -12,7 +12,7 @@
 
 * `send()` now returns an integer exit code in all cases. The 'echo' argument has been replaced by '...', and specifying 'echo' no longer has any effect.
 * `recv()`, `recv_aio()` and `request()` now default to 'keep.raw' = FALSE to return only the sent object.
-* `ncurl()` argument 'request' renamed to 'response' for specifying response headers to return (to avoid confusion); the 'pem' argument is also moved after the new argument 'follow'.
+* `ncurl()` argument 'request' renamed to 'response' for specifying response headers to return (to avoid confusion); new argument 'follow' (placed between 'convert' and 'method') controls whether redirects are followed, and there is no longer a user prompt in interactive environments.
 * `sha224()`, `sha256()`, `sha384()` and `sha512()` functions no longer return 'nanoHash' objects, but a raw vector or character string depending on the new argument 'convert'.
 
 *Other changes:*

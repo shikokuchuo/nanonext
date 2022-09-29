@@ -24,6 +24,8 @@
 #' @param async [default FALSE] logical value whether to perform actions async.
 #' @param convert [default TRUE] logical value whether to attempt conversion of
 #'     the received raw bytes to a character vector.
+#' @param follow [default FALSE] logical value whether to automatically follow
+#'     redirects. See 'redirects' section below.
 #' @param method (optional) the HTTP method (defaults to 'GET' if not specified).
 #' @param headers (optional) a named list or character vector specifying the
 #'     HTTP request headers e.g. \code{list(`Content-Type` = "text/plain")} or
@@ -32,9 +34,6 @@
 #' @param response (optional) a character vector or list specifying the response
 #'     headers to return e.g. \code{c("date", "server")} or \code{list("Date", "Server")}.
 #'     These are case-insensitive and will return NULL if not present.
-#' @param follow (optional) logical TRUE or FALSE whether to automatically
-#'     follow redirects. If missing or NULL, the default is not to follow
-#'     redirects, or prompt in interactive environments.
 #' @param pem (optional) applicable to secure HTTPS sites only. The path to a
 #'     file containing X.509 certificate(s) in PEM format, comprising the
 #'     certificate authority certificate chain (and revocation list if present).
@@ -57,34 +56,27 @@
 #'
 #' @section Redirects:
 #'
-#'     In interactive sessions: will prompt upon receiving a redirect location
-#'     whether to follow or not (default: yes).
+#'     If redirects are not followed (the default), the redirect address is
+#'     returned as a character string.
 #'
-#'     In non-interactive sessions: redirects are never followed.
-#'
-#'     The above defaults can be overridden by specifying TRUE or FALSE for the
-#'     argument 'follow'.
-#'
-#'     If not followed, the redirect address is returned as a character string.
-#'
-#'     For async requests, the redirect address will be returned as a character
+#'     For async requests, the redirect address is returned as a character
 #'     string at \code{$raw} and \code{$data} will be NULL.
 #'
 #' @examples
 #' ncurl("https://httpbin.org/get", response = c("date", "server"))
-#' ncurl("http://httpbin.org/put",,,"PUT", list(Authorization = "Bearer APIKEY"), "hello world")
-#' ncurl("http://httpbin.org/post",,,"POST", c(`Content-Type` = "application/json"),'{"k":"v"}')
+#' ncurl("http://httpbin.org/put",,,,"PUT", list(Authorization = "Bearer APIKEY"), "hello world")
+#' ncurl("http://httpbin.org/post",,,,"POST", c(`Content-Type` = "application/json"),'{"k":"v"}')
 #'
 #' @export
 #'
 ncurl <- function(url,
                   async = FALSE,
                   convert = TRUE,
+                  follow = FALSE,
                   method = NULL,
                   headers = NULL,
                   data = NULL,
                   response = NULL,
-                  follow = NULL,
                   pem = NULL) {
 
   if (async) {
@@ -164,14 +156,8 @@ ncurl <- function(url,
   } else {
 
     env <- .Call(rnng_ncurl, url, convert, method, headers, data, response, pem)
-    if (is.character(env)) {
-      if (length(follow)) {
-        follow && return(eval(`[[<-`(match.call(), 2L, env)))
-      } else if (interactive()) {
-        continue <- readline(sprintf("Follow redirect to <%s>? [Y/n] ", env))
-        continue %in% c("n", "N", "no", "NO") || return(eval(`[[<-`(match.call(), 2L, env)))
-      }
-    }
+    is.character(env) && follow && return(eval(`[[<-`(match.call(), 2L, env)))
+
   }
 
   env
