@@ -25,7 +25,7 @@
 #'     a character string e.g. 'tcp://127.0.0.1:5555' (see \link{transports}).
 #' @param auth [default NULL] an R object (possessed by both parties) which
 #'     serves as a pre-shared key on which to authenticate the communication.
-#'     Note: the object is never sent, only a random subset of its SHA256 hash.
+#'     Note: the object is never sent, only a random subset of its SHA-512 hash.
 #'
 #' @return Invisible NULL.
 #'
@@ -49,22 +49,20 @@
 #'
 messenger <- function(url, auth = NULL) {
 
-  nano_init(warn = "none")
-  on.exit(expr = {
-    options(warn = getOption("nanonext.original.warn"), nanonext.original.warn = NULL)
-    invisible()
-  })
-  lock <- sha256(auth, convert = FALSE)
-  comb <- order(random(24L))
+  lock <- sha512(auth, convert = FALSE)
+  comb <- order(random(32L))
   key <- c(comb, as.integer(lock)[comb])
 
   sock <- .Call(rnng_messenger, url)
   is.integer(sock) && return(invisible(sock))
+
+  nano_init(warn = "none")
   on.exit(expr = {
     send(sock, data = writeBin(":d ", raw()), mode = 2L, block = FALSE)
     .Call(rnng_close, sock)
-  }, add = TRUE, after = FALSE)
-
+    options(warn = getOption("nanonext.original.warn"), nanonext.original.warn = NULL)
+    invisible()
+  })
   cat("\n", file = stdout())
   intro <- unlist(strsplit("nanonext messenger", ""))
   for (i in seq_along(intro)) {
@@ -80,8 +78,8 @@ messenger <- function(url, auth = NULL) {
   } else {
     cat(sprintf("\r| peer online: %s\n", format.POSIXct(Sys.time())), file = stderr())
     r <- recv(sock, mode = 5L, block = TRUE)
-    for (i in seq_len(24L)) {
-      lock[r[i]] == r[i + 24L] || {
+    for (i in seq_len(32L)) {
+      lock[r[i]] == r[i + 32L] || {
         cat("| authentication error\n", file = stderr())
         return(invisible())
       }
