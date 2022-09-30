@@ -79,10 +79,11 @@ close.nanoContext <- function(con, ...) invisible(.Call(rnng_ctx_close, con))
 #'     perfect reproducibility. Use 'raw' for sending vectors of any type (will be
 #'     converted to a raw byte vector for sending) - essential when interfacing
 #'     with external applications.
-#' @param recv_mode [default 'serial'] mode of vector to be received - one of 'serial',
-#'     'character', 'complex', 'double', 'integer', 'logical', 'numeric', or 'raw'.
-#'     The default 'serial' means a serialised R object, for the other modes,
-#'     the raw vector received will be converted into the respective mode.
+#' @param recv_mode [default 'serial'] mode of vector to be received - one of
+#'     'serial', 'character', 'complex', 'double', 'integer', 'logical',
+#'     'numeric', or 'raw'. The default 'serial' means a serialised R object, for
+#'     the other modes, the raw vector received will be converted into the
+#'     respective mode.
 #' @param timeout [default NULL] integer value in milliseconds or NULL, which
 #'     applies a socket-specific default, usually the same as no timeout. Note
 #'     that this applies to receiving the request. The total elapsed time would

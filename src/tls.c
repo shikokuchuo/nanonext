@@ -140,7 +140,7 @@ SEXP rnng_sha224(SEXP x, SEXP key, SEXP convert) {
   }
 
   if (xc)
-    Rf_error("mbedtls error");
+    Rf_error("error generating hash");
 
   if (Rf_asLogical(convert)) {
 
@@ -188,7 +188,7 @@ SEXP rnng_sha256(SEXP x, SEXP key, SEXP convert) {
   }
 
   if (xc)
-    Rf_error("mbedtls error");
+    Rf_error("error generating hash");
 
   if (Rf_asLogical(convert)) {
 
@@ -240,7 +240,7 @@ SEXP rnng_sha384(SEXP x, SEXP key, SEXP convert) {
   }
 
   if (xc)
-    Rf_error("mbedtls error");
+    Rf_error("error generating hash");
 
   if (Rf_asLogical(convert)) {
 
@@ -288,7 +288,7 @@ SEXP rnng_sha512(SEXP x, SEXP key, SEXP convert) {
   }
 
   if (xc)
-    Rf_error("mbedtls error");
+    Rf_error("error generating hash");
 
   if (Rf_asLogical(convert)) {
 

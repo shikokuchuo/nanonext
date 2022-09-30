@@ -173,12 +173,12 @@ print.nanoObject <- function(x, ...) {
   cat("< nano object >\n - socket id:", attr(.subset2(x, "socket"), "id"),
       "\n - state:", attr(.subset2(x, "socket"), "state"),
       "\n - protocol:", attr(.subset2(x, "socket"), "protocol"), "\n", file = stdout())
-      if (length(.subset2(x, "listener")))
-        cat(" - listener:", unlist(lapply(.subset2(x, "listener"), attr, "url")),
-            sep = "\n    ", file = stdout())
-      if (length(.subset2(x, "dialer")))
-        cat(" - dialer:", unlist(lapply(.subset2(x, "dialer"), attr, "url")),
-            sep = "\n    ", file = stdout())
+  if (length(.subset2(x, "listener")))
+    cat(" - listener:", unlist(lapply(.subset2(x, "listener"), attr, "url")),
+        sep = "\n    ", file = stdout())
+  if (length(.subset2(x, "dialer")))
+    cat(" - dialer:", unlist(lapply(.subset2(x, "dialer"), attr, "url")),
+        sep = "\n    ", file = stdout())
   invisible(x)
 
 }

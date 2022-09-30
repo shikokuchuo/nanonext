@@ -21,10 +21,11 @@ reply(
 first argument. Can be an anonymous function of the form \code{function(x) do(x)}.
 Additional arguments can also be passed in through '...'.}
 
-\item{recv_mode}{[default 'serial'] mode of vector to be received - one of 'serial',
-'character', 'complex', 'double', 'integer', 'logical', 'numeric', or 'raw'.
-The default 'serial' means a serialised R object, for the other modes,
-the raw vector received will be converted into the respective mode.}
+\item{recv_mode}{[default 'serial'] mode of vector to be received - one of
+'serial', 'character', 'complex', 'double', 'integer', 'logical',
+'numeric', or 'raw'. The default 'serial' means a serialised R object, for
+the other modes, the raw vector received will be converted into the
+respective mode.}
 
 \item{send_mode}{[default 'serial'] whether data will be sent serialized or
 as a raw vector. Use 'serial' for sending and receiving within R to ensure
