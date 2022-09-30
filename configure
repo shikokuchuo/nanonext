@@ -26,7 +26,7 @@ then
   PKG_LIBS="$PKG_LIBS -latomic"
 fi
 
-# Prepare MbedTLS library
+# Find MbedTLS and compile if necessary
 if [ "$INCLUDE_DIR" ] || [ "$LIB_DIR" ]
 then
   PKG_CFLAGS="-I$INCLUDE_DIR $PKG_CFLAGS"
@@ -88,16 +88,14 @@ then
   fi
   cd mbedtls-$TLS_VER
   echo "Compiling 'libmbedtls' from source ..."
-  cmake -DCMAKE_POSITION_INDEPENDENT_CODE=1 -DCMAKE_BUILD_TYPE=Release \
-    -DCMAKE_COLOR_MAKEFILE=0 -DCMAKE_INSTALL_MESSAGE=NEVER \
-    -DCMAKE_INSTALL_PREFIX=../install .
+  cmake -DCMAKE_INSTALL_PREFIX=../install .
   cmake --build .
   cmake --install .
   cd ..
   rm -rf mbedtls-$TLS_VER
 fi
 
-# Prepare NNG library
+# Find NNG and compile if necessary
 if [ "$INCLUDE_DIR" ] || [ "$LIB_DIR" ]
 then
   NNG_CFLAGS="-I$INCLUDE_DIR"
@@ -151,9 +149,7 @@ then
   fi
   cd nng-$LIB_VER
   echo "Compiling 'libnng' from source ..."
-  cmake -DCMAKE_POSITION_INDEPENDENT_CODE=1 -DCMAKE_BUILD_TYPE=Release \
-    -DCMAKE_COLOR_MAKEFILE=0 -DCMAKE_INSTALL_MESSAGE=NEVER \
-    -DCMAKE_INSTALL_PREFIX=../install .
+  cmake -DCMAKE_INSTALL_PREFIX=../install .
   cmake --build .
   cmake --install .
   cd ..
