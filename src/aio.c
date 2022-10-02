@@ -282,11 +282,11 @@ SEXP rnng_new_saio(SEXP aio, SEXP fun) {
 
   SEXP env;
 #if defined(R_VERSION) && R_VERSION >= R_Version(4, 1, 0)
-  PROTECT(env = R_NewEnv(R_GetCurrentEnv(), 0, 2));
+  PROTECT(env = R_NewEnv(R_BaseEnv, 0, 2));
 #else
   SEXP expr;
   PROTECT(expr = Rf_lang2(nano_NewEnvSymbol, Rf_ScalarLogical(0)));
-  PROTECT(env = Rf_eval(expr, R_GetCurrentEnv()));
+  PROTECT(env = Rf_eval(expr, R_BaseEnv));
   UNPROTECT(1);
 #endif
   Rf_defineVar(nano_AioSymbol, aio, env);
@@ -302,11 +302,11 @@ SEXP rnng_new_raio(SEXP aio, SEXP keep, SEXP rawfun, SEXP datafun) {
 
   SEXP env;
 #if defined(R_VERSION) && R_VERSION >= R_Version(4, 1, 0)
-  PROTECT(env = R_NewEnv(R_GetCurrentEnv(), 0, 3));
+  PROTECT(env = R_NewEnv(R_BaseEnv, 0, 3));
 #else
   SEXP expr;
   PROTECT(expr = Rf_lang2(nano_NewEnvSymbol, Rf_ScalarLogical(0)));
-  PROTECT(env = Rf_eval(expr, R_GetCurrentEnv()));
+  PROTECT(env = Rf_eval(expr, R_BaseEnv));
   UNPROTECT(1);
 #endif
   Rf_defineVar(nano_AioSymbol, aio, env);
@@ -324,11 +324,11 @@ SEXP rnng_new_naio(SEXP aio, SEXP statusfun, SEXP headersfun, SEXP rawfun, SEXP 
 
   SEXP env;
 #if defined(R_VERSION) && R_VERSION >= R_Version(4, 1, 0)
-  PROTECT(env = R_NewEnv(R_GetCurrentEnv(), 0, 5));
+  PROTECT(env = R_NewEnv(R_BaseEnv, 0, 5));
 #else
   SEXP expr;
   PROTECT(expr = Rf_lang2(nano_NewEnvSymbol, Rf_ScalarLogical(0)));
-  PROTECT(env = Rf_eval(expr, R_GetCurrentEnv()));
+  PROTECT(env = Rf_eval(expr, R_BaseEnv));
   UNPROTECT(1);
 #endif
   Rf_defineVar(nano_AioSymbol, aio, env);

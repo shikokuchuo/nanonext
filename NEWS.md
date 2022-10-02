@@ -23,7 +23,7 @@
 * The source code of 'libnng' v1.6.0 pre-release (722bf46) and 'libmbedtls' v3.2.1 now comes bundled rather than downloaded - this is much more efficient as unused portions have been stripped out.
 * Detects and uses system installations of 'libnng' >= 1.6.0 pre-release 722bf46 and 'libmbedtls' >= 2 where available, only compiling from source when required.
 * R >= 4.2 on Windows now performs source compilation of the bundled 'libnng' and 'libmbedtls' using the rtools42 toolchain. Installation falls back to pre-compiled libraries for older R releases.
-* Minimum supported R version increased to v3.6.0 due to use of C code to create environments.
+* Supported R version amended to >= 2.5, when the current `new.env()` interface was implemented.
 * Internal performance enhancements.
 
 # nanonext 0.5.5
