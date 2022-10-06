@@ -196,7 +196,7 @@ request <- function(context,
                     timeout = NULL,
                     keep.raw = FALSE) {
 
-  res <- .Call(rnng_send_aio, context, data, send_mode, NULL)
+  res <- send_aio(context, data = data, mode = send_mode, timeout = NULL)
   is.integer(res) && return(res)
   recv_aio(context, mode = recv_mode, timeout = timeout, keep.raw = keep.raw)
 

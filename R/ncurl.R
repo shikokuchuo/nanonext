@@ -81,86 +81,17 @@ ncurl <- function(url,
 
   if (async) {
 
-    aio <- .Call(rnng_ncurl_aio, url, convert, method, headers, data, pem)
-    is.integer(aio) && return(aio)
-
     response
-    status <- headers <- raw <- data <- NULL
-    unresolv <- TRUE
-    env <- .Call(rnng_new_naio, aio, function(x) {
-      if (unresolv) {
-        res <- .Call(rnng_aio_http, aio, response)
-        missing(res) && return(.__unresolvedValue__.)
-        if (is.integer(res)) {
-          data <<- raw <<- res
-        } else {
-          status <<- res[[1L]]
-          headers <<- res[[2L]]
-          raw <<- res[[3L]]
-          data <<- res[[4L]]
-        }
-        aio <<- env[["aio"]] <<- NULL
-        unresolv <<- FALSE
-      }
-      status
-    }, function(x) {
-      if (unresolv) {
-        res <- .Call(rnng_aio_http, aio, response)
-        missing(res) && return(.__unresolvedValue__.)
-        if (is.integer(res)) {
-          data <<- raw <<- res
-        } else {
-          status <<- res[[1L]]
-          headers <<- res[[2L]]
-          raw <<- res[[3L]]
-          data <<- res[[4L]]
-        }
-        aio <<- env[["aio"]] <<- NULL
-        unresolv <<- FALSE
-      }
-      headers
-    }, function(x) {
-      if (unresolv) {
-        res <- .Call(rnng_aio_http, aio, response)
-        missing(res) && return(.__unresolvedValue__.)
-        if (is.integer(res)) {
-          data <<- raw <<- res
-        } else {
-          status <<- res[[1L]]
-          headers <<- res[[2L]]
-          raw <<- res[[3L]]
-          data <<- res[[4L]]
-        }
-        aio <<- env[["aio"]] <<- NULL
-        unresolv <<- FALSE
-      }
-      raw
-    }, function(x) {
-      if (unresolv) {
-        res <- .Call(rnng_aio_http, aio, response)
-        missing(res) && return(.__unresolvedValue__.)
-        if (is.integer(res)) {
-          data <<- raw <<- res
-        } else {
-          status <<- res[[1L]]
-          headers <<- res[[2L]]
-          raw <<- res[[3L]]
-          data <<- res[[4L]]
-        }
-        aio <<- env[["aio"]] <<- NULL
-        unresolv <<- FALSE
-      }
-      data
-    })
+    context <- .Call(rnng_ncurl_aio, url, convert, method, headers, data, pem, environment())
 
   } else {
 
-    env <- .Call(rnng_ncurl, url, convert, method, headers, data, response, pem)
-    is.character(env) && follow && return(eval(`[[<-`(match.call(), 2L, env)))
+    context <- .Call(rnng_ncurl, url, convert, method, headers, data, response, pem)
+    is.character(context) && follow && return(eval(`[[<-`(match.call(), 2L, context)))
 
   }
 
-  env
+  context
 
 }
 

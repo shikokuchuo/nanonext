@@ -55,24 +55,12 @@
 #'
 #' @export
 #'
-send_aio <- function(con, data, mode = c("serial", "raw"), timeout = NULL) {
+send_aio <- function(con,
+                     data,
+                     mode = c("serial", "raw"),
+                     timeout = NULL) {
 
-  aio <- .Call(rnng_send_aio, con, data, mode, timeout)
-  is.integer(aio) && return(aio)
-
-  data <- result <- NULL
-  unresolv <- TRUE
-  env <- .Call(rnng_new_saio, aio, function(x) {
-    if (unresolv) {
-      res <- .Call(rnng_aio_result, aio)
-      missing(res) && return(.__unresolvedValue__.)
-      result <<- res
-      aio <<- env[["aio"]] <<- NULL
-      unresolv <<- FALSE
-    }
-    result
-  })
-  env
+  data <- .Call(rnng_send_aio, con, data, mode, timeout, environment())
 
 }
 
@@ -139,43 +127,7 @@ recv_aio <- function(con,
                      keep.raw = FALSE,
                      n = 65536L) {
 
-  aio <- .Call(rnng_recv_aio, con, mode, timeout, n)
-  is.integer(aio) && return(aio)
-
-  data <- raw <- NULL
-  unresolv <- TRUE
-  env <- .Call(rnng_new_raio, aio, keep.raw, function(x) {
-    if (unresolv) {
-      res <- .Call(rnng_aio_get_msg, aio, keep.raw)
-      missing(res) && return(.__unresolvedValue__.)
-      if (is_error_value(res)) {
-        data <<- raw <<- res
-      } else {
-        raw <<- .subset2(res, "raw")
-        data <<- .subset2(res, "data")
-      }
-      aio <<- env[["aio"]] <<- NULL
-      unresolv <<- FALSE
-    }
-    raw
-  }, function(x) {
-    if (unresolv) {
-      res <- .Call(rnng_aio_get_msg, aio, keep.raw)
-      missing(res) && return(.__unresolvedValue__.)
-      if (is_error_value(res)) {
-        data <<- raw <<- res
-      } else if (keep.raw) {
-        raw <<- .subset2(res, "raw")
-        data <<- .subset2(res, "data")
-      } else {
-        data <<- res
-      }
-      aio <<- env[["aio"]] <<- NULL
-      unresolv <<- FALSE
-    }
-    data
-  })
-  env
+  result <- .Call(rnng_recv_aio, con, mode, timeout, keep.raw, n, environment())
 
 }
 

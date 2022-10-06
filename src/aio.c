@@ -137,8 +137,13 @@ static void haio_finalizer(SEXP xptr) {
 
 // core aio --------------------------------------------------------------------
 
-SEXP rnng_aio_result(SEXP aio) {
+SEXP rnng_aio_result(SEXP env) {
 
+  SEXP result = Rf_findVarInFrame(ENCLOS(env), nano_ResultSymbol);
+  if (result != R_UnboundValue)
+    return result;
+
+  SEXP aio = Rf_findVarInFrame(env, nano_AioSymbol);
   if (R_ExternalPtrTag(aio) != nano_AioSymbol)
     Rf_error("object is not a valid Aio");
   if (R_ExternalPtrAddr(aio) == NULL)
@@ -147,17 +152,28 @@ SEXP rnng_aio_result(SEXP aio) {
   nano_aio *aiop = (nano_aio *) R_ExternalPtrAddr(aio);
 
   if (nng_aio_busy(aiop->aio))
-    return R_MissingArg;
+    return nano_unresolved;
 
-  if (aiop->result)
+  Rf_defineVar(nano_AioSymbol, R_NilValue, env);
+
+  if (aiop->result) {
+    Rf_defineVar(nano_ResultSymbol, Rf_ScalarInteger(aiop->result), ENCLOS(env));
     return mk_error(aiop->result);
+  }
 
+  Rf_defineVar(nano_ResultSymbol, nano_success, ENCLOS(env));
   return nano_success;
 
 }
 
-SEXP rnng_aio_get_msg(SEXP aio, SEXP keep) {
+SEXP rnng_aio_get_msg(SEXP env, SEXP which, SEXP keep) {
 
+  const int data = LOGICAL(which)[0];
+  SEXP exist = data ? Rf_findVarInFrame(ENCLOS(env), nano_DataSymbol) : Rf_findVarInFrame(ENCLOS(env), nano_RawSymbol);
+  if (exist != R_UnboundValue)
+    return exist;
+
+  SEXP aio = Rf_findVarInFrame(env, nano_AioSymbol);
   if (R_ExternalPtrTag(aio) != nano_AioSymbol)
     Rf_error("object is not a valid Aio");
   if (R_ExternalPtrAddr(aio) == NULL)
@@ -166,12 +182,18 @@ SEXP rnng_aio_get_msg(SEXP aio, SEXP keep) {
   nano_aio *raio = (nano_aio *) R_ExternalPtrAddr(aio);
 
   if (nng_aio_busy(raio->aio))
-    return R_MissingArg;
+    return nano_unresolved;
 
-  if (raio->result)
+  Rf_defineVar(nano_AioSymbol, R_NilValue, env);
+
+  if (raio->result) {
+    Rf_defineVar(nano_RawSymbol, Rf_ScalarInteger(raio->result), ENCLOS(env));
+    Rf_defineVar(nano_DataSymbol, Rf_ScalarInteger(raio->result), ENCLOS(env));
     return mk_error(raio->result);
+  }
 
-  const int mod = raio->mode, kpr = Rf_asLogical(keep);
+  SEXP out;
+  const int mod = raio->mode, kpr = LOGICAL(keep)[0];
   unsigned char *buf;
   size_t sz;
 
@@ -184,7 +206,17 @@ SEXP rnng_aio_get_msg(SEXP aio, SEXP keep) {
     sz = nng_msg_len(raio->data);
   }
 
-  return nano_decode(buf, sz, mod, kpr);
+  PROTECT(out = nano_decode(buf, sz, mod, kpr));
+  if (kpr) {
+    Rf_defineVar(nano_RawSymbol, VECTOR_ELT(out, 0), ENCLOS(env));
+    Rf_defineVar(nano_DataSymbol, VECTOR_ELT(out, 1), ENCLOS(env));
+    out = data ? VECTOR_ELT(out, 1) : VECTOR_ELT(out, 0);
+  } else {
+    Rf_defineVar(nano_DataSymbol, out, ENCLOS(env));
+  }
+
+  UNPROTECT(1);
+  return out;
 
 }
 
@@ -276,76 +308,9 @@ SEXP rnng_unresolved(SEXP x) {
 
 }
 
-// aio creation ----------------------------------------------------------------
-
-SEXP rnng_new_saio(SEXP aio, SEXP fun) {
-
-  SEXP env;
-#if defined(R_VERSION) && R_VERSION >= R_Version(4, 1, 0)
-  PROTECT(env = R_NewEnv(R_BaseEnv, 0, 2));
-#else
-  SEXP expr;
-  PROTECT(expr = Rf_lang2(nano_NewEnvSymbol, Rf_ScalarLogical(0)));
-  PROTECT(env = Rf_eval(expr, R_BaseEnv));
-  UNPROTECT(1);
-#endif
-  Rf_defineVar(nano_AioSymbol, aio, env);
-  R_MakeActiveBinding(nano_ResultSymbol, fun, env);
-  Rf_classgets(env, nano_sendAio);
-
-  UNPROTECT(1);
-  return env;
-
-}
-
-SEXP rnng_new_raio(SEXP aio, SEXP keep, SEXP rawfun, SEXP datafun) {
-
-  SEXP env;
-#if defined(R_VERSION) && R_VERSION >= R_Version(4, 1, 0)
-  PROTECT(env = R_NewEnv(R_BaseEnv, 0, 3));
-#else
-  SEXP expr;
-  PROTECT(expr = Rf_lang2(nano_NewEnvSymbol, Rf_ScalarLogical(0)));
-  PROTECT(env = Rf_eval(expr, R_BaseEnv));
-  UNPROTECT(1);
-#endif
-  Rf_defineVar(nano_AioSymbol, aio, env);
-  if (Rf_asLogical(keep))
-    R_MakeActiveBinding(nano_RawSymbol, rawfun, env);
-  R_MakeActiveBinding(nano_DataSymbol, datafun, env);
-  Rf_classgets(env, nano_recvAio);
-
-  UNPROTECT(1);
-  return env;
-
-}
-
-SEXP rnng_new_naio(SEXP aio, SEXP statusfun, SEXP headersfun, SEXP rawfun, SEXP datafun) {
-
-  SEXP env;
-#if defined(R_VERSION) && R_VERSION >= R_Version(4, 1, 0)
-  PROTECT(env = R_NewEnv(R_BaseEnv, 0, 5));
-#else
-  SEXP expr;
-  PROTECT(expr = Rf_lang2(nano_NewEnvSymbol, Rf_ScalarLogical(0)));
-  PROTECT(env = Rf_eval(expr, R_BaseEnv));
-  UNPROTECT(1);
-#endif
-  Rf_defineVar(nano_AioSymbol, aio, env);
-  R_MakeActiveBinding(nano_StatusSymbol, statusfun, env);
-  R_MakeActiveBinding(nano_HeadersSymbol, headersfun, env);
-  R_MakeActiveBinding(nano_RawSymbol, rawfun, env);
-  R_MakeActiveBinding(nano_DataSymbol, datafun, env);
-  Rf_classgets(env, nano_ncurlAio);
-
-  UNPROTECT(1);
-  return env;
-
-}
-
 // send recv aio functions -----------------------------------------------------
 
-SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout) {
+SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
 
   SEXP aio;
   int xc;
@@ -456,11 +421,30 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout) {
     Rf_error("'con' is not a valid Socket, Context or Stream");
   }
 
-  return aio;
+  PROTECT(aio);
+  SEXP env, func;
+#if defined(R_VERSION) && R_VERSION >= R_Version(4, 1, 0)
+  PROTECT(env = R_NewEnv(clo, 0, 2));
+#else
+  SEXP expr;
+  PROTECT(expr = Rf_lang2(nano_NewEnvSymbol, Rf_ScalarLogical(0)));
+  PROTECT(env = Rf_eval(expr, clo));
+  UNPROTECT(1);
+#endif
+  Rf_defineVar(nano_AioSymbol, aio, env);
+  PROTECT(func = Rf_allocSExp(CLOSXP));
+  SET_FORMALS(func, Rf_list1(nano_AioSymbol));
+  SET_BODY(func, Rf_lang3(nano_DotcallSymbol, nano_RnngResultSymbol, nano_DataSymbol));
+  SET_CLOENV(func, clo);
+  R_MakeActiveBinding(nano_ResultSymbol, func, env);
+  Rf_classgets(env, nano_sendAio);
+
+  UNPROTECT(3);
+  return env;
 
 }
 
-SEXP rnng_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP bytes) {
+SEXP rnng_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP keep, SEXP bytes, SEXP clo) {
 
   const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) Rf_asInteger(timeout);
   SEXP aio;
@@ -548,13 +532,46 @@ SEXP rnng_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP bytes) {
     Rf_error("'con' is not a valid Socket, Context or Stream");
   }
 
-  return aio;
+  PROTECT(aio);
+  SEXP env, datafunc;
+#if defined(R_VERSION) && R_VERSION >= R_Version(4, 1, 0)
+  PROTECT(env = R_NewEnv(clo, 0, 3));
+#else
+  SEXP expr;
+  PROTECT(expr = Rf_lang2(nano_NewEnvSymbol, Rf_ScalarLogical(0)));
+  PROTECT(env = Rf_eval(expr, clo));
+  UNPROTECT(1);
+#endif
+  Rf_defineVar(nano_AioSymbol, aio, env);
+  const int kpr = Rf_asLogical(keep);
+
+  PROTECT(datafunc = Rf_allocSExp(CLOSXP));
+  SET_FORMALS(datafunc, Rf_list1(nano_AioSymbol));
+  SET_BODY(datafunc, Rf_lang5(nano_DotcallSymbol, nano_RnngGetmsgSymbol, nano_ResultSymbol,
+                              Rf_ScalarLogical(1), Rf_ScalarLogical(kpr)));
+  SET_CLOENV(datafunc, clo);
+  if (kpr) {
+    SEXP rawfunc;
+    PROTECT(rawfunc = Rf_allocSExp(CLOSXP));
+    SET_FORMALS(rawfunc, Rf_list1(nano_AioSymbol));
+    SET_BODY(rawfunc, Rf_lang5(nano_DotcallSymbol, nano_RnngGetmsgSymbol, nano_ResultSymbol,
+                               Rf_ScalarLogical(0), Rf_ScalarLogical(kpr)));
+    SET_CLOENV(rawfunc, clo);
+    R_MakeActiveBinding(nano_RawSymbol, rawfunc, env);
+    UNPROTECT(1);
+  }
+  R_MakeActiveBinding(nano_DataSymbol, datafunc, env);
+  Rf_classgets(env, nano_recvAio);
+
+  UNPROTECT(3);
+  return env;
 
 }
 
 // ncurl aio -------------------------------------------------------------------
 
-SEXP rnng_ncurl_aio(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP data, SEXP pem) {
+SEXP rnng_ncurl_aio(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP data,
+                    SEXP pem, SEXP clo) {
 
   const char *httr = CHAR(STRING_ELT(http, 0));
   nano_aio *haio = R_Calloc(1, nano_aio);
@@ -642,8 +659,48 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP dat
   PROTECT(aio = R_MakeExternalPtr(haio, nano_AioSymbol, R_NilValue));
   R_RegisterCFinalizerEx(aio, haio_finalizer, TRUE);
 
+  SEXP env, statusfunc, headersfunc, rawfunc, datafunc;
+#if defined(R_VERSION) && R_VERSION >= R_Version(4, 1, 0)
+  PROTECT(env = R_NewEnv(clo, 0, 5));
+#else
+  SEXP expr;
+  PROTECT(expr = Rf_lang2(nano_NewEnvSymbol, Rf_ScalarLogical(0)));
+  PROTECT(env = Rf_eval(expr, clo));
   UNPROTECT(1);
-  return aio;
+#endif
+  Rf_defineVar(nano_AioSymbol, aio, env);
+  PROTECT(statusfunc = Rf_allocSExp(CLOSXP));
+  SET_FORMALS(statusfunc, Rf_list1(nano_AioSymbol));
+  SET_BODY(statusfunc, Rf_lang5(nano_DotcallSymbol, nano_RnngHttpSymbol, nano_ContextSymbol,
+                                nano_ResponseSymbol, Rf_ScalarInteger(0)));
+  SET_CLOENV(statusfunc, clo);
+  R_MakeActiveBinding(nano_StatusSymbol, statusfunc, env);
+
+  PROTECT(headersfunc = Rf_allocSExp(CLOSXP));
+  SET_FORMALS(headersfunc, Rf_list1(nano_AioSymbol));
+  SET_BODY(headersfunc, Rf_lang5(nano_DotcallSymbol, nano_RnngHttpSymbol, nano_ContextSymbol,
+                                 nano_ResponseSymbol, Rf_ScalarInteger(1)));
+  SET_CLOENV(headersfunc, clo);
+  R_MakeActiveBinding(nano_HeadersSymbol, headersfunc, env);
+
+  PROTECT(rawfunc = Rf_allocSExp(CLOSXP));
+  SET_FORMALS(rawfunc, Rf_list1(nano_AioSymbol));
+  SET_BODY(rawfunc, Rf_lang5(nano_DotcallSymbol, nano_RnngHttpSymbol, nano_ContextSymbol,
+                             nano_ResponseSymbol, Rf_ScalarInteger(2)));
+  SET_CLOENV(rawfunc, clo);
+  R_MakeActiveBinding(nano_RawSymbol, rawfunc, env);
+
+  PROTECT(datafunc = Rf_allocSExp(CLOSXP));
+  SET_FORMALS(datafunc, Rf_list1(nano_AioSymbol));
+  SET_BODY(datafunc, Rf_lang5(nano_DotcallSymbol, nano_RnngHttpSymbol, nano_ContextSymbol,
+                              nano_ResponseSymbol, Rf_ScalarInteger(3)));
+  SET_CLOENV(datafunc, clo);
+  R_MakeActiveBinding(nano_DataSymbol, datafunc, env);
+
+  Rf_classgets(env, nano_ncurlAio);
+
+  UNPROTECT(6);
+  return env;
 
   exitlevel7:
   nng_tls_config_free(handle->cfg);
@@ -664,8 +721,20 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP dat
 
 }
 
-SEXP rnng_aio_http(SEXP aio, SEXP response) {
+SEXP rnng_aio_http(SEXP env, SEXP response, SEXP which) {
 
+  const int typ = INTEGER(which)[0];
+  SEXP exist;
+  switch (typ) {
+  case 0: exist = Rf_findVarInFrame(ENCLOS(env), nano_StatusSymbol); break;
+  case 1: exist = Rf_findVarInFrame(ENCLOS(env), nano_IdSymbol); break;
+  case 2: exist = Rf_findVarInFrame(ENCLOS(env), nano_RawSymbol); break;
+  case 3: exist = Rf_findVarInFrame(ENCLOS(env), nano_ProtocolSymbol); break;
+  }
+  if (exist != R_UnboundValue)
+    return exist;
+
+  SEXP aio = Rf_findVarInFrame(env, nano_AioSymbol);
   if (R_ExternalPtrTag(aio) != nano_AioSymbol)
     Rf_error("object is not a valid Aio");
   if (R_ExternalPtrAddr(aio) == NULL)
@@ -674,10 +743,17 @@ SEXP rnng_aio_http(SEXP aio, SEXP response) {
   nano_aio *haio = (nano_aio *) R_ExternalPtrAddr(aio);
 
   if (nng_aio_busy(haio->aio))
-    return R_MissingArg;
+    return nano_unresolved;
 
-  if (haio->result)
+  Rf_defineVar(nano_AioSymbol, R_NilValue, env);
+
+  if (haio->result) {
+    Rf_defineVar(nano_StatusSymbol, R_NilValue, ENCLOS(env));
+    Rf_defineVar(nano_IdSymbol, R_NilValue, ENCLOS(env));
+    Rf_defineVar(nano_RawSymbol, Rf_ScalarInteger(haio->result), ENCLOS(env));
+    Rf_defineVar(nano_ProtocolSymbol, Rf_ScalarInteger(haio->result), ENCLOS(env));
     return mk_error(haio->result);
+  }
 
   nano_handle *handle = (nano_handle *) haio->data;
   uint16_t code = nng_http_res_get_status(handle->res);
@@ -685,23 +761,26 @@ SEXP rnng_aio_http(SEXP aio, SEXP response) {
   if (code != 200) {
     REprintf("HTTP Server Response: %d %s\n", code, nng_http_res_get_reason(handle->res));
     if (code >= 300 && code < 400) {
+      Rf_defineVar(nano_StatusSymbol, Rf_ScalarInteger(code), ENCLOS(env));
+      Rf_defineVar(nano_IdSymbol, R_NilValue, ENCLOS(env));
+      Rf_defineVar(nano_RawSymbol, Rf_mkString(nng_http_res_get_header(handle->res, "Location")), ENCLOS(env));
+      Rf_defineVar(nano_ProtocolSymbol, R_NilValue, ENCLOS(env));
       SEXP out;
-      PROTECT(out = Rf_allocVector(VECSXP, 4));
-      SET_VECTOR_ELT(out, 0, Rf_ScalarInteger(code));
-      SET_VECTOR_ELT(out, 1, R_NilValue);
-      SET_VECTOR_ELT(out, 2, Rf_mkString(nng_http_res_get_header(handle->res, "Location")));
-      SET_VECTOR_ELT(out, 3, R_NilValue);
-      UNPROTECT(1);
+      switch (typ) {
+      case 0: out = Rf_findVarInFrame(ENCLOS(env), nano_StatusSymbol); break;
+      case 1: out = Rf_findVarInFrame(ENCLOS(env), nano_IdSymbol); break;
+      case 2: out = Rf_findVarInFrame(ENCLOS(env), nano_RawSymbol); break;
+      case 3: out = Rf_findVarInFrame(ENCLOS(env), nano_ProtocolSymbol); break;
+      }
       return out;
     }
   }
 
   void *dat;
   size_t sz;
-  SEXP out, vec, cvec = R_NilValue, rvec = R_NilValue;
+  SEXP vec, cvec = R_NilValue, rvec = R_NilValue;
 
-  PROTECT(out = Rf_allocVector(VECSXP, 4));
-  SET_VECTOR_ELT(out, 0, Rf_ScalarInteger(code));
+  Rf_defineVar(nano_StatusSymbol, Rf_ScalarInteger(code), ENCLOS(env));
 
   if (response != R_NilValue) {
     const R_xlen_t rlen = Rf_xlength(response);
@@ -730,12 +809,12 @@ SEXP rnng_aio_http(SEXP aio, SEXP response) {
     }
     UNPROTECT(1);
   }
-  SET_VECTOR_ELT(out, 1, rvec);
+  Rf_defineVar(nano_IdSymbol, rvec, ENCLOS(env));
 
   nng_http_res_get_data(handle->res, &dat, &sz);
   vec = Rf_allocVector(RAWSXP, sz);
   memcpy(RAW(vec), dat, sz);
-  SET_VECTOR_ELT(out, 2, vec);
+  Rf_defineVar(nano_RawSymbol, vec, ENCLOS(env));
 
   if (haio->mode) {
     SEXP expr;
@@ -744,9 +823,15 @@ SEXP rnng_aio_http(SEXP aio, SEXP response) {
     cvec = R_tryEvalSilent(expr, R_BaseEnv, &xc);
     UNPROTECT(1);
   }
-  SET_VECTOR_ELT(out, 3, cvec);
+  Rf_defineVar(nano_ProtocolSymbol, cvec, ENCLOS(env));
 
-  UNPROTECT(1);
+  SEXP out;
+  switch (typ) {
+  case 0: out = Rf_findVarInFrame(ENCLOS(env), nano_StatusSymbol); break;
+  case 1: out = Rf_findVarInFrame(ENCLOS(env), nano_IdSymbol); break;
+  case 2: out = Rf_findVarInFrame(ENCLOS(env), nano_RawSymbol); break;
+  case 3: out = Rf_findVarInFrame(ENCLOS(env), nano_ProtocolSymbol); break;
+  }
   return out;
 
 }
