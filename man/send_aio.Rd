@@ -22,7 +22,7 @@ serialisation.}
 applies a socket-specific default, usually the same as no timeout.}
 }
 \value{
-A 'sendAio' (object of class 'sendAio').
+A 'sendAio' (object of class 'sendAio') (invisibly).
 }
 \description{
 Send data asynchronously over a connection (Socket, Context or Stream).

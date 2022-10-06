@@ -26,7 +26,7 @@
 #' @param timeout [default NULL] integer value in milliseconds or NULL, which
 #'     applies a socket-specific default, usually the same as no timeout.
 #'
-#' @return A 'sendAio' (object of class 'sendAio').
+#' @return A 'sendAio' (object of class 'sendAio') (invisibly).
 #'
 #' @details Async send is always non-blocking and returns a 'sendAio'
 #'     immediately.
@@ -71,7 +71,7 @@ send_aio <- function(con,
 #' @inheritParams recv
 #' @inheritParams send_aio
 #'
-#' @return A 'recvAio' (object of class 'recvAio').
+#' @return A 'recvAio' (object of class 'recvAio') (invisibly).
 #'
 #' @details Async receive is always non-blocking and returns a 'recvAio'
 #'     immediately.

@@ -52,7 +52,7 @@
 #'     }
 #'
 #'     Or else, if \code{async = TRUE}, an 'ncurlAio' (object of class 'ncurlAio'
-#'     and 'recvAio').
+#'     and 'recvAio') (invisibly).
 #'
 #' @section Redirects:
 #'
@@ -86,12 +86,11 @@ ncurl <- function(url,
 
   } else {
 
-    context <- .Call(rnng_ncurl, url, convert, method, headers, data, response, pem)
-    is.character(context) && follow && return(eval(`[[<-`(match.call(), 2L, context)))
+    res <- .Call(rnng_ncurl, url, convert, method, headers, data, response, pem)
+    is.character(res) && follow && return(eval(`[[<-`(match.call(), 2L, res)))
+    res
 
   }
-
-  context
 
 }
 

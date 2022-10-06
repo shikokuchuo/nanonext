@@ -33,7 +33,7 @@ bytes to receive. Can be an over-estimate, but note that a buffer of this
 size is reserved.}
 }
 \value{
-A 'recvAio' (object of class 'recvAio').
+A 'recvAio' (object of class 'recvAio') (invisibly).
 }
 \description{
 Receive data asynchronously over a connection (Socket, Context or Stream).

@@ -58,7 +58,7 @@ Named list of 4 elements:
     }
 
     Or else, if \code{async = TRUE}, an 'ncurlAio' (object of class 'ncurlAio'
-    and 'recvAio').
+    and 'recvAio') (invisibly).
 }
 \description{
 nano cURL - a minimalist http(s) client.
