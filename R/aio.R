@@ -99,18 +99,18 @@ send_aio <- function(con,
 #' s2 <- socket("pair", dial = "inproc://nanonext")
 #'
 #' res <- send_aio(s1, data.frame(a = 1, b = 2), timeout = 100)
-#' msg <- recv_aio(s2, timeout = 100, keep.raw = FALSE)
+#' msg <- recv_aio(s2, timeout = 100)
 #' msg
 #' msg$data
 #'
 #' res <- send_aio(s1, c(1.1, 2.2, 3.3), mode = "raw", timeout = 100)
-#' msg <- recv_aio(s2, mode = "double", timeout = 100)
+#' msg <- recv_aio(s2, mode = "double", timeout = 100, keep.raw = TRUE)
 #' msg
 #' msg$raw
 #' msg$data
 #'
 #' res <- send_aio(s1, "example message", mode = "raw", timeout = 100)
-#' msg <- recv_aio(s2, mode = "character", timeout = 100)
+#' msg <- recv_aio(s2, mode = "character", timeout = 100, keep.raw = TRUE)
 #' call_aio(msg)
 #' msg$raw
 #' msg$data

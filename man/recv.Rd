@@ -73,14 +73,14 @@ s2 <- socket("pair", dial = "inproc://nanonext")
 send(s1, data.frame(a = 1, b = 2))
 res <- recv(s2)
 res
-send(s1, data.frame(a = 1, b = 2), echo = FALSE)
-recv(s2, keep.raw = FALSE)
+send(s1, data.frame(a = 1, b = 2))
+recv(s2, keep.raw = TRUE)
 
 send(s1, c(1.1, 2.2, 3.3), mode = "raw")
-res <- recv(s2, mode = "double", block = 100)
+res <- recv(s2, mode = "double", block = 100, keep.raw = TRUE)
 res
-send(s1, "example message", mode = "raw", echo = FALSE)
-recv(s2, mode = "character", keep.raw = FALSE)
+send(s1, "example message", mode = "raw")
+recv(s2, mode = "character")
 
 close(s1)
 close(s2)
