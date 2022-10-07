@@ -106,6 +106,7 @@ extern SEXP nano_unresolved;
 extern SEXP nano_sendAio;
 extern SEXP nano_recvAio;
 extern SEXP nano_ncurlAio;
+extern SEXP nano_sendfun;
 
 extern SEXP rnng_aio_call(SEXP);
 extern SEXP rnng_aio_get_msg(SEXP, SEXP, SEXP);

@@ -422,7 +422,7 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
   }
 
   PROTECT(aio);
-  SEXP env, func;
+  SEXP env, fun;
 #if defined(R_VERSION) && R_VERSION >= R_Version(4, 1, 0)
   PROTECT(env = R_NewEnv(clo, 0, 2));
 #else
@@ -432,11 +432,9 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
   UNPROTECT(1);
 #endif
   Rf_defineVar(nano_AioSymbol, aio, env);
-  PROTECT(func = Rf_allocSExp(CLOSXP));
-  SET_FORMALS(func, Rf_list1(nano_AioSymbol));
-  SET_BODY(func, Rf_lang3(nano_DotcallSymbol, nano_RnngResultSymbol, nano_DataSymbol));
-  SET_CLOENV(func, clo);
-  R_MakeActiveBinding(nano_ResultSymbol, func, env);
+  PROTECT(fun = Rf_shallow_duplicate(nano_sendfun));
+  SET_CLOENV(fun, clo);
+  R_MakeActiveBinding(nano_ResultSymbol, fun, env);
   Rf_classgets(env, nano_sendAio);
 
   UNPROTECT(3);
@@ -533,7 +531,7 @@ SEXP rnng_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP keep, SEXP bytes, SEX
   }
 
   PROTECT(aio);
-  SEXP env, datafunc;
+  SEXP env, datafun;
 #if defined(R_VERSION) && R_VERSION >= R_Version(4, 1, 0)
   PROTECT(env = R_NewEnv(clo, 0, 3));
 #else
@@ -545,22 +543,22 @@ SEXP rnng_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP keep, SEXP bytes, SEX
   Rf_defineVar(nano_AioSymbol, aio, env);
   const int kpr = Rf_asLogical(keep);
 
-  PROTECT(datafunc = Rf_allocSExp(CLOSXP));
-  SET_FORMALS(datafunc, Rf_list1(nano_AioSymbol));
-  SET_BODY(datafunc, Rf_lang5(nano_DotcallSymbol, nano_RnngGetmsgSymbol, nano_ResultSymbol,
-                              Rf_ScalarLogical(1), Rf_ScalarLogical(kpr)));
-  SET_CLOENV(datafunc, clo);
+  PROTECT(datafun = Rf_allocSExp(CLOSXP));
+  SET_FORMALS(datafun, Rf_list1(nano_AioSymbol));
+  SET_BODY(datafun, Rf_lang5(nano_DotcallSymbol, nano_RnngGetmsgSymbol, nano_ResultSymbol,
+                             Rf_ScalarLogical(1), Rf_ScalarLogical(kpr)));
+  SET_CLOENV(datafun, clo);
   if (kpr) {
-    SEXP rawfunc;
-    PROTECT(rawfunc = Rf_allocSExp(CLOSXP));
-    SET_FORMALS(rawfunc, Rf_list1(nano_AioSymbol));
-    SET_BODY(rawfunc, Rf_lang5(nano_DotcallSymbol, nano_RnngGetmsgSymbol, nano_ResultSymbol,
-                               Rf_ScalarLogical(0), Rf_ScalarLogical(kpr)));
-    SET_CLOENV(rawfunc, clo);
-    R_MakeActiveBinding(nano_RawSymbol, rawfunc, env);
+    SEXP rawfun;
+    PROTECT(rawfun = Rf_allocSExp(CLOSXP));
+    SET_FORMALS(rawfun, Rf_list1(nano_AioSymbol));
+    SET_BODY(rawfun, Rf_lang5(nano_DotcallSymbol, nano_RnngGetmsgSymbol, nano_ResultSymbol,
+                              Rf_ScalarLogical(0), Rf_ScalarLogical(kpr)));
+    SET_CLOENV(rawfun, clo);
+    R_MakeActiveBinding(nano_RawSymbol, rawfun, env);
     UNPROTECT(1);
   }
-  R_MakeActiveBinding(nano_DataSymbol, datafunc, env);
+  R_MakeActiveBinding(nano_DataSymbol, datafun, env);
   Rf_classgets(env, nano_recvAio);
 
   UNPROTECT(3);
@@ -659,7 +657,7 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP dat
   PROTECT(aio = R_MakeExternalPtr(haio, nano_AioSymbol, R_NilValue));
   R_RegisterCFinalizerEx(aio, haio_finalizer, TRUE);
 
-  SEXP env, statusfunc, headersfunc, rawfunc, datafunc;
+  SEXP env, statusfun, headersfun, rawfun, datafun;
 #if defined(R_VERSION) && R_VERSION >= R_Version(4, 1, 0)
   PROTECT(env = R_NewEnv(clo, 0, 5));
 #else
@@ -669,33 +667,33 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP dat
   UNPROTECT(1);
 #endif
   Rf_defineVar(nano_AioSymbol, aio, env);
-  PROTECT(statusfunc = Rf_allocSExp(CLOSXP));
-  SET_FORMALS(statusfunc, Rf_list1(nano_AioSymbol));
-  SET_BODY(statusfunc, Rf_lang5(nano_DotcallSymbol, nano_RnngHttpSymbol, nano_ContextSymbol,
-                                nano_ResponseSymbol, Rf_ScalarInteger(0)));
-  SET_CLOENV(statusfunc, clo);
-  R_MakeActiveBinding(nano_StatusSymbol, statusfunc, env);
+  PROTECT(statusfun = Rf_allocSExp(CLOSXP));
+  SET_FORMALS(statusfun, Rf_list1(nano_AioSymbol));
+  SET_BODY(statusfun, Rf_lang5(nano_DotcallSymbol, nano_RnngHttpSymbol, nano_ContextSymbol,
+                               nano_ResponseSymbol, Rf_ScalarInteger(0)));
+  SET_CLOENV(statusfun, clo);
+  R_MakeActiveBinding(nano_StatusSymbol, statusfun, env);
 
-  PROTECT(headersfunc = Rf_allocSExp(CLOSXP));
-  SET_FORMALS(headersfunc, Rf_list1(nano_AioSymbol));
-  SET_BODY(headersfunc, Rf_lang5(nano_DotcallSymbol, nano_RnngHttpSymbol, nano_ContextSymbol,
-                                 nano_ResponseSymbol, Rf_ScalarInteger(1)));
-  SET_CLOENV(headersfunc, clo);
-  R_MakeActiveBinding(nano_HeadersSymbol, headersfunc, env);
+  PROTECT(headersfun = Rf_allocSExp(CLOSXP));
+  SET_FORMALS(headersfun, Rf_list1(nano_AioSymbol));
+  SET_BODY(headersfun, Rf_lang5(nano_DotcallSymbol, nano_RnngHttpSymbol, nano_ContextSymbol,
+                                nano_ResponseSymbol, Rf_ScalarInteger(1)));
+  SET_CLOENV(headersfun, clo);
+  R_MakeActiveBinding(nano_HeadersSymbol, headersfun, env);
 
-  PROTECT(rawfunc = Rf_allocSExp(CLOSXP));
-  SET_FORMALS(rawfunc, Rf_list1(nano_AioSymbol));
-  SET_BODY(rawfunc, Rf_lang5(nano_DotcallSymbol, nano_RnngHttpSymbol, nano_ContextSymbol,
-                             nano_ResponseSymbol, Rf_ScalarInteger(2)));
-  SET_CLOENV(rawfunc, clo);
-  R_MakeActiveBinding(nano_RawSymbol, rawfunc, env);
+  PROTECT(rawfun = Rf_allocSExp(CLOSXP));
+  SET_FORMALS(rawfun, Rf_list1(nano_AioSymbol));
+  SET_BODY(rawfun, Rf_lang5(nano_DotcallSymbol, nano_RnngHttpSymbol, nano_ContextSymbol,
+                            nano_ResponseSymbol, Rf_ScalarInteger(2)));
+  SET_CLOENV(rawfun, clo);
+  R_MakeActiveBinding(nano_RawSymbol, rawfun, env);
 
-  PROTECT(datafunc = Rf_allocSExp(CLOSXP));
-  SET_FORMALS(datafunc, Rf_list1(nano_AioSymbol));
-  SET_BODY(datafunc, Rf_lang5(nano_DotcallSymbol, nano_RnngHttpSymbol, nano_ContextSymbol,
-                              nano_ResponseSymbol, Rf_ScalarInteger(3)));
-  SET_CLOENV(datafunc, clo);
-  R_MakeActiveBinding(nano_DataSymbol, datafunc, env);
+  PROTECT(datafun = Rf_allocSExp(CLOSXP));
+  SET_FORMALS(datafun, Rf_list1(nano_AioSymbol));
+  SET_BODY(datafun, Rf_lang5(nano_DotcallSymbol, nano_RnngHttpSymbol, nano_ContextSymbol,
+                             nano_ResponseSymbol, Rf_ScalarInteger(3)));
+  SET_CLOENV(datafun, clo);
+  R_MakeActiveBinding(nano_DataSymbol, datafun, env);
 
   Rf_classgets(env, nano_ncurlAio);
 

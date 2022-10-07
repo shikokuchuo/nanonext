@@ -50,6 +50,7 @@ SEXP nano_unresolved;
 SEXP nano_sendAio;
 SEXP nano_recvAio;
 SEXP nano_ncurlAio;
+SEXP nano_sendfun;
 
 static void RegisterSymbols(void) {
   nano_AioSymbol = Rf_install("aio");
@@ -67,7 +68,6 @@ static void RegisterSymbols(void) {
   nano_ResultSymbol = Rf_install("result");
   nano_RnngGetmsgSymbol = Rf_install("rnng_aio_get_msg");
   nano_RnngHttpSymbol = Rf_install("rnng_aio_http");
-  nano_RnngResultSymbol = Rf_install("rnng_aio_result");
   nano_RtcSymbol = Rf_install("rawToChar");
   nano_SerialSymbol = Rf_install("serialize");
   nano_SocketSymbol = Rf_install("socket");
@@ -89,6 +89,9 @@ static void PreserveObjects(void) {
   R_PreserveObject(nano_ncurlAio = Rf_allocVector(STRSXP, 2));
   SET_STRING_ELT(nano_ncurlAio, 0, Rf_mkChar("ncurlAio"));
   SET_STRING_ELT(nano_ncurlAio, 1, Rf_mkChar("recvAio"));
+  R_PreserveObject(nano_sendfun = Rf_allocSExp(CLOSXP));
+  SET_FORMALS(nano_sendfun, Rf_list1(nano_AioSymbol));
+  SET_BODY(nano_sendfun, Rf_lang3(nano_DotcallSymbol, Rf_install("rnng_aio_result"), nano_DataSymbol));
 }
 
 static void ReleaseObjects(void) {
@@ -98,6 +101,7 @@ static void ReleaseObjects(void) {
   R_ReleaseObject(nano_sendAio);
   R_ReleaseObject(nano_recvAio);
   R_ReleaseObject(nano_ncurlAio);
+  R_ReleaseObject(nano_sendfun);
 }
 
 static const R_CallMethodDef callMethods[] = {
