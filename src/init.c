@@ -48,9 +48,8 @@ SEXP nano_unresolved;
 SEXP nano_sendAio;
 SEXP nano_recvAio;
 SEXP nano_ncurlAio;
-SEXP nano_sendfun;
-SEXP nano_datafun;
-SEXP nano_rawfun;
+SEXP nano_funList;
+SEXP nano_funList2;
 
 static void RegisterSymbols(void) {
   nano_AioSymbol = Rf_install("aio");
@@ -88,15 +87,32 @@ static void PreserveObjects(void) {
   R_PreserveObject(nano_ncurlAio = Rf_allocVector(STRSXP, 2));
   SET_STRING_ELT(nano_ncurlAio, 0, Rf_mkChar("ncurlAio"));
   SET_STRING_ELT(nano_ncurlAio, 1, Rf_mkChar("recvAio"));
-  R_PreserveObject(nano_sendfun = Rf_allocSExp(CLOSXP));
-  SET_FORMALS(nano_sendfun, Rf_list1(nano_AioSymbol));
-  SET_BODY(nano_sendfun, Rf_lang3(nano_DotcallSymbol, Rf_install("rnng_aio_result"), nano_DataSymbol));
-  R_PreserveObject(nano_rawfun = Rf_allocSExp(CLOSXP));
-  SET_FORMALS(nano_rawfun, Rf_list1(nano_AioSymbol));
-  SET_BODY(nano_rawfun, Rf_lang3(nano_DotcallSymbol, Rf_install("rnng_aio_get_msgraw"), nano_ResultSymbol));
-  R_PreserveObject(nano_datafun = Rf_allocSExp(CLOSXP));
-  SET_FORMALS(nano_datafun, Rf_list1(nano_AioSymbol));
-  SET_BODY(nano_datafun, Rf_lang3(nano_DotcallSymbol, Rf_install("rnng_aio_get_msgdata"), nano_ResultSymbol));
+  SEXP statusfun, headersfun, rawfun, datafun;
+  PROTECT(statusfun = Rf_allocSExp(CLOSXP));
+  SET_FORMALS(statusfun, Rf_list1(nano_AioSymbol));
+  SET_BODY(statusfun, Rf_lang3(nano_DotcallSymbol, Rf_install("rnng_aio_result"), nano_DataSymbol));
+  PROTECT(datafun = Rf_allocSExp(CLOSXP));
+  SET_FORMALS(datafun, Rf_list1(nano_AioSymbol));
+  SET_BODY(datafun, Rf_lang3(nano_DotcallSymbol, Rf_install("rnng_aio_get_msgdata"), nano_ResultSymbol));
+  PROTECT(rawfun = Rf_allocSExp(CLOSXP));
+  SET_FORMALS(rawfun, Rf_list1(nano_AioSymbol));
+  SET_BODY(rawfun, Rf_lang3(nano_DotcallSymbol, Rf_install("rnng_aio_get_msgraw"), nano_ResultSymbol));
+  R_PreserveObject(nano_funList = Rf_list3(statusfun, datafun, rawfun));
+  UNPROTECT(3);
+  PROTECT(statusfun = Rf_allocSExp(CLOSXP));
+  SET_FORMALS(statusfun, Rf_list1(nano_AioSymbol));
+  SET_BODY(statusfun, Rf_lang5(nano_DotcallSymbol, nano_RnngHttpSymbol, nano_ContextSymbol, nano_ResponseSymbol, Rf_ScalarInteger(0)));
+  PROTECT(headersfun = Rf_allocSExp(CLOSXP));
+  SET_FORMALS(headersfun, Rf_list1(nano_AioSymbol));
+  SET_BODY(headersfun, Rf_lang5(nano_DotcallSymbol, nano_RnngHttpSymbol, nano_ContextSymbol, nano_ResponseSymbol, Rf_ScalarInteger(1)));
+  PROTECT(rawfun = Rf_allocSExp(CLOSXP));
+  SET_FORMALS(rawfun, Rf_list1(nano_AioSymbol));
+  SET_BODY(rawfun, Rf_lang5(nano_DotcallSymbol, nano_RnngHttpSymbol, nano_ContextSymbol, nano_ResponseSymbol, Rf_ScalarInteger(2)));
+  PROTECT(datafun = Rf_allocSExp(CLOSXP));
+  SET_FORMALS(datafun, Rf_list1(nano_AioSymbol));
+  SET_BODY(datafun, Rf_lang5(nano_DotcallSymbol, nano_RnngHttpSymbol, nano_ContextSymbol, nano_ResponseSymbol, Rf_ScalarInteger(3)));
+  R_PreserveObject(nano_funList2 = Rf_list4(statusfun, headersfun, rawfun, datafun));
+  UNPROTECT(4);
 }
 
 static void ReleaseObjects(void) {
@@ -106,9 +122,8 @@ static void ReleaseObjects(void) {
   R_ReleaseObject(nano_sendAio);
   R_ReleaseObject(nano_recvAio);
   R_ReleaseObject(nano_ncurlAio);
-  R_ReleaseObject(nano_sendfun);
-  R_ReleaseObject(nano_datafun);
-  R_ReleaseObject(nano_rawfun);
+  R_ReleaseObject(nano_funList);
+  R_ReleaseObject(nano_funList2);
 }
 
 static const R_CallMethodDef callMethods[] = {
