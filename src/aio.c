@@ -135,6 +135,18 @@ static void haio_finalizer(SEXP xptr) {
 
 }
 
+static void create_activebinding(SEXP sym, SEXP env, SEXP clo, int x) {
+
+  SEXP fun;
+  PROTECT(fun = Rf_allocSExp(CLOSXP));
+  SET_FORMALS(fun, Rf_list1(nano_AioSymbol));
+  SET_BODY(fun, Rf_lang5(nano_DotcallSymbol, nano_RnngHttpSymbol, nano_ContextSymbol, nano_ResponseSymbol, Rf_ScalarInteger(x)));
+  SET_CLOENV(fun, clo);
+  R_MakeActiveBinding(sym, fun, env);
+  UNPROTECT(1);
+
+}
+
 // core aio --------------------------------------------------------------------
 
 SEXP rnng_aio_result(SEXP env) {
@@ -611,19 +623,6 @@ SEXP rnng_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP keep, SEXP bytes, SEX
 
 // ncurl aio -------------------------------------------------------------------
 
-static SEXP create_bindingfun(SEXP clo, int x) {
-
-  SEXP fun;
-  PROTECT(fun = Rf_allocSExp(CLOSXP));
-  SET_FORMALS(fun, Rf_list1(nano_AioSymbol));
-  SET_BODY(fun, Rf_lang5(nano_DotcallSymbol, nano_RnngHttpSymbol, nano_ContextSymbol, nano_ResponseSymbol, Rf_ScalarInteger(x)));
-  SET_CLOENV(fun, clo);
-
-  UNPROTECT(1);
-  return fun;
-
-}
-
 SEXP rnng_ncurl_aio(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP data,
                     SEXP pem, SEXP clo) {
 
@@ -713,7 +712,7 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP dat
   PROTECT(aio = R_MakeExternalPtr(haio, nano_AioSymbol, R_NilValue));
   R_RegisterCFinalizerEx(aio, haio_finalizer, TRUE);
 
-  SEXP env, statusfun, headersfun, rawfun, datafun;
+  SEXP env;
 #if defined(R_VERSION) && R_VERSION >= R_Version(4, 1, 0)
   PROTECT(env = R_NewEnv(clo, 0, 5));
 #else
@@ -723,19 +722,14 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP dat
   UNPROTECT(1);
 #endif
   Rf_defineVar(nano_AioSymbol, aio, env);
-
-  PROTECT(statusfun = create_bindingfun(clo, 0));
-  R_MakeActiveBinding(nano_StatusSymbol, statusfun, env);
-  PROTECT(headersfun = create_bindingfun(clo, 1));
-  R_MakeActiveBinding(nano_HeadersSymbol, headersfun, env);
-  PROTECT(rawfun = create_bindingfun(clo, 2));
-  R_MakeActiveBinding(nano_RawSymbol, rawfun, env);
-  PROTECT(datafun = create_bindingfun(clo, 3));
-  R_MakeActiveBinding(nano_DataSymbol, datafun, env);
+  create_activebinding(nano_StatusSymbol, env, clo, 0);
+  create_activebinding(nano_HeadersSymbol, env, clo, 1);
+  create_activebinding(nano_RawSymbol, env, clo, 2);
+  create_activebinding(nano_DataSymbol, env, clo, 3);
 
   Rf_classgets(env, nano_ncurlAio);
 
-  UNPROTECT(6);
+  UNPROTECT(2);
   return env;
 
   exitlevel7:
