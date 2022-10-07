@@ -31,9 +31,7 @@ SEXP nano_ProtocolSymbol;
 SEXP nano_RawSymbol;
 SEXP nano_ResponseSymbol;
 SEXP nano_ResultSymbol;
-SEXP nano_RnngGetmsgSymbol;
 SEXP nano_RnngHttpSymbol;
-SEXP nano_RnngResultSymbol;
 SEXP nano_RtcSymbol;
 SEXP nano_SerialSymbol;
 SEXP nano_SocketSymbol;
@@ -51,6 +49,8 @@ SEXP nano_sendAio;
 SEXP nano_recvAio;
 SEXP nano_ncurlAio;
 SEXP nano_sendfun;
+SEXP nano_datafun;
+SEXP nano_rawfun;
 
 static void RegisterSymbols(void) {
   nano_AioSymbol = Rf_install("aio");
@@ -66,7 +66,6 @@ static void RegisterSymbols(void) {
   nano_RawSymbol = Rf_install("raw");
   nano_ResponseSymbol = Rf_install("response");
   nano_ResultSymbol = Rf_install("result");
-  nano_RnngGetmsgSymbol = Rf_install("rnng_aio_get_msg");
   nano_RnngHttpSymbol = Rf_install("rnng_aio_http");
   nano_RtcSymbol = Rf_install("rawToChar");
   nano_SerialSymbol = Rf_install("serialize");
@@ -92,6 +91,12 @@ static void PreserveObjects(void) {
   R_PreserveObject(nano_sendfun = Rf_allocSExp(CLOSXP));
   SET_FORMALS(nano_sendfun, Rf_list1(nano_AioSymbol));
   SET_BODY(nano_sendfun, Rf_lang3(nano_DotcallSymbol, Rf_install("rnng_aio_result"), nano_DataSymbol));
+  R_PreserveObject(nano_rawfun = Rf_allocSExp(CLOSXP));
+  SET_FORMALS(nano_rawfun, Rf_list1(nano_AioSymbol));
+  SET_BODY(nano_rawfun, Rf_lang3(nano_DotcallSymbol, Rf_install("rnng_aio_get_msgraw"), nano_ResultSymbol));
+  R_PreserveObject(nano_datafun = Rf_allocSExp(CLOSXP));
+  SET_FORMALS(nano_datafun, Rf_list1(nano_AioSymbol));
+  SET_BODY(nano_datafun, Rf_lang3(nano_DotcallSymbol, Rf_install("rnng_aio_get_msgdata"), nano_ResultSymbol));
 }
 
 static void ReleaseObjects(void) {
@@ -102,11 +107,14 @@ static void ReleaseObjects(void) {
   R_ReleaseObject(nano_recvAio);
   R_ReleaseObject(nano_ncurlAio);
   R_ReleaseObject(nano_sendfun);
+  R_ReleaseObject(nano_datafun);
+  R_ReleaseObject(nano_rawfun);
 }
 
 static const R_CallMethodDef callMethods[] = {
   {"rnng_aio_call", (DL_FUNC) &rnng_aio_call, 1},
-  {"rnng_aio_get_msg", (DL_FUNC) &rnng_aio_get_msg, 3},
+  {"rnng_aio_get_msgdata", (DL_FUNC) &rnng_aio_get_msgdata, 1},
+  {"rnng_aio_get_msgraw", (DL_FUNC) &rnng_aio_get_msgraw, 1},
   {"rnng_aio_http", (DL_FUNC) &rnng_aio_http, 3},
   {"rnng_aio_result", (DL_FUNC) &rnng_aio_result, 1},
   {"rnng_aio_stop", (DL_FUNC) &rnng_aio_stop, 1},

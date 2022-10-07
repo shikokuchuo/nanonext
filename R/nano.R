@@ -253,7 +253,7 @@ print.nanoStream <- function(x, ...) {
 print.recvAio <- function(x, ...) {
 
   cat("< recvAio >\n - $data for message data\n",
-      if (length(.subset2(x, "raw"))) "- $raw for raw message\n", file = stdout())
+      if (.subset2(x, "state")) "- $raw for raw message\n", file = stdout())
   invisible(x)
 
 }
