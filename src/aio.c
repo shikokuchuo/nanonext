@@ -492,7 +492,9 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
   UNPROTECT(1);
 #endif
   Rf_defineVar(nano_AioSymbol, aio, env);
-  PROTECT(fun = Rf_shallow_duplicate(CAR(nano_funList)));
+  PROTECT(fun = Rf_allocSExp(CLOSXP));
+  SET_FORMALS(fun, nano_aioFormals);
+  SET_BODY(fun, CAR(nano_funList));
   SET_CLOENV(fun, clo);
   R_MakeActiveBinding(nano_ResultSymbol, fun, env);
   Rf_classgets(env, nano_sendAio);
@@ -604,11 +606,15 @@ SEXP rnng_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP keep, SEXP bytes, SEX
   const int kpr = Rf_asLogical(keep);
   Rf_defineVar(nano_StateSymbol, Rf_ScalarLogical(kpr), env);
 
-  PROTECT(datafun = Rf_shallow_duplicate(CADR(nano_funList)));
+  PROTECT(datafun = Rf_allocSExp(CLOSXP));
+  SET_FORMALS(datafun, nano_aioFormals);
+  SET_BODY(datafun, CADR(nano_funList));
   SET_CLOENV(datafun, clo);
   if (kpr) {
     SEXP rawfun;
-    PROTECT(rawfun = Rf_shallow_duplicate(CADDR(nano_funList)));
+    PROTECT(rawfun = Rf_allocSExp(CLOSXP));
+    SET_FORMALS(rawfun, nano_aioFormals);
+    SET_BODY(rawfun, CADDR(nano_funList));
     SET_CLOENV(rawfun, clo);
     R_MakeActiveBinding(nano_RawSymbol, rawfun, env);
     UNPROTECT(1);

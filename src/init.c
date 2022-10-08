@@ -48,6 +48,7 @@ SEXP nano_unresolved;
 SEXP nano_sendAio;
 SEXP nano_recvAio;
 SEXP nano_ncurlAio;
+SEXP nano_aioFormals;
 SEXP nano_funList;
 
 static void RegisterSymbols(void) {
@@ -86,17 +87,12 @@ static void PreserveObjects(void) {
   R_PreserveObject(nano_ncurlAio = Rf_allocVector(STRSXP, 2));
   SET_STRING_ELT(nano_ncurlAio, 0, Rf_mkChar("ncurlAio"));
   SET_STRING_ELT(nano_ncurlAio, 1, Rf_mkChar("recvAio"));
-  SEXP sendfun, datafun, rawfun;
-  PROTECT(sendfun = Rf_allocSExp(CLOSXP));
-  SET_FORMALS(sendfun, Rf_list1(nano_AioSymbol));
-  SET_BODY(sendfun, Rf_lang3(nano_DotcallSymbol, Rf_install("rnng_aio_result"), nano_DataSymbol));
-  PROTECT(datafun = Rf_allocSExp(CLOSXP));
-  SET_FORMALS(datafun, Rf_list1(nano_AioSymbol));
-  SET_BODY(datafun, Rf_lang3(nano_DotcallSymbol, Rf_install("rnng_aio_get_msgdata"), nano_ResultSymbol));
-  PROTECT(rawfun = Rf_allocSExp(CLOSXP));
-  SET_FORMALS(rawfun, Rf_list1(nano_AioSymbol));
-  SET_BODY(rawfun, Rf_lang3(nano_DotcallSymbol, Rf_install("rnng_aio_get_msgraw"), nano_ResultSymbol));
-  R_PreserveObject(nano_funList = Rf_list3(sendfun, datafun, rawfun));
+  R_PreserveObject(nano_aioFormals = Rf_list1(Rf_install(".")));
+  SEXP result, msgdata, msgraw;
+  PROTECT(result = Rf_lang3(nano_DotcallSymbol, Rf_install("rnng_aio_result"), nano_DataSymbol));
+  PROTECT(msgdata = Rf_lang3(nano_DotcallSymbol, Rf_install("rnng_aio_get_msgdata"), nano_ResultSymbol));
+  PROTECT(msgraw = Rf_lang3(nano_DotcallSymbol, Rf_install("rnng_aio_get_msgraw"), nano_ResultSymbol));
+  R_PreserveObject(nano_funList = Rf_list3(result, msgdata, msgraw));
   UNPROTECT(3);
 }
 
@@ -107,6 +103,7 @@ static void ReleaseObjects(void) {
   R_ReleaseObject(nano_sendAio);
   R_ReleaseObject(nano_recvAio);
   R_ReleaseObject(nano_ncurlAio);
+  R_ReleaseObject(nano_aioFormals);
   R_ReleaseObject(nano_funList);
 }
 
