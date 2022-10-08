@@ -139,7 +139,7 @@ static void create_activebinding(SEXP sym, SEXP env, SEXP clo, int x) {
 
   SEXP fun;
   PROTECT(fun = Rf_allocSExp(CLOSXP));
-  SET_FORMALS(fun, Rf_list1(nano_AioSymbol));
+  SET_FORMALS(fun, nano_aioFormals);
   SET_BODY(fun, Rf_lang5(nano_DotcallSymbol, nano_RnngHttpSymbol, nano_ContextSymbol, nano_ResponseSymbol, Rf_ScalarInteger(x)));
   SET_CLOENV(fun, clo);
   R_MakeActiveBinding(sym, fun, env);
