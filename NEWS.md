@@ -1,5 +1,7 @@
 # nanonext 0.5.5.9010 (to be 0.6.0)
 
+*The nanonext 0.6 series incorporates significant advances in performance and stability over previous releases*
+
 #### New Features
 
 * Implements `base64enc()` and `base64dec()` base64 encoding and decoding using the 'Mbed TLS' library.

@@ -149,9 +149,11 @@ recv(socket2)
 
 The following example demonstrates the exchange of numerical data between R and Python (NumPy), two of the most commonly-used languages for data science and machine learning. 
 
-Using a messaging interface provides a clean and robust approach, light on resources with limited and identifiable points of failure. This is especially relevant when processing real-time data, as an example. 
+Using a messaging interface provides a clean and robust approach, light on resources with limited and identifiable points of failure.
 
 This approach can also serve as an interface / pipe between different processes written in the same or different languages, running on the same computer or distributed across networks, and is an enabler of modular software design as espoused by the Unix philosophy.
+
+One problem it solves is that of processing real-time data where computation times exceed the data frequency - by dividing the computation into stages, this may be set up as a pipeline or 'cascade' of processes, each connected using NNG sockets.
 
 Create socket in Python using the NNG binding 'pynng':
 

@@ -494,7 +494,7 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
   Rf_defineVar(nano_AioSymbol, aio, env);
   PROTECT(fun = Rf_allocSExp(CLOSXP));
   SET_FORMALS(fun, nano_aioFormals);
-  SET_BODY(fun, CAR(nano_funList));
+  SET_BODY(fun, CAR(nano_aioFunctions));
   SET_CLOENV(fun, clo);
   R_MakeActiveBinding(nano_ResultSymbol, fun, env);
   Rf_classgets(env, nano_sendAio);
@@ -608,13 +608,13 @@ SEXP rnng_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP keep, SEXP bytes, SEX
 
   PROTECT(datafun = Rf_allocSExp(CLOSXP));
   SET_FORMALS(datafun, nano_aioFormals);
-  SET_BODY(datafun, CADR(nano_funList));
+  SET_BODY(datafun, CADR(nano_aioFunctions));
   SET_CLOENV(datafun, clo);
   if (kpr) {
     SEXP rawfun;
     PROTECT(rawfun = Rf_allocSExp(CLOSXP));
     SET_FORMALS(rawfun, nano_aioFormals);
-    SET_BODY(rawfun, CADDR(nano_funList));
+    SET_BODY(rawfun, CADDR(nano_aioFunctions));
     SET_CLOENV(rawfun, clo);
     R_MakeActiveBinding(nano_RawSymbol, rawfun, env);
     UNPROTECT(1);
@@ -869,6 +869,100 @@ SEXP rnng_aio_http(SEXP env, SEXP response, SEXP which) {
   case 3: out = Rf_findVarInFrame(ENCLOS(env), nano_ProtocolSymbol); break;
   }
   return out;
+
+}
+
+// request ---------------------------------------------------------------------
+
+SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeout, SEXP keep, SEXP clo) {
+
+  if (R_ExternalPtrTag(con) != nano_ContextSymbol)
+    Rf_error("'con' is not a valid Context");
+
+  SEXP sendaio, aio;
+  int xc;
+
+  nng_ctx *ctxp = (nng_ctx *) R_ExternalPtrAddr(con);
+  const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) Rf_asInteger(timeout);
+  nano_aio *saio = R_Calloc(1, nano_aio);
+  nng_msg *msg;
+
+  SEXP enc = nano_encodes(data, sendmode);
+  const R_xlen_t xlen = Rf_xlength(enc);
+  unsigned char *dp = RAW(enc);
+
+  saio->type = SENDAIO;
+
+  if ((xc = nng_msg_alloc(&msg, 0))) {
+    R_Free(saio);
+    return mk_error(xc);
+  }
+
+  if ((xc = nng_msg_append(msg, dp, xlen)) ||
+      (xc = nng_aio_alloc(&saio->aio, saio_complete, saio))) {
+    nng_msg_free(msg);
+    R_Free(saio);
+    return mk_error(xc);
+  }
+
+  nng_aio_set_msg(saio->aio, msg);
+  nng_aio_set_timeout(saio->aio, NNG_DURATION_DEFAULT);
+  nng_ctx_send(*ctxp, saio->aio);
+
+  PROTECT(sendaio = R_MakeExternalPtr(saio, nano_AioSymbol, R_NilValue));
+  R_RegisterCFinalizerEx(sendaio, saio_finalizer, TRUE);
+  Rf_defineVar(nano_AioSymbol, sendaio, clo);
+  UNPROTECT(1);
+  Rf_setVar(nano_DataSymbol, R_UnboundValue, clo);
+
+  nano_aio *raio = R_Calloc(1, nano_aio);
+
+  raio->type = RECVAIO;
+  raio->mode = nano_matcharg(recvmode);
+  raio->data = NULL;
+
+  if ((xc = nng_aio_alloc(&raio->aio, raio_complete, raio))) {
+    R_Free(raio);
+    return mk_error(xc);
+  }
+
+  nng_aio_set_timeout(raio->aio, dur);
+  nng_ctx_recv(*ctxp, raio->aio);
+
+  PROTECT(aio = R_MakeExternalPtr(raio, nano_AioSymbol, R_NilValue));
+  R_RegisterCFinalizerEx(aio, raio_finalizer, TRUE);
+
+  SEXP env, datafun;
+#if defined(R_VERSION) && R_VERSION >= R_Version(4, 1, 0)
+  PROTECT(env = R_NewEnv(clo, 0, 4));
+#else
+  SEXP expr;
+  PROTECT(expr = Rf_lang2(nano_NewEnvSymbol, Rf_ScalarLogical(0)));
+  PROTECT(env = Rf_eval(expr, clo));
+  UNPROTECT(1);
+#endif
+  Rf_defineVar(nano_AioSymbol, aio, env);
+  const int kpr = Rf_asLogical(keep);
+  Rf_defineVar(nano_StateSymbol, Rf_ScalarLogical(kpr), env);
+
+  PROTECT(datafun = Rf_allocSExp(CLOSXP));
+  SET_FORMALS(datafun, nano_aioFormals);
+  SET_BODY(datafun, CADR(nano_aioFunctions));
+  SET_CLOENV(datafun, clo);
+  if (kpr) {
+    SEXP rawfun;
+    PROTECT(rawfun = Rf_allocSExp(CLOSXP));
+    SET_FORMALS(rawfun, nano_aioFormals);
+    SET_BODY(rawfun, CADDR(nano_aioFunctions));
+    SET_CLOENV(rawfun, clo);
+    R_MakeActiveBinding(nano_RawSymbol, rawfun, env);
+    UNPROTECT(1);
+  }
+  R_MakeActiveBinding(nano_DataSymbol, datafun, env);
+  Rf_classgets(env, nano_recvAio);
+
+  UNPROTECT(3);
+  return env;
 
 }
 

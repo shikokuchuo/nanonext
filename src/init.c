@@ -42,14 +42,14 @@ SEXP nano_TextframesSymbol;
 SEXP nano_UnserSymbol;
 SEXP nano_UrlSymbol;
 
-SEXP nano_success;
-SEXP nano_error;
-SEXP nano_unresolved;
-SEXP nano_sendAio;
-SEXP nano_recvAio;
-SEXP nano_ncurlAio;
 SEXP nano_aioFormals;
-SEXP nano_funList;
+SEXP nano_aioFunctions;
+SEXP nano_error;
+SEXP nano_ncurlAio;
+SEXP nano_recvAio;
+SEXP nano_sendAio;
+SEXP nano_success;
+SEXP nano_unresolved;
 
 static void RegisterSymbols(void) {
   nano_AioSymbol = Rf_install("aio");
@@ -78,33 +78,33 @@ static void RegisterSymbols(void) {
 }
 
 static void PreserveObjects(void) {
-  R_PreserveObject(nano_success = Rf_ScalarInteger(0));
-  R_PreserveObject(nano_error = Rf_mkString("errorValue"));
-  R_PreserveObject(nano_unresolved = Rf_shallow_duplicate(Rf_ScalarLogical(NA_LOGICAL)));
-  Rf_classgets(nano_unresolved, Rf_mkString("unresolvedValue"));
-  R_PreserveObject(nano_sendAio = Rf_mkString("sendAio"));
-  R_PreserveObject(nano_recvAio = Rf_mkString("recvAio"));
-  R_PreserveObject(nano_ncurlAio = Rf_allocVector(STRSXP, 2));
-  SET_STRING_ELT(nano_ncurlAio, 0, Rf_mkChar("ncurlAio"));
-  SET_STRING_ELT(nano_ncurlAio, 1, Rf_mkChar("recvAio"));
   R_PreserveObject(nano_aioFormals = Rf_list1(Rf_install(".")));
   SEXP result, msgdata, msgraw;
   PROTECT(result = Rf_lang3(nano_DotcallSymbol, Rf_install("rnng_aio_result"), nano_DataSymbol));
   PROTECT(msgdata = Rf_lang3(nano_DotcallSymbol, Rf_install("rnng_aio_get_msgdata"), nano_ResultSymbol));
   PROTECT(msgraw = Rf_lang3(nano_DotcallSymbol, Rf_install("rnng_aio_get_msgraw"), nano_ResultSymbol));
-  R_PreserveObject(nano_funList = Rf_list3(result, msgdata, msgraw));
+  R_PreserveObject(nano_aioFunctions = Rf_list3(result, msgdata, msgraw));
   UNPROTECT(3);
+  R_PreserveObject(nano_error = Rf_mkString("errorValue"));
+  R_PreserveObject(nano_ncurlAio = Rf_allocVector(STRSXP, 2));
+  SET_STRING_ELT(nano_ncurlAio, 0, Rf_mkChar("ncurlAio"));
+  SET_STRING_ELT(nano_ncurlAio, 1, Rf_mkChar("recvAio"));
+  R_PreserveObject(nano_recvAio = Rf_mkString("recvAio"));
+  R_PreserveObject(nano_sendAio = Rf_mkString("sendAio"));
+  R_PreserveObject(nano_success = Rf_ScalarInteger(0));
+  R_PreserveObject(nano_unresolved = Rf_shallow_duplicate(Rf_ScalarLogical(NA_LOGICAL)));
+  Rf_classgets(nano_unresolved, Rf_mkString("unresolvedValue"));
 }
 
 static void ReleaseObjects(void) {
-  R_ReleaseObject(nano_success);
-  R_ReleaseObject(nano_error);
-  R_ReleaseObject(nano_unresolved);
-  R_ReleaseObject(nano_sendAio);
-  R_ReleaseObject(nano_recvAio);
-  R_ReleaseObject(nano_ncurlAio);
   R_ReleaseObject(nano_aioFormals);
-  R_ReleaseObject(nano_funList);
+  R_ReleaseObject(nano_aioFunctions);
+  R_ReleaseObject(nano_error);
+  R_ReleaseObject(nano_ncurlAio);
+  R_ReleaseObject(nano_recvAio);
+  R_ReleaseObject(nano_sendAio);
+  R_ReleaseObject(nano_success);
+  R_ReleaseObject(nano_unresolved);
 }
 
 static const R_CallMethodDef callMethods[] = {
@@ -137,6 +137,7 @@ static const R_CallMethodDef callMethods[] = {
   {"rnng_random", (DL_FUNC) &rnng_random, 1},
   {"rnng_recv", (DL_FUNC) &rnng_recv, 5},
   {"rnng_recv_aio", (DL_FUNC) &rnng_recv_aio, 6},
+  {"rnng_request", (DL_FUNC) &rnng_request, 7},
   {"rnng_send", (DL_FUNC) &rnng_send, 4},
   {"rnng_send_aio", (DL_FUNC) &rnng_send_aio, 5},
   {"rnng_set_opt", (DL_FUNC) &rnng_set_opt, 4},

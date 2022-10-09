@@ -154,7 +154,7 @@ reply <- function(context,
 #'     applies a socket-specific default, usually the same as no timeout. Note
 #'     that this applies to receiving the result.
 #'
-#' @return A 'recvAio' (object of class 'recvAio').
+#' @return A 'recvAio' (object of class 'recvAio') (invisibly).
 #'
 #' @details Sending the request and receiving the result are both performed async,
 #'     hence the function will return immediately with a 'recvAio' object. Access
@@ -196,9 +196,9 @@ request <- function(context,
                     timeout = NULL,
                     keep.raw = FALSE) {
 
-  res <- send_aio(context, data = data, mode = send_mode, timeout = NULL)
-  is.integer(res) && return(res)
-  recv_aio(context, mode = recv_mode, timeout = timeout, keep.raw = keep.raw)
+  result <- .Call(rnng_request, context, data, send_mode, recv_mode, timeout,
+                  keep.raw, environment())
 
 }
+
 

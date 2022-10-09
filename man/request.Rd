@@ -39,7 +39,7 @@ that this applies to receiving the result.}
 received raw vector along with the converted data.}
 }
 \value{
-A 'recvAio' (object of class 'recvAio').
+A 'recvAio' (object of class 'recvAio') (invisibly).
 }
 \description{
 Implements a caller/client for the req node of the req/rep protocol. Sends
