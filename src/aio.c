@@ -909,10 +909,6 @@ SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeou
   nng_aio_set_timeout(saio->aio, NNG_DURATION_DEFAULT);
   nng_ctx_send(*ctxp, saio->aio);
 
-  PROTECT(sendaio = R_MakeExternalPtr(saio, nano_AioSymbol, R_NilValue));
-  R_RegisterCFinalizerEx(sendaio, saio_finalizer, TRUE);
-  Rf_defineVar(nano_AioSymbol, sendaio, clo);
-  UNPROTECT(1);
   Rf_setVar(nano_DataSymbol, R_UnboundValue, clo);
 
   nano_aio *raio = R_Calloc(1, nano_aio);
@@ -942,6 +938,10 @@ SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeou
   UNPROTECT(1);
 #endif
   Rf_defineVar(nano_AioSymbol, aio, env);
+  PROTECT(sendaio = R_MakeExternalPtr(saio, R_NilValue, R_NilValue));
+  R_RegisterCFinalizerEx(sendaio, saio_finalizer, TRUE);
+  R_MakeWeakRef(aio, sendaio, R_NilValue, TRUE);
+
   const int kpr = Rf_asLogical(keep);
   Rf_defineVar(nano_StateSymbol, Rf_ScalarLogical(kpr), env);
 
@@ -961,7 +961,7 @@ SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeou
   R_MakeActiveBinding(nano_DataSymbol, datafun, env);
   Rf_classgets(env, nano_recvAio);
 
-  UNPROTECT(3);
+  UNPROTECT(4);
   return env;
 
 }
