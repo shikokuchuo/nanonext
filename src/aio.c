@@ -877,7 +877,7 @@ SEXP rnng_aio_http(SEXP env, SEXP response, SEXP which) {
 SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeout, SEXP keep, SEXP clo) {
 
   if (R_ExternalPtrTag(con) != nano_ContextSymbol)
-    Rf_error("'con' is not a valid Context");
+    Rf_error("'context' is not a valid Context");
 
   SEXP sendaio, aio;
   int xc;

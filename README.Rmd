@@ -153,7 +153,7 @@ Using a messaging interface provides a clean and robust approach, light on resou
 
 This approach can also serve as an interface / pipe between different processes written in the same or different languages, running on the same computer or distributed across networks, and is an enabler of modular software design as espoused by the Unix philosophy.
 
-One problem it solves is that of processing real-time data where computation times exceed the data frequency - by dividing the computation into stages, this may be set up as a pipeline or 'cascade' of processes, each connected using NNG sockets.
+One solution it provides is that of processing real-time data where computation times exceed the data frequency - by dividing the computation into stages, this may be set up as a pipeline or 'cascade' of processes, each connected using NNG sockets.
 
 Create socket in Python using the NNG binding 'pynng':
 
@@ -268,7 +268,7 @@ close(s2)
 
 ### RPC and Distributed Computing
 
-{nanonext} implements remote procedure calls (RPC) using NNG's req/rep protocol to provide a basis for distributed computing. 
+{nanonext} implements remote procedure calls (RPC) using NNG's req/rep protocol to provide a basis for distributed computing.
 
 Can be used to perform computationally-expensive calculations or I/O-bound operations such as writing large amounts of data to disk in a separate 'server' process running concurrently.
 

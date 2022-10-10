@@ -1,4 +1,4 @@
-# nanonext 0.5.5.9010 (to be 0.6.0)
+# nanonext 0.6.0
 
 *The nanonext 0.6 series incorporates significant advances in performance and stability over previous releases*
 

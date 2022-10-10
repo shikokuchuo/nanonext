@@ -167,13 +167,17 @@ between R and Python (NumPy), two of the most commonly-used languages
 for data science and machine learning.
 
 Using a messaging interface provides a clean and robust approach, light
-on resources with limited and identifiable points of failure. This is
-especially relevant when processing real-time data, as an example.
+on resources with limited and identifiable points of failure.
 
 This approach can also serve as an interface / pipe between different
 processes written in the same or different languages, running on the
 same computer or distributed across networks, and is an enabler of
 modular software design as espoused by the Unix philosophy.
+
+One solution it provides is that of processing real-time data where
+computation times exceed the data frequency - by dividing the
+computation into stages, this may be set up as a pipeline or ‘cascade’
+of processes, each connected using NNG sockets.
 
 Create socket in Python using the NNG binding ‘pynng’:
 
@@ -362,7 +366,7 @@ aio
 #> < recvAio >
 #>  - $data for message data
 aio$data |> str()
-#>  num [1:100000000] -0.9296 -0.5975 0.0695 0.0636 -1.5941 ...
+#>  num [1:100000000] -0.202 -0.654 -0.632 -0.234 0.25 ...
 ```
 
 As `call_aio()` is blocking and will wait for completion, an alternative
@@ -482,7 +486,7 @@ aio2$data
 # after the survey expires, the second resolves into a timeout error
 Sys.sleep(0.5)
 aio2$data
-#> Warning in (function (aio) : 5 | Timed out
+#> Warning in (function (.) : 5 | Timed out
 #> 'errorValue' int 5
 
 close(sur)
@@ -518,11 +522,11 @@ ncurl("https://httpbin.org/headers")
 #>   [1] 7b 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73
 #>  [26] 74 22 3a 20 22 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22
 #>  [51] 58 2d 41 6d 7a 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31
-#>  [76] 2d 36 33 34 30 37 33 35 32 2d 33 61 38 65 30 32 36 66 31 62 62 34 39 61 35
-#> [101] 61 36 30 39 31 35 32 39 32 22 0a 20 20 7d 0a 7d 0a
+#>  [76] 2d 36 33 34 33 33 61 61 38 2d 31 39 64 63 35 32 36 30 35 31 64 36 66 31 61
+#> [101] 62 32 30 38 62 30 32 30 63 22 0a 20 20 7d 0a 7d 0a
 #> 
 #> $data
-#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-63407352-3a8e026f1bb49a5a60915292\"\n  }\n}\n"
+#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-63433aa8-19dc526051d6f1ab208b020c\"\n  }\n}\n"
 ```
 
 For advanced use, supports additional HTTP methods such as POST or PUT.
@@ -543,13 +547,13 @@ res
 
 call_aio(res)$headers
 #> $Date
-#> [1] "Fri, 07 Oct 2022 18:43:31 GMT"
+#> [1] "Sun, 09 Oct 2022 21:18:32 GMT"
 #> 
 #> $Server
 #> [1] "gunicorn/19.9.0"
 
 res$data
-#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-63407353-1c60969717fda5ad0aa21373\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"89.249.189.68\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
+#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-63433aa8-4f3d6da80076713f4a359c49\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"213.205.242.66\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
 ```
 
 In this respect, it may be used as a performant and lightweight method
@@ -590,10 +594,10 @@ s |> recv()
 s |> send('{"action": "subscribe", "symbols": "EURUSD"}')
 
 s |> recv()
-#> [1] "{\"s\":\"EURUSD\",\"a\":0.97461,\"b\":0.97459,\"dc\":\"-0.4402\",\"dd\":\"-0.0043\",\"ppms\":false,\"t\":1665168213000}"
+#> [1] "{\"s\":\"EURUSD\",\"a\":0.97372,\"b\":0.9735,\"dc\":\"-0.0698\",\"dd\":\"-0.0007\",\"ppms\":true,\"t\":1665350345000}"
 
 s |> recv()
-#> [1] "{\"s\":\"EURUSD\",\"a\":0.97463,\"b\":0.97456,\"dc\":\"-0.4381\",\"dd\":\"-0.0043\",\"ppms\":false,\"t\":1665168213000}"
+#> [1] "{\"s\":\"EURUSD\",\"a\":0.97371,\"b\":0.97351,\"dc\":\"-0.0709\",\"dd\":\"-0.0007\",\"ppms\":true,\"t\":1665350349000}"
 
 close(s)
 ```
