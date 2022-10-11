@@ -1,3 +1,10 @@
+# nanonext 0.6.0.9000 (development)
+
+#### Updates
+
+* Fixes bug introduced in 0.6.0 where Aios returning 'errorValues' are not cached with the class, thus returning only integer values when subsequently accessed after the first time.
+* Internal performance enhancements.
+
 # nanonext 0.6.0
 
 *The nanonext 0.6 series incorporates significant advances in performance and stability over previous releases*

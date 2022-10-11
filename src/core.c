@@ -23,11 +23,9 @@
 
 SEXP mk_error(const int xc) {
 
-  SEXP err;
-  PROTECT(err = Rf_ScalarInteger(xc));
-  Rf_classgets(err, nano_error);
   Rf_warning("%d | %s", xc, nng_strerror(xc));
-  UNPROTECT(1);
+  SEXP err = Rf_ScalarInteger(xc);
+  Rf_classgets(err, nano_error);
   return err;
 
 }
