@@ -147,6 +147,46 @@ static void create_activebinding(SEXP sym, SEXP env, SEXP clo, const int x) {
 
 }
 
+static SEXP mk_error_saio(const int xc, SEXP env) {
+
+  SEXP err;
+  PROTECT(err = Rf_ScalarInteger(xc));
+  Rf_classgets(err, nano_error);
+  Rf_defineVar(nano_ResultSymbol, err, ENCLOS(env));
+  Rf_warning("%d | %s", xc, nng_strerror(xc));
+  UNPROTECT(1);
+  return err;
+
+}
+
+static SEXP mk_error_raio(const int xc, SEXP env) {
+
+  SEXP err;
+  PROTECT(err = Rf_ScalarInteger(xc));
+  Rf_classgets(err, nano_error);
+  Rf_defineVar(nano_RawSymbol, err, ENCLOS(env));
+  Rf_defineVar(nano_DataSymbol, err, ENCLOS(env));
+  Rf_warning("%d | %s", xc, nng_strerror(xc));
+  UNPROTECT(1);
+  return err;
+
+}
+
+static SEXP mk_error_haio(const int xc, SEXP env) {
+
+  SEXP err;
+  PROTECT(err = Rf_ScalarInteger(xc));
+  Rf_classgets(err, nano_error);
+  Rf_defineVar(nano_StatusSymbol, R_NilValue, ENCLOS(env));
+  Rf_defineVar(nano_IdSymbol, R_NilValue, ENCLOS(env));
+  Rf_defineVar(nano_RawSymbol, err, ENCLOS(env));
+  Rf_defineVar(nano_ProtocolSymbol, err, ENCLOS(env));
+  Rf_warning("%d | %s", xc, nng_strerror(xc));
+  UNPROTECT(1);
+  return err;
+
+}
+
 // core aio --------------------------------------------------------------------
 
 SEXP rnng_aio_result(SEXP env) {
@@ -168,13 +208,8 @@ SEXP rnng_aio_result(SEXP env) {
 
   Rf_defineVar(nano_AioSymbol, R_NilValue, env);
 
-  if (aiop->result) {
-    Rf_warning("%d | %s", aiop->result, nng_strerror(aiop->result));
-    SEXP err = Rf_ScalarInteger(aiop->result);
-    Rf_classgets(err, nano_error);
-    Rf_defineVar(nano_ResultSymbol, err, ENCLOS(env));
-    return err;
-  }
+  if (aiop->result)
+    return mk_error_saio(aiop->result, env);
 
   Rf_defineVar(nano_ResultSymbol, nano_success, ENCLOS(env));
   return nano_success;
@@ -200,14 +235,8 @@ SEXP rnng_aio_get_msgraw(SEXP env) {
 
   Rf_defineVar(nano_AioSymbol, R_NilValue, env);
 
-  if (raio->result) {
-    Rf_warning("%d | %s", raio->result, nng_strerror(raio->result));
-    SEXP err = Rf_ScalarInteger(raio->result);
-    Rf_classgets(err, nano_error);
-    Rf_defineVar(nano_RawSymbol, err, ENCLOS(env));
-    Rf_defineVar(nano_DataSymbol, err, ENCLOS(env));
-    return err;
-  }
+  if (raio->result)
+    return mk_error_raio(raio->result, env);
 
   SEXP out;
   const int mod = raio->mode, kpr = 1;
@@ -252,14 +281,8 @@ SEXP rnng_aio_get_msgdata(SEXP env) {
 
   Rf_defineVar(nano_AioSymbol, R_NilValue, env);
 
-  if (raio->result) {
-    Rf_warning("%d | %s", raio->result, nng_strerror(raio->result));
-    SEXP err = Rf_ScalarInteger(raio->result);
-    Rf_classgets(err, nano_error);
-    Rf_defineVar(nano_RawSymbol, err, ENCLOS(env));
-    Rf_defineVar(nano_DataSymbol, err, ENCLOS(env));
-    return err;
-  }
+  if (raio->result)
+    return mk_error_raio(raio->result, env);
 
   SEXP out;
   const int mod = raio->mode, kpr = LOGICAL(Rf_findVarInFrame(env, nano_StateSymbol))[0];
@@ -792,16 +815,8 @@ SEXP rnng_aio_http(SEXP env, SEXP response, SEXP which) {
 
   Rf_defineVar(nano_AioSymbol, R_NilValue, env);
 
-  if (haio->result) {
-    Rf_warning("%d | %s", haio->result, nng_strerror(haio->result));
-    Rf_defineVar(nano_StatusSymbol, R_NilValue, ENCLOS(env));
-    Rf_defineVar(nano_IdSymbol, R_NilValue, ENCLOS(env));
-    SEXP err = Rf_ScalarInteger(haio->result);
-    Rf_classgets(err, nano_error);
-    Rf_defineVar(nano_RawSymbol, err, ENCLOS(env));
-    Rf_defineVar(nano_ProtocolSymbol, err, ENCLOS(env));
-    return err;
-  }
+  if (haio->result)
+    return mk_error_haio(haio->result, env);
 
   nano_handle *handle = (nano_handle *) haio->data;
   uint16_t code = nng_http_res_get_status(handle->res);
