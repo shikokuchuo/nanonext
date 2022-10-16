@@ -10,6 +10,7 @@ status](https://www.r-pkg.org/badges/version/nanonext?color=112d4e)](https://CRA
 [![nanonext status
 badge](https://shikokuchuo.r-universe.dev/badges/nanonext?color=3f72af)](https://shikokuchuo.r-universe.dev)
 [![R-CMD-check](https://github.com/shikokuchuo/nanonext/workflows/R-CMD-check/badge.svg)](https://github.com/shikokuchuo/nanonext/actions)
+[![codecov](https://codecov.io/gh/shikokuchuo/nanonext/branch/main/graph/badge.svg)](https://app.codecov.io/gh/shikokuchuo/nanonext)
 <!-- badges: end -->
 
 R binding for NNG (Nanomsg Next Gen), a successor to ZeroMQ. NNG is a
@@ -366,7 +367,7 @@ aio
 #> < recvAio >
 #>  - $data for message data
 aio$data |> str()
-#>  num [1:100000000] -0.202 -0.654 -0.632 -0.234 0.25 ...
+#>  num [1:100000000] 0.9948 -0.0192 0.1036 -1.5211 0.2226 ...
 ```
 
 As `call_aio()` is blocking and will wait for completion, an alternative
@@ -522,11 +523,11 @@ ncurl("https://httpbin.org/headers")
 #>   [1] 7b 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73
 #>  [26] 74 22 3a 20 22 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22
 #>  [51] 58 2d 41 6d 7a 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31
-#>  [76] 2d 36 33 34 33 33 61 61 38 2d 31 39 64 63 35 32 36 30 35 31 64 36 66 31 61
-#> [101] 62 32 30 38 62 30 32 30 63 22 0a 20 20 7d 0a 7d 0a
+#>  [76] 2d 36 33 34 63 37 33 62 39 2d 34 37 63 62 65 36 32 30 31 35 38 34 33 31 30
+#> [101] 32 31 64 36 64 36 62 30 61 22 0a 20 20 7d 0a 7d 0a
 #> 
 #> $data
-#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-63433aa8-19dc526051d6f1ab208b020c\"\n  }\n}\n"
+#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-634c73b9-47cbe620158431021d6d6b0a\"\n  }\n}\n"
 ```
 
 For advanced use, supports additional HTTP methods such as POST or PUT.
@@ -547,13 +548,13 @@ res
 
 call_aio(res)$headers
 #> $Date
-#> [1] "Sun, 09 Oct 2022 21:18:32 GMT"
+#> [1] "Sun, 16 Oct 2022 21:12:25 GMT"
 #> 
 #> $Server
 #> [1] "gunicorn/19.9.0"
 
 res$data
-#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-63433aa8-4f3d6da80076713f4a359c49\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"213.205.242.66\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
+#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-634c73b9-24d4462254a74d9b3ca3ccc4\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"185.225.45.49\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
 ```
 
 In this respect, it may be used as a performant and lightweight method
@@ -594,10 +595,10 @@ s |> recv()
 s |> send('{"action": "subscribe", "symbols": "EURUSD"}')
 
 s |> recv()
-#> [1] "{\"s\":\"EURUSD\",\"a\":0.97372,\"b\":0.9735,\"dc\":\"-0.0698\",\"dd\":\"-0.0007\",\"ppms\":true,\"t\":1665350345000}"
+#> [1] "{\"s\":\"EURUSD\",\"a\":0.97224,\"b\":0.97178,\"dc\":\"0.0453\",\"dd\":\"0.0004\",\"ppms\":true,\"t\":1665954750000}"
 
 s |> recv()
-#> [1] "{\"s\":\"EURUSD\",\"a\":0.97371,\"b\":0.97351,\"dc\":\"-0.0709\",\"dd\":\"-0.0007\",\"ppms\":true,\"t\":1665350349000}"
+#> [1] "{\"s\":\"EURUSD\",\"a\":0.9724,\"b\":0.972,\"dc\":\"0.0617\",\"dd\":\"0.0006\",\"ppms\":true,\"t\":1665954755000}"
 
 close(s)
 ```

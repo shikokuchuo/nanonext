@@ -234,10 +234,10 @@ int nano_matchargs(SEXP mode) {
 
 SEXP nano_decode(unsigned char *buf, size_t sz, const int mod, const int kpr) {
 
-  int tryErr = 0;
   SEXP raw, data;
 
   if (mod == 1) {
+    int tryErr = 0;
     PROTECT(raw = Rf_allocVector(RAWSXP, sz));
     memcpy(RAW(raw), buf, sz);
     SEXP expr;

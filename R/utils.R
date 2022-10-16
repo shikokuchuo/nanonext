@@ -160,14 +160,7 @@ random <- function(n = 1L) .Call(rnng_random, n)
 #'
 #' @export
 #'
-device <- function(s1, s2) {
-
-  if (interactive())
-    readline(sprintf("Proceed to bind sockets '%s' and '%s'? (This action cannot be interrupted) [Y/n]: ",
-                     deparse(substitute(s1)), deparse(substitute(s2)))) %in% c("n", "N") && return(invisible())
-  .Call(rnng_device, s1, s2)
-
-}
+device <- function(s1, s2) .Call(rnng_device, s1, s2)
 
 #' Is Nano
 #'

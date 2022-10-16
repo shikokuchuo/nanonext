@@ -33,7 +33,6 @@
 #'     to return immediately even if unsuccessful (e.g. if no connection is
 #'     available), or else an integer value specifying the maximum time to block
 #'     in milliseconds, after which the operation will time out.
-#' @param ... not used.
 #'
 #' @return Invisibly, an integer exit code (zero on success).
 #'
@@ -76,8 +75,7 @@
 send <- function(con,
                  data,
                  mode = c("serial", "raw"),
-                 block = NULL,
-                 ...) invisible(.Call(rnng_send, con, data, mode, block))
+                 block = NULL) invisible(.Call(rnng_send, con, data, mode, block))
 
 #' Receive
 #'

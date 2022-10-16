@@ -1,8 +1,10 @@
-# nanonext 0.6.0.9000 (development)
+# nanonext 0.6.0.9010 (development)
 
 #### Updates
 
-* Fixes bug introduced in 0.6.0 where Aios returning 'errorValues' are not cached with the class, thus returning only integer values when accessed subsequent to the first time.
+* `send()` no longer has a '...' argument. This has had no effect since 0.6.0, but will now error if additional arguments are provided (please check and remove previous uses of the argument 'echo').
+* `device()` no longer prompts for confirmation in interactive environments - as device creation is only successful when binding 2 raw mode sockets, there is little scope for accidental use.
+* Fixes bug introduced in 0.6.0 where Aios returning 'errorValues' are not cached with the class, returning only integer values when accessed subsequent to the first time.
 * Internal performance enhancements.
 
 # nanonext 0.6.0

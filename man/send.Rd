@@ -4,7 +4,7 @@
 \alias{send}
 \title{Send}
 \usage{
-send(con, data, mode = c("serial", "raw"), block = NULL, ...)
+send(con, data, mode = c("serial", "raw"), block = NULL)
 }
 \arguments{
 \item{con}{a Socket, Context or Stream.}
@@ -23,8 +23,6 @@ serialisation.}
 to return immediately even if unsuccessful (e.g. if no connection is
 available), or else an integer value specifying the maximum time to block
 in milliseconds, after which the operation will time out.}
-
-\item{...}{not used.}
 }
 \value{
 Invisibly, an integer exit code (zero on success).
