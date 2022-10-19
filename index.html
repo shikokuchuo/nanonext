@@ -46,7 +46,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.0.9010</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.0.9100</span>
       </span>
     </div>
 
@@ -323,7 +323,7 @@
 <span><span class="co">#&gt; &lt; recvAio &gt;</span></span>
 <span><span class="co">#&gt;  - $data for message data</span></span>
 <span><span class="va">aio</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] 0.322 1.742 0.652 -0.186 -0.208 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] -0.323 -1.6 0.181 -0.234 0.296 ...</span></span></code></pre></div>
 <p>As <code><a href="reference/call_aio.html">call_aio()</a></code> is blocking and will wait for completion, an alternative is to query <code>aio$data</code> directly. This will return an ‘unresolved’ logical NA value if the calculation is yet to complete.</p>
 <p>In this example the calculation is returned, but other operations may reside entirely on the server side, for example writing data to disk.</p>
 <p>In such a case, calling or querying the value confirms that the operation has completed, and provides the return value of the function, which may typically be NULL or an exit code.</p>
@@ -443,11 +443,11 @@
 <span><span class="co">#&gt;   [1] 7b 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73</span></span>
 <span><span class="co">#&gt;  [26] 74 22 3a 20 22 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22</span></span>
 <span><span class="co">#&gt;  [51] 58 2d 41 6d 7a 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31</span></span>
-<span><span class="co">#&gt;  [76] 2d 36 33 34 64 34 66 33 31 2d 33 32 36 31 62 38 39 36 34 37 34 65 39 39 64</span></span>
-<span><span class="co">#&gt; [101] 35 31 61 30 35 33 39 35 37 22 0a 20 20 7d 0a 7d 0a</span></span>
+<span><span class="co">#&gt;  [76] 2d 36 33 34 66 61 64 32 38 2d 31 65 62 34 62 65 37 64 35 38 37 66 66 35 33</span></span>
+<span><span class="co">#&gt; [101] 35 31 37 64 61 38 65 64 66 22 0a 20 20 7d 0a 7d 0a</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $data</span></span>
-<span><span class="co">#&gt; [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-634d4f31-3261b896474e99d51a053957\"\n  }\n}\n"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-634fad28-1eb4be7d587ff53517da8edf\"\n  }\n}\n"</span></span></code></pre></div>
 <p>For advanced use, supports additional HTTP methods such as POST or PUT.</p>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ncurl.html">ncurl</a></span><span class="op">(</span><span class="st">"http://httpbin.org/post"</span>,</span>
@@ -465,13 +465,13 @@
 <span></span>
 <span><span class="fu"><a href="reference/call_aio.html">call_aio</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span><span class="op">$</span><span class="va">headers</span></span>
 <span><span class="co">#&gt; $Date</span></span>
-<span><span class="co">#&gt; [1] "Mon, 17 Oct 2022 12:48:49 GMT"</span></span>
+<span><span class="co">#&gt; [1] "Wed, 19 Oct 2022 07:54:16 GMT"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $Server</span></span>
 <span><span class="co">#&gt; [1] "gunicorn/19.9.0"</span></span>
 <span></span>
 <span><span class="va">res</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt; [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-634d4f31-05b3b9986f49163367bdef2a\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"79.173.129.2\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-634fad28-7d7536ed451422493ae4e4be\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"185.225.45.49\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"</span></span></code></pre></div>
 <p>In this respect, it may be used as a performant and lightweight method for making REST API requests.</p>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
@@ -497,10 +497,10 @@
 <span><span class="va">s</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/send.html">send</a></span><span class="op">(</span><span class="st">'{"action": "subscribe", "symbols": "EURUSD"}'</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">s</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/recv.html">recv</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "{\"s\":\"EURUSD\",\"a\":0.97759,\"b\":0.97757,\"dc\":\"0.3877\",\"dd\":\"0.0038\",\"ppms\":false,\"t\":1666010930000}"</span></span>
+<span><span class="co">#&gt; [1] "{\"s\":\"EURUSD\",\"a\":0.98368,\"b\":0.98361,\"dc\":\"-0.2643\",\"dd\":\"-0.0026\",\"ppms\":false,\"t\":1666166058000}"</span></span>
 <span></span>
 <span><span class="va">s</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/recv.html">recv</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "{\"s\":\"EURUSD\",\"a\":0.97758,\"b\":0.97756,\"dc\":\"0.3867\",\"dd\":\"0.0038\",\"ppms\":false,\"t\":1666010931000}"</span></span>
+<span><span class="co">#&gt; [1] "{\"s\":\"EURUSD\",\"a\":0.98368,\"b\":0.98366,\"dc\":\"-0.2643\",\"dd\":\"-0.0026\",\"ppms\":false,\"t\":1666166059000}"</span></span>
 <span></span>
 <span><span class="fu"><a href="reference/close.html">close</a></span><span class="op">(</span><span class="va">s</span><span class="op">)</span></span></code></pre></div>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
@@ -536,7 +536,7 @@
 <div class="section level4">
 <h4 id="linux--mac--solaris">Linux / Mac / Solaris<a class="anchor" aria-label="anchor" href="#linux--mac--solaris"></a>
 </h4>
-<p>Installation from source requires ‘libnng’ &gt;= v1.6.0 and ‘libmbedtls’ &gt;= 2 - suitable installations are automatically detected - or else ‘cmake’ to compile ‘libnng’ v1.6.0 pre-release (722bf46) and ‘libmbedtls’ v3.2.1 included within the package sources.</p>
+<p>Installation from source requires ‘libnng’ &gt;= v1.6.0 and ‘libmbedtls’ &gt;= 2 - suitable installations are automatically detected - or else ‘cmake’ to compile ‘libnng’ v1.6.0 pre-release (5385b78) and ‘libmbedtls’ v3.2.1 included within the package sources.</p>
 <p>Note: ‘libnng’ v1.6.0 is not yet available in system repositories; ‘libmbedtls’ is available as libmbedtls-dev (deb) or libmbedtls-devel (rpm).</p>
 <p>The ‘INCLUDE_DIR’ and ‘LIB_DIR’ environment variables may be set prior to package installation to specify a custom location for ‘libmbedtls’ or ‘libnng’ other than the standard filesystem locations.</p>
 <p>Package installation will automatically build the libraries if required.</p>
@@ -545,7 +545,7 @@
 <div class="section level4">
 <h4 id="windows">Windows<a class="anchor" aria-label="anchor" href="#windows"></a>
 </h4>
-<p>For R &gt;= 4.2 using the ‘rtools42’ toolchain, ‘libnng’ v1.6.0 (722bf46) and ‘libmbedtls’ v3.2.1 will be automatically compiled from the package sources during installation.</p>
+<p>For R &gt;= 4.2 using the ‘rtools42’ toolchain, ‘libnng’ v1.6.0 (5385b78) and ‘libmbedtls’ v3.2.1 will be automatically compiled from the package sources during installation.</p>
 <p>For previous R versions, pre-compiled ‘libnng’ v1.6.0 (722bf46) and ‘libmbedtls’ v3.2.1 libraries are downloaded and used for installation instead.</p>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>

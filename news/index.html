@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.0.9010</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.0.9100</span>
       </span>
     </div>
 
@@ -54,14 +54,15 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.6.0.9010" id="nanonext-0609010-development">nanonext 0.6.0.9010 (development)<a class="anchor" aria-label="anchor" href="#nanonext-0609010-development"></a></h2>
+<h2 class="page-header" data-toc-text="0.6.0.9100" id="nanonext-0609100-development">nanonext 0.6.0.9100 (development)<a class="anchor" aria-label="anchor" href="#nanonext-0609100-development"></a></h2>
 <div class="section level5">
-<h5 id="updates-0-6-0-9010">Updates<a class="anchor" aria-label="anchor" href="#updates-0-6-0-9010"></a></h5>
+<h5 id="updates-0-6-0-9100">Updates<a class="anchor" aria-label="anchor" href="#updates-0-6-0-9100"></a></h5>
 <ul><li>
 <code><a href="../reference/send.html">send()</a></code> no longer has a ‘…’ argument. This has had no effect since 0.6.0, but will now error if additional arguments are provided (please check and remove previous uses of the argument ‘echo’).</li>
 <li>
 <code><a href="../reference/device.html">device()</a></code> no longer prompts for confirmation in interactive environments - as device creation is only successful when binding 2 raw mode sockets, there is little scope for accidental use.</li>
 <li>Fixes bug introduced in 0.6.0 where Aios returning ‘errorValues’ are not cached with the class, returning only integer values when accessed subsequent to the first time.</li>
+<li>Bundled ‘libnng’ source updated to v1.6.0 pre-release (5385b78).</li>
 <li>Internal performance enhancements.</li>
 </ul></div>
 </div>
