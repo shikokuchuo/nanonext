@@ -797,7 +797,7 @@ SEXP rnng_aio_http(SEXP env, SEXP response, SEXP which) {
   case 0: exist = Rf_findVarInFrame(ENCLOS(env), nano_StatusSymbol); break;
   case 1: exist = Rf_findVarInFrame(ENCLOS(env), nano_IdSymbol); break;
   case 2: exist = Rf_findVarInFrame(ENCLOS(env), nano_RawSymbol); break;
-  case 3: exist = Rf_findVarInFrame(ENCLOS(env), nano_ProtocolSymbol); break;
+  default: exist = Rf_findVarInFrame(ENCLOS(env), nano_ProtocolSymbol); break;
   }
   if (exist != R_UnboundValue)
     return exist;
@@ -833,7 +833,7 @@ SEXP rnng_aio_http(SEXP env, SEXP response, SEXP which) {
       case 0: out = Rf_findVarInFrame(ENCLOS(env), nano_StatusSymbol); break;
       case 1: out = Rf_findVarInFrame(ENCLOS(env), nano_IdSymbol); break;
       case 2: out = Rf_findVarInFrame(ENCLOS(env), nano_RawSymbol); break;
-      case 3: out = Rf_findVarInFrame(ENCLOS(env), nano_ProtocolSymbol); break;
+      default: out = Rf_findVarInFrame(ENCLOS(env), nano_ProtocolSymbol); break;
       }
       return out;
     }
@@ -893,7 +893,7 @@ SEXP rnng_aio_http(SEXP env, SEXP response, SEXP which) {
   case 0: out = Rf_findVarInFrame(ENCLOS(env), nano_StatusSymbol); break;
   case 1: out = Rf_findVarInFrame(ENCLOS(env), nano_IdSymbol); break;
   case 2: out = Rf_findVarInFrame(ENCLOS(env), nano_RawSymbol); break;
-  case 3: out = Rf_findVarInFrame(ENCLOS(env), nano_ProtocolSymbol); break;
+  default: out = Rf_findVarInFrame(ENCLOS(env), nano_ProtocolSymbol); break;
   }
   return out;
 

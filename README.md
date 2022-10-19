@@ -367,7 +367,7 @@ aio
 #> < recvAio >
 #>  - $data for message data
 aio$data |> str()
-#>  num [1:100000000] 0.322 1.742 0.652 -0.186 -0.208 ...
+#>  num [1:100000000] -0.323 -1.6 0.181 -0.234 0.296 ...
 ```
 
 As `call_aio()` is blocking and will wait for completion, an alternative
@@ -523,11 +523,11 @@ ncurl("https://httpbin.org/headers")
 #>   [1] 7b 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73
 #>  [26] 74 22 3a 20 22 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22
 #>  [51] 58 2d 41 6d 7a 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31
-#>  [76] 2d 36 33 34 64 34 66 33 31 2d 33 32 36 31 62 38 39 36 34 37 34 65 39 39 64
-#> [101] 35 31 61 30 35 33 39 35 37 22 0a 20 20 7d 0a 7d 0a
+#>  [76] 2d 36 33 34 66 61 64 32 38 2d 31 65 62 34 62 65 37 64 35 38 37 66 66 35 33
+#> [101] 35 31 37 64 61 38 65 64 66 22 0a 20 20 7d 0a 7d 0a
 #> 
 #> $data
-#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-634d4f31-3261b896474e99d51a053957\"\n  }\n}\n"
+#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-634fad28-1eb4be7d587ff53517da8edf\"\n  }\n}\n"
 ```
 
 For advanced use, supports additional HTTP methods such as POST or PUT.
@@ -548,13 +548,13 @@ res
 
 call_aio(res)$headers
 #> $Date
-#> [1] "Mon, 17 Oct 2022 12:48:49 GMT"
+#> [1] "Wed, 19 Oct 2022 07:54:16 GMT"
 #> 
 #> $Server
 #> [1] "gunicorn/19.9.0"
 
 res$data
-#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-634d4f31-05b3b9986f49163367bdef2a\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"79.173.129.2\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
+#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-634fad28-7d7536ed451422493ae4e4be\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"185.225.45.49\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
 ```
 
 In this respect, it may be used as a performant and lightweight method
@@ -595,10 +595,10 @@ s |> recv()
 s |> send('{"action": "subscribe", "symbols": "EURUSD"}')
 
 s |> recv()
-#> [1] "{\"s\":\"EURUSD\",\"a\":0.97759,\"b\":0.97757,\"dc\":\"0.3877\",\"dd\":\"0.0038\",\"ppms\":false,\"t\":1666010930000}"
+#> [1] "{\"s\":\"EURUSD\",\"a\":0.98368,\"b\":0.98361,\"dc\":\"-0.2643\",\"dd\":\"-0.0026\",\"ppms\":false,\"t\":1666166058000}"
 
 s |> recv()
-#> [1] "{\"s\":\"EURUSD\",\"a\":0.97758,\"b\":0.97756,\"dc\":\"0.3867\",\"dd\":\"0.0038\",\"ppms\":false,\"t\":1666010931000}"
+#> [1] "{\"s\":\"EURUSD\",\"a\":0.98368,\"b\":0.98366,\"dc\":\"-0.2643\",\"dd\":\"-0.0026\",\"ppms\":false,\"t\":1666166059000}"
 
 close(s)
 ```
@@ -649,7 +649,7 @@ base64dec(base64enc("hello world!"))
 
 Installation from source requires ‘libnng’ \>= v1.6.0 and ‘libmbedtls’
 \>= 2 - suitable installations are automatically detected - or else
-‘cmake’ to compile ‘libnng’ v1.6.0 pre-release (722bf46) and
+‘cmake’ to compile ‘libnng’ v1.6.0 pre-release (5385b78) and
 ‘libmbedtls’ v3.2.1 included within the package sources.
 
 Note: ‘libnng’ v1.6.0 is not yet available in system repositories;
@@ -669,7 +669,7 @@ file which can be built with just a C compiler.*
 
 #### Windows
 
-For R \>= 4.2 using the ‘rtools42’ toolchain, ‘libnng’ v1.6.0 (722bf46)
+For R \>= 4.2 using the ‘rtools42’ toolchain, ‘libnng’ v1.6.0 (5385b78)
 and ‘libmbedtls’ v3.2.1 will be automatically compiled from the package
 sources during installation.
 
