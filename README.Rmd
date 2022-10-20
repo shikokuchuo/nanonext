@@ -524,7 +524,7 @@ Package installation will automatically build the libraries if required.
 
 For R >= 4.2 using the 'rtools42' toolchain, 'libnng' v1.6.0 (5385b78) and 'libmbedtls' v3.2.1 will be automatically compiled from the package sources during installation.
 
-For previous R versions, pre-compiled 'libnng' v1.6.0 (722bf46) and 'libmbedtls' v3.2.1 libraries are downloaded and used for installation instead.
+For previous R versions, pre-compiled 'libnng' v1.6.0 (5385b78) and 'libmbedtls' v3.2.1 libraries are downloaded and used for installation instead.
 
 [&laquo; Back to ToC](#table-of-contents)
 
