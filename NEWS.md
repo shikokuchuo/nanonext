@@ -4,7 +4,8 @@
 
 * `send()` no longer has a '...' argument. This has had no effect since 0.6.0, but will now error if additional arguments are provided (please check and remove previous uses of the argument 'echo').
 * `device()` no longer prompts for confirmation in interactive environments - as device creation is only successful when binding 2 raw mode sockets, there is little scope for accidental use.
-* Fixes bug introduced in 0.6.0 where Aios returning 'errorValues' are not cached with the class, returning only integer values when accessed subsequent to the first time.
+* Fixes bug introduced in 0.6.0 where Aios returning 'errorValues' are not cached with the class, returning only integer values when subsequently accessed.
+* If an error occurred when retrieving an 'ncurlAio', the error value is now also returned at `$status` and `$headers`, which was not the case before.
 * Bundled 'libnng' source updated to v1.6.0 pre-release (5385b78).
 * Internal performance enhancements.
 

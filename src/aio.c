@@ -177,8 +177,8 @@ static SEXP mk_error_haio(const int xc, SEXP env) {
   SEXP err;
   PROTECT(err = Rf_ScalarInteger(xc));
   Rf_classgets(err, nano_error);
-  Rf_defineVar(nano_StatusSymbol, R_NilValue, ENCLOS(env));
-  Rf_defineVar(nano_IdSymbol, R_NilValue, ENCLOS(env));
+  Rf_defineVar(nano_StatusSymbol, err, ENCLOS(env));
+  Rf_defineVar(nano_IdSymbol, err, ENCLOS(env));
   Rf_defineVar(nano_RawSymbol, err, ENCLOS(env));
   Rf_defineVar(nano_ProtocolSymbol, err, ENCLOS(env));
   Rf_warning("%d | %s", xc, nng_strerror(xc));
