@@ -63,6 +63,7 @@
 
 #ifdef NANONEXT_INTERNALS
 extern SEXP mk_error(const int);
+extern SEXP mk_error_ncurl(const int);
 extern SEXP nano_decode(unsigned char *, size_t, const int, const int);
 extern SEXP nano_encode(SEXP);
 extern SEXP nano_encodes(SEXP, SEXP);

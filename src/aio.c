@@ -785,7 +785,7 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP dat
   exitlevel1:
   R_Free(handle);
   R_Free(haio);
-  return mk_error(xc);
+  return mk_error_ncurl(xc);
 
 }
 

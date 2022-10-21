@@ -30,6 +30,21 @@ SEXP mk_error(const int xc) {
 
 }
 
+SEXP mk_error_ncurl(const int xc) {
+
+  SEXP err, out;
+  PROTECT(err = Rf_ScalarInteger(xc));
+  Rf_classgets(err, nano_error);
+  const char *names[] = {"status", "headers", "raw", "data", ""};
+  PROTECT(out = Rf_mkNamed(VECSXP, names));
+  for (int i = 0; i < 4; i++)
+    SET_VECTOR_ELT(out, i, err);
+  Rf_warning("%d | %s", xc, nng_strerror(xc));
+  UNPROTECT(2);
+  return out;
+
+}
+
 SEXP nano_encode(SEXP object) {
 
   R_xlen_t xlen = Rf_xlength(object);

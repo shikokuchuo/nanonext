@@ -337,7 +337,7 @@ SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP data,
   exitlevel2:
   nng_url_free(url);
   exitlevel1:
-  return mk_error(xc);
+  return mk_error_ncurl(xc);
 
 }
 
