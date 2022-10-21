@@ -62,7 +62,8 @@
 <li>
 <code><a href="../reference/device.html">device()</a></code> no longer prompts for confirmation in interactive environments - as device creation is only successful when binding 2 raw mode sockets, there is little scope for accidental use.</li>
 <li>Fixes bug introduced in 0.6.0 where Aios returning ‘errorValues’ are not cached with the class, returning only integer values when subsequently accessed.</li>
-<li>If an error occurred when retrieving an ‘ncurlAio’, the error value is now also returned at <code>$status</code> and <code>$headers</code>, which was not the case before.</li>
+<li>
+<code><a href="../reference/ncurl.html">ncurl()</a></code> now returns an integer ‘errorValue’ at each of <code>$status</code>, <code>$headers</code>, <code>$raw</code> and <code>$data</code> for both sync and async, ensuring stability of return types.</li>
 <li>Bundled ‘libnng’ source updated to v1.6.0 pre-release (5385b78).</li>
 <li>Internal performance enhancements.</li>
 </ul></div>
