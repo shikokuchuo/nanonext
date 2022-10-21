@@ -30,6 +30,21 @@ SEXP mk_error(const int xc) {
 
 }
 
+SEXP mk_error_recv(const int xc) {
+
+  SEXP err, out;
+  PROTECT(err = Rf_ScalarInteger(xc));
+  Rf_classgets(err, nano_error);
+  const char *names[] = {"raw", "data", ""};
+  PROTECT(out = Rf_mkNamed(VECSXP, names));
+  SET_VECTOR_ELT(out, 0, err);
+  SET_VECTOR_ELT(out, 1, err);
+  Rf_warning("%d | %s", xc, nng_strerror(xc));
+  UNPROTECT(2);
+  return out;
+
+}
+
 SEXP mk_error_ncurl(const int xc) {
 
   SEXP err, out;
@@ -818,6 +833,7 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
 SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP keep, SEXP bytes) {
 
   int xc;
+  const int kpr = LOGICAL(keep)[0];
   unsigned char *buf;
   size_t sz;
   SEXP res;
@@ -826,14 +842,14 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP keep, SEXP bytes) {
   if (ptrtag == nano_SocketSymbol) {
 
     nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(con);
-    const int mod = nano_matcharg(mode), kpr = LOGICAL(keep)[0];
+    const int mod = nano_matcharg(mode);
     nng_aio *aiop;
 
     if (block == R_NilValue) {
 
       xc = nng_recv(*sock, &buf, &sz, NNG_FLAG_ALLOC + NNG_FLAG_NONBLOCK);
       if (xc)
-        return mk_error(xc);
+        return kpr ? mk_error_recv(xc) : mk_error(xc);
       res = nano_decode(buf, sz, mod, kpr);
       nng_free(buf, sz);
 
@@ -842,20 +858,20 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP keep, SEXP bytes) {
       const int blk = LOGICAL(block)[0];
       xc = blk ? nng_recv(*sock, &buf, &sz, NNG_FLAG_ALLOC): nng_recv(*sock, &buf, &sz, NNG_FLAG_ALLOC + NNG_FLAG_NONBLOCK);
       if (xc)
-        return mk_error(xc);
+        return kpr ? mk_error_recv(xc) : mk_error(xc);
       res = nano_decode(buf, sz, mod, kpr);
       nng_free(buf, sz);
 
     } else {
       nng_duration dur = (nng_duration) Rf_asInteger(block);
       if ((xc = nng_aio_alloc(&aiop, NULL, NULL)))
-        return mk_error(xc);
+        return kpr ? mk_error_recv(xc) : mk_error(xc);
       nng_aio_set_timeout(aiop, dur);
       nng_recv_aio(*sock, aiop);
       nng_aio_wait(aiop);
       if ((xc = nng_aio_result(aiop))) {
         nng_aio_free(aiop);
-        return mk_error(xc);
+        return kpr ? mk_error_recv(xc) : mk_error(xc);
       }
       nng_msg *msgp = nng_aio_get_msg(aiop);
       nng_aio_free(aiop);
@@ -868,7 +884,7 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP keep, SEXP bytes) {
   } else if (ptrtag == nano_ContextSymbol) {
 
     nng_ctx *ctxp = (nng_ctx *) R_ExternalPtrAddr(con);
-    const int mod = nano_matcharg(mode), kpr = LOGICAL(keep)[0];
+    const int mod = nano_matcharg(mode);
     nng_aio *aiop;
     nng_duration dur;
 
@@ -881,14 +897,14 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP keep, SEXP bytes) {
     }
 
     if ((xc = nng_aio_alloc(&aiop, NULL, NULL)))
-      return mk_error(xc);
+      return kpr ? mk_error_recv(xc) : mk_error(xc);
     nng_aio_set_timeout(aiop, dur);
     nng_ctx_recv(*ctxp, aiop);
 
     nng_aio_wait(aiop);
     if ((xc = nng_aio_result(aiop))) {
       nng_aio_free(aiop);
-      return mk_error(xc);
+      return kpr ? mk_error_recv(xc) : mk_error(xc);
     }
 
     nng_msg *msgp = nng_aio_get_msg(aiop);
@@ -901,7 +917,7 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP keep, SEXP bytes) {
   } else if (ptrtag == nano_StreamSymbol) {
 
     nng_stream *sp = (nng_stream *) R_ExternalPtrAddr(con);
-    const int mod = nano_matchargs(mode), kpr = LOGICAL(keep)[0];
+    const int mod = nano_matchargs(mode);
     const size_t xlen = (size_t) Rf_asInteger(bytes);
     nng_duration dur;
     nng_iov iov;
@@ -920,13 +936,13 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP keep, SEXP bytes) {
 
     if ((xc = nng_aio_alloc(&aiop, NULL, NULL))) {
       R_Free(iov.iov_buf);
-      return mk_error(xc);
+      return kpr ? mk_error_recv(xc) : mk_error(xc);
     }
 
     if ((xc = nng_aio_set_iov(aiop, 1, &iov))) {
       nng_aio_free(aiop);
       R_Free(iov.iov_buf);
-      return mk_error(xc);
+      return kpr ? mk_error_recv(xc) : mk_error(xc);
     }
 
     nng_aio_set_timeout(aiop, dur);
@@ -936,7 +952,7 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP keep, SEXP bytes) {
     if ((xc = nng_aio_result(aiop))) {
       nng_aio_free(aiop);
       R_Free(iov.iov_buf);
-      return mk_error(xc);
+      return kpr ? mk_error_recv(xc) : mk_error(xc);
     }
 
     buf = iov.iov_buf;
