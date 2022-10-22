@@ -55,14 +55,8 @@
 #'
 #' @export
 #'
-send_aio <- function(con,
-                     data,
-                     mode = c("serial", "raw"),
-                     timeout = NULL) {
-
+send_aio <- function(con, data, mode = c("serial", "raw"), timeout = NULL)
   data <- .Call(rnng_send_aio, con, data, mode, timeout, environment())
-
-}
 
 #' Receive Async
 #'
@@ -125,11 +119,8 @@ recv_aio <- function(con,
                               "integer", "logical", "numeric", "raw"),
                      timeout = NULL,
                      keep.raw = FALSE,
-                     n = 65536L) {
-
+                     n = 65536L)
   result <- .Call(rnng_recv_aio, con, mode, timeout, keep.raw, n, environment())
-
-}
 
 # Core aio functions -----------------------------------------------------------
 

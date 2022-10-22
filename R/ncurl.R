@@ -80,16 +80,13 @@ ncurl <- function(url,
                   pem = NULL) {
 
   if (async) {
-
     response
     context <- .Call(rnng_ncurl_aio, url, convert, method, headers, data, pem, environment())
 
   } else {
-
     res <- .Call(rnng_ncurl, url, convert, method, headers, data, response, pem)
     is.character(res) && follow && return(eval(`[[<-`(match.call(), 2L, res)))
     res
-
   }
 
 }

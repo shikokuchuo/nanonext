@@ -57,11 +57,8 @@
 stream <- function(dial = NULL, listen = NULL, textframes = FALSE, pem = NULL) {
 
   if (missing(dial)) {
-    if (missing(listen)) {
-      stop("specify a URL for either 'dial' or 'listen'")
-    } else {
-      .Call(rnng_stream_listen, listen, textframes, pem)
-    }
+    missing(listen) && stop("specify a URL for either 'dial' or 'listen'")
+    .Call(rnng_stream_listen, listen, textframes, pem)
   } else {
     .Call(rnng_stream_dial, dial, textframes, pem)
   }

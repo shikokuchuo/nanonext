@@ -236,23 +236,27 @@ NULL
 #' @method start nanoListener
 #' @export
 #'
-start.nanoListener <- function(x, ...) invisible(.Call(rnng_listener_start, x))
+start.nanoListener <- function(x, ...)
+  invisible(.Call(rnng_listener_start, x))
 
 #' @rdname start
 #' @method start nanoDialer
 #' @export
 #'
-start.nanoDialer <- function(x, async = TRUE, ...) invisible(.Call(rnng_dialer_start, x, async))
+start.nanoDialer <- function(x, async = TRUE, ...)
+  invisible(.Call(rnng_dialer_start, x, async))
 
 #' @rdname close
 #' @method close nanoDialer
 #' @export
 #'
-close.nanoDialer <- function(con, ...) invisible(.Call(rnng_dialer_close, con))
+close.nanoDialer <- function(con, ...)
+  invisible(.Call(rnng_dialer_close, con))
 
 #' @rdname close
 #' @method close nanoListener
 #' @export
 #'
-close.nanoListener <- function(con, ...) invisible(.Call(rnng_listener_close, con))
+close.nanoListener <- function(con, ...)
+  invisible(.Call(rnng_listener_close, con))
 

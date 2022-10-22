@@ -105,7 +105,8 @@ setopt <- function(object,
 #'
 #' @export
 #'
-subscribe <- function(con, topic = NULL) invisible(.Call(rnng_set_opt, con, 0L, "sub:subscribe", topic))
+subscribe <- function(con, topic = NULL)
+  invisible(.Call(rnng_set_opt, con, 0L, "sub:subscribe", topic))
 
 #' Unsubscribe Topic
 #'
@@ -151,7 +152,8 @@ subscribe <- function(con, topic = NULL) invisible(.Call(rnng_set_opt, con, 0L, 
 #'
 #' @export
 #'
-unsubscribe <- function(con, topic = NULL) invisible(.Call(rnng_set_opt, con, 0L, "sub:unsubscribe", topic))
+unsubscribe <- function(con, topic = NULL)
+  invisible(.Call(rnng_set_opt, con, 0L, "sub:unsubscribe", topic))
 
 #' Set Survey Time
 #'
@@ -196,5 +198,6 @@ unsubscribe <- function(con, topic = NULL) invisible(.Call(rnng_set_opt, con, 0L
 #'
 #' @export
 #'
-survey_time <- function(con, time) invisible(.Call(rnng_set_opt, con, 3L, "surveyor:survey-time", time))
+survey_time <- function(con, time)
+  invisible(.Call(rnng_set_opt, con, 3L, "surveyor:survey-time", time))
 

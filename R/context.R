@@ -194,11 +194,7 @@ request <- function(context,
                     recv_mode = c("serial", "character", "complex", "double",
                                   "integer", "logical", "numeric", "raw"),
                     timeout = NULL,
-                    keep.raw = FALSE) {
-
+                    keep.raw = FALSE)
   result <- .Call(rnng_request, context, data, send_mode, recv_mode, timeout,
                   keep.raw, environment())
-
-}
-
 

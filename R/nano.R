@@ -296,15 +296,18 @@ print.errorValue <- function(x, ...) {
 
 #' @export
 #'
-`[[.nano` <- function(x, i, exact = FALSE) attr(x, i, exact = exact)
+`[[.nano` <- function(x, i, exact = FALSE)
+  attr(x, i, exact = exact)
 
 #' @export
 #'
-`[.nano` <- function(x, i, exact = FALSE) attr(x, deparse(substitute(i)), exact = exact)
+`[.nano` <- function(x, i, exact = FALSE)
+  attr(x, deparse(substitute(i)), exact = exact)
 
 #' @export
 #'
-`$.nano` <- function(x, name) attr(x, name, exact = FALSE)
+`$.nano` <- function(x, name)
+  attr(x, name, exact = FALSE)
 
 #' @export
 #'
@@ -324,21 +327,21 @@ print.errorValue <- function(x, ...) {
 
 #' @export
 #'
-.DollarNames.nano <- function(x, pattern = "") grep(pattern, names(attributes(x)),
-                                                    value = TRUE, fixed = TRUE)
+.DollarNames.nano <- function(x, pattern = "")
+  grep(pattern, names(attributes(x)), value = TRUE, fixed = TRUE)
 
 #' @export
 #'
-.DollarNames.recvAio <- function(x, pattern = "") grep(pattern, c("data", if (length(.subset2(x, "raw"))) "raw"),
-                                                       value = TRUE, fixed = TRUE)
+.DollarNames.recvAio <- function(x, pattern = "")
+  grep(pattern, c("data", if (length(.subset2(x, "raw"))) "raw"), value = TRUE, fixed = TRUE)
 
 #' @export
 #'
-.DollarNames.sendAio <- function(x, pattern = "") grep(pattern, "result",
-                                                       value = TRUE, fixed = TRUE)
+.DollarNames.sendAio <- function(x, pattern = "")
+  grep(pattern, "result", value = TRUE, fixed = TRUE)
 
 #' @export
 #'
-.DollarNames.ncurlAio <- function(x, pattern = "") grep(pattern, c("status", "headers", "raw", "data"),
-                                                        value = TRUE, fixed = TRUE)
+.DollarNames.ncurlAio <- function(x, pattern = "")
+  grep(pattern, c("status", "headers", "raw", "data"), value = TRUE, fixed = TRUE)
 

@@ -72,10 +72,8 @@
 #'
 #' @export
 #'
-send <- function(con,
-                 data,
-                 mode = c("serial", "raw"),
-                 block = NULL) invisible(.Call(rnng_send, con, data, mode, block))
+send <- function(con, data, mode = c("serial", "raw"), block = NULL)
+  invisible(.Call(rnng_send, con, data, mode, block))
 
 #' Receive
 #'
@@ -158,5 +156,6 @@ recv <- function(con,
                           "integer", "logical", "numeric", "raw"),
                  block = NULL,
                  keep.raw = FALSE,
-                 n = 65536L) .Call(rnng_recv, con, mode, block, keep.raw, n)
+                 n = 65536L)
+  .Call(rnng_recv, con, mode, block, keep.raw, n)
 
