@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.0.9100</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.0.9200</span>
       </span>
     </div>
 
@@ -54,18 +54,24 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.6.0.9100" id="nanonext-0609100-development">nanonext 0.6.0.9100 (development)<a class="anchor" aria-label="anchor" href="#nanonext-0609100-development"></a></h2>
+<h2 class="page-header" data-toc-text="0.6.0.9200" id="nanonext-0609200-development">nanonext 0.6.0.9200 (development)<a class="anchor" aria-label="anchor" href="#nanonext-0609200-development"></a></h2>
 <div class="section level5">
-<h5 id="updates-0-6-0-9100">Updates<a class="anchor" aria-label="anchor" href="#updates-0-6-0-9100"></a></h5>
-<ul><li>
-<code><a href="../reference/send.html">send()</a></code> no longer has a ‘…’ argument. This has had no effect since 0.6.0, but will now error if additional arguments are provided (please check and remove previous uses of the argument ‘echo’).</li>
+<h5 id="updates-0-6-0-9200">Updates<a class="anchor" aria-label="anchor" href="#updates-0-6-0-9200"></a></h5>
+<p><em>Please review the following potentially breaking changes, and only update when ready:</em></p>
+<ul><li>‘errorValues’ are now returned silently without an accompanying warning. Use <code><a href="../reference/is_error_value.html">is_error_value()</a></code> to explicitly check for errors rather than relying on warnings (side-effects).</li>
 <li>
-<code><a href="../reference/device.html">device()</a></code> no longer prompts for confirmation in interactive environments - as device creation is only successful when binding 2 raw mode sockets, there is little scope for accidental use.</li>
-<li>Fixes bug introduced in 0.6.0 where Aios returning ‘errorValues’ are not cached with the class, returning only integer values when subsequently accessed.</li>
+<code><a href="../reference/nano_init.html">nano_init()</a></code> is deprecated due to warnings no longer being generated.</li>
+<li>
+<code><a href="../reference/send.html">send()</a></code> no longer has a ‘…’ argument. This has had no effect since 0.6.0, but will now error if additional arguments are provided (please check and remove previous uses of the argument ‘echo’).</li>
 <li>
 <code><a href="../reference/recv.html">recv()</a></code> and <code><a href="../reference/recv_aio.html">recv_aio()</a></code> now return an integer ‘errorValue’ at each of <code>$raw</code> and <code>$data</code> when ‘keep.raw’ is set to TRUE, ensuring stability of return types.</li>
 <li>
 <code><a href="../reference/ncurl.html">ncurl()</a></code> now returns an integer ‘errorValue’ at each of <code>$status</code>, <code>$headers</code>, <code>$raw</code> and <code>$data</code> for both sync and async, ensuring stability of return types.</li>
+</ul><p><em>Other changes:</em></p>
+<ul><li>Fixes bug introduced in 0.6.0 where Aios returning ‘errorValues’ are not cached with the class, returning only integer values when accessed subsequently.</li>
+<li>
+<code><a href="../reference/device.html">device()</a></code> no longer prompts for confirmation in interactive environments - as device creation is only successful when binding 2 raw mode sockets, there is little scope for accidental use.</li>
+<li>Print method for ‘errorValue’ now also provides the human translation of the error code.</li>
 <li>Bundled ‘libnng’ source updated to v1.6.0 pre-release (5385b78).</li>
 <li>Internal performance enhancements.</li>
 </ul></div>
@@ -109,7 +115,8 @@
 <h2 class="page-header" data-toc-text="0.5.5" id="nanonext-055">nanonext 0.5.5<small>2022-09-04</small><a class="anchor" aria-label="anchor" href="#nanonext-055"></a></h2>
 <div class="section level5">
 <h5 id="updates-0-5-5">Updates<a class="anchor" aria-label="anchor" href="#updates-0-5-5"></a></h5>
-<ul><li>Installation succeeds under Linux where library path uses ‘lib64’ instead of ‘lib’, and fails gracefully if ‘cmake’ is not found.</li></ul></div>
+<ul><li>Installation succeeds under Linux where library path uses ‘lib64’ instead of ‘lib’, and fails gracefully if ‘cmake’ is not found.</li>
+</ul></div>
 </div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.5.4" id="nanonext-054">nanonext 0.5.4<small>2022-09-02</small><a class="anchor" aria-label="anchor" href="#nanonext-054"></a></h2>
@@ -160,7 +167,8 @@
 </ul></div>
 <div class="section level5">
 <h5 id="updates-0-5-2">Updates<a class="anchor" aria-label="anchor" href="#updates-0-5-2"></a></h5>
-<ul><li>Internal performance optimisations.</li></ul></div>
+<ul><li>Internal performance optimisations.</li>
+</ul></div>
 </div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.5.1" id="nanonext-051">nanonext 0.5.1<small>2022-06-10</small><a class="anchor" aria-label="anchor" href="#nanonext-051"></a></h2>
@@ -241,7 +249,9 @@
 <code><a href="../reference/listen.html">listen()</a></code> and <code><a href="../reference/dial.html">dial()</a></code> now return (invisible) zero rather than NULL upon success for consistency with other functions.</li>
 <li>Options documentation entry renamed to <code>opts</code> to avoid clash with base R ‘options’.</li>
 <li>Common format for NNG errors and informational events now starts with a timestamp for easier logging.</li>
-<li>Allows setting the environment variable ‘NANONEXT_ARM’ prior to package installation<ul><li>Fixes installation issues on certain ARM architectures</li></ul></li>
+<li>Allows setting the environment variable ‘NANONEXT_ARM’ prior to package installation
+<ul><li>Fixes installation issues on certain ARM architectures</li>
+</ul></li>
 <li>Package installation using a system ‘libnng’ now automatically detects ‘libmbedtls’, removing the need to manually set ‘NANONEXT_TLS’ in this case.</li>
 <li>More streamlined NNG build process eliminating unused options.</li>
 <li>Removes experimental <code>nng_timer()</code> utility as a non-essential function.</li>
@@ -252,19 +262,26 @@
 <h2 class="page-header" data-toc-text="0.2.0" id="nanonext-020">nanonext 0.2.0<small>2022-02-10</small><a class="anchor" aria-label="anchor" href="#nanonext-020"></a></h2>
 <div class="section level5">
 <h5 id="new-features-0-2-0">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-2-0"></a></h5>
-<ul><li>Implements full async I/O capabilities<ul><li>
-<code><a href="../reference/send_aio.html">send_aio()</a></code> and <code><a href="../reference/recv_aio.html">recv_aio()</a></code> now return Aio objects, for which the results may be called using <code><a href="../reference/call_aio.html">call_aio()</a></code>.</li></ul></li>
-<li>New <code><a href="../reference/request.html">request()</a></code> and <code><a href="../reference/reply.html">reply()</a></code> functions implement the full logic of an RPC client/server, allowing processes to run concurrently on the client and server.<ul><li>Designed to be run in separate processes, the reply server will await data and apply a function before returning a result.</li>
+<ul><li>Implements full async I/O capabilities
+<ul><li>
+<code><a href="../reference/send_aio.html">send_aio()</a></code> and <code><a href="../reference/recv_aio.html">recv_aio()</a></code> now return Aio objects, for which the results may be called using <code><a href="../reference/call_aio.html">call_aio()</a></code>.</li>
+</ul></li>
+<li>New <code><a href="../reference/request.html">request()</a></code> and <code><a href="../reference/reply.html">reply()</a></code> functions implement the full logic of an RPC client/server, allowing processes to run concurrently on the client and server.
+<ul><li>Designed to be run in separate processes, the reply server will await data and apply a function before returning a result.</li>
 <li>The request client performs an async request to the server and returns immediately with an Aio.</li>
 </ul></li>
 <li>New <code><a href="../reference/ncurl.html">ncurl()</a></code> minimalistic http(s) client.</li>
 <li>New <code>nng_timer()</code> utility as a demonstration of NNG’s multithreading capabilities.</li>
-<li>Allows setting the environment variable ‘NANONEXT_TLS’ prior to package installation<ul><li>Enables TLS where the system NNG library has been built with TLS support (using Mbed TLS).</li></ul></li>
+<li>Allows setting the environment variable ‘NANONEXT_TLS’ prior to package installation
+<ul><li>Enables TLS where the system NNG library has been built with TLS support (using Mbed TLS).</li>
+</ul></li>
 </ul></div>
 <div class="section level5">
 <h5 id="updates-0-2-0">Updates<a class="anchor" aria-label="anchor" href="#updates-0-2-0"></a></h5>
 <ul><li>Dialer/listener starts and close operations no longer print a message to stderr when successful for less verbosity by default.</li>
-<li>All send and receive functions, e.g. <code><a href="../reference/send.html">send()</a></code>/<code><a href="../reference/recv.html">recv()</a></code>, gain a revised ‘mode’ argument.<ul><li>This now permits R serialization as an option, consolidating the functionality of the ’_vec’ series of functions.</li></ul></li>
+<li>All send and receive functions, e.g. <code><a href="../reference/send.html">send()</a></code>/<code><a href="../reference/recv.html">recv()</a></code>, gain a revised ‘mode’ argument.
+<ul><li>This now permits R serialization as an option, consolidating the functionality of the ’_vec’ series of functions.</li>
+</ul></li>
 <li>Functions ‘send_vec’ and ‘recv_vec’ are deprecated and will be removed in a future release.</li>
 <li>Functions ‘ctx_send’ and ‘ctx_recv’ have been renamed <code>send_ctx()</code> and <code>recv_ctx()</code> for consistency.</li>
 <li>The <code>$socket_close()</code> method of nano objects has been renamed <code>$close()</code> to better align with the functional API.</li>
@@ -272,7 +289,8 @@
 </div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.1.0" id="nanonext-010">nanonext 0.1.0<small>2022-01-25</small><a class="anchor" aria-label="anchor" href="#nanonext-010"></a></h2>
-<ul><li>Initial release to CRAN, rOpenSci R-universe and Github.</li></ul></div>
+<ul><li>Initial release to CRAN, rOpenSci R-universe and Github.</li>
+</ul></div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
