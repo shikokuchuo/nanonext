@@ -81,8 +81,6 @@ install.packages("nanonext", repos = "https://shikokuchuo.r-universe.dev")
 
 ### Interfaces
 
-Call `nano_init()` after package load to set global options such as causing warnings to print immediately as they occur.
-
 {nanonext} offers 2 equivalent interfaces: an object-oriented interface, and a functional interface.
 
 #### Object-oriented Interface
@@ -96,7 +94,6 @@ Create nano objects:
 
 ```{r example}
 library(nanonext)
-nano_init()
 
 nano1 <- nano("req", listen = "inproc://nanonext")
 nano2 <- nano("rep", dial = "inproc://nanonext")
@@ -124,7 +121,6 @@ Create sockets:
 
 ```{r example2}
 library(nanonext)
-nano_init()
 
 socket1 <- socket("push", listen = "tcp://127.0.0.1:5555")
 socket2 <- socket("pull", dial = "tcp://127.0.0.1:5555")

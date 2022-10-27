@@ -27,9 +27,6 @@
 #'
 #' @section Usage notes:
 #'
-#'     Call \code{\link{nano_init}} after package load to set global options
-#'     such as causing warnings to print immediately as they occur.
-#'
 #'     \{nanonext\} offers 2 equivalent interfaces: an object-oriented interface,
 #'     and a functional interface.
 #'
@@ -98,10 +95,4 @@
 #' @name nanonext-package
 #'
 NULL
-
-.onUnload <- function(libpath) {
-  if (length(warn <- getOption("nanonext.original.warn")))
-    options(warn = warn, nanonext.original.warn = NULL)
-  invisible()
-}
 

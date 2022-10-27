@@ -14,38 +14,9 @@ level, 'error' to upgrade all warnings to errors (stops execution), and
 'none' to ignore all warnings.}
 }
 \value{
-Invisibly, the integer \code{code} applied to \code{options(warn = code)}.
+Invisible NULL.
 }
 \description{
-Initialise global options - intended to be called immediately after package load.
+Initialise global options [DEPRECATED]. This function prints a deprecation
+    message and no longer has any effect.
 }
-\section{Warnings}{
-
-
-    A warning is generated every time an 'errorValue' is returned.
-
-    This function sets the global option 'warn' to the appropriate value and
-    automatically reverts it upon package unload. The default, applied by
-    calling \code{nano_init()} with no arguments, is 'immediate', which
-    prints warnings as they occur.
-
-    Further options for warnings may be set manually via \code{\link{options}}:
-
-    \itemize{
-
-    \item{warning.expression} { - an R code expression to be called if a
-    warning is
-    generated, replacing the standard message. If non-null it is called
-    irrespective of the value of option warn.}
-
-    \item{warning.length} { - sets the truncation limit in bytes for error
-    and warning messages. A non-negative integer, with allowed values 100...8170,
-    default 1000.}
-
-    \item{nwarnings} { - the limit for the number of warnings kept when warn = 0,
-    default 50. This will discard messages if called whilst they are being
-    collected. If you increase this limit, be aware that the current
-    implementation pre-allocates the equivalent of a named list for them.}
-    }
-}
-

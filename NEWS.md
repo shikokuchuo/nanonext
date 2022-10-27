@@ -1,12 +1,20 @@
-# nanonext 0.6.0.9100 (development)
+# nanonext 0.6.0.9200 (development)
 
 #### Updates
 
+*Please review the following potentially breaking changes, and only update when ready:*
+
+* 'errorValues' are now returned silently without an accompanying warning. Use `is_error_value()` to explicitly check for errors rather than relying on warnings (side-effects).
+* `nano_init()` is deprecated due to warnings no longer being generated.
 * `send()` no longer has a '...' argument. This has had no effect since 0.6.0, but will now error if additional arguments are provided (please check and remove previous uses of the argument 'echo').
-* `device()` no longer prompts for confirmation in interactive environments - as device creation is only successful when binding 2 raw mode sockets, there is little scope for accidental use.
-* Fixes bug introduced in 0.6.0 where Aios returning 'errorValues' are not cached with the class, returning only integer values when subsequently accessed.
 * `recv()` and `recv_aio()` now return an integer 'errorValue' at each of `$raw` and `$data` when 'keep.raw' is set to TRUE, ensuring stability of return types.
 * `ncurl()` now returns an integer 'errorValue' at each of `$status`, `$headers`, `$raw` and `$data` for both sync and async, ensuring stability of return types.
+
+*Other changes:*
+
+* Fixes bug introduced in 0.6.0 where Aios returning 'errorValues' are not cached with the class, returning only integer values when accessed subsequently.
+* `device()` no longer prompts for confirmation in interactive environments - as device creation is only successful when binding 2 raw mode sockets, there is little scope for accidental use.
+* Print method for 'errorValue' now also provides the human translation of the error code.
 * Bundled 'libnng' source updated to v1.6.0 pre-release (5385b78).
 * Internal performance enhancements.
 

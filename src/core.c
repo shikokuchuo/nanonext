@@ -23,7 +23,6 @@
 
 SEXP mk_error(const int xc) {
 
-  Rf_warning("%d | %s", xc, nng_strerror(xc));
   SEXP err = Rf_ScalarInteger(xc);
   Rf_classgets(err, nano_error);
   return err;
@@ -32,14 +31,13 @@ SEXP mk_error(const int xc) {
 
 SEXP mk_error_recv(const int xc) {
 
-  SEXP err, out;
-  PROTECT(err = Rf_ScalarInteger(xc));
-  Rf_classgets(err, nano_error);
+  SEXP out, err;
   const char *names[] = {"raw", "data", ""};
   PROTECT(out = Rf_mkNamed(VECSXP, names));
+  PROTECT(err = Rf_ScalarInteger(xc));
+  Rf_classgets(err, nano_error);
   SET_VECTOR_ELT(out, 0, err);
   SET_VECTOR_ELT(out, 1, err);
-  Rf_warning("%d | %s", xc, nng_strerror(xc));
   UNPROTECT(2);
   return out;
 
@@ -47,14 +45,13 @@ SEXP mk_error_recv(const int xc) {
 
 SEXP mk_error_ncurl(const int xc) {
 
-  SEXP err, out;
-  PROTECT(err = Rf_ScalarInteger(xc));
-  Rf_classgets(err, nano_error);
+  SEXP out, err;
   const char *names[] = {"status", "headers", "raw", "data", ""};
   PROTECT(out = Rf_mkNamed(VECSXP, names));
+  PROTECT(err = Rf_ScalarInteger(xc));
+  Rf_classgets(err, nano_error);
   for (int i = 0; i < 4; i++)
     SET_VECTOR_ELT(out, i, err);
-  Rf_warning("%d | %s", xc, nng_strerror(xc));
   UNPROTECT(2);
   return out;
 
@@ -192,6 +189,8 @@ int nano_matcharg(SEXP mode) {
 
   switch (slen) {
   case 1:
+    if (!strcmp("c", mod))
+      Rf_error("'mode' should be one of serial, character, complex, double, integer, logical, numeric, raw");
   case 2:
   case 3:
     if (!strncmp(r, mod, slen)) { xc = 8; break; }
@@ -204,8 +203,6 @@ int nano_matcharg(SEXP mode) {
     if (!strncmp(i, mod, slen)) { xc = 5; break; }
     if (!strncmp(n, mod, slen)) { xc = 7; break; }
     if (!strncmp(l, mod, slen)) { xc = 6; break; }
-    if (slen == 1)
-      Rf_error("'mode' should be one of serial, character, complex, double, integer, logical, numeric, raw");
     if (!strncmp(co, mod, slen)) { xc = 3; break; }
   case 8:
   case 9:

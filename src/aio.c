@@ -153,7 +153,6 @@ static SEXP mk_error_saio(const int xc, SEXP env) {
   PROTECT(err = Rf_ScalarInteger(xc));
   Rf_classgets(err, nano_error);
   Rf_defineVar(nano_ResultSymbol, err, ENCLOS(env));
-  Rf_warning("%d | %s", xc, nng_strerror(xc));
   UNPROTECT(1);
   return err;
 
@@ -166,7 +165,6 @@ static SEXP mk_error_raio(const int xc, SEXP env) {
   Rf_classgets(err, nano_error);
   Rf_defineVar(nano_RawSymbol, err, ENCLOS(env));
   Rf_defineVar(nano_DataSymbol, err, ENCLOS(env));
-  Rf_warning("%d | %s", xc, nng_strerror(xc));
   UNPROTECT(1);
   return err;
 
@@ -181,7 +179,6 @@ static SEXP mk_error_haio(const int xc, SEXP env) {
   Rf_defineVar(nano_IdSymbol, err, ENCLOS(env));
   Rf_defineVar(nano_RawSymbol, err, ENCLOS(env));
   Rf_defineVar(nano_ProtocolSymbol, err, ENCLOS(env));
-  Rf_warning("%d | %s", xc, nng_strerror(xc));
   UNPROTECT(1);
   return err;
 

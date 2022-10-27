@@ -128,39 +128,6 @@ SEXP rnng_device(SEXP s1, SEXP s2) {
 
 }
 
-// nano_init -------------------------------------------------------------------
-
-SEXP rnng_matchwarn(SEXP warn) {
-
-  if (TYPEOF(warn) == INTSXP) return warn;
-
-  const char *w = CHAR(STRING_ELT(warn, 0));
-  size_t slen = strlen(w);
-  const char i[] = "immediate", d[] = "deferred", e[] = "error", n[] = "none";
-  int xc = 0;
-
-  switch (slen) {
-  case 1:
-  case 2:
-  case 3:
-  case 4:
-    if (!strncmp(n, w, slen)) { xc = -1; break; }
-  case 5:
-    if (!strncmp(e, w, slen)) { xc = 2; break; }
-  case 6:
-  case 7:
-  case 8:
-    if (!strncmp(d, w, slen)) { xc = 0; break; }
-  case 9:
-    if (!strncmp(i, w, slen)) { xc = 1; break; }
-  default:
-      Rf_error("'warn' should be one of immediate, deferred, error, none");
-  }
-
-  return Rf_ScalarInteger(xc);
-
-}
-
 // ncurl - minimalist http client ----------------------------------------------
 
 SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP data,
