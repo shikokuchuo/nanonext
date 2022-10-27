@@ -130,8 +130,8 @@ SEXP rnng_device(SEXP s1, SEXP s2) {
 
 // ncurl - minimalist http client ----------------------------------------------
 
-SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP data,
-                SEXP response, SEXP pem) {
+SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP follow, SEXP method, SEXP headers,
+                SEXP data, SEXP response, SEXP pem) {
 
   nng_url *url;
   nng_http_client *client;
@@ -175,9 +175,9 @@ SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP data,
     }
   }
   if (data != R_NilValue) {
-    data = nano_encode(data);
-    unsigned char *dp = RAW(data);
-    const size_t dlen = Rf_xlength(data) - 1;
+    SEXP enc = nano_encode(data);
+    unsigned char *dp = RAW(enc);
+    const size_t dlen = Rf_xlength(enc) - 1;
     if ((xc = nng_http_req_set_data(req, dp, dlen)))
       goto exitlevel4;
   }
@@ -216,31 +216,26 @@ SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP data,
     nng_tls_config_free(cfg);
   nng_aio_free(aio);
 
-  code = nng_http_res_get_status(res);
-  if (code != 200) {
-    REprintf("HTTP Server Response: %d %s\n", code, nng_http_res_get_reason(res));
-    if (code >= 300 && code < 400) {
-      SEXP ret;
-      PROTECT(ret = Rf_mkString(nng_http_res_get_header(res, "Location")));
-      nng_http_res_free(res);
-      nng_http_req_free(req);
-      nng_http_client_free(client);
-      nng_url_free(url);
-      UNPROTECT(1);
-      return ret;
-    }
-  }
-
+  SEXP out, vec, sta, cvec, rvec;
   void *dat;
   size_t sz;
-  SEXP out, vec, cvec = R_NilValue, rvec = R_NilValue;
-
-  nng_http_res_get_data(res, &dat, &sz);
-
   const char *names[] = {"status", "headers", "raw", "data", ""};
+
   PROTECT(out = Rf_mkNamed(VECSXP, names));
 
-  SET_VECTOR_ELT(out, 0, Rf_ScalarInteger(code));
+  code = nng_http_res_get_status(res);
+  if (code == 200) {
+    sta = Rf_ScalarInteger(code);
+  } else if (Rf_asLogical(follow) && code >= 300 && code < 400) {
+    UNPROTECT(1);
+    return rnng_ncurl(Rf_mkString(nng_http_res_get_header(res, "Location")),
+                      convert, follow, method, headers, data, response, pem);
+  } else {
+    PROTECT(sta = Rf_ScalarInteger(code));
+    Rf_setAttrib(sta, nano_StatusSymbol, Rf_mkString(nng_http_res_get_reason(res)));
+    UNPROTECT(1);
+  }
+  SET_VECTOR_ELT(out, 0, sta);
 
   if (response != R_NilValue) {
     const R_xlen_t rlen = Rf_xlength(response);
@@ -267,18 +262,25 @@ SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP data,
       break;
     }
     UNPROTECT(1);
+  } else {
+    rvec = R_NilValue;
   }
   SET_VECTOR_ELT(out, 1, rvec);
 
+  nng_http_res_get_data(res, &dat, &sz);
   vec = Rf_allocVector(RAWSXP, sz);
   memcpy(RAW(vec), dat, sz);
   SET_VECTOR_ELT(out, 2, vec);
 
-  if (Rf_asLogical(convert)) {
+  if (code >= 300 && code < 400) {
+    cvec = Rf_mkString(nng_http_res_get_header(res, "Location"));
+  } else if (Rf_asLogical(convert)) {
     SEXP expr;
     PROTECT(expr = Rf_lang2(nano_RtcSymbol, vec));
     cvec = R_tryEvalSilent(expr, R_BaseEnv, &xc);
     UNPROTECT(1);
+  } else {
+    cvec = R_NilValue;
   }
   SET_VECTOR_ELT(out, 3, cvec);
 

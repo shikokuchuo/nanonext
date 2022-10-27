@@ -131,7 +131,7 @@ extern SEXP rnng_listener_close(SEXP);
 extern SEXP rnng_listener_create(SEXP, SEXP);
 extern SEXP rnng_listener_start(SEXP);
 extern SEXP rnng_messenger(SEXP);
-extern SEXP rnng_ncurl(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
+extern SEXP rnng_ncurl(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 extern SEXP rnng_ncurl_aio(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 extern SEXP rnng_protocol_open(SEXP, SEXP);
 extern SEXP rnng_random(SEXP);

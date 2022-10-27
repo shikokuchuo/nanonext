@@ -709,9 +709,9 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP dat
   }
 
   if (data != R_NilValue) {
-    data = nano_encode(data);
-    unsigned char *dp = RAW(data);
-    const size_t dlen = Rf_xlength(data) - 1;
+    SEXP enc = nano_encode(data);
+    unsigned char *dp = RAW(enc);
+    const size_t dlen = Rf_xlength(enc) - 1;
     if ((xc = nng_http_req_set_data(handle->req, dp, dlen)))
       goto exitlevel4;
   }
@@ -815,32 +815,20 @@ SEXP rnng_aio_http(SEXP env, SEXP response, SEXP which) {
   if (haio->result)
     return mk_error_haio(haio->result, env);
 
-  nano_handle *handle = (nano_handle *) haio->data;
-  uint16_t code = nng_http_res_get_status(handle->res);
-
-  if (code != 200) {
-    REprintf("HTTP Server Response: %d %s\n", code, nng_http_res_get_reason(handle->res));
-    if (code >= 300 && code < 400) {
-      Rf_defineVar(nano_StatusSymbol, Rf_ScalarInteger(code), ENCLOS(env));
-      Rf_defineVar(nano_IdSymbol, R_NilValue, ENCLOS(env));
-      Rf_defineVar(nano_RawSymbol, Rf_mkString(nng_http_res_get_header(handle->res, "Location")), ENCLOS(env));
-      Rf_defineVar(nano_ProtocolSymbol, R_NilValue, ENCLOS(env));
-      SEXP out;
-      switch (typ) {
-      case 0: out = Rf_findVarInFrame(ENCLOS(env), nano_StatusSymbol); break;
-      case 1: out = Rf_findVarInFrame(ENCLOS(env), nano_IdSymbol); break;
-      case 2: out = Rf_findVarInFrame(ENCLOS(env), nano_RawSymbol); break;
-      default: out = Rf_findVarInFrame(ENCLOS(env), nano_ProtocolSymbol); break;
-      }
-      return out;
-    }
-  }
-
   void *dat;
   size_t sz;
-  SEXP vec, cvec = R_NilValue, rvec = R_NilValue;
+  SEXP vec, sta, cvec, rvec;
+  nano_handle *handle = (nano_handle *) haio->data;
 
-  Rf_defineVar(nano_StatusSymbol, Rf_ScalarInteger(code), ENCLOS(env));
+  uint16_t code = nng_http_res_get_status(handle->res);
+  if (code == 200) {
+    sta = Rf_ScalarInteger(code);
+  } else {
+    PROTECT(sta = Rf_ScalarInteger(code));
+    Rf_setAttrib(sta, nano_StatusSymbol, Rf_mkString(nng_http_res_get_reason(handle->res)));
+    UNPROTECT(1);
+  }
+  Rf_defineVar(nano_StatusSymbol, sta, ENCLOS(env));
 
   if (response != R_NilValue) {
     const R_xlen_t rlen = Rf_xlength(response);
@@ -868,6 +856,8 @@ SEXP rnng_aio_http(SEXP env, SEXP response, SEXP which) {
       break;
     }
     UNPROTECT(1);
+  } else {
+    rvec = R_NilValue;
   }
   Rf_defineVar(nano_IdSymbol, rvec, ENCLOS(env));
 
@@ -876,12 +866,16 @@ SEXP rnng_aio_http(SEXP env, SEXP response, SEXP which) {
   memcpy(RAW(vec), dat, sz);
   Rf_defineVar(nano_RawSymbol, vec, ENCLOS(env));
 
-  if (haio->mode) {
+  if (code >= 300 && code < 400) {
+    cvec = Rf_mkString(nng_http_res_get_header(handle->res, "Location"));
+  } else if (haio->mode) {
     SEXP expr;
     int xc;
     PROTECT(expr = Rf_lang2(nano_RtcSymbol, vec));
     cvec = R_tryEvalSilent(expr, R_BaseEnv, &xc);
     UNPROTECT(1);
+  } else {
+    cvec = R_NilValue;
   }
   Rf_defineVar(nano_ProtocolSymbol, cvec, ENCLOS(env));
 

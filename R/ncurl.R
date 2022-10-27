@@ -25,7 +25,9 @@
 #' @param convert [default TRUE] logical value whether to attempt conversion of
 #'     the received raw bytes to a character vector.
 #' @param follow [default FALSE] logical value whether to automatically follow
-#'     redirects. See 'redirects' section below.
+#'     redirects. If FALSE, or for all async requests, the redirect address is
+#'     returned as a character string at \code{$data} and the HTTP status code
+#'     will be within the 300 range.
 #' @param method (optional) the HTTP method (defaults to 'GET' if not specified).
 #' @param headers (optional) a named list or character vector specifying the
 #'     HTTP request headers e.g. \code{list(`Content-Type` = "text/plain")} or
@@ -41,7 +43,9 @@
 #'
 #' @return Named list of 4 elements:
 #'     \itemize{
-#'     \item{\code{$status}} {- integer HTTP repsonse status code (200 - OK).}
+#'     \item{\code{$status}} {- integer HTTP repsonse status code. Codes other
+#'     than 200 (success) will contain a character attribute 'status' with an
+#'     explanation of the meaning.}
 #'     \item{\code{$headers}} {- named list of response headers supplied in
 #'     'response' or NULL if unspecified.}
 #'     \item{\code{$raw}} {- raw vector of the received resource (use
@@ -53,14 +57,6 @@
 #'
 #'     Or else, if \code{async = TRUE}, an 'ncurlAio' (object of class 'ncurlAio'
 #'     and 'recvAio') (invisibly).
-#'
-#' @section Redirects:
-#'
-#'     If redirects are not followed (the default), the redirect address is
-#'     returned as a character string.
-#'
-#'     For async requests, the redirect address is returned as a character
-#'     string at \code{$raw} and \code{$data} will be NULL.
 #'
 #' @examples
 #' ncurl("https://httpbin.org/get", response = c("date", "server"))
@@ -82,11 +78,8 @@ ncurl <- function(url,
   if (async) {
     response
     context <- .Call(rnng_ncurl_aio, url, convert, method, headers, data, pem, environment())
-
   } else {
-    res <- .Call(rnng_ncurl, url, convert, method, headers, data, response, pem)
-    is.character(res) && follow && return(eval(`[[<-`(match.call(), 2L, res)))
-    res
+    .Call(rnng_ncurl, url, convert, follow, method, headers, data, response, pem)
   }
 
 }

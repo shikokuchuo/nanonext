@@ -25,7 +25,9 @@ ncurl(
 the received raw bytes to a character vector.}
 
 \item{follow}{[default FALSE] logical value whether to automatically follow
-redirects. See 'redirects' section below.}
+redirects. If FALSE, or for all async requests, the redirect address is
+returned as a character string at \code{$data} and the HTTP status code
+will be within the 300 range.}
 
 \item{method}{(optional) the HTTP method (defaults to 'GET' if not specified).}
 
@@ -47,7 +49,9 @@ If missing or NULL, certificates are not validated.}
 \value{
 Named list of 4 elements:
     \itemize{
-    \item{\code{$status}} {- integer HTTP repsonse status code (200 - OK).}
+    \item{\code{$status}} {- integer HTTP repsonse status code. Codes other
+    than 200 (success) will contain a character attribute 'status' with an
+    explanation of the meaning.}
     \item{\code{$headers}} {- named list of response headers supplied in
     'response' or NULL if unspecified.}
     \item{\code{$raw}} {- raw vector of the received resource (use
@@ -63,16 +67,6 @@ Named list of 4 elements:
 \description{
 nano cURL - a minimalist http(s) client.
 }
-\section{Redirects}{
-
-
-    If redirects are not followed (the default), the redirect address is
-    returned as a character string.
-
-    For async requests, the redirect address is returned as a character
-    string at \code{$raw} and \code{$data} will be NULL.
-}
-
 \examples{
 ncurl("https://httpbin.org/get", response = c("date", "server"))
 ncurl("http://httpbin.org/put",,,,"PUT", list(Authorization = "Bearer APIKEY"), "hello world")
