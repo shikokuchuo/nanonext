@@ -93,9 +93,9 @@ socket <- function(protocol = c("bus", "pair", "push", "pull", "pub", "sub",
 
 #' Close Connection
 #'
-#' Close Connection on a Socket, Context, Dialer or Listener.
+#' Close Connection on a Socket, Context, Dialer, Listener or Stream.
 #'
-#' @param con a Socket, Context, Dialer or Listener.
+#' @param con a Socket, Context, Dialer, Listener or Stream.
 #' @param ... not used.
 #'
 #' @return Invisibly, an integer exit code (zero on success).
@@ -104,16 +104,20 @@ socket <- function(protocol = c("bus", "pair", "push", "pull", "pub", "sub",
 #'     be removed directly in which case its resources are freed when the object
 #'     is garbage collected.
 #'
-#'     Dialers and Listeners are implicitly closed when the socket they are
+#'     Dialers and Listeners are implicitly closed when the Socket they are
 #'     associated with is closed.
 #'
-#'     Closing a socket associated with a context also closes the context.
+#'     Closing a Socket associated with a Context also closes the Context.
 #'
-#'     When closing a socket or a context: messages that have been submitted for
+#'     Closing a Socket or a Context: messages that have been submitted for
 #'     sending may be flushed or delivered, depending upon the transport. Closing
-#'     the socket while data is in transmission will likely lead to loss of that
-#'     data. There is no automatic linger or flush to ensure that the socket
+#'     the Socket while data is in transmission will likely lead to loss of that
+#'     data. There is no automatic linger or flush to ensure that the Socket
 #'     send buffers have completely transmitted.
+#'
+#'     Closing a Stream: if any send or receive operations are pending, they
+#'     will be terminated and any new operations will fail after the connection
+#'     is closed.
 #'
 #' @name close
 #' @rdname close
