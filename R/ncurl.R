@@ -43,9 +43,8 @@
 #'
 #' @return Named list of 4 elements:
 #'     \itemize{
-#'     \item{\code{$status}} {- integer HTTP repsonse status code. Codes other
-#'     than 200 (success) will contain a character attribute 'status' with an
-#'     explanation of the meaning.}
+#'     \item{\code{$status}} {- integer HTTP repsonse status code (200 - OK).
+#'     Use \code{\link{status_code}} for a translation of the meaning.}
 #'     \item{\code{$headers}} {- named list of response headers supplied in
 #'     'response' or NULL if unspecified.}
 #'     \item{\code{$raw}} {- raw vector of the received resource (use
