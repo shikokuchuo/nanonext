@@ -2,7 +2,7 @@
 
 #### New Features
 
-* `status_code()` utility included for returning a human-readable translation of HTTP response status codes.
+* `status_code()` utility returns a human-readable translation of HTTP response status codes.
 
 #### Updates
 
