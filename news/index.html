@@ -56,6 +56,11 @@
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.6.0.9200" id="nanonext-0609200-development">nanonext 0.6.0.9200 (development)<a class="anchor" aria-label="anchor" href="#nanonext-0609200-development"></a></h2>
 <div class="section level5">
+<h5 id="new-features-0-6-0-9200">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-6-0-9200"></a></h5>
+<ul><li>
+<code><a href="../reference/status_code.html">status_code()</a></code> utility included for returning a human-readable translation of HTTP response status codes.</li>
+</ul></div>
+<div class="section level5">
 <h5 id="updates-0-6-0-9200">Updates<a class="anchor" aria-label="anchor" href="#updates-0-6-0-9200"></a></h5>
 <p><em>Please review the following potentially breaking changes, and only update when ready:</em></p>
 <ul><li>‘errorValues’ are now returned silently without an accompanying warning. Use <code><a href="../reference/is_error_value.html">is_error_value()</a></code> to explicitly check for errors rather than relying on warnings (side-effects).</li>
@@ -69,8 +74,6 @@
 <code><a href="../reference/ncurl.html">ncurl()</a></code> now returns an integer ‘errorValue’ at each of <code>$status</code>, <code>$headers</code>, <code>$raw</code> and <code>$data</code> for both sync and async, ensuring stability of return types. Where ‘follow’ is set to FALSE, or for all async requests, the redirect address is now returned as a character string at <code>$data</code>.</li>
 </ul><p><em>Other changes:</em></p>
 <ul><li>Fixes bug introduced in 0.6.0 where Aios returning ‘errorValues’ are not cached with the class, returning only integer values when accessed subsequently.</li>
-<li>
-<code><a href="../reference/ncurl.html">ncurl()</a></code> status codes other than 200 (success) now contain a character attribute ‘status’ with an explanation of the meaning.</li>
 <li>
 <code><a href="../reference/device.html">device()</a></code> no longer prompts for confirmation in interactive environments - as device creation is only successful when binding 2 raw mode sockets, there is little scope for accidental use.</li>
 <li>Print method for ‘errorValue’ now also provides the human translation of the error code.</li>
