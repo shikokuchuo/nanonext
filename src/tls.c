@@ -322,7 +322,6 @@ SEXP rnng_base64enc(SEXP x, SEXP convert) {
   xc = mbedtls_base64_encode(NULL, 0, &olen, hash.buf, hash.sz);
   unsigned char output[olen];
   xc = mbedtls_base64_encode(output, olen, &olen, hash.buf, hash.sz);
-
   if (xc)
     Rf_error("invalid input");
 
@@ -354,9 +353,10 @@ SEXP rnng_base64dec(SEXP x, SEXP convert) {
   nano_hash hash = nano_anytoraw(x);
 
   xc = mbedtls_base64_decode(NULL, 0, &olen, hash.buf, hash.sz);
+  if (xc == MBEDTLS_ERR_BASE64_INVALID_CHARACTER)
+    Rf_error("invalid input");
   unsigned char output[olen];
   xc = mbedtls_base64_decode(output, olen, &olen, hash.buf, hash.sz);
-
   if (xc)
     Rf_error("invalid input");
 

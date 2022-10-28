@@ -31,7 +31,7 @@ nng_version <- function() .Call(rnng_version)
 
 #' Translate Error Codes
 #'
-#' Translate integer exit code to human readable form. All package functions
+#' Translate integer exit code to human-readable form. All package functions
 #'     return an integer exit code on error rather than the expected return
 #'     value. These are classed 'errorValue' and may be checked by the function
 #'     \code{\link{is_error_value}}.
@@ -243,9 +243,10 @@ nano_init <- function(warn = c("immediate", "deferred", "error", "none")) {
 
 #' Translate HTTP Status Codes
 #'
-#' Translate HTTP response status codes, in the range 100 to 599, to human
-#'     readable form. If the status code is not recognised (could be a custom
-#'     code used by the server), 'Non-standard Response' is returned.
+#' Translate HTTP response status codes (in the range 100 to 599) to
+#'     human-readable form. If the status code is not defined as per RFC 9110,
+#'     'Non-standard Response' is returned, and may be a custom code used by the
+#'     server.
 #'
 #' @param x numeric HTTP status code to translate.
 #'

@@ -13,7 +13,7 @@ nng_error(xc)
 A character vector.
 }
 \description{
-Translate integer exit code to human readable form. All package functions
+Translate integer exit code to human-readable form. All package functions
     return an integer exit code on error rather than the expected return
     value. These are classed 'errorValue' and may be checked by the function
     \code{\link{is_error_value}}.

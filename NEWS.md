@@ -17,6 +17,7 @@
 *Other changes:*
 
 * Fixes bug introduced in 0.6.0 where Aios returning 'errorValues' are not cached with the class, returning only integer values when accessed subsequently.
+* Fixes potential crash when `base64dec()` encounters invalid input data.
 * `device()` no longer prompts for confirmation in interactive environments - as device creation is only successful when binding 2 raw mode sockets, there is little scope for accidental use.
 * Print method for 'errorValue' now also provides the human translation of the error code.
 * Bundled 'libnng' source updated to v1.6.0 pre-release (5385b78).

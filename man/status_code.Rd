@@ -13,9 +13,10 @@ status_code(x)
 A character vector.
 }
 \description{
-Translate HTTP response status codes, in the range 100 to 599, to human
-    readable form. If the status code is not recognised (could be a custom
-    code used by the server), 'Non-standard Response' is returned.
+Translate HTTP response status codes (in the range 100 to 599) to
+    human-readable form. If the status code is not defined as per RFC 9110,
+    'Non-standard Response' is returned, and may be a custom code used by the
+    server.
 }
 \examples{
 status_code(200)
