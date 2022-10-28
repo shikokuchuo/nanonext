@@ -216,26 +216,20 @@ SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP follow, SEXP method, SEXP headers,
     nng_tls_config_free(cfg);
   nng_aio_free(aio);
 
-  SEXP out, vec, sta, cvec, rvec;
+  code = nng_http_res_get_status(res);
+
+  if (code >= 300 && code < 400 && Rf_asLogical(follow))
+    return rnng_ncurl(Rf_mkString(nng_http_res_get_header(res, "Location")),
+                      convert, follow, method, headers, data, response, pem);
+
+  SEXP out, vec, cvec, rvec;
   void *dat;
   size_t sz;
   const char *names[] = {"status", "headers", "raw", "data", ""};
 
   PROTECT(out = Rf_mkNamed(VECSXP, names));
 
-  code = nng_http_res_get_status(res);
-  if (code == 200) {
-    sta = Rf_ScalarInteger(code);
-  } else if (Rf_asLogical(follow) && code >= 300 && code < 400) {
-    UNPROTECT(1);
-    return rnng_ncurl(Rf_mkString(nng_http_res_get_header(res, "Location")),
-                      convert, follow, method, headers, data, response, pem);
-  } else {
-    PROTECT(sta = Rf_ScalarInteger(code));
-    Rf_setAttrib(sta, nano_StatusSymbol, Rf_mkString(nng_http_res_get_reason(res)));
-    UNPROTECT(1);
-  }
-  SET_VECTOR_ELT(out, 0, sta);
+  SET_VECTOR_ELT(out, 0, Rf_ScalarInteger(code));
 
   if (response != R_NilValue) {
     const R_xlen_t rlen = Rf_xlength(response);
@@ -511,6 +505,80 @@ SEXP rnng_stream_close(SEXP stream) {
   SET_ATTRIB(stream, R_NilValue);
 
   return nano_success;
+
+}
+
+SEXP rnng_status_code(SEXP x) {
+
+  char *code;
+  switch (Rf_asInteger(x)) {
+  case 100: code = "Continue"; break;
+  case 101: code = "Switching Protocols"; break;
+  case 102: code = "Processing"; break;
+  case 103: code = "Early Hints"; break;
+  case 200: code = "OK"; break;
+  case 201: code = "Created"; break;
+  case 202: code = "Accepted"; break;
+  case 203: code = "Non-Authoritative Information"; break;
+  case 204: code = "No Content"; break;
+  case 205: code = "Reset Content"; break;
+  case 206: code = "Partial Content"; break;
+  case 207: code = "Multi-Status"; break;
+  case 208: code = "Already Reported"; break;
+  case 226: code = "IM Used"; break;
+  case 300: code = "Multiple Choices"; break;
+  case 301: code = "Moved Permanently"; break;
+  case 302: code = "Found"; break;
+  case 303: code = "See Other"; break;
+  case 304: code = "Not Modified"; break;
+  case 305: code = "Use Proxy"; break;
+  case 306: code = "Switch Proxy"; break;
+  case 307: code = "Temporary Redirect"; break;
+  case 308: code = "Permanent Redirect"; break;
+  case 400: code = "Bad Request"; break;
+  case 401: code = "Unauthorized"; break;
+  case 402: code = "Payment Required"; break;
+  case 403: code = "Forbidden"; break;
+  case 404: code = "Not Found"; break;
+  case 405: code = "Method Not Allowed"; break;
+  case 406: code = "Not Acceptable"; break;
+  case 407: code = "Proxy Authentication Required"; break;
+  case 408: code = "Request Timeout"; break;
+  case 409: code = "Conflict"; break;
+  case 410: code = "Gone"; break;
+  case 411: code = "Length Required"; break;
+  case 412: code = "Precondition Failed"; break;
+  case 413: code = "Payload Too Large"; break;
+  case 414: code = "URI Too Long"; break;
+  case 415: code = "Unsupported Media Type"; break;
+  case 416: code = "Range Not Satisfiable"; break;
+  case 417: code = "Expectation Failed"; break;
+  case 418: code = "I'm a teapot"; break;
+  case 421: code = "Misdirected Request"; break;
+  case 422: code = "Unprocessable Entity"; break;
+  case 423: code = "Locked"; break;
+  case 424: code = "Failed Dependency"; break;
+  case 425: code = "Too Early"; break;
+  case 426: code = "Upgrade Required"; break;
+  case 428: code = "Precondition Required"; break;
+  case 429: code = "Too Many Requests"; break;
+  case 431: code = "Request Header Fields Too Large"; break;
+  case 451: code = "Unavailable For Legal Reasons"; break;
+  case 500: code = "Internal Server Error"; break;
+  case 501: code = "Not Implemented"; break;
+  case 502: code = "Bad Gateway"; break;
+  case 503: code = "Service Unavailable"; break;
+  case 504: code = "Gateway Timeout"; break;
+  case 505: code = "HTTP Version Not Supported"; break;
+  case 506: code = "Variant Also Negotiates"; break;
+  case 507: code = "Insufficient Storage"; break;
+  case 508: code = "Loop Detected"; break;
+  case 510: code = "Not Extended"; break;
+  case 511: code = "Network Authentication Required"; break;
+  default: code = "Non-standard Response"; break;
+  }
+
+  return Rf_mkString(code);
 
 }
 

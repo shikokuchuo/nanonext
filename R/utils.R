@@ -241,3 +241,21 @@ nano_init <- function(warn = c("immediate", "deferred", "error", "none")) {
 
 }
 
+#' Translate HTTP Status Codes
+#'
+#' Translate HTTP response status codes, in the range 100 to 599, to human
+#'     readable form. If the status code is not recognised (could be a custom
+#'     code used by the server), 'Non-standard Response' is returned.
+#'
+#' @param x numeric HTTP status code to translate.
+#'
+#' @return A character vector.
+#'
+#' @examples
+#' status_code(200)
+#' status_code(404)
+#'
+#' @export
+#'
+status_code <- function(x) .Call(rnng_status_code, x)
+

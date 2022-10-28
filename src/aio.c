@@ -817,18 +817,11 @@ SEXP rnng_aio_http(SEXP env, SEXP response, SEXP which) {
 
   void *dat;
   size_t sz;
-  SEXP vec, sta, cvec, rvec;
+  SEXP vec, cvec, rvec;
   nano_handle *handle = (nano_handle *) haio->data;
 
   uint16_t code = nng_http_res_get_status(handle->res);
-  if (code == 200) {
-    sta = Rf_ScalarInteger(code);
-  } else {
-    PROTECT(sta = Rf_ScalarInteger(code));
-    Rf_setAttrib(sta, nano_StatusSymbol, Rf_mkString(nng_http_res_get_reason(handle->res)));
-    UNPROTECT(1);
-  }
-  Rf_defineVar(nano_StatusSymbol, sta, ENCLOS(env));
+  Rf_defineVar(nano_StatusSymbol, Rf_ScalarInteger(code), ENCLOS(env));
 
   if (response != R_NilValue) {
     const R_xlen_t rlen = Rf_xlength(response);
