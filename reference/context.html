@@ -19,7 +19,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.0.9200</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.0.9300</span>
       </span>
     </div>
 
@@ -89,8 +89,8 @@
 <p>To send and receive over a context use <code><a href="send.html">send</a></code> and
     <code><a href="recv.html">recv</a></code> or their async counterparts <code><a href="send_aio.html">send_aio</a></code> and
     <code><a href="recv_aio.html">recv_aio</a></code>.</p>
-<p>For nano objects, use the <code>$context()</code> method, which will return a
-    new context.</p>
+<p>For nano objects, use the <code>$context_open()</code> method, which will
+    attach a new context at <code>$context</code>. See <code><a href="nano.html">nano</a></code>.</p>
     </div>
 
     <div id="ref-examples">
@@ -107,14 +107,21 @@
 <span class="r-in"><span><span class="fu"><a href="close.html">close</a></span><span class="op">(</span><span class="va">s</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fu"><a href="nano.html">nano</a></span><span class="op">(</span><span class="st">"req"</span>, listen <span class="op">=</span> <span class="st">"inproc://nanonext"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">ctx</span> <span class="op">&lt;-</span> <span class="va">n</span><span class="op">$</span><span class="fu">context</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">ctx</span></span></span>
+<span class="r-in"><span><span class="va">n</span><span class="op">$</span><span class="fu">context_open</span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">n</span><span class="op">$</span><span class="va">context</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt; nanoContext &gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - id: 2 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - socket: 4 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - state: opened </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - protocol: req </span>
-<span class="r-in"><span><span class="fu"><a href="close.html">close</a></span><span class="op">(</span><span class="va">ctx</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">n</span><span class="op">$</span><span class="fu">context_open</span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">n</span><span class="op">$</span><span class="va">context</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt; nanoContext &gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - id: 3 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - socket: 4 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - state: opened </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - protocol: req </span>
+<span class="r-in"><span><span class="va">n</span><span class="op">$</span><span class="fu">context_close</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">n</span><span class="op">$</span><span class="fu">close</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>

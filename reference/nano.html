@@ -18,7 +18,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.0.9200</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.0.9300</span>
       </span>
     </div>
 
@@ -100,7 +100,7 @@ it is not generally possible to change these once started.</p></dd>
     <h2>Value</h2>
     
 
-<p>An nano object of class 'nanoObject'.</p>
+<p>A nano object of class 'nanoObject'.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -121,6 +121,14 @@ it is not generally possible to change these once started.</p></dd>
     These methods apply settings to all dialers or listeners equally. To
     apply settings to individual dialers/listeners, access them directly
     via <code>$dialer[[2]]</code> or <code>$listener[[2]]</code> etc.</p>
+<p>For applicable protocols, new contexts may be created by using the
+    <code>$context_open()</code> method. This will attach a new context at
+    <code>$context</code> as well as a <code>$context_close()</code> method. While a
+    context is active, all object methods use the context instead of the
+    socket. A new context may be created by calling <code>$context_open()</code>,
+    which will replace any existing context. It is only necessary to use
+    <code>$context_close()</code> to close the existing context and revert to using
+    the socket.</p>
     </div>
 
     <div id="ref-examples">
@@ -145,7 +153,7 @@ it is not generally possible to change these once started.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - state: started </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - url: inproc://nanonext </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">nano</span><span class="op">$</span><span class="fu">socket_setopt</span><span class="op">(</span><span class="st">"ms"</span>, <span class="st">"send-timeout"</span>, <span class="fl">1000</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">nano</span><span class="op">$</span><span class="fu">setopt</span><span class="op">(</span><span class="st">"ms"</span>, <span class="st">"send-timeout"</span>, <span class="fl">1000</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">nano</span><span class="op">$</span><span class="fu">listen</span><span class="op">(</span>url <span class="op">=</span> <span class="st">"inproc://nanonextgen"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">nano</span><span class="op">$</span><span class="va">listener</span></span></span>
@@ -166,6 +174,7 @@ it is not generally possible to change these once started.</p></dd>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">nano1</span> <span class="op">&lt;-</span> <span class="fu">nano</span><span class="op">(</span><span class="st">"bus"</span>, dial <span class="op">=</span> <span class="st">"inproc://nanonext"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">nano</span><span class="op">$</span><span class="fu">send</span><span class="op">(</span><span class="st">"example test"</span>, mode <span class="op">=</span> <span class="st">"raw"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
 <span class="r-in"><span><span class="va">nano1</span><span class="op">$</span><span class="fu">recv</span><span class="op">(</span><span class="st">"character"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "example test"</span>
 <span class="r-in"><span></span></span>

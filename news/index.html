@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.0.9200</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.0.9300</span>
       </span>
     </div>
 
@@ -54,27 +54,30 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.6.0.9200" id="nanonext-0609200-development">nanonext 0.6.0.9200 (development)<a class="anchor" aria-label="anchor" href="#nanonext-0609200-development"></a></h2>
+<h2 class="page-header" data-toc-text="0.6.0.9300" id="nanonext-0609300-development">nanonext 0.6.0.9300 (development)<a class="anchor" aria-label="anchor" href="#nanonext-0609300-development"></a></h2>
 <div class="section level5">
-<h5 id="new-features-0-6-0-9200">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-6-0-9200"></a></h5>
+<h5 id="new-features-0-6-0-9300">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-6-0-9300"></a></h5>
 <ul><li>
-<code><a href="../reference/status_code.html">status_code()</a></code> utility returns a human-readable translation of HTTP response status codes.</li>
+<code><a href="../reference/status_code.html">status_code()</a></code> utility returns a translation of HTTP response status codes.</li>
 </ul></div>
 <div class="section level5">
-<h5 id="updates-0-6-0-9200">Updates<a class="anchor" aria-label="anchor" href="#updates-0-6-0-9200"></a></h5>
+<h5 id="updates-0-6-0-9300">Updates<a class="anchor" aria-label="anchor" href="#updates-0-6-0-9300"></a></h5>
 <p><em>Please review the following potentially breaking changes, and only update when ready:</em></p>
-<ul><li>‘errorValues’ are now returned silently without an accompanying warning. Use <code><a href="../reference/is_error_value.html">is_error_value()</a></code> to explicitly check for errors rather than relying on warnings (side-effects).</li>
+<ul><li>For functions that send and receive messages i.e. <code><a href="../reference/send.html">send()</a></code>, <code><a href="../reference/send_aio.html">send_aio()</a></code>, <code><a href="../reference/recv.html">recv()</a></code>, <code><a href="../reference/recv_aio.html">recv_aio()</a></code> and <code><a href="../reference/ncurl.html">ncurl()</a></code>, ‘errorValues’ are now returned silently without an accompanying warning. Use <code><a href="../reference/is_error_value.html">is_error_value()</a></code> to explicitly check for errors. Warnings are still generated for other functions.</li>
 <li>
-<code><a href="../reference/nano_init.html">nano_init()</a></code> is deprecated due to warnings no longer being generated.</li>
+<code><a href="../reference/nano_init.html">nano_init()</a></code> is deprecated due to the above change in warning behaviour.</li>
 <li>
-<code><a href="../reference/send.html">send()</a></code> no longer has a ‘…’ argument. This has had no effect since 0.6.0, but will now error if additional arguments are provided (please check and remove previous uses of the argument ‘echo’).</li>
+<code><a href="../reference/send.html">send()</a></code> no longer has a ‘…’ argument. This has had no effect since 0.6.0, but will now error if additional arguments are provided (please check and remove previous uses of the argument ‘echo’). Also no longer returns invisibly for consistency with <code><a href="../reference/recv.html">recv()</a></code>.</li>
 <li>
 <code><a href="../reference/recv.html">recv()</a></code> and <code><a href="../reference/recv_aio.html">recv_aio()</a></code> now return an integer ‘errorValue’ at each of <code>$raw</code> and <code>$data</code> when ‘keep.raw’ is set to TRUE, ensuring stability of return types.</li>
 <li>
 <code><a href="../reference/ncurl.html">ncurl()</a></code> now returns an integer ‘errorValue’ at each of <code>$status</code>, <code>$headers</code>, <code>$raw</code> and <code>$data</code> for both sync and async, ensuring stability of return types. Where ‘follow’ is set to FALSE, or for all async requests, the redirect address is now returned as a character string at <code>$data</code>.</li>
+<li>
+<code><a href="../reference/nano.html">nano()</a></code> now creates a nano object with method <code>$context_open()</code> for applicable protocols. Opening a context will attach a context at <code>$context</code> and a <code>$context_close()</code> method. When a context is active, all object methods use the context instead of the socket. Method <code>$socket_setopt()</code> renamed to <code>$setopt()</code> as it can be used on the socket or active context as applicable.</li>
 </ul><p><em>Other changes:</em></p>
 <ul><li>Fixes bug introduced in 0.6.0 where Aios returning ‘errorValues’ are not cached with the class, returning only integer values when accessed subsequently.</li>
 <li>Fixes potential crash when <code><a href="../reference/base64enc.html">base64dec()</a></code> encounters invalid input data.</li>
+<li>Fixes the <code>$</code> method for ‘recvAio’ objects for when the object has been stopped using <code><a href="../reference/stop_aio.html">stop_aio()</a></code>.</li>
 <li>
 <code><a href="../reference/device.html">device()</a></code> no longer prompts for confirmation in interactive environments - as device creation is only successful when binding 2 raw mode sockets, there is little scope for accidental use.</li>
 <li>Print method for ‘errorValue’ now also provides the human translation of the error code.</li>
