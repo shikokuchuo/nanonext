@@ -29,6 +29,15 @@ SEXP mk_error(const int xc) {
 
 }
 
+SEXP mk_werror(const int xc) {
+
+  Rf_warning("%d | %s", xc, nng_strerror(xc));
+  SEXP err = Rf_ScalarInteger(xc);
+  Rf_classgets(err, nano_error);
+  return err;
+
+}
+
 SEXP mk_error_recv(const int xc) {
 
   SEXP out, err;
@@ -453,7 +462,7 @@ SEXP rnng_ctx_open(SEXP socket) {
   int xc = nng_ctx_open(ctxp, *sock);
   if (xc) {
     R_Free(ctxp);
-    return mk_error(xc);
+    return mk_werror(xc);
   }
 
   PROTECT(context = R_MakeExternalPtr(ctxp, nano_ContextSymbol, R_NilValue));
@@ -481,7 +490,7 @@ SEXP rnng_ctx_close(SEXP context) {
   int xc = nng_ctx_close(*ctxp);
 
   if (xc)
-    return mk_error(xc);
+    return mk_werror(xc);
 
   Rf_setAttrib(context, nano_StateSymbol, Rf_mkString("closed"));
   return nano_success;
@@ -505,7 +514,7 @@ SEXP rnng_dial(SEXP socket, SEXP url) {
   xc = nng_dial(*sock, up, dp, NNG_FLAG_NONBLOCK);
   if (xc) {
     R_Free(dp);
-    return mk_error(xc);
+    return mk_werror(xc);
   }
 
   PROTECT(dialer = R_MakeExternalPtr(dp, nano_DialerSymbol, R_NilValue));
@@ -540,7 +549,7 @@ SEXP rnng_dialer_create(SEXP socket, SEXP url) {
   xc = nng_dialer_create(dp, *sock, up);
   if (xc) {
     R_Free(dp);
-    return mk_error(xc);
+    return mk_werror(xc);
   }
 
   PROTECT(dialer = R_MakeExternalPtr(dp, nano_DialerSymbol, R_NilValue));
@@ -575,7 +584,7 @@ SEXP rnng_listen(SEXP socket, SEXP url) {
   xc = nng_listen(*sock, up, lp, 0);
   if (xc) {
     R_Free(lp);
-    return mk_error(xc);
+    return mk_werror(xc);
   }
 
   PROTECT(listener = R_MakeExternalPtr(lp, nano_ListenerSymbol, R_NilValue));
@@ -610,7 +619,7 @@ SEXP rnng_listener_create(SEXP socket, SEXP url) {
   xc = nng_listener_create(lp, *sock, up);
   if (xc) {
     R_Free(lp);
-    return mk_error(xc);
+    return mk_werror(xc);
   }
 
   PROTECT(listener = R_MakeExternalPtr(lp, nano_ListenerSymbol, R_NilValue));
@@ -640,7 +649,7 @@ SEXP rnng_dialer_start(SEXP dialer, SEXP async) {
   int xc = nng_dialer_start(*dial, flags);
 
   if (xc)
-    return mk_error(xc);
+    return mk_werror(xc);
 
   Rf_setAttrib(dialer, nano_StateSymbol, Rf_mkString("started"));
   return nano_success;
@@ -655,7 +664,7 @@ SEXP rnng_listener_start(SEXP listener) {
   int xc = nng_listener_start(*list, 0);
 
   if (xc)
-    return mk_error(xc);
+    return mk_werror(xc);
 
   Rf_setAttrib(listener, nano_StateSymbol, Rf_mkString("started"));
   return nano_success;
@@ -670,7 +679,7 @@ SEXP rnng_dialer_close(SEXP dialer) {
   int xc = nng_dialer_close(*dial);
 
   if (xc)
-    return mk_error(xc);
+    return mk_werror(xc);
 
   Rf_setAttrib(dialer, nano_StateSymbol, Rf_mkString("closed"));
   return nano_success;
@@ -685,7 +694,7 @@ SEXP rnng_listener_close(SEXP listener) {
   int xc = nng_listener_close(*list);
 
   if (xc)
-    return mk_error(xc);
+    return mk_werror(xc);
 
   Rf_setAttrib(listener, nano_StateSymbol, Rf_mkString("closed"));
   return nano_success;
@@ -1004,16 +1013,14 @@ SEXP rnng_set_opt(SEXP object, SEXP type, SEXP opt, SEXP value) {
       xc = nng_socket_set_size(*sock, op, (size_t) Rf_asInteger(value));
       break;
     case 5:
-      if (value != R_NilValue)
-        xc = nng_socket_set_string(*sock, op, CHAR(STRING_ELT(value, 0)));
-      else
+      if (value == R_NilValue)
         xc = nng_socket_set_string(*sock, op, NULL);
-      break;
-    case 6:
-      xc = nng_socket_set_uint64(*sock, op, (uint64_t) Rf_asInteger(value));
+      else
+        xc = nng_socket_set_string(*sock, op, CHAR(STRING_ELT(value, 0)));
       break;
     default:
-      xc = -1;
+      xc = nng_socket_set_uint64(*sock, op, (uint64_t) Rf_asInteger(value));
+      break;
     }
 
   } else if (R_ExternalPtrTag(object) == nano_ContextSymbol) {
@@ -1042,16 +1049,14 @@ SEXP rnng_set_opt(SEXP object, SEXP type, SEXP opt, SEXP value) {
       xc = nng_ctx_set_size(*ctx, op, (size_t) Rf_asInteger(value));
       break;
     case 5:
-      if (value != R_NilValue)
-        xc = nng_ctx_set_string(*ctx, op, CHAR(STRING_ELT(value, 0)));
-      else
+      if (value == R_NilValue)
         xc = nng_ctx_set_string(*ctx, op, NULL);
-      break;
-    case 6:
-      xc = nng_ctx_set_uint64(*ctx, op, (uint64_t) Rf_asInteger(value));
+      else
+        xc = nng_ctx_set_string(*ctx, op, CHAR(STRING_ELT(value, 0)));
       break;
     default:
-      xc = -1;
+      xc = nng_ctx_set_uint64(*ctx, op, (uint64_t) Rf_asInteger(value));
+      break;
     }
 
   } else if (R_ExternalPtrTag(object) == nano_StreamSymbol) {
@@ -1072,16 +1077,14 @@ SEXP rnng_set_opt(SEXP object, SEXP type, SEXP opt, SEXP value) {
       xc = nng_stream_set_size(st, op, (size_t) Rf_asInteger(value));
       break;
     case 5:
-      if (value != R_NilValue)
-        xc = nng_stream_set_string(st, op, CHAR(STRING_ELT(value, 0)));
-      else
+      if (value == R_NilValue)
         xc = nng_stream_set_string(st, op, NULL);
-      break;
-    case 6:
-      xc = nng_stream_set_uint64(st, op, (uint64_t) Rf_asInteger(value));
+      else
+        xc = nng_stream_set_string(st, op, CHAR(STRING_ELT(value, 0)));
       break;
     default:
-      xc = -1;
+      xc = nng_stream_set_uint64(st, op, (uint64_t) Rf_asInteger(value));
+      break;
     }
 
   } else if (R_ExternalPtrTag(object) == nano_ListenerSymbol) {
@@ -1102,16 +1105,14 @@ SEXP rnng_set_opt(SEXP object, SEXP type, SEXP opt, SEXP value) {
       xc = nng_listener_set_size(*list, op, (size_t) Rf_asInteger(value));
       break;
     case 5:
-      if (value != R_NilValue)
-        xc = nng_listener_set_string(*list, op, CHAR(STRING_ELT(value, 0)));
-      else
+      if (value == R_NilValue)
         xc = nng_listener_set_string(*list, op, NULL);
-      break;
-    case 6:
-      xc = nng_listener_set_uint64(*list, op, (uint64_t) Rf_asInteger(value));
+      else
+        xc = nng_listener_set_string(*list, op, CHAR(STRING_ELT(value, 0)));
       break;
     default:
-      xc = -1;
+      xc = nng_listener_set_uint64(*list, op, (uint64_t) Rf_asInteger(value));
+      break;
     }
 
   } else if (R_ExternalPtrTag(object) == nano_DialerSymbol) {
@@ -1132,16 +1133,14 @@ SEXP rnng_set_opt(SEXP object, SEXP type, SEXP opt, SEXP value) {
       xc = nng_dialer_set_size(*dial, op, (size_t) Rf_asInteger(value));
       break;
     case 5:
-      if (value != R_NilValue)
-        xc = nng_dialer_set_string(*dial, op, CHAR(STRING_ELT(value, 0)));
-      else
+      if (value == R_NilValue)
         xc = nng_dialer_set_string(*dial, op, NULL);
-      break;
-    case 6:
-      xc = nng_dialer_set_uint64(*dial, op, (uint64_t) Rf_asInteger(value));
+      else
+        xc = nng_dialer_set_string(*dial, op, CHAR(STRING_ELT(value, 0)));
       break;
     default:
-      xc = -1;
+      xc = nng_dialer_set_uint64(*dial, op, (uint64_t) Rf_asInteger(value));
+      break;
     }
 
   } else {
@@ -1149,7 +1148,7 @@ SEXP rnng_set_opt(SEXP object, SEXP type, SEXP opt, SEXP value) {
   }
 
   if (xc)
-    return mk_error(xc);
+    return mk_werror(xc);
 
   return nano_success;
 

@@ -122,7 +122,7 @@ SEXP rnng_device(SEXP s1, SEXP s2) {
   const int xc = nng_device(*(nng_socket *) R_ExternalPtrAddr(s1),
                             *(nng_socket *) R_ExternalPtrAddr(s2));
   if (xc)
-    return mk_error(xc);
+    return mk_werror(xc);
 
   return nano_success;
 
@@ -394,7 +394,7 @@ SEXP rnng_stream_dial(SEXP url, SEXP textframes, SEXP pem) {
   exitlevel2:
   nng_url_free(up);
   exitlevel1:
-  return mk_error(xc);
+  return mk_werror(xc);
 
 }
 
@@ -489,7 +489,7 @@ SEXP rnng_stream_listen(SEXP url, SEXP textframes, SEXP pem) {
   exitlevel2:
   nng_url_free(up);
   exitlevel1:
-  return mk_error(xc);
+  return mk_werror(xc);
 
 }
 

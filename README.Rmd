@@ -81,49 +81,22 @@ install.packages("nanonext", repos = "https://shikokuchuo.r-universe.dev")
 
 ### Interfaces
 
-{nanonext} offers 2 equivalent interfaces: an object-oriented interface, and a functional interface.
-
-#### Object-oriented Interface
-
-The primary object in the object-oriented interface is the nano object. Use `nano()` to create a nano object which encapsulates a Socket and Dialer/Listener. Methods such as `$send()` or `$recv()` can then be accessed directly from the object.
-
-*Example using Request/Reply (REQ/REP) protocol with inproc transport:* <br />
-(The inproc transport uses zero-copy where possible for a much faster solution than alternatives)
-
-Create nano objects:
-
-```{r example}
-library(nanonext)
-
-nano1 <- nano("req", listen = "inproc://nanonext")
-nano2 <- nano("rep", dial = "inproc://nanonext")
-```
-
-Send message from 'nano1':
-
-```{r send}
-nano1$send("hello world!")
-```
-
-Receive message using 'nano2':
-
-```{r recv}
-nano2$recv()
-```
+{nanonext} offers 2 equivalent interfaces: a functional interface, and an object-oriented interface.
 
 #### Functional Interface 
 
 The primary object in the functional interface is the Socket. Use `socket()` to create a socket and dial or listen at an address. The socket is then passed as the first argument of subsequent actions such as `send()` or `recv()`.
 
-*Example using Pipeline (Push/Pull) protocol with TCP/IP transport:*
+*Example using Request/Reply (REQ/REP) protocol with inproc transport:* <br />
+(The inproc transport uses zero-copy where possible for a much faster solution than alternatives)
 
 Create sockets:
 
 ```{r example2}
 library(nanonext)
 
-socket1 <- socket("push", listen = "tcp://127.0.0.1:5555")
-socket2 <- socket("pull", dial = "tcp://127.0.0.1:5555")
+socket1 <- socket("req", listen = "inproc://nanonext")
+socket2 <- socket("rep", dial = "inproc://nanonext")
 ```
 
 Send message from 'socket1':
@@ -136,6 +109,33 @@ Receive message using 'socket2':
 
 ```{r recv2}
 recv(socket2)
+```
+
+#### Object-oriented Interface
+
+The primary object in the object-oriented interface is the nano object. Use `nano()` to create a nano object which encapsulates a Socket and Dialer/Listener. Methods such as `$send()` or `$recv()` can then be accessed directly from the object.
+
+*Example using Pipeline (Push/Pull) protocol with TCP/IP transport:*
+
+Create nano objects:
+
+```{r example}
+library(nanonext)
+
+nano1 <- nano("push", listen = "tcp://127.0.0.1:5555")
+nano2 <- nano("pull", dial = "tcp://127.0.0.1:5555")
+```
+
+Send message from 'nano1':
+
+```{r send}
+nano1$send("hello world!")
+```
+
+Receive message using 'nano2':
+
+```{r recv}
+nano2$recv()
 ```
 
 [&laquo; Back to ToC](#table-of-contents)
@@ -216,11 +216,8 @@ res <- send_aio(s1, data.frame(a = 1, b = 2))
 res
 res$result
 
-# an exit code of 0 denotes a successful send
-# note: the send is successful as long as the message has been accepted by the socket for sending
-# the message itself may still be buffered within the system
-
 ```
+*Note: a return value of 0 denotes a successful send, meaning that the message has been accepted by the socket for sending; the message itself may still be buffered within the system.*
 
 For a 'recvAio' object, the message is stored at `$data`, and the raw message at `$raw` (if kept).
 

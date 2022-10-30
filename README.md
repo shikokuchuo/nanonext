@@ -83,41 +83,8 @@ install.packages("nanonext", repos = "https://shikokuchuo.r-universe.dev")
 
 ### Interfaces
 
-{nanonext} offers 2 equivalent interfaces: an object-oriented interface,
-and a functional interface.
-
-#### Object-oriented Interface
-
-The primary object in the object-oriented interface is the nano object.
-Use `nano()` to create a nano object which encapsulates a Socket and
-Dialer/Listener. Methods such as `$send()` or `$recv()` can then be
-accessed directly from the object.
-
-*Example using Request/Reply (REQ/REP) protocol with inproc transport:*
-<br /> (The inproc transport uses zero-copy where possible for a much
-faster solution than alternatives)
-
-Create nano objects:
-
-``` r
-library(nanonext)
-
-nano1 <- nano("req", listen = "inproc://nanonext")
-nano2 <- nano("rep", dial = "inproc://nanonext")
-```
-
-Send message from ‘nano1’:
-
-``` r
-nano1$send("hello world!")
-```
-
-Receive message using ‘nano2’:
-
-``` r
-nano2$recv()
-#> [1] "hello world!"
-```
+{nanonext} offers 2 equivalent interfaces: a functional interface, and
+an object-oriented interface.
 
 #### Functional Interface
 
@@ -126,27 +93,62 @@ The primary object in the functional interface is the Socket. Use
 socket is then passed as the first argument of subsequent actions such
 as `send()` or `recv()`.
 
-*Example using Pipeline (Push/Pull) protocol with TCP/IP transport:*
+*Example using Request/Reply (REQ/REP) protocol with inproc transport:*
+<br /> (The inproc transport uses zero-copy where possible for a much
+faster solution than alternatives)
 
 Create sockets:
 
 ``` r
 library(nanonext)
 
-socket1 <- socket("push", listen = "tcp://127.0.0.1:5555")
-socket2 <- socket("pull", dial = "tcp://127.0.0.1:5555")
+socket1 <- socket("req", listen = "inproc://nanonext")
+socket2 <- socket("rep", dial = "inproc://nanonext")
 ```
 
 Send message from ‘socket1’:
 
 ``` r
 send(socket1, "hello world!")
+#> [1] 0
 ```
 
 Receive message using ‘socket2’:
 
 ``` r
 recv(socket2)
+#> [1] "hello world!"
+```
+
+#### Object-oriented Interface
+
+The primary object in the object-oriented interface is the nano object.
+Use `nano()` to create a nano object which encapsulates a Socket and
+Dialer/Listener. Methods such as `$send()` or `$recv()` can then be
+accessed directly from the object.
+
+*Example using Pipeline (Push/Pull) protocol with TCP/IP transport:*
+
+Create nano objects:
+
+``` r
+library(nanonext)
+
+nano1 <- nano("push", listen = "tcp://127.0.0.1:5555")
+nano2 <- nano("pull", dial = "tcp://127.0.0.1:5555")
+```
+
+Send message from ‘nano1’:
+
+``` r
+nano1$send("hello world!")
+#> [1] 0
+```
+
+Receive message using ‘nano2’:
+
+``` r
+nano2$recv()
 #> [1] "hello world!"
 ```
 
@@ -190,6 +192,7 @@ Create nano object in R using {nanonext}, then send a vector of
 library(nanonext)
 n <- nano("pair", dial = "ipc:///tmp/nanonext.socket")
 n$send(c(1.1, 2.2, 3.3, 4.4, 5.5), mode = "raw")
+#> [1] 0
 ```
 
 Receive in Python as a NumPy array of ‘floats’, and send back to R:
@@ -249,11 +252,11 @@ res
 #>  - $result for send result
 res$result
 #> [1] 0
-
-# an exit code of 0 denotes a successful send
-# note: the send is successful as long as the message has been accepted by the socket for sending
-# the message itself may still be buffered within the system
 ```
+
+*Note: a return value of 0 denotes a successful send, meaning that the
+message has been accepted by the socket for sending; the message itself
+may still be buffered within the system.*
 
 For a ‘recvAio’ object, the message is stored at `$data`, and the raw
 message at `$raw` (if kept).
@@ -362,7 +365,7 @@ aio
 #> < recvAio >
 #>  - $data for message data
 aio$data |> str()
-#>  num [1:100000000] 0.478 1.695 -1.271 0.453 -0.258 ...
+#>  num [1:100000000] 0.58 0.867 0.572 -0.3 -2.721 ...
 ```
 
 As `call_aio()` is blocking and will wait for completion, an alternative
@@ -395,30 +398,36 @@ sub <- socket("sub", dial = "inproc://nanobroadcast")
 sub |> subscribe(topic = "examples")
 
 pub |> send(c("examples", "this is an example"), mode = "raw")
+#> [1] 0
 sub |> recv(mode = "character")
 #> [1] "examples"           "this is an example"
 
 pub |> send("examples at the start of a single text message", mode = "raw")
+#> [1] 0
 sub |> recv(mode = "character")
 #> [1] "examples at the start of a single text message"
 
 pub |> send(c("other", "this other topic will not be received"), mode = "raw")
+#> [1] 0
 sub |> recv(mode = "character")
 #> 'errorValue' int 8 | Try again
 
 # specify NULL to subscribe to ALL topics
 sub |> subscribe(topic = NULL)
 pub |> send(c("newTopic", "this is a new topic"), mode = "raw")
+#> [1] 0
 sub |> recv("character")
 #> [1] "newTopic"            "this is a new topic"
 
 sub |> unsubscribe(topic = NULL)
 pub |> send(c("newTopic", "this topic will now not be received"), mode = "raw")
+#> [1] 0
 sub |> recv("character")
 #> 'errorValue' int 8 | Try again
 
 # however the topics explicitly subscribed to are still received
 pub |> send(c("examples will still be received"), mode = "raw")
+#> [1] 0
 sub |> recv(mode = "character")
 #> [1] "examples will still be received"
 ```
@@ -430,6 +439,7 @@ and received.
 ``` r
 sub |> subscribe(topic = 1)
 pub |> send(c(1, 10, 10, 20), mode = "raw")
+#> [1] 0
 sub |> recv(mode = "double")
 #> [1]  1 10 10 20
 
@@ -459,6 +469,7 @@ sur |> survey_time(500)
 
 # sur sends a message and then requests 2 async receives
 sur |> send("service check")
+#> [1] 0
 aio1 <- sur |> recv_aio()
 aio2 <- sur |> recv_aio()
 
@@ -515,11 +526,11 @@ ncurl("https://httpbin.org/headers")
 #>   [1] 7b 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73
 #>  [26] 74 22 3a 20 22 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22
 #>  [51] 58 2d 41 6d 7a 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31
-#>  [76] 2d 36 33 35 62 65 65 62 32 2d 30 34 66 33 36 63 63 61 34 63 62 38 64 38 34
-#> [101] 34 32 65 61 31 38 63 30 33 22 0a 20 20 7d 0a 7d 0a
+#>  [76] 2d 36 33 35 65 66 37 33 64 2d 37 33 63 36 34 39 33 34 31 36 36 62 64 66 38
+#> [101] 35 36 32 63 66 65 32 62 38 22 0a 20 20 7d 0a 7d 0a
 #> 
 #> $data
-#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-635beeb2-04f36cca4cb8d8442ea18c03\"\n  }\n}\n"
+#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-635ef73d-73c64934166bdf8562cfe2b8\"\n  }\n}\n"
 ```
 
 For advanced use, supports additional HTTP methods such as POST or PUT.
@@ -540,13 +551,13 @@ res
 
 call_aio(res)$headers
 #> $Date
-#> [1] "Fri, 28 Oct 2022 15:01:07 GMT"
+#> [1] "Sun, 30 Oct 2022 22:14:21 GMT"
 #> 
 #> $Server
 #> [1] "gunicorn/19.9.0"
 
 res$data
-#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-635beeb2-7b7a2792051b3a42234a903f\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"213.86.169.34\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
+#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-635ef73d-0c873b48770e34f76f6e9ce0\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"185.225.45.49\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
 ```
 
 In this respect, it may be used as a performant and lightweight method
@@ -585,12 +596,13 @@ s |> recv()
 #> [1] "{\"status_code\":200,\"message\":\"Authorized\"}"
 
 s |> send('{"action": "subscribe", "symbols": "EURUSD"}')
+#> [1] 0
 
 s |> recv()
-#> [1] "{\"s\":\"EURUSD\",\"a\":0.99501,\"b\":0.99498,\"dc\":\"-0.1668\",\"dd\":\"-0.0017\",\"ppms\":false,\"t\":1666969269000}"
+#> [1] "{\"s\":\"EURUSD\",\"a\":0.99564,\"b\":0.99528,\"dc\":\"-0.0372\",\"dd\":\"-0.0004\",\"ppms\":true,\"t\":1667168062000}"
 
 s |> recv()
-#> [1] "{\"s\":\"EURUSD\",\"a\":0.99501,\"b\":0.99498,\"dd\":\"-0.0017\",\"dc\":\"-0.1668\",\"ppms\":false,\"t\":1666969269000}"
+#> [1] "{\"s\":\"EURUSD\",\"a\":0.99551,\"b\":0.99523,\"dc\":\"-0.0502\",\"dd\":\"-0.0005\",\"ppms\":true,\"t\":1667168062000}"
 
 close(s)
 ```

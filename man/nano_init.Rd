@@ -7,7 +7,7 @@
 nano_init(warn)
 }
 \arguments{
-\item{warn}{DEPRECATED.}
+\item{warn}{Deprecated.}
 }
 \value{
 Invisible NULL.

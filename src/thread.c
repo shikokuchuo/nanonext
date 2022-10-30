@@ -99,7 +99,7 @@ SEXP rnng_messenger(SEXP url) {
   xc = nng_pair0_open(sock);
   if (xc) {
     R_Free(sock);
-    return mk_error(xc);
+    return mk_werror(xc);
   }
   dlp = R_Calloc(1, nng_listener);
   xc = nng_listen(*sock, up, dlp, 0);
@@ -110,14 +110,14 @@ SEXP rnng_messenger(SEXP url) {
     if (xc) {
       R_Free(dlp);
       R_Free(sock);
-      return mk_error(xc);
+      return mk_werror(xc);
     }
     dialer = 1;
 
   } else if (xc) {
     R_Free(dlp);
     R_Free(sock);
-    return mk_error(xc);
+    return mk_werror(xc);
   }
 
   PROTECT(socket = R_MakeExternalPtr(sock, nano_SocketSymbol, R_NilValue));

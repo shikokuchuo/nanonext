@@ -30,8 +30,8 @@ Contexts allow the independent and concurrent use of stateful
     \code{\link{recv}} or their async counterparts \code{\link{send_aio}} and
     \code{\link{recv_aio}}.
 
-    For nano objects, use the \code{$context()} method, which will return a
-    new context.
+    For nano objects, use the \code{$context_open()} method, which will
+    attach a new context at \code{$context}. See \code{\link{nano}}.
 }
 \examples{
 s <- socket("req", listen = "inproc://nanonext")
@@ -41,9 +41,11 @@ close(ctx)
 close(s)
 
 n <- nano("req", listen = "inproc://nanonext")
-ctx <- n$context()
-ctx
-close(ctx)
+n$context_open()
+n$context
+n$context_open()
+n$context
+n$context_close()
 n$close()
 
 }

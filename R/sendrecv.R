@@ -34,7 +34,7 @@
 #'     available), or else an integer value specifying the maximum time to block
 #'     in milliseconds, after which the operation will time out.
 #'
-#' @return Invisibly, an integer exit code (zero on success).
+#' @return Integer exit code (zero on success).
 #'
 #' @section Blocking:
 #'
@@ -73,7 +73,7 @@
 #' @export
 #'
 send <- function(con, data, mode = c("serial", "raw"), block = NULL)
-  invisible(.Call(rnng_send, con, data, mode, block))
+  .Call(rnng_send, con, data, mode, block)
 
 #' Receive
 #'

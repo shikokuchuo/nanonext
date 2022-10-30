@@ -1,23 +1,25 @@
-# nanonext 0.6.0.9200 (development)
+# nanonext 0.6.0.9300 (development)
 
 #### New Features
 
-* `status_code()` utility returns a human-readable translation of HTTP response status codes.
+* `status_code()` utility returns a translation of HTTP response status codes.
 
 #### Updates
 
 *Please review the following potentially breaking changes, and only update when ready:*
 
-* 'errorValues' are now returned silently without an accompanying warning. Use `is_error_value()` to explicitly check for errors rather than relying on warnings (side-effects).
-* `nano_init()` is deprecated due to warnings no longer being generated.
-* `send()` no longer has a '...' argument. This has had no effect since 0.6.0, but will now error if additional arguments are provided (please check and remove previous uses of the argument 'echo').
+* For functions that send and receive messages i.e. `send()`, `send_aio()`, `recv()`, `recv_aio()` and `ncurl()`, 'errorValues' are now returned silently without an accompanying warning. Use `is_error_value()` to explicitly check for errors. Warnings are still generated for other functions. 
+* `nano_init()` is deprecated due to the above change in warning behaviour.
+* `send()` no longer has a '...' argument. This has had no effect since 0.6.0, but will now error if additional arguments are provided (please check and remove previous uses of the argument 'echo'). Also no longer returns invisibly for consistency with `recv()`.
 * `recv()` and `recv_aio()` now return an integer 'errorValue' at each of `$raw` and `$data` when 'keep.raw' is set to TRUE, ensuring stability of return types.
 * `ncurl()` now returns an integer 'errorValue' at each of `$status`, `$headers`, `$raw` and `$data` for both sync and async, ensuring stability of return types. Where 'follow' is set to FALSE, or for all async requests, the redirect address is now returned as a character string at `$data`.
+* `nano()` now creates a nano object with method `$context_open()` for applicable protocols. Opening a context will attach a context at `$context` and a `$context_close()` method. When a context is active, all object methods use the context instead of the socket. Method `$socket_setopt()` renamed to `$setopt()` as it can be used on the socket or active context as applicable.
 
 *Other changes:*
 
 * Fixes bug introduced in 0.6.0 where Aios returning 'errorValues' are not cached with the class, returning only integer values when accessed subsequently.
 * Fixes potential crash when `base64dec()` encounters invalid input data.
+* Fixes the `$` method for 'recvAio' objects for when the object has been stopped using `stop_aio()`.
 * `device()` no longer prompts for confirmation in interactive environments - as device creation is only successful when binding 2 raw mode sockets, there is little scope for accidental use.
 * Print method for 'errorValue' now also provides the human translation of the error code.
 * Bundled 'libnng' source updated to v1.6.0 pre-release (5385b78).

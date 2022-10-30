@@ -23,7 +23,7 @@
 #'
 #' @inheritParams socket
 #'
-#' @return An nano object of class 'nanoObject'.
+#' @return A nano object of class 'nanoObject'.
 #'
 #' @details This function encapsulates a Socket and a single Dialer and/or Listener.
 #'
@@ -47,13 +47,22 @@
 #'     apply settings to individual dialers/listeners, access them directly
 #'     via \code{$dialer[[2]]} or \code{$listener[[2]]} etc.
 #'
+#'     For applicable protocols, new contexts may be created by using the
+#'     \code{$context_open()} method. This will attach a new context at
+#'     \code{$context} as well as a \code{$context_close()} method. While a
+#'     context is active, all object methods use the context instead of the
+#'     socket. A new context may be created by calling \code{$context_open()},
+#'     which will replace any existing context. It is only necessary to use
+#'     \code{$context_close()} to close the existing context and revert to using
+#'     the socket.
+#'
 #' @examples
 #' nano <- nano("bus", listen = "inproc://nanonext")
 #' nano
 #' nano$socket
 #' nano$listener[[1]]
 #'
-#' nano$socket_setopt("ms", "send-timeout", 1000)
+#' nano$setopt("ms", "send-timeout", 1000)
 #'
 #' nano$listen(url = "inproc://nanonextgen")
 #' nano$listener
@@ -76,7 +85,10 @@ nano <- function(protocol = c("bus", "pair", "push", "pull", "pub", "sub",
   nano <- `class<-`(new.env(hash = FALSE), "nanoObject")
   socket <- .Call(rnng_protocol_open, protocol, FALSE)
   is.integer(socket) && return(socket)
-  makeActiveBinding(sym = "socket", fun = function(x) socket, env = nano)
+  sock2 <- NULL
+  makeActiveBinding(sym = "socket",
+                    fun = function(x) if (length(sock2)) sock2 else socket,
+                    env = nano)
 
   if (length(dial)) {
     dial(nano, url = dial, autostart = autostart)
@@ -98,7 +110,7 @@ nano <- function(protocol = c("bus", "pair", "push", "pull", "pub", "sub",
     }
   }
 
-  nano[["close"]] <- function() close(socket)
+  nano[["close"]] <- function() close(.subset2(nano, "socket"))
   nano[["dial"]] <- function(url = "inproc://nanonext",
                              autostart = TRUE) dial(nano,
                                                     url = url,
@@ -109,7 +121,7 @@ nano <- function(protocol = c("bus", "pair", "push", "pull", "pub", "sub",
                                                         autostart = autostart)
   nano[["recv"]] <- function(mode = c("serial", "character", "complex", "double",
                                       "integer", "logical", "numeric", "raw"),
-                             block = FALSE,
+                             block = NULL,
                              keep.raw = FALSE) recv(socket,
                                                     mode = mode,
                                                     block = block,
@@ -123,42 +135,82 @@ nano <- function(protocol = c("bus", "pair", "push", "pull", "pub", "sub",
                                                             keep.raw = keep.raw)
   nano[["send"]] <- function(data,
                              mode = c("serial", "raw"),
-                             block = FALSE) send(socket,
-                                                 data = data,
-                                                 mode = mode,
-                                                 block = block)
+                             block = NULL) send(socket,
+                                                data = data,
+                                                mode = mode,
+                                                block = block)
   nano[["send_aio"]] <- function(data,
                                  mode = c("serial", "raw"),
                                  timeout = NULL) send_aio(socket,
                                                           data = data,
                                                           mode = mode,
                                                           timeout = timeout)
-  nano[["socket_setopt"]] <- function(type = c("bool", "int", "ms", "size",
+  nano[["setopt"]] <- function(type = c("bool", "int", "ms", "size",
                                                "string", "uint64"),
-                                      opt,
-                                      value) setopt(socket,
-                                                    type = type,
-                                                    opt = opt,
-                                                    value = value)
+                               opt,
+                               value) setopt(socket,
+                                             type = type,
+                                             opt = opt,
+                                             value = value)
 
   switch(attr(socket, "protocol"),
          req =,
          rep = {
-           nano[["context"]] <- function() context(socket)
+           nano[["context_open"]] <- function() {
+             if (is.null(sock2)) sock2 <<- socket
+             nano[["context_close"]] <- function() if (length(sock2)) {
+               res <- close(socket)
+               socket <<- sock2
+               sock2 <<- NULL
+               rm(list = c("context", "context_close"), envir = nano)
+               invisible(res)
+             }
+            socket <<- nano[["context"]] <- context(sock2)
+           }
          },
          sub = {
-           nano[["context"]] <- function() context(socket)
+           nano[["context_open"]] <- function() {
+             if (is.null(sock2)) sock2 <<- socket
+             nano[["context_close"]] <- function() if (length(sock2)) {
+               res <- close(socket)
+               socket <<- sock2
+               sock2 <<- NULL
+               rm(list = c("context", "context_close"), envir = nano)
+               invisible(res)
+             }
+             socket <<- nano[["context"]] <- context(sock2)
+           }
            nano[["subscribe"]] <- function(topic = NULL) subscribe(socket,
                                                                    topic = topic)
            nano[["unsubscribe"]] <- function(topic = NULL) unsubscribe(socket,
                                                                        topic = topic)
          },
          surveyor = {
-           nano[["context"]] <- function() context(socket)
+           nano[["context_open"]] <- function() {
+             if (is.null(sock2)) sock2 <<- socket
+             nano[["context_close"]] <- function() if (length(sock2)) {
+               res <- close(socket)
+               socket <<- sock2
+               sock2 <<- NULL
+               rm(list = c("context", "context_close"), envir = nano)
+               invisible(res)
+             }
+             socket <<- nano[["context"]] <- context(sock2)
+           }
            nano[["survey_time"]] <- function(time) survey_time(socket, time = time)
          },
          respondent = {
-           nano[["context"]] <- function() context(socket)
+           nano[["context_open"]] <- function() {
+             if (is.null(sock2)) sock2 <<- socket
+             nano[["context_close"]] <- function() if (length(sock2)) {
+               res <- close(socket)
+               socket <<- sock2
+               sock2 <<- NULL
+               rm(list = c("context", "context_close"), envir = nano)
+               invisible(res)
+             }
+             socket <<- nano[["context"]] <- context(sock2)
+           }
          },
          NULL)
 
@@ -333,7 +385,7 @@ print.errorValue <- function(x, ...) {
 #' @export
 #'
 .DollarNames.recvAio <- function(x, pattern = "")
-  grep(pattern, c("data", if (length(.subset2(x, "raw"))) "raw"), value = TRUE, fixed = TRUE)
+  grep(pattern, c("data", if (.subset2(x, "state")) "raw"), value = TRUE, fixed = TRUE)
 
 #' @export
 #'

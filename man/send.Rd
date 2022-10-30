@@ -25,7 +25,7 @@ available), or else an integer value specifying the maximum time to block
 in milliseconds, after which the operation will time out.}
 }
 \value{
-Invisibly, an integer exit code (zero on success).
+Integer exit code (zero on success).
 }
 \description{
 Send data over a connection (Socket, Context or Stream).

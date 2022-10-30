@@ -38,8 +38,8 @@
 #'     \code{\link{recv}} or their async counterparts \code{\link{send_aio}} and
 #'     \code{\link{recv_aio}}.
 #'
-#'     For nano objects, use the \code{$context()} method, which will return a
-#'     new context.
+#'     For nano objects, use the \code{$context_open()} method, which will
+#'     attach a new context at \code{$context}. See \code{\link{nano}}.
 #'
 #' @examples
 #' s <- socket("req", listen = "inproc://nanonext")
@@ -49,9 +49,11 @@
 #' close(s)
 #'
 #' n <- nano("req", listen = "inproc://nanonext")
-#' ctx <- n$context()
-#' ctx
-#' close(ctx)
+#' n$context_open()
+#' n$context
+#' n$context_open()
+#' n$context
+#' n$context_close()
 #' n$close()
 #'
 #' @export
@@ -92,7 +94,7 @@ close.nanoContext <- function(con, ...) invisible(.Call(rnng_ctx_close, con))
 #'     become unavailable since sending the request).
 #' @param ... additional arguments passed to the function specified by 'execute'.
 #'
-#' @return Invisibly, an integer exit code (zero on success).
+#' @return Integer exit code (zero on success).
 #'
 #' @details Receive will block while awaiting a message to arrive and is usually
 #'     the desired behaviour. Set a timeout to allow the function to return

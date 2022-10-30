@@ -25,7 +25,7 @@ ncurl(
 the received raw bytes to a character vector.}
 
 \item{follow}{[default FALSE] logical value whether to automatically follow
-redirects (not applicable for async requests). If FALSE, or for all async
+redirects (not applicable for async requests). If FALSE, or for async
 requests, the redirect address is returned as a character string at
 \code{$data} and the HTTP status code will be within the 300 range.}
 

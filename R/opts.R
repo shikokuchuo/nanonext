@@ -63,7 +63,8 @@
 setopt <- function(object,
                    type = c("bool", "int", "ms", "size", "string", "uint64"),
                    opt,
-                   value) invisible(.Call(rnng_set_opt, object, type, opt, value))
+                   value)
+  invisible(.Call(rnng_set_opt, object, type, opt, value))
 
 #' Subscribe Topic
 #'

@@ -30,7 +30,7 @@ FALSE if you wish to set configuration options on the dialer/listener as
 it is not generally possible to change these once started.}
 }
 \value{
-An nano object of class 'nanoObject'.
+A nano object of class 'nanoObject'.
 }
 \description{
 Create a nano object, encapsulating a Socket along with an associated
@@ -58,6 +58,15 @@ This function encapsulates a Socket and a single Dialer and/or Listener.
     These methods apply settings to all dialers or listeners equally. To
     apply settings to individual dialers/listeners, access them directly
     via \code{$dialer[[2]]} or \code{$listener[[2]]} etc.
+
+    For applicable protocols, new contexts may be created by using the
+    \code{$context_open()} method. This will attach a new context at
+    \code{$context} as well as a \code{$context_close()} method. While a
+    context is active, all object methods use the context instead of the
+    socket. A new context may be created by calling \code{$context_open()},
+    which will replace any existing context. It is only necessary to use
+    \code{$context_close()} to close the existing context and revert to using
+    the socket.
 }
 \examples{
 nano <- nano("bus", listen = "inproc://nanonext")
@@ -65,7 +74,7 @@ nano
 nano$socket
 nano$listener[[1]]
 
-nano$socket_setopt("ms", "send-timeout", 1000)
+nano$setopt("ms", "send-timeout", 1000)
 
 nano$listen(url = "inproc://nanonextgen")
 nano$listener

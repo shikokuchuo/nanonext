@@ -90,10 +90,8 @@ dial <- function(socket,
                  autostart = TRUE) {
 
   res <- if (autostart) .Call(rnng_dial, socket, url) else .Call(rnng_dialer_create, socket, url)
-  is.integer(res) && return(res)
-
+  is.integer(res) && return(invisible(res))
   if (is.environment(socket)) {
-
     socket[["dialer"]] <- c(.subset2(socket, "dialer"), res)
     socket[["dialer_setopt"]] <- function(type = c("bool", "int", "ms", "size",
                                                    "string", "uint64"),
@@ -103,11 +101,8 @@ dial <- function(socket,
                                                                   type = type,
                                                                   opt = opt,
                                                                   value = value))
-
   } else {
-
     attr(socket, "dialer") <- c(attr(socket, "dialer"), res)
-
   }
 
   invisible(0L)
@@ -188,10 +183,8 @@ listen <- function(socket,
                    autostart = TRUE) {
 
   res <- if (autostart) .Call(rnng_listen, socket, url) else .Call(rnng_listener_create, socket, url)
-  is.integer(res) && return(res)
-
+  is.integer(res) && return(invisible(res))
   if (is.environment(socket)) {
-
     socket[["listener"]] <- c(.subset2(socket, "listener"), res)
     socket[["listener_setopt"]] <- function(type = c("bool", "int", "ms", "size",
                                                    "string", "uint64"),
@@ -201,11 +194,8 @@ listen <- function(socket,
                                                                     type = type,
                                                                     opt = opt,
                                                                     value = value))
-
   } else {
-
     attr(socket, "listener") <- c(attr(socket, "listener"), res)
-
   }
 
   invisible(0L)

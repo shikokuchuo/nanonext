@@ -124,7 +124,7 @@ SEXP rnng_protocol_open(SEXP protocol, SEXP raw) {
 
   if (xc) {
     R_Free(sock);
-    return mk_error(xc);
+    return mk_werror(xc);
   }
 
   PROTECT(socket = R_MakeExternalPtr(sock, nano_SocketSymbol, R_NilValue));
@@ -151,7 +151,7 @@ SEXP rnng_close(SEXP socket) {
   const int xc = nng_close(*sock);
 
   if (xc)
-    return mk_error(xc);
+    return mk_werror(xc);
 
   Rf_setAttrib(socket, nano_StateSymbol, Rf_mkString("closed"));
   return nano_success;
