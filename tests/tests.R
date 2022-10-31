@@ -245,7 +245,7 @@ nanotest(is_error_value(ncurl("http", async = TRUE)$data))
 haio <- ncurl("https://i.i", async = TRUE)
 nanotest(is_error_value(call_aio(haio)$raw))
 haio$data
-nanotesterr(stream(dial = "tcp://127.0.0.1:5555"))
+nanotesterr(stream(dial = "wss://127.0.0.1:5555"))
 nanotesterr(stream(listen = "errorValue3"), 3)
 nanotesterr(stream(), "specify")
 
