@@ -64,7 +64,7 @@
 <h5 id="updates-0-6-0-9400">Updates<a class="anchor" aria-label="anchor" href="#updates-0-6-0-9400"></a></h5>
 <p><em>Please note that nanonext 0.7.0 introduces the following behavioural changes:</em></p>
 <ul><li>For functions that send and receive messages i.e. <code><a href="../reference/send.html">send()</a></code>, <code><a href="../reference/send_aio.html">send_aio()</a></code>, <code><a href="../reference/recv.html">recv()</a></code>, <code><a href="../reference/recv_aio.html">recv_aio()</a></code> and <code><a href="../reference/ncurl.html">ncurl()</a></code>, ‘errorValues’ are now returned silently without an accompanying warning. Use <code><a href="../reference/is_error_value.html">is_error_value()</a></code> to explicitly check for errors.</li>
-<li>Other functions that potentially returned ‘errorValues’ with warnings now error with the error value contained in the error message. This is to ensure stability of return types (e.g. <code><a href="../reference/socket.html">socket()</a></code> will always return a socket, or else error rather than return an ‘errorValue’).</li>
+<li>Other functions that could return ‘errorValues’ with warnings now error with the error value contained in the error message. This is to ensure stability of return types (e.g. <code><a href="../reference/socket.html">socket()</a></code> will always return a socket, or else error rather than return an ‘errorValue’).</li>
 </ul><p><em>Please also review the following potentially breaking changes, and only update when ready:</em></p>
 <ul><li>
 <code><a href="../reference/nano_init.html">nano_init()</a></code> is deprecated due to the above change in behaviour.</li>
