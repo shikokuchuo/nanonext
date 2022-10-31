@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.0.9300</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.0.9400</span>
       </span>
     </div>
 
@@ -84,9 +84,8 @@ generally possible to change these once started.</p></dd>
     <h2>Value</h2>
     
 
-<p>Invisibly, an integer exit code (zero on success). A new Dialer
-    (object of class 'nanoDialer' and 'nano') is created and bound to the
-    Socket or nano object if successful.</p>
+<p>Invisible NULL. A new Dialer (object of class 'nanoDialer' and 'nano')
+    is created and bound to the Socket or nano object.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -130,19 +129,19 @@ generally possible to change these once started.</p></dd>
 <span class="r-in"><span><span class="va">socket</span><span class="op">$</span><span class="va">dialer</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt; nanoDialer &gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - id: 2 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - socket: 5 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - state: not started </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - url: tcp://127.0.0.1:6545 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - id: 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - socket: 5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - state: not started</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - url: tcp://127.0.0.1:6545</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span><span class="fu"><a href="start.html">start</a></span><span class="op">(</span><span class="va">socket</span><span class="op">$</span><span class="va">dialer</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">socket</span><span class="op">$</span><span class="va">dialer</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt; nanoDialer &gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - id: 2 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - socket: 5 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - state: started </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - url: tcp://127.0.0.1:6545 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - id: 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - socket: 5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - state: started</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - url: tcp://127.0.0.1:6545</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span><span class="fu"><a href="close.html">close</a></span><span class="op">(</span><span class="va">socket</span><span class="op">$</span><span class="va">dialer</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="close.html">close</a></span><span class="op">(</span><span class="va">socket</span><span class="op">)</span></span></span>
@@ -152,19 +151,19 @@ generally possible to change these once started.</p></dd>
 <span class="r-in"><span><span class="va">nano</span><span class="op">$</span><span class="va">dialer</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt; nanoDialer &gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - id: 3 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - socket: 6 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - state: not started </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - url: tcp://127.0.0.1:6546 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - id: 3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - socket: 6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - state: not started</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - url: tcp://127.0.0.1:6546</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span><span class="fu"><a href="start.html">start</a></span><span class="op">(</span><span class="va">nano</span><span class="op">$</span><span class="va">dialer</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">nano</span><span class="op">$</span><span class="va">dialer</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt; nanoDialer &gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - id: 3 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - socket: 6 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - state: started </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - url: tcp://127.0.0.1:6546 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - id: 3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - socket: 6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - state: started</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - url: tcp://127.0.0.1:6546</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span><span class="fu"><a href="close.html">close</a></span><span class="op">(</span><span class="va">nano</span><span class="op">$</span><span class="va">dialer</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">nano</span><span class="op">$</span><span class="fu">close</span><span class="op">(</span><span class="op">)</span></span></span>
