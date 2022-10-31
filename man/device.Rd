@@ -12,8 +12,8 @@ device(s1, s2)
 \item{s2}{a raw mode Socket.}
 }
 \value{
-Invisible NULL. If the device was successfully created, this
-    function does not return.
+NULL. If the device was successfully created, this function does not
+    return.
 }
 \description{
 Creates a device which is a socket forwarder or proxy. Provides for improved

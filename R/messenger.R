@@ -57,7 +57,6 @@ messenger <- function(url, auth = NULL) {
   on.exit(expr = {
     send(sock, data = writeBin(":d ", raw()), mode = 2L, block = FALSE)
     .Call(rnng_close, sock)
-    invisible()
   })
   cat("\n", file = stdout())
   intro <- unlist(strsplit("nanonext messenger", ""))
@@ -99,6 +98,8 @@ messenger <- function(url, auth = NULL) {
           file = stdout())
     }
   }
+
+  invisible()
 
 }
 

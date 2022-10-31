@@ -217,9 +217,9 @@ nano <- function(protocol = c("bus", "pair", "push", "pull", "pub", "sub",
 #'
 print.nanoObject <- function(x, ...) {
 
-  cat("< nano object >\n - socket id:", attr(.subset2(x, "socket"), "id"),
-      "\n - state:", attr(.subset2(x, "socket"), "state"),
-      "\n - protocol:", attr(.subset2(x, "socket"), "protocol"), "\n", file = stdout())
+  cat(sprintf("< nano object >\n - socket id: %d\n - state: %s\n - protocol: %s\n",
+      attr(.subset2(x, "socket"), "id"), attr(.subset2(x, "socket"), "state"),
+      attr(.subset2(x, "socket"), "protocol")), file = stdout())
   if (length(.subset2(x, "listener")))
     cat(" - listener:", unlist(lapply(.subset2(x, "listener"), attr, "url")),
         sep = "\n    ", file = stdout())

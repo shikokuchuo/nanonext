@@ -9,7 +9,7 @@
 *Please note that nanonext 0.7.0 introduces the following behavioural changes:*
 
 * For functions that send and receive messages i.e. `send()`, `send_aio()`, `recv()`, `recv_aio()` and `ncurl()`, 'errorValues' are now returned silently without an accompanying warning. Use `is_error_value()` to explicitly check for errors.
-* Other functions that potentially returned 'errorValues' with warnings now error with the error value contained in the error message. This is to ensure stability of return types (e.g. `socket()` will always return a socket, or else error rather than return an 'errorValue').
+* Other functions that could return 'errorValues' with warnings now error with the error value contained in the error message. This is to ensure stability of return types (e.g. `socket()` will always return a socket, or else error rather than return an 'errorValue').
 
 *Please also review the following potentially breaking changes, and only update when ready:*
 
