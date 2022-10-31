@@ -23,7 +23,7 @@ See \link{opts}.}
 \item{value}{value of option.}
 }
 \value{
-Invisibly, an integer exit code (zero on success).
+Invisible NULL.
 }
 \description{
 Set \link{opts} on a Socket, Context, Stream, Listener or Dialer.

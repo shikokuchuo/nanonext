@@ -46,7 +46,7 @@ SEXP rnng_protocol_open(SEXP protocol, SEXP raw) {
 
   nng_socket *sock;
   const char *pname;
-  int xc = 0;
+  int xc;
   SEXP socket, klass;
 
   sock = R_Calloc(1, nng_socket);
@@ -119,12 +119,13 @@ SEXP rnng_protocol_open(SEXP protocol, SEXP raw) {
       break;
     }
   default:
+    xc = -1;
     Rf_error("'protocol' should be one of bus, pair, push, pull, pub, sub, req, rep, surveyor, respondent");
   }
 
   if (xc) {
     R_Free(sock);
-    return mk_werror(xc);
+    ERROR_OUT(xc);
   }
 
   PROTECT(socket = R_MakeExternalPtr(sock, nano_SocketSymbol, R_NilValue));
@@ -151,10 +152,10 @@ SEXP rnng_close(SEXP socket) {
   const int xc = nng_close(*sock);
 
   if (xc)
-    return mk_werror(xc);
+    ERROR_OUT(xc);
 
   Rf_setAttrib(socket, nano_StateSymbol, Rf_mkString("closed"));
-  return nano_success;
+  return R_NilValue;
 
 }
 

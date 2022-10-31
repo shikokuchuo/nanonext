@@ -272,7 +272,7 @@ Can be used to perform computationally-expensive calculations or I/O-bound opera
 library(nanonext)
 rep <- socket("rep", listen = "tcp://127.0.0.1:6546")
 ctxp <- context(rep)
-reply(ctxp, execute = rnorm, send_mode = "raw")
+r <- reply(ctxp, execute = rnorm, send_mode = "raw")
 
 ```
 

@@ -84,7 +84,6 @@ nano <- function(protocol = c("bus", "pair", "push", "pull", "pub", "sub",
 
   nano <- `class<-`(new.env(hash = FALSE), "nanoObject")
   socket <- .Call(rnng_protocol_open, protocol, FALSE)
-  is.integer(socket) && return(socket)
   sock2 <- NULL
   makeActiveBinding(sym = "socket",
                     fun = function(x) if (length(sock2)) sock2 else socket,
@@ -159,11 +158,10 @@ nano <- function(protocol = c("bus", "pair", "push", "pull", "pub", "sub",
            nano[["context_open"]] <- function() {
              if (is.null(sock2)) sock2 <<- socket
              nano[["context_close"]] <- function() if (length(sock2)) {
-               res <- close(socket)
+               close(socket)
                socket <<- sock2
                sock2 <<- NULL
                rm(list = c("context", "context_close"), envir = nano)
-               invisible(res)
              }
             socket <<- nano[["context"]] <- context(sock2)
            }
@@ -172,11 +170,10 @@ nano <- function(protocol = c("bus", "pair", "push", "pull", "pub", "sub",
            nano[["context_open"]] <- function() {
              if (is.null(sock2)) sock2 <<- socket
              nano[["context_close"]] <- function() if (length(sock2)) {
-               res <- close(socket)
+               close(socket)
                socket <<- sock2
                sock2 <<- NULL
                rm(list = c("context", "context_close"), envir = nano)
-               invisible(res)
              }
              socket <<- nano[["context"]] <- context(sock2)
            }
@@ -189,11 +186,10 @@ nano <- function(protocol = c("bus", "pair", "push", "pull", "pub", "sub",
            nano[["context_open"]] <- function() {
              if (is.null(sock2)) sock2 <<- socket
              nano[["context_close"]] <- function() if (length(sock2)) {
-               res <- close(socket)
+               close(socket)
                socket <<- sock2
                sock2 <<- NULL
                rm(list = c("context", "context_close"), envir = nano)
-               invisible(res)
              }
              socket <<- nano[["context"]] <- context(sock2)
            }
@@ -203,11 +199,10 @@ nano <- function(protocol = c("bus", "pair", "push", "pull", "pub", "sub",
            nano[["context_open"]] <- function() {
              if (is.null(sock2)) sock2 <<- socket
              nano[["context_close"]] <- function() if (length(sock2)) {
-               res <- close(socket)
+               close(socket)
                socket <<- sock2
                sock2 <<- NULL
                rm(list = c("context", "context_close"), envir = nano)
-               invisible(res)
              }
              socket <<- nano[["context"]] <- context(sock2)
            }
@@ -239,9 +234,8 @@ print.nanoObject <- function(x, ...) {
 #'
 print.nanoSocket <- function(x, ...) {
 
-  cat("< nanoSocket >\n - id:", attr(x, "id"),
-      "\n - state:", attr(x, "state"),
-      "\n - protocol:", attr(x, "protocol"), "\n", file = stdout())
+  cat(sprintf("< nanoSocket >\n - id: %d\n - state: %s\n - protocol: %s\n",
+              attr(x, "id"), attr(x, "state"), attr(x, "protocol")), file = stdout())
   if (length(attr(x, "listener")))
     cat(" - listener:", unlist(lapply(attr(x, "listener"), attr, "url")),
         sep = "\n    ", file = stdout())
@@ -256,10 +250,9 @@ print.nanoSocket <- function(x, ...) {
 #'
 print.nanoContext <- function(x, ...) {
 
-  cat("< nanoContext >\n - id:", attr(x, "id"),
-      "\n - socket:", attr(x, "socket"),
-      "\n - state:", attr(x, "state"),
-      "\n - protocol:", attr(x, "protocol"), "\n", file = stdout())
+  cat(sprintf("< nanoContext >\n - id: %d\n - socket: %d\n - state: %s\n - protocol: %s\n",
+              attr(x, "id"), attr(x, "socket"), attr(x, "state"), attr(x, "protocol")),
+      file = stdout())
   invisible(x)
 
 }
@@ -268,10 +261,9 @@ print.nanoContext <- function(x, ...) {
 #'
 print.nanoDialer <- function(x, ...) {
 
-  cat("< nanoDialer >\n - id:", attr(x, "id"),
-      "\n - socket:", attr(x, "socket"),
-      "\n - state:", attr(x, "state"),
-      "\n - url:", attr(x, "url"), "\n", file = stdout())
+  cat(sprintf("< nanoDialer >\n - id: %d\n - socket: %d\n - state: %s\n - url: %s\n",
+              attr(x, "id"), attr(x, "socket"), attr(x, "state"), attr(x, "url")),
+      file = stdout())
   invisible(x)
 
 }
@@ -280,10 +272,9 @@ print.nanoDialer <- function(x, ...) {
 #'
 print.nanoListener <- function(x, ...) {
 
-  cat("< nanoListener >\n - id:", attr(x, "id"),
-      "\n - socket:", attr(x, "socket"),
-      "\n - state:", attr(x, "state"),
-      "\n - url:", attr(x, "url"), "\n", file = stdout())
+  cat(sprintf("< nanoListener >\n - id: %d\n - socket: %d\n - state: %s\n - url: %s\n",
+              attr(x, "id"), attr(x, "socket"), attr(x, "state"), attr(x, "url")),
+      file = stdout())
   invisible(x)
 
 }
@@ -292,10 +283,10 @@ print.nanoListener <- function(x, ...) {
 #'
 print.nanoStream <- function(x, ...) {
 
-  cat("< nanoStream >\n - type:",
-      if (length(attr(x, "dialer"))) "dialer" else "listener",
-      "\n - url:", attr(x, "url"),
-      "\n - textframes:", attr(x, "textframes"), "\n", file = stdout())
+  cat(sprintf(if (length(attr(x, "dialer")))
+    "< nanoStream >\n - type: dialer\n - url: %s\n - textframes: %s\n" else
+      "< nanoStream >\n - type: listener\n - url: %s\n - textframes: %s\n",
+    attr(x, "url"), attr(x, "textframes")), file = stdout())
   invisible(x)
 
 }
@@ -304,8 +295,10 @@ print.nanoStream <- function(x, ...) {
 #'
 print.recvAio <- function(x, ...) {
 
-  cat("< recvAio >\n - $data for message data\n",
-      if (.subset2(x, "state")) "- $raw for raw message\n", file = stdout())
+  if (.subset2(x, "state"))
+    cat("< recvAio >\n - $data for message data\n - $raw for raw message\n", file = stdout())
+  else
+    cat("< recvAio >\n - $data for message data\n", file = stdout())
   invisible(x)
 
 }

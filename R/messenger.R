@@ -54,8 +54,6 @@ messenger <- function(url, auth = NULL) {
   key <- c(comb, as.integer(lock)[comb])
 
   sock <- .Call(rnng_messenger, url)
-  is.integer(sock) && return(invisible(sock))
-
   on.exit(expr = {
     send(sock, data = writeBin(":d ", raw()), mode = 2L, block = FALSE)
     .Call(rnng_close, sock)

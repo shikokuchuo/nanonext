@@ -122,9 +122,9 @@ SEXP rnng_device(SEXP s1, SEXP s2) {
   const int xc = nng_device(*(nng_socket *) R_ExternalPtrAddr(s1),
                             *(nng_socket *) R_ExternalPtrAddr(s2));
   if (xc)
-    return mk_werror(xc);
+    ERROR_OUT(xc);
 
-  return nano_success;
+  return R_NilValue;
 
 }
 
@@ -394,7 +394,7 @@ SEXP rnng_stream_dial(SEXP url, SEXP textframes, SEXP pem) {
   exitlevel2:
   nng_url_free(up);
   exitlevel1:
-  return mk_werror(xc);
+  ERROR_OUT(xc);
 
 }
 
@@ -489,22 +489,22 @@ SEXP rnng_stream_listen(SEXP url, SEXP textframes, SEXP pem) {
   exitlevel2:
   nng_url_free(up);
   exitlevel1:
-  return mk_werror(xc);
+  ERROR_OUT(xc);
 
 }
 
 SEXP rnng_stream_close(SEXP stream) {
 
   if (R_ExternalPtrTag(stream) != nano_StreamSymbol)
-    Rf_error("'stream' is not a valid stream");
+    Rf_error("'stream' is not a valid Stream");
   if (R_ExternalPtrAddr(stream) == NULL)
-    Rf_error("'stream' is not an active stream");
+    Rf_error("'stream' is not an active Stream");
   nng_stream *sp = (nng_stream *) R_ExternalPtrAddr(stream);
   nng_stream_free(sp);
   R_ClearExternalPtr(stream);
   SET_ATTRIB(stream, R_NilValue);
 
-  return nano_success;
+  return R_NilValue;
 
 }
 

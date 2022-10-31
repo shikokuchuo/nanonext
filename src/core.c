@@ -29,15 +29,6 @@ SEXP mk_error(const int xc) {
 
 }
 
-SEXP mk_werror(const int xc) {
-
-  Rf_warning("%d | %s", xc, nng_strerror(xc));
-  SEXP err = Rf_ScalarInteger(xc);
-  Rf_classgets(err, nano_error);
-  return err;
-
-}
-
 SEXP mk_error_recv(const int xc) {
 
   SEXP out, err;
@@ -462,7 +453,7 @@ SEXP rnng_ctx_open(SEXP socket) {
   int xc = nng_ctx_open(ctxp, *sock);
   if (xc) {
     R_Free(ctxp);
-    return mk_werror(xc);
+    ERROR_OUT(xc);
   }
 
   PROTECT(context = R_MakeExternalPtr(ctxp, nano_ContextSymbol, R_NilValue));
@@ -490,10 +481,10 @@ SEXP rnng_ctx_close(SEXP context) {
   int xc = nng_ctx_close(*ctxp);
 
   if (xc)
-    return mk_werror(xc);
+    ERROR_OUT(xc);
 
   Rf_setAttrib(context, nano_StateSymbol, Rf_mkString("closed"));
-  return nano_success;
+  return R_NilValue;
 
 }
 
@@ -514,7 +505,7 @@ SEXP rnng_dial(SEXP socket, SEXP url) {
   xc = nng_dial(*sock, up, dp, NNG_FLAG_NONBLOCK);
   if (xc) {
     R_Free(dp);
-    return mk_werror(xc);
+    ERROR_OUT(xc);
   }
 
   PROTECT(dialer = R_MakeExternalPtr(dp, nano_DialerSymbol, R_NilValue));
@@ -549,7 +540,7 @@ SEXP rnng_dialer_create(SEXP socket, SEXP url) {
   xc = nng_dialer_create(dp, *sock, up);
   if (xc) {
     R_Free(dp);
-    return mk_werror(xc);
+    ERROR_OUT(xc);
   }
 
   PROTECT(dialer = R_MakeExternalPtr(dp, nano_DialerSymbol, R_NilValue));
@@ -584,7 +575,7 @@ SEXP rnng_listen(SEXP socket, SEXP url) {
   xc = nng_listen(*sock, up, lp, 0);
   if (xc) {
     R_Free(lp);
-    return mk_werror(xc);
+    ERROR_OUT(xc);
   }
 
   PROTECT(listener = R_MakeExternalPtr(lp, nano_ListenerSymbol, R_NilValue));
@@ -619,7 +610,7 @@ SEXP rnng_listener_create(SEXP socket, SEXP url) {
   xc = nng_listener_create(lp, *sock, up);
   if (xc) {
     R_Free(lp);
-    return mk_werror(xc);
+    ERROR_OUT(xc);
   }
 
   PROTECT(listener = R_MakeExternalPtr(lp, nano_ListenerSymbol, R_NilValue));
@@ -649,10 +640,10 @@ SEXP rnng_dialer_start(SEXP dialer, SEXP async) {
   int xc = nng_dialer_start(*dial, flags);
 
   if (xc)
-    return mk_werror(xc);
+    ERROR_OUT(xc);
 
   Rf_setAttrib(dialer, nano_StateSymbol, Rf_mkString("started"));
-  return nano_success;
+  return R_NilValue;
 
 }
 
@@ -664,10 +655,10 @@ SEXP rnng_listener_start(SEXP listener) {
   int xc = nng_listener_start(*list, 0);
 
   if (xc)
-    return mk_werror(xc);
+    ERROR_OUT(xc);
 
   Rf_setAttrib(listener, nano_StateSymbol, Rf_mkString("started"));
-  return nano_success;
+  return R_NilValue;
 
 }
 
@@ -679,25 +670,25 @@ SEXP rnng_dialer_close(SEXP dialer) {
   int xc = nng_dialer_close(*dial);
 
   if (xc)
-    return mk_werror(xc);
+    ERROR_OUT(xc);
 
   Rf_setAttrib(dialer, nano_StateSymbol, Rf_mkString("closed"));
-  return nano_success;
+  return R_NilValue;
 
 }
 
 SEXP rnng_listener_close(SEXP listener) {
 
   if (R_ExternalPtrTag(listener) != nano_ListenerSymbol)
-    Rf_error("'listener' is not a valid listener");
+    Rf_error("'listener' is not a valid Listener");
   nng_listener *list = (nng_listener *) R_ExternalPtrAddr(listener);
   int xc = nng_listener_close(*list);
 
   if (xc)
-    return mk_werror(xc);
+    ERROR_OUT(xc);
 
   Rf_setAttrib(listener, nano_StateSymbol, Rf_mkString("closed"));
-  return nano_success;
+  return R_NilValue;
 
 }
 
@@ -1148,9 +1139,9 @@ SEXP rnng_set_opt(SEXP object, SEXP type, SEXP opt, SEXP value) {
   }
 
   if (xc)
-    return mk_werror(xc);
+    ERROR_OUT(xc);
 
-  return nano_success;
+  return R_NilValue;
 
 }
 

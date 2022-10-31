@@ -50,7 +50,8 @@
 #'
 #' @examples
 #' # will succeed only if there is an open connection at the address:
-#' s <- stream(dial = "tcp://127.0.0.1:5555")
+#' s <- tryCatch(stream(dial = "tcp://127.0.0.1:5555"), error = identity)
+#' s
 #'
 #' @export
 #'

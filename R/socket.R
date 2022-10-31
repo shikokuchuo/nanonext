@@ -84,7 +84,6 @@ socket <- function(protocol = c("bus", "pair", "push", "pull", "pub", "sub",
                    raw = FALSE) {
 
   sock <- .Call(rnng_protocol_open, protocol, raw)
-  is.integer(sock) && return(sock)
   if (length(dial)) dial(sock, url = dial, autostart = autostart)
   if (length(listen)) listen(sock, url = listen, autostart = autostart)
   sock
@@ -98,7 +97,7 @@ socket <- function(protocol = c("bus", "pair", "push", "pull", "pub", "sub",
 #' @param con a Socket, Context, Dialer, Listener or Stream.
 #' @param ... not used.
 #'
-#' @return Invisibly, an integer exit code (zero on success).
+#' @return Invisible NULL.
 #'
 #' @details Closing an object explicitly frees its resources. An object can also
 #'     be removed directly in which case its resources are freed when the object

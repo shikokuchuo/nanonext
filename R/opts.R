@@ -27,7 +27,7 @@
 #'     See \link{opts}.
 #' @param value value of option.
 #'
-#' @return Invisibly, an integer exit code (zero on success).
+#' @return Invisible NULL.
 #'
 #' @details Note: once a dialer or listener has started, it is not generally
 #'     possible to change its configuration. Hence create the dialer or listener
@@ -75,7 +75,7 @@ setopt <- function(object,
 #' @param topic [default NULL] an atomic type or NULL. The default NULL
 #'     subscribes to all topics.
 #'
-#' @return Invisibly, an integer exit code (zero on success).
+#' @return Invisible NULL.
 #'
 #' @details To use pub/sub the publisher must:
 #'     \itemize{
@@ -118,7 +118,7 @@ subscribe <- function(con, topic = NULL)
 #' @param topic [default NULL] an atomic type or NULL. The default NULL
 #'     unsubscribes from all topics (if all topics were previously subscribed).
 #'
-#' @return Invisibly, an integer exit code (zero on success).
+#' @return Invisible NULL.
 #'
 #' @details Note that if the topic was not previously subscribed to then an
 #'     'entry not found' error will result.
@@ -166,7 +166,7 @@ unsubscribe <- function(con, topic = NULL)
 #' @param con a Socket or Context using the 'surveyor' protocol.
 #' @param time the survey timeout in ms.
 #'
-#' @return Invisibly, an integer exit code (zero on success).
+#' @return Invisible NULL.
 #'
 #' @details After using this function, to start a new survey, the surveyor must:
 #'     \itemize{

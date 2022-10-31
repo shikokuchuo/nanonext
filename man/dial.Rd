@@ -18,9 +18,8 @@ you wish to set configuration options on the dialer as it is not
 generally possible to change these once started.}
 }
 \value{
-Invisibly, an integer exit code (zero on success). A new Dialer
-    (object of class 'nanoDialer' and 'nano') is created and bound to the
-    Socket or nano object if successful.
+Invisible NULL. A new Dialer (object of class 'nanoDialer' and 'nano')
+    is created and bound to the Socket or nano object.
 }
 \description{
 Creates a new Dialer and binds it to a Socket.

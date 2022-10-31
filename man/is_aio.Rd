@@ -10,7 +10,8 @@ is_aio(x)
 \item{x}{an object.}
 }
 \value{
-Logical value TRUE or FALSE.
+Logical value TRUE if 'x' is of class 'recvAio' or 'sendAio', FALSE
+    otherwise.
 }
 \description{
 Is the object an Aio (sendAio or recvAio).
