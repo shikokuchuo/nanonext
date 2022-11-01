@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.0.9400</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.0.9500</span>
       </span>
     </div>
 
@@ -54,22 +54,19 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.6.0.9400" id="nanonext-0609400-development">nanonext 0.6.0.9400 (development)<a class="anchor" aria-label="anchor" href="#nanonext-0609400-development"></a></h2>
+<h2 class="page-header" data-toc-text="0.6.0.9500" id="nanonext-0609500-development">nanonext 0.6.0.9500 (development)<a class="anchor" aria-label="anchor" href="#nanonext-0609500-development"></a></h2>
 <div class="section level5">
-<h5 id="new-features-0-6-0-9400">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-6-0-9400"></a></h5>
+<h5 id="new-features-0-6-0-9500">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-6-0-9500"></a></h5>
 <ul><li>
 <code><a href="../reference/status_code.html">status_code()</a></code> utility returns a translation of HTTP response status codes.</li>
 </ul></div>
 <div class="section level5">
-<h5 id="updates-0-6-0-9400">Updates<a class="anchor" aria-label="anchor" href="#updates-0-6-0-9400"></a></h5>
-<p><em>Please note that nanonext 0.7.0 introduces the following behavioural changes:</em></p>
+<h5 id="updates-0-6-0-9500">Updates<a class="anchor" aria-label="anchor" href="#updates-0-6-0-9500"></a></h5>
+<p><em>Please review the following potentially breaking changes, and only update when ready:</em></p>
 <ul><li>For functions that send and receive messages i.e. <code><a href="../reference/send.html">send()</a></code>, <code><a href="../reference/send_aio.html">send_aio()</a></code>, <code><a href="../reference/recv.html">recv()</a></code>, <code><a href="../reference/recv_aio.html">recv_aio()</a></code> and <code><a href="../reference/ncurl.html">ncurl()</a></code>, ‘errorValues’ are now returned silently without an accompanying warning. Use <code><a href="../reference/is_error_value.html">is_error_value()</a></code> to explicitly check for errors.</li>
-<li>Other functions that potentially returned ‘errorValues’ with warnings now error with the error value contained in the error message. This is to ensure stability of return types (e.g. <code><a href="../reference/socket.html">socket()</a></code> will always return a socket, or else error rather than return an ‘errorValue’).</li>
-</ul><p><em>Please also review the following potentially breaking changes, and only update when ready:</em></p>
-<ul><li>
-<code><a href="../reference/nano_init.html">nano_init()</a></code> is deprecated due to the above change in behaviour.</li>
+<li>Functions <code><a href="../reference/socket.html">socket()</a></code> and <code><a href="../reference/stream.html">stream()</a></code> will now error instead of returning an ‘errorValue’ to ensure stability of return types. The error value is included in the error message.</li>
 <li>
-<code><a href="../reference/dial.html">dial()</a></code>, <code><a href="../reference/listen.html">listen()</a></code>, <code><a href="../reference/close.html">close()</a></code>, <code><a href="../reference/start.html">start()</a></code>, <code><a href="../reference/setopt.html">setopt()</a></code>, <code><a href="../reference/subscribe.html">subscribe()</a></code>, <code><a href="../reference/unsubscribe.html">unsubscribe()</a></code> and <code><a href="../reference/survey_time.html">survey_time()</a></code> now return invisible NULL, as they will otherwise error if unsuccessful.</li>
+<code><a href="../reference/nano_init.html">nano_init()</a></code> is deprecated due to the above change in behaviour.</li>
 <li>
 <code><a href="../reference/send.html">send()</a></code> no longer has a ‘…’ argument. This has had no effect since 0.6.0, but will now error if additional arguments are provided (please check and remove previous uses of the argument ‘echo’). Also no longer returns invisibly for consistency with <code><a href="../reference/recv.html">recv()</a></code>.</li>
 <li>
