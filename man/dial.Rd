@@ -7,7 +7,7 @@
 dial(socket, url = "inproc://nanonext", autostart = TRUE)
 }
 \arguments{
-\item{socket}{a Socket or nano object.}
+\item{socket}{a Socket.}
 
 \item{url}{[default 'inproc://nanonext'] a URL to dial, specifying the
 transport and address as a character string e.g. 'inproc://anyvalue' or
@@ -20,7 +20,7 @@ generally possible to change these once started.}
 \value{
 Invisibly, an integer exit code (zero on success). A new Dialer
     (object of class 'nanoDialer' and 'nano') is created and bound to the
-    Socket or nano object if successful.
+    Socket if successful.
 }
 \description{
 Creates a new Dialer and binds it to a Socket.
@@ -30,12 +30,6 @@ To view all Dialers bound to a socket use \code{$dialer} on the
     socket, which returns a list of Dialer objects. To access any individual
     Dialer (e.g. to set options on it), index into the list e.g.
     \code{$dialer[[1]]} to return the first Dialer.
-
-    This function may be used to bind a new Dialer to a Socket, or else a
-    nano object. If called on a nano object, the dialer is attached to the
-    object rather than the socket for ease of access, e.g. \code{$dialer[[1]]}
-    rather than \code{$socket$dialer[[1]]}, but is otherwise equivalent to
-    calling \code{dial()} on the object's socket directly.
 
     A Dialer is an external pointer to a dialer object, which creates a
     single outgoing connection at a time. If the connection is broken, or
@@ -72,9 +66,9 @@ close(socket$dialer[[1]])
 close(socket)
 
 nano <- nano("bus")
-dial(nano, url = "tcp://127.0.0.1:6546", autostart = FALSE)
+nano$dial(url = "tcp://127.0.0.1:6546", autostart = FALSE)
 nano$dialer
-start(nano$dialer[[1]])
+nano$dialer_start()
 nano$dialer
 close(nano$dialer[[1]])
 nano$close()

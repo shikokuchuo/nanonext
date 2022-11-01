@@ -129,9 +129,11 @@ assign("aio", value = "test", envir = rraio)
 nanotesterr(rraio$raw, "valid")
 nanotesterr(rraio$data, "valid")
 
-nanotestz(n$dial(url = "inproc://two", autostart = TRUE))
+nanotestz(n$dial(url = "inproc://two", autostart = FALSE))
+nanotestz(n$dialer_start())
 nanotest(inherits(n$dialer[[1L]], "nanoDialer"))
-nanotestz(n$listen(url = "inproc://three"))
+nanotestz(n$listen(url = "inproc://three", autostart = FALSE))
+nanotestz(n$listener_start())
 nanotest(inherits(n$listener[[2L]], "nanoListener"))
 
 nanotestz(close(n$listener[[1]]))

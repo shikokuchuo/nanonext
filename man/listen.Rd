@@ -7,7 +7,7 @@
 listen(socket, url = "inproc://nanonext", autostart = TRUE)
 }
 \arguments{
-\item{socket}{a Socket or nano object.}
+\item{socket}{a Socket.}
 
 \item{url}{[default 'inproc://nanonext'] a URL to dial or listen at, specifying
 the transport and address as a character string e.g. 'inproc://anyvalue'
@@ -20,7 +20,7 @@ generally possible to change these once started.}
 \value{
 Invisibly, an integer exit code (zero on success). A new Listener
     (object of class 'nanoListener' and 'nano') is created and bound to the
-    Socket or nano object if successful.
+    Socket if successful.
 }
 \description{
 Creates a new Listener and binds it to a Socket.
@@ -30,12 +30,6 @@ To view all Listeners bound to a socket use \code{$listener} on the
     socket, which returns a list of Listener objects. To access any individual
     Listener (e.g. to set options on it), index into the list e.g.
     \code{$listener[[1]]} to return the first Listener.
-
-    This function may be used to bind a new Listener to a Socket, or else a
-    nano object. If called on a nano object, the listener is attached to the
-    object rather than the socket for ease of access, e.g. \code{$listener[[1]]}
-    rather than \code{$socket$listener[[1]]}, but is otherwise equivalent to
-    calling \code{listen()} on the object's socket directly.
 
     A listener is an external pointer to a listener object, which accepts
     incoming connections. A given listener object may have many connections
@@ -72,9 +66,9 @@ close(socket$listener[[1]])
 close(socket)
 
 nano <- nano("bus")
-listen(nano, url = "tcp://127.0.0.1:6548", autostart = FALSE)
+nano$listen(url = "tcp://127.0.0.1:6548", autostart = FALSE)
 nano$listener
-start(nano$listener[[1]])
+nano$listener_start()
 nano$listener
 close(nano$listener[[1]])
 nano$close()

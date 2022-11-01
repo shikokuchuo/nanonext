@@ -15,12 +15,14 @@
 * `recv()` and `recv_aio()` now return an integer 'errorValue' at each of `$raw` and `$data` when 'keep.raw' is set to TRUE, ensuring stability of return types.
 * `ncurl()` now returns an integer 'errorValue' at each of `$status`, `$headers`, `$raw` and `$data` for both sync and async, ensuring stability of return types. Where 'follow' is set to FALSE, or for all async requests, the redirect address is now returned as a character string at `$data`.
 * `nano()` now creates a nano object with method `$context_open()` for applicable protocols. Opening a context will attach a context at `$context` and a `$context_close()` method. When a context is active, all object methods use the context instead of the socket. Method `$socket_setopt()` renamed to `$setopt()` as it can be used on the socket or active context as applicable.
+* `listen()` and `dial()` now only take a socket as argument; for nano objects, the `$listen()` and `$dial()` methods must be used instead.
 
 *Other changes:*
 
 * Fixes bug introduced in 0.6.0 where Aios returning 'errorValues' are not cached with the class, returning only integer values when accessed subsequently.
 * Fixes potential crash when `base64dec()` encounters invalid input data.
 * Fixes the `$` method for 'recvAio' objects for when the object has been stopped using `stop_aio()`.
+* Using the `$listen()` or `$dial()` methods of a nano object specifying 'autostart = FALSE' now attaches the `$listener_start()` or `$dialer_start()` method for the most recently added listener/dialer.
 * `device()` no longer prompts for confirmation in interactive environments - as device creation is only successful when binding 2 raw mode sockets, there is little scope for accidental use.
 * Print method for 'errorValue' now also provides the human translation of the error code.
 * Bundled 'libnng' source updated to v1.6.0 pre-release (5385b78).

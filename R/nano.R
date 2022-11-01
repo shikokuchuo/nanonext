@@ -90,9 +90,18 @@ nano <- function(protocol = c("bus", "pair", "push", "pull", "pub", "sub",
                     env = nano)
 
   if (length(dial)) {
-    dial(nano, url = dial, autostart = autostart)
-    if (!autostart) {
-      nano[["dialer_start"]] <- function(async = TRUE) {
+    r <- dial(socket, url = dial, autostart = autostart)
+    if (r == 0L) {
+      nano[["dialer"]] <- attr(socket, "dialer")
+      nano[["dialer_setopt"]] <- function(type = c("bool", "int", "ms", "size",
+                                                   "string", "uint64"),
+                                          opt,
+                                          value) invisible(lapply(.subset2(nano, "dialer"),
+                                                                  setopt,
+                                                                  type = type,
+                                                                  opt = opt,
+                                                                  value = value))
+      if (!autostart) nano[["dialer_start"]] <- function(async = TRUE) {
         rm("dialer_start", envir = nano)
         start(.subset2(nano, "dialer")[[1L]], async = async)
       }
@@ -100,9 +109,18 @@ nano <- function(protocol = c("bus", "pair", "push", "pull", "pub", "sub",
   }
 
   if (length(listen)) {
-    listen(nano, url = listen, autostart = autostart)
-    if (!autostart) {
-      nano[["listener_start"]] <- function() {
+    r <- listen(socket, url = listen, autostart = autostart)
+    if (r == 0L) {
+      nano[["listener"]] <- attr(socket, "listener")
+      nano[["listener_setopt"]] <- function(type = c("bool", "int", "ms", "size",
+                                                     "string", "uint64"),
+                                            opt,
+                                            value) invisible(lapply(.subset2(nano, "listener"),
+                                                                    setopt,
+                                                                    type = type,
+                                                                    opt = opt,
+                                                                    value = value))
+      if (!autostart) nano[["listener_start"]] <- function() {
         rm("listener_start", envir = nano)
         start(.subset2(nano, "listener")[[1L]])
       }
@@ -111,13 +129,45 @@ nano <- function(protocol = c("bus", "pair", "push", "pull", "pub", "sub",
 
   nano[["close"]] <- function() close(.subset2(nano, "socket"))
   nano[["dial"]] <- function(url = "inproc://nanonext",
-                             autostart = TRUE) dial(nano,
-                                                    url = url,
-                                                    autostart = autostart)
+                             autostart = TRUE) {
+    r <- dial(socket, url = url, autostart = autostart)
+    if (r == 0L) {
+      nano[["dialer"]] <- attr(socket, "dialer")
+      nano[["dialer_setopt"]] <- function(type = c("bool", "int", "ms", "size",
+                                                   "string", "uint64"),
+                                          opt,
+                                          value) invisible(lapply(.subset2(nano, "dialer"),
+                                                                  setopt,
+                                                                  type = type,
+                                                                  opt = opt,
+                                                                  value = value))
+      if (!autostart) nano[["dialer_start"]] <- function(async = TRUE) {
+        rm("dialer_start", envir = nano)
+        start((d <- .subset2(nano, "dialer"))[[length(d)]], async = async)
+      }
+    }
+    invisible(r)
+  }
   nano[["listen"]] <- function(url = "inproc://nanonext",
-                               autostart = TRUE) listen(nano,
-                                                        url = url,
-                                                        autostart = autostart)
+                               autostart = TRUE) {
+    r <- listen(socket, url = url, autostart = autostart)
+    if (r == 0L) {
+      nano[["listener"]] <- attr(socket, "listener")
+      nano[["listener_setopt"]] <- function(type = c("bool", "int", "ms", "size",
+                                                     "string", "uint64"),
+                                            opt,
+                                            value) invisible(lapply(.subset2(nano, "listener"),
+                                                                    setopt,
+                                                                    type = type,
+                                                                    opt = opt,
+                                                                    value = value))
+      if (!autostart) nano[["listener_start"]] <- function() {
+        rm("listener_start", envir = nano)
+        start((l <- .subset2(nano, "listener"))[[length(l)]])
+      }
+    }
+    invisible(r)
+  }
   nano[["recv"]] <- function(mode = c("serial", "character", "complex", "double",
                                       "integer", "logical", "numeric", "raw"),
                              block = NULL,
