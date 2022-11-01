@@ -1,4 +1,4 @@
-# nanonext 0.6.0.9400 (development)
+# nanonext 0.6.0.9500 (development)
 
 #### New Features
 
@@ -6,15 +6,11 @@
 
 #### Updates
 
-*Please note that nanonext 0.7.0 introduces the following behavioural changes:*
+*Please review the following potentially breaking changes, and only update when ready:*
 
 * For functions that send and receive messages i.e. `send()`, `send_aio()`, `recv()`, `recv_aio()` and `ncurl()`, 'errorValues' are now returned silently without an accompanying warning. Use `is_error_value()` to explicitly check for errors.
-* Other functions that potentially returned 'errorValues' with warnings now error with the error value contained in the error message. This is to ensure stability of return types (e.g. `socket()` will always return a socket, or else error rather than return an 'errorValue').
-
-*Please also review the following potentially breaking changes, and only update when ready:*
-
+* Functions `socket()` and `stream()` will now error instead of returning an 'errorValue' to ensure stability of return types. The error value is included in the error message. 
 * `nano_init()` is deprecated due to the above change in behaviour.
-* `dial()`, `listen()`, `close()`, `start()`, `setopt()`, `subscribe()`, `unsubscribe()` and `survey_time()` now return invisible NULL, as they will otherwise error if unsuccessful.
 * `send()` no longer has a '...' argument. This has had no effect since 0.6.0, but will now error if additional arguments are provided (please check and remove previous uses of the argument 'echo'). Also no longer returns invisibly for consistency with `recv()`.
 * `recv()` and `recv_aio()` now return an integer 'errorValue' at each of `$raw` and `$data` when 'keep.raw' is set to TRUE, ensuring stability of return types.
 * `ncurl()` now returns an integer 'errorValue' at each of `$status`, `$headers`, `$raw` and `$data` for both sync and async, ensuring stability of return types. Where 'follow' is set to FALSE, or for all async requests, the redirect address is now returned as a character string at `$data`.

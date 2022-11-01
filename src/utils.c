@@ -504,7 +504,7 @@ SEXP rnng_stream_close(SEXP stream) {
   R_ClearExternalPtr(stream);
   SET_ATTRIB(stream, R_NilValue);
 
-  return R_NilValue;
+  return nano_success;
 
 }
 

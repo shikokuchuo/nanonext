@@ -18,8 +18,9 @@ if you wish to set configuration options on the listener as it is not
 generally possible to change these once started.}
 }
 \value{
-Invisible NULL. A new Listener (object of class 'nanoListener' and
-    'nano') is created and bound to the Socket or nano object.
+Invisibly, an integer exit code (zero on success). A new Listener
+    (object of class 'nanoListener' and 'nano') is created and bound to the
+    Socket or nano object if successful.
 }
 \description{
 Creates a new Listener and binds it to a Socket.

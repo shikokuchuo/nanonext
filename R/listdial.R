@@ -28,8 +28,9 @@
 #'     you wish to set configuration options on the dialer as it is not
 #'     generally possible to change these once started.
 #'
-#' @return Invisible NULL. A new Dialer (object of class 'nanoDialer' and 'nano')
-#'     is created and bound to the Socket or nano object.
+#' @return Invisibly, an integer exit code (zero on success). A new Dialer
+#'     (object of class 'nanoDialer' and 'nano') is created and bound to the
+#'     Socket or nano object if successful.
 #'
 #' @details To view all Dialers bound to a socket use \code{$dialer} on the
 #'     socket, which returns a list of Dialer objects. To access any individual
@@ -89,6 +90,8 @@ dial <- function(socket,
                  autostart = TRUE) {
 
   res <- if (autostart) .Call(rnng_dial, socket, url) else .Call(rnng_dialer_create, socket, url)
+  is.integer(res) && return(invisible(res))
+
   if (is.environment(socket)) {
     socket[["dialer"]] <- c(.subset2(socket, "dialer"), res)
     socket[["dialer_setopt"]] <- function(type = c("bool", "int", "ms", "size",
@@ -103,7 +106,7 @@ dial <- function(socket,
     attr(socket, "dialer") <- c(attr(socket, "dialer"), res)
   }
 
-  invisible()
+  invisible(0L)
 
 }
 
@@ -119,8 +122,9 @@ dial <- function(socket,
 #'     if you wish to set configuration options on the listener as it is not
 #'     generally possible to change these once started.
 #'
-#' @return Invisible NULL. A new Listener (object of class 'nanoListener' and
-#'     'nano') is created and bound to the Socket or nano object.
+#' @return Invisibly, an integer exit code (zero on success). A new Listener
+#'     (object of class 'nanoListener' and 'nano') is created and bound to the
+#'     Socket or nano object if successful.
 #'
 #' @details To view all Listeners bound to a socket use \code{$listener} on the
 #'     socket, which returns a list of Listener objects. To access any individual
@@ -180,6 +184,8 @@ listen <- function(socket,
                    autostart = TRUE) {
 
   res <- if (autostart) .Call(rnng_listen, socket, url) else .Call(rnng_listener_create, socket, url)
+  is.integer(res) && return(invisible(res))
+
   if (is.environment(socket)) {
     socket[["listener"]] <- c(.subset2(socket, "listener"), res)
     socket[["listener_setopt"]] <- function(type = c("bool", "int", "ms", "size",
@@ -194,7 +200,7 @@ listen <- function(socket,
     attr(socket, "listener") <- c(attr(socket, "listener"), res)
   }
 
-  invisible()
+  invisible(0L)
 
 }
 
@@ -211,7 +217,7 @@ listen <- function(socket,
 #'     action will be taken.
 #' @param ... not used.
 #'
-#' @return Invisible NULL.
+#' @return Invisibly, an integer exit code (zero on success).
 #'
 #' @name start
 #' @rdname start

@@ -158,10 +158,11 @@ nano <- function(protocol = c("bus", "pair", "push", "pull", "pub", "sub",
            nano[["context_open"]] <- function() {
              if (is.null(sock2)) sock2 <<- socket
              nano[["context_close"]] <- function() if (length(sock2)) {
-               close(socket)
+               r <- close(socket)
                socket <<- sock2
                sock2 <<- NULL
                rm(list = c("context", "context_close"), envir = nano)
+               r
              }
             socket <<- nano[["context"]] <- context(sock2)
            }
@@ -170,10 +171,11 @@ nano <- function(protocol = c("bus", "pair", "push", "pull", "pub", "sub",
            nano[["context_open"]] <- function() {
              if (is.null(sock2)) sock2 <<- socket
              nano[["context_close"]] <- function() if (length(sock2)) {
-               close(socket)
+               r <- close(socket)
                socket <<- sock2
                sock2 <<- NULL
                rm(list = c("context", "context_close"), envir = nano)
+               r
              }
              socket <<- nano[["context"]] <- context(sock2)
            }
@@ -186,10 +188,11 @@ nano <- function(protocol = c("bus", "pair", "push", "pull", "pub", "sub",
            nano[["context_open"]] <- function() {
              if (is.null(sock2)) sock2 <<- socket
              nano[["context_close"]] <- function() if (length(sock2)) {
-               close(socket)
+               r <- close(socket)
                socket <<- sock2
                sock2 <<- NULL
                rm(list = c("context", "context_close"), envir = nano)
+               r
              }
              socket <<- nano[["context"]] <- context(sock2)
            }
@@ -199,10 +202,11 @@ nano <- function(protocol = c("bus", "pair", "push", "pull", "pub", "sub",
            nano[["context_open"]] <- function() {
              if (is.null(sock2)) sock2 <<- socket
              nano[["context_close"]] <- function() if (length(sock2)) {
-               close(socket)
+               r <- close(socket)
                socket <<- sock2
                sock2 <<- NULL
                rm(list = c("context", "context_close"), envir = nano)
+               r
              }
              socket <<- nano[["context"]] <- context(sock2)
            }

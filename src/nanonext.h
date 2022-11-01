@@ -64,6 +64,7 @@
 #ifdef NANONEXT_INTERNALS
 #define ERROR_OUT(xc) Rf_error("%d | %s", xc, nng_strerror(xc))
 extern SEXP mk_error(const int);
+extern SEXP mk_werror(const int);
 extern SEXP mk_error_recv(const int);
 extern SEXP mk_error_ncurl(const int);
 extern SEXP nano_decode(unsigned char *, size_t, const int, const int);

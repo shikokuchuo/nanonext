@@ -152,10 +152,10 @@ SEXP rnng_close(SEXP socket) {
   const int xc = nng_close(*sock);
 
   if (xc)
-    ERROR_OUT(xc);
+    return mk_werror(xc);
 
   Rf_setAttrib(socket, nano_StateSymbol, Rf_mkString("closed"));
-  return R_NilValue;
+  return nano_success;
 
 }
 

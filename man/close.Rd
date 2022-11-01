@@ -25,7 +25,7 @@
 \item{...}{not used.}
 }
 \value{
-Invisible NULL.
+Invisibly, an integer exit code (zero on success).
 }
 \description{
 Close Connection on a Socket, Context, Dialer, Listener or Stream.

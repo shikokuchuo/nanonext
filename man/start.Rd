@@ -23,7 +23,7 @@ connection is refused, will be returned immediately, and no further
 action will be taken.}
 }
 \value{
-Invisible NULL.
+Invisibly, an integer exit code (zero on success).
 }
 \description{
 Start a Listener/Dialer.

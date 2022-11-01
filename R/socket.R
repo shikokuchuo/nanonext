@@ -97,7 +97,7 @@ socket <- function(protocol = c("bus", "pair", "push", "pull", "pub", "sub",
 #' @param con a Socket, Context, Dialer, Listener or Stream.
 #' @param ... not used.
 #'
-#' @return Invisible NULL.
+#' @return Invisibly, an integer exit code (zero on success).
 #'
 #' @details Closing an object explicitly frees its resources. An object can also
 #'     be removed directly in which case its resources are freed when the object

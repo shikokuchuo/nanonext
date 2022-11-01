@@ -13,7 +13,7 @@ subscribe(con, topic = NULL)
 subscribes to all topics.}
 }
 \value{
-Invisible NULL.
+Invisibly, an integer exit code (zero on success).
 }
 \description{
 For a socket or context using the sub protocol in a publisher/subscriber
