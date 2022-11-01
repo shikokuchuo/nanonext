@@ -515,10 +515,10 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
 #if defined(R_VERSION) && R_VERSION >= R_Version(4, 1, 0)
   PROTECT(env = R_NewEnv(clo, 0, 2));
 #else
+  PROTECT_INDEX pxi;
   SEXP expr;
-  PROTECT(expr = Rf_lang2(nano_NewEnvSymbol, Rf_ScalarLogical(0)));
-  PROTECT(env = Rf_eval(expr, clo));
-  UNPROTECT(1);
+  PROTECT_WITH_INDEX(expr = Rf_lang2(nano_NewEnvSymbol, Rf_ScalarLogical(0)), &pxi);
+  REPROTECT(env = Rf_eval(expr, clo), pxi);
 #endif
   Rf_defineVar(nano_AioSymbol, aio, env);
   PROTECT(fun = Rf_allocSExp(CLOSXP));
@@ -627,10 +627,10 @@ SEXP rnng_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP keep, SEXP bytes, SEX
 #if defined(R_VERSION) && R_VERSION >= R_Version(4, 1, 0)
   PROTECT(env = R_NewEnv(clo, 0, 4));
 #else
+  PROTECT_INDEX pxi;
   SEXP expr;
-  PROTECT(expr = Rf_lang2(nano_NewEnvSymbol, Rf_ScalarLogical(0)));
-  PROTECT(env = Rf_eval(expr, clo));
-  UNPROTECT(1);
+  PROTECT_WITH_INDEX(expr = Rf_lang2(nano_NewEnvSymbol, Rf_ScalarLogical(0)), &pxi);
+  REPROTECT(env = Rf_eval(expr, clo), pxi);
 #endif
   Rf_defineVar(nano_AioSymbol, aio, env);
   Rf_defineVar(nano_StateSymbol, Rf_ScalarLogical(kpr), env);
@@ -751,10 +751,10 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP dat
 #if defined(R_VERSION) && R_VERSION >= R_Version(4, 1, 0)
   PROTECT(env = R_NewEnv(clo, 0, 5));
 #else
+  PROTECT_INDEX pxi;
   SEXP expr;
-  PROTECT(expr = Rf_lang2(nano_NewEnvSymbol, Rf_ScalarLogical(0)));
-  PROTECT(env = Rf_eval(expr, clo));
-  UNPROTECT(1);
+  PROTECT_WITH_INDEX(expr = Rf_lang2(nano_NewEnvSymbol, Rf_ScalarLogical(0)), &pxi);
+  REPROTECT(env = Rf_eval(expr, clo), pxi);
 #endif
   Rf_defineVar(nano_AioSymbol, aio, env);
   create_activebinding(nano_StatusSymbol, env, clo, 0);
@@ -943,10 +943,10 @@ SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeou
 #if defined(R_VERSION) && R_VERSION >= R_Version(4, 1, 0)
   PROTECT(env = R_NewEnv(clo, 0, 4));
 #else
+  PROTECT_INDEX pxi;
   SEXP expr;
-  PROTECT(expr = Rf_lang2(nano_NewEnvSymbol, Rf_ScalarLogical(0)));
-  PROTECT(env = Rf_eval(expr, clo));
-  UNPROTECT(1);
+  PROTECT_WITH_INDEX(expr = Rf_lang2(nano_NewEnvSymbol, Rf_ScalarLogical(0)), &pxi);
+  REPROTECT(env = Rf_eval(expr, clo), pxi);
 #endif
   Rf_defineVar(nano_AioSymbol, aio, env);
   PROTECT(sendaio = R_MakeExternalPtr(saio, R_NilValue, R_NilValue));

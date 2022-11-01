@@ -499,19 +499,18 @@ SEXP rnng_ctx_close(SEXP context) {
 
 // dialers and listeners -------------------------------------------------------
 
-SEXP rnng_dial(SEXP socket, SEXP url) {
+SEXP rnng_dial(SEXP socket, SEXP url, SEXP autostart) {
 
-  if (TYPEOF(socket) == ENVSXP)
-    socket = Rf_findVarInFrame(socket, nano_SocketSymbol);
   if (R_ExternalPtrTag(socket) != nano_SocketSymbol)
     Rf_error("'socket' is not a valid Socket");
   nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(socket);
   const char *up = CHAR(STRING_ELT(url, 0));
+  const int start = LOGICAL(autostart)[0];
   nng_dialer *dp = R_Calloc(1, nng_dialer);
   int xc;
-  SEXP dialer, klass;
+  SEXP dialer, klass, attr;
 
-  xc = nng_dial(*sock, up, dp, NNG_FLAG_NONBLOCK);
+  xc = start ? nng_dial(*sock, up, dp, NNG_FLAG_NONBLOCK) : nng_dialer_create(dp, *sock, up);
   if (xc) {
     R_Free(dp);
     return mk_werror(xc);
@@ -526,62 +525,39 @@ SEXP rnng_dial(SEXP socket, SEXP url) {
   Rf_classgets(dialer, klass);
   Rf_setAttrib(dialer, nano_IdSymbol, Rf_ScalarInteger((int) dp->id));
   Rf_setAttrib(dialer, nano_UrlSymbol, url);
-  Rf_setAttrib(dialer, nano_StateSymbol, Rf_mkString("started"));
+  if (start)
+    Rf_setAttrib(dialer, nano_StateSymbol, Rf_mkString("started"));
+  else
+    Rf_setAttrib(dialer, nano_StateSymbol, Rf_mkString("not started"));
   Rf_setAttrib(dialer, nano_SocketSymbol, Rf_ScalarInteger((int) sock->id));
 
-  UNPROTECT(2);
-  return dialer;
+  PROTECT_INDEX pxi;
+  attr = Rf_getAttrib(socket, nano_DialerSymbol);
+  R_xlen_t pos = Rf_xlength(attr);
+  if (attr == R_NilValue)
+    attr = Rf_allocVector(VECSXP, 0);
+  PROTECT_WITH_INDEX(attr, &pxi);
+  REPROTECT(attr = Rf_xlengthgets(attr, pos + 1), pxi);
+  SET_VECTOR_ELT(attr, pos, dialer);
+  Rf_setAttrib(socket, nano_DialerSymbol, attr);
+
+  UNPROTECT(3);
+  return nano_success;
 
 }
 
-SEXP rnng_dialer_create(SEXP socket, SEXP url) {
+SEXP rnng_listen(SEXP socket, SEXP url, SEXP autostart) {
 
-  if (TYPEOF(socket) == ENVSXP)
-    socket = Rf_findVarInFrame(socket, nano_SocketSymbol);
   if (R_ExternalPtrTag(socket) != nano_SocketSymbol)
     Rf_error("'socket' is not a valid Socket");
   nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(socket);
   const char *up = CHAR(STRING_ELT(url, 0));
-  nng_dialer *dp = R_Calloc(1, nng_dialer);
-  int xc;
-  SEXP dialer, klass;
-
-  xc = nng_dialer_create(dp, *sock, up);
-  if (xc) {
-    R_Free(dp);
-    return mk_werror(xc);
-  }
-
-  PROTECT(dialer = R_MakeExternalPtr(dp, nano_DialerSymbol, R_NilValue));
-  R_RegisterCFinalizerEx(dialer, dialer_finalizer, TRUE);
-
-  PROTECT(klass = Rf_allocVector(STRSXP, 2));
-  SET_STRING_ELT(klass, 0, Rf_mkChar("nanoDialer"));
-  SET_STRING_ELT(klass, 1, Rf_mkChar("nano"));
-  Rf_classgets(dialer, klass);
-  Rf_setAttrib(dialer, nano_IdSymbol, Rf_ScalarInteger((int) dp->id));
-  Rf_setAttrib(dialer, nano_UrlSymbol, url);
-  Rf_setAttrib(dialer, nano_StateSymbol, Rf_mkString("not started"));
-  Rf_setAttrib(dialer, nano_SocketSymbol, Rf_ScalarInteger((int) sock->id));
-
-  UNPROTECT(2);
-  return dialer;
-
-}
-
-SEXP rnng_listen(SEXP socket, SEXP url) {
-
-  if (TYPEOF(socket) == ENVSXP)
-    socket = Rf_findVarInFrame(socket, nano_SocketSymbol);
-  if (R_ExternalPtrTag(socket) != nano_SocketSymbol)
-    Rf_error("'socket' is not a valid Socket");
-  nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(socket);
-  const char *up = CHAR(STRING_ELT(url, 0));
+  const int start = LOGICAL(autostart)[0];
   nng_listener *lp = R_Calloc(1, nng_listener);
   int xc;
-  SEXP listener, klass;
+  SEXP listener, klass, attr;
 
-  xc = nng_listen(*sock, up, lp, 0);
+  xc = start ? nng_listen(*sock, up, lp, 0) : nng_listener_create(lp, *sock, up);
   if (xc) {
     R_Free(lp);
     return mk_werror(xc);
@@ -596,46 +572,24 @@ SEXP rnng_listen(SEXP socket, SEXP url) {
   Rf_classgets(listener, klass);
   Rf_setAttrib(listener, nano_IdSymbol, Rf_ScalarInteger((int) lp->id));
   Rf_setAttrib(listener, nano_UrlSymbol, url);
-  Rf_setAttrib(listener, nano_StateSymbol, Rf_mkString("started"));
+  if (start)
+    Rf_setAttrib(listener, nano_StateSymbol, Rf_mkString("started"));
+  else
+    Rf_setAttrib(listener, nano_StateSymbol, Rf_mkString("not started"));
   Rf_setAttrib(listener, nano_SocketSymbol, Rf_ScalarInteger((int) sock->id));
 
-  UNPROTECT(2);
-  return listener;
+  PROTECT_INDEX pxi;
+  attr = Rf_getAttrib(socket, nano_ListenerSymbol);
+  R_xlen_t pos = Rf_xlength(attr);
+  if (attr == R_NilValue)
+    attr = Rf_allocVector(VECSXP, 0);
+  PROTECT_WITH_INDEX(attr, &pxi);
+  REPROTECT(attr = Rf_xlengthgets(attr, pos + 1), pxi);
+  SET_VECTOR_ELT(attr, pos, listener);
+  Rf_setAttrib(socket, nano_ListenerSymbol, attr);
 
-}
-
-SEXP rnng_listener_create(SEXP socket, SEXP url) {
-
-  if (TYPEOF(socket) == ENVSXP)
-    socket = Rf_findVarInFrame(socket, nano_SocketSymbol);
-  if (R_ExternalPtrTag(socket) != nano_SocketSymbol)
-    Rf_error("'socket' is not a valid Socket");
-  nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(socket);
-  const char *up = CHAR(STRING_ELT(url, 0));
-  nng_listener *lp = R_Calloc(1, nng_listener);
-  int xc;
-  SEXP listener, klass;
-
-  xc = nng_listener_create(lp, *sock, up);
-  if (xc) {
-    R_Free(lp);
-    return mk_werror(xc);
-  }
-
-  PROTECT(listener = R_MakeExternalPtr(lp, nano_ListenerSymbol, R_NilValue));
-  R_RegisterCFinalizerEx(listener, listener_finalizer, TRUE);
-
-  PROTECT(klass = Rf_allocVector(STRSXP, 2));
-  SET_STRING_ELT(klass, 0, Rf_mkChar("nanoListener"));
-  SET_STRING_ELT(klass, 1, Rf_mkChar("nano"));
-  Rf_classgets(listener, klass);
-  Rf_setAttrib(listener, nano_IdSymbol, Rf_ScalarInteger((int) lp->id));
-  Rf_setAttrib(listener, nano_UrlSymbol, url);
-  Rf_setAttrib(listener, nano_StateSymbol, Rf_mkString("not started"));
-  Rf_setAttrib(listener, nano_SocketSymbol, Rf_ScalarInteger((int) sock->id));
-
-  UNPROTECT(2);
-  return listener;
+  UNPROTECT(3);
+  return nano_success;
 
 }
 
@@ -644,8 +598,8 @@ SEXP rnng_dialer_start(SEXP dialer, SEXP async) {
   if (R_ExternalPtrTag(dialer) != nano_DialerSymbol)
     Rf_error("'dialer' is not a valid Dialer");
   nng_dialer *dial = (nng_dialer *) R_ExternalPtrAddr(dialer);
-  const Rboolean asy = Rf_asLogical(async);
-  int flags = asy == 0 ? 0 : NNG_FLAG_NONBLOCK;
+  const int asy = LOGICAL(async)[0];
+  int flags = asy ? NNG_FLAG_NONBLOCK : 0;
   int xc = nng_dialer_start(*dial, flags);
 
   if (xc)

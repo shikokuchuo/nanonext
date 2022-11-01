@@ -79,16 +79,8 @@
 #'
 #' @export
 #'
-dial <- function(socket,
-                 url = "inproc://nanonext",
-                 autostart = TRUE) {
-
-  res <- if (autostart) .Call(rnng_dial, socket, url) else .Call(rnng_dialer_create, socket, url)
-  is.integer(res) && return(invisible(res))
-  attr(socket, "dialer") <- c(attr(socket, "dialer"), res)
-  invisible(0L)
-
-}
+dial <- function(socket, url = "inproc://nanonext", autostart = TRUE)
+  invisible(.Call(rnng_dial, socket, url, autostart))
 
 #' Listen to an Address from a Socket
 #'
@@ -153,16 +145,8 @@ dial <- function(socket,
 #'
 #' @export
 #'
-listen <- function(socket,
-                   url = "inproc://nanonext",
-                   autostart = TRUE) {
-
-  res <- if (autostart) .Call(rnng_listen, socket, url) else .Call(rnng_listener_create, socket, url)
-  is.integer(res) && return(invisible(res))
-  attr(socket, "listener") <- c(attr(socket, "listener"), res)
-  invisible(0L)
-
-}
+listen <- function(socket, url = "inproc://nanonext", autostart = TRUE)
+  invisible(.Call(rnng_listen, socket, url, autostart))
 
 #' Start Listener/Dialer
 #'

@@ -12,8 +12,8 @@ base64dec(x, convert = TRUE)
 \arguments{
 \item{x}{an object.}
 
-\item{convert}{[default TRUE] whether to convert the output to a character
-string or keep as a raw vector.}
+\item{convert}{[default TRUE] logical value whether to convert the output to
+a character string or keep as a raw vector.}
 }
 \value{
 A raw vector or character string depending on 'convert'.

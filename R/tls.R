@@ -24,8 +24,8 @@
 #' @param x an object.
 #' @param key (optional) supply a secret key to generate an HMAC. If missing or
 #'     NULL, the SHA-256/224/384/512 hash of 'x' is returned.
-#' @param convert [default TRUE] whether to convert the output to a character
-#'     string or keep as a raw vector.
+#' @param convert [default TRUE] logical value whether to convert the output to
+#'     a character string or keep as a raw vector.
 #'
 #' @return A raw vector or character string depending on 'convert', of byte
 #'     length 32 for SHA-256, 28 for SHA-224, 48 for SHA-384, and 64 for SHA-512.
