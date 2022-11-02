@@ -21,13 +21,16 @@
 #' nano cURL - a minimalist http(s) client.
 #'
 #' @param url the URL address.
-#' @param async [default FALSE] logical value whether to perform actions async.
+#' @param async [default FALSE] logical value whether to perform an async request,
+#'     in which case an 'ncurlAio' is returned instead of a list.
 #' @param convert [default TRUE] logical value whether to attempt conversion of
-#'     the received raw bytes to a character vector.
+#'     the received raw bytes to a character vector. Supplying a non-logical
+#'     value will error.
 #' @param follow [default FALSE] logical value whether to automatically follow
-#'     redirects (not applicable for async requests). If FALSE, or for async
-#'     requests, the redirect address is returned as a character string at
-#'     \code{$data} and the HTTP status code will be within the 300 range.
+#'     redirects (ignored for async requests). If FALSE, or for async requests,
+#'     the redirect address is returned as a character string at \code{$data}
+#'     and the HTTP status code will be within the 300 range. Supplying a
+#'     non-logical value will error.
 #' @param method (optional) the HTTP method (defaults to 'GET' if not specified).
 #' @param headers (optional) a named list or character vector specifying the
 #'     HTTP request headers e.g. \code{list(`Content-Type` = "text/plain")} or

@@ -305,7 +305,6 @@ SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP follow, SEXP method, SEXP headers,
 SEXP rnng_stream_dial(SEXP url, SEXP textframes, SEXP pem) {
 
   const char *add = CHAR(STRING_ELT(url, 0));
-  const int mod = LOGICAL(textframes)[0];
   nng_url *up;
   nng_tls_config *cfg = NULL;
   nng_stream_dialer *dp;
@@ -320,11 +319,11 @@ SEXP rnng_stream_dial(SEXP url, SEXP textframes, SEXP pem) {
     goto exitlevel2;
 
   if (!strcmp(up->u_scheme, "ws") || !strcmp(up->u_scheme, "wss")) {
-    if (mod &&
+    frames = LOGICAL(textframes)[0];
+    if (frames &&
         ((xc = nng_stream_dialer_set_bool(dp, "ws:recv-text", 1)) ||
         (xc = nng_stream_dialer_set_bool(dp, "ws:send-text", 1))))
       goto exitlevel3;
-    frames = mod;
   }
 
   if (!strcmp(up->u_scheme, "wss")) {
@@ -397,7 +396,6 @@ SEXP rnng_stream_dial(SEXP url, SEXP textframes, SEXP pem) {
 SEXP rnng_stream_listen(SEXP url, SEXP textframes, SEXP pem) {
 
   const char *add = CHAR(STRING_ELT(url, 0));
-  const int mod = LOGICAL(textframes)[0];
   nng_url *up;
   nng_tls_config *cfg = NULL;
   nng_stream_listener *lp;
@@ -412,11 +410,11 @@ SEXP rnng_stream_listen(SEXP url, SEXP textframes, SEXP pem) {
     goto exitlevel2;
 
   if (!strcmp(up->u_scheme, "ws") || !strcmp(up->u_scheme, "wss")) {
-    if (mod &&
+    frames = LOGICAL(textframes)[0];
+    if (frames &&
         ((xc = nng_stream_listener_set_bool(lp, "ws:recv-text", 1)) ||
         (xc = nng_stream_listener_set_bool(lp, "ws:send-text", 1))))
       goto exitlevel3;
-    frames = mod;
   }
 
   if (!strcmp(up->u_scheme, "wss")) {

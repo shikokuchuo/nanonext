@@ -31,6 +31,7 @@
 #'     (not all transports are supported).
 #' @param textframes [default FALSE] applicable to the websocket transport only,
 #'     enables sending and receiving of TEXT frames (ignored otherwise).
+#'     Supplying a non-logical value will error.
 #' @param pem (optional) applicable to secure websockets only. The path to a
 #'     file containing X.509 certificate(s) in PEM format, comprising the
 #'     certificate authority certificate chain (and revocation list if present).

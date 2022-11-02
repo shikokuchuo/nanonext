@@ -16,7 +16,8 @@ character string e.g. 'ipc:///tmp/anyvalue' or 'tcp://127.0.0.1:5555'
 (not all transports are supported).}
 
 \item{textframes}{[default FALSE] applicable to the websocket transport only,
-enables sending and receiving of TEXT frames (ignored otherwise).}
+enables sending and receiving of TEXT frames (ignored otherwise).
+Supplying a non-logical value will error.}
 
 \item{pem}{(optional) applicable to secure websockets only. The path to a
 file containing X.509 certificate(s) in PEM format, comprising the
