@@ -56,16 +56,12 @@
 #'
 #' @export
 #'
-stream <- function(dial = NULL, listen = NULL, textframes = FALSE, pem = NULL) {
-
-  if (missing(dial)) {
-    missing(listen) && stop("specify a URL for either 'dial' or 'listen'")
-    .Call(rnng_stream_listen, listen, textframes, pem)
-  } else {
-    .Call(rnng_stream_dial, dial, textframes, pem)
-  }
-
-}
+stream <- function(dial = NULL, listen = NULL, textframes = FALSE, pem = NULL)
+  if (length(dial))
+    .Call(rnng_stream_dial, dial, textframes, pem) else
+      if (length(listen))
+        .Call(rnng_stream_listen, listen, textframes, pem) else
+          stop("specify a URL for either 'dial' or 'listen'")
 
 #' @rdname close
 #' @method close nanoStream
