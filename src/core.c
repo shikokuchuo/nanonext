@@ -150,9 +150,9 @@ SEXP nano_encodes(SEXP data, SEXP mode) {
   if (xc == 0)
     return nano_encode(data);
 
-  SEXP expr, out;
-  PROTECT(expr = Rf_lang3(nano_SerialSymbol, data, R_NilValue));
-  out = Rf_eval(expr, R_BaseEnv);
+  SEXP out;
+  PROTECT(out = Rf_lang3(nano_SerialSymbol, data, R_NilValue));
+  out = Rf_eval(out, R_BaseEnv);
   UNPROTECT(1);
 
   return out;
@@ -276,9 +276,8 @@ SEXP nano_decode(unsigned char *buf, size_t sz, const int mod, const int kpr) {
     int tryErr = 0;
     PROTECT(raw = Rf_allocVector(RAWSXP, sz));
     memcpy(RAW(raw), buf, sz);
-    SEXP expr;
-    PROTECT(expr = Rf_lang2(nano_UnserSymbol, raw));
-    data = R_tryEval(expr, R_BaseEnv, &tryErr);
+    PROTECT(data = Rf_lang2(nano_UnserSymbol, raw));
+    data = R_tryEval(data, R_BaseEnv, &tryErr);
     if (tryErr) {
       data = raw;
     }
@@ -531,14 +530,17 @@ SEXP rnng_dial(SEXP socket, SEXP url, SEXP autostart) {
     Rf_setAttrib(dialer, nano_StateSymbol, Rf_mkString("not started"));
   Rf_setAttrib(dialer, nano_SocketSymbol, Rf_ScalarInteger((int) sock->id));
 
-  PROTECT_INDEX pxi;
   attr = Rf_getAttrib(socket, nano_DialerSymbol);
-  R_xlen_t pos = Rf_xlength(attr);
-  if (attr == R_NilValue)
-    attr = Rf_allocVector(VECSXP, 0);
-  PROTECT_WITH_INDEX(attr, &pxi);
-  REPROTECT(attr = Rf_xlengthgets(attr, pos + 1), pxi);
-  SET_VECTOR_ELT(attr, pos, dialer);
+  if (attr == R_NilValue) {
+    PROTECT(attr = Rf_allocVector(VECSXP, 1));
+    SET_VECTOR_ELT(attr, 0, dialer);
+  } else {
+    R_xlen_t pos = Rf_xlength(attr);
+    PROTECT_INDEX pxi;
+    PROTECT_WITH_INDEX(attr, &pxi);
+    REPROTECT(attr = Rf_xlengthgets(attr, pos + 1), pxi);
+    SET_VECTOR_ELT(attr, pos, dialer);
+  }
   Rf_setAttrib(socket, nano_DialerSymbol, attr);
 
   UNPROTECT(3);
@@ -578,14 +580,17 @@ SEXP rnng_listen(SEXP socket, SEXP url, SEXP autostart) {
     Rf_setAttrib(listener, nano_StateSymbol, Rf_mkString("not started"));
   Rf_setAttrib(listener, nano_SocketSymbol, Rf_ScalarInteger((int) sock->id));
 
-  PROTECT_INDEX pxi;
   attr = Rf_getAttrib(socket, nano_ListenerSymbol);
-  R_xlen_t pos = Rf_xlength(attr);
-  if (attr == R_NilValue)
-    attr = Rf_allocVector(VECSXP, 0);
-  PROTECT_WITH_INDEX(attr, &pxi);
-  REPROTECT(attr = Rf_xlengthgets(attr, pos + 1), pxi);
-  SET_VECTOR_ELT(attr, pos, listener);
+  if (attr == R_NilValue) {
+    PROTECT(attr = Rf_allocVector(VECSXP, 1));
+    SET_VECTOR_ELT(attr, 0, listener);
+  } else {
+    R_xlen_t pos = Rf_xlength(attr);
+    PROTECT_INDEX pxi;
+    PROTECT_WITH_INDEX(attr, &pxi);
+    REPROTECT(attr = Rf_xlengthgets(attr, pos + 1), pxi);
+    SET_VECTOR_ELT(attr, pos, listener);
+  }
   Rf_setAttrib(socket, nano_ListenerSymbol, attr);
 
   UNPROTECT(3);

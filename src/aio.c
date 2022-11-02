@@ -516,9 +516,8 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
   PROTECT(env = R_NewEnv(clo, 0, 2));
 #else
   PROTECT_INDEX pxi;
-  SEXP expr;
-  PROTECT_WITH_INDEX(expr = Rf_lang2(nano_NewEnvSymbol, Rf_ScalarLogical(0)), &pxi);
-  REPROTECT(env = Rf_eval(expr, clo), pxi);
+  PROTECT_WITH_INDEX(env = Rf_lang2(nano_NewEnvSymbol, Rf_ScalarLogical(0)), &pxi);
+  REPROTECT(env = Rf_eval(env, clo), pxi);
 #endif
   Rf_defineVar(nano_AioSymbol, aio, env);
   PROTECT(fun = Rf_allocSExp(CLOSXP));
@@ -628,9 +627,8 @@ SEXP rnng_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP keep, SEXP bytes, SEX
   PROTECT(env = R_NewEnv(clo, 0, 4));
 #else
   PROTECT_INDEX pxi;
-  SEXP expr;
-  PROTECT_WITH_INDEX(expr = Rf_lang2(nano_NewEnvSymbol, Rf_ScalarLogical(0)), &pxi);
-  REPROTECT(env = Rf_eval(expr, clo), pxi);
+  PROTECT_WITH_INDEX(env = Rf_lang2(nano_NewEnvSymbol, Rf_ScalarLogical(0)), &pxi);
+  REPROTECT(env = Rf_eval(env, clo), pxi);
 #endif
   Rf_defineVar(nano_AioSymbol, aio, env);
   Rf_defineVar(nano_StateSymbol, Rf_ScalarLogical(kpr), env);
@@ -752,9 +750,8 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP dat
   PROTECT(env = R_NewEnv(clo, 0, 5));
 #else
   PROTECT_INDEX pxi;
-  SEXP expr;
-  PROTECT_WITH_INDEX(expr = Rf_lang2(nano_NewEnvSymbol, Rf_ScalarLogical(0)), &pxi);
-  REPROTECT(env = Rf_eval(expr, clo), pxi);
+  PROTECT_WITH_INDEX(env = Rf_lang2(nano_NewEnvSymbol, Rf_ScalarLogical(0)), &pxi);
+  REPROTECT(env = Rf_eval(env, clo), pxi);
 #endif
   Rf_defineVar(nano_AioSymbol, aio, env);
   create_activebinding(nano_StatusSymbol, env, clo, 0);
@@ -817,7 +814,7 @@ SEXP rnng_aio_http(SEXP env, SEXP response, SEXP which) {
 
   void *dat;
   size_t sz;
-  SEXP vec, cvec, rvec;
+  SEXP vec, cvec = R_NilValue, rvec = R_NilValue;
   nano_handle *handle = (nano_handle *) haio->data;
 
   uint16_t code = nng_http_res_get_status(handle->res);
@@ -849,8 +846,6 @@ SEXP rnng_aio_http(SEXP env, SEXP response, SEXP which) {
       break;
     }
     UNPROTECT(1);
-  } else {
-    rvec = R_NilValue;
   }
   Rf_defineVar(nano_IdSymbol, rvec, ENCLOS(env));
 
@@ -867,8 +862,6 @@ SEXP rnng_aio_http(SEXP env, SEXP response, SEXP which) {
     PROTECT(expr = Rf_lang2(nano_RtcSymbol, vec));
     cvec = R_tryEvalSilent(expr, R_BaseEnv, &xc);
     UNPROTECT(1);
-  } else {
-    cvec = R_NilValue;
   }
   Rf_defineVar(nano_ProtocolSymbol, cvec, ENCLOS(env));
 
@@ -944,9 +937,8 @@ SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeou
   PROTECT(env = R_NewEnv(clo, 0, 4));
 #else
   PROTECT_INDEX pxi;
-  SEXP expr;
-  PROTECT_WITH_INDEX(expr = Rf_lang2(nano_NewEnvSymbol, Rf_ScalarLogical(0)), &pxi);
-  REPROTECT(env = Rf_eval(expr, clo), pxi);
+  PROTECT_WITH_INDEX(env = Rf_lang2(nano_NewEnvSymbol, Rf_ScalarLogical(0)), &pxi);
+  REPROTECT(env = Rf_eval(env, clo), pxi);
 #endif
   Rf_defineVar(nano_AioSymbol, aio, env);
   PROTECT(sendaio = R_MakeExternalPtr(saio, R_NilValue, R_NilValue));

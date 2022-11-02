@@ -222,7 +222,7 @@ SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP follow, SEXP method, SEXP headers,
     return rnng_ncurl(Rf_mkString(nng_http_res_get_header(res, "Location")),
                       convert, follow, method, headers, data, response, pem);
 
-  SEXP out, vec, cvec, rvec;
+  SEXP out, vec, cvec = R_NilValue, rvec = R_NilValue;
   void *dat;
   size_t sz;
   const char *names[] = {"status", "headers", "raw", "data", ""};
@@ -256,8 +256,6 @@ SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP follow, SEXP method, SEXP headers,
       break;
     }
     UNPROTECT(1);
-  } else {
-    rvec = R_NilValue;
   }
   SET_VECTOR_ELT(out, 1, rvec);
 
@@ -273,8 +271,6 @@ SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP follow, SEXP method, SEXP headers,
     PROTECT(expr = Rf_lang2(nano_RtcSymbol, vec));
     cvec = R_tryEvalSilent(expr, R_BaseEnv, &xc);
     UNPROTECT(1);
-  } else {
-    cvec = R_NilValue;
   }
   SET_VECTOR_ELT(out, 3, cvec);
 
