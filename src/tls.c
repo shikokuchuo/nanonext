@@ -139,7 +139,7 @@ SEXP rnng_sha224(SEXP x, SEXP key, SEXP convert) {
   if (xc)
     Rf_error("error generating hash");
 
-  if (Rf_asLogical(convert)) {
+  if (LOGICAL(convert)[0]) {
 
     SEXP vec;
     PROTECT(vec = Rf_allocVector(RAWSXP, SHA224_KEY_SIZE));
@@ -187,7 +187,7 @@ SEXP rnng_sha256(SEXP x, SEXP key, SEXP convert) {
   if (xc)
     Rf_error("error generating hash");
 
-  if (Rf_asLogical(convert)) {
+  if (LOGICAL(convert)[0]) {
 
     SEXP vec;
     PROTECT(vec = Rf_allocVector(RAWSXP, SHA256_KEY_SIZE));
@@ -239,7 +239,7 @@ SEXP rnng_sha384(SEXP x, SEXP key, SEXP convert) {
   if (xc)
     Rf_error("error generating hash");
 
-  if (Rf_asLogical(convert)) {
+  if (LOGICAL(convert)[0]) {
 
     SEXP vec;
     PROTECT(vec = Rf_allocVector(RAWSXP, SHA384_KEY_SIZE));
@@ -287,7 +287,7 @@ SEXP rnng_sha512(SEXP x, SEXP key, SEXP convert) {
   if (xc)
     Rf_error("error generating hash");
 
-  if (Rf_asLogical(convert)) {
+  if (LOGICAL(convert)[0]) {
 
     SEXP vec;
     PROTECT(vec = Rf_allocVector(RAWSXP, SHA512_KEY_SIZE));
@@ -311,7 +311,7 @@ SEXP rnng_sha512(SEXP x, SEXP key, SEXP convert) {
 SEXP rnng_base64enc(SEXP x, SEXP convert) {
 
   SEXP out;
-  int xc = 0;
+  int xc;
   size_t olen;
 
   nano_hash hash = nano_anytoraw(x);
@@ -322,7 +322,7 @@ SEXP rnng_base64enc(SEXP x, SEXP convert) {
   if (xc)
     Rf_error("invalid input");
 
-  if (Rf_asLogical(convert)) {
+  if (LOGICAL(convert)[0]) {
 
     SEXP vec;
     PROTECT(vec = Rf_allocVector(RAWSXP, olen));
@@ -344,7 +344,7 @@ SEXP rnng_base64enc(SEXP x, SEXP convert) {
 SEXP rnng_base64dec(SEXP x, SEXP convert) {
 
   SEXP out;
-  int xc = 0;
+  int xc;
   size_t olen;
 
   nano_hash hash = nano_anytoraw(x);
@@ -357,7 +357,7 @@ SEXP rnng_base64dec(SEXP x, SEXP convert) {
   if (xc)
     Rf_error("invalid input");
 
-  if (Rf_asLogical(convert)) {
+  if (LOGICAL(convert)[0]) {
 
     SEXP vec;
     vec = PROTECT(Rf_allocVector(RAWSXP, olen));

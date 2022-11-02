@@ -125,7 +125,7 @@ SEXP nano_encode(SEXP object) {
 
 SEXP nano_encodes(SEXP data, SEXP mode) {
 
-  int xc = 0;
+  int xc;
   if (TYPEOF(mode) == INTSXP) {
     xc = INTEGER(mode)[0] == 1 ? 1 : 0;
   } else {
@@ -144,6 +144,7 @@ SEXP nano_encodes(SEXP data, SEXP mode) {
       if (!strncmp(s, mod, slen)) { xc = 1; break; }
     default:
       Rf_error("'mode' should be one of serial, raw");
+      xc = 0;
     }
   }
 
@@ -194,7 +195,7 @@ int nano_matcharg(SEXP mode) {
   size_t slen = strlen(mod);
   const char s[] = "serial", ch[] = "character", co[] = "complex", d[] = "double",
     i[] = "integer", l[] = "logical", n[] = "numeric", r[] = "raw";
-  int xc = 0;
+  int xc;
 
   switch (slen) {
   case 1:
@@ -218,6 +219,7 @@ int nano_matcharg(SEXP mode) {
     if (!strncmp(ch, mod, slen)) { xc = 2; break; }
   default:
     Rf_error("'mode' should be one of serial, character, complex, double, integer, logical, numeric, raw");
+    xc = 0;
   }
 
   return xc;
@@ -239,7 +241,7 @@ int nano_matchargs(SEXP mode) {
   size_t slen = strlen(mod);
   const char ch[] = "character", co[] = "complex", d[] = "double",
     i[] = "integer", l[] = "logical", n[] = "numeric", r[] = "raw";
-  int xc = 0;
+  int xc;
 
   switch (slen) {
   case 1:
@@ -262,6 +264,7 @@ int nano_matchargs(SEXP mode) {
     if (!strncmp(ch, mod, slen)) { xc = 2; break; }
   default:
     Rf_error("'mode' should be one of character, complex, double, integer, logical, numeric, raw");
+    xc = 0;
   }
 
   return xc;
@@ -391,7 +394,7 @@ static int matchtype(SEXP type) {
   const char *typ = CHAR(STRING_ELT(type, 0));
   size_t slen = strlen(typ);
   const char *b = "bool", *i = "int", *m = "ms", *si = "size", *st = "string", *u = "uint64";
-  int xc = 0;
+  int xc;
 
   switch (slen) {
   case 1:
@@ -409,7 +412,8 @@ static int matchtype(SEXP type) {
     if (!strncmp(st, typ, slen)) { xc = 5; break; }
     if (!strncmp(u, typ, slen)) { xc = 6; break; }
   default:
-      Rf_error("'type' should be one of bool, int, ms, size, string, uint64");
+    Rf_error("'type' should be one of bool, int, ms, size, string, uint64");
+    xc = 0;
   }
 
   return xc;
@@ -458,7 +462,7 @@ SEXP rnng_ctx_open(SEXP socket) {
   nng_ctx *ctxp = R_Calloc(1, nng_ctx);
   SEXP context, klass;
 
-  int xc = nng_ctx_open(ctxp, *sock);
+  const int xc = nng_ctx_open(ctxp, *sock);
   if (xc) {
     R_Free(ctxp);
     ERROR_OUT(xc);
@@ -486,7 +490,7 @@ SEXP rnng_ctx_close(SEXP context) {
   if (R_ExternalPtrTag(context) != nano_ContextSymbol)
     Rf_error("'context' is not a valid Context");
   nng_ctx *ctxp = (nng_ctx *) R_ExternalPtrAddr(context);
-  int xc = nng_ctx_close(*ctxp);
+  const int xc = nng_ctx_close(*ctxp);
 
   if (xc)
     return mk_werror(xc);
@@ -506,10 +510,9 @@ SEXP rnng_dial(SEXP socket, SEXP url, SEXP autostart) {
   const char *up = CHAR(STRING_ELT(url, 0));
   const int start = LOGICAL(autostart)[0];
   nng_dialer *dp = R_Calloc(1, nng_dialer);
-  int xc;
   SEXP dialer, klass, attr;
 
-  xc = start ? nng_dial(*sock, up, dp, NNG_FLAG_NONBLOCK) : nng_dialer_create(dp, *sock, up);
+  const int xc = start ? nng_dial(*sock, up, dp, NNG_FLAG_NONBLOCK) : nng_dialer_create(dp, *sock, up);
   if (xc) {
     R_Free(dp);
     return mk_werror(xc);
@@ -556,10 +559,9 @@ SEXP rnng_listen(SEXP socket, SEXP url, SEXP autostart) {
   const char *up = CHAR(STRING_ELT(url, 0));
   const int start = LOGICAL(autostart)[0];
   nng_listener *lp = R_Calloc(1, nng_listener);
-  int xc;
   SEXP listener, klass, attr;
 
-  xc = start ? nng_listen(*sock, up, lp, 0) : nng_listener_create(lp, *sock, up);
+  const int xc = start ? nng_listen(*sock, up, lp, 0) : nng_listener_create(lp, *sock, up);
   if (xc) {
     R_Free(lp);
     return mk_werror(xc);
@@ -603,10 +605,8 @@ SEXP rnng_dialer_start(SEXP dialer, SEXP async) {
   if (R_ExternalPtrTag(dialer) != nano_DialerSymbol)
     Rf_error("'dialer' is not a valid Dialer");
   nng_dialer *dial = (nng_dialer *) R_ExternalPtrAddr(dialer);
-  const int asy = LOGICAL(async)[0];
-  int flags = asy ? NNG_FLAG_NONBLOCK : 0;
-  int xc = nng_dialer_start(*dial, flags);
-
+  const int flags = LOGICAL(async)[0] ? NNG_FLAG_NONBLOCK : 0;
+  const int xc = nng_dialer_start(*dial, flags);
   if (xc)
     return mk_werror(xc);
 
@@ -620,8 +620,7 @@ SEXP rnng_listener_start(SEXP listener) {
   if (R_ExternalPtrTag(listener) != nano_ListenerSymbol)
     Rf_error("'listener' is not a valid Listener");
   nng_listener *list = (nng_listener *) R_ExternalPtrAddr(listener);
-  int xc = nng_listener_start(*list, 0);
-
+  const int xc = nng_listener_start(*list, 0);
   if (xc)
     return mk_werror(xc);
 
@@ -635,8 +634,7 @@ SEXP rnng_dialer_close(SEXP dialer) {
   if (R_ExternalPtrTag(dialer) != nano_DialerSymbol)
     Rf_error("'dialer' is not a valid Dialer");
   nng_dialer *dial = (nng_dialer *) R_ExternalPtrAddr(dialer);
-  int xc = nng_dialer_close(*dial);
-
+  const int xc = nng_dialer_close(*dial);
   if (xc)
     return mk_werror(xc);
 
@@ -650,8 +648,7 @@ SEXP rnng_listener_close(SEXP listener) {
   if (R_ExternalPtrTag(listener) != nano_ListenerSymbol)
     Rf_error("'listener' is not a valid Listener");
   nng_listener *list = (nng_listener *) R_ExternalPtrAddr(listener);
-  int xc = nng_listener_close(*list);
-
+  const int xc = nng_listener_close(*list);
   if (xc)
     return mk_werror(xc);
 

@@ -20,7 +20,7 @@ including any name resolution, is to be made asynchronously. This helps
 an application be more resilient, but it also generally makes diagnosing
 failures somewhat more difficult.  If FALSE, failure, such as if the
 connection is refused, will be returned immediately, and no further
-action will be taken.}
+action will be taken. Supplying a non-logical value will error.}
 }
 \value{
 Invisibly, an integer exit code (zero on success).

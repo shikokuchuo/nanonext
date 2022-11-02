@@ -22,7 +22,8 @@ sha512(x, key = NULL, convert = TRUE)
 NULL, the SHA-256/224/384/512 hash of 'x' is returned.}
 
 \item{convert}{[default TRUE] logical value whether to convert the output to
-a character string or keep as a raw vector.}
+a character string or keep as a raw vector. Supplying a non-logical value
+will error.}
 }
 \value{
 A raw vector or character string depending on 'convert', of byte

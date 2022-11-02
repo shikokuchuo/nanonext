@@ -29,7 +29,8 @@ available), or else an integer value specifying the maximum time to block
 in milliseconds, after which the operation will time out.}
 
 \item{keep.raw}{[default FALSE] logical flag whether to keep and return the
-received raw vector along with the converted data.}
+received raw vector along with the converted data. Supplying a non-logical
+value will error.}
 
 \item{n}{[default 65536L] applicable to Streams only, the maximum number of
 bytes to receive. Can be an over-estimate, but note that a buffer of this

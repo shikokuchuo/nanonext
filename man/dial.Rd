@@ -14,8 +14,9 @@ transport and address as a character string e.g. 'inproc://anyvalue' or
 'tcp://127.0.0.1:5555' (see \link{transports}).}
 
 \item{autostart}{[default TRUE] whether to start the dialer. Set to FALSE if
-you wish to set configuration options on the dialer as it is not
-generally possible to change these once started.}
+setting configuration options on the dialer as it is not generally
+possible to change these once started. Supplying a non-logical value will
+error.}
 }
 \value{
 Invisibly, an integer exit code (zero on success). A new Dialer

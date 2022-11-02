@@ -119,8 +119,9 @@ SEXP rnng_protocol_open(SEXP protocol, SEXP raw) {
       break;
     }
   default:
-    xc = -1;
+    R_Free(sock);
     Rf_error("'protocol' should be one of bus, pair, push, pull, pub, sub, req, rep, surveyor, respondent");
+    xc = 0;
   }
 
   if (xc) {
@@ -150,7 +151,6 @@ SEXP rnng_close(SEXP socket) {
     Rf_error("'socket' is not a valid Socket");
   nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(socket);
   const int xc = nng_close(*sock);
-
   if (xc)
     return mk_werror(xc);
 

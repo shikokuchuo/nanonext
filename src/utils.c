@@ -218,7 +218,7 @@ SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP follow, SEXP method, SEXP headers,
 
   code = nng_http_res_get_status(res);
 
-  if (code >= 300 && code < 400 && Rf_asLogical(follow))
+  if (code >= 300 && code < 400 && LOGICAL(follow)[0])
     return rnng_ncurl(Rf_mkString(nng_http_res_get_header(res, "Location")),
                       convert, follow, method, headers, data, response, pem);
 
@@ -266,7 +266,7 @@ SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP follow, SEXP method, SEXP headers,
 
   if (code >= 300 && code < 400) {
     cvec = Rf_mkString(nng_http_res_get_header(res, "Location"));
-  } else if (Rf_asLogical(convert)) {
+  } else if (LOGICAL(convert)[0]) {
     SEXP expr;
     PROTECT(expr = Rf_lang2(nano_RtcSymbol, vec));
     cvec = R_tryEvalSilent(expr, R_BaseEnv, &xc);

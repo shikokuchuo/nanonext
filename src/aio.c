@@ -667,7 +667,7 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP dat
 
   haio->type = HTTP_AIO;
   haio->data = handle;
-  haio->mode = Rf_asLogical(convert);
+  haio->mode = LOGICAL(convert)[0];
   handle->cfg = NULL;
 
   if ((xc = nng_url_parse(&handle->url, httr)))
@@ -945,7 +945,7 @@ SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeou
   R_RegisterCFinalizerEx(sendaio, saio_finalizer, TRUE);
   R_MakeWeakRef(aio, sendaio, R_NilValue, TRUE);
 
-  const int kpr = Rf_asLogical(keep);
+  const int kpr = LOGICAL(keep)[0];
   Rf_defineVar(nano_StateSymbol, Rf_ScalarLogical(kpr), env);
 
   PROTECT(datafun = Rf_allocSExp(CLOSXP));

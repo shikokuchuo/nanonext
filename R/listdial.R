@@ -25,8 +25,9 @@
 #'     transport and address as a character string e.g. 'inproc://anyvalue' or
 #'     'tcp://127.0.0.1:5555' (see \link{transports}).
 #' @param autostart [default TRUE] whether to start the dialer. Set to FALSE if
-#'     you wish to set configuration options on the dialer as it is not
-#'     generally possible to change these once started.
+#'     setting configuration options on the dialer as it is not generally
+#'     possible to change these once started. Supplying a non-logical value will
+#'     error.
 #'
 #' @return Invisibly, an integer exit code (zero on success). A new Dialer
 #'     (object of class 'nanoDialer' and 'nano') is created and bound to the
@@ -91,8 +92,9 @@ dial <- function(socket, url = "inproc://nanonext", autostart = TRUE)
 #'     the transport and address as a character string e.g. 'inproc://anyvalue'
 #'     or 'tcp://127.0.0.1:5555' (see \link{transports}).
 #' @param autostart [default TRUE] whether to start the listener. Set to FALSE
-#'     if you wish to set configuration options on the listener as it is not
-#'     generally possible to change these once started.
+#'     if setting configuration options on the listener as it is not generally
+#'     possible to change these once started. Supplying a non-logical value will
+#'     error.
 #'
 #' @return Invisibly, an integer exit code (zero on success). A new Listener
 #'     (object of class 'nanoListener' and 'nano') is created and bound to the
@@ -158,7 +160,7 @@ listen <- function(socket, url = "inproc://nanonext", autostart = TRUE)
 #'     an application be more resilient, but it also generally makes diagnosing
 #'     failures somewhat more difficult.  If FALSE, failure, such as if the
 #'     connection is refused, will be returned immediately, and no further
-#'     action will be taken.
+#'     action will be taken. Supplying a non-logical value will error.
 #' @param ... not used.
 #'
 #' @return Invisibly, an integer exit code (zero on success).
