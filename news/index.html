@@ -77,6 +77,7 @@
 <code><a href="../reference/nano.html">nano()</a></code> now creates a nano object with method <code>$context_open()</code> for applicable protocols. Opening a context will attach a context at <code>$context</code> and a <code>$context_close()</code> method. When a context is active, all object methods use the context instead of the socket. Method <code>$socket_setopt()</code> renamed to <code>$setopt()</code> as it can be used on the socket or active context as applicable.</li>
 <li>
 <code><a href="../reference/listen.html">listen()</a></code> and <code><a href="../reference/dial.html">dial()</a></code> now only take a socket as argument; for nano objects, the <code>$listen()</code> and <code>$dial()</code> methods must be used instead.</li>
+<li>Non-logical values supplied to logical arguments will now error across the package. This is documented for each function where this is applicable.</li>
 </ul><p><em>Other changes:</em></p>
 <ul><li>Fixes bug introduced in 0.6.0 where Aios returning ‘errorValues’ are not cached with the class, returning only integer values when accessed subsequently.</li>
 <li>Fixes potential crash when <code><a href="../reference/base64enc.html">base64dec()</a></code> encounters invalid input data.</li>
