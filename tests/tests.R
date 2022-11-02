@@ -246,7 +246,7 @@ nanotestnn(put1$raw)
 nanotestnn(put1$data)
 put2 <- ncurl("http://httpbin.org/put", async = TRUE, method = "PUT", headers = list(Authorization = "Bearer token"), response = list("date", "server"))
 put2
-nanotest(is.list(call_aio(put2)$headers))
+nanotest(is.integer(call_aio(put2)$status))
 nanotest(is.null(stop_aio(put2)))
 nanotest(is_error_value(ncurl("http")$raw))
 nanotest(is_error_value(ncurl("http", async = TRUE)$data))
