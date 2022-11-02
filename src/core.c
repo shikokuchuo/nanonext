@@ -510,7 +510,7 @@ SEXP rnng_dial(SEXP socket, SEXP url, SEXP autostart) {
   const char *up = CHAR(STRING_ELT(url, 0));
   const int start = LOGICAL(autostart)[0];
   nng_dialer *dp = R_Calloc(1, nng_dialer);
-  SEXP dialer, klass, attr;
+  SEXP dialer, klass, attr, newattr;
 
   const int xc = start ? nng_dial(*sock, up, dp, NNG_FLAG_NONBLOCK) : nng_dialer_create(dp, *sock, up);
   if (xc) {
@@ -535,16 +535,16 @@ SEXP rnng_dial(SEXP socket, SEXP url, SEXP autostart) {
 
   attr = Rf_getAttrib(socket, nano_DialerSymbol);
   if (attr == R_NilValue) {
-    PROTECT(attr = Rf_allocVector(VECSXP, 1));
-    SET_VECTOR_ELT(attr, 0, dialer);
+    PROTECT(newattr = Rf_allocVector(VECSXP, 1));
+    SET_VECTOR_ELT(newattr, 0, dialer);
   } else {
-    R_xlen_t pos = Rf_xlength(attr);
-    PROTECT_INDEX pxi;
-    PROTECT_WITH_INDEX(attr, &pxi);
-    REPROTECT(attr = Rf_xlengthgets(attr, pos + 1), pxi);
-    SET_VECTOR_ELT(attr, pos, dialer);
+    R_xlen_t xlen = Rf_xlength(attr);
+    PROTECT(newattr = Rf_allocVector(VECSXP, xlen + 1));
+    for (R_xlen_t i = 0; i < xlen; i++)
+      SET_VECTOR_ELT(newattr, i, VECTOR_ELT(attr, i));
+    SET_VECTOR_ELT(newattr, xlen, dialer);
   }
-  Rf_setAttrib(socket, nano_DialerSymbol, attr);
+  Rf_setAttrib(socket, nano_DialerSymbol, newattr);
 
   UNPROTECT(3);
   return nano_success;
@@ -559,7 +559,7 @@ SEXP rnng_listen(SEXP socket, SEXP url, SEXP autostart) {
   const char *up = CHAR(STRING_ELT(url, 0));
   const int start = LOGICAL(autostart)[0];
   nng_listener *lp = R_Calloc(1, nng_listener);
-  SEXP listener, klass, attr;
+  SEXP listener, klass, attr, newattr;
 
   const int xc = start ? nng_listen(*sock, up, lp, 0) : nng_listener_create(lp, *sock, up);
   if (xc) {
@@ -584,16 +584,16 @@ SEXP rnng_listen(SEXP socket, SEXP url, SEXP autostart) {
 
   attr = Rf_getAttrib(socket, nano_ListenerSymbol);
   if (attr == R_NilValue) {
-    PROTECT(attr = Rf_allocVector(VECSXP, 1));
-    SET_VECTOR_ELT(attr, 0, listener);
+    PROTECT(newattr = Rf_allocVector(VECSXP, 1));
+    SET_VECTOR_ELT(newattr, 0, listener);
   } else {
-    R_xlen_t pos = Rf_xlength(attr);
-    PROTECT_INDEX pxi;
-    PROTECT_WITH_INDEX(attr, &pxi);
-    REPROTECT(attr = Rf_xlengthgets(attr, pos + 1), pxi);
-    SET_VECTOR_ELT(attr, pos, listener);
+    R_xlen_t xlen = Rf_xlength(attr);
+    PROTECT(newattr = Rf_allocVector(VECSXP, xlen + 1));
+    for (R_xlen_t i = 0; i < xlen; i++)
+      SET_VECTOR_ELT(newattr, i, VECTOR_ELT(attr, i));
+    SET_VECTOR_ELT(newattr, xlen, listener);
   }
-  Rf_setAttrib(socket, nano_ListenerSymbol, attr);
+  Rf_setAttrib(socket, nano_ListenerSymbol, newattr);
 
   UNPROTECT(3);
   return nano_success;

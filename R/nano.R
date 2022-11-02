@@ -102,8 +102,9 @@ nano <- function(protocol = c("bus", "pair", "push", "pull", "pub", "sub",
                                                                   opt = opt,
                                                                   value = value))
       if (!autostart) nano[["dialer_start"]] <- function(async = TRUE) {
-        rm("dialer_start", envir = nano)
-        start(.subset2(nano, "dialer")[[1L]], async = async)
+        s <- start(.subset2(nano, "dialer")[[1L]], async = async)
+        if (s == 0L) rm("dialer_start", envir = nano)
+        invisible(s)
       }
     }
   }
@@ -121,8 +122,9 @@ nano <- function(protocol = c("bus", "pair", "push", "pull", "pub", "sub",
                                                                     opt = opt,
                                                                     value = value))
       if (!autostart) nano[["listener_start"]] <- function() {
-        rm("listener_start", envir = nano)
-        start(.subset2(nano, "listener")[[1L]])
+        s <- start(.subset2(nano, "listener")[[1L]])
+        if (s == 0L) rm("listener_start", envir = nano)
+        invisible(s)
       }
     }
   }
@@ -142,8 +144,9 @@ nano <- function(protocol = c("bus", "pair", "push", "pull", "pub", "sub",
                                                                   opt = opt,
                                                                   value = value))
       if (!autostart) nano[["dialer_start"]] <- function(async = TRUE) {
-        rm("dialer_start", envir = nano)
-        start((d <- .subset2(nano, "dialer"))[[length(d)]], async = async)
+        s <- start((d <- .subset2(nano, "dialer"))[[length(d)]], async = async)
+        if (s == 0L) rm("dialer_start", envir = nano)
+        invisible(s)
       }
     }
     invisible(r)
@@ -162,8 +165,9 @@ nano <- function(protocol = c("bus", "pair", "push", "pull", "pub", "sub",
                                                                     opt = opt,
                                                                     value = value))
       if (!autostart) nano[["listener_start"]] <- function() {
-        rm("listener_start", envir = nano)
-        start((l <- .subset2(nano, "listener"))[[length(l)]])
+        s <- start((l <- .subset2(nano, "listener"))[[length(l)]])
+        if (s == 0L) rm("listener_start", envir = nano)
+        invisible(s)
       }
     }
     invisible(r)
