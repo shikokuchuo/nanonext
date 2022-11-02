@@ -68,17 +68,19 @@ nanotestz(n1$send(c(1L, 0L, 0L), mode = "r"))
 nanotest(is.list(n$recv("int", keep.raw = TRUE)))
 saio <- n$send_aio(data.frame(), timeout = 500)
 saio
-nanotest(is_aio(saio))
-nanotest(!is_nano(saio))
 nanotestnn(saio[["aio"]])
+nanotest(is_aio(call_aio(saio)))
+nanotestn(saio[["aio"]])
+nanotest(!is_nano(saio))
 nanotest(is.integer(saio$result))
 nanotesterr(n$send("wrong mode", mode = "none"), "mode")
 raio <- n1$recv_aio(timeout = 500, keep.raw = TRUE)
 raio
 raio$newfield <- "doesnotwork"
 nanotestn(raio$newfield)
-nanotest(is_aio(raio))
 nanotestnn(raio[["aio"]])
+nanotest(is_aio(call_aio(raio)))
+nanotestn(raio[["aio"]])
 nanotest(identical(unserialize(raio$raw), raio$data))
 saio <- n$send_aio(c(1.1, 2.2), mode = "raw", timeout = 500)
 saio$newfield <- "doesnotwork"
