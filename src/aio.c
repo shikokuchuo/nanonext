@@ -203,8 +203,6 @@ SEXP rnng_aio_result(SEXP env) {
   if (nng_aio_busy(aiop->aio))
     return nano_unresolved;
 
-  Rf_defineVar(nano_AioSymbol, R_NilValue, env);
-
   if (aiop->result)
     return mk_error_saio(aiop->result, env);
 
@@ -229,8 +227,6 @@ SEXP rnng_aio_get_msgraw(SEXP env) {
 
   if (nng_aio_busy(raio->aio))
     return nano_unresolved;
-
-  Rf_defineVar(nano_AioSymbol, R_NilValue, env);
 
   if (raio->result)
     return mk_error_raio(raio->result, env);
@@ -275,8 +271,6 @@ SEXP rnng_aio_get_msgdata(SEXP env) {
 
   if (nng_aio_busy(raio->aio))
     return nano_unresolved;
-
-  Rf_defineVar(nano_AioSymbol, R_NilValue, env);
 
   if (raio->result)
     return mk_error_raio(raio->result, env);
@@ -806,8 +800,6 @@ SEXP rnng_aio_http(SEXP env, SEXP response, SEXP which) {
 
   if (nng_aio_busy(haio->aio))
     return nano_unresolved;
-
-  Rf_defineVar(nano_AioSymbol, R_NilValue, env);
 
   if (haio->result)
     return mk_error_haio(haio->result, env);
