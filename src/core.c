@@ -43,11 +43,11 @@ SEXP mk_error_recv(const int xc) {
   SEXP out, err;
   const char *names[] = {"raw", "data", ""};
   PROTECT(out = Rf_mkNamed(VECSXP, names));
-  PROTECT(err = Rf_ScalarInteger(xc));
+  err = Rf_ScalarInteger(xc);
   Rf_classgets(err, nano_error);
   SET_VECTOR_ELT(out, 0, err);
   SET_VECTOR_ELT(out, 1, err);
-  UNPROTECT(2);
+  UNPROTECT(1);
   return out;
 
 }
@@ -57,11 +57,11 @@ SEXP mk_error_ncurl(const int xc) {
   SEXP out, err;
   const char *names[] = {"status", "headers", "raw", "data", ""};
   PROTECT(out = Rf_mkNamed(VECSXP, names));
-  PROTECT(err = Rf_ScalarInteger(xc));
+  err = Rf_ScalarInteger(xc);
   Rf_classgets(err, nano_error);
   for (int i = 0; i < 4; i++)
     SET_VECTOR_ELT(out, i, err);
-  UNPROTECT(2);
+  UNPROTECT(1);
   return out;
 
 }
