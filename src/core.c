@@ -21,7 +21,7 @@
 
 // internals -------------------------------------------------------------------
 
-SEXP mk_error(const int xc) {
+static SEXP mk_error(const int xc) {
 
   SEXP err = Rf_ScalarInteger(xc);
   Rf_classgets(err, nano_error);
@@ -73,7 +73,7 @@ SEXP nano_encode(SEXP object) {
   SEXP out;
 
   if (!Rf_isVectorAtomic(object))
-    Rf_error("'data' is not an atomic vector type");
+    Rf_error("'data' must be an atomic vector type to send in mode 'raw'");
   if (TYPEOF(object) == STRSXP) {
     const char *s;
     unsigned char *buf;
@@ -127,7 +127,7 @@ SEXP nano_encodes(SEXP data, SEXP mode) {
 
   int xc;
   if (TYPEOF(mode) == INTSXP) {
-    xc = INTEGER(mode)[0] == 1 ? 1 : 0;
+    xc = INTEGER(mode)[0];
   } else {
     const char *mod = CHAR(STRING_ELT(mode, 0));
     size_t slen = strlen(mod);
@@ -137,7 +137,7 @@ SEXP nano_encodes(SEXP data, SEXP mode) {
     case 1:
     case 2:
     case 3:
-      if (!strncmp(r, mod, slen)) { xc = 0; break; }
+      if (!strncmp(r, mod, slen)) { xc = 2; break; }
     case 4:
     case 5:
     case 6:
@@ -148,7 +148,7 @@ SEXP nano_encodes(SEXP data, SEXP mode) {
     }
   }
 
-  if (xc == 0)
+  if (xc != 1)
     return nano_encode(data);
 
   SEXP out;

@@ -13,10 +13,10 @@
 * `nano_init()` is deprecated due to the above change in behaviour.
 * `send()` no longer has a '...' argument. This has had no effect since 0.6.0, but will now error if additional arguments are provided (please check and remove previous uses of the argument 'echo'). Also no longer returns invisibly for consistency with `recv()`.
 * `recv()` and `recv_aio()` now return an integer 'errorValue' at each of `$raw` and `$data` when 'keep.raw' is set to TRUE, ensuring stability of return types.
-* `ncurl()` now returns an integer 'errorValue' at each of `$status`, `$headers`, `$raw` and `$data` for both sync and async, ensuring stability of return types. Where 'follow' is set to FALSE, or for all async requests, the redirect address is now returned as a character string at `$data`.
-* `nano()` now creates a nano object with method `$context_open()` for applicable protocols. Opening a context will attach a context at `$context` and a `$context_close()` method. When a context is active, all object methods use the context instead of the socket. Method `$socket_setopt()` renamed to `$setopt()` as it can be used on the socket or active context as applicable.
+* `ncurl()` now returns an integer 'errorValue' at each of `$status`, `$headers`, `$raw` and `$data` for both sync and async, ensuring stability of return types. Where 'follow' is set to FALSE, or for all async requests, redirect addresses are now returned as a character string at `$data`.
+* `nano()` now creates a nano object with method `$context_open()` for applicable protocols. Opening a context will attach a context at `$context` and a `$context_close()` method. When a context is active, all object methods apply to the context instead of the socket. Method `$socket_setopt()` renamed to `$setopt()` as it can be used on the socket or active context as applicable.
 * `listen()` and `dial()` now only take a socket as argument; for nano objects, the `$listen()` and `$dial()` methods must be used instead.
-* Non-logical values supplied to logical arguments will now error across the package. This is documented for each function where this is applicable.
+* Non-logical values supplied to logical arguments will now error: this is documented for each function where this is applicable.
 
 *Other changes:*
 

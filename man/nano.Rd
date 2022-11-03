@@ -33,11 +33,12 @@ it is not generally possible to change these once started.}
 A nano object of class 'nanoObject'.
 }
 \description{
-Create a nano object, encapsulating a Socket along with an associated
-    Dialer/Listener.
+Create a nano object, encapsulating a Socket, Dialers/Listeners and
+    associated methods.
 }
 \details{
-This function encapsulates a Socket and a single Dialer and/or Listener.
+This function encapsulates a Socket, Dialer and/or Listener, and its
+    associated methods.
 
     The Socket may be accessed by \code{$socket}, and the Dialer or
     Listener by \code{$dialer[[1]]} or \code{$listener[[1]]} respectively.
@@ -45,8 +46,8 @@ This function encapsulates a Socket and a single Dialer and/or Listener.
     The object's methods may be accessed by \code{$} e.g. \code{$send()} or
     \code{$recv()}. These methods mirror their functional equivalents, with
     the same arguments and defaults, apart from that the first argument of the
-    functional equivalent is mapped to the object's encapsulated socket and
-    does not need to be supplied.
+    functional equivalent is mapped to the object's encapsulated socket (or
+    context, if active) and does not need to be supplied.
 
     More complex network topologies may be created by binding further
     dialers or listeners using the object's \code{$dial()} and \code{$listen()}
@@ -59,10 +60,15 @@ This function encapsulates a Socket and a single Dialer and/or Listener.
     apply settings to individual dialers/listeners, access them directly
     via \code{$dialer[[2]]} or \code{$listener[[2]]} etc.
 
+    For Dialers or Listeners not automatically started, the
+    \code{$dialer_start()} or  \code{$listener_start()} methods will be
+    available. These act on the most recently created Dialer or Listener
+    respectively.
+
     For applicable protocols, new contexts may be created by using the
     \code{$context_open()} method. This will attach a new context at
     \code{$context} as well as a \code{$context_close()} method. While a
-    context is active, all object methods use the context instead of the
+    context is active, all object methods use the context rather than the
     socket. A new context may be created by calling \code{$context_open()},
     which will replace any existing context. It is only necessary to use
     \code{$context_close()} to close the existing context and revert to using

@@ -184,6 +184,32 @@ static SEXP mk_error_haio(const int xc, SEXP env) {
 
 }
 
+static SEXP mk_error_data(const int xc) {
+
+  SEXP out, err;
+  const char *names[] = {"data", ""};
+  PROTECT(out = Rf_mkNamed(VECSXP, names));
+  err = Rf_ScalarInteger(xc);
+  Rf_classgets(err, nano_error);
+  SET_VECTOR_ELT(out, 0, err);
+  UNPROTECT(1);
+  return out;
+
+}
+
+static SEXP mk_error_result(const int xc) {
+
+  SEXP out, err;
+  const char *names[] = {"result", ""};
+  PROTECT(out = Rf_mkNamed(VECSXP, names));
+  err = Rf_ScalarInteger(xc);
+  Rf_classgets(err, nano_error);
+  SET_VECTOR_ELT(out, 0, err);
+  UNPROTECT(1);
+  return out;
+
+}
+
 // core aio --------------------------------------------------------------------
 
 SEXP rnng_aio_result(SEXP env) {
@@ -414,13 +440,13 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
 
     if ((xc = nng_msg_alloc(&msg, 0))) {
       R_Free(saio);
-      return mk_error(xc);
+      return mk_error_result(xc);
     }
     if ((xc = nng_msg_append(msg, dp, xlen)) ||
         (xc = nng_aio_alloc(&saio->aio, saio_complete, saio))) {
       nng_msg_free(msg);
       R_Free(saio);
-      return mk_error(xc);
+      return mk_error_result(xc);
     }
 
     nng_aio_set_msg(saio->aio, msg);
@@ -446,14 +472,14 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
 
     if ((xc = nng_msg_alloc(&msg, 0))) {
       R_Free(saio);
-      return mk_error(xc);
+      return mk_error_result(xc);
     }
 
     if ((xc = nng_msg_append(msg, dp, xlen)) ||
         (xc = nng_aio_alloc(&saio->aio, saio_complete, saio))) {
       nng_msg_free(msg);
       R_Free(saio);
-      return mk_error(xc);
+      return mk_error_result(xc);
     }
 
     nng_aio_set_msg(saio->aio, msg);
@@ -483,14 +509,14 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
     if ((xc = nng_aio_alloc(&iaio->aio, iaio_complete, iaio))) {
       R_Free(iov);
       R_Free(iaio);
-      return mk_error(xc);
+      return mk_error_result(xc);
     }
 
     if ((xc = nng_aio_set_iov(iaio->aio, 1u, iov))) {
       nng_aio_free(iaio->aio);
       R_Free(iov);
       R_Free(iaio);
-      return mk_error(xc);
+      return mk_error_result(xc);
     }
 
     nng_aio_set_timeout(iaio->aio, dur);
@@ -545,7 +571,7 @@ SEXP rnng_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP keep, SEXP bytes, SEX
 
     if ((xc = nng_aio_alloc(&raio->aio, raio_complete, raio))) {
       R_Free(raio);
-      return kpr ? mk_error_recv(xc) : mk_error(xc);
+      return kpr ? mk_error_recv(xc) : mk_error_data(xc);
     }
 
     nng_aio_set_timeout(raio->aio, dur);
@@ -566,7 +592,7 @@ SEXP rnng_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP keep, SEXP bytes, SEX
 
     if ((xc = nng_aio_alloc(&raio->aio, raio_complete, raio))) {
       R_Free(raio);
-      return kpr ? mk_error_recv(xc) : mk_error(xc);
+      return kpr ? mk_error_recv(xc) : mk_error_data(xc);
     }
 
     nng_aio_set_timeout(raio->aio, dur);
@@ -593,7 +619,7 @@ SEXP rnng_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP keep, SEXP bytes, SEX
       R_Free(iov->iov_buf);
       R_Free(iov);
       R_Free(iaio);
-      return kpr ? mk_error_recv(xc) : mk_error(xc);
+      return kpr ? mk_error_recv(xc) : mk_error_data(xc);
     }
 
     if ((xc = nng_aio_set_iov(iaio->aio, 1u, iov))) {
@@ -601,7 +627,7 @@ SEXP rnng_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP keep, SEXP bytes, SEX
       R_Free(iov->iov_buf);
       R_Free(iov);
       R_Free(iaio);
-      return kpr ? mk_error_recv(xc) : mk_error(xc);
+      return kpr ? mk_error_recv(xc) : mk_error_data(xc);
     }
 
     nng_aio_set_timeout(iaio->aio, dur);
@@ -880,6 +906,7 @@ SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeou
 
   nng_ctx *ctxp = (nng_ctx *) R_ExternalPtrAddr(con);
   const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) Rf_asInteger(timeout);
+  const int kpr = LOGICAL(keep)[0];
   nano_aio *saio = R_Calloc(1, nano_aio);
   nng_msg *msg;
 
@@ -891,14 +918,14 @@ SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeou
 
   if ((xc = nng_msg_alloc(&msg, 0))) {
     R_Free(saio);
-    return mk_error(xc);
+    return kpr ? mk_error_recv(xc) : mk_error_data(xc);
   }
 
   if ((xc = nng_msg_append(msg, dp, xlen)) ||
       (xc = nng_aio_alloc(&saio->aio, saio_complete, saio))) {
     nng_msg_free(msg);
     R_Free(saio);
-    return mk_error(xc);
+    return kpr ? mk_error_recv(xc) : mk_error_data(xc);
   }
 
   nng_aio_set_msg(saio->aio, msg);
@@ -915,7 +942,7 @@ SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeou
 
   if ((xc = nng_aio_alloc(&raio->aio, raio_complete, raio))) {
     R_Free(raio);
-    return mk_error(xc);
+    return kpr ? mk_error_recv(xc) : mk_error_data(xc);
   }
 
   nng_aio_set_timeout(raio->aio, dur);
@@ -937,7 +964,6 @@ SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeou
   R_RegisterCFinalizerEx(sendaio, saio_finalizer, TRUE);
   R_MakeWeakRef(aio, sendaio, R_NilValue, TRUE);
 
-  const int kpr = LOGICAL(keep)[0];
   Rf_defineVar(nano_StateSymbol, Rf_ScalarLogical(kpr), env);
 
   PROTECT(datafun = Rf_allocSExp(CLOSXP));
