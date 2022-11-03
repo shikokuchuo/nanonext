@@ -320,7 +320,7 @@ SEXP rnng_base64enc(SEXP x, SEXP convert) {
   unsigned char output[olen];
   xc = mbedtls_base64_encode(output, olen, &olen, hash.buf, hash.sz);
   if (xc)
-    Rf_error("invalid input");
+    Rf_error("write buffer insufficient");
 
   if (LOGICAL(convert)[0]) {
 
@@ -351,11 +351,11 @@ SEXP rnng_base64dec(SEXP x, SEXP convert) {
 
   xc = mbedtls_base64_decode(NULL, 0, &olen, hash.buf, hash.sz);
   if (xc == MBEDTLS_ERR_BASE64_INVALID_CHARACTER)
-    Rf_error("invalid input");
+    Rf_error("input is not valid base64");
   unsigned char output[olen];
   xc = mbedtls_base64_decode(output, olen, &olen, hash.buf, hash.sz);
   if (xc)
-    Rf_error("invalid input");
+    Rf_error("write buffer insufficient");
 
   if (LOGICAL(convert)[0]) {
 

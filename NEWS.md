@@ -8,20 +8,22 @@
 
 *Please review the following potentially breaking changes, and only update when ready:*
 
+* The package now ensures stability of return types:
+  + `socket()` and `stream()` will now error rather than return an 'errorValue'. The error value is included in the error message.
+  + `send_aio()` and `recv_aio()` now always return an integer 'errorValue' at `$result` and `$data` respectively.
+  + `recv()` and `recv_aio()` now return an integer 'errorValue' at each of `$raw` and `$data` when 'keep.raw' is set to TRUE.
+  + `ncurl()` now returns an integer 'errorValue' at each of `$status`, `$headers`, `$raw` and `$data` for both sync and async. Where redirects are not followed, the address is now returned as a character string at `$data`.
 * For functions that send and receive messages i.e. `send()`, `send_aio()`, `recv()`, `recv_aio()` and `ncurl()`, 'errorValues' are now returned silently without an accompanying warning. Use `is_error_value()` to explicitly check for errors.
-* Functions `socket()` and `stream()` will now error instead of returning an 'errorValue' to ensure stability of return types. The error value is included in the error message. 
 * `nano_init()` is deprecated due to the above change in behaviour.
 * `send()` no longer has a '...' argument. This has had no effect since 0.6.0, but will now error if additional arguments are provided (please check and remove previous uses of the argument 'echo'). Also no longer returns invisibly for consistency with `recv()`.
-* `recv()` and `recv_aio()` now return an integer 'errorValue' at each of `$raw` and `$data` when 'keep.raw' is set to TRUE, ensuring stability of return types.
-* `ncurl()` now returns an integer 'errorValue' at each of `$status`, `$headers`, `$raw` and `$data` for both sync and async, ensuring stability of return types. Where 'follow' is set to FALSE, or for all async requests, redirect addresses are now returned as a character string at `$data`.
-* `nano()` now creates a nano object with method `$context_open()` for applicable protocols. Opening a context will attach a context at `$context` and a `$context_close()` method. When a context is active, all object methods apply to the context instead of the socket. Method `$socket_setopt()` renamed to `$setopt()` as it can be used on the socket or active context as applicable.
 * `listen()` and `dial()` now only take a socket as argument; for nano objects, the `$listen()` and `$dial()` methods must be used instead.
+* `nano()` now creates a nano object with method `$context_open()` for applicable protocols. Opening a context will attach a context at `$context` and a `$context_close()` method. When a context is active, all object methods apply to the context instead of the socket. Method `$socket_setopt()` renamed to `$setopt()` as it can be used on the socket or active context as applicable.
 * Non-logical values supplied to logical arguments will now error: this is documented for each function where this is applicable.
 
 *Other changes:*
 
 * Fixes bug introduced in 0.6.0 where Aios returning 'errorValues' are not cached with the class, returning only integer values when accessed subsequently.
-* Fixes potential crash when `base64dec()` encounters invalid input data.
+* Fixes potential crash when `base64dec()` encounters invalid input data. Error messages have been revised to be more accurate.
 * Fixes the `$` method for 'recvAio' objects for when the object has been stopped using `stop_aio()`.
 * Using the `$listen()` or `$dial()` methods of a nano object specifying 'autostart = FALSE' now attaches the `$listener_start()` or `$dialer_start()` method for the most recently added listener/dialer.
 * `device()` no longer prompts for confirmation in interactive environments - as device creation is only successful when binding 2 raw mode sockets, there is little scope for accidental use.
@@ -30,8 +32,6 @@
 * Internal performance enhancements.
 
 # nanonext 0.6.0
-
-*The nanonext 0.6 series incorporates significant advances in performance and stability over previous releases*
 
 #### New Features
 
@@ -115,8 +115,6 @@
 * Fixes a bug involving the `unresolvedValue` returned by Aios (thanks @lionel- #3).
 
 # nanonext 0.5.0
-
-*nanonext is now considered substantially feature-complete and API-stable*
 
 #### New Features
 
