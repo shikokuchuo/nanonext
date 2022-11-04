@@ -8,8 +8,8 @@
 
 *Please review the following potentially breaking changes, and only update when ready:*
 
-* The package now ensures stability of return types:
-  + `socket()` and `stream()` will now error rather than return an 'errorValue'. The error value is included in the error message.
+* The API has been re-engineered to ensure stability of return types:
+  + `socket()`, `context()` and `stream()` will now error rather than return an 'errorValue'. The error value is included in the error message.
   + `send_aio()` and `recv_aio()` now always return an integer 'errorValue' at `$result` and `$data` respectively.
   + `recv()` and `recv_aio()` now return an integer 'errorValue' at each of `$raw` and `$data` when 'keep.raw' is set to TRUE.
   + `ncurl()` now returns an integer 'errorValue' at each of `$status`, `$headers`, `$raw` and `$data` for both sync and async. Where redirects are not followed, the address is now returned as a character string at `$data`.

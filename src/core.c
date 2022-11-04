@@ -231,13 +231,7 @@ int nano_matchargs(SEXP mode) {
   if (TYPEOF(mode) == INTSXP)
     return INTEGER(mode)[0];
 
-  const char *mod;
-  if (Rf_xlength(mode) == 8) {
-    mod = CHAR(STRING_ELT(mode, 1));
-  } else {
-    mod = CHAR(STRING_ELT(mode, 0));
-  }
-
+  const char *mod = Rf_xlength(mode) == 8 ? CHAR(STRING_ELT(mode, 1)) : CHAR(STRING_ELT(mode, 0));
   size_t slen = strlen(mod);
   const char ch[] = "character", co[] = "complex", d[] = "double",
     i[] = "integer", l[] = "logical", n[] = "numeric", r[] = "raw";
