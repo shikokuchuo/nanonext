@@ -78,18 +78,16 @@ static void RegisterSymbols(void) {
 
 static void PreserveObjects(void) {
   R_PreserveObject(nano_aioFormals = Rf_list1(Rf_install(".")));
-  SEXP result, msgdata, msgraw, nstatus, nheaders, nraw, ndata;
-  PROTECT(result = Rf_lang3(nano_DotcallSymbol, Rf_install("rnng_aio_result"), nano_DataSymbol));
-  PROTECT(msgdata = Rf_lang3(nano_DotcallSymbol, Rf_install("rnng_aio_get_msgdata"), nano_ResultSymbol));
-  PROTECT(msgraw = Rf_lang3(nano_DotcallSymbol, Rf_install("rnng_aio_get_msgraw"), nano_ResultSymbol));
-  R_PreserveObject(nano_aioFuncs = Rf_list3(result, msgdata, msgraw));
+  R_PreserveObject(nano_aioFuncs = Rf_allocVector(LISTSXP, 3));
+  SETCAR(nano_aioFuncs, Rf_lang3(nano_DotcallSymbol, Rf_install("rnng_aio_result"), nano_DataSymbol));
+  SETCADR(nano_aioFuncs, Rf_lang3(nano_DotcallSymbol, Rf_install("rnng_aio_get_msgdata"), nano_ResultSymbol));
+  SETCADDR(nano_aioFuncs, Rf_lang3(nano_DotcallSymbol, Rf_install("rnng_aio_get_msgraw"), nano_ResultSymbol));
   SEXP nano_AioHttpSymbol = Rf_install("rnng_aio_http");
-  PROTECT(nstatus = Rf_lang5(nano_DotcallSymbol, nano_AioHttpSymbol, nano_ContextSymbol, nano_ResponseSymbol, Rf_ScalarInteger(0)));
-  PROTECT(nheaders = Rf_lang5(nano_DotcallSymbol, nano_AioHttpSymbol, nano_ContextSymbol, nano_ResponseSymbol, Rf_ScalarInteger(1)));
-  PROTECT(nraw = Rf_lang5(nano_DotcallSymbol, nano_AioHttpSymbol, nano_ContextSymbol, nano_ResponseSymbol, Rf_ScalarInteger(2)));
-  PROTECT(ndata = Rf_lang5(nano_DotcallSymbol, nano_AioHttpSymbol, nano_ContextSymbol, nano_ResponseSymbol, Rf_ScalarInteger(3)));
-  R_PreserveObject(nano_aioNFuncs = Rf_list4(nstatus, nheaders, nraw, ndata));
-  UNPROTECT(7);
+  R_PreserveObject(nano_aioNFuncs = Rf_allocVector(LISTSXP, 4));
+  SETCAR(nano_aioNFuncs, Rf_lang5(nano_DotcallSymbol, nano_AioHttpSymbol, nano_ContextSymbol, nano_ResponseSymbol, Rf_ScalarInteger(0)));
+  SETCADR(nano_aioNFuncs, Rf_lang5(nano_DotcallSymbol, nano_AioHttpSymbol, nano_ContextSymbol, nano_ResponseSymbol, Rf_ScalarInteger(1)));
+  SETCADDR(nano_aioNFuncs, Rf_lang5(nano_DotcallSymbol, nano_AioHttpSymbol, nano_ContextSymbol, nano_ResponseSymbol, Rf_ScalarInteger(2)));
+  SETCADDDR(nano_aioNFuncs, Rf_lang5(nano_DotcallSymbol, nano_AioHttpSymbol, nano_ContextSymbol, nano_ResponseSymbol, Rf_ScalarInteger(3)));
   R_PreserveObject(nano_error = Rf_mkString("errorValue"));
   R_PreserveObject(nano_ncurlAio = Rf_allocVector(STRSXP, 2));
   SET_STRING_ELT(nano_ncurlAio, 0, Rf_mkChar("ncurlAio"));
