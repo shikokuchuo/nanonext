@@ -63,9 +63,9 @@
 <div class="section level5">
 <h5 id="updates-0-6-0-9700">Updates<a class="anchor" aria-label="anchor" href="#updates-0-6-0-9700"></a></h5>
 <p><em>Please review the following potentially breaking changes, and only update when ready:</em></p>
-<ul><li>The package now ensures stability of return types:
+<ul><li>The API has been re-engineered to ensure stability of return types:
 <ul><li>
-<code><a href="../reference/socket.html">socket()</a></code> and <code><a href="../reference/stream.html">stream()</a></code> will now error rather than return an ‘errorValue’. The error value is included in the error message.</li>
+<code><a href="../reference/socket.html">socket()</a></code>, <code><a href="../reference/context.html">context()</a></code> and <code><a href="../reference/stream.html">stream()</a></code> will now error rather than return an ‘errorValue’. The error value is included in the error message.</li>
 <li>
 <code><a href="../reference/send_aio.html">send_aio()</a></code> and <code><a href="../reference/recv_aio.html">recv_aio()</a></code> now always return an integer ‘errorValue’ at <code>$result</code> and <code>$data</code> respectively.</li>
 <li>
