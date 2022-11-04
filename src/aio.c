@@ -135,18 +135,6 @@ static void haio_finalizer(SEXP xptr) {
 
 }
 
-static void create_activebinding(SEXP sym, SEXP env, SEXP clo, const int x) {
-
-  SEXP fun;
-  PROTECT(fun = Rf_allocSExp(CLOSXP));
-  SET_FORMALS(fun, nano_aioFormals);
-  SET_BODY(fun, Rf_lang5(nano_DotcallSymbol, nano_RnngHttpSymbol, nano_ContextSymbol, nano_ResponseSymbol, Rf_ScalarInteger(x)));
-  SET_CLOENV(fun, clo);
-  R_MakeActiveBinding(sym, fun, env);
-  UNPROTECT(1);
-
-}
-
 static SEXP mk_error_saio(const int xc, SEXP env) {
 
   SEXP err;
@@ -529,7 +517,7 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
   Rf_defineVar(nano_AioSymbol, aio, env);
   PROTECT(fun = Rf_allocSExp(CLOSXP));
   SET_FORMALS(fun, nano_aioFormals);
-  SET_BODY(fun, CAR(nano_aioFunctions));
+  SET_BODY(fun, CAR(nano_aioFuncs));
   SET_CLOENV(fun, clo);
   R_MakeActiveBinding(nano_ResultSymbol, fun, env);
   Rf_classgets(env, nano_sendAio);
@@ -638,21 +626,21 @@ SEXP rnng_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP keep, SEXP bytes, SEX
   REPROTECT(env = Rf_eval(env, clo), pxi);
 #endif
   Rf_defineVar(nano_AioSymbol, aio, env);
-  Rf_defineVar(nano_StateSymbol, Rf_ScalarLogical(kpr), env);
+  Rf_defineVar(nano_StateSymbol, keep, env);
 
-  PROTECT(datafun = Rf_allocSExp(CLOSXP));
-  SET_FORMALS(datafun, nano_aioFormals);
-  SET_BODY(datafun, CADR(nano_aioFunctions));
-  SET_CLOENV(datafun, clo);
   if (kpr) {
     SEXP rawfun;
     PROTECT(rawfun = Rf_allocSExp(CLOSXP));
     SET_FORMALS(rawfun, nano_aioFormals);
-    SET_BODY(rawfun, CADDR(nano_aioFunctions));
+    SET_BODY(rawfun, CADDR(nano_aioFuncs));
     SET_CLOENV(rawfun, clo);
     R_MakeActiveBinding(nano_RawSymbol, rawfun, env);
     UNPROTECT(1);
   }
+  PROTECT(datafun = Rf_allocSExp(CLOSXP));
+  SET_FORMALS(datafun, nano_aioFormals);
+  SET_BODY(datafun, CADR(nano_aioFuncs));
+  SET_CLOENV(datafun, clo);
   R_MakeActiveBinding(nano_DataSymbol, datafun, env);
   Rf_classgets(env, nano_recvAio);
 
@@ -761,14 +749,32 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP dat
   REPROTECT(env = Rf_eval(env, clo), pxi);
 #endif
   Rf_defineVar(nano_AioSymbol, aio, env);
-  create_activebinding(nano_StatusSymbol, env, clo, 0);
-  create_activebinding(nano_HeadersSymbol, env, clo, 1);
-  create_activebinding(nano_RawSymbol, env, clo, 2);
-  create_activebinding(nano_DataSymbol, env, clo, 3);
+
+  SEXP sfun, hfun, rfun, dfun;
+  PROTECT(sfun = Rf_allocSExp(CLOSXP));
+  SET_FORMALS(sfun, nano_aioFormals);
+  SET_BODY(sfun, CAR(nano_aioNFuncs));
+  SET_CLOENV(sfun, clo);
+  R_MakeActiveBinding(nano_StatusSymbol, sfun, env);
+  PROTECT(hfun = Rf_allocSExp(CLOSXP));
+  SET_FORMALS(hfun, nano_aioFormals);
+  SET_BODY(hfun, CADR(nano_aioNFuncs));
+  SET_CLOENV(hfun, clo);
+  R_MakeActiveBinding(nano_HeadersSymbol, hfun, env);
+  PROTECT(rfun = Rf_allocSExp(CLOSXP));
+  SET_FORMALS(rfun, nano_aioFormals);
+  SET_BODY(rfun, CADDR(nano_aioNFuncs));
+  SET_CLOENV(rfun, clo);
+  R_MakeActiveBinding(nano_RawSymbol, rfun, env);
+  PROTECT(dfun = Rf_allocSExp(CLOSXP));
+  SET_FORMALS(dfun, nano_aioFormals);
+  SET_BODY(dfun, CADDDR(nano_aioNFuncs));
+  SET_CLOENV(dfun, clo);
+  R_MakeActiveBinding(nano_DataSymbol, dfun, env);
 
   Rf_classgets(env, nano_ncurlAio);
 
-  UNPROTECT(2);
+  UNPROTECT(6);
   return env;
 
   exitlevel7:
@@ -950,22 +956,21 @@ SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeou
   PROTECT(sendaio = R_MakeExternalPtr(saio, R_NilValue, R_NilValue));
   R_RegisterCFinalizerEx(sendaio, saio_finalizer, TRUE);
   R_MakeWeakRef(aio, sendaio, R_NilValue, TRUE);
+  Rf_defineVar(nano_StateSymbol, keep, env);
 
-  Rf_defineVar(nano_StateSymbol, Rf_ScalarLogical(kpr), env);
-
-  PROTECT(datafun = Rf_allocSExp(CLOSXP));
-  SET_FORMALS(datafun, nano_aioFormals);
-  SET_BODY(datafun, CADR(nano_aioFunctions));
-  SET_CLOENV(datafun, clo);
   if (kpr) {
     SEXP rawfun;
     PROTECT(rawfun = Rf_allocSExp(CLOSXP));
     SET_FORMALS(rawfun, nano_aioFormals);
-    SET_BODY(rawfun, CADDR(nano_aioFunctions));
+    SET_BODY(rawfun, CADDR(nano_aioFuncs));
     SET_CLOENV(rawfun, clo);
     R_MakeActiveBinding(nano_RawSymbol, rawfun, env);
     UNPROTECT(1);
   }
+  PROTECT(datafun = Rf_allocSExp(CLOSXP));
+  SET_FORMALS(datafun, nano_aioFormals);
+  SET_BODY(datafun, CADR(nano_aioFuncs));
+  SET_CLOENV(datafun, clo);
   R_MakeActiveBinding(nano_DataSymbol, datafun, env);
   Rf_classgets(env, nano_recvAio);
 

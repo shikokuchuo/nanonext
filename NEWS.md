@@ -1,4 +1,4 @@
-# nanonext 0.6.0.9600 (development)
+# nanonext 0.6.0.9700 (development)
 
 #### New Features
 

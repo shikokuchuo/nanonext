@@ -360,7 +360,7 @@ print.nanoStream <- function(x, ...) {
 print.recvAio <- function(x, ...) {
 
   if (.subset2(x, "state"))
-    cat("< recvAio >\n - $data for message data\n - $raw for raw message\n", file = stdout())
+    cat("< recvAio >\n - $raw for raw message\n - $data for message data\n", file = stdout())
   else
     cat("< recvAio >\n - $data for message data\n", file = stdout())
   invisible(x)
@@ -442,7 +442,7 @@ print.errorValue <- function(x, ...) {
 #' @export
 #'
 .DollarNames.recvAio <- function(x, pattern = "")
-  grep(pattern, c("data", if (.subset2(x, "state")) "raw"), value = TRUE, fixed = TRUE)
+  grep(pattern, c(if (.subset2(x, "state")) "raw", "data"), value = TRUE, fixed = TRUE)
 
 #' @export
 #'

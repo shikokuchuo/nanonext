@@ -31,7 +31,6 @@ SEXP nano_ProtocolSymbol;
 SEXP nano_RawSymbol;
 SEXP nano_ResponseSymbol;
 SEXP nano_ResultSymbol;
-SEXP nano_RnngHttpSymbol;
 SEXP nano_RtcSymbol;
 SEXP nano_SerialSymbol;
 SEXP nano_SocketSymbol;
@@ -43,7 +42,8 @@ SEXP nano_UnserSymbol;
 SEXP nano_UrlSymbol;
 
 SEXP nano_aioFormals;
-SEXP nano_aioFunctions;
+SEXP nano_aioFuncs;
+SEXP nano_aioNFuncs;
 SEXP nano_error;
 SEXP nano_ncurlAio;
 SEXP nano_recvAio;
@@ -65,7 +65,6 @@ static void RegisterSymbols(void) {
   nano_RawSymbol = Rf_install("raw");
   nano_ResponseSymbol = Rf_install("response");
   nano_ResultSymbol = Rf_install("result");
-  nano_RnngHttpSymbol = Rf_install("rnng_aio_http");
   nano_RtcSymbol = Rf_install("rawToChar");
   nano_SerialSymbol = Rf_install("serialize");
   nano_SocketSymbol = Rf_install("socket");
@@ -79,12 +78,18 @@ static void RegisterSymbols(void) {
 
 static void PreserveObjects(void) {
   R_PreserveObject(nano_aioFormals = Rf_list1(Rf_install(".")));
-  SEXP result, msgdata, msgraw;
+  SEXP result, msgdata, msgraw, nstatus, nheaders, nraw, ndata;
   PROTECT(result = Rf_lang3(nano_DotcallSymbol, Rf_install("rnng_aio_result"), nano_DataSymbol));
   PROTECT(msgdata = Rf_lang3(nano_DotcallSymbol, Rf_install("rnng_aio_get_msgdata"), nano_ResultSymbol));
   PROTECT(msgraw = Rf_lang3(nano_DotcallSymbol, Rf_install("rnng_aio_get_msgraw"), nano_ResultSymbol));
-  R_PreserveObject(nano_aioFunctions = Rf_list3(result, msgdata, msgraw));
-  UNPROTECT(3);
+  R_PreserveObject(nano_aioFuncs = Rf_list3(result, msgdata, msgraw));
+  SEXP nano_AioHttpSymbol = Rf_install("rnng_aio_http");
+  PROTECT(nstatus = Rf_lang5(nano_DotcallSymbol, nano_AioHttpSymbol, nano_ContextSymbol, nano_ResponseSymbol, Rf_ScalarInteger(0)));
+  PROTECT(nheaders = Rf_lang5(nano_DotcallSymbol, nano_AioHttpSymbol, nano_ContextSymbol, nano_ResponseSymbol, Rf_ScalarInteger(1)));
+  PROTECT(nraw = Rf_lang5(nano_DotcallSymbol, nano_AioHttpSymbol, nano_ContextSymbol, nano_ResponseSymbol, Rf_ScalarInteger(2)));
+  PROTECT(ndata = Rf_lang5(nano_DotcallSymbol, nano_AioHttpSymbol, nano_ContextSymbol, nano_ResponseSymbol, Rf_ScalarInteger(3)));
+  R_PreserveObject(nano_aioNFuncs = Rf_list4(nstatus, nheaders, nraw, ndata));
+  UNPROTECT(7);
   R_PreserveObject(nano_error = Rf_mkString("errorValue"));
   R_PreserveObject(nano_ncurlAio = Rf_allocVector(STRSXP, 2));
   SET_STRING_ELT(nano_ncurlAio, 0, Rf_mkChar("ncurlAio"));
@@ -98,7 +103,8 @@ static void PreserveObjects(void) {
 
 static void ReleaseObjects(void) {
   R_ReleaseObject(nano_aioFormals);
-  R_ReleaseObject(nano_aioFunctions);
+  R_ReleaseObject(nano_aioFuncs);
+  R_ReleaseObject(nano_aioNFuncs);
   R_ReleaseObject(nano_error);
   R_ReleaseObject(nano_ncurlAio);
   R_ReleaseObject(nano_recvAio);

@@ -90,7 +90,6 @@ extern SEXP nano_ProtocolSymbol;
 extern SEXP nano_RawSymbol;
 extern SEXP nano_ResponseSymbol;
 extern SEXP nano_ResultSymbol;
-extern SEXP nano_RnngHttpSymbol;
 extern SEXP nano_RtcSymbol;
 extern SEXP nano_SerialSymbol;
 extern SEXP nano_SocketSymbol;
@@ -102,7 +101,8 @@ extern SEXP nano_UnserSymbol;
 extern SEXP nano_UrlSymbol;
 
 extern SEXP nano_aioFormals;
-extern SEXP nano_aioFunctions;
+extern SEXP nano_aioFuncs;
+extern SEXP nano_aioNFuncs;
 extern SEXP nano_error;
 extern SEXP nano_ncurlAio;
 extern SEXP nano_recvAio;
