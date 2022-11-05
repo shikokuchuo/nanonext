@@ -277,14 +277,7 @@ SEXP rnng_aio_get_msgdata(SEXP env) {
     return mk_error_raio(raio->result, env);
 
   SEXP out;
-  int mod, kpr;
-  if (raio->mode > 0) {
-    mod = raio->mode;
-    kpr = 0;
-  } else {
-    mod = -raio->mode;
-    kpr = 1;
-  }
+  const int kpr = raio->mode > 0 ? 0 : 1, mod = kpr ? -raio->mode : raio->mode;
   unsigned char *buf;
   size_t sz;
 
