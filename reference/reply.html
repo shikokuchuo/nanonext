@@ -89,9 +89,11 @@ Additional arguments can also be passed in through '...'.</p></dd>
 <dt>recv_mode</dt>
 <dd><p>[default 'serial'] mode of vector to be received - one of
 'serial', 'character', 'complex', 'double', 'integer', 'logical',
-'numeric', or 'raw'. The default 'serial' means a serialised R object, for
-the other modes, the raw vector received will be converted into the
-respective mode.</p></dd>
+'numeric', or 'raw'. The default 'serial' means a serialised R object,
+for the other modes, the raw vector received will be converted into the
+respective mode. Alternatively, for performance, specify an integer
+position in the vector of choices e.g. 1L for 'serial', 2L for 'character'
+etc.</p></dd>
 
 
 <dt>send_mode</dt>
@@ -99,7 +101,9 @@ respective mode.</p></dd>
 as a raw vector. Use 'serial' for sending and receiving within R to ensure
 perfect reproducibility. Use 'raw' for sending vectors of any type (will be
 converted to a raw byte vector for sending) - essential when interfacing
-with external applications.</p></dd>
+with external applications. Alternatively, for performance, specify an
+integer position in the vector of choices i.e. 1L for 'serial' or 2L for
+'raw'.</p></dd>
 
 
 <dt>timeout</dt>

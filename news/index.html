@@ -54,7 +54,8 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.6.0.9700" id="nanonext-0609700-development">nanonext 0.6.0.9700 (development)<a class="anchor" aria-label="anchor" href="#nanonext-0609700-development"></a></h2>
+<h2 class="page-header" data-toc-text="0.6.0.9700" id="nanonext-0609700-070-release-candidate">nanonext 0.6.0.9700 (0.7.0 release candidate)<a class="anchor" aria-label="anchor" href="#nanonext-0609700-070-release-candidate"></a></h2>
+<p><em>nanonext 0.7 has focused on optimising the API after completing feature additions and performance enhancements; the API is again expected to remain stable after these changes</em></p>
 <div class="section level5">
 <h5 id="new-features-0-6-0-9700">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-6-0-9700"></a></h5>
 <ul><li>
@@ -84,7 +85,8 @@
 <code><a href="../reference/nano.html">nano()</a></code> now creates a nano object with method <code>$context_open()</code> for applicable protocols. Opening a context will attach a context at <code>$context</code> and a <code>$context_close()</code> method. When a context is active, all object methods apply to the context instead of the socket. Method <code>$socket_setopt()</code> renamed to <code>$setopt()</code> as it can be used on the socket or active context as applicable.</li>
 <li>Non-logical values supplied to logical arguments will now error: this is documented for each function where this is applicable.</li>
 </ul><p><em>Other changes:</em></p>
-<ul><li>Fixes bug introduced in 0.6.0 where Aios returning ‘errorValues’ are not cached with the class, returning only integer values when accessed subsequently.</li>
+<ul><li>Integer send/recv (and setopt) arguments implemented in 0.5.3 are now documented and considered part of the API. This is a performance feature that skips matching the character argument value.</li>
+<li>Fixes bug introduced in 0.6.0 where Aios returning ‘errorValues’ are not cached with the class, returning only integer values when accessed subsequently.</li>
 <li>Fixes potential crash when <code><a href="../reference/base64enc.html">base64dec()</a></code> encounters invalid input data. Error messages have been revised to be more accurate.</li>
 <li>Fixes the <code>$</code> method for ‘recvAio’ objects for when the object has been stopped using <code><a href="../reference/stop_aio.html">stop_aio()</a></code>.</li>
 <li>Using the <code>$listen()</code> or <code>$dial()</code> methods of a nano object specifying ‘autostart = FALSE’ now attaches the <code>$listener_start()</code> or <code>$dialer_start()</code> method for the most recently added listener/dialer.</li>
@@ -97,6 +99,7 @@
 </div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.6.0" id="nanonext-060">nanonext 0.6.0<small>2022-10-09</small><a class="anchor" aria-label="anchor" href="#nanonext-060"></a></h2>
+<p><em>The nanonext 0.6 series incorporates significant advances in performance and stability over previous releases</em></p>
 <div class="section level5">
 <h5 id="new-features-0-6-0">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-6-0"></a></h5>
 <ul><li>Implements <code><a href="../reference/base64enc.html">base64enc()</a></code> and <code><a href="../reference/base64enc.html">base64dec()</a></code> base64 encoding and decoding using the ‘Mbed TLS’ library.</li>
@@ -200,6 +203,7 @@
 </div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.5.0" id="nanonext-050">nanonext 0.5.0<small>2022-05-10</small><a class="anchor" aria-label="anchor" href="#nanonext-050"></a></h2>
+<p><em>nanonext is now considered substantially feature-complete and API-stable</em></p>
 <div class="section level5">
 <h5 id="new-features-0-5-0">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-5-0"></a></h5>
 <ul><li>
