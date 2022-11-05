@@ -4,14 +4,15 @@
 \alias{opts}
 \title{Opts [Documentation]}
 \description{
-Options that can be set on Sockets, Contexts, Dialers or Listeners.
+Options that can be set on Sockets, Contexts, Streams, Dialers
+    or Listeners.
 
     Some options are only meaningful or supported in certain contexts; for
     example there is no single meaningful address for a socket, since sockets
     can have multiple dialers and endpoints associated with them.
 
     For an authoritative guide please refer to the online documentation for
-    the NNG library at <https://nng.nanomsg.org/man/>.
+    the NNG library at \url{https://nng.nanomsg.org/man/}.
 }
 \section{Global Options}{
 

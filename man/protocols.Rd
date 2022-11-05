@@ -7,7 +7,7 @@
 Protocols implemented by \{nanonext\}.
 
     For an authoritative guide please refer to the online documentation for
-    the NNG library at <https://nng.nanomsg.org/man/>.
+    the NNG library at \url{https://nng.nanomsg.org/man/}.
 }
 \section{Bus (mesh networks)}{
 

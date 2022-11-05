@@ -748,17 +748,17 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP dat
   REPROTECT(env = Rf_eval(env, clo), pxi);
 #endif
   Rf_defineVar(nano_AioSymbol, aio, env);
-  SEXP funlist = nano_aioNFuncs;
-  for (int i = 0; i < 4; i++, funlist = CDR(funlist)) {
+  int i = 0;
+  for (SEXP fnlist = nano_aioNFuncs; fnlist != R_NilValue; fnlist = CDR(fnlist)) {
     PROTECT(fun = Rf_allocSExp(CLOSXP));
     SET_FORMALS(fun, nano_aioFormals);
-    SET_BODY(fun, CAR(funlist));
+    SET_BODY(fun, CAR(fnlist));
     SET_CLOENV(fun, clo);
-    switch (i) {
-    case 0: R_MakeActiveBinding(nano_StatusSymbol, fun, env);
-    case 1: R_MakeActiveBinding(nano_HeadersSymbol, fun, env);
-    case 2: R_MakeActiveBinding(nano_RawSymbol, fun, env);
-    case 3: R_MakeActiveBinding(nano_DataSymbol, fun, env);
+    switch (++i) {
+    case 1: R_MakeActiveBinding(nano_StatusSymbol, fun, env);
+    case 2: R_MakeActiveBinding(nano_HeadersSymbol, fun, env);
+    case 3: R_MakeActiveBinding(nano_RawSymbol, fun, env);
+    case 4: R_MakeActiveBinding(nano_DataSymbol, fun, env);
     }
     UNPROTECT(1);
   }
