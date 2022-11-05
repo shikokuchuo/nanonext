@@ -22,7 +22,9 @@
 #'
 #' @param object a Socket, Context, Stream, Listener or Dialer.
 #' @param type [default 'bool'] type of option - either 'bool', 'int', 'ms'
-#'     (duration), 'size', 'string' or 'uint64'.
+#'     (duration), 'size', 'string' or 'uint64'. Alternatively, for performance,
+#'     specify an integer position in the vector of choices e.g. 1L for 'bool',
+#'     2L for 'int' etc.
 #' @param opt name of option, e.g. 'reconnect-time-min', as a character string.
 #'     See \link{opts}.
 #' @param value value of option.

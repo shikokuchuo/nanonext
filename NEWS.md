@@ -1,4 +1,6 @@
-# nanonext 0.6.0.9700 (development)
+# nanonext 0.6.0.9700 (0.7.0 release candidate)
+
+*nanonext 0.7 has focused on optimising the API after completing feature additions and performance enhancements; the API is again expected to remain stable after these changes*
 
 #### New Features
 
@@ -22,6 +24,7 @@
 
 *Other changes:*
 
+* Integer send/recv (and setopt) arguments implemented in 0.5.3 are now documented and considered part of the API. This is a performance feature that skips matching the character argument value.
 * Fixes bug introduced in 0.6.0 where Aios returning 'errorValues' are not cached with the class, returning only integer values when accessed subsequently.
 * Fixes potential crash when `base64dec()` encounters invalid input data. Error messages have been revised to be more accurate.
 * Fixes the `$` method for 'recvAio' objects for when the object has been stopped using `stop_aio()`.
@@ -32,6 +35,8 @@
 * Internal performance enhancements.
 
 # nanonext 0.6.0
+
+*The nanonext 0.6 series incorporates significant advances in performance and stability over previous releases*
 
 #### New Features
 
@@ -115,6 +120,8 @@
 * Fixes a bug involving the `unresolvedValue` returned by Aios (thanks @lionel- #3).
 
 # nanonext 0.5.0
+
+*nanonext is now considered substantially feature-complete and API-stable*
 
 #### New Features
 

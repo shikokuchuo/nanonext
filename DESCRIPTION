@@ -9,7 +9,7 @@ Description: R binding for NNG (Nanomsg Next Gen), a successor to ZeroMQ. NNG is
     utilising 'Aio' objects which automatically resolve upon completion of
     asynchronous operations.
 Authors@R: 
-    c(person(given = "Charlie", 
+    c(person(given = "Charlie",
              family = "Gao",
              role = c("aut", "cre"),
              email = "charlie.gao@shikokuchuo.net",

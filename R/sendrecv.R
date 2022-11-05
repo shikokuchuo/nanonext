@@ -27,7 +27,8 @@
 #'     For Streams, 'raw' is the only option and this argument is ignored. Use
 #'     'serial' for perfect reproducibility within R, although 'raw' must be used
 #'     when interfacing with external applications that do not understand R
-#'     serialisation.
+#'     serialisation. Alternatively, for performance, specify an integer position
+#'     in the vector of choices i.e. 1L for 'serial' or 2L for 'raw'.
 #' @param block [default NULL] which applies the connection default (see section
 #'     'Blocking' below). Specify logical TRUE to block until successful or FALSE
 #'     to return immediately even if unsuccessful (e.g. if no connection is
@@ -85,6 +86,8 @@ send <- function(con, data, mode = c("serial", "raw"), block = NULL)
 #'     The default 'serial' means a serialised R object, for the other modes,
 #'     the raw vector received will be converted into the respective mode.
 #'     For Streams, 'serial' is not an option and the default is 'character'.
+#'     Alternatively, for performance, specify an integer position in the vector
+#'     of choices e.g. 1L for 'serial', 2L for 'character' etc.
 #' @param keep.raw [default FALSE] logical flag whether to keep and return the
 #'     received raw vector along with the converted data. Supplying a non-logical
 #'     value will error.
