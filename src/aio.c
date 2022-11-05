@@ -233,7 +233,7 @@ SEXP rnng_aio_get_msgraw(SEXP env) {
     return mk_error_raio(raio->result, env);
 
   SEXP out;
-  const int mod = raio->mode, kpr = 1;
+  const int mod = -raio->mode, kpr = 1;
   unsigned char *buf;
   size_t sz;
 
@@ -277,7 +277,14 @@ SEXP rnng_aio_get_msgdata(SEXP env) {
     return mk_error_raio(raio->result, env);
 
   SEXP out;
-  const int mod = raio->mode, kpr = LOGICAL(Rf_findVarInFrame(env, nano_StateSymbol))[0];
+  int mod, kpr;
+  if (raio->mode > 0) {
+    mod = raio->mode;
+    kpr = 0;
+  } else {
+    mod = -raio->mode;
+    kpr = 1;
+  }
   unsigned char *buf;
   size_t sz;
 
@@ -541,7 +548,7 @@ SEXP rnng_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP keep, SEXP bytes, SEX
     nano_aio *raio = R_Calloc(1, nano_aio);
 
     raio->type = RECVAIO;
-    raio->mode = nano_matcharg(mode);
+    raio->mode = kpr ? -nano_matcharg(mode) : nano_matcharg(mode);
     raio->data = NULL;
 
     if ((xc = nng_aio_alloc(&raio->aio, raio_complete, raio))) {
@@ -562,7 +569,7 @@ SEXP rnng_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP keep, SEXP bytes, SEX
     nano_aio *raio = R_Calloc(1, nano_aio);
 
     raio->type = RECVAIO;
-    raio->mode = nano_matcharg(mode);
+    raio->mode = kpr ? -nano_matcharg(mode) : nano_matcharg(mode);
     raio->data = NULL;
 
     if ((xc = nng_aio_alloc(&raio->aio, raio_complete, raio))) {
@@ -585,7 +592,7 @@ SEXP rnng_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP keep, SEXP bytes, SEX
     nng_iov *iov = R_Calloc(1, nng_iov);
 
     iaio->type = IOV_RECVAIO;
-    iaio->mode = nano_matchargs(mode);
+    iaio->mode = kpr ? -nano_matchargs(mode) : nano_matchargs(mode);
     iaio->data = iov;
     iov->iov_len = xlen;
     iov->iov_buf = R_Calloc(xlen, unsigned char);
@@ -626,7 +633,6 @@ SEXP rnng_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP keep, SEXP bytes, SEX
   REPROTECT(env = Rf_eval(env, clo), pxi);
 #endif
   Rf_defineVar(nano_AioSymbol, aio, env);
-  Rf_defineVar(nano_StateSymbol, keep, env);
 
   if (kpr) {
     PROTECT(fun = Rf_allocSExp(CLOSXP));
@@ -791,10 +797,10 @@ SEXP rnng_aio_http(SEXP env, SEXP response, SEXP which) {
   const int typ = INTEGER(which)[0];
   SEXP exist;
   switch (typ) {
-  case 0: exist = Rf_findVarInFrame(ENCLOS(env), nano_StatusSymbol); break;
-  case 1: exist = Rf_findVarInFrame(ENCLOS(env), nano_IdSymbol); break;
-  case 2: exist = Rf_findVarInFrame(ENCLOS(env), nano_RawSymbol); break;
-  default: exist = Rf_findVarInFrame(ENCLOS(env), nano_ProtocolSymbol); break;
+  case 1: exist = Rf_findVarInFrame(ENCLOS(env), nano_StatusSymbol); break;
+  case 2: exist = Rf_findVarInFrame(ENCLOS(env), nano_StateSymbol); break;
+  case 3: exist = Rf_findVarInFrame(ENCLOS(env), nano_RawSymbol); break;
+  default: exist = Rf_findVarInFrame(ENCLOS(env), nano_ResultSymbol); break;
   }
   if (exist != R_UnboundValue)
     return exist;
@@ -848,7 +854,7 @@ SEXP rnng_aio_http(SEXP env, SEXP response, SEXP which) {
     }
     UNPROTECT(1);
   }
-  Rf_defineVar(nano_IdSymbol, rvec, ENCLOS(env));
+  Rf_defineVar(nano_StateSymbol, rvec, ENCLOS(env));
 
   nng_http_res_get_data(handle->res, &dat, &sz);
   vec = Rf_allocVector(RAWSXP, sz);
@@ -863,13 +869,13 @@ SEXP rnng_aio_http(SEXP env, SEXP response, SEXP which) {
     cvec = R_tryEvalSilent(cvec, R_BaseEnv, &xc);
     UNPROTECT(1);
   }
-  Rf_defineVar(nano_ProtocolSymbol, cvec, ENCLOS(env));
+  Rf_defineVar(nano_ResultSymbol, cvec, ENCLOS(env));
 
   switch (typ) {
-  case 0: out = Rf_findVarInFrame(ENCLOS(env), nano_StatusSymbol); break;
-  case 1: out = Rf_findVarInFrame(ENCLOS(env), nano_IdSymbol); break;
-  case 2: out = Rf_findVarInFrame(ENCLOS(env), nano_RawSymbol); break;
-  default: out = Rf_findVarInFrame(ENCLOS(env), nano_ProtocolSymbol); break;
+  case 1: out = Rf_findVarInFrame(ENCLOS(env), nano_StatusSymbol); break;
+  case 2: out = Rf_findVarInFrame(ENCLOS(env), nano_StateSymbol); break;
+  case 3: out = Rf_findVarInFrame(ENCLOS(env), nano_RawSymbol); break;
+  default: out = Rf_findVarInFrame(ENCLOS(env), nano_ResultSymbol); break;
   }
   return out;
 
@@ -918,7 +924,7 @@ SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeou
   nano_aio *raio = R_Calloc(1, nano_aio);
 
   raio->type = RECVAIO;
-  raio->mode = nano_matcharg(recvmode);
+  raio->mode = kpr ? -nano_matcharg(recvmode) : nano_matcharg(recvmode);
   raio->data = NULL;
 
   if ((xc = nng_aio_alloc(&raio->aio, raio_complete, raio))) {
@@ -944,7 +950,6 @@ SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeou
   PROTECT(sendaio = R_MakeExternalPtr(saio, R_NilValue, R_NilValue));
   R_RegisterCFinalizerEx(sendaio, saio_finalizer, TRUE);
   R_MakeWeakRef(aio, sendaio, R_NilValue, TRUE);
-  Rf_defineVar(nano_StateSymbol, keep, env);
 
   if (kpr) {
     PROTECT(fun = Rf_allocSExp(CLOSXP));

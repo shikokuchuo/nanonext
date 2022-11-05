@@ -76,10 +76,7 @@ ncurl <- function(url,
                   data = NULL,
                   response = NULL,
                   pem = NULL)
-  if (async) {
-    response
-    context <- .Call(rnng_ncurl_aio, url, convert, method, headers, data, pem, environment())
-  } else {
-    .Call(rnng_ncurl, url, convert, follow, method, headers, data, response, pem)
-  }
+  if (async)
+    data <- .Call(rnng_ncurl_aio, url, convert, method, headers, data, pem, environment()) else
+      .Call(rnng_ncurl, url, convert, follow, method, headers, data, response, pem)
 
