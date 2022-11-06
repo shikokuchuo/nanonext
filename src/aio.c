@@ -137,7 +137,7 @@ static void haio_finalizer(SEXP xptr) {
 
 static SEXP mk_error_saio(const int xc, SEXP env) {
 
-  SET_INTEGER_ELT(nano_error, 0, xc);
+  INTEGER(nano_error)[0] = xc;
   Rf_defineVar(nano_ResultSymbol, nano_error, ENCLOS(env));
   return nano_error;
 
@@ -145,7 +145,7 @@ static SEXP mk_error_saio(const int xc, SEXP env) {
 
 static SEXP mk_error_raio(const int xc, SEXP env) {
 
-  SET_INTEGER_ELT(nano_error, 0, xc);
+  INTEGER(nano_error)[0] = xc;
   Rf_defineVar(nano_RawSymbol, nano_error, ENCLOS(env));
   Rf_defineVar(nano_DataSymbol, nano_error, ENCLOS(env));
   return nano_error;
@@ -154,7 +154,7 @@ static SEXP mk_error_raio(const int xc, SEXP env) {
 
 static SEXP mk_error_haio(const int xc, SEXP env) {
 
-  SET_INTEGER_ELT(nano_error, 0, xc);
+  INTEGER(nano_error)[0] = xc;
   Rf_defineVar(nano_StatusSymbol, nano_error, ENCLOS(env));
   Rf_defineVar(nano_IdSymbol, nano_error, ENCLOS(env));
   Rf_defineVar(nano_RawSymbol, nano_error, ENCLOS(env));
@@ -166,7 +166,7 @@ static SEXP mk_error_haio(const int xc, SEXP env) {
 static SEXP mk_error_data(const int xc) {
 
   const char *names[] = {"data", ""};
-  SET_INTEGER_ELT(nano_error, 0, xc);
+  INTEGER(nano_error)[0] = xc;
   SEXP out = Rf_mkNamed(VECSXP, names);
   SET_VECTOR_ELT(out, 0, nano_error);
   return out;
@@ -176,7 +176,7 @@ static SEXP mk_error_data(const int xc) {
 static SEXP mk_error_result(const int xc) {
 
   const char *names[] = {"result", ""};
-  SET_INTEGER_ELT(nano_error, 0, xc);
+  INTEGER(nano_error)[0] = xc;
   SEXP out = Rf_mkNamed(VECSXP, names);
   SET_VECTOR_ELT(out, 0, nano_error);
   return out;

@@ -23,7 +23,7 @@
 
 SEXP mk_error(const int xc) {
 
-  SET_INTEGER_ELT(nano_error, 0, xc);
+  INTEGER(nano_error)[0] = xc;
   return nano_error;
 
 }
@@ -31,7 +31,7 @@ SEXP mk_error(const int xc) {
 SEXP mk_error_recv(const int xc) {
 
   const char *names[] = {"raw", "data", ""};
-  SET_INTEGER_ELT(nano_error, 0, xc);
+  INTEGER(nano_error)[0] = xc;
   SEXP out = Rf_mkNamed(VECSXP, names);
   SET_VECTOR_ELT(out, 0, nano_error);
   SET_VECTOR_ELT(out, 1, nano_error);
@@ -42,7 +42,7 @@ SEXP mk_error_recv(const int xc) {
 SEXP mk_error_ncurl(const int xc) {
 
   const char *names[] = {"status", "headers", "raw", "data", ""};
-  SET_INTEGER_ELT(nano_error, 0, xc);
+  INTEGER(nano_error)[0] = xc;
   SEXP out = Rf_mkNamed(VECSXP, names);
   SET_VECTOR_ELT(out, 0, nano_error);
   SET_VECTOR_ELT(out, 1, nano_error);
