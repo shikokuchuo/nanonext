@@ -45,7 +45,6 @@ SEXP nano_aioFormals;
 SEXP nano_aioFuncs;
 SEXP nano_aioNFuncs;
 SEXP nano_error;
-SEXP nano_errorLists;
 SEXP nano_ncurlAio;
 SEXP nano_recvAio;
 SEXP nano_sendAio;

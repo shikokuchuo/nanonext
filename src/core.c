@@ -21,16 +21,8 @@
 
 // internals -------------------------------------------------------------------
 
-static SEXP mk_error(const int xc) {
+SEXP mk_error(const int xc) {
 
-  SET_INTEGER_ELT(nano_error, 0, xc);
-  return nano_error;
-
-}
-
-SEXP mk_werror(const int xc) {
-
-  Rf_warning("%d | %s", xc, nng_strerror(xc));
   SET_INTEGER_ELT(nano_error, 0, xc);
   return nano_error;
 
@@ -481,7 +473,7 @@ SEXP rnng_ctx_close(SEXP context) {
   const int xc = nng_ctx_close(*ctxp);
 
   if (xc)
-    return mk_werror(xc);
+    ERROR_RET(xc);
 
   Rf_setAttrib(context, nano_StateSymbol, Rf_mkString("closed"));
   return nano_success;
@@ -503,7 +495,7 @@ SEXP rnng_dial(SEXP socket, SEXP url, SEXP autostart) {
   const int xc = start ? nng_dial(*sock, up, dp, NNG_FLAG_NONBLOCK) : nng_dialer_create(dp, *sock, up);
   if (xc) {
     R_Free(dp);
-    return mk_werror(xc);
+    ERROR_RET(xc);
   }
 
   PROTECT(dialer = R_MakeExternalPtr(dp, nano_DialerSymbol, R_NilValue));
@@ -552,7 +544,7 @@ SEXP rnng_listen(SEXP socket, SEXP url, SEXP autostart) {
   const int xc = start ? nng_listen(*sock, up, lp, 0) : nng_listener_create(lp, *sock, up);
   if (xc) {
     R_Free(lp);
-    return mk_werror(xc);
+    ERROR_RET(xc);
   }
 
   PROTECT(listener = R_MakeExternalPtr(lp, nano_ListenerSymbol, R_NilValue));
@@ -596,7 +588,7 @@ SEXP rnng_dialer_start(SEXP dialer, SEXP async) {
   const int flags = LOGICAL(async)[0] ? NNG_FLAG_NONBLOCK : 0;
   const int xc = nng_dialer_start(*dial, flags);
   if (xc)
-    return mk_werror(xc);
+    ERROR_RET(xc);
 
   Rf_setAttrib(dialer, nano_StateSymbol, Rf_mkString("started"));
   return nano_success;
@@ -610,7 +602,7 @@ SEXP rnng_listener_start(SEXP listener) {
   nng_listener *list = (nng_listener *) R_ExternalPtrAddr(listener);
   const int xc = nng_listener_start(*list, 0);
   if (xc)
-    return mk_werror(xc);
+    ERROR_RET(xc);
 
   Rf_setAttrib(listener, nano_StateSymbol, Rf_mkString("started"));
   return nano_success;
@@ -624,7 +616,7 @@ SEXP rnng_dialer_close(SEXP dialer) {
   nng_dialer *dial = (nng_dialer *) R_ExternalPtrAddr(dialer);
   const int xc = nng_dialer_close(*dial);
   if (xc)
-    return mk_werror(xc);
+    ERROR_RET(xc);
 
   Rf_setAttrib(dialer, nano_StateSymbol, Rf_mkString("closed"));
   return nano_success;
@@ -638,7 +630,7 @@ SEXP rnng_listener_close(SEXP listener) {
   nng_listener *list = (nng_listener *) R_ExternalPtrAddr(listener);
   const int xc = nng_listener_close(*list);
   if (xc)
-    return mk_werror(xc);
+    ERROR_RET(xc);
 
   Rf_setAttrib(listener, nano_StateSymbol, Rf_mkString("closed"));
   return nano_success;
@@ -1092,7 +1084,7 @@ SEXP rnng_set_opt(SEXP object, SEXP type, SEXP opt, SEXP value) {
   }
 
   if (xc)
-    return mk_werror(xc);
+    ERROR_RET(xc);
 
   return nano_success;
 
