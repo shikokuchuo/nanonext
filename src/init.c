@@ -45,6 +45,7 @@ SEXP nano_aioFormals;
 SEXP nano_aioFuncs;
 SEXP nano_aioNFuncs;
 SEXP nano_error;
+SEXP nano_errorLists;
 SEXP nano_ncurlAio;
 SEXP nano_recvAio;
 SEXP nano_sendAio;
@@ -88,7 +89,8 @@ static void PreserveObjects(void) {
   SETCADR(nano_aioNFuncs, Rf_lang5(nano_DotcallSymbol, nano_AioHttpSymbol, nano_DataSymbol, nano_ResponseSymbol, Rf_ScalarInteger(2)));
   SETCADDR(nano_aioNFuncs, Rf_lang5(nano_DotcallSymbol, nano_AioHttpSymbol, nano_DataSymbol, nano_ResponseSymbol, Rf_ScalarInteger(3)));
   SETCADDDR(nano_aioNFuncs, Rf_lang5(nano_DotcallSymbol, nano_AioHttpSymbol, nano_DataSymbol, nano_ResponseSymbol, Rf_ScalarInteger(4)));
-  R_PreserveObject(nano_error = Rf_mkString("errorValue"));
+  R_PreserveObject(nano_error = Rf_ScalarInteger(1));
+  Rf_classgets(nano_error, Rf_mkString("errorValue"));
   R_PreserveObject(nano_ncurlAio = Rf_allocVector(STRSXP, 2));
   SET_STRING_ELT(nano_ncurlAio, 0, Rf_mkChar("ncurlAio"));
   SET_STRING_ELT(nano_ncurlAio, 1, Rf_mkChar("recvAio"));

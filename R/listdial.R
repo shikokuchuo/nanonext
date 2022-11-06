@@ -155,12 +155,12 @@ listen <- function(socket, url = "inproc://nanonext", autostart = TRUE)
 #' Start a Listener/Dialer.
 #'
 #' @param x a Listener or Dialer.
-#' @param async [default TRUE] logical flag whether the connection attempt,
-#'     including any name resolution, is to be made asynchronously. This helps
-#'     an application be more resilient, but it also generally makes diagnosing
-#'     failures somewhat more difficult.  If FALSE, failure, such as if the
-#'     connection is refused, will be returned immediately, and no further
-#'     action will be taken. Supplying a non-logical value will error.
+#' @param async [default TRUE] (applicable to Dialers only) logical flag whether
+#'     the connection attempt, including any name resolution, is to be made
+#'     asynchronously. This behaviour is more resilient, but also generally
+#'     makes diagnosing failures somewhat more difficult. If FALSE, failure,
+#'     such as if the connection is refused, will be returned immediately, and
+#'     no further action will be taken. Supplying a non-logical value will error.
 #' @param ... not used.
 #'
 #' @return Invisibly, an integer exit code (zero on success).

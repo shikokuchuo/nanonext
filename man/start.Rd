@@ -15,12 +15,12 @@
 
 \item{...}{not used.}
 
-\item{async}{[default TRUE] logical flag whether the connection attempt,
-including any name resolution, is to be made asynchronously. This helps
-an application be more resilient, but it also generally makes diagnosing
-failures somewhat more difficult.  If FALSE, failure, such as if the
-connection is refused, will be returned immediately, and no further
-action will be taken. Supplying a non-logical value will error.}
+\item{async}{[default TRUE] (applicable to Dialers only) logical flag whether
+the connection attempt, including any name resolution, is to be made
+asynchronously. This behaviour is more resilient, but also generally
+makes diagnosing failures somewhat more difficult. If FALSE, failure,
+such as if the connection is refused, will be returned immediately, and
+no further action will be taken. Supplying a non-logical value will error.}
 }
 \value{
 Invisibly, an integer exit code (zero on success).
