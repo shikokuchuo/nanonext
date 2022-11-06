@@ -23,18 +23,23 @@
 
 SEXP mk_error(const int xc) {
 
-  INTEGER(nano_error)[0] = xc;
-  return nano_error;
+  SEXP err = Rf_ScalarInteger(xc);
+  SET_ATTRIB(err, nano_error);
+  SET_OBJECT(err, 1);
+  return err;
 
 }
 
 SEXP mk_error_recv(const int xc) {
 
   const char *names[] = {"raw", "data", ""};
-  INTEGER(nano_error)[0] = xc;
-  SEXP out = Rf_mkNamed(VECSXP, names);
-  SET_VECTOR_ELT(out, 0, nano_error);
-  SET_VECTOR_ELT(out, 1, nano_error);
+  SEXP out = PROTECT(Rf_mkNamed(VECSXP, names));
+  SEXP err = Rf_ScalarInteger(xc);
+  SET_ATTRIB(err, nano_error);
+  SET_OBJECT(err, 1);
+  SET_VECTOR_ELT(out, 0, err);
+  SET_VECTOR_ELT(out, 1, err);
+  UNPROTECT(1);
   return out;
 
 }
@@ -42,12 +47,15 @@ SEXP mk_error_recv(const int xc) {
 SEXP mk_error_ncurl(const int xc) {
 
   const char *names[] = {"status", "headers", "raw", "data", ""};
-  INTEGER(nano_error)[0] = xc;
-  SEXP out = Rf_mkNamed(VECSXP, names);
-  SET_VECTOR_ELT(out, 0, nano_error);
-  SET_VECTOR_ELT(out, 1, nano_error);
-  SET_VECTOR_ELT(out, 2, nano_error);
-  SET_VECTOR_ELT(out, 3, nano_error);
+  SEXP out = PROTECT(Rf_mkNamed(VECSXP, names));
+  SEXP err = Rf_ScalarInteger(xc);
+  SET_ATTRIB(err, nano_error);
+  SET_OBJECT(err, 1);
+  SET_VECTOR_ELT(out, 0, err);
+  SET_VECTOR_ELT(out, 1, err);
+  SET_VECTOR_ELT(out, 2, err);
+  SET_VECTOR_ELT(out, 3, err);
+  UNPROTECT(1);
   return out;
 
 }
