@@ -2,7 +2,7 @@ pandoc: 2.19.2
 pkgdown: 2.0.6
 pkgdown_sha: ~
 articles: {}
-last_built: 2022-11-06T14:31Z
+last_built: 2022-11-07T11:55Z
 urls:
   reference: https://shikokuchuo.net/nanonext/reference
   article: https://shikokuchuo.net/nanonext/articles
