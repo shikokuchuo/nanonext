@@ -261,7 +261,8 @@ SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP follow, SEXP method, SEXP headers,
 
   nng_http_res_get_data(res, &dat, &sz);
   vec = Rf_allocVector(RAWSXP, sz);
-  memcpy(RAW(vec), dat, sz);
+  if (dat != NULL)
+    memcpy(RAW(vec), dat, sz);
   SET_VECTOR_ELT(out, 2, vec);
 
   if (code >= 300 && code < 400) {

@@ -17,7 +17,7 @@ R binding for NNG (Nanomsg Next Gen), a successor to ZeroMQ. NNG is a
 socket library providing high-performance scalability protocols,
 implementing a cross-platform standard for messaging and communications.
 Serves as a concurrency framework for building distributed applications,
-utilising ‘Aio’ objects which automatically resolve upon completion of
+utilising ‘aio’ objects which resolve automatically upon completion of
 asynchronous operations.
 
 Designed for performance and reliability, the NNG library is written in
@@ -365,7 +365,7 @@ aio
 #> < recvAio >
 #>  - $data for message data
 aio$data |> str()
-#>  num [1:100000000] -0.994 -1.507 -0.857 -0.88 -0.294 ...
+#>  num [1:100000000] -0.257 -0.316 0.202 1.494 0.15 ...
 ```
 
 As `call_aio()` is blocking and will wait for completion, an alternative
@@ -526,11 +526,11 @@ ncurl("https://httpbin.org/headers")
 #>   [1] 7b 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73
 #>  [26] 74 22 3a 20 22 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22
 #>  [51] 58 2d 41 6d 7a 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31
-#>  [76] 2d 36 33 36 38 64 33 39 34 2d 36 30 39 61 32 32 61 35 33 36 35 63 31 31 62
-#> [101] 36 34 38 35 30 65 64 34 65 22 0a 20 20 7d 0a 7d 0a
+#>  [76] 2d 36 33 36 61 36 62 37 34 2d 32 61 63 32 61 63 30 65 30 36 64 36 33 66 65
+#> [101] 35 37 30 62 34 63 30 64 62 22 0a 20 20 7d 0a 7d 0a
 #> 
 #> $data
-#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6368d394-609a22a5365c11b64850ed4e\"\n  }\n}\n"
+#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-636a6b74-2ac2ac0e06d63fe570b4c0db\"\n  }\n}\n"
 ```
 
 For advanced use, supports additional HTTP methods such as POST or PUT.
@@ -551,13 +551,13 @@ res
 
 call_aio(res)$headers
 #> $Date
-#> [1] "Mon, 07 Nov 2022 09:44:52 GMT"
+#> [1] "Tue, 08 Nov 2022 14:45:09 GMT"
 #> 
 #> $Server
 #> [1] "gunicorn/19.9.0"
 
 res$data
-#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6368d394-3a93bcc6609ccb4b6f98b635\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"79.173.129.2\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
+#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-636a6b75-14f2b0563a4938bf773d2c1a\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"82.163.196.114\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
 ```
 
 In this respect, it may be used as a performant and lightweight method
@@ -599,10 +599,10 @@ s |> send('{"action": "subscribe", "symbols": "EURUSD"}')
 #> [1] 0
 
 s |> recv()
-#> [1] "{\"s\":\"EURUSD\",\"a\":0.99892,\"b\":0.99885,\"dc\":\"0.6117\",\"dd\":\"0.0061\",\"ppms\":false,\"t\":1667814293000}"
+#> [1] "{\"s\":\"EURUSD\",\"a\":1.00067,\"b\":1.00065,\"dc\":\"-0.1059\",\"dd\":\"-0.0011\",\"ppms\":false,\"t\":1667918711000}"
 
 s |> recv()
-#> [1] "{\"s\":\"EURUSD\",\"a\":0.99891,\"b\":0.99884,\"dc\":\"0.6107\",\"dd\":\"0.0061\",\"ppms\":false,\"t\":1667814293000}"
+#> [1] "{\"s\":\"EURUSD\",\"a\":1.00065,\"b\":1.00058,\"dc\":\"-0.1079\",\"dd\":\"-0.0011\",\"ppms\":false,\"t\":1667918711000}"
 
 close(s)
 ```

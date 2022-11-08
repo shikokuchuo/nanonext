@@ -851,7 +851,8 @@ SEXP rnng_aio_http(SEXP env, SEXP response, SEXP which) {
 
   nng_http_res_get_data(handle->res, &dat, &sz);
   vec = Rf_allocVector(RAWSXP, sz);
-  memcpy(RAW(vec), dat, sz);
+  if (dat != NULL)
+    memcpy(RAW(vec), dat, sz);
   Rf_defineVar(nano_RawSymbol, vec, ENCLOS(env));
 
   if (code >= 300 && code < 400) {

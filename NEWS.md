@@ -1,3 +1,9 @@
+# nanonext 0.7.0.9000 (development)
+
+#### Updates
+
+* Fixes CRAN 'additional issue' (clang/gcc-UBSAN). Note: this does not actually result in any problems during use.
+
 # nanonext 0.7.0
 
 *nanonext 0.7 implements API optimisations after recent enhancements; the API is again intended to remain stable after these changes*

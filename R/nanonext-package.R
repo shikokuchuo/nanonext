@@ -22,7 +22,7 @@
 #'     library providing high-performance scalability protocols, implementing a
 #'     cross-platform standard for messaging and communications. Serves as a
 #'     concurrency framework for building distributed applications, utilising
-#'     'Aio' objects which automatically resolve upon completion of asynchronous
+#'     'aio' objects which resolve automatically upon completion of asynchronous
 #'     operations.
 #'
 #' @section Usage notes:
