@@ -654,7 +654,7 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
   unsigned char *dp;
   int xc;
 
-  SEXP ptrtag = R_ExternalPtrTag(con);
+  const SEXP ptrtag = R_ExternalPtrTag(con);
   if (ptrtag == nano_SocketSymbol) {
 
     nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(con);
@@ -788,7 +788,7 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP keep, SEXP bytes) {
   size_t sz;
   SEXP res;
 
-  SEXP ptrtag = R_ExternalPtrTag(con);
+  const SEXP ptrtag = R_ExternalPtrTag(con);
   if (ptrtag == nano_SocketSymbol) {
 
     nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(con);
@@ -930,7 +930,8 @@ SEXP rnng_set_opt(SEXP object, SEXP type, SEXP opt, SEXP value) {
   const int typ = matchtype(type);
   int xc;
 
-  if (R_ExternalPtrTag(object) == nano_SocketSymbol) {
+  const SEXP ptrtag = R_ExternalPtrTag(object);
+  if (ptrtag == nano_SocketSymbol) {
 
     nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(object);
 
@@ -967,7 +968,7 @@ SEXP rnng_set_opt(SEXP object, SEXP type, SEXP opt, SEXP value) {
       break;
     }
 
-  } else if (R_ExternalPtrTag(object) == nano_ContextSymbol) {
+  } else if (ptrtag == nano_ContextSymbol) {
 
     nng_ctx *ctx = (nng_ctx *) R_ExternalPtrAddr(object);
 
@@ -1003,7 +1004,7 @@ SEXP rnng_set_opt(SEXP object, SEXP type, SEXP opt, SEXP value) {
       break;
     }
 
-  } else if (R_ExternalPtrTag(object) == nano_StreamSymbol) {
+  } else if (ptrtag == nano_StreamSymbol) {
 
     nng_stream *st = (nng_stream *) R_ExternalPtrAddr(object);
 
@@ -1031,7 +1032,7 @@ SEXP rnng_set_opt(SEXP object, SEXP type, SEXP opt, SEXP value) {
       break;
     }
 
-  } else if (R_ExternalPtrTag(object) == nano_ListenerSymbol) {
+  } else if (ptrtag == nano_ListenerSymbol) {
 
     nng_listener *list = (nng_listener *) R_ExternalPtrAddr(object);
 
@@ -1059,7 +1060,7 @@ SEXP rnng_set_opt(SEXP object, SEXP type, SEXP opt, SEXP value) {
       break;
     }
 
-  } else if (R_ExternalPtrTag(object) == nano_DialerSymbol) {
+  } else if (ptrtag == nano_DialerSymbol) {
 
     nng_dialer *dial = (nng_dialer *) R_ExternalPtrAddr(object);
 

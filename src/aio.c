@@ -189,11 +189,11 @@ static SEXP mk_error_data(const int xc) {
 
 SEXP rnng_aio_result(SEXP env) {
 
-  SEXP result = Rf_findVarInFrame(ENCLOS(env), nano_ResultSymbol);
+  const SEXP result = Rf_findVarInFrame(ENCLOS(env), nano_ResultSymbol);
   if (result != R_UnboundValue)
     return result;
 
-  SEXP aio = Rf_findVarInFrame(env, nano_AioSymbol);
+  const SEXP aio = Rf_findVarInFrame(env, nano_AioSymbol);
   if (R_ExternalPtrTag(aio) != nano_AioSymbol)
     Rf_error("object is not a valid Aio");
   if (R_ExternalPtrAddr(aio) == NULL)
@@ -214,11 +214,11 @@ SEXP rnng_aio_result(SEXP env) {
 
 SEXP rnng_aio_get_msgraw(SEXP env) {
 
-  SEXP exist = Rf_findVarInFrame(ENCLOS(env), nano_RawSymbol);
+  const SEXP exist = Rf_findVarInFrame(ENCLOS(env), nano_RawSymbol);
   if (exist != R_UnboundValue)
     return exist;
 
-  SEXP aio = Rf_findVarInFrame(env, nano_AioSymbol);
+  const SEXP aio = Rf_findVarInFrame(env, nano_AioSymbol);
   if (R_ExternalPtrTag(aio) != nano_AioSymbol)
     Rf_error("object is not a valid Aio");
   if (R_ExternalPtrAddr(aio) == NULL)
@@ -258,11 +258,11 @@ SEXP rnng_aio_get_msgraw(SEXP env) {
 
 SEXP rnng_aio_get_msgdata(SEXP env) {
 
-  SEXP exist = Rf_findVarInFrame(ENCLOS(env), nano_DataSymbol);
+  const SEXP exist = Rf_findVarInFrame(ENCLOS(env), nano_DataSymbol);
   if (exist != R_UnboundValue)
     return exist;
 
-  SEXP aio = Rf_findVarInFrame(env, nano_AioSymbol);
+  const SEXP aio = Rf_findVarInFrame(env, nano_AioSymbol);
   if (R_ExternalPtrTag(aio) != nano_AioSymbol)
     Rf_error("object is not a valid Aio");
   if (R_ExternalPtrAddr(aio) == NULL)
@@ -309,7 +309,7 @@ SEXP rnng_aio_call(SEXP aio) {
   if (TYPEOF(aio) != ENVSXP)
     return aio;
 
-  SEXP coreaio = Rf_findVarInFrame(aio, nano_AioSymbol);
+  const SEXP coreaio = Rf_findVarInFrame(aio, nano_AioSymbol);
   if (R_ExternalPtrTag(coreaio) != nano_AioSymbol || R_ExternalPtrAddr(coreaio) == NULL)
     return aio;
 
@@ -396,20 +396,22 @@ SEXP rnng_unresolved(SEXP x) {
 
 SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
 
-  SEXP aio;
+  const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) Rf_asInteger(timeout);
+  SEXP enc, aio;
+  R_xlen_t xlen;
+  unsigned char *dp;
   int xc;
 
-  SEXP ptrtag = R_ExternalPtrTag(con);
+  const SEXP ptrtag = R_ExternalPtrTag(con);
   if (ptrtag == nano_SocketSymbol) {
 
     nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(con);
-    const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) Rf_asInteger(timeout);
     nano_aio *saio = R_Calloc(1, nano_aio);
     nng_msg *msg;
 
-    SEXP enc = nano_encodes(data, mode);
-    const R_xlen_t xlen = Rf_xlength(enc);
-    unsigned char *dp = RAW(enc);
+    enc = nano_encodes(data, mode);
+    xlen = Rf_xlength(enc);
+    dp = RAW(enc);
 
     saio->type = SENDAIO;
 
@@ -435,13 +437,12 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
   } else if (ptrtag == nano_ContextSymbol) {
 
     nng_ctx *ctxp = (nng_ctx *) R_ExternalPtrAddr(con);
-    const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) Rf_asInteger(timeout);
     nano_aio *saio = R_Calloc(1, nano_aio);
     nng_msg *msg;
 
-    SEXP enc = nano_encodes(data, mode);
-    const R_xlen_t xlen = Rf_xlength(enc);
-    unsigned char *dp = RAW(enc);
+    enc = nano_encodes(data, mode);
+    xlen = Rf_xlength(enc);
+    dp = RAW(enc);
 
     saio->type = SENDAIO;
 
@@ -468,13 +469,12 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
   } else if (ptrtag == nano_StreamSymbol) {
 
     nng_stream *sp = (nng_stream *) R_ExternalPtrAddr(con);
-    const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) Rf_asInteger(timeout);
     const int frames = LOGICAL(Rf_getAttrib(con, nano_TextframesSymbol))[0];
     nano_aio *iaio = R_Calloc(1, nano_aio);
     nng_iov *iov = R_Calloc(1, nng_iov);
-    SEXP enc = nano_encode(data);
-    const R_xlen_t xlen = Rf_xlength(enc);
-    unsigned char *dp = RAW(enc);
+    enc = nano_encode(data);
+    xlen = Rf_xlength(enc);
+    dp = RAW(enc);
 
     iaio->type = IOV_SENDAIO;
     iaio->data = iov;
@@ -534,7 +534,7 @@ SEXP rnng_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP keep, SEXP bytes, SEX
   SEXP aio;
   int xc;
 
-  SEXP ptrtag = R_ExternalPtrTag(con);
+  const SEXP ptrtag = R_ExternalPtrTag(con);
   if (ptrtag == nano_SocketSymbol) {
 
     nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(con);
@@ -798,7 +798,7 @@ SEXP rnng_aio_http(SEXP env, SEXP response, SEXP type) {
   if (exist != R_UnboundValue)
     return exist;
 
-  SEXP aio = Rf_findVarInFrame(env, nano_AioSymbol);
+  const SEXP aio = Rf_findVarInFrame(env, nano_AioSymbol);
   if (R_ExternalPtrTag(aio) != nano_AioSymbol)
     Rf_error("object is not a valid Aio");
   if (R_ExternalPtrAddr(aio) == NULL)
@@ -886,18 +886,21 @@ SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeou
   if (R_ExternalPtrTag(con) != nano_ContextSymbol)
     Rf_error("'context' is not a valid Context");
 
-  SEXP sendaio, aio;
+  const int kpr = LOGICAL(keep)[0];
+  const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) Rf_asInteger(timeout);
+
+  SEXP enc, sendaio, aio, env, fun;
+  R_xlen_t xlen;
+  unsigned char *dp;
   int xc;
 
   nng_ctx *ctxp = (nng_ctx *) R_ExternalPtrAddr(con);
-  const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) Rf_asInteger(timeout);
-  const int kpr = LOGICAL(keep)[0];
   nano_aio *saio = R_Calloc(1, nano_aio);
   nng_msg *msg;
 
-  SEXP enc = nano_encodes(data, sendmode);
-  const R_xlen_t xlen = Rf_xlength(enc);
-  unsigned char *dp = RAW(enc);
+  enc = nano_encodes(data, sendmode);
+  xlen = Rf_xlength(enc);
+  dp = RAW(enc);
 
   saio->type = SENDAIO;
 
@@ -927,6 +930,8 @@ SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeou
 
   if ((xc = nng_aio_alloc(&raio->aio, raio_complete, raio))) {
     R_Free(raio);
+    nng_aio_free(saio->aio);
+    R_Free(saio);
     return kpr ? mk_error_recv(xc) : mk_error_data(xc);
   }
 
@@ -936,7 +941,6 @@ SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeou
   PROTECT(aio = R_MakeExternalPtr(raio, nano_AioSymbol, R_NilValue));
   R_RegisterCFinalizerEx(aio, raio_finalizer, TRUE);
 
-  SEXP env, fun;
 #if defined(R_VERSION) && R_VERSION >= R_Version(4, 1, 0)
   PROTECT(env = R_NewEnv(clo, 0, 4));
 #else

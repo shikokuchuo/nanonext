@@ -19,6 +19,9 @@ Sleep function. May block for longer than requested, with the actual wait
 \details{
 If 'msec' is non-integer, it will be coerced to integer. Non-numeric
     input will be ignored and return immediately.
+
+    Note that unlike \code{\link{Sys.sleep}}, this function is not
+    user-interruptible by sending SIGINT e.g. with ctrl + c.
 }
 \examples{
 time <- mclock(); msleep(100); mclock() - time

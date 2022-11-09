@@ -103,9 +103,8 @@ SEXP rnng_random(SEXP n) {
 
   PROTECT(vec = Rf_allocVector(REALSXP, vlen));
   double *pvec = REAL(vec);
-  for (R_xlen_t i = 0; i < vlen; i++) {
+  for (R_xlen_t i = 0; i < vlen; i++)
     pvec[i] = (double) nng_random();
-  }
 
   UNPROTECT(1);
   return vec;

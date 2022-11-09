@@ -29,6 +29,7 @@ Only raw mode sockets may be used with this function. Sockets s1 and
 
     Warning: this function is designed to be called in an isolated process
     with the two sockets. Once called, it will block with no ability to
-    interrupt. Kill the process to terminate the device.
+    interrupt. To terminate the device, the process must be killed (in
+    interactive sessions this may be done by sending SIGQUIT e.g. ctrl + \).
 }
 
