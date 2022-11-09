@@ -201,6 +201,6 @@ request <- function(context,
                                   "integer", "logical", "numeric", "raw"),
                     timeout = NULL,
                     keep.raw = FALSE)
-  result <- .Call(rnng_request, context, data, send_mode, recv_mode, timeout,
-                  keep.raw, environment())
+  data <- .Call(rnng_request, context, data, send_mode, recv_mode, timeout,
+                keep.raw, environment())
 

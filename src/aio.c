@@ -152,7 +152,7 @@ static SEXP mk_error_raio(const int xc, SEXP clo) {
   SET_ATTRIB(err, nano_error);
   SET_OBJECT(err, 1);
   Rf_defineVar(nano_RawSymbol, err, clo);
-  Rf_defineVar(nano_DataSymbol, err, clo);
+  Rf_defineVar(nano_ResultSymbol, err, clo);
   UNPROTECT(1);
   return err;
 
@@ -189,9 +189,9 @@ static SEXP mk_error_data(const int xc) {
 
 SEXP rnng_aio_result(SEXP env) {
 
-  const SEXP result = Rf_findVarInFrame(ENCLOS(env), nano_ResultSymbol);
-  if (result != R_UnboundValue)
-    return result;
+  const SEXP exist = Rf_findVarInFrame(ENCLOS(env), nano_ResultSymbol);
+  if (exist != R_UnboundValue)
+    return exist;
 
   const SEXP aio = Rf_findVarInFrame(env, nano_AioSymbol);
   if (R_ExternalPtrTag(aio) != nano_AioSymbol)
@@ -248,7 +248,7 @@ SEXP rnng_aio_get_msgraw(SEXP env) {
 
   PROTECT(out = nano_decode(buf, sz, mod, kpr));
   Rf_defineVar(nano_RawSymbol, VECTOR_ELT(out, 0), ENCLOS(env));
-  Rf_defineVar(nano_DataSymbol, VECTOR_ELT(out, 1), ENCLOS(env));
+  Rf_defineVar(nano_ResultSymbol, VECTOR_ELT(out, 1), ENCLOS(env));
   out = VECTOR_ELT(out, 0);
 
   UNPROTECT(1);
@@ -258,7 +258,7 @@ SEXP rnng_aio_get_msgraw(SEXP env) {
 
 SEXP rnng_aio_get_msgdata(SEXP env) {
 
-  const SEXP exist = Rf_findVarInFrame(ENCLOS(env), nano_DataSymbol);
+  const SEXP exist = Rf_findVarInFrame(ENCLOS(env), nano_ResultSymbol);
   if (exist != R_UnboundValue)
     return exist;
 
@@ -293,10 +293,10 @@ SEXP rnng_aio_get_msgdata(SEXP env) {
   PROTECT(out = nano_decode(buf, sz, mod, kpr));
   if (kpr) {
     Rf_defineVar(nano_RawSymbol, VECTOR_ELT(out, 0), ENCLOS(env));
-    Rf_defineVar(nano_DataSymbol, VECTOR_ELT(out, 1), ENCLOS(env));
+    Rf_defineVar(nano_ResultSymbol, VECTOR_ELT(out, 1), ENCLOS(env));
     out = VECTOR_ELT(out, 1);
   } else {
-    Rf_defineVar(nano_DataSymbol, out, ENCLOS(env));
+    Rf_defineVar(nano_ResultSymbol, out, ENCLOS(env));
   }
 
   UNPROTECT(1);
@@ -919,8 +919,6 @@ SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeou
   nng_aio_set_msg(saio->aio, msg);
   nng_aio_set_timeout(saio->aio, NNG_DURATION_DEFAULT);
   nng_ctx_send(*ctxp, saio->aio);
-
-  Rf_setVar(nano_DataSymbol, R_UnboundValue, clo);
 
   nano_aio *raio = R_Calloc(1, nano_aio);
 
