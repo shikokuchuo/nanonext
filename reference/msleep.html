@@ -80,6 +80,8 @@
     <h2>Details</h2>
     <p>If 'msec' is non-integer, it will be coerced to integer. Non-numeric
     input will be ignored and return immediately.</p>
+<p>Note that unlike <code><a href="https://rdrr.io/r/base/Sys.sleep.html" class="external-link">Sys.sleep</a></code>, this function is not
+    user-interruptible by sending SIGINT e.g. with ctrl + c.</p>
     </div>
 
     <div id="ref-examples">
