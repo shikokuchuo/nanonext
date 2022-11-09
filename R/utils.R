@@ -222,8 +222,7 @@ is_error_value <- function(x) inherits(x, "errorValue")
 
 #' nanonext Initialise
 #'
-#' Initialise global options. This function prints a deprecation message and no
-#'     longer has any effect.
+#' This function prints a deprecation message and no longer has any effect.
 #'
 #' @param warn Deprecated.
 #'
@@ -233,7 +232,7 @@ is_error_value <- function(x) inherits(x, "errorValue")
 #'
 nano_init <- function(warn) {
 
-  message("nanonext 0.7.0 | 'nano_init()' is deprecated as 'errorValues' no longer generate warnings")
+  message("nanonext 0.7.0 | 'nano_init()' is deprecated. See 'news' for updated warning behaviour")
 
 }
 

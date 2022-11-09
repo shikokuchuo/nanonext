@@ -2,7 +2,7 @@
 
 #### Updates
 
-* Fixes CRAN 'additional issue' (clang/gcc-UBSAN). Note: this does not actually result in any problems during use.
+* Fixes CRAN 'additional issue' (clang/gcc-UBSAN). Note: this does not result in any actual problems during use.
 
 # nanonext 0.7.0
 

@@ -13,6 +13,5 @@ nano_init(warn)
 Invisible NULL.
 }
 \description{
-Initialise global options. This function prints a deprecation message and no
-    longer has any effect.
+This function prints a deprecation message and no longer has any effect.
 }

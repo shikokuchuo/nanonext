@@ -785,9 +785,9 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP dat
 
 }
 
-SEXP rnng_aio_http(SEXP env, SEXP response, SEXP which) {
+SEXP rnng_aio_http(SEXP env, SEXP response, SEXP type) {
 
-  const int typ = INTEGER(which)[0];
+  const int typ = INTEGER(type)[0];
   SEXP exist;
   switch (typ) {
   case 1: exist = Rf_findVarInFrame(ENCLOS(env), nano_StatusSymbol); break;
@@ -814,7 +814,7 @@ SEXP rnng_aio_http(SEXP env, SEXP response, SEXP which) {
 
   void *dat;
   size_t sz;
-  SEXP out, vec, cvec = R_NilValue, rvec = R_NilValue;
+  SEXP out, vec, cvec, rvec;
   nano_handle *handle = (nano_handle *) haio->data;
 
   uint16_t code = nng_http_res_get_status(handle->res);
@@ -846,6 +846,8 @@ SEXP rnng_aio_http(SEXP env, SEXP response, SEXP which) {
       break;
     }
     UNPROTECT(1);
+  } else {
+    rvec = R_NilValue;
   }
   Rf_defineVar(nano_StateSymbol, rvec, ENCLOS(env));
 
@@ -862,6 +864,8 @@ SEXP rnng_aio_http(SEXP env, SEXP response, SEXP which) {
     PROTECT(cvec = Rf_lang2(nano_RtcSymbol, vec));
     cvec = R_tryEvalSilent(cvec, R_BaseEnv, &xc);
     UNPROTECT(1);
+  } else {
+    cvec = R_NilValue;
   }
   Rf_defineVar(nano_ResultSymbol, cvec, ENCLOS(env));
 
