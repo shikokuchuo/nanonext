@@ -56,9 +56,13 @@
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.7.0.9000" id="nanonext-0709000-development">nanonext 0.7.0.9000 (development)<a class="anchor" aria-label="anchor" href="#nanonext-0709000-development"></a></h2>
 <div class="section level5">
+<h5 id="new-features-0-7-0-9000">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-7-0-9000"></a></h5>
+<ul><li>Implements <code><a href="../reference/getopt.html">getopt()</a></code>, which is the counterpart to <code><a href="../reference/setopt.html">setopt()</a></code> for retrieving options set on ‘nano’ objects.</li>
+</ul></div>
+<div class="section level5">
 <h5 id="updates-0-7-0-9000">Updates<a class="anchor" aria-label="anchor" href="#updates-0-7-0-9000"></a></h5>
 <ul><li>
-<code><a href="../reference/ncurl.html">ncurl()</a></code>, when not following redirects or async, now returns redirect addresses as the response header ‘Location’ as sometimes additional information is returned which is now available at <code>$data</code>.</li>
+<code><a href="../reference/ncurl.html">ncurl()</a></code> changes to return redirect addresses as the response header ‘Location’. This is so any additional information provided can now be available at <code>$data</code>.</li>
 <li>Eliminates CRAN ‘additional issue’ (clang/gcc-UBSAN).</li>
 <li>Internal performance optimisations.</li>
 </ul></div>
