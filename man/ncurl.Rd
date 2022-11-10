@@ -28,9 +28,8 @@ value will error.}
 
 \item{follow}{[default FALSE] logical value whether to automatically follow
 redirects (ignored for async requests). If FALSE, or for async requests,
-the redirect address is returned as a character string at \code{$data}
-and the HTTP status code will be within the 300 range. Supplying a
-non-logical value will error.}
+the redirect address is returned as response header 'Location'. Supplying
+a non-logical value will error.}
 
 \item{method}{(optional) the HTTP method (defaults to 'GET' if not specified).}
 
@@ -55,7 +54,9 @@ Named list of 4 elements:
     \item{\code{$status}} {- integer HTTP repsonse status code (200 - OK).
     Use \code{\link{status_code}} for a translation of the meaning.}
     \item{\code{$headers}} {- named list of response headers supplied in
-    'response' or NULL if unspecified.}
+    'response' or NULL if unspecified. If the status code is within the 300
+    range, the response header 'Location' is automatically appended to return
+    the redirect address.}
     \item{\code{$raw}} {- raw vector of the received resource (use
     \code{\link{writeBin}} to save to a file).}
     \item{\code{$data}} {- converted character string (if \code{'convert' = TRUE}

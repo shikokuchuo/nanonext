@@ -139,7 +139,7 @@ SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP follow, SEXP method, SEXP headers,
   nng_aio *aio;
   nng_tls_config *cfg = NULL;
   int xc;
-  uint16_t code;
+  uint16_t code, relo;
 
   if ((xc = nng_url_parse(&url, CHAR(STRING_ELT(http, 0)))))
     goto exitlevel1;
@@ -215,11 +215,12 @@ SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP follow, SEXP method, SEXP headers,
     nng_tls_config_free(cfg);
   nng_aio_free(aio);
 
-  code = nng_http_res_get_status(res);
+  code = nng_http_res_get_status(res), relo = code >= 300 && code < 400 ? 1 : 0;
 
-  if (code >= 300 && code < 400 && LOGICAL(follow)[0])
-    return rnng_ncurl(Rf_mkString(nng_http_res_get_header(res, "Location")),
-                      convert, follow, method, headers, data, response, pem);
+  if (relo && LOGICAL(follow)[0]) {
+    SET_STRING_ELT(nano_addRedirect, 0, Rf_mkChar(nng_http_res_get_header(res, "Location")));
+    return rnng_ncurl(nano_addRedirect, convert, follow, method, headers, data, response, pem);
+  }
 
   SEXP out, vec, cvec, rvec;
   void *dat;
@@ -229,6 +230,22 @@ SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP follow, SEXP method, SEXP headers,
   PROTECT(out = Rf_mkNamed(VECSXP, names));
 
   SET_VECTOR_ELT(out, 0, Rf_ScalarInteger(code));
+
+  if (relo) {
+    const R_xlen_t rlen = Rf_xlength(response);
+    switch (TYPEOF(response)) {
+    case STRSXP:
+      PROTECT(response = Rf_lengthgets(response, rlen + 1));
+      SET_STRING_ELT(response, rlen, Rf_mkChar("Location"));
+      break;
+    case VECSXP:
+      PROTECT(response = Rf_lengthgets(response, rlen + 1));
+      SET_VECTOR_ELT(response, rlen, Rf_mkString("Location"));
+      break;
+    default:
+      PROTECT(response = Rf_mkString("Location"));
+    }
+  }
 
   if (response != R_NilValue) {
     const R_xlen_t rlen = Rf_xlength(response);
@@ -259,6 +276,7 @@ SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP follow, SEXP method, SEXP headers,
     rvec = R_NilValue;
   }
   SET_VECTOR_ELT(out, 1, rvec);
+  if (relo) UNPROTECT(1);
 
   nng_http_res_get_data(res, &dat, &sz);
   vec = Rf_allocVector(RAWSXP, sz);
@@ -266,9 +284,7 @@ SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP follow, SEXP method, SEXP headers,
     memcpy(RAW(vec), dat, sz);
   SET_VECTOR_ELT(out, 2, vec);
 
-  if (code >= 300 && code < 400) {
-    cvec = Rf_mkString(nng_http_res_get_header(res, "Location"));
-  } else if (LOGICAL(convert)[0]) {
+  if (LOGICAL(convert)[0]) {
     PROTECT(cvec = Rf_lang2(nano_RtcSymbol, vec));
     cvec = R_tryEvalSilent(cvec, R_BaseEnv, &xc);
     UNPROTECT(1);

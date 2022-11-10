@@ -817,8 +817,24 @@ SEXP rnng_aio_http(SEXP env, SEXP response, SEXP type) {
   SEXP out, vec, cvec, rvec;
   nano_handle *handle = (nano_handle *) haio->data;
 
-  uint16_t code = nng_http_res_get_status(handle->res);
+  uint16_t code = nng_http_res_get_status(handle->res), relo = code >= 300 && code < 400 ? 1 : 0;
   Rf_defineVar(nano_StatusSymbol, Rf_ScalarInteger(code), ENCLOS(env));
+
+  if (relo) {
+    const R_xlen_t rlen = Rf_xlength(response);
+    switch (TYPEOF(response)) {
+    case STRSXP:
+      PROTECT(response = Rf_lengthgets(response, rlen + 1));
+      SET_STRING_ELT(response, rlen, Rf_mkChar("Location"));
+      break;
+    case VECSXP:
+      PROTECT(response = Rf_lengthgets(response, rlen + 1));
+      SET_VECTOR_ELT(response, rlen, Rf_mkString("Location"));
+      break;
+    default:
+      PROTECT(response = Rf_mkString("Location"));
+    }
+  }
 
   if (response != R_NilValue) {
     const R_xlen_t rlen = Rf_xlength(response);
@@ -850,6 +866,7 @@ SEXP rnng_aio_http(SEXP env, SEXP response, SEXP type) {
     rvec = R_NilValue;
   }
   Rf_defineVar(nano_StateSymbol, rvec, ENCLOS(env));
+  if (relo) UNPROTECT(1);
 
   nng_http_res_get_data(handle->res, &dat, &sz);
   vec = Rf_allocVector(RAWSXP, sz);
@@ -857,9 +874,7 @@ SEXP rnng_aio_http(SEXP env, SEXP response, SEXP type) {
     memcpy(RAW(vec), dat, sz);
   Rf_defineVar(nano_RawSymbol, vec, ENCLOS(env));
 
-  if (code >= 300 && code < 400) {
-    cvec = Rf_mkString(nng_http_res_get_header(handle->res, "Location"));
-  } else if (haio->mode) {
+  if (haio->mode) {
     int xc;
     PROTECT(cvec = Rf_lang2(nano_RtcSymbol, vec));
     cvec = R_tryEvalSilent(cvec, R_BaseEnv, &xc);

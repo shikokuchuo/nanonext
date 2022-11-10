@@ -101,6 +101,7 @@ extern SEXP nano_TextframesSymbol;
 extern SEXP nano_UnserSymbol;
 extern SEXP nano_UrlSymbol;
 
+extern SEXP nano_addRedirect;
 extern SEXP nano_aioFormals;
 extern SEXP nano_aioFuncs;
 extern SEXP nano_aioNFuncs;

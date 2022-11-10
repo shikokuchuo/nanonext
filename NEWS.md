@@ -2,7 +2,9 @@
 
 #### Updates
 
-* Fixes CRAN 'additional issue' (clang/gcc-UBSAN) - involves a technicality and does not manifest into any actual issues.
+* `ncurl()`, when not following redirects or async, now returns redirect addresses as the response header 'Location' as sometimes additional information is returned which is now available at `$data`.
+* Eliminates CRAN 'additional issue' (clang/gcc-UBSAN).
+* Internal performance optimisations.
 
 # nanonext 0.7.0
 

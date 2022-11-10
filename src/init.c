@@ -41,6 +41,7 @@ SEXP nano_TextframesSymbol;
 SEXP nano_UnserSymbol;
 SEXP nano_UrlSymbol;
 
+SEXP nano_addRedirect;
 SEXP nano_aioFormals;
 SEXP nano_aioFuncs;
 SEXP nano_aioNFuncs;
@@ -77,6 +78,7 @@ static void RegisterSymbols(void) {
 }
 
 static void PreserveObjects(void) {
+  R_PreserveObject(nano_addRedirect = Rf_allocVector(STRSXP, 1));
   R_PreserveObject(nano_aioFormals = Rf_list1(nano_AioSymbol));
   R_PreserveObject(nano_aioFuncs = Rf_allocVector(LISTSXP, 3));
   SETCAR(nano_aioFuncs, Rf_lang3(nano_DotcallSymbol, Rf_install("rnng_aio_result"), nano_DataSymbol));
@@ -102,15 +104,16 @@ static void PreserveObjects(void) {
 }
 
 static void ReleaseObjects(void) {
-  R_ReleaseObject(nano_aioFormals);
-  R_ReleaseObject(nano_aioFuncs);
-  R_ReleaseObject(nano_aioNFuncs);
-  R_ReleaseObject(nano_error);
-  R_ReleaseObject(nano_ncurlAio);
-  R_ReleaseObject(nano_recvAio);
-  R_ReleaseObject(nano_sendAio);
-  R_ReleaseObject(nano_success);
   R_ReleaseObject(nano_unresolved);
+  R_ReleaseObject(nano_success);
+  R_ReleaseObject(nano_sendAio);
+  R_ReleaseObject(nano_recvAio);
+  R_ReleaseObject(nano_ncurlAio);
+  R_ReleaseObject(nano_error);
+  R_ReleaseObject(nano_aioNFuncs);
+  R_ReleaseObject(nano_aioFuncs);
+  R_ReleaseObject(nano_aioFormals);
+  R_ReleaseObject(nano_addRedirect);
 }
 
 static const R_CallMethodDef callMethods[] = {

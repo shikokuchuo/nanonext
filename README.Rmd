@@ -526,6 +526,9 @@ For previous R versions, pre-compiled 'libnng' v1.6.0 (5385b78) and 'libmbedtls'
 nanonext on CRAN: <https://cran.r-project.org/package=nanonext><br />
 Package website: <https://shikokuchuo.net/nanonext/><br />
 
+nanonext is listed in CRAN Task Views:<br />
+- Web Technologies: <https://cran.r-project.org/view=WebTechnologies><br />
+
 NNG website: <https://nng.nanomsg.org/><br />
 Mbed TLS website: <https://www.trustedfirmware.org/projects/mbed-tls/><br />
 
