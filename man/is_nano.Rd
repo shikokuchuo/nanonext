@@ -13,7 +13,7 @@ is_nano(x)
 Logical value TRUE or FALSE.
 }
 \description{
-Is the object an object created by the nanonext package i.e. a nanoSocket,
+Is the object an object created by \{nanonext\} i.e. a nanoSocket,
     nanoContext, nanoStream, nanoListener, nanoDialer or nano Object.
 }
 \details{

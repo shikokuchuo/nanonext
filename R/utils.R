@@ -140,7 +140,7 @@ device <- function(s1, s2) .Call(rnng_device, s1, s2)
 
 #' Is Nano
 #'
-#' Is the object an object created by the nanonext package i.e. a nanoSocket,
+#' Is the object an object created by \{nanonext\} i.e. a nanoSocket,
 #'     nanoContext, nanoStream, nanoListener, nanoDialer or nano Object.
 #'
 #' @param x an object.
@@ -236,7 +236,7 @@ is_error_value <- function(x) inherits(x, "errorValue")
 #'
 nano_init <- function(warn) {
 
-  message("nanonext 0.7.0 | 'nano_init()' is deprecated. See 'news' for updated warning behaviour")
+  message("nanonext 0.7 | 'nano_init()' is deprecated. See 'news' for updated warning behaviour")
 
 }
 

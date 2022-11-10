@@ -495,8 +495,8 @@ SEXP rnng_dial(SEXP socket, SEXP url, SEXP autostart) {
   if (R_ExternalPtrTag(socket) != nano_SocketSymbol)
     Rf_error("'socket' is not a valid Socket");
   nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(socket);
-  const char *up = CHAR(STRING_ELT(url, 0));
   const int start = LOGICAL(autostart)[0];
+  const char *up = CHAR(STRING_ELT(url, 0));
   nng_dialer *dp = R_Calloc(1, nng_dialer);
   SEXP dialer, klass, attr, newattr;
 
@@ -544,8 +544,8 @@ SEXP rnng_listen(SEXP socket, SEXP url, SEXP autostart) {
   if (R_ExternalPtrTag(socket) != nano_SocketSymbol)
     Rf_error("'socket' is not a valid Socket");
   nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(socket);
-  const char *up = CHAR(STRING_ELT(url, 0));
   const int start = LOGICAL(autostart)[0];
+  const char *up = CHAR(STRING_ELT(url, 0));
   nng_listener *lp = R_Calloc(1, nng_listener);
   SEXP listener, klass, attr, newattr;
 
@@ -919,7 +919,7 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP keep, SEXP bytes) {
 
 }
 
-// set options -----------------------------------------------------------------
+// options ---------------------------------------------------------------------
 
 SEXP rnng_set_opt(SEXP object, SEXP type, SEXP opt, SEXP value) {
 
@@ -965,7 +965,6 @@ SEXP rnng_set_opt(SEXP object, SEXP type, SEXP opt, SEXP value) {
       break;
     default:
       xc = nng_socket_set_uint64(*sock, op, (uint64_t) Rf_asInteger(value));
-      break;
     }
 
   } else if (ptrtag == nano_ContextSymbol) {
@@ -1001,7 +1000,6 @@ SEXP rnng_set_opt(SEXP object, SEXP type, SEXP opt, SEXP value) {
       break;
     default:
       xc = nng_ctx_set_uint64(*ctx, op, (uint64_t) Rf_asInteger(value));
-      break;
     }
 
   } else if (ptrtag == nano_StreamSymbol) {
@@ -1029,7 +1027,6 @@ SEXP rnng_set_opt(SEXP object, SEXP type, SEXP opt, SEXP value) {
       break;
     default:
       xc = nng_stream_set_uint64(st, op, (uint64_t) Rf_asInteger(value));
-      break;
     }
 
   } else if (ptrtag == nano_ListenerSymbol) {
@@ -1057,7 +1054,6 @@ SEXP rnng_set_opt(SEXP object, SEXP type, SEXP opt, SEXP value) {
       break;
     default:
       xc = nng_listener_set_uint64(*list, op, (uint64_t) Rf_asInteger(value));
-      break;
     }
 
   } else if (ptrtag == nano_DialerSymbol) {
@@ -1085,7 +1081,6 @@ SEXP rnng_set_opt(SEXP object, SEXP type, SEXP opt, SEXP value) {
       break;
     default:
       xc = nng_dialer_set_uint64(*dial, op, (uint64_t) Rf_asInteger(value));
-      break;
     }
 
   } else {
@@ -1096,6 +1091,174 @@ SEXP rnng_set_opt(SEXP object, SEXP type, SEXP opt, SEXP value) {
     ERROR_RET(xc);
 
   return nano_success;
+
+}
+
+SEXP rnng_get_opt(SEXP object, SEXP type, SEXP opt) {
+
+  if (TYPEOF(object) != EXTPTRSXP)
+    Rf_error("'object' is not a valid Socket, Context, Stream, Listener or Dialer");
+
+  const char *op = CHAR(STRING_ELT(opt, 0));
+  const int typ = matchtype(type);
+  SEXP out;
+  int xc;
+  bool bval;
+  int ival;
+  nng_duration dval;
+  size_t sval;
+  char *strval;
+  uint64_t uval;
+
+  const SEXP ptrtag = R_ExternalPtrTag(object);
+  if (ptrtag == nano_SocketSymbol) {
+
+    nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(object);
+
+    switch (typ) {
+    case 1:
+      xc = nng_socket_get_bool(*sock, op, &bval);
+      break;
+    case 2:
+      xc = nng_socket_get_int(*sock, op, &ival);
+      break;
+    case 3:
+      xc = nng_socket_get_ms(*sock, op, &dval);
+      break;
+    case 4:
+      xc = nng_socket_get_size(*sock, op, &sval);
+      break;
+    case 5:
+      xc = nng_socket_get_string(*sock, op, &strval);
+      break;
+    default:
+      xc = nng_socket_get_uint64(*sock, op, &uval);
+    }
+
+  } else if (ptrtag == nano_ContextSymbol) {
+
+    nng_ctx *ctx = (nng_ctx *) R_ExternalPtrAddr(object);
+
+    switch (typ) {
+    case 1:
+      xc = nng_ctx_get_bool(*ctx, op, &bval);
+      break;
+    case 2:
+      xc = nng_ctx_get_int(*ctx, op, &ival);
+      break;
+    case 3:
+      xc = nng_ctx_get_ms(*ctx, op, &dval);
+      break;
+    case 4:
+      xc = nng_ctx_get_size(*ctx, op, &sval);
+      break;
+    case 5:
+      xc = nng_ctx_get_string(*ctx, op, &strval);
+      break;
+    default:
+      xc = nng_ctx_get_uint64(*ctx, op, &uval);
+    }
+
+  } else if (ptrtag == nano_StreamSymbol) {
+
+    nng_stream *st = (nng_stream *) R_ExternalPtrAddr(object);
+
+    switch (typ) {
+    case 1:
+      xc = nng_stream_get_bool(st, op, &bval);
+      break;
+    case 2:
+      xc = nng_stream_get_int(st, op, &ival);
+      break;
+    case 3:
+      xc = nng_stream_get_ms(st, op, &dval);
+      break;
+    case 4:
+      xc = nng_stream_get_size(st, op, &sval);
+      break;
+    case 5:
+      xc = nng_stream_get_string(st, op, &strval);
+      break;
+    default:
+      xc = nng_stream_get_uint64(st, op, &uval);
+    }
+
+  } else if (ptrtag == nano_ListenerSymbol) {
+
+    nng_listener *list = (nng_listener *) R_ExternalPtrAddr(object);
+
+    switch (typ) {
+    case 1:
+      xc = nng_listener_get_bool(*list, op, &bval);
+      break;
+    case 2:
+      xc = nng_listener_get_int(*list, op, &ival);
+      break;
+    case 3:
+      xc = nng_listener_get_ms(*list, op, &dval);
+      break;
+    case 4:
+      xc = nng_listener_get_size(*list, op, &sval);
+      break;
+    case 5:
+      xc = nng_listener_get_string(*list, op, &strval);
+      break;
+    default:
+      xc = nng_listener_get_uint64(*list, op, &uval);
+    }
+
+  } else if (ptrtag == nano_DialerSymbol) {
+
+    nng_dialer *dial = (nng_dialer *) R_ExternalPtrAddr(object);
+
+    switch (typ) {
+    case 1:
+      xc = nng_dialer_get_bool(*dial, op, &bval);
+      break;
+    case 2:
+      xc = nng_dialer_get_int(*dial, op, &ival);
+      break;
+    case 3:
+      xc = nng_dialer_get_ms(*dial, op, &dval);
+      break;
+    case 4:
+      xc = nng_dialer_get_size(*dial, op, &sval);
+      break;
+    case 5:
+      xc = nng_dialer_get_string(*dial, op, &strval);
+      break;
+    default:
+      xc = nng_dialer_get_uint64(*dial, op, &uval);
+    }
+
+  } else {
+    Rf_error("'object' is not a valid Socket, Context, Stream, Listener or Dialer");
+  }
+
+  if (xc)
+    return  mk_error(xc);
+
+  switch (typ) {
+  case 1:
+    out = Rf_ScalarLogical((int) bval);
+    break;
+  case 2:
+    out = Rf_ScalarInteger(ival);
+    break;
+  case 3:
+    out = Rf_ScalarInteger((int) dval);
+    break;
+  case 4:
+    out = Rf_ScalarInteger((int) sval);
+    break;
+  case 5:
+    out = Rf_mkString(strval);
+    break;
+  default:
+    out = Rf_ScalarReal((double) uval);
+  }
+
+  return out;
 
 }
 

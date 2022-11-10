@@ -527,6 +527,7 @@ nanonext on CRAN: <https://cran.r-project.org/package=nanonext><br />
 Package website: <https://shikokuchuo.net/nanonext/><br />
 
 nanonext is listed in CRAN Task Views:<br />
+- High Performance Computing: <https://cran.r-project.org/view=HighPerformanceComputing><br />
 - Web Technologies: <https://cran.r-project.org/view=WebTechnologies><br />
 
 NNG website: <https://nng.nanomsg.org/><br />

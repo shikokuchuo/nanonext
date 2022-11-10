@@ -36,8 +36,8 @@ Note: once a dialer or listener has started, it is not generally
     with 'autostart = FALSE' if configuration needs to be set.
 
     To set options on a Listener or Dialer attached to a Socket or nano object,
-    you must pass in the objects directly via for example \code{$listener[[1]]}
-    for the first Listener.
+    pass in the objects directly via for example \code{$listener[[1]]} for
+    the first Listener.
 }
 \examples{
 s <- socket("pair")

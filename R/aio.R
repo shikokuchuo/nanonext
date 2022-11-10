@@ -124,9 +124,9 @@ recv_aio <- function(con,
 
 # Core aio functions -----------------------------------------------------------
 
-#' Call the Value of an Asynchronous AIO Operation
+#' Call the Value of an Asynchronous Aio Operation
 #'
-#' Retrieve the value of an asynchronous AIO operation, waiting for the AIO
+#' Retrieve the value of an asynchronous Aio operation, waiting for the
 #'     operation to complete if still in progress.
 #'
 #' @param aio An Aio (object of class 'sendAio' or 'recvAio').
@@ -184,9 +184,9 @@ recv_aio <- function(con,
 #'
 call_aio <- function(aio) invisible(.Call(rnng_aio_call, aio))
 
-#' Stop Asynchronous AIO Operation
+#' Stop Asynchronous Aio Operation
 #'
-#' Stop an asynchronous AIO operation.
+#' Stop an asynchronous Aio operation.
 #'
 #' @param aio An Aio (object of class 'sendAio' or 'recvAio').
 #'

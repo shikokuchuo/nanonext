@@ -1,8 +1,12 @@
 # nanonext 0.7.0.9000 (development)
 
+#### New Features
+
+* Implements `getopt()`, which is the counterpart to `setopt()` for retrieving options set on 'nano' objects.
+
 #### Updates
 
-* `ncurl()`, when not following redirects or async, now returns redirect addresses as the response header 'Location' as sometimes additional information is returned which is now available at `$data`.
+* `ncurl()` changes to return redirect addresses as the response header 'Location'. This is so any additional information provided can now be available at `$data`.
 * Eliminates CRAN 'additional issue' (clang/gcc-UBSAN).
 * Internal performance optimisations.
 

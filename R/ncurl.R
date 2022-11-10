@@ -27,13 +27,14 @@
 #'     the received raw bytes to a character vector. Supplying a non-logical
 #'     value will error.
 #' @param follow [default FALSE] logical value whether to automatically follow
-#'     redirects (ignored for async requests). If FALSE, or for async requests,
-#'     the redirect address is returned as response header 'Location'. Supplying
+#'     redirects (not applicable for async requests). If FALSE (or async), the
+#'     redirect address is returned as response header 'Location'. Supplying
 #'     a non-logical value will error.
 #' @param method (optional) the HTTP method (defaults to 'GET' if not specified).
 #' @param headers (optional) a named list or character vector specifying the
 #'     HTTP request headers e.g. \code{list(`Content-Type` = "text/plain")} or
-#'     \code{c(Authorization = "Bearer APIKEY")}.
+#'     \code{c(Authorization = "Bearer APIKEY")}. Supplying a non-named list or
+#'     vector will error.
 #' @param data (optional) the request data to be submitted.
 #' @param response (optional) a character vector or list specifying the response
 #'     headers to return e.g. \code{c("date", "server")} or \code{list("Date", "Server")}.
@@ -49,8 +50,8 @@
 #'     Use \code{\link{status_code}} for a translation of the meaning.}
 #'     \item{\code{$headers}} {- named list of response headers supplied in
 #'     'response' or NULL if unspecified. If the status code is within the 300
-#'     range, the response header 'Location' is automatically appended to return
-#'     the redirect address.}
+#'     range, i.e. a redirect, the response header 'Location' is automatically
+#'     appended to return the redirect address.}
 #'     \item{\code{$raw}} {- raw vector of the received resource (use
 #'     \code{\link{writeBin}} to save to a file).}
 #'     \item{\code{$data}} {- converted character string (if \code{'convert' = TRUE}

@@ -2,7 +2,7 @@
 % Please edit documentation in R/aio.R
 \name{stop_aio}
 \alias{stop_aio}
-\title{Stop Asynchronous AIO Operation}
+\title{Stop Asynchronous Aio Operation}
 \usage{
 stop_aio(aio)
 }
@@ -13,7 +13,7 @@ stop_aio(aio)
 Invisible NULL.
 }
 \description{
-Stop an asynchronous AIO operation.
+Stop an asynchronous Aio operation.
 }
 \details{
 Stops the asynchronous I/O operation associated with 'aio' by

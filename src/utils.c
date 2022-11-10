@@ -132,6 +132,7 @@ SEXP rnng_device(SEXP s1, SEXP s2) {
 SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP follow, SEXP method, SEXP headers,
                 SEXP data, SEXP response, SEXP pem) {
 
+  const int conv = LOGICAL(convert)[0];
   nng_url *url;
   nng_http_client *client;
   nng_http_req *req;
@@ -284,7 +285,7 @@ SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP follow, SEXP method, SEXP headers,
     memcpy(RAW(vec), dat, sz);
   SET_VECTOR_ELT(out, 2, vec);
 
-  if (LOGICAL(convert)[0]) {
+  if (conv) {
     PROTECT(cvec = Rf_lang2(nano_RtcSymbol, vec));
     cvec = R_tryEvalSilent(cvec, R_BaseEnv, &xc);
     UNPROTECT(1);

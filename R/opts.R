@@ -36,8 +36,8 @@
 #'     with 'autostart = FALSE' if configuration needs to be set.
 #'
 #'     To set options on a Listener or Dialer attached to a Socket or nano object,
-#'     you must pass in the objects directly via for example \code{$listener[[1]]}
-#'     for the first Listener.
+#'     pass in the objects directly via for example \code{$listener[[1]]} for
+#'     the first Listener.
 #'
 #' @examples
 #' s <- socket("pair")
@@ -67,6 +67,46 @@ setopt <- function(object,
                    opt,
                    value)
   invisible(.Call(rnng_set_opt, object, type, opt, value))
+
+#' Get Option for a Socket, Context, Stream, Listener or Dialer
+#'
+#' Get value of \link{opts} for a Socket, Context, Stream, Listener or Dialer.
+#'
+#' @inheritParams setopt
+#'
+#' @return The value of the option (logical for type 'bool', integer for 'int',
+#'     'ms' and 'size', character for 'string' and double for 'uint64') if
+#'     successful, or else an integer 'errorValue'.
+#'
+#' @details To get options for a Listener or Dialer attached to a Socket or nano
+#'     object, pass in the objects directly via for example \code{$listener[[1]]}
+#'     for the first Listener.
+#'
+#' @examples
+#' s <- socket("pair")
+#' getopt(s, "int", "send-buffer")
+#' close(s)
+#'
+#' s <- socket("req")
+#' ctx <- context(s)
+#' getopt(ctx, "ms", "send-timeout")
+#' close(ctx)
+#' close(s)
+#'
+#' s <- socket("pair", dial = "inproc://nanonext", autostart = FALSE)
+#' getopt(s$dialer[[1]], "ms", "reconnect-time-min")
+#' close(s)
+#'
+#' s <- socket("pair", listen = "inproc://nanonext", autostart = FALSE)
+#' getopt(s$listener[[1]], "size", "recv-size-max")
+#' close(s)
+#'
+#' @export
+#'
+getopt <- function(object,
+                   type = c("bool", "int", "ms", "size", "string", "uint64"),
+                   opt)
+  .Call(rnng_get_opt, object, type, opt)
 
 #' Subscribe Topic
 #'

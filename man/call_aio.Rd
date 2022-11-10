@@ -2,7 +2,7 @@
 % Please edit documentation in R/aio.R
 \name{call_aio}
 \alias{call_aio}
-\title{Call the Value of an Asynchronous AIO Operation}
+\title{Call the Value of an Asynchronous Aio Operation}
 \usage{
 call_aio(aio)
 }
@@ -13,7 +13,7 @@ call_aio(aio)
 The passed object (invisibly).
 }
 \description{
-Retrieve the value of an asynchronous AIO operation, waiting for the AIO
+Retrieve the value of an asynchronous Aio operation, waiting for the
     operation to complete if still in progress.
 }
 \details{
