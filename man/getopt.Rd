@@ -4,23 +4,17 @@
 \alias{getopt}
 \title{Get Option for a Socket, Context, Stream, Listener or Dialer}
 \usage{
-getopt(object, type = c("bool", "int", "ms", "size", "string", "uint64"), opt)
+getopt(object, opt)
 }
 \arguments{
 \item{object}{a Socket, Context, Stream, Listener or Dialer.}
-
-\item{type}{[default 'bool'] type of option - either 'bool', 'int', 'ms'
-(duration), 'size', 'string' or 'uint64'. Alternatively, for performance,
-specify an integer position in the vector of choices e.g. 1L for 'bool',
-2L for 'int' etc.}
 
 \item{opt}{name of option, e.g. 'reconnect-time-min', as a character string.
 See \link{opts}.}
 }
 \value{
 The value of the option (logical for type 'bool', integer for 'int',
-    'ms' and 'size', character for 'string' and double for 'uint64') if
-    successful, or else an integer 'errorValue'.
+    'ms' and 'size', character for 'string' and double for 'uint64').
 }
 \description{
 Get value of \link{opts} for a Socket, Context, Stream, Listener or Dialer.
@@ -32,21 +26,21 @@ To get options for a Listener or Dialer attached to a Socket or nano
 }
 \examples{
 s <- socket("pair")
-getopt(s, "int", "send-buffer")
+getopt(s, "send-buffer")
 close(s)
 
 s <- socket("req")
 ctx <- context(s)
-getopt(ctx, "ms", "send-timeout")
+getopt(ctx, "send-timeout")
 close(ctx)
 close(s)
 
 s <- socket("pair", dial = "inproc://nanonext", autostart = FALSE)
-getopt(s$dialer[[1]], "ms", "reconnect-time-min")
+getopt(s$dialer[[1]], "reconnect-time-min")
 close(s)
 
 s <- socket("pair", listen = "inproc://nanonext", autostart = FALSE)
-getopt(s$listener[[1]], "size", "recv-size-max")
+getopt(s$listener[[1]], "recv-size-max")
 close(s)
 
 }

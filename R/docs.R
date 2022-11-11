@@ -291,6 +291,9 @@ NULL
 #' @description Options that can be set on Sockets, Contexts, Streams, Dialers
 #'     or Listeners.
 #'
+#'     Use \code{\link{setopt}} to set options and \code{\link{getopt}} to get
+#'     the value of options.
+#'
 #'     Some options are only meaningful or supported in certain contexts; for
 #'     example there is no single meaningful address for a socket, since sockets
 #'     can have multiple dialers and endpoints associated with them.

@@ -133,7 +133,7 @@ static const R_CallMethodDef callMethods[] = {
   {"rnng_dialer_start", (DL_FUNC) &rnng_dialer_start, 2},
   {"rnng_base64dec", (DL_FUNC) &rnng_base64dec, 2},
   {"rnng_base64enc", (DL_FUNC) &rnng_base64enc, 2},
-  {"rnng_get_opt", (DL_FUNC) &rnng_get_opt, 3},
+  {"rnng_get_opt", (DL_FUNC) &rnng_get_opt, 2},
   {"rnng_listen", (DL_FUNC) &rnng_listen, 3},
   {"rnng_listener_close", (DL_FUNC) &rnng_listener_close, 1},
   {"rnng_listener_start", (DL_FUNC) &rnng_listener_start, 1},

@@ -99,11 +99,8 @@ nano <- function(protocol = c("bus", "pair", "push", "pull", "pub", "sub",
     r <- dial(socket, url = dial, autostart = autostart)
     if (r == 0L) {
       nano[["dialer"]] <- attr(socket, "dialer")
-      nano[["dialer_getopt"]] <- function(type = c("bool", "int", "ms", "size",
-                                                   "string", "uint64"),
-                                          opt) lapply(.subset2(nano, "dialer"),
+      nano[["dialer_getopt"]] <- function(opt) lapply(.subset2(nano, "dialer"),
                                                       getopt,
-                                                      type = type,
                                                       opt = opt)
       nano[["dialer_setopt"]] <- function(type = c("bool", "int", "ms", "size",
                                                    "string", "uint64"),
@@ -125,11 +122,8 @@ nano <- function(protocol = c("bus", "pair", "push", "pull", "pub", "sub",
     r <- listen(socket, url = listen, autostart = autostart)
     if (r == 0L) {
       nano[["listener"]] <- attr(socket, "listener")
-      nano[["listener_getopt"]] <- function(type = c("bool", "int", "ms", "size",
-                                                     "string", "uint64"),
-                                            opt) lapply(.subset2(nano, "listener"),
+      nano[["listener_getopt"]] <- function(opt) lapply(.subset2(nano, "listener"),
                                                         getopt,
-                                                        type = type,
                                                         opt = opt)
       nano[["listener_setopt"]] <- function(type = c("bool", "int", "ms", "size",
                                                      "string", "uint64"),
@@ -153,11 +147,8 @@ nano <- function(protocol = c("bus", "pair", "push", "pull", "pub", "sub",
     r <- dial(socket, url = url, autostart = autostart)
     if (r == 0L) {
       nano[["dialer"]] <- attr(socket, "dialer")
-      nano[["dialer_getopt"]] <- function(type = c("bool", "int", "ms", "size",
-                                                   "string", "uint64"),
-                                          opt) lapply(.subset2(nano, "dialer"),
+      nano[["dialer_getopt"]] <- function(opt) lapply(.subset2(nano, "dialer"),
                                                       getopt,
-                                                      type = type,
                                                       opt = opt)
       nano[["dialer_setopt"]] <- function(type = c("bool", "int", "ms", "size",
                                                    "string", "uint64"),
@@ -180,11 +171,8 @@ nano <- function(protocol = c("bus", "pair", "push", "pull", "pub", "sub",
     r <- listen(socket, url = url, autostart = autostart)
     if (r == 0L) {
       nano[["listener"]] <- attr(socket, "listener")
-      nano[["listener_getopt"]] <- function(type = c("bool", "int", "ms", "size",
-                                                     "string", "uint64"),
-                                            opt) lapply(.subset2(nano, "listener"),
+      nano[["listener_getopt"]] <- function(opt) lapply(.subset2(nano, "listener"),
                                                         getopt,
-                                                        type = type,
                                                         opt = opt)
       nano[["listener_setopt"]] <- function(type = c("bool", "int", "ms", "size",
                                                      "string", "uint64"),
@@ -202,10 +190,7 @@ nano <- function(protocol = c("bus", "pair", "push", "pull", "pub", "sub",
     }
     invisible(r)
   }
-  nano[["getopt"]] <- function(type = c("bool", "int", "ms", "size",
-                                        "string", "uint64"),
-                               opt) getopt(socket,
-                                           type = type,
+  nano[["getopt"]] <- function(opt) getopt(socket,
                                            opt = opt)
   nano[["recv"]] <- function(mode = c("serial", "character", "complex", "double",
                                       "integer", "logical", "numeric", "raw"),

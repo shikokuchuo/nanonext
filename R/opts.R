@@ -75,8 +75,7 @@ setopt <- function(object,
 #' @inheritParams setopt
 #'
 #' @return The value of the option (logical for type 'bool', integer for 'int',
-#'     'ms' and 'size', character for 'string' and double for 'uint64') if
-#'     successful, or else an integer 'errorValue'.
+#'     'ms' and 'size', character for 'string' and double for 'uint64').
 #'
 #' @details To get options for a Listener or Dialer attached to a Socket or nano
 #'     object, pass in the objects directly via for example \code{$listener[[1]]}
@@ -84,29 +83,27 @@ setopt <- function(object,
 #'
 #' @examples
 #' s <- socket("pair")
-#' getopt(s, "int", "send-buffer")
+#' getopt(s, "send-buffer")
 #' close(s)
 #'
 #' s <- socket("req")
 #' ctx <- context(s)
-#' getopt(ctx, "ms", "send-timeout")
+#' getopt(ctx, "send-timeout")
 #' close(ctx)
 #' close(s)
 #'
 #' s <- socket("pair", dial = "inproc://nanonext", autostart = FALSE)
-#' getopt(s$dialer[[1]], "ms", "reconnect-time-min")
+#' getopt(s$dialer[[1]], "reconnect-time-min")
 #' close(s)
 #'
 #' s <- socket("pair", listen = "inproc://nanonext", autostart = FALSE)
-#' getopt(s$listener[[1]], "size", "recv-size-max")
+#' getopt(s$listener[[1]], "recv-size-max")
 #' close(s)
 #'
 #' @export
 #'
-getopt <- function(object,
-                   type = c("bool", "int", "ms", "size", "string", "uint64"),
-                   opt)
-  .Call(rnng_get_opt, object, type, opt)
+getopt <- function(object, opt)
+  .Call(rnng_get_opt, object, opt)
 
 #' Subscribe Topic
 #'

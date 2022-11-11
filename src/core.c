@@ -1094,15 +1094,14 @@ SEXP rnng_set_opt(SEXP object, SEXP type, SEXP opt, SEXP value) {
 
 }
 
-SEXP rnng_get_opt(SEXP object, SEXP type, SEXP opt) {
+SEXP rnng_get_opt(SEXP object, SEXP opt) {
 
   if (TYPEOF(object) != EXTPTRSXP)
     Rf_error("'object' is not a valid Socket, Context, Stream, Listener or Dialer");
 
   const char *op = CHAR(STRING_ELT(opt, 0));
-  const int typ = matchtype(type);
   SEXP out;
-  int xc;
+  int xc, typ;
   bool bval;
   int ival;
   nng_duration dval;
@@ -1114,121 +1113,91 @@ SEXP rnng_get_opt(SEXP object, SEXP type, SEXP opt) {
   if (ptrtag == nano_SocketSymbol) {
 
     nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(object);
-
-    switch (typ) {
-    case 1:
-      xc = nng_socket_get_bool(*sock, op, &bval);
-      break;
-    case 2:
-      xc = nng_socket_get_int(*sock, op, &ival);
-      break;
-    case 3:
-      xc = nng_socket_get_ms(*sock, op, &dval);
-      break;
-    case 4:
-      xc = nng_socket_get_size(*sock, op, &sval);
-      break;
-    case 5:
+    for (;;) {
       xc = nng_socket_get_string(*sock, op, &strval);
-      break;
-    default:
+      if (xc == 0) { typ = 1; break; }
+      xc = nng_socket_get_ms(*sock, op, &dval);
+      if (xc == 0) { typ = 2; break; }
+      xc = nng_socket_get_size(*sock, op, &sval);
+      if (xc == 0) { typ = 3; break; }
+      xc = nng_socket_get_int(*sock, op, &ival);
+      if (xc == 0) { typ = 4; break; }
+      xc = nng_socket_get_bool(*sock, op, &bval);
+      if (xc == 0) { typ = 5; break; }
       xc = nng_socket_get_uint64(*sock, op, &uval);
+      typ = 6; break;
     }
 
   } else if (ptrtag == nano_ContextSymbol) {
 
     nng_ctx *ctx = (nng_ctx *) R_ExternalPtrAddr(object);
-
-    switch (typ) {
-    case 1:
-      xc = nng_ctx_get_bool(*ctx, op, &bval);
-      break;
-    case 2:
-      xc = nng_ctx_get_int(*ctx, op, &ival);
-      break;
-    case 3:
-      xc = nng_ctx_get_ms(*ctx, op, &dval);
-      break;
-    case 4:
-      xc = nng_ctx_get_size(*ctx, op, &sval);
-      break;
-    case 5:
+    for (;;) {
       xc = nng_ctx_get_string(*ctx, op, &strval);
-      break;
-    default:
+      if (xc == 0) { typ = 1; break; }
+      xc = nng_ctx_get_ms(*ctx, op, &dval);
+      if (xc == 0) { typ = 2; break; }
+      xc = nng_ctx_get_size(*ctx, op, &sval);
+      if (xc == 0) { typ = 3; break; }
+      xc = nng_ctx_get_int(*ctx, op, &ival);
+      if (xc == 0) { typ = 4; break; }
+      xc = nng_ctx_get_bool(*ctx, op, &bval);
+      if (xc == 0) { typ = 5; break; }
       xc = nng_ctx_get_uint64(*ctx, op, &uval);
+      typ = 6; break;
     }
 
   } else if (ptrtag == nano_StreamSymbol) {
 
     nng_stream *st = (nng_stream *) R_ExternalPtrAddr(object);
-
-    switch (typ) {
-    case 1:
-      xc = nng_stream_get_bool(st, op, &bval);
-      break;
-    case 2:
-      xc = nng_stream_get_int(st, op, &ival);
-      break;
-    case 3:
-      xc = nng_stream_get_ms(st, op, &dval);
-      break;
-    case 4:
-      xc = nng_stream_get_size(st, op, &sval);
-      break;
-    case 5:
+    for (;;) {
       xc = nng_stream_get_string(st, op, &strval);
-      break;
-    default:
+      if (xc == 0) { typ = 1; break; }
+      xc = nng_stream_get_ms(st, op, &dval);
+      if (xc == 0) { typ = 2; break; }
+      xc = nng_stream_get_size(st, op, &sval);
+      if (xc == 0) { typ = 3; break; }
+      xc = nng_stream_get_int(st, op, &ival);
+      if (xc == 0) { typ = 4; break; }
+      xc = nng_stream_get_bool(st, op, &bval);
+      if (xc == 0) { typ = 5; break; }
       xc = nng_stream_get_uint64(st, op, &uval);
+      typ = 6; break;
     }
 
   } else if (ptrtag == nano_ListenerSymbol) {
 
     nng_listener *list = (nng_listener *) R_ExternalPtrAddr(object);
-
-    switch (typ) {
-    case 1:
-      xc = nng_listener_get_bool(*list, op, &bval);
-      break;
-    case 2:
-      xc = nng_listener_get_int(*list, op, &ival);
-      break;
-    case 3:
-      xc = nng_listener_get_ms(*list, op, &dval);
-      break;
-    case 4:
-      xc = nng_listener_get_size(*list, op, &sval);
-      break;
-    case 5:
+    for (;;) {
       xc = nng_listener_get_string(*list, op, &strval);
-      break;
-    default:
+      if (xc == 0) { typ = 1; break; }
+      xc = nng_listener_get_ms(*list, op, &dval);
+      if (xc == 0) { typ = 2; break; }
+      xc = nng_listener_get_size(*list, op, &sval);
+      if (xc == 0) { typ = 3; break; }
+      xc = nng_listener_get_int(*list, op, &ival);
+      if (xc == 0) { typ = 4; break; }
+      xc = nng_listener_get_bool(*list, op, &bval);
+      if (xc == 0) { typ = 5; break; }
       xc = nng_listener_get_uint64(*list, op, &uval);
+      typ = 6; break;
     }
 
   } else if (ptrtag == nano_DialerSymbol) {
 
     nng_dialer *dial = (nng_dialer *) R_ExternalPtrAddr(object);
-
-    switch (typ) {
-    case 1:
-      xc = nng_dialer_get_bool(*dial, op, &bval);
-      break;
-    case 2:
-      xc = nng_dialer_get_int(*dial, op, &ival);
-      break;
-    case 3:
-      xc = nng_dialer_get_ms(*dial, op, &dval);
-      break;
-    case 4:
-      xc = nng_dialer_get_size(*dial, op, &sval);
-      break;
-    case 5:
+    for (;;) {
       xc = nng_dialer_get_string(*dial, op, &strval);
-      break;
-    default:
+      if (xc == 0) { typ = 1; break; }
+      xc = nng_dialer_get_ms(*dial, op, &dval);
+      if (xc == 0) { typ = 2; break; }
+      xc = nng_dialer_get_size(*dial, op, &sval);
+      if (xc == 0) { typ = 3; break; }
+      xc = nng_dialer_get_int(*dial, op, &ival);
+      if (xc == 0) { typ = 4; break; }
+      xc = nng_dialer_get_bool(*dial, op, &bval);
+      if (xc == 0) { typ = 5; break; }
       xc = nng_dialer_get_uint64(*dial, op, &uval);
+      typ = 6; break;
     }
 
   } else {
@@ -1236,23 +1205,23 @@ SEXP rnng_get_opt(SEXP object, SEXP type, SEXP opt) {
   }
 
   if (xc)
-    return  mk_error(xc);
+    ERROR_OUT(xc);
 
   switch (typ) {
   case 1:
-    out = Rf_ScalarLogical((int) bval);
+    out = Rf_mkString(strval);
     break;
   case 2:
-    out = Rf_ScalarInteger(ival);
-    break;
-  case 3:
     out = Rf_ScalarInteger((int) dval);
     break;
-  case 4:
+  case 3:
     out = Rf_ScalarInteger((int) sval);
     break;
+  case 4:
+    out = Rf_ScalarInteger(ival);
+    break;
   case 5:
-    out = Rf_mkString(strval);
+    out = Rf_ScalarLogical((int) bval);
     break;
   default:
     out = Rf_ScalarReal((double) uval);
