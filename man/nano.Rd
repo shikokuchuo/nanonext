@@ -80,7 +80,7 @@ nano
 nano$socket
 nano$listener[[1]]
 
-nano$setopt("ms", "send-timeout", 1000)
+nano$setopt("send-timeout", 1000)
 
 nano$listen(url = "inproc://nanonextgen")
 nano$listener

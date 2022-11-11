@@ -21,10 +21,6 @@
 #' Set \link{opts} on a Socket, Context, Stream, Listener or Dialer.
 #'
 #' @param object a Socket, Context, Stream, Listener or Dialer.
-#' @param type [default 'bool'] type of option - either 'bool', 'int', 'ms'
-#'     (duration), 'size', 'string' or 'uint64'. Alternatively, for performance,
-#'     specify an integer position in the vector of choices e.g. 1L for 'bool',
-#'     2L for 'int' etc.
 #' @param opt name of option, e.g. 'reconnect-time-min', as a character string.
 #'     See \link{opts}.
 #' @param value value of option.
@@ -41,32 +37,29 @@
 #'
 #' @examples
 #' s <- socket("pair")
-#' setopt(s, "ms", "recv-timeout", 2000)
+#' setopt(s, "recv-timeout", 2000)
 #' close(s)
 #'
 #' s <- socket("req")
 #' ctx <- context(s)
-#' setopt(ctx, "ms", "send-timeout", 2000)
+#' setopt(ctx, "send-timeout", 2000)
 #' close(ctx)
 #' close(s)
 #'
 #' s <- socket("pair", dial = "inproc://nanonext", autostart = FALSE)
-#' setopt(s$dialer[[1]], "ms", "reconnect-time-min", 2000)
+#' setopt(s$dialer[[1]], "reconnect-time-min", 2000)
 #' start(s$dialer[[1]])
 #' close(s)
 #'
 #' s <- socket("pair", listen = "inproc://nanonext", autostart = FALSE)
-#' setopt(s$listener[[1]], "size", "recv-size-max", 1024)
+#' setopt(s$listener[[1]], "recv-size-max", 1024)
 #' start(s$listener[[1]])
 #' close(s)
 #'
 #' @export
 #'
-setopt <- function(object,
-                   type = c("bool", "int", "ms", "size", "string", "uint64"),
-                   opt,
-                   value)
-  invisible(.Call(rnng_set_opt, object, type, opt, value))
+setopt <- function(object, opt, value)
+  invisible(.Call(rnng_set_opt, object, opt, value))
 
 #' Get Option for a Socket, Context, Stream, Listener or Dialer
 #'
@@ -146,7 +139,7 @@ getopt <- function(object, opt)
 #' @export
 #'
 subscribe <- function(con, topic = NULL)
-  invisible(.Call(rnng_set_opt, con, 0L, "sub:subscribe", topic))
+  invisible(.Call(rnng_subscribe, con, 1L, topic))
 
 #' Unsubscribe Topic
 #'
@@ -193,7 +186,7 @@ subscribe <- function(con, topic = NULL)
 #' @export
 #'
 unsubscribe <- function(con, topic = NULL)
-  invisible(.Call(rnng_set_opt, con, 0L, "sub:unsubscribe", topic))
+  invisible(.Call(rnng_subscribe, con, 0L, topic))
 
 #' Set Survey Time
 #'
@@ -239,5 +232,5 @@ unsubscribe <- function(con, topic = NULL)
 #' @export
 #'
 survey_time <- function(con, time)
-  invisible(.Call(rnng_set_opt, con, 3L, "surveyor:survey-time", time))
+  invisible(.Call(rnng_set_opt, con, "surveyor:survey-time", time))
 

@@ -2,7 +2,8 @@
 
 #### New Features
 
-* Implements `getopt()`, which is the counterpart to `setopt()` for retrieving options set on 'nano' objects.
+* Implements `getopt()`, which is the counterpart to `setopt()` for retrieving options set on objects.
+* The `setopt()` interface is simplified, with the type now inferred from the value supplied.
 
 #### Updates
 
