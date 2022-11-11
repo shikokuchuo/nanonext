@@ -910,7 +910,6 @@ SEXP rnng_set_opt(SEXP object, SEXP opt, SEXP value) {
       break;
     case REALSXP:
     case INTSXP:
-    case LGLSXP:
       val = Rf_asInteger(value);
       xc = nng_socket_set_ms(*sock, op, (nng_duration) val);
       if (xc == 0) break;
@@ -918,9 +917,10 @@ SEXP rnng_set_opt(SEXP object, SEXP opt, SEXP value) {
       if (xc == 0) break;
       xc = nng_socket_set_int(*sock, op, val);
       if (xc == 0) break;
-      xc = nng_socket_set_bool(*sock, op, (bool) val);
-      if (xc == 0) break;
       xc = nng_socket_set_uint64(*sock, op, (uint64_t) val);
+      break;
+    case LGLSXP:
+      xc = nng_socket_set_bool(*sock, op, (bool) LOGICAL(value)[0]);
       break;
     default:
       Rf_error("type of 'value' not supported");
@@ -938,7 +938,6 @@ SEXP rnng_set_opt(SEXP object, SEXP opt, SEXP value) {
       break;
     case REALSXP:
     case INTSXP:
-    case LGLSXP:
       val = Rf_asInteger(value);
       xc = nng_ctx_set_ms(*ctx, op, (nng_duration) val);
       if (xc == 0) break;
@@ -946,9 +945,10 @@ SEXP rnng_set_opt(SEXP object, SEXP opt, SEXP value) {
       if (xc == 0) break;
       xc = nng_ctx_set_int(*ctx, op, val);
       if (xc == 0) break;
-      xc = nng_ctx_set_bool(*ctx, op, (bool) val);
-      if (xc == 0) break;
       xc = nng_ctx_set_uint64(*ctx, op, (uint64_t) val);
+      break;
+    case LGLSXP:
+      xc = nng_ctx_set_bool(*ctx, op, (bool) LOGICAL(value)[0]);
       break;
     default:
       Rf_error("type of 'value' not supported");
@@ -966,7 +966,6 @@ SEXP rnng_set_opt(SEXP object, SEXP opt, SEXP value) {
       break;
     case REALSXP:
     case INTSXP:
-    case LGLSXP:
       val = Rf_asInteger(value);
       xc = nng_stream_set_ms(st, op, (nng_duration) val);
       if (xc == 0) break;
@@ -974,9 +973,10 @@ SEXP rnng_set_opt(SEXP object, SEXP opt, SEXP value) {
       if (xc == 0) break;
       xc = nng_stream_set_int(st, op, val);
       if (xc == 0) break;
-      xc = nng_stream_set_bool(st, op, (bool) val);
-      if (xc == 0) break;
       xc = nng_stream_set_uint64(st, op, (uint64_t) val);
+      break;
+    case LGLSXP:
+      xc = nng_stream_set_bool(st, op, (bool) LOGICAL(value)[0]);
       break;
     default:
       Rf_error("type of 'value' not supported");
@@ -994,7 +994,6 @@ SEXP rnng_set_opt(SEXP object, SEXP opt, SEXP value) {
       break;
     case REALSXP:
     case INTSXP:
-    case LGLSXP:
       val = Rf_asInteger(value);
       xc = nng_listener_set_ms(*list, op, (nng_duration) val);
       if (xc == 0) break;
@@ -1002,9 +1001,10 @@ SEXP rnng_set_opt(SEXP object, SEXP opt, SEXP value) {
       if (xc == 0) break;
       xc = nng_listener_set_int(*list, op, val);
       if (xc == 0) break;
-      xc = nng_listener_set_bool(*list, op, (bool) val);
-      if (xc == 0) break;
       xc = nng_listener_set_uint64(*list, op, (uint64_t) val);
+      break;
+    case LGLSXP:
+      xc = nng_listener_set_bool(*list, op, (bool) LOGICAL(value)[0]);
       break;
     default:
       Rf_error("type of 'value' not supported");
@@ -1022,7 +1022,6 @@ SEXP rnng_set_opt(SEXP object, SEXP opt, SEXP value) {
       break;
     case REALSXP:
     case INTSXP:
-    case LGLSXP:
       val = Rf_asInteger(value);
       xc = nng_dialer_set_ms(*dial, op, (nng_duration) val);
       if (xc == 0) break;
@@ -1030,9 +1029,10 @@ SEXP rnng_set_opt(SEXP object, SEXP opt, SEXP value) {
       if (xc == 0) break;
       xc = nng_dialer_set_int(*dial, op, val);
       if (xc == 0) break;
-      xc = nng_dialer_set_bool(*dial, op, (bool) val);
-      if (xc == 0) break;
       xc = nng_dialer_set_uint64(*dial, op, (uint64_t) val);
+      break;
+    case LGLSXP:
+      xc = nng_dialer_set_bool(*dial, op, (bool) LOGICAL(value)[0]);
       break;
     default:
       Rf_error("type of 'value' not supported");
@@ -1049,12 +1049,12 @@ SEXP rnng_set_opt(SEXP object, SEXP opt, SEXP value) {
 
 }
 
-SEXP rnng_subscribe(SEXP object, SEXP type, SEXP value) {
+SEXP rnng_subscribe(SEXP object, SEXP value, SEXP sub) {
 
   if (TYPEOF(object) != EXTPTRSXP)
     Rf_error("'object' is not a valid Socket, Context, Stream, Listener or Dialer");
 
-  const char *op = INTEGER(type)[0] ? "sub:subscribe" : "sub:unsubscribe";
+  const char *op = LOGICAL(sub)[0] ? "sub:subscribe" : "sub:unsubscribe";
   int xc;
 
   const SEXP ptrtag = R_ExternalPtrTag(object);

@@ -139,7 +139,7 @@ getopt <- function(object, opt)
 #' @export
 #'
 subscribe <- function(con, topic = NULL)
-  invisible(.Call(rnng_subscribe, con, 1L, topic))
+  invisible(.Call(rnng_subscribe, con, topic, TRUE))
 
 #' Unsubscribe Topic
 #'
@@ -186,7 +186,7 @@ subscribe <- function(con, topic = NULL)
 #' @export
 #'
 unsubscribe <- function(con, topic = NULL)
-  invisible(.Call(rnng_subscribe, con, 0L, topic))
+  invisible(.Call(rnng_subscribe, con, topic, FALSE))
 
 #' Set Survey Time
 #'
