@@ -18,7 +18,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.1</span>
       </span>
     </div>
 
@@ -67,7 +67,7 @@
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>aio</dt>
-<dd><p>An Aio (object of class 'sendAio' or 'recvAio'), or Aio value
+<dd><p>an Aio (object of class 'sendAio' or 'recvAio'), or Aio value
 stored in <code>$result</code>, <code>$raw</code> or <code>$data</code> as the case may be.</p></dd>
 
 </dl></div>
@@ -75,12 +75,13 @@ stored in <code>$result</code>, <code>$raw</code> or <code>$data</code> as the c
     <h2>Value</h2>
     
 
-<p>Logical TRUE or FALSE.</p>
+<p>Logical TRUE if 'aio' is an unresolved Aio or Aio value, or FALSE
+    otherwise.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
-    <p>Returns TRUE for unresolved Aios or Aio values, FALSE otherwise.
-    Suitable for use in control flow statements such as <code>while</code> or <code>if</code>.</p>
+    <p>Suitable for use in control flow statements such as <code>while</code> or
+    <code>if</code>.</p>
 <p>Note: querying resolution may cause a previously unresolved Aio to resolve.</p>
     </div>
 

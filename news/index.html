@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.1</span>
       </span>
     </div>
 
@@ -54,23 +54,22 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.7.0.9000" id="nanonext-0709000-development">nanonext 0.7.0.9000 (development)<a class="anchor" aria-label="anchor" href="#nanonext-0709000-development"></a></h2>
+<h2 class="page-header" data-toc-text="0.7.1" id="nanonext-071">nanonext 0.7.1<a class="anchor" aria-label="anchor" href="#nanonext-071"></a></h2>
 <div class="section level5">
-<h5 id="new-features-0-7-0-9000">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-7-0-9000"></a></h5>
-<ul><li>Implements <code><a href="../reference/getopt.html">getopt()</a></code>, which is the counterpart to <code><a href="../reference/setopt.html">setopt()</a></code> for retrieving options set on objects.</li>
-<li>The <code><a href="../reference/setopt.html">setopt()</a></code> interface is simplified, with the type now inferred from the value supplied.</li>
+<h5 id="new-features-0-7-1">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-7-1"></a></h5>
+<ul><li>Implements <code><a href="../reference/getopt.html">getopt()</a></code>, the counterpart to <code><a href="../reference/setopt.html">setopt()</a></code> for retrieving the value of options on objects.</li>
 </ul></div>
 <div class="section level5">
-<h5 id="updates-0-7-0-9000">Updates<a class="anchor" aria-label="anchor" href="#updates-0-7-0-9000"></a></h5>
-<ul><li>
-<code><a href="../reference/ncurl.html">ncurl()</a></code> changes to return redirect addresses as the response header ‘Location’. This is so any additional information provided can now be available at <code>$data</code>.</li>
+<h5 id="updates-0-7-1">Updates<a class="anchor" aria-label="anchor" href="#updates-0-7-1"></a></h5>
+<ul><li>The <code><a href="../reference/setopt.html">setopt()</a></code> interface is simplified, with the type now inferred from the value supplied.</li>
+<li>
+<code><a href="../reference/ncurl.html">ncurl()</a></code> now returns redirect addresses as the response header ‘Location’. This is so that HTTP data can also be returned at <code>$data</code> where this is provided.</li>
 <li>Eliminates CRAN ‘additional issue’ (clang/gcc-UBSAN).</li>
 <li>Internal performance optimisations.</li>
 </ul></div>
 </div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.7.0" id="nanonext-070">nanonext 0.7.0<small>2022-11-07</small><a class="anchor" aria-label="anchor" href="#nanonext-070"></a></h2>
-<p><em>nanonext 0.7 implements API optimisations after recent enhancements; the API is again intended to remain stable after these changes</em></p>
 <div class="section level5">
 <h5 id="new-features-0-7-0">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-7-0"></a></h5>
 <ul><li>
@@ -100,7 +99,7 @@
 <code><a href="../reference/nano.html">nano()</a></code> now creates a nano object with method <code>$context_open()</code> for applicable protocols. Opening a context will attach a context at <code>$context</code> and a <code>$context_close()</code> method. When a context is active, all object methods apply to the context instead of the socket. Method <code>$socket_setopt()</code> renamed to <code>$setopt()</code> as it can be used on the socket or active context as applicable.</li>
 <li>Non-logical values supplied to logical arguments will now error: this is documented for each function where this is applicable.</li>
 </ul><p><em>Other changes:</em></p>
-<ul><li>Integer <code><a href="../reference/send.html">send()</a></code>/<code><a href="../reference/recv.html">recv()</a></code> arguments for ‘mode’ and <code><a href="../reference/setopt.html">setopt()</a></code> arguments for ‘type’ implemented in 0.5.3 are now documented and considered part of the API. This is a performance feature that skips matching the character argument value.</li>
+<ul><li>Integer <code><a href="../reference/send.html">send()</a></code>/<code><a href="../reference/recv.html">recv()</a></code> arguments for ‘mode’ implemented in 0.5.3 are now documented and considered part of the API. This is a performance feature that skips matching the character argument value.</li>
 <li>Fixes bug introduced in 0.6.0 where Aios returning ‘errorValues’ are not cached with the class, returning only integer values when accessed subsequently.</li>
 <li>Fixes potential crash when <code><a href="../reference/base64enc.html">base64dec()</a></code> encounters invalid input data. Error messages have been revised to be more accurate.</li>
 <li>Fixes the <code>$</code> method for ‘recvAio’ objects for when the object has been stopped using <code><a href="../reference/stop_aio.html">stop_aio()</a></code>.</li>
@@ -114,7 +113,6 @@
 </div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.6.0" id="nanonext-060">nanonext 0.6.0<small>2022-10-09</small><a class="anchor" aria-label="anchor" href="#nanonext-060"></a></h2>
-<p><em>The nanonext 0.6 series incorporates significant advances in performance and stability over previous releases</em></p>
 <div class="section level5">
 <h5 id="new-features-0-6-0">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-6-0"></a></h5>
 <ul><li>Implements <code><a href="../reference/base64enc.html">base64enc()</a></code> and <code><a href="../reference/base64enc.html">base64dec()</a></code> base64 encoding and decoding using the ‘Mbed TLS’ library.</li>
@@ -218,7 +216,6 @@
 </div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.5.0" id="nanonext-050">nanonext 0.5.0<small>2022-05-10</small><a class="anchor" aria-label="anchor" href="#nanonext-050"></a></h2>
-<p><em>nanonext is now considered substantially feature-complete and API-stable</em></p>
 <div class="section level5">
 <h5 id="new-features-0-5-0">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-5-0"></a></h5>
 <ul><li>
