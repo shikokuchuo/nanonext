@@ -7,7 +7,7 @@
 stop_aio(aio)
 }
 \arguments{
-\item{aio}{An Aio (object of class 'sendAio' or 'recvAio').}
+\item{aio}{an Aio (object of class 'sendAio' or 'recvAio').}
 }
 \value{
 Invisible NULL.

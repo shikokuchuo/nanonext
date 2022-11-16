@@ -23,7 +23,9 @@
 #' @param object a Socket, Context, Stream, Listener or Dialer.
 #' @param opt name of option, e.g. 'reconnect-time-min', as a character string.
 #'     See \link{opts}.
-#' @param value value of option.
+#' @param value value of option. Supply character type for 'string' options,
+#'     integer or double for 'int', 'duration', 'size' and 'uint64', and logical
+#'     for 'bool'.
 #'
 #' @return Invisibly, an integer exit code (zero on success).
 #'
@@ -68,7 +70,7 @@ setopt <- function(object, opt, value)
 #' @inheritParams setopt
 #'
 #' @return The value of the option (logical for type 'bool', integer for 'int',
-#'     'ms' and 'size', character for 'string' and double for 'uint64').
+#'     'duration' and 'size', character for 'string' and double for 'uint64').
 #'
 #' @details To get options for a Listener or Dialer attached to a Socket or nano
 #'     object, pass in the objects directly via for example \code{$listener[[1]]}

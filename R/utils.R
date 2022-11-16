@@ -50,8 +50,8 @@ nng_error <- function(xc) .Call(rnng_strerror, xc)
 #' Clock Utility
 #'
 #' Provides the number of elapsed milliseconds since an arbitrary reference time
-#'     in the past. The reference time will be the same for a given program, but
-#'     may differ between programs.
+#'     in the past. The reference time will be the same for a given session, but
+#'     may differ between sessions.
 #'
 #' @details A convenience function for building concurrent applications. The
 #'     resolution of the clock depends on the underlying system timing facilities

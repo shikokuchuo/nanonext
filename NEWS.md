@@ -1,19 +1,17 @@
-# nanonext 0.7.0.9000 (development)
+# nanonext 0.7.1
 
 #### New Features
 
-* Implements `getopt()`, which is the counterpart to `setopt()` for retrieving options set on objects.
-* The `setopt()` interface is simplified, with the type now inferred from the value supplied.
+* Implements `getopt()`, the counterpart to `setopt()` for retrieving the value of options on objects.
 
 #### Updates
 
-* `ncurl()` changes to return redirect addresses as the response header 'Location'. This is so any additional information provided can now be available at `$data`.
+* The `setopt()` interface is simplified, with the type now inferred from the value supplied.
+* `ncurl()` now returns redirect addresses as the response header 'Location'. This is so that HTTP data can also be returned at `$data` where this is provided.
 * Eliminates CRAN 'additional issue' (clang/gcc-UBSAN).
 * Internal performance optimisations.
 
 # nanonext 0.7.0
-
-*nanonext 0.7 implements API optimisations after recent enhancements; the API is again intended to remain stable after these changes*
 
 #### New Features
 
@@ -37,7 +35,7 @@
 
 *Other changes:*
 
-* Integer `send()`/`recv()` arguments for 'mode' and `setopt()` arguments for 'type' implemented in 0.5.3 are now documented and considered part of the API. This is a performance feature that skips matching the character argument value.
+* Integer `send()`/`recv()` arguments for 'mode' implemented in 0.5.3 are now documented and considered part of the API. This is a performance feature that skips matching the character argument value.
 * Fixes bug introduced in 0.6.0 where Aios returning 'errorValues' are not cached with the class, returning only integer values when accessed subsequently.
 * Fixes potential crash when `base64dec()` encounters invalid input data. Error messages have been revised to be more accurate.
 * Fixes the `$` method for 'recvAio' objects for when the object has been stopped using `stop_aio()`.
@@ -48,8 +46,6 @@
 * Internal performance enhancements.
 
 # nanonext 0.6.0
-
-*The nanonext 0.6 series incorporates significant advances in performance and stability over previous releases*
 
 #### New Features
 
@@ -133,8 +129,6 @@
 * Fixes a bug involving the `unresolvedValue` returned by Aios (thanks @lionel- #3).
 
 # nanonext 0.5.0
-
-*nanonext is now considered substantially feature-complete and API-stable*
 
 #### New Features
 

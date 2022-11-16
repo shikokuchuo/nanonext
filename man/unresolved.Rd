@@ -7,19 +7,20 @@
 unresolved(aio)
 }
 \arguments{
-\item{aio}{An Aio (object of class 'sendAio' or 'recvAio'), or Aio value
+\item{aio}{an Aio (object of class 'sendAio' or 'recvAio'), or Aio value
 stored in \code{$result}, \code{$raw} or \code{$data} as the case may be.}
 }
 \value{
-Logical TRUE or FALSE.
+Logical TRUE if 'aio' is an unresolved Aio or Aio value, or FALSE
+    otherwise.
 }
 \description{
 Query whether an Aio or Aio value remains unresolved. Unlike
     \code{\link{call_aio}}, this function does not wait for completion.
 }
 \details{
-Returns TRUE for unresolved Aios or Aio values, FALSE otherwise.
-    Suitable for use in control flow statements such as \code{while} or \code{if}.
+Suitable for use in control flow statements such as \code{while} or
+    \code{if}.
 
     Note: querying resolution may cause a previously unresolved Aio to resolve.
 }

@@ -14,7 +14,7 @@ See \link{opts}.}
 }
 \value{
 The value of the option (logical for type 'bool', integer for 'int',
-    'ms' and 'size', character for 'string' and double for 'uint64').
+    'duration' and 'size', character for 'string' and double for 'uint64').
 }
 \description{
 Get value of \link{opts} for a Socket, Context, Stream, Listener or Dialer.

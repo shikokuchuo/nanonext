@@ -12,7 +12,9 @@ setopt(object, opt, value)
 \item{opt}{name of option, e.g. 'reconnect-time-min', as a character string.
 See \link{opts}.}
 
-\item{value}{value of option.}
+\item{value}{value of option. Supply character type for 'string' options,
+integer or double for 'int', 'duration', 'size' and 'uint64', and logical
+for 'bool'.}
 }
 \value{
 Invisibly, an integer exit code (zero on success).
