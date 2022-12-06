@@ -99,7 +99,7 @@ static SEXP nano_hashToChar(SEXP hash) {
   char out[sz * 2 + 1];
 
   for (R_xlen_t i = 0; i < sz; i++)
-    sprintf(&out[i * 2], "%.2x", buf[i]);
+    snprintf(&out[i * 2], 3, "%.2x", buf[i]);
 
   return Rf_mkString(out);
 
