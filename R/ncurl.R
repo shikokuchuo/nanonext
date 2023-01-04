@@ -82,3 +82,66 @@ ncurl <- function(url,
     data <- .Call(rnng_ncurl_aio, url, convert, method, headers, data, pem, environment()) else
       .Call(rnng_ncurl, url, convert, follow, method, headers, data, response, pem)
 
+#' ncurl Session
+#'
+#' nano cURL - a minimalist http(s) client. A session encapsulates a connection,
+#'     along with all related parameters. A session may be used multiple times
+#'     to return data by repeatedly calling \code{\link{transact}}.
+#'
+#' @inheritParams ncurl
+#'
+#' @return An 'ncurlSession' object.
+#'
+#' @examples
+#' s <- tryCatch(ncurl_session("https://httpbin.org/get", response = c("date")), error = identity)
+#' s
+#'
+#' @export
+#'
+ncurl_session <- function(url,
+                          convert = TRUE,
+                          method = NULL,
+                          headers = NULL,
+                          data = NULL,
+                          response = NULL,
+                          pem = NULL)
+    .Call(rnng_ncurl_session, url, convert, method, headers, data, response, pem)
+
+#' ncurl Transact
+#'
+#' nano cURL - a minimalist http(s) client. Transact once over the connection
+#'     and stored parameters in an ncurl Session created with
+#'     \code{\link{ncurl_session}}.
+#'
+#' @param session an 'ncurlSession' object.
+#'
+#' @return Named list of 4 elements:
+#'     \itemize{
+#'     \item{\code{$status}} {- integer HTTP repsonse status code (200 - OK).
+#'     Use \code{\link{status_code}} for a translation of the meaning.}
+#'     \item{\code{$headers}} {- named list of response headers supplied in
+#'     'response' or NULL if unspecified. If the status code is within the 300
+#'     range, i.e. a redirect, the response header 'Location' is automatically
+#'     appended to return the redirect address.}
+#'     \item{\code{$raw}} {- raw vector of the received resource (use
+#'     \code{\link{writeBin}} to save to a file).}
+#'     \item{\code{$data}} {- converted character string (if \code{'convert' = TRUE}
+#'     and content is a recognised text format), or NULL otherwise. Other tools
+#'     can be used to further parse this as html, json, xml etc. if required.}
+#'     }
+#'
+#' @examples
+#' s <- tryCatch(ncurl_session("https://httpbin.org/get"), error = identity)
+#' if (!inherits(s, "error")) transact(s)
+#'
+#' @export
+#'
+transact <- function(session)
+  .Call(rnng_ncurl_transact, session)
+
+#' @rdname close
+#' @method close ncurlSession
+#' @export
+#'
+close.ncurlSession <- function(con, ...) invisible(.Call(rnng_ncurl_session_close, con))
+

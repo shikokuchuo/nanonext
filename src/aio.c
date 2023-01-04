@@ -135,6 +135,15 @@ static void haio_finalizer(SEXP xptr) {
 
 }
 
+static void session_finalizer(SEXP xptr) {
+
+  if (R_ExternalPtrAddr(xptr) == NULL)
+    return;
+  nng_http_conn *xp = (nng_http_conn *) R_ExternalPtrAddr(xptr);
+  nng_http_conn_close(xp);
+
+}
+
 static SEXP mk_error_saio(const int xc, SEXP clo) {
 
   SEXP err = PROTECT(Rf_ScalarInteger(xc));
@@ -891,6 +900,239 @@ SEXP rnng_aio_http(SEXP env, SEXP response, SEXP type) {
   default: out = Rf_findVarInFrame(ENCLOS(env), nano_ResultSymbol); break;
   }
   return out;
+
+}
+
+// ncurl session ---------------------------------------------------------------
+
+SEXP rnng_ncurl_session(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP data,
+                        SEXP response, SEXP pem) {
+
+  const char *httr = CHAR(STRING_ELT(http, 0));
+  nano_aio *haio = R_Calloc(1, nano_aio);
+  nano_handle *handle = R_Calloc(1, nano_handle);
+  nng_aio *caio;
+
+  int xc;
+  SEXP sess, aio;
+
+  haio->type = HTTP_AIO;
+  haio->data = handle;
+  haio->mode = LOGICAL(convert)[0];
+  handle->cfg = NULL;
+
+  if ((xc = nng_url_parse(&handle->url, httr)))
+    goto exitlevel1;
+  if ((xc = nng_http_client_alloc(&handle->cli, handle->url)))
+    goto exitlevel2;
+  if ((xc = nng_http_req_alloc(&handle->req, handle->url)))
+    goto exitlevel3;
+
+  if (method != R_NilValue) {
+    const char *met = CHAR(STRING_ELT(method, 0));
+    if ((xc = nng_http_req_set_method(handle->req, met)))
+      goto exitlevel4;
+  }
+
+  if (headers != R_NilValue) {
+    R_xlen_t hlen = Rf_xlength(headers);
+    SEXP names = Rf_getAttrib(headers, R_NamesSymbol);
+    switch (TYPEOF(headers)) {
+    case STRSXP:
+      for (R_xlen_t i = 0; i < hlen; i++) {
+        const char *head = CHAR(STRING_ELT(headers, i));
+        const char *name = CHAR(STRING_ELT(names, i));
+        if ((xc = nng_http_req_set_header(handle->req, name, head)))
+          goto exitlevel4;
+      }
+      break;
+    case VECSXP:
+      for (R_xlen_t i = 0; i < hlen; i++) {
+        const char *head = CHAR(STRING_ELT(VECTOR_ELT(headers, i), 0));
+        const char *name = CHAR(STRING_ELT(names, i));
+        if ((xc = nng_http_req_set_header(handle->req, name, head)))
+          goto exitlevel4;
+      }
+      break;
+    }
+  }
+
+  if (data != R_NilValue) {
+    SEXP enc = nano_encode(data);
+    unsigned char *dp = RAW(enc);
+    const size_t dlen = Rf_xlength(enc) - 1;
+    if ((xc = nng_http_req_set_data(handle->req, dp, dlen)))
+      goto exitlevel4;
+  }
+
+  if ((xc = nng_http_res_alloc(&handle->res)))
+    goto exitlevel4;
+
+  if ((xc = nng_aio_alloc(&haio->aio, iaio_complete, haio)))
+    goto exitlevel5;
+
+  if (!strcmp(handle->url->u_scheme, "https")) {
+
+    if ((xc = nng_tls_config_alloc(&handle->cfg, NNG_TLS_MODE_CLIENT)))
+      goto exitlevel6;
+
+    if (pem == R_NilValue) {
+      if ((xc = nng_tls_config_server_name(handle->cfg, handle->url->u_hostname)) ||
+          (xc = nng_tls_config_auth_mode(handle->cfg, NNG_TLS_AUTH_MODE_NONE)) ||
+          (xc = nng_http_client_set_tls(handle->cli, handle->cfg)))
+        goto exitlevel7;
+    } else {
+      if ((xc = nng_tls_config_server_name(handle->cfg, handle->url->u_hostname)) ||
+          (xc = nng_tls_config_ca_file(handle->cfg, CHAR(STRING_ELT(pem, 0)))) ||
+          (xc = nng_tls_config_auth_mode(handle->cfg, NNG_TLS_AUTH_MODE_REQUIRED)) ||
+          (xc = nng_http_client_set_tls(handle->cli, handle->cfg)))
+        goto exitlevel7;
+    }
+
+  }
+
+  if ((xc = nng_aio_alloc(&caio, NULL, NULL)))
+    goto exitlevel7;
+
+  nng_http_client_connect(handle->cli, caio);
+  nng_aio_wait(caio);
+  if ((xc = nng_aio_result(caio)))
+    goto exitlevel8;
+
+  nng_http_conn *conn;
+  conn = nng_aio_get_output(caio, 0);
+  nng_aio_free(caio);
+
+  PROTECT(sess = R_MakeExternalPtr(conn, nano_SessionSymbol, R_NilValue));
+  R_RegisterCFinalizerEx(sess, session_finalizer, TRUE);
+
+  PROTECT(aio = R_MakeExternalPtr(haio, nano_AioSymbol, R_NilValue));
+  R_RegisterCFinalizerEx(aio, haio_finalizer, TRUE);
+  Rf_setAttrib(sess, nano_AioSymbol, aio);
+
+  if (response != R_NilValue)
+    Rf_setAttrib(sess, nano_ResponseSymbol, response);
+
+  Rf_classgets(sess, nano_ncurlSession);
+
+  UNPROTECT(2);
+  return sess;
+
+  exitlevel8:
+    nng_aio_free(caio);
+  exitlevel7:
+    if (handle->cfg != NULL)
+      nng_tls_config_free(handle->cfg);
+  exitlevel6:
+    nng_aio_free(haio->aio);
+  exitlevel5:
+    nng_http_res_free(handle->res);
+  exitlevel4:
+    nng_http_req_free(handle->req);
+  exitlevel3:
+    nng_http_client_free(handle->cli);
+  exitlevel2:
+    nng_url_free(handle->url);
+  exitlevel1:
+    R_Free(handle);
+  R_Free(haio);
+  ERROR_OUT(xc);
+
+}
+
+SEXP rnng_ncurl_transact(SEXP session) {
+
+  if (R_ExternalPtrTag(session) != nano_SessionSymbol)
+    Rf_error("'session' is not a valid ncurlSession");
+  if (R_ExternalPtrAddr(session) == NULL)
+    Rf_error("'session' is not an active ncurlSession");
+
+  nng_http_conn *conn = (nng_http_conn *) R_ExternalPtrAddr(session);
+  SEXP aio = Rf_getAttrib(session, nano_AioSymbol);
+  nano_aio *haio = (nano_aio *) R_ExternalPtrAddr(aio);
+  nano_handle *handle = (nano_handle *) haio->data;
+
+  nng_http_conn_transact(conn, handle->req, handle->res, haio->aio);
+  nng_aio_wait(haio->aio);
+  if (haio->result)
+    return mk_error_ncurl(haio->result);
+
+  SEXP out, vec, rvec, cvec, response;
+  void *dat;
+  size_t sz;
+  const char *names[] = {"status", "headers", "raw", "data", ""};
+
+  PROTECT(out = Rf_mkNamed(VECSXP, names));
+
+  uint16_t code = nng_http_res_get_status(handle->res);
+  SET_VECTOR_ELT(out, 0, Rf_ScalarInteger(code));
+
+  response = Rf_getAttrib(session, nano_ResponseSymbol);
+  if (response != R_NilValue) {
+    const R_xlen_t rlen = Rf_xlength(response);
+    PROTECT(rvec = Rf_allocVector(VECSXP, rlen));
+
+    switch (TYPEOF(response)) {
+    case STRSXP:
+      for (R_xlen_t i = 0; i < rlen; i++) {
+        const char *r = nng_http_res_get_header(handle->res, CHAR(STRING_ELT(response, i)));
+        SET_VECTOR_ELT(rvec, i, r == NULL ? R_NilValue : Rf_mkString(r));
+      }
+      Rf_namesgets(rvec, response);
+      break;
+    case VECSXP: ;
+      SEXP rnames;
+      PROTECT(rnames = Rf_allocVector(STRSXP, rlen));
+      for (R_xlen_t i = 0; i < rlen; i++) {
+        SEXP rname = STRING_ELT(VECTOR_ELT(response, i), 0);
+        SET_STRING_ELT(rnames, i, rname);
+        const char *r = nng_http_res_get_header(handle->res, CHAR(rname));
+        SET_VECTOR_ELT(rvec, i, r == NULL ? R_NilValue : Rf_mkString(r));
+      }
+      Rf_namesgets(rvec, rnames);
+      UNPROTECT(1);
+      break;
+    }
+    UNPROTECT(1);
+  } else {
+    rvec = R_NilValue;
+  }
+  SET_VECTOR_ELT(out, 1, rvec);
+
+  nng_http_res_get_data(handle->res, &dat, &sz);
+  vec = Rf_allocVector(RAWSXP, sz);
+  if (dat != NULL)
+    memcpy(RAW(vec), dat, sz);
+  SET_VECTOR_ELT(out, 2, vec);
+
+  if (haio->mode) {
+    int xc;
+    PROTECT(cvec = Rf_lang2(nano_RtcSymbol, vec));
+    cvec = R_tryEvalSilent(cvec, R_BaseEnv, &xc);
+    UNPROTECT(1);
+  } else {
+    cvec = R_NilValue;
+  }
+  SET_VECTOR_ELT(out, 3, cvec);
+
+  UNPROTECT(1);
+  return out;
+
+}
+
+SEXP rnng_ncurl_session_close(SEXP session) {
+
+  if (R_ExternalPtrTag(session) != nano_SessionSymbol)
+    Rf_error("'session' is not a valid ncurlSession");
+  if (R_ExternalPtrAddr(session) == NULL)
+    Rf_error("'session' is not an active ncurlSession");
+  nng_http_conn *sp = (nng_http_conn *) R_ExternalPtrAddr(session);
+  nng_http_conn_close(sp);
+  R_ClearExternalPtr(session);
+  SET_ATTRIB(session, R_NilValue);
+  SET_OBJECT(session, 0);
+
+  return nano_success;
 
 }
 

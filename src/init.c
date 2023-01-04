@@ -1,4 +1,4 @@
-// Copyright (C) 2022 Hibiki AI Limited <info@hibiki-ai.com>
+// Copyright (C) 2022-2023 Hibiki AI Limited <info@hibiki-ai.com>
 //
 // This file is part of nanonext.
 //
@@ -33,6 +33,7 @@ SEXP nano_ResponseSymbol;
 SEXP nano_ResultSymbol;
 SEXP nano_RtcSymbol;
 SEXP nano_SerialSymbol;
+SEXP nano_SessionSymbol;
 SEXP nano_SocketSymbol;
 SEXP nano_StateSymbol;
 SEXP nano_StatusSymbol;
@@ -47,6 +48,7 @@ SEXP nano_aioFuncs;
 SEXP nano_aioNFuncs;
 SEXP nano_error;
 SEXP nano_ncurlAio;
+SEXP nano_ncurlSession;
 SEXP nano_recvAio;
 SEXP nano_sendAio;
 SEXP nano_success;
@@ -68,6 +70,7 @@ static void RegisterSymbols(void) {
   nano_ResultSymbol = Rf_install("result");
   nano_RtcSymbol = Rf_install("rawToChar");
   nano_SerialSymbol = Rf_install("serialize");
+  nano_SessionSymbol = Rf_install("session");
   nano_SocketSymbol = Rf_install("socket");
   nano_StateSymbol = Rf_install("state");
   nano_StatusSymbol = Rf_install("status");
@@ -96,6 +99,7 @@ static void PreserveObjects(void) {
   R_PreserveObject(nano_ncurlAio = Rf_allocVector(STRSXP, 2));
   SET_STRING_ELT(nano_ncurlAio, 0, Rf_mkChar("ncurlAio"));
   SET_STRING_ELT(nano_ncurlAio, 1, Rf_mkChar("recvAio"));
+  R_PreserveObject(nano_ncurlSession = Rf_mkString("ncurlSession"));
   R_PreserveObject(nano_recvAio = Rf_mkString("recvAio"));
   R_PreserveObject(nano_sendAio = Rf_mkString("sendAio"));
   R_PreserveObject(nano_success = Rf_ScalarInteger(0));
@@ -108,6 +112,7 @@ static void ReleaseObjects(void) {
   R_ReleaseObject(nano_success);
   R_ReleaseObject(nano_sendAio);
   R_ReleaseObject(nano_recvAio);
+  R_ReleaseObject(nano_ncurlSession);
   R_ReleaseObject(nano_ncurlAio);
   R_ReleaseObject(nano_error);
   R_ReleaseObject(nano_aioNFuncs);
@@ -140,6 +145,9 @@ static const R_CallMethodDef callMethods[] = {
   {"rnng_messenger", (DL_FUNC) &rnng_messenger, 1},
   {"rnng_ncurl", (DL_FUNC) &rnng_ncurl, 8},
   {"rnng_ncurl_aio", (DL_FUNC) &rnng_ncurl_aio, 7},
+  {"rnng_ncurl_session", (DL_FUNC) &rnng_ncurl_session, 7},
+  {"rnng_ncurl_session_close", (DL_FUNC) &rnng_ncurl_session_close, 1},
+  {"rnng_ncurl_transact", (DL_FUNC) &rnng_ncurl_transact, 1},
   {"rnng_protocol_open", (DL_FUNC) &rnng_protocol_open, 2},
   {"rnng_random", (DL_FUNC) &rnng_random, 1},
   {"rnng_recv", (DL_FUNC) &rnng_recv, 5},

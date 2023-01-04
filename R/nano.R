@@ -1,4 +1,4 @@
-# Copyright (C) 2022 Hibiki AI Limited <info@hibiki-ai.com>
+# Copyright (C) 2022-2023 Hibiki AI Limited <info@hibiki-ai.com>
 #
 # This file is part of nanonext.
 #
@@ -380,6 +380,15 @@ print.sendAio <- function(x, ...) {
 print.ncurlAio <- function(x, ...) {
 
   cat("< ncurlAio >\n - $status for response status code\n - $headers for response headers\n - $raw for raw message\n - $data for message data\n", file = stdout())
+  invisible(x)
+
+}
+
+#' @export
+#'
+print.ncurlSession <- function(x, ...) {
+
+  cat("< ncurlSession >\n - use transact() to return data\n", file = stdout())
   invisible(x)
 
 }

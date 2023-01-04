@@ -1,4 +1,4 @@
-// Copyright (C) 2022 Hibiki AI Limited <info@hibiki-ai.com>
+// Copyright (C) 2022-2023 Hibiki AI Limited <info@hibiki-ai.com>
 //
 // This file is part of nanonext.
 //
@@ -93,6 +93,7 @@ extern SEXP nano_ResponseSymbol;
 extern SEXP nano_ResultSymbol;
 extern SEXP nano_RtcSymbol;
 extern SEXP nano_SerialSymbol;
+extern SEXP nano_SessionSymbol;
 extern SEXP nano_SocketSymbol;
 extern SEXP nano_StateSymbol;
 extern SEXP nano_StatusSymbol;
@@ -107,6 +108,7 @@ extern SEXP nano_aioFuncs;
 extern SEXP nano_aioNFuncs;
 extern SEXP nano_error;
 extern SEXP nano_ncurlAio;
+extern SEXP nano_ncurlSession;
 extern SEXP nano_recvAio;
 extern SEXP nano_sendAio;
 extern SEXP nano_success;
@@ -135,6 +137,9 @@ extern SEXP rnng_listener_start(SEXP);
 extern SEXP rnng_messenger(SEXP);
 extern SEXP rnng_ncurl(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 extern SEXP rnng_ncurl_aio(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
+extern SEXP rnng_ncurl_session(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
+extern SEXP rnng_ncurl_session_close(SEXP);
+extern SEXP rnng_ncurl_transact(SEXP);
 extern SEXP rnng_protocol_open(SEXP, SEXP);
 extern SEXP rnng_random(SEXP);
 extern SEXP rnng_recv(SEXP, SEXP, SEXP, SEXP, SEXP);
