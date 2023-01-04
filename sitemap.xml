@@ -79,6 +79,9 @@
     <loc>https://shikokuchuo.net/nanonext/reference/ncurl.html</loc>
   </url>
   <url>
+    <loc>https://shikokuchuo.net/nanonext/reference/ncurl_session.html</loc>
+  </url>
+  <url>
     <loc>https://shikokuchuo.net/nanonext/reference/nng_error.html</loc>
   </url>
   <url>
@@ -137,6 +140,9 @@
   </url>
   <url>
     <loc>https://shikokuchuo.net/nanonext/reference/survey_time.html</loc>
+  </url>
+  <url>
+    <loc>https://shikokuchuo.net/nanonext/reference/transact.html</loc>
   </url>
   <url>
     <loc>https://shikokuchuo.net/nanonext/reference/transports.html</loc>
