@@ -1122,8 +1122,7 @@ SEXP rnng_ncurl_session_close(SEXP session) {
   nng_http_conn *sp = (nng_http_conn *) R_ExternalPtrAddr(session);
   nng_http_conn_close(sp);
   R_ClearExternalPtr(session);
-  SET_ATTRIB(session, R_NilValue);
-  SET_OBJECT(session, 0);
+  Rf_setAttrib(session, nano_AioSymbol, R_NilValue);
 
   return nano_success;
 

@@ -283,6 +283,7 @@ sess <- tryCatch(ncurl_session("https://httpbin.org/post", convert = FALSE, meth
 nanotestnn(sess)
 nanotest(if (!inherits(sess, "error")) length(transact(sess)) == 4L else TRUE)
 nanotest(if (!inherits(sess, "error")) close(sess) == 0L else TRUE)
+nanotesterr(transact(sess), "ncurlSession")
 nanotesterr(ncurl_session("https://i.i"))
 nanotesterr(stream(dial = "wss://127.0.0.1:5555"))
 nanotesterr(stream(listen = "errorValue3"), 3)

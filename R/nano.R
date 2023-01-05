@@ -388,7 +388,8 @@ print.ncurlAio <- function(x, ...) {
 #'
 print.ncurlSession <- function(x, ...) {
 
-  cat("< ncurlSession >\n - use transact() to return data\n", file = stdout())
+  cat(sprintf("< ncurlSession >\n - %s\n",
+              if (length(attr(x, "aio"))) "use transact() to return data" else "not active" ), file = stdout())
   invisible(x)
 
 }
