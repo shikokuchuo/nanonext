@@ -55,7 +55,7 @@ Named list of 4 elements:
     \item{\code{$status}} {- integer HTTP repsonse status code (200 - OK).
     Use \code{\link{status_code}} for a translation of the meaning.}
     \item{\code{$headers}} {- named list of response headers supplied in
-    'response' or NULL if unspecified. If the status code is within the 300
+    'response', or NULL otherwise. If the status code is within the 300
     range, i.e. a redirect, the response header 'Location' is automatically
     appended to return the redirect address.}
     \item{\code{$raw}} {- raw vector of the received resource (use

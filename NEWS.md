@@ -2,7 +2,7 @@
 
 #### New Features
 
-* Implements `ncurl_session()` and `transact()` for high-performance re-usable http(s) connections.
+* Implements `ncurl_session()` and `transact()` providing high-performance, re-usable http(s) connections.
 
 # nanonext 0.7.2
 

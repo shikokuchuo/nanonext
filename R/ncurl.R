@@ -1,4 +1,4 @@
-# Copyright (C) 2022 Hibiki AI Limited <info@hibiki-ai.com>
+# Copyright (C) 2022-2023 Hibiki AI Limited <info@hibiki-ai.com>
 #
 # This file is part of nanonext.
 #
@@ -49,7 +49,7 @@
 #'     \item{\code{$status}} {- integer HTTP repsonse status code (200 - OK).
 #'     Use \code{\link{status_code}} for a translation of the meaning.}
 #'     \item{\code{$headers}} {- named list of response headers supplied in
-#'     'response' or NULL if unspecified. If the status code is within the 300
+#'     'response', or NULL otherwise. If the status code is within the 300
 #'     range, i.e. a redirect, the response header 'Location' is automatically
 #'     appended to return the redirect address.}
 #'     \item{\code{$raw}} {- raw vector of the received resource (use
@@ -119,15 +119,15 @@ ncurl_session <- function(url,
 #'     \itemize{
 #'     \item{\code{$status}} {- integer HTTP repsonse status code (200 - OK).
 #'     Use \code{\link{status_code}} for a translation of the meaning.}
-#'     \item{\code{$headers}} {- named list of response headers supplied in
-#'     'response' or NULL if unspecified. If the status code is within the 300
+#'     \item{\code{$headers}} {- named list of response headers (if specified in
+#'     the session), or NULL otherwise. If the status code is within the 300
 #'     range, i.e. a redirect, the response header 'Location' is automatically
 #'     appended to return the redirect address.}
 #'     \item{\code{$raw}} {- raw vector of the received resource (use
 #'     \code{\link{writeBin}} to save to a file).}
-#'     \item{\code{$data}} {- converted character string (if specified), or NULL
-#'     otherwise. This may be further parsed this as html, json, xml etc. if
-#'     required.}
+#'     \item{\code{$data}} {- converted character string (if specified in the
+#'     session), or NULL otherwise. This may be further parsed this as html,
+#'     json, xml etc. if required.}
 #'     }
 #'
 #' @examples
