@@ -911,7 +911,6 @@ SEXP rnng_ncurl_session(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP
   const char *httr = CHAR(STRING_ELT(http, 0));
   nano_aio *haio = R_Calloc(1, nano_aio);
   nano_handle *handle = R_Calloc(1, nano_handle);
-  nng_aio *caio;
 
   int xc;
   SEXP sess, aio;
@@ -991,17 +990,13 @@ SEXP rnng_ncurl_session(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP
 
   }
 
-  if ((xc = nng_aio_alloc(&caio, NULL, NULL)))
+  nng_http_client_connect(handle->cli, haio->aio);
+  nng_aio_wait(haio->aio);
+  if ((xc = haio->result))
     goto exitlevel7;
 
-  nng_http_client_connect(handle->cli, caio);
-  nng_aio_wait(caio);
-  if ((xc = nng_aio_result(caio)))
-    goto exitlevel8;
-
   nng_http_conn *conn;
-  conn = nng_aio_get_output(caio, 0);
-  nng_aio_free(caio);
+  conn = nng_aio_get_output(haio->aio, 0);
 
   PROTECT(sess = R_MakeExternalPtr(conn, nano_SessionSymbol, R_NilValue));
   R_RegisterCFinalizerEx(sess, session_finalizer, TRUE);
@@ -1018,8 +1013,6 @@ SEXP rnng_ncurl_session(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP
   UNPROTECT(2);
   return sess;
 
-  exitlevel8:
-    nng_aio_free(caio);
   exitlevel7:
     if (handle->cfg != NULL)
       nng_tls_config_free(handle->cfg);

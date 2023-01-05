@@ -20,9 +20,9 @@ Named list of 4 elements:
     appended to return the redirect address.}
     \item{\code{$raw}} {- raw vector of the received resource (use
     \code{\link{writeBin}} to save to a file).}
-    \item{\code{$data}} {- converted character string (if \code{'convert' = TRUE}
-    and content is a recognised text format), or NULL otherwise. Other tools
-    can be used to further parse this as html, json, xml etc. if required.}
+    \item{\code{$data}} {- converted character string (if specified), or NULL
+    otherwise. This may be further parsed this as html, json, xml etc. if
+    required.}
     }
 }
 \description{
