@@ -4,6 +4,10 @@
 
 * Implements `ncurl_session()` and `transact()` providing high-performance, re-usable http(s) connections.
 
+#### Updates
+
+* Closing a stream now renders it inactive safely, without the need to strip all attributes on the object (as was the case previously).
+
 # nanonext 0.7.2
 
 #### Updates

@@ -510,14 +510,15 @@ SEXP rnng_stream_listen(SEXP url, SEXP textframes, SEXP pem) {
 SEXP rnng_stream_close(SEXP stream) {
 
   if (R_ExternalPtrTag(stream) != nano_StreamSymbol)
-    Rf_error("'stream' is not a valid Stream");
-  if (R_ExternalPtrAddr(stream) == NULL)
-    Rf_error("'stream' is not an active Stream");
+    Rf_error("'stream' is not a valid/active Stream");
   nng_stream *sp = (nng_stream *) R_ExternalPtrAddr(stream);
   nng_stream_free(sp);
+  R_SetExternalPtrTag(stream, R_NilValue);
   R_ClearExternalPtr(stream);
-  SET_ATTRIB(stream, R_NilValue);
-  SET_OBJECT(stream, 0);
+  Rf_setAttrib(stream, nano_ListenerSymbol, R_NilValue);
+  Rf_setAttrib(stream, nano_DialerSymbol, R_NilValue);
+  Rf_setAttrib(stream, nano_UrlSymbol, R_NilValue);
+  Rf_setAttrib(stream, nano_TextframesSymbol, R_NilValue);
 
   return nano_success;
 
