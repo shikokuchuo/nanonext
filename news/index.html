@@ -61,7 +61,8 @@
 </ul></div>
 <div class="section level5">
 <h5 id="updates-0-7-2-9000">Updates<a class="anchor" aria-label="anchor" href="#updates-0-7-2-9000"></a></h5>
-<ul><li>Closing a stream now renders it inactive safely, without the need to strip all attributes on the object (as was the case previously).</li>
+<ul><li>For dialers, the ‘autostart’ argument to <code><a href="../reference/dial.html">dial()</a></code>, <code><a href="../reference/socket.html">socket()</a></code> and <code><a href="../reference/nano.html">nano()</a></code> now accepts NA for starting the dialer synchronously - this is less resilient if a connection is not immediately possible, but avoids subtle errors from attempting to use the socket before an asynchronous dial has completed.</li>
+<li>Closing a stream now renders it inactive safely, without the need to strip all attributes on the object (as was the case previously).</li>
 </ul></div>
 </div>
     <div class="section level2">
