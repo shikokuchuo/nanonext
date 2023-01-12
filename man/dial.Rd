@@ -13,10 +13,13 @@ dial(socket, url = "inproc://nanonext", autostart = TRUE)
 transport and address as a character string e.g. 'inproc://anyvalue' or
 'tcp://127.0.0.1:5555' (see \link{transports}).}
 
-\item{autostart}{[default TRUE] whether to start the dialer. Set to FALSE if
-setting configuration options on the dialer as it is not generally
-possible to change these once started. Supplying a non-logical value will
-error.}
+\item{autostart}{[default TRUE] whether to start the dialer (by default
+asynchronously). Set to NA to start synchronously - this is less resilient
+if a connection is not immediately possible, but avoids subtle errors
+from attempting to use the socket before an asynchronous dial has completed.
+Set to FALSE if setting configuration options on the dialer as it is not
+generally possible to change these once started. Supplying a non-logical
+value will error.}
 }
 \value{
 Invisibly, an integer exit code (zero on success). A new Dialer

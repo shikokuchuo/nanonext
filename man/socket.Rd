@@ -28,7 +28,10 @@ address as a character string e.g. 'inproc://anyvalue' or
 
 \item{autostart}{[default TRUE] whether to start the dialer/listener. Set to
 FALSE if you wish to set configuration options on the dialer/listener as
-it is not generally possible to change these once started.}
+it is not generally possible to change these once started. For dialers
+only: set to NA to start synchronously - this is less resilient if a
+connection is not immediately possible, but avoids subtle errors from
+attempting to use the socket before an asynchronous dial has completed.}
 
 \item{raw}{[default FALSE] whether to open raw mode sockets. Note: not for
 general use - do not enable unless you have a specific need, such as for

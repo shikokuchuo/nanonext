@@ -1,4 +1,4 @@
-// Copyright (C) 2022 Hibiki AI Limited <info@hibiki-ai.com>
+// Copyright (C) 2022-2023 Hibiki AI Limited <info@hibiki-ai.com>
 //
 // This file is part of nanonext.
 //
@@ -467,7 +467,18 @@ SEXP rnng_dial(SEXP socket, SEXP url, SEXP autostart) {
   nng_dialer *dp = R_Calloc(1, nng_dialer);
   SEXP dialer, klass, attr, newattr;
 
-  const int xc = start ? nng_dial(*sock, up, dp, NNG_FLAG_NONBLOCK) : nng_dialer_create(dp, *sock, up);
+  int xc;
+  switch (start) {
+  case 0:
+    xc = nng_dialer_create(dp, *sock, up);
+    break;
+  case 1:
+    xc = nng_dial(*sock, up, dp, NNG_FLAG_NONBLOCK);
+    break;
+  default:
+    xc = nng_dial(*sock, up, dp, 0);
+  }
+
   if (xc) {
     R_Free(dp);
     ERROR_RET(xc);

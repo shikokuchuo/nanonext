@@ -204,7 +204,7 @@ nanotestz(close(ctx))
 nanotestz(close(rep))
 
 pub <- nano("pub", listen = "inproc://ps")
-sub <- nano("sub", dial = "inproc://ps")
+sub <- nano("sub", dial = "inproc://ps", autostart = NA)
 nanotestz(sub$setopt(opt = "sub:prefnew", value = FALSE))
 nanotest(!sub$getopt(opt = "sub:prefnew"))
 nanotestw(sub$setopt(opt = "false", value = 100) == 9L)
