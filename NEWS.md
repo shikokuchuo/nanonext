@@ -8,6 +8,7 @@
 
 * For dialers, the 'autostart' argument to `dial()`, `socket()` and `nano()` now accepts NA for starting the dialer synchronously - this is less resilient if a connection is not immediately possible, but avoids subtle errors from attempting to use the socket before an asynchronous dial has completed.
 * Closing a stream now renders it inactive safely, without the need to strip all attributes on the object (as was the case previously).
+* Bundled 'libnng' source updated to v1.6.0 pre-release (539e559).
 
 # nanonext 0.7.2
 
