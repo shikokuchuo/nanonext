@@ -1,4 +1,4 @@
-# Copyright (C) 2022 Hibiki AI Limited <info@hibiki-ai.com>
+# Copyright (C) 2022-2023 Hibiki AI Limited <info@hibiki-ai.com>
 #
 # This file is part of nanonext.
 #
@@ -223,22 +223,6 @@ is_nul_byte <- function(x) identical(x, as.raw(0L))
 #' @export
 #'
 is_error_value <- function(x) inherits(x, "errorValue")
-
-#' nanonext Initialise
-#'
-#' This function prints a deprecation message and no longer has any effect.
-#'
-#' @param warn Deprecated.
-#'
-#' @return Invisible NULL.
-#'
-#' @export
-#'
-nano_init <- function(warn) {
-
-  message("nanonext 0.7 | 'nano_init()' is deprecated. See 'news' for updated warning behaviour")
-
-}
 
 #' Translate HTTP Status Codes
 #'
