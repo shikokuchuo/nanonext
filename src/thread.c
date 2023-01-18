@@ -1,4 +1,4 @@
-// Copyright (C) 2022 Hibiki AI Limited <info@hibiki-ai.com>
+// Copyright (C) 2022-2023 Hibiki AI Limited <info@hibiki-ai.com>
 //
 // This file is part of nanonext.
 //
@@ -106,7 +106,7 @@ SEXP rnng_messenger(SEXP url) {
   if (xc == 10 || xc == 15) {
     R_Free(dlp);
     dlp = R_Calloc(1, nng_dialer);
-    xc = nng_dial(*sock, up, dlp, 2u);
+    xc = nng_dial(*sock, up, dlp, 0);
     if (xc) {
       R_Free(dlp);
       R_Free(sock);
@@ -124,10 +124,12 @@ SEXP rnng_messenger(SEXP url) {
   R_RegisterCFinalizerEx(socket, socket_finalizer, TRUE);
 
   PROTECT(con = R_MakeExternalPtr(dlp, R_NilValue, R_NilValue));
-  if (dialer)
+  if (dialer) {
     R_RegisterCFinalizerEx(con, dialer_finalizer, TRUE);
-  else
+    Rf_setAttrib(socket, nano_DialerSymbol, R_MissingArg);
+  } else {
     R_RegisterCFinalizerEx(con, listener_finalizer, TRUE);
+  }
   R_MakeWeakRef(socket, con, R_NilValue, TRUE);
 
   UNPROTECT(2);

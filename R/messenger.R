@@ -1,4 +1,4 @@
-# Copyright (C) 2022 Hibiki AI Limited <info@hibiki-ai.com>
+# Copyright (C) 2022-2023 Hibiki AI Limited <info@hibiki-ai.com>
 #
 # This file is part of nanonext.
 #
@@ -65,13 +65,16 @@ messenger <- function(url, auth = NULL) {
     msleep(32L)
   }
   cat(sprintf("\n| url: %s\n", url), file = stdout())
-  cat("| connecting... ", file = stderr())
 
-  s <- send(sock, data = writeBin(":c ", raw()), mode = 2L, block = 1000L)
+  s <- send(sock, data = writeBin(":c ", raw()), mode = 2L, block = FALSE)
   if (s) {
-    cat(sprintf("\r| peer offline: %s\n", format.POSIXct(Sys.time())), file = stderr())
+    length(attr(sock, "dialer")) && {
+      cat("| connection error... exiting\n", file = stderr())
+      return(invisible())
+    }
+    cat(sprintf("| peer offline: %s\n", format.POSIXct(Sys.time())), file = stderr())
   } else {
-    cat(sprintf("\r| peer online: %s\n", format.POSIXct(Sys.time())), file = stderr())
+    cat(sprintf("| peer online: %s\n", format.POSIXct(Sys.time())), file = stderr())
     r <- recv(sock, mode = 5L, block = TRUE)
     for (i in seq_len(32L)) {
       lock[r[i]] == r[i + 32L] || {
