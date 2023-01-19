@@ -34,17 +34,17 @@ Note that if the topic was not previously subscribed to then an
 pub <- socket("pub", listen = "inproc://nanonext")
 sub <- socket("sub", dial = "inproc://nanonext")
 
-subscribe(sub, NULL)
-
+subscribe(sub, "examples")
 send(pub, c("examples", "this is an example"), mode = "raw")
 recv(sub, "character")
-send(pub, "examples will also be received", mode = "raw")
-recv(sub, "character")
-unsubscribe(sub, NULL)
+unsubscribe(sub, "examples")
 send(pub, c("examples", "this example will not be received"), mode = "raw")
 recv(sub, "character")
 
 subscribe(sub, 2)
+send(pub, c(2, 10, 10, 20), mode = "raw")
+recv(sub, "double", keep.raw = FALSE)
+unsubscribe(sub, 2)
 send(pub, c(2, 10, 10, 20), mode = "raw")
 recv(sub, "double", keep.raw = FALSE)
 

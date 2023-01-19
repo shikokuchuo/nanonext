@@ -11,6 +11,7 @@
 * `messenger()` is faster to connect and exits gracefully in case of a connection error.
 * Removes defunct function `nano_init()`.
 * Bundled 'libnng' source updated to v1.6.0 pre-release (539e559).
+* Fixes CRAN 'additional issue' (clang-UBSAN).
 
 # nanonext 0.7.2
 
