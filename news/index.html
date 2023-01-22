@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.2.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.3</span>
       </span>
     </div>
 
@@ -54,13 +54,13 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.7.2.9000" id="nanonext-0729000-development">nanonext 0.7.2.9000 (development)<a class="anchor" aria-label="anchor" href="#nanonext-0729000-development"></a></h2>
+<h2 class="page-header" data-toc-text="0.7.3" id="nanonext-073">nanonext 0.7.3<small>2023-01-22</small><a class="anchor" aria-label="anchor" href="#nanonext-073"></a></h2>
 <div class="section level5">
-<h5 id="new-features-0-7-2-9000">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-7-2-9000"></a></h5>
+<h5 id="new-features-0-7-3">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-7-3"></a></h5>
 <ul><li>Implements <code><a href="../reference/ncurl_session.html">ncurl_session()</a></code> and <code><a href="../reference/transact.html">transact()</a></code> providing high-performance, re-usable http(s) connections.</li>
 </ul></div>
 <div class="section level5">
-<h5 id="updates-0-7-2-9000">Updates<a class="anchor" aria-label="anchor" href="#updates-0-7-2-9000"></a></h5>
+<h5 id="updates-0-7-3">Updates<a class="anchor" aria-label="anchor" href="#updates-0-7-3"></a></h5>
 <ul><li>For dialers, the ‘autostart’ argument to <code><a href="../reference/dial.html">dial()</a></code>, <code><a href="../reference/socket.html">socket()</a></code> and <code><a href="../reference/nano.html">nano()</a></code> now accepts NA for starting the dialer synchronously - this is less resilient if a connection is not immediately possible, but avoids subtle errors from attempting to use the socket before an asynchronous dial has completed.</li>
 <li>Closing a stream now renders it inactive safely, without the need to strip all attributes on the object (as was the case previously).</li>
 <li>
