@@ -31,8 +31,8 @@ etc.}
 
 \item{send_mode}{[default 'serial'] whether data will be sent serialized or
 as a raw vector. Use 'serial' for sending and receiving within R to ensure
-perfect reproducibility. Use 'raw' for sending vectors of any type (will be
-converted to a raw byte vector for sending) - essential when interfacing
+perfect reproducibility. Use 'raw' for sending vectors of any type
+(converted to a raw byte vector for sending) - essential when interfacing
 with external applications. Alternatively, for performance, specify an
 integer position in the vector of choices i.e. 1L for 'serial' or 2L for
 'raw'.}

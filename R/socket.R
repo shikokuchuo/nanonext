@@ -32,9 +32,9 @@
 #'     address as a character string e.g. 'inproc://anyvalue' or
 #'     'tcp://127.0.0.1:5555' (see \link{transports}).
 #' @param autostart [default TRUE] whether to start the dialer/listener. Set to
-#'     FALSE if you wish to set configuration options on the dialer/listener as
-#'     it is not generally possible to change these once started. For dialers
-#'     only: set to NA to start synchronously - this is less resilient if a
+#'     FALSE if setting configuration options on the dialer/listener as it is
+#'     not generally possible to change these once started. For dialers only:
+#'     set to NA to start synchronously - this is less resilient if a
 #'     connection is not immediately possible, but avoids subtle errors from
 #'     attempting to use the socket before an asynchronous dial has completed.
 #' @param raw [default FALSE] whether to open raw mode sockets. Note: not for

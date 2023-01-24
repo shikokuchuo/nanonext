@@ -14,10 +14,10 @@ send(con, data, mode = c("serial", "raw"), block = NULL)
 \item{mode}{[default 'serial'] for sending serialised R objects, or 'raw' for
 sending vectors of any type (converted to a raw byte vector for sending).
 For Streams, 'raw' is the only option and this argument is ignored. Use
-'serial' for perfect reproducibility within R, although 'raw' must be used
-when interfacing with external applications that do not understand R
-serialisation. Alternatively, for performance, specify an integer position
-in the vector of choices i.e. 1L for 'serial' or 2L for 'raw'.}
+'serial' to ensure perfect reproducibility within R, although 'raw' must
+be used when interfacing with external applications that do not understand
+R serialisation. Alternatively, for performance, specify an integer
+position in the vector of choices i.e. 1L for 'serial' or 2L for 'raw'.}
 
 \item{block}{[default NULL] which applies the connection default (see section
 'Blocking' below). Specify logical TRUE to block until successful or FALSE
