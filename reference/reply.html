@@ -19,7 +19,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.3.9000</span>
       </span>
     </div>
 
@@ -99,8 +99,8 @@ etc.</p></dd>
 <dt>send_mode</dt>
 <dd><p>[default 'serial'] whether data will be sent serialized or
 as a raw vector. Use 'serial' for sending and receiving within R to ensure
-perfect reproducibility. Use 'raw' for sending vectors of any type (will be
-converted to a raw byte vector for sending) - essential when interfacing
+perfect reproducibility. Use 'raw' for sending vectors of any type
+(converted to a raw byte vector for sending) - essential when interfacing
 with external applications. Alternatively, for performance, specify an
 integer position in the vector of choices i.e. 1L for 'serial' or 2L for
 'raw'.</p></dd>
