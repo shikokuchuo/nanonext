@@ -131,6 +131,7 @@ extern SEXP rnng_dial(SEXP, SEXP, SEXP);
 extern SEXP rnng_dialer_close(SEXP);
 extern SEXP rnng_dialer_start(SEXP, SEXP);
 extern SEXP rnng_get_opt(SEXP, SEXP);
+extern SEXP rnng_is_nul_byte(SEXP);
 extern SEXP rnng_listen(SEXP, SEXP, SEXP);
 extern SEXP rnng_listener_close(SEXP);
 extern SEXP rnng_listener_start(SEXP);

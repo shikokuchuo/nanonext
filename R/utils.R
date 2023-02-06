@@ -205,7 +205,7 @@ is_aio <- function(x) inherits(x, c("recvAio", "sendAio"))
 #'
 #' @export
 #'
-is_nul_byte <- function(x) identical(x, as.raw(0L))
+is_nul_byte <- function(x) .Call(rnng_is_nul_byte, x)
 
 #' Is Error Value
 #'

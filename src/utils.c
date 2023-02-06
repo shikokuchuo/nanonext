@@ -1,4 +1,4 @@
-// Copyright (C) 2022 Hibiki AI Limited <info@hibiki-ai.com>
+// Copyright (C) 2022-2023 Hibiki AI Limited <info@hibiki-ai.com>
 //
 // This file is part of nanonext.
 //
@@ -124,6 +124,14 @@ SEXP rnng_device(SEXP s1, SEXP s2) {
     ERROR_OUT(xc);
 
   return R_NilValue;
+
+}
+
+SEXP rnng_is_nul_byte(SEXP x) {
+
+  if (TYPEOF(x) == RAWSXP && Rf_xlength(x) == 1 && RAW(x)[0] == 0)
+    return Rf_ScalarLogical(1);
+  return Rf_ScalarLogical(0);
 
 }
 
