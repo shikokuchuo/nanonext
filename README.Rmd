@@ -438,6 +438,18 @@ res$data
 
 In this respect, it may be used as a performant and lightweight method for making REST API requests.
 
+`ncurl_session()` creates a re-usable open connection and presents a much faster and more efficient solution for repeated polling of an API endpoint. `transact()` is then used to request data multiple times as required. This method allows a polling frequency that exceeds a server's new connection limits, where this is permitted.
+
+```{r ncurlsession}
+sess <- ncurl_session("https://httpbin.org/get",
+                      headers = c(`Content-Type` = "application/json", Authorization = "Bearer APIKEY"),
+                      response = "date")
+sess
+
+transact(sess)
+
+```
+
 [&laquo; Back to ToC](#table-of-contents)
 
 ### stream: Websocket Client
@@ -511,7 +523,7 @@ The 'INCLUDE_DIR' and 'LIB_DIR' environment variables may be set prior to packag
 
 Package installation will automatically build the libraries if required.
 
-*Additional requirements for Solaris: (i) the 'xz' package - available on OpenCSW, and (ii) a more recent version of 'cmake' than that available on OpenCSW - see the 'cmake' website for the latest source file which can be built with just a C compiler.*
+*Additional requirements for Solaris: (i) the 'xz' package - available on OpenCSW, and (ii) a more recent version of 'cmake' than available on OpenCSW - refer to the 'cmake' website for the latest source file (requiring only a C compiler to build).*
 
 #### Windows
 

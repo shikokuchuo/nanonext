@@ -48,7 +48,7 @@ nano cURL - a minimalist http(s) client. A session encapsulates a connection,
     to return data by repeatedly calling \code{\link{transact}}.
 }
 \examples{
-s <- tryCatch(ncurl_session("https://httpbin.org/get", response = c("date")), error = identity)
+s <- tryCatch(ncurl_session("https://httpbin.org/get", response = "date"), error = identity)
 s
 
 }

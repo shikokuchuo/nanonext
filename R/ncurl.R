@@ -93,7 +93,7 @@ ncurl <- function(url,
 #' @return An 'ncurlSession' object.
 #'
 #' @examples
-#' s <- tryCatch(ncurl_session("https://httpbin.org/get", response = c("date")), error = identity)
+#' s <- tryCatch(ncurl_session("https://httpbin.org/get", response = "date"), error = identity)
 #' s
 #'
 #' @export

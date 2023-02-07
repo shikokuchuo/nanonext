@@ -365,7 +365,7 @@ aio
 #> < recvAio >
 #>  - $data for message data
 aio$data |> str()
-#>  num [1:100000000] -0.5396 0.5577 -0.7544 -0.0621 0.2685 ...
+#>  num [1:100000000] -0.537 -0.77 -0.209 0.48 -2.341 ...
 ```
 
 As `call_aio()` is blocking and will wait for completion, an alternative
@@ -526,11 +526,11 @@ ncurl("https://httpbin.org/headers")
 #>   [1] 7b 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73
 #>  [26] 74 22 3a 20 22 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22
 #>  [51] 58 2d 41 6d 7a 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31
-#>  [76] 2d 36 33 63 66 63 38 39 64 2d 34 65 65 32 38 61 63 32 33 63 66 64 39 61 34
-#> [101] 33 37 34 63 34 35 64 34 66 22 0a 20 20 7d 0a 7d 0a
+#>  [76] 2d 36 33 65 32 31 37 34 35 2d 35 31 62 35 35 34 35 62 33 61 64 39 62 39 31
+#> [101] 39 36 66 34 30 35 34 61 38 22 0a 20 20 7d 0a 7d 0a
 #> 
 #> $data
-#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-63cfc89d-4ee28ac23cfd9a4374c45d4f\"\n  }\n}\n"
+#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-63e21745-51b5545b3ad9b9196f4054a8\"\n  }\n}\n"
 ```
 
 For advanced use, supports additional HTTP methods such as POST or PUT.
@@ -551,17 +551,58 @@ res
 
 call_aio(res)$headers
 #> $Date
-#> [1] "Tue, 24 Jan 2023 12:01:33 GMT"
+#> [1] "Tue, 07 Feb 2023 09:17:57 GMT"
 #> 
 #> $Server
 #> [1] "gunicorn/19.9.0"
 
 res$data
-#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-63cfc89d-463e0f600e00ebe30773a1f6\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
+#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-63e21745-308036a25335cb8d7710eaf0\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
 ```
 
 In this respect, it may be used as a performant and lightweight method
 for making REST API requests.
+
+`ncurl_session()` creates a re-usable open connection and presents a
+much faster and more efficient solution for repeated polling of an API
+endpoint. `transact()` is then used to request data multiple times as
+required. This method allows a polling frequency that exceeds a server’s
+new connection limits, where this is permitted.
+
+``` r
+sess <- ncurl_session("https://httpbin.org/get",
+                      headers = c(`Content-Type` = "application/json", Authorization = "Bearer APIKEY"),
+                      response = "date")
+sess
+#> < ncurlSession >
+#>  - use transact() to return data
+
+transact(sess)
+#> $status
+#> [1] 200
+#> 
+#> $headers
+#> $headers$date
+#> [1] "Tue, 07 Feb 2023 09:17:59 GMT"
+#> 
+#> 
+#> $raw
+#>   [1] 7b 0a 20 20 22 61 72 67 73 22 3a 20 7b 7d 2c 20 0a 20 20 22 68 65 61 64 65
+#>  [26] 72 73 22 3a 20 7b 0a 20 20 20 20 22 41 75 74 68 6f 72 69 7a 61 74 69 6f 6e
+#>  [51] 22 3a 20 22 42 65 61 72 65 72 20 41 50 49 4b 45 59 22 2c 20 0a 20 20 20 20
+#>  [76] 22 43 6f 6e 74 65 6e 74 2d 54 79 70 65 22 3a 20 22 61 70 70 6c 69 63 61 74
+#> [101] 69 6f 6e 2f 6a 73 6f 6e 22 2c 20 0a 20 20 20 20 22 48 6f 73 74 22 3a 20 22
+#> [126] 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22 58 2d 41 6d 7a
+#> [151] 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31 2d 36 33 65 32
+#> [176] 31 37 34 36 2d 31 61 30 66 32 36 31 37 36 35 63 34 35 35 62 36 32 35 36 61
+#> [201] 35 36 35 31 22 0a 20 20 7d 2c 20 0a 20 20 22 6f 72 69 67 69 6e 22 3a 20 22
+#> [226] 38 32 2e 31 36 33 2e 31 39 36 2e 31 31 34 22 2c 20 0a 20 20 22 75 72 6c 22
+#> [251] 3a 20 22 68 74 74 70 73 3a 2f 2f 68 74 74 70 62 69 6e 2e 6f 72 67 2f 67 65
+#> [276] 74 22 0a 7d 0a
+#> 
+#> $data
+#> [1] "{\n  \"args\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-63e21746-1a0f261765c455b6256a5651\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"https://httpbin.org/get\"\n}\n"
+```
 
 [« Back to ToC](#table-of-contents)
 
@@ -599,10 +640,10 @@ s |> send('{"action": "subscribe", "symbols": "EURUSD"}')
 #> [1] 0
 
 s |> recv()
-#> [1] "{\"s\":\"EURUSD\",\"a\":1.08688,\"b\":1.08686,\"dc\":\"-0.0230\",\"dd\":\"-0.0002\",\"ppms\":false,\"t\":1674561694000}"
+#> [1] "{\"s\":\"EURUSD\",\"a\":1.07278,\"b\":1.07272,\"dc\":\"-0.0112\",\"dd\":\"-0.0001\",\"ppms\":false,\"t\":1675761480000}"
 
 s |> recv()
-#> [1] "{\"s\":\"EURUSD\",\"a\":1.0872,\"b\":1.0869,\"dc\":\"0.0064\",\"dd\":\"0.0001\",\"ppms\":false,\"t\":1674561694000}"
+#> [1] "{\"s\":\"EURUSD\",\"a\":1.07278,\"b\":1.07276,\"dc\":\"-0.0112\",\"dd\":\"-0.0001\",\"ppms\":false,\"t\":1675761480000}"
 
 close(s)
 ```
@@ -667,9 +708,9 @@ to package installation to specify a custom location for ‘libmbedtls’ or
 Package installation will automatically build the libraries if required.
 
 *Additional requirements for Solaris: (i) the ‘xz’ package - available
-on OpenCSW, and (ii) a more recent version of ‘cmake’ than that
-available on OpenCSW - see the ‘cmake’ website for the latest source
-file which can be built with just a C compiler.*
+on OpenCSW, and (ii) a more recent version of ‘cmake’ than available on
+OpenCSW - refer to the ‘cmake’ website for the latest source file
+(requiring only a C compiler to build).*
 
 #### Windows
 
