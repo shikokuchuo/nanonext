@@ -1,5 +1,6 @@
 # nanonext 0.7.3.9000 (development)
 
+* Supported R version amended to >= 2.12, when person() adopted the current format used for package description.
 * Internal performance enhancements.
 
 # nanonext 0.7.3
