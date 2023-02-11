@@ -30,7 +30,6 @@ static void thread_finalizer(SEXP xptr) {
     return;
   nng_thread *xp = (nng_thread *) R_ExternalPtrAddr(xptr);
   nng_thread_destroy(xp);
-  R_ClearExternalPtr(xptr);
 
 }
 
@@ -48,7 +47,7 @@ static void rnng_thread(void *arg) {
   int xc;
 
   while (1) {
-    xc = nng_recv(*sock, &buf, &sz, 1u);
+    xc = nng_recv(*sock, &buf, &sz, NNG_FLAG_ALLOC);
     time(&now);
     tms = localtime(&now);
 
