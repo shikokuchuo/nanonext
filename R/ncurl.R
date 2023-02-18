@@ -136,8 +136,7 @@ ncurl_session <- function(url,
 #'
 #' @export
 #'
-transact <- function(session)
-  .Call(rnng_ncurl_transact, session)
+transact <- function(session) .Call(rnng_ncurl_transact, session)
 
 #' @rdname close
 #' @method close ncurlSession

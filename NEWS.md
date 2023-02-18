@@ -1,5 +1,6 @@
-# nanonext 0.7.3.9000 (development)
+# nanonext 0.7.3.9001 (development)
 
+* Implements `getstat()`, an interface to the NNG statistics framework. Can be used to return the number of currently connected pipes for a socket, connection attempts for a listener/dialer etc.
 * Supported R version amended to >= 2.12, when person() adopted the current format used for package description.
 * Internal performance enhancements.
 
