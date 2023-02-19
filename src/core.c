@@ -457,7 +457,7 @@ SEXP rnng_ctx_close(SEXP context) {
 
 // dialers and listeners -------------------------------------------------------
 
-SEXP rnng_dial(SEXP socket, SEXP url, SEXP autostart) {
+SEXP rnng_dial(SEXP socket, SEXP url, SEXP autostart, SEXP error) {
 
   if (R_ExternalPtrTag(socket) != nano_SocketSymbol)
     Rf_error("'socket' is not a valid Socket");
@@ -481,6 +481,7 @@ SEXP rnng_dial(SEXP socket, SEXP url, SEXP autostart) {
 
   if (xc) {
     R_Free(dp);
+    if (error != R_NilValue) ERROR_OUT(xc);
     ERROR_RET(xc);
   }
 
@@ -517,7 +518,7 @@ SEXP rnng_dial(SEXP socket, SEXP url, SEXP autostart) {
 
 }
 
-SEXP rnng_listen(SEXP socket, SEXP url, SEXP autostart) {
+SEXP rnng_listen(SEXP socket, SEXP url, SEXP autostart, SEXP error) {
 
   if (R_ExternalPtrTag(socket) != nano_SocketSymbol)
     Rf_error("'socket' is not a valid Socket");
@@ -530,6 +531,7 @@ SEXP rnng_listen(SEXP socket, SEXP url, SEXP autostart) {
   const int xc = start ? nng_listen(*sock, up, lp, 0) : nng_listener_create(lp, *sock, up);
   if (xc) {
     R_Free(lp);
+    if (error != R_NilValue) ERROR_OUT(xc);
     ERROR_RET(xc);
   }
 

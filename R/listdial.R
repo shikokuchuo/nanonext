@@ -84,7 +84,7 @@
 #' @export
 #'
 dial <- function(socket, url = "inproc://nanonext", autostart = TRUE)
-  invisible(.Call(rnng_dial, socket, url, autostart))
+  invisible(.Call(rnng_dial, socket, url, autostart, NULL))
 
 #' Listen to an Address from a Socket
 #'
@@ -151,7 +151,7 @@ dial <- function(socket, url = "inproc://nanonext", autostart = TRUE)
 #' @export
 #'
 listen <- function(socket, url = "inproc://nanonext", autostart = TRUE)
-  invisible(.Call(rnng_listen, socket, url, autostart))
+  invisible(.Call(rnng_listen, socket, url, autostart, NULL))
 
 #' Start Listener/Dialer
 #'
