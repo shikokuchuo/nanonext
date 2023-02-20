@@ -1056,9 +1056,9 @@ SEXP rnng_set_opt(SEXP object, SEXP opt, SEXP value) {
   }
 
   if (xc)
-    ERROR_RET(xc);
+    ERROR_OUT(xc);
 
-  return nano_success;
+  return object;
 
 }
 

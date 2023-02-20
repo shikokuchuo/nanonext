@@ -37,7 +37,7 @@ R binding for NNG (Nanomsg Next Gen), a successor to ZeroMQ. NNG is a socket
 
     Guide to the supported transports for dialers and listeners: \link{transports}
 
-    Options that can be set using \code{setopt()}: \link{opts}
+    Guide to the options that can be set using: \link{opt<-}
 }
 
 \section{Conceptual overview}{

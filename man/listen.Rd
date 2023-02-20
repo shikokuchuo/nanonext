@@ -50,7 +50,7 @@ To view all Listeners bound to a socket use \code{$listener} on the
     challenging communications problems.
 
     Any configuration options on the dialer/listener should be set by
-    \code{\link{setopt}} before starting the dialer/listener with
+    \code{\link{opt<-}} before starting the dialer/listener with
     \code{\link{start}}.
 
     Dialers/Listeners may be destroyed by \code{\link{close}}. They are also

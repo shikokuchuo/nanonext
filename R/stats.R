@@ -22,7 +22,7 @@
 #'     exposes the stats interface of NNG.
 #'
 #' @param object a Socket, Listener or Dialer.
-#' @param stat character name of statistic to return.
+#' @param name character name of statistic to return.
 #'
 #' @return The value of the statistic (character or double depending on the type
 #'     of statistic requested) if available, or else NULL.
@@ -75,17 +75,17 @@
 #'
 #' @examples
 #' s <- socket("bus", listen = "inproc://stats")
-#' getstat(s, "pipes")
+#' stat(s, "pipes")
 #'
 #' s1 <- socket("bus", dial = "inproc://stats")
-#' getstat(s, "pipes")
+#' stat(s, "pipes")
 #'
 #' close(s1)
-#' getstat(s, "pipes")
+#' stat(s, "pipes")
 #'
 #' close(s)
 #'
 #' @export
 #'
-getstat <- function(object, stat) .Call(rnng_stats_get, object, stat)
+stat <- function(object, name) .Call(rnng_stats_get, object, name)
 
