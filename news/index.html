@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.3.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.3.9002</span>
       </span>
     </div>
 
@@ -54,15 +54,19 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.7.3.9001" id="nanonext-0739001-development">nanonext 0.7.3.9001 (development)<a class="anchor" aria-label="anchor" href="#nanonext-0739001-development"></a></h2>
+<h2 class="page-header" data-toc-text="0.7.3.9002" id="nanonext-0739002-development">nanonext 0.7.3.9002 (development)<a class="anchor" aria-label="anchor" href="#nanonext-0739002-development"></a></h2>
 <div class="section level5">
-<h5 id="new-features-0-7-3-9001">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-7-3-9001"></a></h5>
-<ul><li>Implements <code><a href="../reference/getstat.html">getstat()</a></code>, an interface to the NNG statistics framework. Can be used to return the number of currently connected pipes for a socket, connection attempts for a listener/dialer etc.</li>
+<h5 id="new-features-0-7-3-9002">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-7-3-9002"></a></h5>
+<ul><li>Implements <code><a href="../reference/stat.html">stat()</a></code>, an interface to the NNG statistics framework. Can be used to return the number of currently connected pipes for a socket, connection attempts for a listener/dialer etc.</li>
 </ul></div>
 <div class="section level5">
-<h5 id="updates-0-7-3-9001">Updates<a class="anchor" aria-label="anchor" href="#updates-0-7-3-9001"></a></h5>
+<h5 id="updates-0-7-3-9002">Updates<a class="anchor" aria-label="anchor" href="#updates-0-7-3-9002"></a></h5>
+<p><em>Please review the following potentially breaking changes, and only update when ready:</em></p>
 <ul><li>Using <code><a href="../reference/socket.html">socket()</a></code> specifying either ‘dial’ or ‘listen’, a failure to either dial or listen (due to an invalid URL for example) will now error rather than return a socket with a warning. This is safer behaviour that should make it easier to detect bugs in user code.</li>
-<li>Supported R version amended to &gt;= 2.12, when person() adopted the current format used for package description.</li>
+<li>
+<code>opt</code> and <code>opt&lt;-</code> have been implemented as more ergonomic options getter and setter functions to replace <code>getopt()</code> and <code>setopt()</code>. These along with the helper function <code><a href="../reference/survey_time.html">survey_time()</a></code> now error upon invalid input etc.</li>
+</ul><p><em>Other changes:</em></p>
+<ul><li>Supported R version amended to &gt;= 2.12, when person() adopted the current format used for package description.</li>
 <li>Internal performance enhancements.</li>
 </ul></div>
 </div>
@@ -94,11 +98,11 @@
 <h2 class="page-header" data-toc-text="0.7.1" id="nanonext-071">nanonext 0.7.1<small>2022-11-16</small><a class="anchor" aria-label="anchor" href="#nanonext-071"></a></h2>
 <div class="section level5">
 <h5 id="new-features-0-7-1">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-7-1"></a></h5>
-<ul><li>Implements <code><a href="../reference/getopt.html">getopt()</a></code>, the counterpart to <code><a href="../reference/setopt.html">setopt()</a></code> for retrieving the value of options on objects.</li>
+<ul><li>Implements <code>getopt()</code>, the counterpart to <code>setopt()</code> for retrieving the value of options on objects.</li>
 </ul></div>
 <div class="section level5">
 <h5 id="updates-0-7-1">Updates<a class="anchor" aria-label="anchor" href="#updates-0-7-1"></a></h5>
-<ul><li>The <code><a href="../reference/setopt.html">setopt()</a></code> interface is simplified, with the type now inferred from the value supplied.</li>
+<ul><li>The <code>setopt()</code> interface is simplified, with the type now inferred from the value supplied.</li>
 <li>
 <code><a href="../reference/ncurl.html">ncurl()</a></code> now returns redirect addresses as the response header ‘Location’. This is so that HTTP data can also be returned at <code>$data</code> where this is provided.</li>
 <li>Eliminates CRAN ‘additional issue’ (clang/gcc-UBSAN).</li>
@@ -172,7 +176,7 @@
 </ul><p><em>Other changes:</em></p>
 <ul><li>
 <code><a href="../reference/socket.html">socket()</a></code> and <code><a href="../reference/nano.html">nano()</a></code> now accept non-missing NULL ‘listen’ and ‘dial’ arguments, allowing easier programmatic use.</li>
-<li>Functions <code><a href="../reference/send.html">send()</a></code>, <code><a href="../reference/recv.html">recv()</a></code>, <code><a href="../reference/send_aio.html">send_aio()</a></code>, <code><a href="../reference/recv_aio.html">recv_aio()</a></code>, <code><a href="../reference/setopt.html">setopt()</a></code>, <code><a href="../reference/subscribe.html">subscribe()</a></code>, <code><a href="../reference/unsubscribe.html">unsubscribe()</a></code> and <code><a href="../reference/survey_time.html">survey_time()</a></code> are no longer S3 generics for enhanced performance.</li>
+<li>Functions <code><a href="../reference/send.html">send()</a></code>, <code><a href="../reference/recv.html">recv()</a></code>, <code><a href="../reference/send_aio.html">send_aio()</a></code>, <code><a href="../reference/recv_aio.html">recv_aio()</a></code>, <code>setopt()</code>, <code><a href="../reference/subscribe.html">subscribe()</a></code>, <code><a href="../reference/unsubscribe.html">unsubscribe()</a></code> and <code><a href="../reference/survey_time.html">survey_time()</a></code> are no longer S3 generics for enhanced performance.</li>
 <li>
 <code><a href="../reference/messenger.html">messenger()</a></code> uses longer SHA-512 hash for authentication; fixes errors creating a connnection not being shown.</li>
 <li>The source code of ‘libnng’ v1.6.0 pre-release (722bf46) and ‘libmbedtls’ v3.2.1 now comes bundled rather than downloaded - this is much more efficient as unused portions have been stripped out.</li>
