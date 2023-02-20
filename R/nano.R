@@ -207,9 +207,9 @@ nano <- function(protocol = c("bus", "pair", "push", "pull", "pub", "sub",
                                                           mode = mode,
                                                           timeout = timeout)
   nano[["setopt"]] <- function(name,
-                               value) `opt<-`(socket,
-                                              name = name,
-                                              value = value)
+                               value) invisible(`opt<-`(socket,
+                                                        name = name,
+                                                        value = value))
   nano[["stat"]] <- function(name) stat(socket,
                                         name = name)
 

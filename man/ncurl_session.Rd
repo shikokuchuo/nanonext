@@ -2,6 +2,7 @@
 % Please edit documentation in R/ncurl.R
 \name{ncurl_session}
 \alias{ncurl_session}
+\alias{transact}
 \title{ncurl Session}
 \usage{
 ncurl_session(
@@ -13,6 +14,8 @@ ncurl_session(
   response = NULL,
   pem = NULL
 )
+
+transact(session)
 }
 \arguments{
 \item{url}{the URL address.}
@@ -38,17 +41,37 @@ These are case-insensitive and will return NULL if not present.}
 file containing X.509 certificate(s) in PEM format, comprising the
 certificate authority certificate chain (and revocation list if present).
 If missing or NULL, certificates are not validated.}
+
+\item{session}{an 'ncurlSession' object.}
 }
 \value{
-An 'ncurlSession' object.
+For \code{ncurl_session}: an 'ncurlSession' object.
+
+For \code{transact}: a named list of 4 elements:
+    \itemize{
+    \item{\code{$status}} {- integer HTTP repsonse status code (200 - OK).
+    Use \code{\link{status_code}} for a translation of the meaning.}
+    \item{\code{$headers}} {- named list of response headers (if specified in
+    the session), or NULL otherwise. If the status code is within the 300
+    range, i.e. a redirect, the response header 'Location' is automatically
+    appended to return the redirect address.}
+    \item{\code{$raw}} {- raw vector of the received resource (use
+    \code{\link{writeBin}} to save to a file).}
+    \item{\code{$data}} {- converted character string (if specified in the
+    session), or NULL otherwise. This may be further parsed this as html,
+    json, xml etc. if required.}
+    }
 }
 \description{
 nano cURL - a minimalist http(s) client. A session encapsulates a connection,
-    along with all related parameters. A session may be used multiple times
-    to return data by repeatedly calling \code{\link{transact}}.
+    along with all related parameters, and may be used to return data
+    multiple times by repeatedly calling \code{transact}, which transacts
+    once over the connection.
 }
 \examples{
 s <- tryCatch(ncurl_session("https://httpbin.org/get", response = "date"), error = identity)
 s
+if (!inherits(s, "error")) transact(s)
+if (!inherits(s, "error")) close(s)
 
 }

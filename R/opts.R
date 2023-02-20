@@ -272,18 +272,20 @@ opt <- function(object, name)
 #' @export
 #'
 `opt<-` <- function(object, name, value)
-  invisible(.Call(rnng_set_opt, object, name, value))
+  .Call(rnng_set_opt, object, name, value)
 
-#' Subscribe Topic
+#' Subscribe / Unsubscribe Topic
 #'
 #' For a socket or context using the sub protocol in a publisher/subscriber
-#'     pattern. Set a topic to subscribe to.
+#'     pattern. Set a topic to subscribe to, or remove a topic from the
+#'     subscription list.
 #'
 #' @param con a Socket or Context using the 'sub' protocol.
 #' @param topic [default NULL] an atomic type or NULL. The default NULL
-#'     subscribes to all topics.
+#'     subscribes to all topics / unsubscribes from all topics (if all topics
+#'     were previously subscribed).
 #'
-#' @return Invisibly, an integer exit code (zero on success).
+#' @return Invisibly, the passed Socket or Context.
 #'
 #' @details To use pub/sub the publisher must:
 #'     \itemize{
@@ -304,49 +306,8 @@ opt <- function(object, name)
 #' recv(sub, "character")
 #' send(pub, c("other", "this other topic will not be received"), mode = "raw")
 #' recv(sub, "character")
-#'
-#' subscribe(sub, 2)
-#' send(pub, c(2, 10, 10, 20), mode = "raw")
-#' recv(sub, "double", keep.raw = FALSE)
-#'
-#' close(pub)
-#' close(sub)
-#'
-#' @export
-#'
-subscribe <- function(con, topic = NULL)
-  invisible(.Call(rnng_subscribe, con, topic, TRUE))
-
-#' Unsubscribe Topic
-#'
-#' For a socket or context using the sub protocol in a publisher/subscriber
-#'     pattern. Remove a topic from the subscription list.
-#'
-#' @param con a Socket or Context using the 'sub' protocol.
-#' @param topic [default NULL] an atomic type or NULL. The default NULL
-#'     unsubscribes from all topics (if all topics were previously subscribed).
-#'
-#' @return Invisibly, an integer exit code (zero on success).
-#'
-#' @details Note that if the topic was not previously subscribed to then an
-#'     'entry not found' error will result.
-#'
-#'     To use pub/sub the publisher must:
-#'     \itemize{
-#'     \item{specify \code{mode = 'raw'} when sending.}
-#'     \item{ensure the sent vector starts with the topic.}
-#'     }
-#'     The subscriber should then receive specifying the correct mode.
-#'
-#' @examples
-#' pub <- socket("pub", listen = "inproc://nanonext")
-#' sub <- socket("sub", dial = "inproc://nanonext")
-#'
-#' subscribe(sub, "examples")
-#' send(pub, c("examples", "this is an example"), mode = "raw")
-#' recv(sub, "character")
 #' unsubscribe(sub, "examples")
-#' send(pub, c("examples", "this example will not be received"), mode = "raw")
+#' send(pub, c("examples", "this example is no longer received"), mode = "raw")
 #' recv(sub, "character")
 #'
 #' subscribe(sub, 2)
@@ -359,6 +320,12 @@ subscribe <- function(con, topic = NULL)
 #' close(pub)
 #' close(sub)
 #'
+#' @export
+#'
+subscribe <- function(con, topic = NULL)
+  invisible(.Call(rnng_subscribe, con, topic, TRUE))
+
+#' @rdname subscribe
 #' @export
 #'
 unsubscribe <- function(con, topic = NULL)
@@ -374,7 +341,7 @@ unsubscribe <- function(con, topic = NULL)
 #' @param con a Socket or Context using the 'surveyor' protocol.
 #' @param time the survey timeout in ms.
 #'
-#' @return The passed Socket or Context (invisibly).
+#' @return Invisibly, the passed Socket or Context.
 #'
 #' @details After using this function, to start a new survey, the surveyor must:
 #'     \itemize{

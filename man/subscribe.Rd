@@ -2,22 +2,27 @@
 % Please edit documentation in R/opts.R
 \name{subscribe}
 \alias{subscribe}
-\title{Subscribe Topic}
+\alias{unsubscribe}
+\title{Subscribe / Unsubscribe Topic}
 \usage{
 subscribe(con, topic = NULL)
+
+unsubscribe(con, topic = NULL)
 }
 \arguments{
 \item{con}{a Socket or Context using the 'sub' protocol.}
 
 \item{topic}{[default NULL] an atomic type or NULL. The default NULL
-subscribes to all topics.}
+subscribes to all topics / unsubscribes from all topics (if all topics
+were previously subscribed).}
 }
 \value{
-Invisibly, an integer exit code (zero on success).
+Invisibly, the passed Socket or Context.
 }
 \description{
 For a socket or context using the sub protocol in a publisher/subscriber
-    pattern. Set a topic to subscribe to.
+    pattern. Set a topic to subscribe to, or remove a topic from the
+    subscription list.
 }
 \details{
 To use pub/sub the publisher must:
@@ -39,8 +44,14 @@ send(pub, "examples will also be received", mode = "raw")
 recv(sub, "character")
 send(pub, c("other", "this other topic will not be received"), mode = "raw")
 recv(sub, "character")
+unsubscribe(sub, "examples")
+send(pub, c("examples", "this example is no longer received"), mode = "raw")
+recv(sub, "character")
 
 subscribe(sub, 2)
+send(pub, c(2, 10, 10, 20), mode = "raw")
+recv(sub, "double", keep.raw = FALSE)
+unsubscribe(sub, 2)
 send(pub, c(2, 10, 10, 20), mode = "raw")
 recv(sub, "double", keep.raw = FALSE)
 

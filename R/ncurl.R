@@ -85,16 +85,19 @@ ncurl <- function(url,
 #' ncurl Session
 #'
 #' nano cURL - a minimalist http(s) client. A session encapsulates a connection,
-#'     along with all related parameters. A session may be used multiple times
-#'     to return data by repeatedly calling \code{\link{transact}}.
+#'     along with all related parameters, and may be used to return data
+#'     multiple times by repeatedly calling \code{transact}, which transacts
+#'     once over the connection.
 #'
 #' @inheritParams ncurl
 #'
-#' @return An 'ncurlSession' object.
+#' @return For \code{ncurl_session}: an 'ncurlSession' object.
 #'
 #' @examples
 #' s <- tryCatch(ncurl_session("https://httpbin.org/get", response = "date"), error = identity)
 #' s
+#' if (!inherits(s, "error")) transact(s)
+#' if (!inherits(s, "error")) close(s)
 #'
 #' @export
 #'
@@ -107,15 +110,9 @@ ncurl_session <- function(url,
                           pem = NULL)
     .Call(rnng_ncurl_session, url, convert, method, headers, data, response, pem)
 
-#' ncurl Transact
-#'
-#' nano cURL - a minimalist http(s) client. Transact once over the connection
-#'     and stored parameters in an ncurl Session created with
-#'     \code{\link{ncurl_session}}.
-#'
 #' @param session an 'ncurlSession' object.
 #'
-#' @return Named list of 4 elements:
+#' @return For \code{transact}: a named list of 4 elements:
 #'     \itemize{
 #'     \item{\code{$status}} {- integer HTTP repsonse status code (200 - OK).
 #'     Use \code{\link{status_code}} for a translation of the meaning.}
@@ -130,10 +127,7 @@ ncurl_session <- function(url,
 #'     json, xml etc. if required.}
 #'     }
 #'
-#' @examples
-#' s <- tryCatch(ncurl_session("https://httpbin.org/get"), error = identity)
-#' if (!inherits(s, "error")) transact(s)
-#'
+#' @rdname ncurl_session
 #' @export
 #'
 transact <- function(session) .Call(rnng_ncurl_transact, session)

@@ -12,7 +12,7 @@ survey_time(con, time)
 \item{time}{the survey timeout in ms.}
 }
 \value{
-The passed Socket or Context (invisibly).
+Invisibly, the passed Socket or Context.
 }
 \description{
 For a socket or context using the surveyor protocol in a surveyor/respondent

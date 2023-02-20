@@ -1097,9 +1097,9 @@ SEXP rnng_subscribe(SEXP object, SEXP value, SEXP sub) {
   }
 
   if (xc)
-    ERROR_RET(xc);
+    ERROR_OUT(xc);
 
-  return nano_success;
+  return object;
 
 }
 
