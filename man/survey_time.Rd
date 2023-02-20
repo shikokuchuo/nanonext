@@ -4,12 +4,12 @@
 \alias{survey_time}
 \title{Set Survey Time}
 \usage{
-survey_time(con, time)
+survey_time(con, value = 1000L)
 }
 \arguments{
 \item{con}{a Socket or Context using the 'surveyor' protocol.}
 
-\item{time}{integer survey timeout in milliseconds.}
+\item{value}{[default 1000L] integer survey timeout in milliseconds.}
 }
 \value{
 Invisibly, the passed Socket or Context.

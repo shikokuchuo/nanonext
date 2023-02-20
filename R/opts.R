@@ -339,7 +339,7 @@ unsubscribe <- function(con, topic = NULL)
 #'     has ended are discarded.
 #'
 #' @param con a Socket or Context using the 'surveyor' protocol.
-#' @param time integer survey timeout in milliseconds.
+#' @param value [default 1000L] integer survey timeout in milliseconds.
 #'
 #' @return Invisibly, the passed Socket or Context.
 #'
@@ -375,6 +375,6 @@ unsubscribe <- function(con, topic = NULL)
 #'
 #' @export
 #'
-`survey_time` <- function(con, time)
-  invisible(.Call(rnng_set_opt, con, "surveyor:survey-time", time))
+`survey_time` <- function(con, value = 1000L)
+  invisible(.Call(rnng_set_opt, con, "surveyor:survey-time", value))
 

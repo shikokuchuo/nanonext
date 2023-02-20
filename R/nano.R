@@ -237,8 +237,8 @@ nano <- function(protocol = c("bus", "pair", "push", "pull", "pub", "sub",
              }
              socket <<- nano[["context"]] <- context(sock2)
            }
-           nano[["survey_time"]] <- function(time)
-             survey_time(socket, time = time)
+           nano[["survey_time"]] <- function(value = 1000L)
+             survey_time(socket, value = value)
          },
          respondent = {
            nano[["context_open"]] <- function() {
