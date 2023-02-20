@@ -120,11 +120,15 @@ attempting to use the socket before an asynchronous dial has completed.</p></dd>
     dialers or listeners using the object's <code>$dial()</code> and <code>$listen()</code>
     methods. The new dialer/listener will be attached to the object e.g. if
     the object already has a dialer, then at <code>$dialer[[2]]</code> etc.</p>
-<p>Note that <code>$dialer_setopt()</code> and <code>$listener_setopt()</code> methods
+<p>Note that <code>$dialer_opt()</code> and <code>$listener_opt()</code> methods
     will be available once dialers/listeners are attached to the object.
-    These methods apply settings to all dialers or listeners equally. To
-    apply settings to individual dialers/listeners, access them directly
-    via <code>$dialer[[2]]</code> or <code>$listener[[2]]</code> etc.</p>
+    These methods get or apply settings for all dialers or listeners equally.
+    To get or apply settings for individual dialers/listeners, access them
+    directly via <code>$dialer[[2]]</code> or <code>$listener[[2]]</code> etc.</p>
+<p>The methods <code>$opt()</code>, and also <code>$dialer_opt()</code> or
+    <code>$listener_opt()</code> as may be applicable, will get the requested option
+    if a single argument 'name' is provided, and will set the value for the
+    option if both arguments 'name' and 'value' are provided.</p>
 <p>For Dialers or Listeners not automatically started, the
     <code>$dialer_start()</code> or  <code>$listener_start()</code> methods will be
     available. These act on the most recently created Dialer or Listener
@@ -163,7 +167,9 @@ attempting to use the socket before an asynchronous dial has completed.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - state: started</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - url: inproc://nanonext</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">nano</span><span class="op">$</span><span class="fu">setopt</span><span class="op">(</span><span class="st">"send-timeout"</span>, <span class="fl">1000</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">nano</span><span class="op">$</span><span class="fu">opt</span><span class="op">(</span><span class="st">"send-timeout"</span>, <span class="fl">1500</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">nano</span><span class="op">$</span><span class="fu">opt</span><span class="op">(</span><span class="st">"send-timeout"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1500</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">nano</span><span class="op">$</span><span class="fu">listen</span><span class="op">(</span>url <span class="op">=</span> <span class="st">"inproc://nanonextgen"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">nano</span><span class="op">$</span><span class="va">listener</span></span></span>
