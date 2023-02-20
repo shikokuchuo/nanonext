@@ -42,11 +42,16 @@
 #'     methods. The new dialer/listener will be attached to the object e.g. if
 #'     the object already has a dialer, then at \code{$dialer[[2]]} etc.
 #'
-#'     Note that \code{$dialer_setopt()} and \code{$listener_setopt()} methods
+#'     Note that \code{$dialer_opt()} and \code{$listener_opt()} methods
 #'     will be available once dialers/listeners are attached to the object.
-#'     These methods apply settings to all dialers or listeners equally. To
-#'     apply settings to individual dialers/listeners, access them directly
-#'     via \code{$dialer[[2]]} or \code{$listener[[2]]} etc.
+#'     These methods get or apply settings for all dialers or listeners equally.
+#'     To get or apply settings for individual dialers/listeners, access them
+#'     directly via \code{$dialer[[2]]} or \code{$listener[[2]]} etc.
+#'
+#'     The methods \code{$opt()}, and also \code{$dialer_opt()} or
+#'     \code{$listener_opt()} as may be applicable, will get the requested option
+#'     if a single argument 'name' is provided, and will set the value for the
+#'     option if both arguments 'name' and 'value' are provided.
 #'
 #'     For Dialers or Listeners not automatically started, the
 #'     \code{$dialer_start()} or  \code{$listener_start()} methods will be
@@ -68,7 +73,8 @@
 #' nano$socket
 #' nano$listener[[1]]
 #'
-#' nano$setopt("send-timeout", 1000)
+#' nano$opt("send-timeout", 1500)
+#' nano$opt("send-timeout")
 #'
 #' nano$listen(url = "inproc://nanonextgen")
 #' nano$listener
@@ -99,14 +105,10 @@ nano <- function(protocol = c("bus", "pair", "push", "pull", "pub", "sub",
     r <- dial(socket, url = dial, autostart = autostart)
     if (r == 0L) {
       nano[["dialer"]] <- attr(socket, "dialer")
-      nano[["dialer_getopt"]] <- function(name) lapply(.subset2(nano, "dialer"),
-                                                       opt,
-                                                       name = name)
-      nano[["dialer_setopt"]] <- function(name,
-                                          value) invisible(lapply(.subset2(nano, "dialer"),
-                                                                  `opt<-`,
-                                                                  name = name,
-                                                                  value = value))
+      nano[["dialer_opt"]] <- function(name, value)
+        if (missing(value))
+          lapply(.subset2(nano, "dialer"), opt, name = name) else
+            invisible(lapply(.subset2(nano, "dialer"), `opt<-`, name = name, value = value))
       if (isFALSE(autostart)) nano[["dialer_start"]] <- function(async = TRUE) {
         s <- start(.subset2(nano, "dialer")[[1L]], async = async)
         if (s == 0L) rm("dialer_start", envir = nano)
@@ -119,14 +121,10 @@ nano <- function(protocol = c("bus", "pair", "push", "pull", "pub", "sub",
     r <- listen(socket, url = listen, autostart = autostart)
     if (r == 0L) {
       nano[["listener"]] <- attr(socket, "listener")
-      nano[["listener_getopt"]] <- function(name) lapply(.subset2(nano, "listener"),
-                                                         opt,
-                                                         name = name)
-      nano[["listener_setopt"]] <- function(name,
-                                            value) invisible(lapply(.subset2(nano, "listener"),
-                                                                    `opt<-`,
-                                                                    name = name,
-                                                                    value = value))
+      nano[["listener_opt"]] <- function(name, value)
+        if (missing(value))
+          lapply(.subset2(nano, "listener"), opt, name = name) else
+            invisible(lapply(.subset2(nano, "listener"), `opt<-`, name = name, value = value))
       if (isFALSE(autostart)) nano[["listener_start"]] <- function() {
         s <- start(.subset2(nano, "listener")[[1L]])
         if (s == 0L) rm("listener_start", envir = nano)
@@ -136,19 +134,15 @@ nano <- function(protocol = c("bus", "pair", "push", "pull", "pub", "sub",
   }
 
   nano[["close"]] <- function() close(.subset2(nano, "socket"))
-  nano[["dial"]] <- function(url = "inproc://nanonext",
-                             autostart = TRUE) {
+
+  nano[["dial"]] <- function(url = "inproc://nanonext", autostart = TRUE) {
     r <- dial(socket, url = url, autostart = autostart)
     if (r == 0L) {
       nano[["dialer"]] <- attr(socket, "dialer")
-      nano[["dialer_getopt"]] <- function(name) lapply(.subset2(nano, "dialer"),
-                                                       opt,
-                                                       name = name)
-      nano[["dialer_setopt"]] <- function(name,
-                                          value) invisible(lapply(.subset2(nano, "dialer"),
-                                                                  `opt<-`,
-                                                                  name = name,
-                                                                  value = value))
+      nano[["dialer_opt"]] <- function(name, value)
+        if (missing(value))
+          lapply(.subset2(nano, "dialer"), opt, name = name) else
+            invisible(lapply(.subset2(nano, "dialer"), `opt<-`, name = name, value = value))
       if (isFALSE(autostart)) nano[["dialer_start"]] <- function(async = TRUE) {
         s <- start((d <- .subset2(nano, "dialer"))[[length(d)]], async = async)
         if (s == 0L) rm("dialer_start", envir = nano)
@@ -157,19 +151,15 @@ nano <- function(protocol = c("bus", "pair", "push", "pull", "pub", "sub",
     }
     invisible(r)
   }
-  nano[["listen"]] <- function(url = "inproc://nanonext",
-                               autostart = TRUE) {
+
+  nano[["listen"]] <- function(url = "inproc://nanonext", autostart = TRUE) {
     r <- listen(socket, url = url, autostart = autostart)
     if (r == 0L) {
       nano[["listener"]] <- attr(socket, "listener")
-      nano[["listener_getopt"]] <- function(name) lapply(.subset2(nano, "listener"),
-                                                         opt,
-                                                         name = name)
-      nano[["listener_setopt"]] <- function(name,
-                                            value) invisible(lapply(.subset2(nano, "listener"),
-                                                                    `opt<-`,
-                                                                    name = name,
-                                                                    value = value))
+      nano[["listener_opt"]] <- function(name, value)
+        if (missing(value))
+          lapply(.subset2(nano, "listener"), opt, name = name) else
+            invisible(lapply(.subset2(nano, "listener"), `opt<-`, name = name, value = value))
       if (isFALSE(autostart)) nano[["listener_start"]] <- function() {
         s <- start((l <- .subset2(nano, "listener"))[[length(l)]])
         if (s == 0L) rm("listener_start", envir = nano)
@@ -178,40 +168,30 @@ nano <- function(protocol = c("bus", "pair", "push", "pull", "pub", "sub",
     }
     invisible(r)
   }
-  nano[["getopt"]] <- function(name) opt(socket,
-                                         name = name)
+
   nano[["recv"]] <- function(mode = c("serial", "character", "complex", "double",
                                       "integer", "logical", "numeric", "raw"),
                              block = NULL,
-                             keep.raw = FALSE) recv(socket,
-                                                    mode = mode,
-                                                    block = block,
-                                                    keep.raw = keep.raw)
+                             keep.raw = FALSE)
+    recv(socket, mode = mode, block = block, keep.raw = keep.raw)
+
   nano[["recv_aio"]] <- function(mode = c("serial", "character", "complex", "double",
                                           "integer", "logical", "numeric", "raw"),
                                  timeout = NULL,
-                                 keep.raw = FALSE) recv_aio(socket,
-                                                            mode = mode,
-                                                            timeout = timeout,
-                                                            keep.raw = keep.raw)
-  nano[["send"]] <- function(data,
-                             mode = c("serial", "raw"),
-                             block = NULL) send(socket,
-                                                data = data,
-                                                mode = mode,
-                                                block = block)
-  nano[["send_aio"]] <- function(data,
-                                 mode = c("serial", "raw"),
-                                 timeout = NULL) send_aio(socket,
-                                                          data = data,
-                                                          mode = mode,
-                                                          timeout = timeout)
-  nano[["setopt"]] <- function(name,
-                               value) invisible(`opt<-`(socket,
-                                                        name = name,
-                                                        value = value))
-  nano[["stat"]] <- function(name) stat(socket,
-                                        name = name)
+                                 keep.raw = FALSE)
+    recv_aio(socket, mode = mode, timeout = timeout, keep.raw = keep.raw)
+
+  nano[["send"]] <- function(data, mode = c("serial", "raw"), block = NULL)
+    send(socket, data = data, mode = mode, block = block)
+
+  nano[["send_aio"]] <- function(data, mode = c("serial", "raw"), timeout = NULL)
+    send_aio(socket, data = data, mode = mode, timeout = timeout)
+
+  nano[["opt"]] <- function(name, value)
+    if (missing(value)) opt(socket, name = name) else
+      invisible(`opt<-`(socket, name = name, value = value))
+
+  nano[["stat"]] <- function(name) stat(socket, name = name)
 
   switch(attr(socket, "protocol"),
          req =,
@@ -257,7 +237,10 @@ nano <- function(protocol = c("bus", "pair", "push", "pull", "pub", "sub",
              }
              socket <<- nano[["context"]] <- context(sock2)
            }
-           nano[["survey_time"]] <- function(time) survey_time(socket, time = time)
+           nano[["survey_time"]] <- function(value)
+             if (missing(value))
+               survey_time(socket) else
+                 invisible(`survey_time<-`(socket, value = value))
          },
          respondent = {
            nano[["context_open"]] <- function() {

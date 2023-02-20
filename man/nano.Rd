@@ -57,11 +57,16 @@ This function encapsulates a Socket, Dialer and/or Listener, and its
     methods. The new dialer/listener will be attached to the object e.g. if
     the object already has a dialer, then at \code{$dialer[[2]]} etc.
 
-    Note that \code{$dialer_setopt()} and \code{$listener_setopt()} methods
+    Note that \code{$dialer_opt()} and \code{$listener_opt()} methods
     will be available once dialers/listeners are attached to the object.
-    These methods apply settings to all dialers or listeners equally. To
-    apply settings to individual dialers/listeners, access them directly
-    via \code{$dialer[[2]]} or \code{$listener[[2]]} etc.
+    These methods get or apply settings for all dialers or listeners equally.
+    To get or apply settings for individual dialers/listeners, access them
+    directly via \code{$dialer[[2]]} or \code{$listener[[2]]} etc.
+
+    The methods \code{$opt()}, and also \code{$dialer_opt()} or
+    \code{$listener_opt()} as may be applicable, will get the requested option
+    if a single argument 'name' is provided, and will set the value for the
+    option if both arguments 'name' and 'value' are provided.
 
     For Dialers or Listeners not automatically started, the
     \code{$dialer_start()} or  \code{$listener_start()} methods will be
@@ -83,7 +88,8 @@ nano
 nano$socket
 nano$listener[[1]]
 
-nano$setopt("send-timeout", 1000)
+nano$opt("send-timeout", 1500)
+nano$opt("send-timeout")
 
 nano$listen(url = "inproc://nanonextgen")
 nano$listener

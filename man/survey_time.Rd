@@ -2,23 +2,26 @@
 % Please edit documentation in R/opts.R
 \name{survey_time}
 \alias{survey_time}
-\title{Set Survey Time}
+\alias{survey_time<-}
+\title{Survey Time}
 \usage{
-survey_time(con, time)
+survey_time(con)
+
+survey_time(con) <- value
 }
 \arguments{
 \item{con}{a Socket or Context using the 'surveyor' protocol.}
 
-\item{time}{the survey timeout in ms.}
+\item{value}{integer survey timeout in milliseconds.}
 }
 \value{
-Invisibly, the passed Socket or Context.
+Integer survey timeout in milliseconds.
 }
 \description{
 For a socket or context using the surveyor protocol in a surveyor/respondent
-    pattern. Set a survey timeout in ms (remains valid for all subsequent
-    surveys). Messages received by the surveyor after the timer has ended are
-    discarded.
+    pattern. Get or set the survey timeout in milliseconds (remains valid for
+    all subsequent surveys). Messages received by the surveyor after the
+    timer has ended are discarded.
 }
 \details{
 After using this function, to start a new survey, the surveyor must:
@@ -38,7 +41,9 @@ After using this function, to start a new survey, the surveyor must:
 sur <- socket("surveyor", listen = "inproc://nanonext")
 res <- socket("respondent", dial = "inproc://nanonext")
 
-survey_time(sur, 1000)
+survey_time(sur) <- 1000
+survey_time(sur)
+
 send(sur, "reply to this survey")
 aio <- recv_aio(sur)
 

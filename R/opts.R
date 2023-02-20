@@ -331,17 +331,17 @@ subscribe <- function(con, topic = NULL)
 unsubscribe <- function(con, topic = NULL)
   invisible(.Call(rnng_subscribe, con, topic, FALSE))
 
-#' Set Survey Time
+#' Survey Time
 #'
 #' For a socket or context using the surveyor protocol in a surveyor/respondent
-#'     pattern. Set a survey timeout in ms (remains valid for all subsequent
-#'     surveys). Messages received by the surveyor after the timer has ended are
-#'     discarded.
+#'     pattern. Get or set the survey timeout in milliseconds (remains valid for
+#'     all subsequent surveys). Messages received by the surveyor after the
+#'     timer has ended are discarded.
 #'
 #' @param con a Socket or Context using the 'surveyor' protocol.
-#' @param time the survey timeout in ms.
+#' @param value integer survey timeout in milliseconds.
 #'
-#' @return Invisibly, the passed Socket or Context.
+#' @return Integer survey timeout in milliseconds.
 #'
 #' @details After using this function, to start a new survey, the surveyor must:
 #'     \itemize{
@@ -360,7 +360,9 @@ unsubscribe <- function(con, topic = NULL)
 #' sur <- socket("surveyor", listen = "inproc://nanonext")
 #' res <- socket("respondent", dial = "inproc://nanonext")
 #'
-#' survey_time(sur, 1000)
+#' survey_time(sur) <- 1000
+#' survey_time(sur)
+#'
 #' send(sur, "reply to this survey")
 #' aio <- recv_aio(sur)
 #'
@@ -374,6 +376,12 @@ unsubscribe <- function(con, topic = NULL)
 #'
 #' @export
 #'
-survey_time <- function(con, time)
-  invisible(.Call(rnng_set_opt, con, "surveyor:survey-time", time))
+survey_time <- function(con)
+  .Call(rnng_get_opt, con, "surveyor:survey-time")
+
+#' @rdname survey_time
+#' @export
+#'
+`survey_time<-` <- function(con, value)
+  .Call(rnng_set_opt, con, "surveyor:survey-time", value)
 
