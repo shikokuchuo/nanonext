@@ -220,10 +220,10 @@ nano <- function(protocol = c("bus", "pair", "push", "pull", "pub", "sub",
              }
              socket <<- nano[["context"]] <- context(sock2)
            }
-           nano[["subscribe"]] <- function(topic = NULL) subscribe(socket,
-                                                                   topic = topic)
-           nano[["unsubscribe"]] <- function(topic = NULL) unsubscribe(socket,
-                                                                       topic = topic)
+           nano[["subscribe"]] <- function(topic = NULL)
+             subscribe(socket, topic = topic)
+           nano[["unsubscribe"]] <- function(topic = NULL)
+             unsubscribe(socket, topic = topic)
          },
          surveyor = {
            nano[["context_open"]] <- function() {
@@ -237,10 +237,8 @@ nano <- function(protocol = c("bus", "pair", "push", "pull", "pub", "sub",
              }
              socket <<- nano[["context"]] <- context(sock2)
            }
-           nano[["survey_time"]] <- function(value)
-             if (missing(value))
-               survey_time(socket) else
-                 invisible(`survey_time<-`(socket, value = value))
+           nano[["survey_time"]] <- function(time)
+             survey_time(socket, time = time)
          },
          respondent = {
            nano[["context_open"]] <- function() {
