@@ -157,7 +157,7 @@ nanotest(n1$socket[state] == "closed")
 req <- nano("req", listen = "inproc://testing")
 rep <- socket("rep", dial = "inproc://testing", listen = "inproc://testing2")
 rep
-nanotest(stat(rep, "pipes") == 1)
+nanotest(stat(rep, "dialers") == 1)
 nanotest(stat(rep, "protocol") == "rep")
 nanotestn(stat(rep, "nonexistentstat"))
 nanotestnano(req$setopt("req:resend-time", 1000))

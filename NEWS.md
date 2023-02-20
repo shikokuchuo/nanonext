@@ -9,7 +9,7 @@
 *Please review the following potentially breaking changes, and only update when ready:*
 
 * Using `socket()` specifying either 'dial' or 'listen', a failure to either dial or listen (due to an invalid URL for example) will now error rather than return a socket with a warning. This is safer behaviour that should make it easier to detect bugs in user code.
-* `opt` and `opt<-` have been implemented as more ergonomic options getter and setter functions to replace `getopt()` and `setopt()`. These along with the helper function `survey_time()` now error upon invalid input etc.
+* `opt()` and `'opt<-'()` have been implemented as more ergonomic options getter and setter functions to replace `getopt()` and `setopt()`. These along with the helper function `survey_time()` now error upon invalid input etc.
 
 *Other changes:*
 

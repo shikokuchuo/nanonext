@@ -2,28 +2,41 @@
 % Please edit documentation in R/utils.R
 \name{is_aio}
 \alias{is_aio}
-\title{Is Aio}
+\alias{is_nano}
+\title{Validators}
 \usage{
 is_aio(x)
+
+is_nano(x)
 }
 \arguments{
 \item{x}{an object.}
 }
 \value{
-Logical value TRUE if 'x' is of class 'recvAio' or 'sendAio', FALSE
-    otherwise.
+Logical value TRUE or FALSE.
 }
 \description{
-Is the object an Aio (sendAio or recvAio).
+Validator functions for object types created by \{nanonext\}.
+}
+\details{
+Is the object an Aio (inheriting from class 'sendAio' or 'recvAio').
+
+    Is the object an object inheriting from class 'nano' i.e. a nanoSocket,
+    nanoContext, nanoStream, nanoListener, nanoDialer or nano Object.
 }
 \examples{
 sock <- socket(listen = "inproc://isaio")
 r <- recv_aio(sock)
 s <- send_aio(sock, "test")
-
 is_aio(r)
 is_aio(s)
-
 close(sock)
+
+s <- socket()
+is_nano(s)
+n <- nano()
+is_nano(n)
+close(s)
+n$close()
 
 }
