@@ -64,7 +64,9 @@
 <p><em>Please review the following potentially breaking changes, and only update when ready:</em></p>
 <ul><li>Using <code><a href="../reference/socket.html">socket()</a></code> specifying either ‘dial’ or ‘listen’, a failure to either dial or listen (due to an invalid URL for example) will now error rather than return a socket with a warning. This is safer behaviour that should make it easier to detect bugs in user code.</li>
 <li>
-<code><a href="../reference/opt.html">opt()</a></code> and <code><a href="../reference/opt.html">'opt&lt;-'()</a></code> have been implemented as more ergonomic options getter and setter functions to replace <code>getopt()</code> and <code>setopt()</code>. These along with the helper function <code><a href="../reference/survey_time.html">survey_time()</a></code> now error upon invalid input etc.</li>
+<code><a href="../reference/opt.html">opt()</a></code> and <code><a href="../reference/opt.html">'opt&lt;-'()</a></code> have been implemented as more ergonomic options getter and setter functions to replace <code>getopt()</code> and <code>setopt()</code>. These will error if the option does not exist / input value is invalid etc.</li>
+<li>
+<code><a href="../reference/subscribe.html">subscribe()</a></code>, <code><a href="../reference/subscribe.html">unsubscribe()</a></code> and <code><a href="../reference/survey_time.html">survey_time()</a></code> now return the Socket or Context invisibly rather than an exit code, and will error upon invalid input etc.</li>
 </ul><p><em>Other changes:</em></p>
 <ul><li>Supported R version amended to &gt;= 2.12, when person() adopted the current format used for package description.</li>
 <li>Internal performance enhancements.</li>
@@ -74,7 +76,7 @@
 <h2 class="page-header" data-toc-text="0.7.3" id="nanonext-073">nanonext 0.7.3<small>2023-01-22</small><a class="anchor" aria-label="anchor" href="#nanonext-073"></a></h2>
 <div class="section level5">
 <h5 id="new-features-0-7-3">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-7-3"></a></h5>
-<ul><li>Implements <code><a href="../reference/ncurl_session.html">ncurl_session()</a></code> and <code><a href="../reference/transact.html">transact()</a></code> providing high-performance, re-usable http(s) connections.</li>
+<ul><li>Implements <code><a href="../reference/ncurl_session.html">ncurl_session()</a></code> and <code><a href="../reference/ncurl_session.html">transact()</a></code> providing high-performance, re-usable http(s) connections.</li>
 </ul></div>
 <div class="section level5">
 <h5 id="updates-0-7-3">Updates<a class="anchor" aria-label="anchor" href="#updates-0-7-3"></a></h5>
@@ -176,7 +178,7 @@
 </ul><p><em>Other changes:</em></p>
 <ul><li>
 <code><a href="../reference/socket.html">socket()</a></code> and <code><a href="../reference/nano.html">nano()</a></code> now accept non-missing NULL ‘listen’ and ‘dial’ arguments, allowing easier programmatic use.</li>
-<li>Functions <code><a href="../reference/send.html">send()</a></code>, <code><a href="../reference/recv.html">recv()</a></code>, <code><a href="../reference/send_aio.html">send_aio()</a></code>, <code><a href="../reference/recv_aio.html">recv_aio()</a></code>, <code>setopt()</code>, <code><a href="../reference/subscribe.html">subscribe()</a></code>, <code><a href="../reference/unsubscribe.html">unsubscribe()</a></code> and <code><a href="../reference/survey_time.html">survey_time()</a></code> are no longer S3 generics for enhanced performance.</li>
+<li>Functions <code><a href="../reference/send.html">send()</a></code>, <code><a href="../reference/recv.html">recv()</a></code>, <code><a href="../reference/send_aio.html">send_aio()</a></code>, <code><a href="../reference/recv_aio.html">recv_aio()</a></code>, <code>setopt()</code>, <code><a href="../reference/subscribe.html">subscribe()</a></code>, <code><a href="../reference/subscribe.html">unsubscribe()</a></code> and <code><a href="../reference/survey_time.html">survey_time()</a></code> are no longer S3 generics for enhanced performance.</li>
 <li>
 <code><a href="../reference/messenger.html">messenger()</a></code> uses longer SHA-512 hash for authentication; fixes errors creating a connnection not being shown.</li>
 <li>The source code of ‘libnng’ v1.6.0 pre-release (722bf46) and ‘libmbedtls’ v3.2.1 now comes bundled rather than downloaded - this is much more efficient as unused portions have been stripped out.</li>
@@ -262,13 +264,13 @@
 <ul><li>
 <code>$context()</code> method added for creating new contexts from nano Objects using supported protocols (i.e. req, rep, sub, surveyor, respondent) - this replaces the <code><a href="../reference/context.html">context()</a></code> function for nano Objects.</li>
 <li>
-<code><a href="../reference/subscribe.html">subscribe()</a></code> and <code><a href="../reference/unsubscribe.html">unsubscribe()</a></code> now accept a topic of any atomic type (not just character), allowing pub/sub to be used with integer, double, logical, complex, or raw vectors.</li>
+<code><a href="../reference/subscribe.html">subscribe()</a></code> and <code><a href="../reference/subscribe.html">unsubscribe()</a></code> now accept a topic of any atomic type (not just character), allowing pub/sub to be used with integer, double, logical, complex, or raw vectors.</li>
 <li>Sending via the “pub” protocol, the topic no longer needs to be separated from the rest of the message, allowing character scalars to be sent as well as vectors.</li>
 <li>Added convenience auxiliary functions <code><a href="../reference/is_aio.html">is_nano()</a></code> and <code><a href="../reference/is_aio.html">is_aio()</a></code>.</li>
 </ul></div>
 <div class="section level5">
 <h5 id="updates-0-5-0">Updates<a class="anchor" aria-label="anchor" href="#updates-0-5-0"></a></h5>
-<ul><li>Protocol-specific helpers <code><a href="../reference/subscribe.html">subscribe()</a></code>, <code><a href="../reference/unsubscribe.html">unsubscribe()</a></code>, and <code><a href="../reference/survey_time.html">survey_time()</a></code> gain nanoContext methods.</li>
+<ul><li>Protocol-specific helpers <code><a href="../reference/subscribe.html">subscribe()</a></code>, <code><a href="../reference/subscribe.html">unsubscribe()</a></code>, and <code><a href="../reference/survey_time.html">survey_time()</a></code> gain nanoContext methods.</li>
 <li>Default protocol is now ‘bus’ when opening a new Socket or nano Object - the choices are ordered more logically.</li>
 <li>Closing a stream now strips all attributes on the object rendering it a nil external pointer - this is for safety, eliminating a potential crash if attempting to re-use a closed stream.</li>
 <li>For receives, if an error occurs in unserialisation or data conversion (e.g. mode was incorrectly specified), the received raw vector is now available at both <code>$raw</code> and <code>$data</code> if <code>keep.raw = TRUE</code>.</li>
