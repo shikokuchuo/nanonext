@@ -16,6 +16,7 @@
 
 *Other changes:*
 
+* Bundled 'libnng' source updated to v1.6.0 pre-release (8e1836f).
 * Supported R version amended to >= 2.12, when person() adopted the current format used for package description.
 * Internal performance enhancements.
 

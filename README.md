@@ -365,7 +365,7 @@ aio
 #> < recvAio >
 #>  - $data for message data
 aio$data |> str()
-#>  num [1:100000000] -0.537 -0.77 -0.209 0.48 -2.341 ...
+#>  num [1:100000000] 0.324 2.571 0.506 -1.11 -1.26 ...
 ```
 
 As `call_aio()` is blocking and will wait for completion, an alternative
@@ -526,11 +526,11 @@ ncurl("https://httpbin.org/headers")
 #>   [1] 7b 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73
 #>  [26] 74 22 3a 20 22 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22
 #>  [51] 58 2d 41 6d 7a 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31
-#>  [76] 2d 36 33 65 32 31 37 34 35 2d 35 31 62 35 35 34 35 62 33 61 64 39 62 39 31
-#> [101] 39 36 66 34 30 35 34 61 38 22 0a 20 20 7d 0a 7d 0a
+#>  [76] 2d 36 33 66 33 64 39 66 62 2d 30 33 62 36 66 65 37 33 30 31 37 62 62 32 37
+#> [101] 32 37 37 30 65 34 63 65 36 22 0a 20 20 7d 0a 7d 0a
 #> 
 #> $data
-#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-63e21745-51b5545b3ad9b9196f4054a8\"\n  }\n}\n"
+#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-63f3d9fb-03b6fe73017bb272770e4ce6\"\n  }\n}\n"
 ```
 
 For advanced use, supports additional HTTP methods such as POST or PUT.
@@ -551,13 +551,13 @@ res
 
 call_aio(res)$headers
 #> $Date
-#> [1] "Tue, 07 Feb 2023 09:17:57 GMT"
+#> [1] "Mon, 20 Feb 2023 20:37:16 GMT"
 #> 
 #> $Server
 #> [1] "gunicorn/19.9.0"
 
 res$data
-#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-63e21745-308036a25335cb8d7710eaf0\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
+#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-63f3d9fc-409464580d78cda00532a07b\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
 ```
 
 In this respect, it may be used as a performant and lightweight method
@@ -583,7 +583,7 @@ transact(sess)
 #> 
 #> $headers
 #> $headers$date
-#> [1] "Tue, 07 Feb 2023 09:17:59 GMT"
+#> [1] "Mon, 20 Feb 2023 20:37:16 GMT"
 #> 
 #> 
 #> $raw
@@ -593,15 +593,15 @@ transact(sess)
 #>  [76] 22 43 6f 6e 74 65 6e 74 2d 54 79 70 65 22 3a 20 22 61 70 70 6c 69 63 61 74
 #> [101] 69 6f 6e 2f 6a 73 6f 6e 22 2c 20 0a 20 20 20 20 22 48 6f 73 74 22 3a 20 22
 #> [126] 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22 58 2d 41 6d 7a
-#> [151] 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31 2d 36 33 65 32
-#> [176] 31 37 34 36 2d 31 61 30 66 32 36 31 37 36 35 63 34 35 35 62 36 32 35 36 61
-#> [201] 35 36 35 31 22 0a 20 20 7d 2c 20 0a 20 20 22 6f 72 69 67 69 6e 22 3a 20 22
-#> [226] 38 32 2e 31 36 33 2e 31 39 36 2e 31 31 34 22 2c 20 0a 20 20 22 75 72 6c 22
-#> [251] 3a 20 22 68 74 74 70 73 3a 2f 2f 68 74 74 70 62 69 6e 2e 6f 72 67 2f 67 65
-#> [276] 74 22 0a 7d 0a
+#> [151] 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31 2d 36 33 66 33
+#> [176] 64 39 66 63 2d 35 31 66 63 38 37 34 63 37 66 35 36 66 34 33 63 37 30 65 66
+#> [201] 66 32 33 36 22 0a 20 20 7d 2c 20 0a 20 20 22 6f 72 69 67 69 6e 22 3a 20 22
+#> [226] 31 38 35 2e 32 32 35 2e 34 35 2e 34 39 22 2c 20 0a 20 20 22 75 72 6c 22 3a
+#> [251] 20 22 68 74 74 70 73 3a 2f 2f 68 74 74 70 62 69 6e 2e 6f 72 67 2f 67 65 74
+#> [276] 22 0a 7d 0a
 #> 
 #> $data
-#> [1] "{\n  \"args\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-63e21746-1a0f261765c455b6256a5651\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"https://httpbin.org/get\"\n}\n"
+#> [1] "{\n  \"args\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-63f3d9fc-51fc874c7f56f43c70eff236\"\n  }, \n  \"origin\": \"185.225.45.49\", \n  \"url\": \"https://httpbin.org/get\"\n}\n"
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -640,10 +640,10 @@ s |> send('{"action": "subscribe", "symbols": "EURUSD"}')
 #> [1] 0
 
 s |> recv()
-#> [1] "{\"s\":\"EURUSD\",\"a\":1.07278,\"b\":1.07272,\"dc\":\"-0.0112\",\"dd\":\"-0.0001\",\"ppms\":false,\"t\":1675761480000}"
+#> [1] "{\"s\":\"EURUSD\",\"a\":1.06867,\"b\":1.0686,\"dc\":\"0.0271\",\"dd\":\"0.0003\",\"ppms\":false,\"t\":1676925442000}"
 
 s |> recv()
-#> [1] "{\"s\":\"EURUSD\",\"a\":1.07278,\"b\":1.07276,\"dc\":\"-0.0112\",\"dd\":\"-0.0001\",\"ppms\":false,\"t\":1675761480000}"
+#> [1] "{\"s\":\"EURUSD\",\"a\":1.06866,\"b\":1.06859,\"dc\":\"0.0262\",\"dd\":\"0.0003\",\"ppms\":false,\"t\":1676925442000}"
 
 close(s)
 ```
@@ -694,7 +694,7 @@ base64dec(base64enc("hello world!"))
 
 Installation from source requires ‘libnng’ \>= v1.6.0 and ‘libmbedtls’
 \>= 2 - suitable installations are automatically detected - or else
-‘cmake’ to compile ‘libnng’ v1.6.0 pre-release (539e559) and
+‘cmake’ to compile ‘libnng’ v1.6.0 pre-release (8e1836f) and
 ‘libmbedtls’ v3.2.1 included within the package sources.
 
 Note: ‘libnng’ v1.6.0 is not yet available in system repositories;
@@ -714,11 +714,11 @@ OpenCSW - refer to the ‘cmake’ website for the latest source file
 
 #### Windows
 
-For R \>= 4.2 using the ‘rtools42’ toolchain, ‘libnng’ v1.6.0 (539e559)
+For R \>= 4.2 using the ‘rtools42’ toolchain, ‘libnng’ v1.6.0 (8e1836f)
 and ‘libmbedtls’ v3.2.1 will be automatically compiled from the package
 sources during installation.
 
-For previous R versions, pre-compiled ‘libnng’ v1.6.0 (539e559) and
+For previous R versions, pre-compiled ‘libnng’ v1.6.0 (8e1836f) and
 ‘libmbedtls’ v3.2.1 libraries are downloaded and used for installation
 instead.
 
