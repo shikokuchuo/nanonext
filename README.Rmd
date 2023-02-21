@@ -62,8 +62,9 @@ Web utilities:
 8. [ncurl: (Async) HTTP Client](#ncurl-async-http-client)
 9. [stream: Websocket Client](#stream-websocket-client)
 10. [Cryptographic Hashing](#cryptographic-hashing)
-11. [Building from Source](#building-from-source)
-12. [Links](#links)
+11. [Options and Statistics](#options-and-statistics)
+12. [Building from Source](#building-from-source)
+13. [Links](#links)
 
 ### Installation
 
@@ -374,7 +375,7 @@ res1 <- socket("respondent", dial = "inproc://nanoservice")
 res2 <- socket("respondent", dial = "inproc://nanoservice")
 
 # sur sets a survey timeout, applying to this and subsequent surveys
-sur |> survey_time(500)
+sur |> survey_time(value = 500)
 
 # sur sends a message and then requests 2 async receives
 sur |> send("service check")
@@ -506,6 +507,50 @@ Optimised functions for base64 encoding and decoding from the 'Mbed TLS' library
 base64enc("hello world!")
 
 base64dec(base64enc("hello world!"))
+
+```
+
+[&laquo; Back to ToC](#table-of-contents)
+
+### Options and Statistics
+
+Use `opt()` and `'opt<-'()` to get and set options on a Socket, Context, Stream, Listener or Dialer.
+
+See the function documentation page for a list of common options.
+
+Once a dialer or listener has started, it is not generally possible to change its configuration. In this case, the dialer or listener should be created specifying 'autostart = FALSE'.
+
+```{r opt}
+s <- socket(listen = "inproc://options", autostart = FALSE)
+
+# no maximum message size
+opt(s$listener[[1]], "recv-size-max")
+
+# enfore maximum message size to protect against denial-of-service type attacks
+opt(s$listener[[1]], "recv-size-max") <- 8192L
+
+opt(s$listener[[1]], "recv-size-max")
+
+start(s$listener[[1]])
+
+```
+
+Similarly `stat()` has been implemented as the interface to NNG's statistics framework.
+
+This can be used on a Socket, Listener or Dialer to query useful statistics such as the total number of connection attempts, the current number of connections etc.
+
+See the function documentation page for available statistics.
+
+```{r stat}
+s <- socket(listen = "inproc://stat")
+
+# no active connections (pipes)
+stat(s, "pipes")
+
+s <- socket(dial = "inproc://stat")
+
+# one now that the dialer has conneceted
+stat(s, "pipes")
 
 ```
 
