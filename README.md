@@ -366,7 +366,7 @@ aio
 #> < recvAio >
 #>  - $data for message data
 aio$data |> str()
-#>  num [1:100000000] 0.3962 -1.7377 -0.976 0.7441 -0.0337 ...
+#>  num [1:100000000] 0.9466 -0.1645 -0.0128 0.3377 -1.2516 ...
 ```
 
 As `call_aio()` is blocking and will wait for completion, an alternative
@@ -527,11 +527,11 @@ ncurl("https://httpbin.org/headers")
 #>   [1] 7b 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73
 #>  [26] 74 22 3a 20 22 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22
 #>  [51] 58 2d 41 6d 7a 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31
-#>  [76] 2d 36 33 66 34 61 64 35 37 2d 37 63 34 30 38 65 63 35 31 32 64 61 39 34 36
-#> [101] 66 31 32 33 35 35 36 30 33 22 0a 20 20 7d 0a 7d 0a
+#>  [76] 2d 36 33 66 34 62 30 35 64 2d 37 38 36 61 39 34 39 30 36 62 66 61 37 36 33
+#> [101] 65 30 31 36 32 31 35 39 62 22 0a 20 20 7d 0a 7d 0a
 #> 
 #> $data
-#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-63f4ad57-7c408ec512da946f12355603\"\n  }\n}\n"
+#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-63f4b05d-786a94906bfa763e0162159b\"\n  }\n}\n"
 ```
 
 For advanced use, supports additional HTTP methods such as POST or PUT.
@@ -552,13 +552,13 @@ res
 
 call_aio(res)$headers
 #> $Date
-#> [1] "Tue, 21 Feb 2023 11:39:04 GMT"
+#> [1] "Tue, 21 Feb 2023 11:51:58 GMT"
 #> 
 #> $Server
 #> [1] "gunicorn/19.9.0"
 
 res$data
-#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-63f4ad58-3ff6eaad7ed738947f55c0e2\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
+#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-63f4b05e-325bcf472a9b8be378b0d50f\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
 ```
 
 In this respect, it may be used as a performant and lightweight method
@@ -584,7 +584,7 @@ transact(sess)
 #> 
 #> $headers
 #> $headers$date
-#> [1] "Tue, 21 Feb 2023 11:39:04 GMT"
+#> [1] "Tue, 21 Feb 2023 11:51:58 GMT"
 #> 
 #> 
 #> $raw
@@ -595,14 +595,14 @@ transact(sess)
 #> [101] 69 6f 6e 2f 6a 73 6f 6e 22 2c 20 0a 20 20 20 20 22 48 6f 73 74 22 3a 20 22
 #> [126] 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22 58 2d 41 6d 7a
 #> [151] 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31 2d 36 33 66 34
-#> [176] 61 64 35 38 2d 36 34 32 37 36 34 33 63 30 35 36 38 31 33 64 62 35 63 61 30
-#> [201] 64 34 65 36 22 0a 20 20 7d 2c 20 0a 20 20 22 6f 72 69 67 69 6e 22 3a 20 22
-#> [226] 38 32 2e 31 36 33 2e 31 39 36 2e 31 31 34 22 2c 20 0a 20 20 22 75 72 6c 22
+#> [176] 62 30 35 65 2d 30 38 31 66 61 37 37 38 35 33 65 39 37 64 63 66 33 33 34 39
+#> [201] 63 34 65 36 22 0a 20 20 7d 2c 20 0a 20 20 22 6f 72 69 67 69 6e 22 3a 20 22
+#> [226] 38 30 2e 31 36 39 2e 31 30 33 2e 32 31 38 22 2c 20 0a 20 20 22 75 72 6c 22
 #> [251] 3a 20 22 68 74 74 70 73 3a 2f 2f 68 74 74 70 62 69 6e 2e 6f 72 67 2f 67 65
 #> [276] 74 22 0a 7d 0a
 #> 
 #> $data
-#> [1] "{\n  \"args\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-63f4ad58-6427643c056813db5ca0d4e6\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"https://httpbin.org/get\"\n}\n"
+#> [1] "{\n  \"args\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-63f4b05e-081fa77853e97dcf3349c4e6\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"https://httpbin.org/get\"\n}\n"
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -641,10 +641,10 @@ s |> send('{"action": "subscribe", "symbols": "EURUSD"}')
 #> [1] 0
 
 s |> recv()
-#> [1] "{\"s\":\"EURUSD\",\"a\":1.06588,\"b\":1.06581,\"dc\":\"-0.2167\",\"dd\":\"-0.0023\",\"ppms\":false,\"t\":1676979547000}"
+#> [1] "{\"s\":\"EURUSD\",\"a\":1.06568,\"b\":1.06561,\"dc\":\"-0.2355\",\"dd\":\"-0.0025\",\"ppms\":false,\"t\":1676980320000}"
 
 s |> recv()
-#> [1] "{\"s\":\"EURUSD\",\"a\":1.06587,\"b\":1.06585,\"dc\":\"-0.2177\",\"dd\":\"-0.0023\",\"ppms\":false,\"t\":1676979549000}"
+#> [1] "{\"s\":\"EURUSD\",\"a\":1.06569,\"b\":1.06567,\"dc\":\"-0.2346\",\"dd\":\"-0.0025\",\"ppms\":false,\"t\":1676980321000}"
 
 close(s)
 ```
@@ -732,7 +732,7 @@ s <- socket(listen = "inproc://stat")
 stat(s, "pipes")
 #> [1] 0
 
-s <- socket(dial = "inproc://stat")
+s1 <- socket(dial = "inproc://stat")
 
 # one now that the dialer has conneceted
 stat(s, "pipes")

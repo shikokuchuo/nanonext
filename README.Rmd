@@ -547,7 +547,7 @@ s <- socket(listen = "inproc://stat")
 # no active connections (pipes)
 stat(s, "pipes")
 
-s <- socket(dial = "inproc://stat")
+s1 <- socket(dial = "inproc://stat")
 
 # one now that the dialer has conneceted
 stat(s, "pipes")
