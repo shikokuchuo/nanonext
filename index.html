@@ -130,6 +130,7 @@
 <li><a href="#ncurl-async-http-client">ncurl: (Async) HTTP Client</a></li>
 <li><a href="#stream-websocket-client">stream: Websocket Client</a></li>
 <li><a href="#cryptographic-hashing">Cryptographic Hashing</a></li>
+<li><a href="#options-and-statistics">Options and Statistics</a></li>
 <li><a href="#building-from-source">Building from Source</a></li>
 <li><a href="#links">Links</a></li>
 </ol>
@@ -321,7 +322,7 @@
 <span><span class="co">#&gt; &lt; recvAio &gt;</span></span>
 <span><span class="co">#&gt;  - $data for message data</span></span>
 <span><span class="va">aio</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] 0.324 2.571 0.506 -1.11 -1.26 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] 0.3962 -1.7377 -0.976 0.7441 -0.0337 ...</span></span></code></pre></div>
 <p>As <code><a href="reference/call_aio.html">call_aio()</a></code> is blocking and will wait for completion, an alternative is to query <code>aio$data</code> directly. This will return an ‘unresolved’ logical NA value if the calculation is yet to complete.</p>
 <p>In this example the calculation is returned, but other operations may reside entirely on the server side, for example writing data to disk.</p>
 <p>In such a case, calling or querying the value confirms that the operation has completed, and provides the return value of the function, which may typically be NULL or an exit code.</p>
@@ -394,7 +395,7 @@
 <span><span class="va">res2</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/socket.html">socket</a></span><span class="op">(</span><span class="st">"respondent"</span>, dial <span class="op">=</span> <span class="st">"inproc://nanoservice"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># sur sets a survey timeout, applying to this and subsequent surveys</span></span>
-<span><span class="va">sur</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/survey_time.html">survey_time</a></span><span class="op">(</span><span class="fl">500</span><span class="op">)</span></span>
+<span><span class="va">sur</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/survey_time.html">survey_time</a></span><span class="op">(</span>value <span class="op">=</span> <span class="fl">500</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># sur sends a message and then requests 2 async receives</span></span>
 <span><span class="va">sur</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/send.html">send</a></span><span class="op">(</span><span class="st">"service check"</span><span class="op">)</span></span>
@@ -446,11 +447,11 @@
 <span><span class="co">#&gt;   [1] 7b 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73</span></span>
 <span><span class="co">#&gt;  [26] 74 22 3a 20 22 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22</span></span>
 <span><span class="co">#&gt;  [51] 58 2d 41 6d 7a 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31</span></span>
-<span><span class="co">#&gt;  [76] 2d 36 33 66 33 64 39 66 62 2d 30 33 62 36 66 65 37 33 30 31 37 62 62 32 37</span></span>
-<span><span class="co">#&gt; [101] 32 37 37 30 65 34 63 65 36 22 0a 20 20 7d 0a 7d 0a</span></span>
+<span><span class="co">#&gt;  [76] 2d 36 33 66 34 61 64 35 37 2d 37 63 34 30 38 65 63 35 31 32 64 61 39 34 36</span></span>
+<span><span class="co">#&gt; [101] 66 31 32 33 35 35 36 30 33 22 0a 20 20 7d 0a 7d 0a</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $data</span></span>
-<span><span class="co">#&gt; [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-63f3d9fb-03b6fe73017bb272770e4ce6\"\n  }\n}\n"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-63f4ad57-7c408ec512da946f12355603\"\n  }\n}\n"</span></span></code></pre></div>
 <p>For advanced use, supports additional HTTP methods such as POST or PUT.</p>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ncurl.html">ncurl</a></span><span class="op">(</span><span class="st">"http://httpbin.org/post"</span>,</span>
@@ -468,13 +469,13 @@
 <span></span>
 <span><span class="fu"><a href="reference/call_aio.html">call_aio</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span><span class="op">$</span><span class="va">headers</span></span>
 <span><span class="co">#&gt; $Date</span></span>
-<span><span class="co">#&gt; [1] "Mon, 20 Feb 2023 20:37:16 GMT"</span></span>
+<span><span class="co">#&gt; [1] "Tue, 21 Feb 2023 11:39:04 GMT"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $Server</span></span>
 <span><span class="co">#&gt; [1] "gunicorn/19.9.0"</span></span>
 <span></span>
 <span><span class="va">res</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt; [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-63f3d9fc-409464580d78cda00532a07b\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-63f4ad58-3ff6eaad7ed738947f55c0e2\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"</span></span></code></pre></div>
 <p>In this respect, it may be used as a performant and lightweight method for making REST API requests.</p>
 <p><code><a href="reference/ncurl_session.html">ncurl_session()</a></code> creates a re-usable open connection and presents a much faster and more efficient solution for repeated polling of an API endpoint. <code><a href="reference/ncurl_session.html">transact()</a></code> is then used to request data multiple times as required. This method allows a polling frequency that exceeds a server’s new connection limits, where this is permitted.</p>
 <div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
@@ -491,7 +492,7 @@
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $headers</span></span>
 <span><span class="co">#&gt; $headers$date</span></span>
-<span><span class="co">#&gt; [1] "Mon, 20 Feb 2023 20:37:16 GMT"</span></span>
+<span><span class="co">#&gt; [1] "Tue, 21 Feb 2023 11:39:04 GMT"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $raw</span></span>
@@ -501,15 +502,15 @@
 <span><span class="co">#&gt;  [76] 22 43 6f 6e 74 65 6e 74 2d 54 79 70 65 22 3a 20 22 61 70 70 6c 69 63 61 74</span></span>
 <span><span class="co">#&gt; [101] 69 6f 6e 2f 6a 73 6f 6e 22 2c 20 0a 20 20 20 20 22 48 6f 73 74 22 3a 20 22</span></span>
 <span><span class="co">#&gt; [126] 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22 58 2d 41 6d 7a</span></span>
-<span><span class="co">#&gt; [151] 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31 2d 36 33 66 33</span></span>
-<span><span class="co">#&gt; [176] 64 39 66 63 2d 35 31 66 63 38 37 34 63 37 66 35 36 66 34 33 63 37 30 65 66</span></span>
-<span><span class="co">#&gt; [201] 66 32 33 36 22 0a 20 20 7d 2c 20 0a 20 20 22 6f 72 69 67 69 6e 22 3a 20 22</span></span>
-<span><span class="co">#&gt; [226] 31 38 35 2e 32 32 35 2e 34 35 2e 34 39 22 2c 20 0a 20 20 22 75 72 6c 22 3a</span></span>
-<span><span class="co">#&gt; [251] 20 22 68 74 74 70 73 3a 2f 2f 68 74 74 70 62 69 6e 2e 6f 72 67 2f 67 65 74</span></span>
-<span><span class="co">#&gt; [276] 22 0a 7d 0a</span></span>
+<span><span class="co">#&gt; [151] 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31 2d 36 33 66 34</span></span>
+<span><span class="co">#&gt; [176] 61 64 35 38 2d 36 34 32 37 36 34 33 63 30 35 36 38 31 33 64 62 35 63 61 30</span></span>
+<span><span class="co">#&gt; [201] 64 34 65 36 22 0a 20 20 7d 2c 20 0a 20 20 22 6f 72 69 67 69 6e 22 3a 20 22</span></span>
+<span><span class="co">#&gt; [226] 38 32 2e 31 36 33 2e 31 39 36 2e 31 31 34 22 2c 20 0a 20 20 22 75 72 6c 22</span></span>
+<span><span class="co">#&gt; [251] 3a 20 22 68 74 74 70 73 3a 2f 2f 68 74 74 70 62 69 6e 2e 6f 72 67 2f 67 65</span></span>
+<span><span class="co">#&gt; [276] 74 22 0a 7d 0a</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $data</span></span>
-<span><span class="co">#&gt; [1] "{\n  \"args\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-63f3d9fc-51fc874c7f56f43c70eff236\"\n  }, \n  \"origin\": \"185.225.45.49\", \n  \"url\": \"https://httpbin.org/get\"\n}\n"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "{\n  \"args\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-63f4ad58-6427643c056813db5ca0d4e6\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"https://httpbin.org/get\"\n}\n"</span></span></code></pre></div>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
 <div class="section level3">
@@ -535,10 +536,10 @@
 <span><span class="co">#&gt; [1] 0</span></span>
 <span></span>
 <span><span class="va">s</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/recv.html">recv</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "{\"s\":\"EURUSD\",\"a\":1.06867,\"b\":1.0686,\"dc\":\"0.0271\",\"dd\":\"0.0003\",\"ppms\":false,\"t\":1676925442000}"</span></span>
+<span><span class="co">#&gt; [1] "{\"s\":\"EURUSD\",\"a\":1.06588,\"b\":1.06581,\"dc\":\"-0.2167\",\"dd\":\"-0.0023\",\"ppms\":false,\"t\":1676979547000}"</span></span>
 <span></span>
 <span><span class="va">s</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/recv.html">recv</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "{\"s\":\"EURUSD\",\"a\":1.06866,\"b\":1.06859,\"dc\":\"0.0262\",\"dd\":\"0.0003\",\"ppms\":false,\"t\":1676925442000}"</span></span>
+<span><span class="co">#&gt; [1] "{\"s\":\"EURUSD\",\"a\":1.06587,\"b\":1.06585,\"dc\":\"-0.2177\",\"dd\":\"-0.0023\",\"ppms\":false,\"t\":1676979549000}"</span></span>
 <span></span>
 <span><span class="fu"><a href="reference/close.html">close</a></span><span class="op">(</span><span class="va">s</span><span class="op">)</span></span></code></pre></div>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
@@ -566,6 +567,43 @@
 <span></span>
 <span><span class="fu"><a href="reference/base64enc.html">base64dec</a></span><span class="op">(</span><span class="fu"><a href="reference/base64enc.html">base64enc</a></span><span class="op">(</span><span class="st">"hello world!"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "hello world!"</span></span></code></pre></div>
+<p><a href="#table-of-contents">« Back to ToC</a></p>
+</div>
+<div class="section level3">
+<h3 id="options-and-statistics">Options and Statistics<a class="anchor" aria-label="anchor" href="#options-and-statistics"></a>
+</h3>
+<p>Use <code><a href="reference/opt.html">opt()</a></code> and <code><a href="reference/opt.html">'opt&lt;-'()</a></code> to get and set options on a Socket, Context, Stream, Listener or Dialer.</p>
+<p>See the function documentation page for a list of common options.</p>
+<p>Once a dialer or listener has started, it is not generally possible to change its configuration. In this case, the dialer or listener should be created specifying ‘autostart = FALSE’.</p>
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/socket.html">socket</a></span><span class="op">(</span>listen <span class="op">=</span> <span class="st">"inproc://options"</span>, autostart <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># no maximum message size</span></span>
+<span><span class="fu"><a href="reference/opt.html">opt</a></span><span class="op">(</span><span class="va">s</span><span class="op">$</span><span class="va">listener</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="st">"recv-size-max"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 0</span></span>
+<span></span>
+<span><span class="co"># enfore maximum message size to protect against denial-of-service type attacks</span></span>
+<span><span class="fu"><a href="reference/opt.html">opt</a></span><span class="op">(</span><span class="va">s</span><span class="op">$</span><span class="va">listener</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="st">"recv-size-max"</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fl">8192L</span></span>
+<span></span>
+<span><span class="fu"><a href="reference/opt.html">opt</a></span><span class="op">(</span><span class="va">s</span><span class="op">$</span><span class="va">listener</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="st">"recv-size-max"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 8192</span></span>
+<span></span>
+<span><span class="fu"><a href="reference/start.html">start</a></span><span class="op">(</span><span class="va">s</span><span class="op">$</span><span class="va">listener</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
+<p>Similarly <code><a href="reference/stat.html">stat()</a></code> has been implemented as the interface to NNG’s statistics framework.</p>
+<p>This can be used on a Socket, Listener or Dialer to query useful statistics such as the total number of connection attempts, the current number of connections etc.</p>
+<p>See the function documentation page for available statistics.</p>
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/socket.html">socket</a></span><span class="op">(</span>listen <span class="op">=</span> <span class="st">"inproc://stat"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># no active connections (pipes)</span></span>
+<span><span class="fu"><a href="reference/stat.html">stat</a></span><span class="op">(</span><span class="va">s</span>, <span class="st">"pipes"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 0</span></span>
+<span></span>
+<span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/socket.html">socket</a></span><span class="op">(</span>dial <span class="op">=</span> <span class="st">"inproc://stat"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># one now that the dialer has conneceted</span></span>
+<span><span class="fu"><a href="reference/stat.html">stat</a></span><span class="op">(</span><span class="va">s</span>, <span class="st">"pipes"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 1</span></span></code></pre></div>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
 <div class="section level3">
