@@ -63,8 +63,9 @@ Web utilities:
 9. [stream: Websocket Client](#stream-websocket-client)
 10. [Cryptographic Hashing](#cryptographic-hashing)
 11. [Options and Statistics](#options-and-statistics)
-12. [Building from Source](#building-from-source)
-13. [Links](#links)
+12. [Utility Functions](#utility-functions)
+13. [Building from Source](#building-from-source)
+14. [Links](#links)
 
 ### Installation
 
@@ -551,6 +552,48 @@ s1 <- socket(dial = "inproc://stat")
 
 # one now that the dialer has conneceted
 stat(s, "pipes")
+
+```
+
+[&laquo; Back to ToC](#table-of-contents)
+
+### Utility Functions
+
+Included in nanonext are various high-performance utilities that can be useful for building applications. These directly access functionality from the NNG library or otherwise contained in C code.
+
+Timing:
+
+```{r timeutils}
+# monotonically-increasing clock (in milliseconds)
+mclock()
+
+# uninterruptible sleep function (in milliseconds)
+msleep(1000)
+
+mclock()
+```
+
+System:
+
+```{r sysutils}
+# strictly not for statistical analysis, but suitable for system functions such as cryptographic key generation
+random()
+random(5)
+
+```
+
+URLs:
+
+```{r url}
+# parse a RFC 3986 compliant URL
+parse_url("https://u:p@w3.org:80/p?q=i#a")
+```
+
+HTTP status codes:
+
+```{r httpstatus}
+# provides an explanation for HTTP response status codes per RFC 9110
+status_code(401)
 
 ```
 

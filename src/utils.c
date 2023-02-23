@@ -135,6 +135,7 @@ SEXP rnng_parse_url(SEXP url) {
   SET_STRING_ELT(out, 7, urlp->u_query == NULL ? Rf_mkChar("") : Rf_mkChar(urlp->u_query));
   SET_STRING_ELT(out, 8, urlp->u_fragment == NULL ? Rf_mkChar("") : Rf_mkChar(urlp->u_fragment));
   SET_STRING_ELT(out, 9, Rf_mkChar(urlp->u_requri));
+  nng_url_free(urlp);
 
   UNPROTECT(1);
   return out;
