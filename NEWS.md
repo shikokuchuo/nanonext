@@ -1,8 +1,9 @@
-# nanonext 0.7.3.9002 (development)
+# nanonext 0.7.3.9003 (development)
 
 #### New Features
 
 * Implements `stat()`, an interface to the NNG statistics framework. Can be used to return the number of currently connected pipes for a socket, connection attempts for a listener/dialer etc.
+* Implements `parse_url()`, which parses a URL as per NNG. Provides a fast and standardised method for obtaining parts of a URL string.
 
 #### Updates
 

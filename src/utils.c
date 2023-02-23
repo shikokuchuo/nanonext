@@ -111,6 +111,36 @@ SEXP rnng_random(SEXP n) {
 
 }
 
+SEXP rnng_parse_url(SEXP url) {
+
+  const char *up = CHAR(STRING_ELT(url, 0));
+  nng_url *urlp;
+  int xc;
+
+  xc = nng_url_parse(&urlp, up);
+  if (xc)
+    ERROR_OUT(xc);
+
+  SEXP out;
+  const char *names[] = {"rawurl", "scheme", "userinfo", "host", "hostname",
+                         "port", "path", "query", "fragment", "requri", ""};
+  PROTECT(out = Rf_mkNamed(STRSXP, names));
+  SET_STRING_ELT(out, 0, Rf_mkChar(urlp->u_rawurl));
+  SET_STRING_ELT(out, 1, Rf_mkChar(urlp->u_scheme));
+  SET_STRING_ELT(out, 2, urlp->u_userinfo == NULL ? Rf_mkChar("") : Rf_mkChar(urlp->u_userinfo));
+  SET_STRING_ELT(out, 3, Rf_mkChar(urlp->u_host));
+  SET_STRING_ELT(out, 4, Rf_mkChar(urlp->u_hostname));
+  SET_STRING_ELT(out, 5, Rf_mkChar(urlp->u_port));
+  SET_STRING_ELT(out, 6, Rf_mkChar(urlp->u_path));
+  SET_STRING_ELT(out, 7, urlp->u_query == NULL ? Rf_mkChar("") : Rf_mkChar(urlp->u_query));
+  SET_STRING_ELT(out, 8, urlp->u_fragment == NULL ? Rf_mkChar("") : Rf_mkChar(urlp->u_fragment));
+  SET_STRING_ELT(out, 9, Rf_mkChar(urlp->u_requri));
+
+  UNPROTECT(1);
+  return out;
+
+}
+
 SEXP rnng_device(SEXP s1, SEXP s2) {
 
   if (R_ExternalPtrTag(s1) != nano_SocketSymbol)

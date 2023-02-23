@@ -112,6 +112,39 @@ msleep <- function(msec) invisible(.Call(rnng_sleep, msec))
 #'
 random <- function(n = 1L) .Call(rnng_random, n)
 
+#' Parse URL
+#'
+#' Parses a character string containing an RFC 3986 compliant URL as per NNG.
+#'
+#' @param url character string containing a URL.
+#'
+#' @return A named character vector of length 10, comprising: \itemize{
+#'     \item{\code{rawurl}} {- the unparsed URL string.}
+#'     \item{\code{scheme}} {- the URL scheme, such as "http" or "inproc"
+#'     (always lower case).}
+#'     \item{\code{userinfo}} {- the username and password if supplied in the
+#'     URL string.}
+#'     \item{\code{host}} {- the full host part of the URL, including the port
+#'     if present (separated by a colon).}
+#'     \item{\code{hostname}} {- the name of the host.}
+#'     \item{\code{port}} {- the port (if not specified, the default port if
+#'     defined by the scheme).}
+#'     \item{\code{path}} {- the path, typically used with HTTP or WebSocket.}
+#'     \item{\code{query}} {- the query info (typically following ? in the URL).}
+#'     \item{\code{fragment}} {- used for specifying an anchor, the part after #
+#'     in a URL.}
+#'     \item{\code{requri}} {- the full Request-URI (path[?query][#fragment]).}
+#'     }
+#'     Values that cannot be determined are represented by an empty string \code{''}.
+#'
+#' @examples
+#' parse_url("https://user:password@w3.org:8080/type/path?q=info#intro")
+#' parse_url("tcp://192.168.0.2:5555")
+#'
+#' @export
+#'
+parse_url <- function(url) .Call(rnng_parse_url, url)
+
 #' Create Device
 #'
 #' Creates a device which is a socket forwarder or proxy. Provides for improved
