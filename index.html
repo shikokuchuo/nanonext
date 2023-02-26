@@ -131,7 +131,6 @@
 <li><a href="#stream-websocket-client">stream: Websocket Client</a></li>
 <li><a href="#cryptographic-hashing">Cryptographic Hashing</a></li>
 <li><a href="#options-and-statistics">Options and Statistics</a></li>
-<li><a href="#utility-functions">Utility Functions</a></li>
 <li><a href="#building-from-source">Building from Source</a></li>
 <li><a href="#links">Links</a></li>
 </ol>
@@ -323,7 +322,7 @@
 <span><span class="co">#&gt; &lt; recvAio &gt;</span></span>
 <span><span class="co">#&gt;  - $data for message data</span></span>
 <span><span class="va">aio</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] -2.158 0.903 1.617 0.176 -0.417 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] -0.339 -0.404 0.341 -0.716 2.379 ...</span></span></code></pre></div>
 <p>As <code><a href="reference/call_aio.html">call_aio()</a></code> is blocking and will wait for completion, an alternative is to query <code>aio$data</code> directly. This will return an ‘unresolved’ logical NA value if the calculation is yet to complete.</p>
 <p>In this example the calculation is returned, but other operations may reside entirely on the server side, for example writing data to disk.</p>
 <p>In such a case, calling or querying the value confirms that the operation has completed, and provides the return value of the function, which may typically be NULL or an exit code.</p>
@@ -380,6 +379,10 @@
 <span><span class="co">#&gt; [1] 0</span></span>
 <span><span class="va">sub</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/recv.html">recv</a></span><span class="op">(</span>mode <span class="op">=</span> <span class="st">"double"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1]  1 10 10 20</span></span>
+<span><span class="va">pub</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/send.html">send</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">10</span>, <span class="fl">10</span>, <span class="fl">20</span><span class="op">)</span>, mode <span class="op">=</span> <span class="st">"raw"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 0</span></span>
+<span><span class="va">sub</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/recv.html">recv</a></span><span class="op">(</span>mode <span class="op">=</span> <span class="st">"double"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; 'errorValue' int 8 | Try again</span></span>
 <span></span>
 <span><span class="fu"><a href="reference/close.html">close</a></span><span class="op">(</span><span class="va">pub</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/close.html">close</a></span><span class="op">(</span><span class="va">sub</span><span class="op">)</span></span></code></pre></div>
@@ -420,14 +423,15 @@
 <span><span class="co">#&gt; 'unresolved' logi NA</span></span>
 <span></span>
 <span><span class="co"># after the survey expires, the second resolves into a timeout error</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/Sys.sleep.html" class="external-link">Sys.sleep</a></span><span class="op">(</span><span class="fl">0.5</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/msleep.html">msleep</a></span><span class="op">(</span><span class="fl">500</span><span class="op">)</span></span>
 <span><span class="va">aio2</span><span class="op">$</span><span class="va">data</span></span>
 <span><span class="co">#&gt; 'errorValue' int 5 | Timed out</span></span>
 <span></span>
 <span><span class="fu"><a href="reference/close.html">close</a></span><span class="op">(</span><span class="va">sur</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/close.html">close</a></span><span class="op">(</span><span class="va">res1</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/close.html">close</a></span><span class="op">(</span><span class="va">res2</span><span class="op">)</span></span></code></pre></div>
-<p>Above it can be seen that the final value resolves into a timeout, which is an integer 5 classed as ‘errorValue’. All integer error codes are classed as ‘errorValue’ to be easily distinguishable from integer message values.</p>
+<p>Above, <code><a href="reference/msleep.html">msleep()</a></code> is an uninterruptible sleep function (utilising the NNG library), taking a time in milliseconds.</p>
+<p>It can be seen that the final value resolves into a timeout, which is an integer 5 classed as ‘errorValue’. All integer error codes are classed as ‘errorValue’ to be easily distinguishable from integer message values.</p>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
 <div class="section level3">
@@ -448,11 +452,11 @@
 <span><span class="co">#&gt;   [1] 7b 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73</span></span>
 <span><span class="co">#&gt;  [26] 74 22 3a 20 22 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22</span></span>
 <span><span class="co">#&gt;  [51] 58 2d 41 6d 7a 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31</span></span>
-<span><span class="co">#&gt;  [76] 2d 36 33 66 37 64 31 39 64 2d 34 63 38 33 34 35 65 37 32 31 34 61 35 34 63</span></span>
-<span><span class="co">#&gt; [101] 31 35 33 33 66 61 32 34 33 22 0a 20 20 7d 0a 7d 0a</span></span>
+<span><span class="co">#&gt;  [76] 2d 36 33 66 62 34 37 66 64 2d 32 62 32 63 37 39 61 38 30 63 38 65 62 62 31</span></span>
+<span><span class="co">#&gt; [101] 39 33 64 62 30 63 33 32 33 22 0a 20 20 7d 0a 7d 0a</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $data</span></span>
-<span><span class="co">#&gt; [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-63f7d19d-4c8345e7214a54c1533fa243\"\n  }\n}\n"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-63fb47fd-2b2c79a80c8ebb193db0c323\"\n  }\n}\n"</span></span></code></pre></div>
 <p>For advanced use, supports additional HTTP methods such as POST or PUT.</p>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ncurl.html">ncurl</a></span><span class="op">(</span><span class="st">"http://httpbin.org/post"</span>,</span>
@@ -470,13 +474,13 @@
 <span></span>
 <span><span class="fu"><a href="reference/call_aio.html">call_aio</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span><span class="op">$</span><span class="va">headers</span></span>
 <span><span class="co">#&gt; $Date</span></span>
-<span><span class="co">#&gt; [1] "Thu, 23 Feb 2023 20:50:37 GMT"</span></span>
+<span><span class="co">#&gt; [1] "Sun, 26 Feb 2023 11:52:30 GMT"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $Server</span></span>
 <span><span class="co">#&gt; [1] "gunicorn/19.9.0"</span></span>
 <span></span>
 <span><span class="va">res</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt; [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-63f7d19d-542872216beb266f6bd8ceb8\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-63fb47fd-0e4c0ec16aabbd2c781ec7bc\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"</span></span></code></pre></div>
 <p>In this respect, it may be used as a performant and lightweight method for making REST API requests.</p>
 <p><code><a href="reference/ncurl_session.html">ncurl_session()</a></code> creates a re-usable open connection and presents a much faster and more efficient solution for repeated polling of an API endpoint. <code><a href="reference/ncurl_session.html">transact()</a></code> is then used to request data multiple times as required. This method allows a polling frequency that exceeds a server’s new connection limits, where this is permitted.</p>
 <div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
@@ -493,7 +497,7 @@
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $headers</span></span>
 <span><span class="co">#&gt; $headers$date</span></span>
-<span><span class="co">#&gt; [1] "Thu, 23 Feb 2023 20:50:38 GMT"</span></span>
+<span><span class="co">#&gt; [1] "Sun, 26 Feb 2023 11:52:30 GMT"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $raw</span></span>
@@ -503,15 +507,15 @@
 <span><span class="co">#&gt;  [76] 22 43 6f 6e 74 65 6e 74 2d 54 79 70 65 22 3a 20 22 61 70 70 6c 69 63 61 74</span></span>
 <span><span class="co">#&gt; [101] 69 6f 6e 2f 6a 73 6f 6e 22 2c 20 0a 20 20 20 20 22 48 6f 73 74 22 3a 20 22</span></span>
 <span><span class="co">#&gt; [126] 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22 58 2d 41 6d 7a</span></span>
-<span><span class="co">#&gt; [151] 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31 2d 36 33 66 37</span></span>
-<span><span class="co">#&gt; [176] 64 31 39 65 2d 32 35 37 33 35 37 62 64 33 63 66 34 33 37 36 35 33 61 35 66</span></span>
-<span><span class="co">#&gt; [201] 30 61 65 33 22 0a 20 20 7d 2c 20 0a 20 20 22 6f 72 69 67 69 6e 22 3a 20 22</span></span>
-<span><span class="co">#&gt; [226] 31 38 35 2e 32 32 35 2e 34 35 2e 34 39 22 2c 20 0a 20 20 22 75 72 6c 22 3a</span></span>
-<span><span class="co">#&gt; [251] 20 22 68 74 74 70 73 3a 2f 2f 68 74 74 70 62 69 6e 2e 6f 72 67 2f 67 65 74</span></span>
-<span><span class="co">#&gt; [276] 22 0a 7d 0a</span></span>
+<span><span class="co">#&gt; [151] 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31 2d 36 33 66 62</span></span>
+<span><span class="co">#&gt; [176] 34 37 66 65 2d 34 63 32 33 63 39 30 62 32 33 34 31 36 37 38 66 37 36 30 32</span></span>
+<span><span class="co">#&gt; [201] 38 31 39 34 22 0a 20 20 7d 2c 20 0a 20 20 22 6f 72 69 67 69 6e 22 3a 20 22</span></span>
+<span><span class="co">#&gt; [226] 38 32 2e 31 36 33 2e 31 39 37 2e 35 22 2c 20 0a 20 20 22 75 72 6c 22 3a 20</span></span>
+<span><span class="co">#&gt; [251] 22 68 74 74 70 73 3a 2f 2f 68 74 74 70 62 69 6e 2e 6f 72 67 2f 67 65 74 22</span></span>
+<span><span class="co">#&gt; [276] 0a 7d 0a</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $data</span></span>
-<span><span class="co">#&gt; [1] "{\n  \"args\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-63f7d19e-257357bd3cf437653a5f0ae3\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"https://httpbin.org/get\"\n}\n"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "{\n  \"args\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-63fb47fe-4c23c90b2341678f76028194\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"https://httpbin.org/get\"\n}\n"</span></span></code></pre></div>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
 <div class="section level3">
@@ -520,27 +524,37 @@
 <p><code><a href="reference/stream.html">stream()</a></code> exposes NNG’s low-level byte stream interface for communicating with raw sockets. This may be used for connecting to arbitrary non-NNG endpoints.</p>
 <p>The stream interface can be used to communicate with (secure) websocket servers. The argument <code>textframes = TRUE</code> can be specified where the websocket server uses text rather than binary frames.</p>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># official demo API key used below</span></span>
-<span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/stream.html">stream</a></span><span class="op">(</span>dial <span class="op">=</span> <span class="st">"wss://ws.eodhistoricaldata.com/ws/forex?api_token=OeAFFmMliFG5orCUuwAKQ8l4WWFQ67YX"</span>,</span>
-<span>            textframes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="co"># connecting to an echo service</span></span>
+<span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/stream.html">stream</a></span><span class="op">(</span>dial <span class="op">=</span> <span class="st">"wss://echo.websocket.events/"</span>, textframes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="va">s</span></span>
 <span><span class="co">#&gt; &lt; nanoStream &gt;</span></span>
 <span><span class="co">#&gt;  - type: dialer</span></span>
-<span><span class="co">#&gt;  - url: wss://ws.eodhistoricaldata.com/ws/forex?api_token=OeAFFmMliFG5orCUuwAKQ8l4WWFQ67YX</span></span>
+<span><span class="co">#&gt;  - url: wss://echo.websocket.events/</span></span>
 <span><span class="co">#&gt;  - textframes: TRUE</span></span></code></pre></div>
 <p><code><a href="reference/send.html">send()</a></code> and <code><a href="reference/recv.html">recv()</a></code>, as well as their asynchronous counterparts <code><a href="reference/send_aio.html">send_aio()</a></code> and <code><a href="reference/recv_aio.html">recv_aio()</a></code> can be used on Streams in the same way as Sockets. This affords a great deal of flexibility in ingesting and processing streaming data.</p>
 <div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">s</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/recv.html">recv</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "{\"status_code\":200,\"message\":\"Authorized\"}"</span></span>
+<span><span class="co">#&gt; [1] "echo.websocket.events sponsored by Lob.com"</span></span>
 <span></span>
-<span><span class="va">s</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/send.html">send</a></span><span class="op">(</span><span class="st">'{"action": "subscribe", "symbols": "EURUSD"}'</span><span class="op">)</span></span>
+<span><span class="va">s</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/send.html">send</a></span><span class="op">(</span><span class="st">"initial message"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 0</span></span>
 <span></span>
 <span><span class="va">s</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/recv.html">recv</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "{\"s\":\"EURUSD\",\"a\":1.06012,\"b\":1.06009,\"dc\":\"-0.0368\",\"dd\":\"-0.0004\",\"ppms\":false,\"t\":1677185440000}"</span></span>
+<span><span class="co">#&gt; [1] "initial message"</span></span>
+<span></span>
+<span><span class="va">s</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/recv_aio.html">recv_aio</a></span><span class="op">(</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="va">r</span></span>
+<span></span>
+<span><span class="va">s</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/send.html">send</a></span><span class="op">(</span><span class="st">"async message"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 0</span></span>
+<span></span>
+<span><span class="va">s</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/send.html">send</a></span><span class="op">(</span><span class="st">"final message"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 0</span></span>
 <span></span>
 <span><span class="va">s</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/recv.html">recv</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "{\"s\":\"EURUSD\",\"a\":1.06011,\"b\":1.06008,\"dc\":\"-0.0377\",\"dd\":\"-0.0004\",\"ppms\":false,\"t\":1677185440000}"</span></span>
+<span><span class="co">#&gt; [1] "final message"</span></span>
+<span></span>
+<span><span class="va">r</span><span class="op">$</span><span class="va">data</span></span>
+<span><span class="co">#&gt; [1] "async message"</span></span>
 <span></span>
 <span><span class="fu"><a href="reference/close.html">close</a></span><span class="op">(</span><span class="va">s</span><span class="op">)</span></span></code></pre></div>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
@@ -568,6 +582,7 @@
 <span></span>
 <span><span class="fu"><a href="reference/base64enc.html">base64dec</a></span><span class="op">(</span><span class="fu"><a href="reference/base64enc.html">base64enc</a></span><span class="op">(</span><span class="st">"hello world!"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "hello world!"</span></span></code></pre></div>
+<p>Performance is such that base64 decoding a character string into a raw vector can be faster than creating a new raw vector using <code><a href="https://rdrr.io/r/base/raw.html" class="external-link">as.raw()</a></code>.</p>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
 <div class="section level3">
@@ -605,49 +620,6 @@
 <span><span class="co"># one now that the dialer has conneceted</span></span>
 <span><span class="fu"><a href="reference/stat.html">stat</a></span><span class="op">(</span><span class="va">s</span>, <span class="st">"pipes"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 1</span></span></code></pre></div>
-<p><a href="#table-of-contents">« Back to ToC</a></p>
-</div>
-<div class="section level3">
-<h3 id="utility-functions">Utility Functions<a class="anchor" aria-label="anchor" href="#utility-functions"></a>
-</h3>
-<p>Included in nanonext are various high-performance utilities that can be useful for building applications. These directly access functionality from the NNG library or otherwise contained in C code.</p>
-<p>Timing:</p>
-<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># monotonically-increasing clock (in milliseconds)</span></span>
-<span><span class="fu"><a href="reference/mclock.html">mclock</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 10434658</span></span>
-<span></span>
-<span><span class="co"># uninterruptible sleep function (in milliseconds)</span></span>
-<span><span class="fu"><a href="reference/msleep.html">msleep</a></span><span class="op">(</span><span class="fl">1000</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="reference/mclock.html">mclock</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 10435661</span></span></code></pre></div>
-<p>System:</p>
-<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># strictly not for statistical analysis, but suitable for system functions such as cryptographic key generation</span></span>
-<span><span class="fu"><a href="reference/random.html">random</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 1120586001</span></span>
-<span><span class="fu"><a href="reference/random.html">random</a></span><span class="op">(</span><span class="fl">5</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 1491360708 4176843642 1878970812 1196116418 3047223279</span></span></code></pre></div>
-<p>URLs:</p>
-<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># parse a RFC 3986 compliant URL</span></span>
-<span><span class="fu"><a href="reference/parse_url.html">parse_url</a></span><span class="op">(</span><span class="st">"https://u:p@w3.org:80/p?q=i#a"</span><span class="op">)</span></span>
-<span><span class="co">#&gt;                          rawurl                          scheme </span></span>
-<span><span class="co">#&gt; "https://u:p@w3.org:80/p?q=i#a"                         "https" </span></span>
-<span><span class="co">#&gt;                        userinfo                            host </span></span>
-<span><span class="co">#&gt;                           "u:p"                     "w3.org:80" </span></span>
-<span><span class="co">#&gt;                        hostname                            port </span></span>
-<span><span class="co">#&gt;                        "w3.org"                            "80" </span></span>
-<span><span class="co">#&gt;                            path                           query </span></span>
-<span><span class="co">#&gt;                            "/p"                           "q=i" </span></span>
-<span><span class="co">#&gt;                        fragment                          requri </span></span>
-<span><span class="co">#&gt;                             "a"                      "/p?q=i#a"</span></span></code></pre></div>
-<p>HTTP status codes:</p>
-<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># provides an explanation for HTTP response status codes per RFC 9110</span></span>
-<span><span class="fu"><a href="reference/status_code.html">status_code</a></span><span class="op">(</span><span class="fl">401</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "Unauthorized"</span></span></code></pre></div>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
 <div class="section level3">
