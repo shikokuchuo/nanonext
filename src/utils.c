@@ -111,7 +111,7 @@ SEXP rnng_random(SEXP n) {
 
 }
 
-SEXP rnng_parse_url(SEXP url) {
+SEXP rnng_url_parse(SEXP url) {
 
   const char *up = CHAR(STRING_ELT(url, 0));
   nng_url *urlp;

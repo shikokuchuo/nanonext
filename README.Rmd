@@ -63,9 +63,8 @@ Web utilities:
 9. [stream: Websocket Client](#stream-websocket-client)
 10. [Cryptographic Hashing](#cryptographic-hashing)
 11. [Options and Statistics](#options-and-statistics)
-12. [Utility Functions](#utility-functions)
-13. [Building from Source](#building-from-source)
-14. [Links](#links)
+12. [Building from Source](#building-from-source)
+13. [Links](#links)
 
 ### Installation
 
@@ -356,6 +355,8 @@ The subscribed topic can be of any atomic type (not just character), allowing in
 sub |> subscribe(topic = 1)
 pub |> send(c(1, 10, 10, 20), mode = "raw")
 sub |> recv(mode = "double")
+pub |> send(c(2, 10, 10, 20), mode = "raw")
+sub |> recv(mode = "double")
 
 close(pub)
 close(sub)
@@ -395,7 +396,7 @@ aio1$data
 aio2$data
 
 # after the survey expires, the second resolves into a timeout error
-Sys.sleep(0.5)
+msleep(500)
 aio2$data
 
 close(sur)
@@ -404,7 +405,9 @@ close(res2)
 
 ```
 
-Above it can be seen that the final value resolves into a timeout, which is an integer 5 classed as 'errorValue'. All integer error codes are classed as 'errorValue' to be easily distinguishable from integer message values.
+Above, `msleep()` is an uninterruptible sleep function (utilising the NNG library), taking a time in milliseconds.
+
+It can be seen that the final value resolves into a timeout, which is an integer 5 classed as 'errorValue'. All integer error codes are classed as 'errorValue' to be easily distinguishable from integer message values.
 
 [&laquo; Back to ToC](#table-of-contents)
 
@@ -461,9 +464,8 @@ transact(sess)
 The stream interface can be used to communicate with (secure) websocket servers. The argument `textframes = TRUE` can be specified where the websocket server uses text rather than binary frames.
 
 ```{r stream}
-# official demo API key used below
-s <- stream(dial = "wss://ws.eodhistoricaldata.com/ws/forex?api_token=OeAFFmMliFG5orCUuwAKQ8l4WWFQ67YX",
-            textframes = TRUE)
+# connecting to an echo service
+s <- stream(dial = "wss://echo.websocket.events/", textframes = TRUE)
 s
 
 ```
@@ -473,11 +475,19 @@ s
 ```{r stream2}
 s |> recv()
 
-s |> send('{"action": "subscribe", "symbols": "EURUSD"}')
+s |> send("initial message")
 
 s |> recv()
 
+s |> recv_aio() -> r
+
+s |> send("async message")
+
+s |> send("final message")
+
 s |> recv()
+
+r$data
 
 close(s)
 
@@ -510,6 +520,8 @@ base64enc("hello world!")
 base64dec(base64enc("hello world!"))
 
 ```
+
+Performance is such that base64 decoding a character string into a raw vector can be faster than creating a new raw vector using `as.raw()`.
 
 [&laquo; Back to ToC](#table-of-contents)
 
@@ -552,48 +564,6 @@ s1 <- socket(dial = "inproc://stat")
 
 # one now that the dialer has conneceted
 stat(s, "pipes")
-
-```
-
-[&laquo; Back to ToC](#table-of-contents)
-
-### Utility Functions
-
-Included in nanonext are various high-performance utilities that can be useful for building applications. These directly access functionality from the NNG library or otherwise contained in C code.
-
-Timing:
-
-```{r timeutils}
-# monotonically-increasing clock (in milliseconds)
-mclock()
-
-# uninterruptible sleep function (in milliseconds)
-msleep(1000)
-
-mclock()
-```
-
-System:
-
-```{r sysutils}
-# strictly not for statistical analysis, but suitable for system functions such as cryptographic key generation
-random()
-random(5)
-
-```
-
-URLs:
-
-```{r url}
-# parse a RFC 3986 compliant URL
-parse_url("https://u:p@w3.org:80/p?q=i#a")
-```
-
-HTTP status codes:
-
-```{r httpstatus}
-# provides an explanation for HTTP response status codes per RFC 9110
-status_code(401)
 
 ```
 

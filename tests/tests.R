@@ -318,6 +318,21 @@ nanotesterr(device(push, ctx), "s2")
 for (i in c(100:103, 200:208, 226, 300:308, 400:426, 428:431, 451, 500:511))
   nanotest(is.character(status_code(i)))
 
+s <- tryCatch(stream(dial = "wss://echo.websocket.events/", textframes = TRUE), error = function(e) NULL)
+if (length(s)) {
+  nanotest(is.character(recv(s)))
+  nanotestz(send(s, "message1"))
+  nanotestnn(recv(s, block = FALSE))
+  nanotestnn(send(s, "message2", block = FALSE))
+  nanotestnn(recv(s, block = 100))
+  nanotestnn(send(s, "message3", block = 100))
+  nanotest(is_aio(sr <- recv_aio(s)))
+  nanotestn(stop_aio(sr))
+  nanotest(is_aio(ss <- send_aio(s, "async")))
+  nanotestn(stop_aio(ss))
+  nanotestz(close(s))
+}
+
 fakesock <- `class<-`(new.env(), "nanoSocket")
 nanotesterr(dial(fakesock), "valid Socket")
 nanotesterr(dial(fakesock, autostart = FALSE), "valid Socket")

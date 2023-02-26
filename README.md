@@ -65,9 +65,8 @@ Web utilities:
 9.  [stream: Websocket Client](#stream-websocket-client)
 10. [Cryptographic Hashing](#cryptographic-hashing)
 11. [Options and Statistics](#options-and-statistics)
-12. [Utility Functions](#utility-functions)
-13. [Building from Source](#building-from-source)
-14. [Links](#links)
+12. [Building from Source](#building-from-source)
+13. [Links](#links)
 
 ### Installation
 
@@ -367,7 +366,7 @@ aio
 #> < recvAio >
 #>  - $data for message data
 aio$data |> str()
-#>  num [1:100000000] -2.158 0.903 1.617 0.176 -0.417 ...
+#>  num [1:100000000] -0.339 -0.404 0.341 -0.716 2.379 ...
 ```
 
 As `call_aio()` is blocking and will wait for completion, an alternative
@@ -444,6 +443,10 @@ pub |> send(c(1, 10, 10, 20), mode = "raw")
 #> [1] 0
 sub |> recv(mode = "double")
 #> [1]  1 10 10 20
+pub |> send(c(2, 10, 10, 20), mode = "raw")
+#> [1] 0
+sub |> recv(mode = "double")
+#> 'errorValue' int 8 | Try again
 
 close(pub)
 close(sub)
@@ -491,7 +494,7 @@ aio2$data
 #> 'unresolved' logi NA
 
 # after the survey expires, the second resolves into a timeout error
-Sys.sleep(0.5)
+msleep(500)
 aio2$data
 #> 'errorValue' int 5 | Timed out
 
@@ -500,10 +503,13 @@ close(res1)
 close(res2)
 ```
 
-Above it can be seen that the final value resolves into a timeout, which
-is an integer 5 classed as ‘errorValue’. All integer error codes are
-classed as ‘errorValue’ to be easily distinguishable from integer
-message values.
+Above, `msleep()` is an uninterruptible sleep function (utilising the
+NNG library), taking a time in milliseconds.
+
+It can be seen that the final value resolves into a timeout, which is an
+integer 5 classed as ‘errorValue’. All integer error codes are classed
+as ‘errorValue’ to be easily distinguishable from integer message
+values.
 
 [« Back to ToC](#table-of-contents)
 
@@ -528,11 +534,11 @@ ncurl("https://httpbin.org/headers")
 #>   [1] 7b 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73
 #>  [26] 74 22 3a 20 22 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22
 #>  [51] 58 2d 41 6d 7a 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31
-#>  [76] 2d 36 33 66 37 64 31 39 64 2d 34 63 38 33 34 35 65 37 32 31 34 61 35 34 63
-#> [101] 31 35 33 33 66 61 32 34 33 22 0a 20 20 7d 0a 7d 0a
+#>  [76] 2d 36 33 66 62 34 37 66 64 2d 32 62 32 63 37 39 61 38 30 63 38 65 62 62 31
+#> [101] 39 33 64 62 30 63 33 32 33 22 0a 20 20 7d 0a 7d 0a
 #> 
 #> $data
-#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-63f7d19d-4c8345e7214a54c1533fa243\"\n  }\n}\n"
+#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-63fb47fd-2b2c79a80c8ebb193db0c323\"\n  }\n}\n"
 ```
 
 For advanced use, supports additional HTTP methods such as POST or PUT.
@@ -553,13 +559,13 @@ res
 
 call_aio(res)$headers
 #> $Date
-#> [1] "Thu, 23 Feb 2023 20:50:37 GMT"
+#> [1] "Sun, 26 Feb 2023 11:52:30 GMT"
 #> 
 #> $Server
 #> [1] "gunicorn/19.9.0"
 
 res$data
-#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-63f7d19d-542872216beb266f6bd8ceb8\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
+#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-63fb47fd-0e4c0ec16aabbd2c781ec7bc\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
 ```
 
 In this respect, it may be used as a performant and lightweight method
@@ -585,7 +591,7 @@ transact(sess)
 #> 
 #> $headers
 #> $headers$date
-#> [1] "Thu, 23 Feb 2023 20:50:38 GMT"
+#> [1] "Sun, 26 Feb 2023 11:52:30 GMT"
 #> 
 #> 
 #> $raw
@@ -595,15 +601,15 @@ transact(sess)
 #>  [76] 22 43 6f 6e 74 65 6e 74 2d 54 79 70 65 22 3a 20 22 61 70 70 6c 69 63 61 74
 #> [101] 69 6f 6e 2f 6a 73 6f 6e 22 2c 20 0a 20 20 20 20 22 48 6f 73 74 22 3a 20 22
 #> [126] 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22 58 2d 41 6d 7a
-#> [151] 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31 2d 36 33 66 37
-#> [176] 64 31 39 65 2d 32 35 37 33 35 37 62 64 33 63 66 34 33 37 36 35 33 61 35 66
-#> [201] 30 61 65 33 22 0a 20 20 7d 2c 20 0a 20 20 22 6f 72 69 67 69 6e 22 3a 20 22
-#> [226] 31 38 35 2e 32 32 35 2e 34 35 2e 34 39 22 2c 20 0a 20 20 22 75 72 6c 22 3a
-#> [251] 20 22 68 74 74 70 73 3a 2f 2f 68 74 74 70 62 69 6e 2e 6f 72 67 2f 67 65 74
-#> [276] 22 0a 7d 0a
+#> [151] 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31 2d 36 33 66 62
+#> [176] 34 37 66 65 2d 34 63 32 33 63 39 30 62 32 33 34 31 36 37 38 66 37 36 30 32
+#> [201] 38 31 39 34 22 0a 20 20 7d 2c 20 0a 20 20 22 6f 72 69 67 69 6e 22 3a 20 22
+#> [226] 38 32 2e 31 36 33 2e 31 39 37 2e 35 22 2c 20 0a 20 20 22 75 72 6c 22 3a 20
+#> [251] 22 68 74 74 70 73 3a 2f 2f 68 74 74 70 62 69 6e 2e 6f 72 67 2f 67 65 74 22
+#> [276] 0a 7d 0a
 #> 
 #> $data
-#> [1] "{\n  \"args\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-63f7d19e-257357bd3cf437653a5f0ae3\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"https://httpbin.org/get\"\n}\n"
+#> [1] "{\n  \"args\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-63fb47fe-4c23c90b2341678f76028194\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"https://httpbin.org/get\"\n}\n"
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -619,13 +625,12 @@ servers. The argument `textframes = TRUE` can be specified where the
 websocket server uses text rather than binary frames.
 
 ``` r
-# official demo API key used below
-s <- stream(dial = "wss://ws.eodhistoricaldata.com/ws/forex?api_token=OeAFFmMliFG5orCUuwAKQ8l4WWFQ67YX",
-            textframes = TRUE)
+# connecting to an echo service
+s <- stream(dial = "wss://echo.websocket.events/", textframes = TRUE)
 s
 #> < nanoStream >
 #>  - type: dialer
-#>  - url: wss://ws.eodhistoricaldata.com/ws/forex?api_token=OeAFFmMliFG5orCUuwAKQ8l4WWFQ67YX
+#>  - url: wss://echo.websocket.events/
 #>  - textframes: TRUE
 ```
 
@@ -636,16 +641,27 @@ processing streaming data.
 
 ``` r
 s |> recv()
-#> [1] "{\"status_code\":200,\"message\":\"Authorized\"}"
+#> [1] "echo.websocket.events sponsored by Lob.com"
 
-s |> send('{"action": "subscribe", "symbols": "EURUSD"}')
+s |> send("initial message")
 #> [1] 0
 
 s |> recv()
-#> [1] "{\"s\":\"EURUSD\",\"a\":1.06012,\"b\":1.06009,\"dc\":\"-0.0368\",\"dd\":\"-0.0004\",\"ppms\":false,\"t\":1677185440000}"
+#> [1] "initial message"
+
+s |> recv_aio() -> r
+
+s |> send("async message")
+#> [1] 0
+
+s |> send("final message")
+#> [1] 0
 
 s |> recv()
-#> [1] "{\"s\":\"EURUSD\",\"a\":1.06011,\"b\":1.06008,\"dc\":\"-0.0377\",\"dd\":\"-0.0004\",\"ppms\":false,\"t\":1677185440000}"
+#> [1] "final message"
+
+r$data
+#> [1] "async message"
 
 close(s)
 ```
@@ -687,6 +703,9 @@ base64enc("hello world!")
 base64dec(base64enc("hello world!"))
 #> [1] "hello world!"
 ```
+
+Performance is such that base64 decoding a character string into a raw
+vector can be faster than creating a new raw vector using `as.raw()`.
 
 [« Back to ToC](#table-of-contents)
 
@@ -738,63 +757,6 @@ s1 <- socket(dial = "inproc://stat")
 # one now that the dialer has conneceted
 stat(s, "pipes")
 #> [1] 1
-```
-
-[« Back to ToC](#table-of-contents)
-
-### Utility Functions
-
-Included in nanonext are various high-performance utilities that can be
-useful for building applications. These directly access functionality
-from the NNG library or otherwise contained in C code.
-
-Timing:
-
-``` r
-# monotonically-increasing clock (in milliseconds)
-mclock()
-#> [1] 10434658
-
-# uninterruptible sleep function (in milliseconds)
-msleep(1000)
-
-mclock()
-#> [1] 10435661
-```
-
-System:
-
-``` r
-# strictly not for statistical analysis, but suitable for system functions such as cryptographic key generation
-random()
-#> [1] 1120586001
-random(5)
-#> [1] 1491360708 4176843642 1878970812 1196116418 3047223279
-```
-
-URLs:
-
-``` r
-# parse a RFC 3986 compliant URL
-parse_url("https://u:p@w3.org:80/p?q=i#a")
-#>                          rawurl                          scheme 
-#> "https://u:p@w3.org:80/p?q=i#a"                         "https" 
-#>                        userinfo                            host 
-#>                           "u:p"                     "w3.org:80" 
-#>                        hostname                            port 
-#>                        "w3.org"                            "80" 
-#>                            path                           query 
-#>                            "/p"                           "q=i" 
-#>                        fragment                          requri 
-#>                             "a"                      "/p?q=i#a"
-```
-
-HTTP status codes:
-
-``` r
-# provides an explanation for HTTP response status codes per RFC 9110
-status_code(401)
-#> [1] "Unauthorized"
 ```
 
 [« Back to ToC](#table-of-contents)

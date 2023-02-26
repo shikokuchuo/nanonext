@@ -149,7 +149,6 @@ static const R_CallMethodDef callMethods[] = {
   {"rnng_ncurl_session", (DL_FUNC) &rnng_ncurl_session, 7},
   {"rnng_ncurl_session_close", (DL_FUNC) &rnng_ncurl_session_close, 1},
   {"rnng_ncurl_transact", (DL_FUNC) &rnng_ncurl_transact, 1},
-  {"rnng_parse_url", (DL_FUNC) &rnng_parse_url, 1},
   {"rnng_protocol_open", (DL_FUNC) &rnng_protocol_open, 2},
   {"rnng_random", (DL_FUNC) &rnng_random, 1},
   {"rnng_recv", (DL_FUNC) &rnng_recv, 5},
@@ -172,6 +171,7 @@ static const R_CallMethodDef callMethods[] = {
   {"rnng_subscribe", (DL_FUNC) &rnng_subscribe, 3},
   {"rnng_thread_create", (DL_FUNC) &rnng_thread_create, 1},
   {"rnng_unresolved", (DL_FUNC) &rnng_unresolved, 1},
+  {"rnng_url_parse", (DL_FUNC) &rnng_url_parse, 1},
   {"rnng_version", (DL_FUNC) &rnng_version, 0},
   {NULL, NULL, 0}
 };

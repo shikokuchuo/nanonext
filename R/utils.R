@@ -143,7 +143,7 @@ random <- function(n = 1L) .Call(rnng_random, n)
 #'
 #' @export
 #'
-parse_url <- function(url) .Call(rnng_parse_url, url)
+parse_url <- function(url) .Call(rnng_url_parse, url)
 
 #' Create Device
 #'
