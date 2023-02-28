@@ -18,7 +18,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.3.9003</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.3.9004</span>
       </span>
     </div>
 
@@ -88,7 +88,8 @@ for 'bool'.</p></dd>
     
 
 <p>The value of the option (logical for type 'bool', integer for 'int',
-    'duration' and 'size', character for 'string' and double for 'uint64').</p>
+    'duration' and 'size', character for 'string', double for 'uint64', and
+    a named character or integer vector for 'sockaddr').</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -165,6 +166,11 @@ for 'bool'.</p></dd>
       the value of the socket. The string must fit within 64-bytes, including
       the terminating NUL byte. The value is intended for application use,
       and is not used for anything in the library itself.</p></li>
+<li><p>'local-address' [type 'sockaddr']</p>
+<p>This read-only option may be used on listeners, dialers and
+      connected pipes, and represents the local address used for
+      communication. Note: Not all transports support this option, and some
+      transports may support it on listeners but not dialers.</p></li>
 </ul></div>
     <div id="protocol-specific-options">
     <h2>Protocol-specific Options</h2>

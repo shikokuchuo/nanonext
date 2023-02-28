@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.3.9003</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.3.9004</span>
       </span>
     </div>
 
@@ -54,14 +54,16 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.7.3.9003" id="nanonext-0739003-development">nanonext 0.7.3.9003 (development)<a class="anchor" aria-label="anchor" href="#nanonext-0739003-development"></a></h2>
+<h2 class="page-header" data-toc-text="0.7.3.9004" id="nanonext-0739004-development">nanonext 0.7.3.9004 (development)<a class="anchor" aria-label="anchor" href="#nanonext-0739004-development"></a></h2>
 <div class="section level5">
-<h5 id="new-features-0-7-3-9003">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-7-3-9003"></a></h5>
+<h5 id="new-features-0-7-3-9004">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-7-3-9004"></a></h5>
 <ul><li>Implements <code><a href="../reference/stat.html">stat()</a></code>, an interface to the NNG statistics framework. Can be used to return the number of currently connected pipes for a socket, connection attempts for a listener/dialer etc.</li>
 <li>Implements <code><a href="../reference/parse_url.html">parse_url()</a></code>, which parses a URL as per NNG. Provides a fast and standardised method for obtaining parts of a URL string.</li>
+<li>
+<code><a href="../reference/opt.html">opt()</a></code> extended to be able to return ‘sockaddr’ type options e.g. ‘local-address’, which are translated to a named vector.</li>
 </ul></div>
 <div class="section level5">
-<h5 id="updates-0-7-3-9003">Updates<a class="anchor" aria-label="anchor" href="#updates-0-7-3-9003"></a></h5>
+<h5 id="updates-0-7-3-9004">Updates<a class="anchor" aria-label="anchor" href="#updates-0-7-3-9004"></a></h5>
 <p><em>Please review the following potentially breaking changes, and only update when ready:</em></p>
 <ul><li>Using <code><a href="../reference/socket.html">socket()</a></code> specifying either ‘dial’ or ‘listen’, a failure to either dial or listen (due to an invalid URL for example) will now error rather than return a socket with a warning. This is safer behaviour that should make it easier to detect bugs in user code.</li>
 <li>
