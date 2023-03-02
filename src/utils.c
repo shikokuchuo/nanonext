@@ -125,7 +125,7 @@ SEXP rnng_url_parse(SEXP url) {
   const char *names[] = {"rawurl", "scheme", "userinfo", "host", "hostname",
                          "port", "path", "query", "fragment", "requri", ""};
   PROTECT(out = Rf_mkNamed(STRSXP, names));
-  SET_STRING_ELT(out, 0, urlp->u_rawurl == NULL ? Rf_mkChar("") : Rf_mkChar(urlp->u_rawurl));
+  SET_STRING_ELT(out, 0, Rf_mkChar(urlp->u_rawurl));
   SET_STRING_ELT(out, 1, urlp->u_scheme == NULL ? Rf_mkChar("") : Rf_mkChar(urlp->u_scheme));
   SET_STRING_ELT(out, 2, urlp->u_userinfo == NULL ? Rf_mkChar("") : Rf_mkChar(urlp->u_userinfo));
   SET_STRING_ELT(out, 3, urlp->u_host == NULL ? Rf_mkChar("") : Rf_mkChar(urlp->u_host));
