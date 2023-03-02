@@ -125,16 +125,16 @@ SEXP rnng_url_parse(SEXP url) {
   const char *names[] = {"rawurl", "scheme", "userinfo", "host", "hostname",
                          "port", "path", "query", "fragment", "requri", ""};
   PROTECT(out = Rf_mkNamed(STRSXP, names));
-  SET_STRING_ELT(out, 0, Rf_mkChar(urlp->u_rawurl));
-  SET_STRING_ELT(out, 1, Rf_mkChar(urlp->u_scheme));
+  SET_STRING_ELT(out, 0, urlp->u_rawurl == NULL ? Rf_mkChar("") : Rf_mkChar(urlp->u_rawurl));
+  SET_STRING_ELT(out, 1, urlp->u_scheme == NULL ? Rf_mkChar("") : Rf_mkChar(urlp->u_scheme));
   SET_STRING_ELT(out, 2, urlp->u_userinfo == NULL ? Rf_mkChar("") : Rf_mkChar(urlp->u_userinfo));
-  SET_STRING_ELT(out, 3, Rf_mkChar(urlp->u_host));
-  SET_STRING_ELT(out, 4, Rf_mkChar(urlp->u_hostname));
-  SET_STRING_ELT(out, 5, Rf_mkChar(urlp->u_port));
-  SET_STRING_ELT(out, 6, Rf_mkChar(urlp->u_path));
+  SET_STRING_ELT(out, 3, urlp->u_host == NULL ? Rf_mkChar("") : Rf_mkChar(urlp->u_host));
+  SET_STRING_ELT(out, 4, urlp->u_hostname == NULL ? Rf_mkChar("") : Rf_mkChar(urlp->u_hostname));
+  SET_STRING_ELT(out, 5, urlp->u_port == NULL ? Rf_mkChar("") : Rf_mkChar(urlp->u_port));
+  SET_STRING_ELT(out, 6, urlp->u_path == NULL ? Rf_mkChar("") : Rf_mkChar(urlp->u_path));
   SET_STRING_ELT(out, 7, urlp->u_query == NULL ? Rf_mkChar("") : Rf_mkChar(urlp->u_query));
   SET_STRING_ELT(out, 8, urlp->u_fragment == NULL ? Rf_mkChar("") : Rf_mkChar(urlp->u_fragment));
-  SET_STRING_ELT(out, 9, Rf_mkChar(urlp->u_requri));
+  SET_STRING_ELT(out, 9, urlp->u_requri == NULL ? Rf_mkChar("") : Rf_mkChar(urlp->u_requri));
   nng_url_free(urlp);
 
   UNPROTECT(1);
