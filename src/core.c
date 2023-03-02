@@ -1117,7 +1117,6 @@ SEXP rnng_get_opt(SEXP object, SEXP opt) {
   size_t sval;
   char *strval;
   uint64_t uval;
-  nng_sockaddr aval;
 
   const SEXP ptrtag = R_ExternalPtrTag(object);
   if (ptrtag == nano_SocketSymbol) {
@@ -1135,9 +1134,7 @@ SEXP rnng_get_opt(SEXP object, SEXP opt) {
       xc = nng_socket_get_bool(*sock, op, &bval);
       if (xc == 0) { typ = 5; break; }
       xc = nng_socket_get_uint64(*sock, op, &uval);
-      if (xc == 0) { typ = 6; break; }
-      xc = nng_socket_get_addr(*sock, op, &aval);
-      typ = 7; break;
+      typ = 6; break;
     }
 
   } else if (ptrtag == nano_ContextSymbol) {
@@ -1173,9 +1170,7 @@ SEXP rnng_get_opt(SEXP object, SEXP opt) {
       xc = nng_stream_get_bool(st, op, &bval);
       if (xc == 0) { typ = 5; break; }
       xc = nng_stream_get_uint64(st, op, &uval);
-      if (xc == 0) { typ = 6; break; }
-      xc = nng_stream_get_addr(st, op, &aval);
-      typ = 7; break;
+      typ = 6; break;
     }
 
   } else if (ptrtag == nano_ListenerSymbol) {
@@ -1193,9 +1188,7 @@ SEXP rnng_get_opt(SEXP object, SEXP opt) {
       xc = nng_listener_get_bool(*list, op, &bval);
       if (xc == 0) { typ = 5; break; }
       xc = nng_listener_get_uint64(*list, op, &uval);
-      if (xc == 0) { typ = 6; break; }
-      xc = nng_listener_get_addr(*list, op, &aval);
-      typ = 7; break;
+      typ = 6; break;
     }
 
   } else if (ptrtag == nano_DialerSymbol) {
@@ -1213,9 +1206,7 @@ SEXP rnng_get_opt(SEXP object, SEXP opt) {
       xc = nng_dialer_get_bool(*dial, op, &bval);
       if (xc == 0) { typ = 5; break; }
       xc = nng_dialer_get_uint64(*dial, op, &uval);
-      if (xc == 0) { typ = 6; break; }
-      xc = nng_dialer_get_addr(*dial, op, &aval);
-      typ = 7; break;
+      typ = 6; break;
     }
 
   } else {
@@ -1241,57 +1232,15 @@ SEXP rnng_get_opt(SEXP object, SEXP opt) {
   case 5:
     out = Rf_ScalarLogical((int) bval);
     break;
-  case 6:
-    out = Rf_ScalarReal((double) uval);
-    break;
   default:
-    switch (aval.s_family) {
-    case NNG_AF_INPROC:;
-      const char *names[] = {"name", ""};
-      PROTECT(out = Rf_mkNamed(STRSXP, names));
-      SET_STRING_ELT(out, 0, Rf_mkChar(aval.s_inproc.sa_name));
-      UNPROTECT(1);
-      break;
-    case NNG_AF_ABSTRACT:;
-      const char *anames[] = {"name", ""};
-      PROTECT(out = Rf_mkNamed(STRSXP, anames));
-      SET_STRING_ELT(out, 0, Rf_mkChar((char *) aval.s_abstract.sa_name));
-      UNPROTECT(1);
-      break;
-    case NNG_AF_IPC:;
-      const char *inames[] = {"path", ""};
-      PROTECT(out = Rf_mkNamed(STRSXP, inames));
-      SET_STRING_ELT(out, 0, Rf_mkChar(aval.s_ipc.sa_path));
-      UNPROTECT(1);
-      break;
-    case NNG_AF_INET:;
-      const char *pnames[] = {"port", "address", ""};
-      PROTECT(out = Rf_mkNamed(INTSXP, pnames));
-      int *pout = INTEGER(out);
-      pout[0] = (int) aval.s_in.sa_port;
-      pout[1] = (int) aval.s_in.sa_addr;
-      UNPROTECT(1);
-      break;
-    case NNG_AF_INET6:;
-      const char *snames[] = {"port", "scope", ""};
-      PROTECT(out = Rf_mkNamed(INTSXP, snames));
-      int *sout = INTEGER(out);
-      sout[0] = (int) aval.s_in6.sa_port;
-      sout[1] = (int) aval.s_in6.sa_scope;
-      UNPROTECT(1);
-      break;
-    default:;
-      const char *dnames[] = {"family", ""};
-      PROTECT(out = Rf_mkNamed(INTSXP, dnames));
-      int *dout = INTEGER(out);
-      dout[0] = (int) aval.s_family;
-      UNPROTECT(1);
-    }
+    out = Rf_ScalarReal((double) uval);
   }
 
   return out;
 
 }
+
+// statistics ------------------------------------------------------------------
 
 SEXP rnng_stats_get(SEXP object, SEXP stat) {
 

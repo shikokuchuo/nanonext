@@ -21,8 +21,7 @@ for 'bool'.}
 }
 \value{
 The value of the option (logical for type 'bool', integer for 'int',
-    'duration' and 'size', character for 'string', double for 'uint64', and
-    a named character or integer vector for 'sockaddr').
+    'duration' and 'size', character for 'string', and double for 'uint64').
 }
 \description{
 Get and set the value of options for a Socket, Context, Stream, Listener or
@@ -120,12 +119,10 @@ Note: once a dialer or listener has started, it is not generally
       the terminating NUL byte. The value is intended for application use,
       and is not used for anything in the library itself.}
 
-   \item{'local-address' [type 'sockaddr']}
+    \item{'url' [type 'string']}
 
-      {This read-only option may be used on listeners, dialers and
-      connected pipes, and represents the local address used for
-      communication. Note: Not all transports support this option, and some
-      transports may support it on listeners but not dialers.}
+      {This read-only option is used on a listener or dialer to obtain the
+      URL with which it was configured.}
 
     }
 }
