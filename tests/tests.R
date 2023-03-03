@@ -335,8 +335,10 @@ if (length(s)) {
   nanotest(is.integer(send(s, 12.56, mode = "raw", block = 500L)))
   nanotest(is_aio(sr <- recv_aio(s, mode = "double", timeout = 500L)))
   nanotestnn(call_aio(sr)[["data"]])
+  nanotest(is.character(opt(s, "ws:request-headers")))
   nanotesterr(recv(s, mode = "none", block = FALSE), "mode")
   nanotesterr(recv(s, mode = "c", block = FALSE), "mode")
+  nanotesterr(opt(s, "none"), "supported")
   nanotest(is.integer(close(s)))
 }
 
