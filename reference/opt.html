@@ -18,7 +18,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.0.9000</span>
       </span>
     </div>
 
@@ -240,6 +240,13 @@ for 'bool'.</p></dd>
       detect dead peers on an otherwise quiescent network. Second, it can be
       used to keep connection table entries in NAT and other middleware from
       expiring due to lack of activity.</p></li>
+<li><p>'tcp-bound-port' [type 'int']</p>
+<p>(TCP transport) Local TCP port number. This is used on a listener, and
+      is intended to be used after starting the listener in combination with
+      a wildcard (0) local port. This determines the actual ephemeral port
+      that was selected and bound. The value is provided as an integer, but
+      only the low order 16 bits will be set, and is in native byte order for
+      convenience.</p></li>
 <li><p>'ws:request-headers' [type 'string']</p>
 <p>(WebSocket transport) Concatenation of multiple lines terminated by
       CRLF sequences, that can be used to add further headers to the HTTP
@@ -250,6 +257,9 @@ for 'bool'.</p></dd>
       CRLF sequences, that can be used to add further headers to the HTTP
       response sent when connecting. This option can be set on listeners,
       and must be done before the transport is started.</p></li>
+<li><p>'ws:request-uri' [type 'string']</p>
+<p>(WebSocket transport) For obtaining the URI sent by the client. This
+      can be useful when a handler supports an entire directory tree.</p></li>
 </ul></div>
 
     <div id="ref-examples">
