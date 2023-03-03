@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.3.9005</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.0</span>
       </span>
     </div>
 
@@ -54,14 +54,14 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.7.3.9005" id="nanonext-0739005-development">nanonext 0.7.3.9005 (development)<a class="anchor" aria-label="anchor" href="#nanonext-0739005-development"></a></h2>
+<h2 class="page-header" data-toc-text="0.8.0" id="nanonext-080">nanonext 0.8.0<a class="anchor" aria-label="anchor" href="#nanonext-080"></a></h2>
 <div class="section level5">
-<h5 id="new-features-0-7-3-9005">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-7-3-9005"></a></h5>
+<h5 id="new-features-0-8-0">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-8-0"></a></h5>
 <ul><li>Implements <code><a href="../reference/stat.html">stat()</a></code>, an interface to the NNG statistics framework. Can be used to return the number of currently connected pipes for a socket, connection attempts for a listener/dialer etc.</li>
 <li>Implements <code><a href="../reference/parse_url.html">parse_url()</a></code>, which parses a URL as per NNG. Provides a fast and standardised method for obtaining parts of a URL string.</li>
 </ul></div>
 <div class="section level5">
-<h5 id="updates-0-7-3-9005">Updates<a class="anchor" aria-label="anchor" href="#updates-0-7-3-9005"></a></h5>
+<h5 id="updates-0-8-0">Updates<a class="anchor" aria-label="anchor" href="#updates-0-8-0"></a></h5>
 <p><em>Please review the following potentially breaking changes, and only update when ready:</em></p>
 <ul><li>Using <code><a href="../reference/socket.html">socket()</a></code> specifying either ‘dial’ or ‘listen’, a failure to either dial or listen (due to an invalid URL for example) will now error rather than return a socket with a warning. This is safer behaviour that should make it easier to detect bugs in user code.</li>
 <li>
@@ -69,7 +69,7 @@
 <li>
 <code><a href="../reference/subscribe.html">subscribe()</a></code>, <code><a href="../reference/subscribe.html">unsubscribe()</a></code> and <code><a href="../reference/survey_time.html">survey_time()</a></code> now return the Socket or Context invisibly rather than an exit code, and will error upon invalid input etc.</li>
 <li>
-<code><a href="../reference/survey_time.html">survey_time()</a></code> argument name is now ‘value’, with a new default value of 1000L.</li>
+<code><a href="../reference/survey_time.html">survey_time()</a></code> argument name is now ‘value’, with a default of 1000L.</li>
 <li>nano Object methods <code>$opt</code>, <code>$listener_opt</code>, and <code>$dialer_opt</code> re-implemented to either get or set values depending on whether the ‘value’ parameter has been supplied.</li>
 </ul><p><em>Other changes:</em></p>
 <ul><li>Bundled ‘libnng’ source updated to v1.6.0 pre-release (8e1836f).</li>
