@@ -214,6 +214,15 @@ Note: once a dialer or listener has started, it is not generally
       used to keep connection table entries in NAT and other middleware from
       expiring due to lack of activity.}
 
+      \item{'tcp-bound-port' [type 'int']}
+
+      {(TCP transport) Local TCP port number. This is used on a listener, and
+      is intended to be used after starting the listener in combination with
+      a wildcard (0) local port. This determines the actual ephemeral port
+      that was selected and bound. The value is provided as an integer, but
+      only the low order 16 bits will be set, and is in native byte order for
+      convenience.}
+
       \item{'ws:request-headers' [type 'string']}
 
       {(WebSocket transport) Concatenation of multiple lines terminated by
@@ -227,6 +236,11 @@ Note: once a dialer or listener has started, it is not generally
       CRLF sequences, that can be used to add further headers to the HTTP
       response sent when connecting. This option can be set on listeners,
       and must be done before the transport is started.}
+
+      \item{'ws:request-uri' [type 'string']}
+
+      {(WebSocket transport) For obtaining the URI sent by the client. This
+      can be useful when a handler supports an entire directory tree.}
 
     }
 }
