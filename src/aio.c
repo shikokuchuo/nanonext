@@ -81,6 +81,15 @@ static void saio_finalizer(SEXP xptr) {
 
 }
 
+static void reqsaio_finalizer(SEXP xptr) {
+
+  if (R_ExternalPtrAddr(xptr) == NULL)
+    return;
+  nng_aio *xp = (nng_aio *) R_ExternalPtrAddr(xptr);
+  nng_aio_free(xp);
+
+}
+
 static void raio_finalizer(SEXP xptr) {
 
   if (R_ExternalPtrAddr(xptr) == NULL)
@@ -1143,30 +1152,26 @@ SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeou
   int xc;
 
   nng_ctx *ctxp = (nng_ctx *) R_ExternalPtrAddr(con);
-  nano_aio *saio = R_Calloc(1, nano_aio);
+  nng_aio *reqsaio;
   nng_msg *msg;
 
   enc = nano_encodes(data, sendmode);
   xlen = Rf_xlength(enc);
   dp = RAW(enc);
 
-  saio->type = SENDAIO;
-
-  if ((xc = nng_msg_alloc(&msg, 0))) {
-    R_Free(saio);
+  if ((xc = nng_msg_alloc(&msg, 0)))
     return kpr ? mk_error_recv(xc) : mk_error_data(xc);
-  }
 
   if ((xc = nng_msg_append(msg, dp, xlen)) ||
-      (xc = nng_aio_alloc(&saio->aio, saio_complete, saio))) {
+      (xc = nng_aio_alloc(&reqsaio, NULL, NULL))) {
     nng_msg_free(msg);
-    R_Free(saio);
+    nng_aio_free(reqsaio);
     return kpr ? mk_error_recv(xc) : mk_error_data(xc);
   }
 
-  nng_aio_set_msg(saio->aio, msg);
-  nng_aio_set_timeout(saio->aio, NNG_DURATION_DEFAULT);
-  nng_ctx_send(*ctxp, saio->aio);
+  nng_aio_set_msg(reqsaio, msg);
+  nng_aio_set_timeout(reqsaio, NNG_DURATION_DEFAULT);
+  nng_ctx_send(*ctxp, reqsaio);
 
   nano_aio *raio = R_Calloc(1, nano_aio);
 
@@ -1176,8 +1181,7 @@ SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeou
 
   if ((xc = nng_aio_alloc(&raio->aio, raio_complete, raio))) {
     R_Free(raio);
-    nng_aio_free(saio->aio);
-    R_Free(saio);
+    nng_aio_free(reqsaio);
     return kpr ? mk_error_recv(xc) : mk_error_data(xc);
   }
 
@@ -1195,8 +1199,8 @@ SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeou
   REPROTECT(env = Rf_eval(env, clo), pxi);
 #endif
   Rf_defineVar(nano_AioSymbol, aio, env);
-  PROTECT(sendaio = R_MakeExternalPtr(saio, R_NilValue, R_NilValue));
-  R_RegisterCFinalizerEx(sendaio, saio_finalizer, TRUE);
+  PROTECT(sendaio = R_MakeExternalPtr(reqsaio, R_NilValue, R_NilValue));
+  R_RegisterCFinalizerEx(sendaio, reqsaio_finalizer, TRUE);
   R_MakeWeakRef(aio, sendaio, R_NilValue, TRUE);
 
   if (kpr) {

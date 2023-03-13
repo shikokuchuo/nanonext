@@ -1,5 +1,7 @@
 # nanonext 0.8.0.9000 (development)
 
+* Internal performance enhancements.
+
 # nanonext 0.8.0
 
 #### New Features
