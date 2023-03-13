@@ -1165,7 +1165,6 @@ SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeou
   if ((xc = nng_msg_append(msg, dp, xlen)) ||
       (xc = nng_aio_alloc(&reqsaio, NULL, NULL))) {
     nng_msg_free(msg);
-    nng_aio_free(reqsaio);
     return kpr ? mk_error_recv(xc) : mk_error_data(xc);
   }
 
