@@ -76,16 +76,15 @@ messenger <- function(url, auth = NULL) {
   } else {
     cat(sprintf("| peer online: %s\n", format.POSIXct(Sys.time())), file = stderr())
     r <- recv(sock, mode = 5L, block = TRUE)
-    for (i in seq_len(32L)) {
+    for (i in seq_len(32L))
       lock[r[i]] == r[i + 32L] || {
         cat("| authentication error\n", file = stderr())
         return(invisible())
       }
-    }
     cat("| authenticated\n", file = stderr())
   }
 
-  sock <- .Call(rnng_thread_create, list(sock, key, 2L))
+  sock <- .Call(rnng_messenger_thread_create, list(sock, key, 2L))
   cat("type your message:\n", file = stdout())
 
   repeat {
@@ -93,13 +92,9 @@ messenger <- function(url, auth = NULL) {
     if (identical(data, ":q")) break
     if (identical(data, "")) next
     s <- send(sock, data = data, mode = 2L, block = FALSE)
-    if (s) {
-      cat(sprintf("%*s > not sent: peer offline: %s\n", nchar(data), "", format.POSIXct(Sys.time())),
-          file = stderr())
-    } else {
-      cat(sprintf("%*s > %s\n", nchar(data), "", format.POSIXct(Sys.time())),
-          file = stdout())
-    }
+    if (s)
+      cat(sprintf("%*s > not sent: peer offline: %s\n", nchar(data), "", format.POSIXct(Sys.time())), file = stderr()) else
+        cat(sprintf("%*s > %s\n", nchar(data), "", format.POSIXct(Sys.time())), file = stdout())
   }
 
   invisible()
