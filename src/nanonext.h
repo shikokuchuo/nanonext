@@ -80,6 +80,7 @@ extern void listener_finalizer(SEXP);
 
 extern SEXP nano_AioSymbol;
 extern SEXP nano_ContextSymbol;
+extern SEXP nano_CvSymbol;
 extern SEXP nano_DataSymbol;
 extern SEXP nano_DialerSymbol;
 extern SEXP nano_DotcallSymbol;
@@ -126,6 +127,10 @@ extern SEXP rnng_clock(void);
 extern SEXP rnng_close(SEXP);
 extern SEXP rnng_ctx_close(SEXP);
 extern SEXP rnng_ctx_open(SEXP);
+extern SEXP rnng_cv_alloc(void);
+extern SEXP rnng_cv_request(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
+extern SEXP rnng_cv_until(SEXP, SEXP);
+extern SEXP rnng_cv_wait(SEXP);
 extern SEXP rnng_device(SEXP, SEXP);
 extern SEXP rnng_dial(SEXP, SEXP, SEXP, SEXP);
 extern SEXP rnng_dialer_close(SEXP);

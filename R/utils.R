@@ -262,3 +262,58 @@ is_nul_byte <- function(x) .Call(rnng_is_nul_byte, x)
 #'
 status_code <- function(x) .Call(rnng_status_code, x)
 
+#' New Condition Variable
+#'
+#' Creates a new condition variable (protected by a mutex). Pass this to the
+#'     special forms of the functions returning 'recvAio' objects which also
+#'     take a condition variable object and signals this when the receive is
+#'     complete.
+#'
+#' @return A 'conditionVariable' object.
+#'
+#' @examples
+#' cv <- cv_new()
+#'
+#' @export
+#'
+cv_new <- function() .Call(rnng_cv_alloc)
+
+#' Wait Upon a Condition Variable
+#'
+#' Waits upon a condition variable to be signalled by an incoming message being
+#'     received.
+#'
+#' @param cv a 'conditionVariable' object.
+#'
+#' @return Invisible NULL.
+#'
+#' @examples
+#' cv <- cv_new()
+#' # cv_wait(cv) # uncommenting will block until the cv is signalled
+#'
+#' @export
+#'
+cv_wait <- function(cv) invisible(.Call(rnng_cv_wait, cv))
+
+#' Wait Upon a Condition Variable Until a Certain Time
+#'
+#' Waits upon a condition variable to be signalled by an incoming message being
+#'     received, until a certain time has elapsed.
+#'
+#' @inheritParams cv_wait
+#' @param msec maximum time in milliseconds to wait for the condition variable
+#'     to be signalled.
+#'
+#' @details If 'msec' is non-integer, it will be coerced to integer. Non-numeric
+#'     input will be ignored and return immediately.
+#'
+#' @return Invisible NULL.
+#'
+#' @examples
+#' cv <- cv_new()
+#' cv_until(cv, 10L)
+#'
+#' @export
+#'
+cv_until <- function(cv, msec) invisible(.Call(rnng_cv_until, cv, msec))
+

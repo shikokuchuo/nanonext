@@ -1,5 +1,11 @@
 # nanonext 0.8.0.9000 (development)
 
+#### New Features
+
+* Implements condition variables (from the NNG library), which allows the R execution thread to wait until it is woken by an incoming message - adding functions `cv_new()`, `cv_wait()`, `cv_until()` and `cv_request()`.
+
+#### Updates
+
 * Internal performance enhancements.
 
 # nanonext 0.8.0

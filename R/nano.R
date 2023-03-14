@@ -401,6 +401,15 @@ print.errorValue <- function(x, ...) {
 
 #' @export
 #'
+print.conditionVariable <- function(x, ...) {
+
+  cat("< conditionVariable >\n", file = stdout())
+  invisible(x)
+
+}
+
+#' @export
+#'
 `[[.nano` <- function(x, i, exact = FALSE)
   attr(x, i, exact = exact)
 

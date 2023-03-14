@@ -20,6 +20,7 @@
 
 SEXP nano_AioSymbol;
 SEXP nano_ContextSymbol;
+SEXP nano_CvSymbol;
 SEXP nano_DataSymbol;
 SEXP nano_DialerSymbol;
 SEXP nano_DotcallSymbol;
@@ -57,6 +58,7 @@ SEXP nano_unresolved;
 static void RegisterSymbols(void) {
   nano_AioSymbol = Rf_install("aio");
   nano_ContextSymbol = Rf_install("context");
+  nano_CvSymbol = Rf_install("cv");
   nano_DataSymbol = Rf_install("data");
   nano_DialerSymbol = Rf_install("dialer");
   nano_DotcallSymbol = Rf_install(".Call");
@@ -132,6 +134,10 @@ static const R_CallMethodDef callMethods[] = {
   {"rnng_close", (DL_FUNC) &rnng_close, 1},
   {"rnng_ctx_close", (DL_FUNC) &rnng_ctx_close, 1},
   {"rnng_ctx_open", (DL_FUNC) &rnng_ctx_open, 1},
+  {"rnng_cv_alloc", (DL_FUNC) &rnng_cv_alloc, 0},
+  {"rnng_cv_request", (DL_FUNC) &rnng_cv_request, 8},
+  {"rnng_cv_until", (DL_FUNC) &rnng_cv_until, 2},
+  {"rnng_cv_wait", (DL_FUNC) &rnng_cv_wait, 1},
   {"rnng_device", (DL_FUNC) &rnng_device, 2},
   {"rnng_dial", (DL_FUNC) &rnng_dial, 4},
   {"rnng_dialer_close", (DL_FUNC) &rnng_dialer_close, 1},
