@@ -99,7 +99,7 @@ to be signalled.</p></dd>
     and <code><a href="request_signal.html">request_signal</a></code>. Completion of the receive, which happens
     asynchronously and independently of the main R thread, will signal the
     condition variable by incrementing it by 1.</p>
-<p>This will cause The R execution thread waiting on the condition variable
+<p>This will cause the R execution thread waiting on the condition variable
     using <code>wait()</code> or <code>until()</code> to wake and continue.</p>
 <p>The condition internal to this 'conditionVariable' maintains a state
     (counter). Each signal increments the condition by 1. Each time
