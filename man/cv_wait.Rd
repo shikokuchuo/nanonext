@@ -16,6 +16,11 @@ Invisible NULL.
 Waits upon a condition variable to be signalled by an incoming message being
     received.
 }
+\details{
+The internal condition maintains a state. Each signal increments the
+    condition by 1. Each time this function returns, the condition is
+    decremented by 1.
+}
 \examples{
 cv <- cv_new()
 # cv_wait(cv) # uncommenting will block until the cv is signalled

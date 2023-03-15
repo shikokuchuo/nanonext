@@ -22,8 +22,6 @@
 
 // definitions and statics -----------------------------------------------------
 
-int condition_true = 0;
-
 typedef enum nano_aio_typ {
   SENDAIO,
   RECVAIO,
@@ -49,6 +47,7 @@ typedef struct nano_handle_s {
 } nano_handle;
 
 typedef struct nano_cv_s {
+  R_xlen_t condition;
   nng_mtx *mtx;
   nng_cv *cv;
   nano_aio *raio;
@@ -79,7 +78,7 @@ static void raio_complete_signal(void *arg) {
   if(!cv->raio->result)
     cv->raio->data = nng_aio_get_msg(cv->raio->aio);
   nng_mtx_lock(cv->mtx);
-  condition_true = 1;
+  cv->condition++;
   nng_cv_wake(cv->cv);
   nng_mtx_unlock(cv->mtx);
 
@@ -1376,10 +1375,10 @@ SEXP rnng_cv_wait(SEXP cv) {
   nano_cv *cvp = (nano_cv *) R_ExternalPtrAddr(cv);
 
   nng_mtx_lock(cvp->mtx);
-  while (!condition_true)
+  while (cvp->condition == 0)
     nng_cv_wait(cvp->cv);
 
-  condition_true = 0;
+  cvp->condition--;
   nng_mtx_unlock(cvp->mtx);
   cvp->raio = NULL;
 
@@ -1404,10 +1403,25 @@ SEXP rnng_cv_until(SEXP cv, SEXP msec) {
   }
 
   nng_mtx_lock(cvp->mtx);
-  while (!condition_true)
+  while (cvp->condition == 0) {
     if (nng_cv_until(cvp->cv, time) == NNG_ETIMEDOUT) break;
+    cvp->condition--;
+  }
+  nng_mtx_unlock(cvp->mtx);
+  cvp->raio = NULL;
 
-  condition_true = 0;
+  return R_NilValue;
+
+}
+
+SEXP rnng_cv_reset(SEXP cv) {
+
+  if (R_ExternalPtrTag(cv) != nano_CvSymbol)
+    Rf_error("'cv' is not a valid Condition Variable");
+
+  nano_cv *cvp = (nano_cv *) R_ExternalPtrAddr(cv);
+  nng_mtx_lock(cvp->mtx);
+  cvp->condition = 0;
   nng_mtx_unlock(cvp->mtx);
   cvp->raio = NULL;
 

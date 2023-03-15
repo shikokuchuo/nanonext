@@ -204,6 +204,7 @@ nanotest(inherits(cv <- cv_new(), "conditionVariable"))
 cv
 nanotestn(cv_until(cv, 10L))
 nanotestn(cv_until(cv, 10))
+nanotestn(cv_reset(cv))
 nanotestnn(cv_request(req$context, "test", keep.raw = TRUE, cv = cv))
 nanotesterr(cv_request(err, "test", cv = cv), "valid")
 nanotesterr(cv_request(req$context, "test", cv = err), "valid")

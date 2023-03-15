@@ -22,6 +22,10 @@ Waits upon a condition variable to be signalled by an incoming message being
 \details{
 If 'msec' is non-integer, it will be coerced to integer. Non-numeric
     input will be ignored and return immediately.
+
+    The internal condition maintains a state. Each signal increments the
+    condition by 1. Each time this function returns due to being woken (as
+    opposed to timeout) the condition is decremented by 1.
 }
 \examples{
 cv <- cv_new()

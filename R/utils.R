@@ -264,12 +264,14 @@ status_code <- function(x) .Call(rnng_status_code, x)
 
 #' New Condition Variable
 #'
-#' Creates a new condition variable (protected by a mutex). Pass this to the
-#'     special forms of the functions returning 'recvAio' objects which also
-#'     take a condition variable object and signals this when the receive is
-#'     complete.
+#' Creates a new condition variable (protected by a mutex).
 #'
 #' @return A 'conditionVariable' object.
+#'
+#' @details Pass the 'conditionVariable' object to the special \code{cv_} forms
+#'     of the functions returning 'recvAio' objects. Completion of the receive,
+#'     which happens asynchronously will signal the condition variable by
+#'     incrementing it by 1.
 #'
 #' @examples
 #' cv <- cv_new()
@@ -286,6 +288,10 @@ cv_new <- function() .Call(rnng_cv_alloc)
 #' @param cv a 'conditionVariable' object.
 #'
 #' @return Invisible NULL.
+#'
+#' @details The internal condition maintains a state. Each signal increments the
+#'     condition by 1. Each time this function returns, the condition is
+#'     decremented by 1.
 #'
 #' @examples
 #' cv <- cv_new()
@@ -307,6 +313,10 @@ cv_wait <- function(cv) invisible(.Call(rnng_cv_wait, cv))
 #' @details If 'msec' is non-integer, it will be coerced to integer. Non-numeric
 #'     input will be ignored and return immediately.
 #'
+#'     The internal condition maintains a state. Each signal increments the
+#'     condition by 1. Each time this function returns due to being woken (as
+#'     opposed to timeout) the condition is decremented by 1.
+#'
 #' @return Invisible NULL.
 #'
 #' @examples
@@ -316,4 +326,20 @@ cv_wait <- function(cv) invisible(.Call(rnng_cv_wait, cv))
 #' @export
 #'
 cv_until <- function(cv, msec) invisible(.Call(rnng_cv_until, cv, msec))
+
+#' Reset a Condition Variable
+#'
+#' Resets the internal condition for a condition variable to an inital zero value.
+#'
+#' @inheritParams cv_wait
+#'
+#' @return Invisible NULL.
+#'
+#' @examples
+#' cv <- cv_new()
+#' cv_reset(cv)
+#'
+#' @export
+#'
+cv_reset <- function(cv) invisible(.Call(rnng_cv_reset, cv))
 

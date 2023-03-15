@@ -10,10 +10,13 @@ cv_new()
 A 'conditionVariable' object.
 }
 \description{
-Creates a new condition variable (protected by a mutex). Pass this to the
-    special forms of the functions returning 'recvAio' objects which also
-    take a condition variable object and signals this when the receive is
-    complete.
+Creates a new condition variable (protected by a mutex).
+}
+\details{
+Pass the 'conditionVariable' object to the special \code{cv_} forms
+    of the functions returning 'recvAio' objects. Completion of the receive,
+    which happens asynchronously will signal the condition variable by
+    incrementing it by 1.
 }
 \examples{
 cv <- cv_new()
