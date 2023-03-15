@@ -85,6 +85,9 @@ to be signalled.</p></dd>
     <h2>Details</h2>
     <p>If 'msec' is non-integer, it will be coerced to integer. Non-numeric
     input will be ignored and return immediately.</p>
+<p>The internal condition maintains a state. Each signal increments the
+    condition by 1. Each time this function returns due to being woken (as
+    opposed to timeout) the condition is decremented by 1.</p>
     </div>
 
     <div id="ref-examples">
