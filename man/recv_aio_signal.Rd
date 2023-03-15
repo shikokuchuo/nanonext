@@ -67,7 +67,7 @@ Async receive is always non-blocking and returns a 'recvAio'
     signalled by incrementing it by 1.
 }
 \examples{
-s1 <- socket("pair", listen = "abstract://nanonext")
+s1 <- socket("pair", listen = "tcp://127.0.0.1:6546")
 cv <- cv()
 msg <- recv_aio_signal(s1, timeout = 100, cv = cv)
 until(cv, 10L)
@@ -75,7 +75,7 @@ msg$data
 close(s1)
 
 # in another process in parallel
-s2 <- socket("pair", dial = "abstract://nanonext")
+s2 <- socket("pair", dial = "tcp://127.0.0.1:6546")
 res <- send_aio(s2, c(1.1, 2.2, 3.3), mode = "raw", timeout = 100)
 close(s2)
 

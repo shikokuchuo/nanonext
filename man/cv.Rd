@@ -38,7 +38,7 @@ Pass the 'conditionVariable' object to the special signalling forms
     asynchronously and independently of the main R thread, will signal the
     condition variable by incrementing it by 1.
 
-    This will cause The R execution thread waiting on the condition variable
+    This will cause the R execution thread waiting on the condition variable
     using \code{wait()} or \code{until()} to wake and continue.
 
     The condition internal to this 'conditionVariable' maintains a state
