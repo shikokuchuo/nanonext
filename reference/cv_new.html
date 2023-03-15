@@ -74,6 +74,8 @@
     of the functions returning 'recvAio' objects. Completion of the receive,
     which happens asynchronously will signal the condition variable by
     incrementing it by 1.</p>
+<p>This will cause threads waiting on the condition variable (using
+    <code><a href="wait.html">wait</a></code> or <code><a href="until.html">until</a></code>) to wake.</p>
     </div>
 
     <div id="ref-examples">

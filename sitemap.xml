@@ -40,12 +40,6 @@
     <loc>https://shikokuchuo.net/nanonext/reference/cv_reset.html</loc>
   </url>
   <url>
-    <loc>https://shikokuchuo.net/nanonext/reference/cv_until.html</loc>
-  </url>
-  <url>
-    <loc>https://shikokuchuo.net/nanonext/reference/cv_wait.html</loc>
-  </url>
-  <url>
     <loc>https://shikokuchuo.net/nanonext/reference/device.html</loc>
   </url>
   <url>
@@ -152,5 +146,11 @@
   </url>
   <url>
     <loc>https://shikokuchuo.net/nanonext/reference/unresolved.html</loc>
+  </url>
+  <url>
+    <loc>https://shikokuchuo.net/nanonext/reference/until.html</loc>
+  </url>
+  <url>
+    <loc>https://shikokuchuo.net/nanonext/reference/wait.html</loc>
   </url>
 </urlset>
