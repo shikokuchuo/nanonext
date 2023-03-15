@@ -273,6 +273,9 @@ status_code <- function(x) .Call(rnng_status_code, x)
 #'     which happens asynchronously will signal the condition variable by
 #'     incrementing it by 1.
 #'
+#'     This will cause threads waiting on the condition variable (using
+#'     \code{\link{wait}} or \code{\link{until}}) to wake.
+#'
 #' @examples
 #' cv <- cv_new()
 #'
@@ -295,18 +298,18 @@ cv_new <- function() .Call(rnng_cv_alloc)
 #'
 #' @examples
 #' cv <- cv_new()
-#' # cv_wait(cv) # uncommenting will block until the cv is signalled
+#' # wait(cv) # uncommenting will block until the cv is signalled
 #'
 #' @export
 #'
-cv_wait <- function(cv) invisible(.Call(rnng_cv_wait, cv))
+wait <- function(cv) invisible(.Call(rnng_cv_wait, cv))
 
 #' Wait Upon a Condition Variable Until a Certain Time
 #'
 #' Waits upon a condition variable to be signalled by an incoming message being
 #'     received, until a certain time has elapsed.
 #'
-#' @inheritParams cv_wait
+#' @inheritParams wait
 #' @param msec maximum time in milliseconds to wait for the condition variable
 #'     to be signalled.
 #'
@@ -321,17 +324,17 @@ cv_wait <- function(cv) invisible(.Call(rnng_cv_wait, cv))
 #'
 #' @examples
 #' cv <- cv_new()
-#' cv_until(cv, 10L)
+#' until(cv, 10L)
 #'
 #' @export
 #'
-cv_until <- function(cv, msec) invisible(.Call(rnng_cv_until, cv, msec))
+until <- function(cv, msec) invisible(.Call(rnng_cv_until, cv, msec))
 
 #' Reset a Condition Variable
 #'
 #' Resets the internal condition for a condition variable to an inital zero value.
 #'
-#' @inheritParams cv_wait
+#' @inheritParams wait
 #'
 #' @return Invisible NULL.
 #'

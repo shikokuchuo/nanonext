@@ -50,8 +50,12 @@ typedef struct nano_cv_s {
   R_xlen_t condition;
   nng_mtx *mtx;
   nng_cv *cv;
-  nano_aio *raio;
 } nano_cv;
+
+typedef struct nano_cv_aio_s {
+  nano_cv *cv;
+  nano_aio *aio;
+} nano_cv_aio;
 
 static void saio_complete(void *arg) {
 
@@ -73,14 +77,14 @@ static void raio_complete(void *arg) {
 
 static void raio_complete_signal(void *arg) {
 
-  nano_cv *cv = (nano_cv *) (arg);
-  cv->raio->result = nng_aio_result(cv->raio->aio);
-  if(!cv->raio->result)
-    cv->raio->data = nng_aio_get_msg(cv->raio->aio);
-  nng_mtx_lock(cv->mtx);
-  cv->condition++;
-  nng_cv_wake(cv->cv);
-  nng_mtx_unlock(cv->mtx);
+  nano_cv_aio *cv_aio = (nano_cv_aio *) (arg);
+  cv_aio->aio->result = nng_aio_result(cv_aio->aio->aio);
+  if(!cv_aio->aio->result)
+    cv_aio->aio->data = nng_aio_get_msg(cv_aio->aio->aio);
+  nng_mtx_lock(cv_aio->cv->mtx);
+  cv_aio->cv->condition++;
+  nng_cv_wake(cv_aio->cv->cv);
+  nng_mtx_unlock(cv_aio->cv->mtx);
 
 }
 
@@ -117,6 +121,15 @@ static void cv_finalizer(SEXP xptr) {
   nano_cv *xp = (nano_cv *) R_ExternalPtrAddr(xptr);
   nng_cv_free(xp->cv);
   nng_mtx_free(xp->mtx);
+  R_Free(xp);
+
+}
+
+static void cv_aio_finalizer(SEXP xptr) {
+
+  if (R_ExternalPtrAddr(xptr) == NULL)
+    return;
+  nano_cv_aio *xp = (nano_cv_aio *) R_ExternalPtrAddr(xptr);
   R_Free(xp);
 
 }
@@ -1253,7 +1266,91 @@ SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeou
 
 }
 
-// cvs -------------------------------------------------------------------------
+// cv specials -----------------------------------------------------------------
+
+SEXP rnng_cv_alloc() {
+
+  nano_cv *cvp = R_Calloc(1, nano_cv);
+  SEXP xp;
+  int xc;
+
+  xc = nng_mtx_alloc(&cvp->mtx);
+  if (xc)
+    ERROR_OUT(xc);
+
+  xc = nng_cv_alloc(&cvp->cv, cvp->mtx);
+  if (xc) {
+    nng_mtx_free(cvp->mtx);
+    ERROR_OUT(xc);
+  }
+
+  PROTECT(xp = R_MakeExternalPtr(cvp, nano_CvSymbol, R_NilValue));
+  R_RegisterCFinalizerEx(xp, cv_finalizer, TRUE);
+  Rf_classgets(xp, Rf_mkString("conditionVariable"));
+
+  UNPROTECT(1);
+  return xp;
+
+}
+
+SEXP rnng_cv_wait(SEXP cv) {
+
+  if (R_ExternalPtrTag(cv) != nano_CvSymbol)
+    Rf_error("'cv' is not a valid Condition Variable");
+
+  nano_cv *cvp = (nano_cv *) R_ExternalPtrAddr(cv);
+
+  nng_mtx_lock(cvp->mtx);
+  while (cvp->condition == 0)
+    nng_cv_wait(cvp->cv);
+
+  cvp->condition--;
+  nng_mtx_unlock(cvp->mtx);
+
+  return R_NilValue;
+
+}
+
+SEXP rnng_cv_until(SEXP cv, SEXP msec) {
+
+  if (R_ExternalPtrTag(cv) != nano_CvSymbol)
+    Rf_error("'cv' is not a valid Condition Variable");
+
+  nano_cv *cvp = (nano_cv *) R_ExternalPtrAddr(cv);
+  nng_time time = nng_clock();
+  switch (TYPEOF(msec)) {
+  case INTSXP:
+    time = time + (nng_time) INTEGER(msec)[0];
+    break;
+  case REALSXP:
+    time = time + (nng_time) Rf_asInteger(msec);
+    break;
+  }
+
+  nng_mtx_lock(cvp->mtx);
+  while (cvp->condition == 0) {
+    if (nng_cv_until(cvp->cv, time) == NNG_ETIMEDOUT) break;
+    cvp->condition--;
+  }
+  nng_mtx_unlock(cvp->mtx);
+
+  return R_NilValue;
+
+}
+
+SEXP rnng_cv_reset(SEXP cv) {
+
+  if (R_ExternalPtrTag(cv) != nano_CvSymbol)
+    Rf_error("'cv' is not a valid Condition Variable");
+
+  nano_cv *cvp = (nano_cv *) R_ExternalPtrAddr(cv);
+  nng_mtx_lock(cvp->mtx);
+  cvp->condition = 0;
+  nng_mtx_unlock(cvp->mtx);
+
+  return R_NilValue;
+
+}
 
 SEXP rnng_cv_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeout, SEXP keep, SEXP clo, SEXP cvar) {
 
@@ -1265,7 +1362,7 @@ SEXP rnng_cv_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP tim
   const int kpr = LOGICAL(keep)[0];
   const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) Rf_asInteger(timeout);
 
-  SEXP enc, sendaio, aio, env, fun;
+  SEXP enc, sendaio, aio, env, fun, signal;
   R_xlen_t xlen;
   unsigned char *dp;
   int xc;
@@ -1296,9 +1393,12 @@ SEXP rnng_cv_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP tim
   raio->type = RECVAIO;
   raio->mode = kpr ? -nano_matcharg(recvmode) : nano_matcharg(recvmode);
   raio->data = NULL;
-  cvp->raio = raio;
 
-  if ((xc = nng_aio_alloc(&raio->aio, raio_complete_signal, cvp))) {
+  nano_cv_aio *cv_raio = R_Calloc(1, nano_cv_aio);
+  cv_raio->aio = raio;
+  cv_raio->cv = cvp;
+
+  if ((xc = nng_aio_alloc(&raio->aio, raio_complete_signal, cv_raio))) {
     R_Free(raio);
     nng_aio_free(reqsaio);
     return kpr ? mk_error_recv(xc) : mk_error_data(xc);
@@ -1339,93 +1439,6 @@ SEXP rnng_cv_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP tim
 
   UNPROTECT(4);
   return env;
-
-}
-
-SEXP rnng_cv_alloc() {
-
-  nano_cv *cvp = R_Calloc(1, nano_cv);
-  SEXP xp;
-  int xc;
-
-  xc = nng_mtx_alloc(&cvp->mtx);
-  if (xc)
-    ERROR_OUT(xc);
-
-  xc = nng_cv_alloc(&cvp->cv, cvp->mtx);
-  if (xc) {
-    nng_mtx_free(cvp->mtx);
-    ERROR_OUT(xc);
-  }
-
-  PROTECT(xp = R_MakeExternalPtr(cvp, nano_CvSymbol, R_NilValue));
-  R_RegisterCFinalizerEx(xp, cv_finalizer, TRUE);
-  Rf_classgets(xp, Rf_mkString("conditionVariable"));
-
-  UNPROTECT(1);
-  return xp;
-
-}
-
-SEXP rnng_cv_wait(SEXP cv) {
-
-  if (R_ExternalPtrTag(cv) != nano_CvSymbol)
-    Rf_error("'cv' is not a valid Condition Variable");
-
-  nano_cv *cvp = (nano_cv *) R_ExternalPtrAddr(cv);
-
-  nng_mtx_lock(cvp->mtx);
-  while (cvp->condition == 0)
-    nng_cv_wait(cvp->cv);
-
-  cvp->condition--;
-  nng_mtx_unlock(cvp->mtx);
-  cvp->raio = NULL;
-
-  return R_NilValue;
-
-}
-
-SEXP rnng_cv_until(SEXP cv, SEXP msec) {
-
-  if (R_ExternalPtrTag(cv) != nano_CvSymbol)
-    Rf_error("'cv' is not a valid Condition Variable");
-
-  nano_cv *cvp = (nano_cv *) R_ExternalPtrAddr(cv);
-  nng_time time = nng_clock();
-  switch (TYPEOF(msec)) {
-  case INTSXP:
-    time = time + (nng_time) INTEGER(msec)[0];
-    break;
-  case REALSXP:
-    time = time + (nng_time) Rf_asInteger(msec);
-    break;
-  }
-
-  nng_mtx_lock(cvp->mtx);
-  while (cvp->condition == 0) {
-    if (nng_cv_until(cvp->cv, time) == NNG_ETIMEDOUT) break;
-    cvp->condition--;
-  }
-  nng_mtx_unlock(cvp->mtx);
-  cvp->raio = NULL;
-
-  return R_NilValue;
-
-}
-
-SEXP rnng_cv_reset(SEXP cv) {
-
-  if (R_ExternalPtrTag(cv) != nano_CvSymbol)
-    Rf_error("'cv' is not a valid Condition Variable");
-
-  nano_cv *cvp = (nano_cv *) R_ExternalPtrAddr(cv);
-  nng_mtx_lock(cvp->mtx);
-  cvp->condition = 0;
-  nng_mtx_unlock(cvp->mtx);
-  cvp->raio = NULL;
-
-  return R_NilValue;
 
 }
 

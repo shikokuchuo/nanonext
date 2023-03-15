@@ -17,6 +17,9 @@ Pass the 'conditionVariable' object to the special \code{cv_} forms
     of the functions returning 'recvAio' objects. Completion of the receive,
     which happens asynchronously will signal the condition variable by
     incrementing it by 1.
+
+    This will cause threads waiting on the condition variable (using
+    \code{\link{wait}} or \code{\link{until}}) to wake.
 }
 \examples{
 cv <- cv_new()

@@ -51,26 +51,24 @@ received.}
 A 'recvAio' (object of class 'recvAio') (invisibly).
 }
 \description{
-Implements a caller/client for the req node of the req/rep protocol. Sends
-    data to the rep node (executor/server) and returns an Aio, which can be
-    called when the result is required. When the result is received, the
-    supplied condition variable is signalled, causing threads waiting on the
-    condition variable to wake.
+Implements a signalling version of the caller/client for the req node of the
+    req/rep protocol. Sends data to the rep node (executor/server) and
+    returns an Aio, which can be called when the result is required.
 }
 \details{
 Sending the request and receiving the result are both performed async,
     hence the function will return immediately with a 'recvAio' object. Access
     the return value at \code{$data}.
 
-    This is designed so that the process on the server can run concurrently
-    without blocking the client.
+    When the receive is complete, the supplied condition variable is
+    signalled by incrementing it by 1.
 }
 \examples{
 req <- socket("req", listen = "tcp://127.0.0.1:6546")
 ctxq <- context(req)
 cv <- cv_new()
 aio <- cv_request(ctxq, data = 2022, timeout = 10, cv = cv)
-# cv_wait(cv) # uncommenting will block until the cv is signalled
+until(cv, 10L)
 close(req)
 
 # The following should be run in another process
