@@ -125,6 +125,15 @@ static void cv_finalizer(SEXP xptr) {
 
 }
 
+static void cv_aio_finalizer(SEXP xptr) {
+
+  if (R_ExternalPtrAddr(xptr) == NULL)
+    return;
+  nano_cv_aio *xp = (nano_cv_aio *) R_ExternalPtrAddr(xptr);
+  R_Free(xp);
+
+}
+
 static void raio_finalizer(SEXP xptr) {
 
   if (R_ExternalPtrAddr(xptr) == NULL)
@@ -1353,7 +1362,7 @@ SEXP rnng_cv_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP tim
   const int kpr = LOGICAL(keep)[0];
   const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) Rf_asInteger(timeout);
 
-  SEXP enc, sendaio, aio, env, fun;
+  SEXP enc, sendaio, aio, env, fun, signal;
   R_xlen_t xlen;
   unsigned char *dp;
   int xc;
@@ -1412,6 +1421,9 @@ SEXP rnng_cv_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP tim
   PROTECT(sendaio = R_MakeExternalPtr(reqsaio, R_NilValue, R_NilValue));
   R_RegisterCFinalizerEx(sendaio, reqsaio_finalizer, TRUE);
   R_MakeWeakRef(aio, sendaio, R_NilValue, TRUE);
+  PROTECT(signal = R_MakeExternalPtr(cv_raio, R_NilValue, R_NilValue));
+  R_RegisterCFinalizerEx(signal, cv_aio_finalizer, TRUE);
+  R_MakeWeakRef(aio, signal, R_NilValue, TRUE);
 
   if (kpr) {
     PROTECT(fun = Rf_allocSExp(CLOSXP));
@@ -1428,7 +1440,7 @@ SEXP rnng_cv_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP tim
   R_MakeActiveBinding(nano_DataSymbol, fun, env);
   Rf_classgets(env, nano_recvAio);
 
-  UNPROTECT(4);
+  UNPROTECT(5);
   return env;
 
 }
