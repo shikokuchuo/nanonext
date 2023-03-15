@@ -22,31 +22,41 @@ reset(cv)
 to be signalled.}
 }
 \value{
-For \code{cv()}, a 'conditionVariable' object, otherwise invisible
-    NULL.
+For \code{cv()}: a 'conditionVariable' object. For other functions:
+    invisible NULL.
 }
 \description{
-Use \code{cv()} to creates a new condition variable (protected by a mutex).
-    Other functions will wait on this condition being signalled by completion
-    of an asynchronous receive, wait until a certain time has elapsed, or
-    allows the internal state of the condition to be reset.
+Use \code{cv()} to create a new condition variable (protected by a mutex).
+    Other functions wait on this condition being signalled by completion
+    of an asynchronous receive, wait until a signal or a certain time has
+    elapsed, or resets the internal state of the condition variable.
 }
 \details{
-Pass the 'conditionVariable' object to the special \code{cv_} forms
-    of the functions returning 'recvAio' objects. Completion of the receive,
-    which happens asynchronously will signal the condition variable by
-    incrementing it by 1.
+Pass the 'conditionVariable' object to the special signalling forms
+    of the functions returning 'recvAio' objects \code{\link{recv_aio_signal}}
+    and \code{\link{request_signal}}. Completion of the receive, which happens
+    asynchronously and independently of the main R thread, will signal the
+    condition variable by incrementing it by 1.
 
-    This will cause threads waiting on the condition variable using
-    \code{wait()} or \code{until()} to wake.
+    This will cause The R execution thread waiting on the condition variable
+    using \code{wait()} or \code{until()} to wake and continue.
 
-    The condition internal to this 'conditionVariable' maintains a state.
-    Each signal increments the condition by 1. Each time \code{wait()}
-    or \code{until()} returns after being woken (i.e. not due to timeout),
-    the condition is decremented by 1.
+    The condition internal to this 'conditionVariable' maintains a state
+    (counter). Each signal increments the condition by 1. Each time
+    \code{wait()} or \code{until()} returns after being woken (i.e. not due
+    to timeout), the condition is decremented by 1.
+
+    This, coupled with the ability to reset the internal condition state at
+    any time using \code{reset()}, affords a high degree of flexibility in
+    designing complex concurrent applications.
 
     For \code{until()}, if 'msec' is non-integer, it will be coerced to
     integer. Non-numeric input will be ignored and return immediately.
+
+    Technical information: internal to the 'conditionVariable' object is a
+    mutex. All actions on the condition variable are performed while holding
+    the mutex. These functions are cross-platform and rely on the capabilities
+    exposed by the NNG library.
 }
 \examples{
 cv <- cv()

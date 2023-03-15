@@ -122,6 +122,60 @@ recv_aio <- function(con,
                      n = 65536L)
   data <- .Call(rnng_recv_aio, con, mode, timeout, keep.raw, n, environment())
 
+#' Receive Async and Signal a Condition
+#'
+#' Implements a signalling version of \code{\link{recv_aio}} to receive data
+#'     asynchronously over a connection (Socket, Context or Stream).
+#'
+#' @inheritParams recv_aio
+#' @param cv a condition variable that should be signalled when the reply is
+#'     received.
+#'
+#' @return A 'recvAio' (object of class 'recvAio') (invisibly).
+#'
+#' @details Async receive is always non-blocking and returns a 'recvAio'
+#'     immediately.
+#'
+#'     For a 'recvAio', the received message is available at \code{$data}, and
+#'     the raw message at \code{$raw} (if kept). An 'unresolved' logical NA is
+#'     returned if the async operation is yet to complete.
+#'
+#'     In case of an error, an integer 'errorValue' is returned (to be
+#'     distiguishable from an integer message value). This can be verified using
+#'     \code{\link{is_error_value}}.
+#'
+#'     If the raw message was successfully received but an error occurred in
+#'     unserialisation or data conversion (for example if the incorrect mode was
+#'     specified), the received raw vector will be stored at \code{$data} to
+#'     allow for the data to be recovered.
+#'
+#'     When the receive is complete, the supplied condition variable is
+#'     signalled by incrementing it by 1.
+#'
+#' @examples
+#' s1 <- socket("pair", listen = "abstract://nanonext")
+#' cv <- cv()
+#' msg <- recv_aio_signal(s1, timeout = 100, cv = cv)
+#' until(cv, 10L)
+#' msg$data
+#' close(s1)
+#'
+#' # in another process in parallel
+#' s2 <- socket("pair", dial = "abstract://nanonext")
+#' res <- send_aio(s2, c(1.1, 2.2, 3.3), mode = "raw", timeout = 100)
+#' close(s2)
+#'
+#' @export
+#'
+recv_aio_signal <- function(con,
+                            mode = c("serial", "character", "complex", "double",
+                                     "integer", "logical", "numeric", "raw"),
+                            timeout = NULL,
+                            keep.raw = FALSE,
+                            n = 65536L,
+                            cv)
+  data <- .Call(rnng_cv_recv_aio, con, mode, timeout, keep.raw, n, environment(), cv)
+
 # Core aio functions -----------------------------------------------------------
 
 #' Call the Value of an Asynchronous Aio Operation

@@ -211,8 +211,7 @@ request <- function(context,
 #'     returns an Aio, which can be called when the result is required.
 #'
 #' @inheritParams request
-#' @param cv a condition variable that should be signalled when the reply is
-#'     received.
+#' @inheritParams recv_aio_signal
 #'
 #' @return A 'recvAio' (object of class 'recvAio') (invisibly).
 #'
@@ -227,7 +226,7 @@ request <- function(context,
 #' req <- socket("req", listen = "tcp://127.0.0.1:6546")
 #' ctxq <- context(req)
 #' cv <- cv()
-#' aio <- cv_request(ctxq, data = 2022, timeout = 10, cv = cv)
+#' aio <- request_signal(ctxq, data = 2022, timeout = 10, cv = cv)
 #' until(cv, 10L)
 #' close(req)
 #'
@@ -239,14 +238,14 @@ request <- function(context,
 #'
 #' @export
 #'
-cv_request <- function(context,
-                       data,
-                       send_mode = c("serial", "raw"),
-                       recv_mode = c("serial", "character", "complex", "double",
-                                     "integer", "logical", "numeric", "raw"),
-                       timeout = NULL,
-                       keep.raw = FALSE,
-                       cv)
+request_signal <- function(context,
+                           data,
+                           send_mode = c("serial", "raw"),
+                           recv_mode = c("serial", "character", "complex", "double",
+                                         "integer", "logical", "numeric", "raw"),
+                           timeout = NULL,
+                           keep.raw = FALSE,
+                           cv)
   data <- .Call(rnng_cv_request, context, data, send_mode, recv_mode, timeout,
                 keep.raw, environment(), cv)
 

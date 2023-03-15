@@ -2,7 +2,7 @@
 
 #### New Features
 
-* Implements condition variables (from the NNG library), which allows the R execution thread to wait until it is signalled by an incoming message - adding functions `cv_new()`, `wait()`, `until()`, `cv_reset()` and `cv_request()`.
+* Implements condition variables (from the NNG library), which allows the R execution thread to wait until it is signalled by an incoming message - adding core functions `cv()`, `wait()`, `until()`, and `reset()`, as well as signalling receive functions `recv_aio_signal()` and `request_signal()`.
 
 #### Updates
 
