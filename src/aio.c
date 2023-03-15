@@ -1455,6 +1455,7 @@ SEXP rnng_cv_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP keep, SEXP bytes, 
 
     if ((xc = nng_aio_set_iov(iaio->aio, 1u, iov))) {
       nng_aio_free(iaio->aio);
+      R_Free(cv_raio);
       R_Free(iov->iov_buf);
       R_Free(iov);
       R_Free(iaio);
