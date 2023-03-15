@@ -226,7 +226,7 @@ request <- function(context,
 #' @examples
 #' req <- socket("req", listen = "tcp://127.0.0.1:6546")
 #' ctxq <- context(req)
-#' cv <- cv_new()
+#' cv <- cv()
 #' aio <- cv_request(ctxq, data = 2022, timeout = 10, cv = cv)
 #' until(cv, 10L)
 #' close(req)

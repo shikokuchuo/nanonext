@@ -262,87 +262,65 @@ is_nul_byte <- function(x) .Call(rnng_is_nul_byte, x)
 #'
 status_code <- function(x) .Call(rnng_status_code, x)
 
-#' New Condition Variable
+#' Condition Variables
 #'
-#' Creates a new condition variable (protected by a mutex).
+#' Use \code{cv()} to creates a new condition variable (protected by a mutex).
+#'     Other functions will wait on this condition being signalled by completion
+#'     of an asynchronous receive, wait until a certain time has elapsed, or
+#'     allows the internal state of the condition to be reset.
 #'
-#' @return A 'conditionVariable' object.
+#' @return For \code{cv()}, a 'conditionVariable' object, otherwise invisible
+#'     NULL.
 #'
 #' @details Pass the 'conditionVariable' object to the special \code{cv_} forms
 #'     of the functions returning 'recvAio' objects. Completion of the receive,
 #'     which happens asynchronously will signal the condition variable by
 #'     incrementing it by 1.
 #'
-#'     This will cause threads waiting on the condition variable (using
-#'     \code{\link{wait}} or \code{\link{until}}) to wake.
+#'     This will cause threads waiting on the condition variable using
+#'     \code{wait()} or \code{until()} to wake.
+#'
+#'     The condition internal to this 'conditionVariable' maintains a state.
+#'     Each signal increments the condition by 1. Each time \code{wait()}
+#'     or \code{until()} returns after being woken (i.e. not due to timeout),
+#'     the condition is decremented by 1.
+#'
+#'     For \code{until()}, if 'msec' is non-integer, it will be coerced to
+#'     integer. Non-numeric input will be ignored and return immediately.
 #'
 #' @examples
-#' cv <- cv_new()
+#' cv <- cv()
 #'
 #' @export
 #'
-cv_new <- function() .Call(rnng_cv_alloc)
+cv <- function() .Call(rnng_cv_alloc)
 
-#' Wait Upon a Condition Variable
-#'
-#' Waits upon a condition variable to be signalled by an incoming message being
-#'     received.
-#'
 #' @param cv a 'conditionVariable' object.
 #'
-#' @return Invisible NULL.
-#'
-#' @details The internal condition maintains a state. Each signal increments the
-#'     condition by 1. Each time this function returns, the condition is
-#'     decremented by 1.
-#'
 #' @examples
-#' cv <- cv_new()
 #' # wait(cv) # uncommenting will block until the cv is signalled
 #'
+#' @rdname cv
 #' @export
 #'
 wait <- function(cv) invisible(.Call(rnng_cv_wait, cv))
 
-#' Wait Upon a Condition Variable Until a Certain Time
-#'
-#' Waits upon a condition variable to be signalled by an incoming message being
-#'     received, until a certain time has elapsed.
-#'
-#' @inheritParams wait
 #' @param msec maximum time in milliseconds to wait for the condition variable
 #'     to be signalled.
 #'
-#' @details If 'msec' is non-integer, it will be coerced to integer. Non-numeric
-#'     input will be ignored and return immediately.
-#'
-#'     The internal condition maintains a state. Each signal increments the
-#'     condition by 1. Each time this function returns due to being woken (as
-#'     opposed to timeout) the condition is decremented by 1.
-#'
-#' @return Invisible NULL.
-#'
 #' @examples
-#' cv <- cv_new()
 #' until(cv, 10L)
 #'
+#' @rdname cv
 #' @export
 #'
 until <- function(cv, msec) invisible(.Call(rnng_cv_until, cv, msec))
 
-#' Reset a Condition Variable
-#'
-#' Resets the internal condition for a condition variable to an inital zero value.
-#'
-#' @inheritParams wait
-#'
-#' @return Invisible NULL.
-#'
 #' @examples
-#' cv <- cv_new()
-#' cv_reset(cv)
+#' reset(cv)
 #'
+#' @rdname cv
 #' @export
 #'
-cv_reset <- function(cv) invisible(.Call(rnng_cv_reset, cv))
+reset <- function(cv) invisible(.Call(rnng_cv_reset, cv))
 
