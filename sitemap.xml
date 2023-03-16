@@ -97,16 +97,10 @@
     <loc>https://shikokuchuo.net/nanonext/reference/recv_aio.html</loc>
   </url>
   <url>
-    <loc>https://shikokuchuo.net/nanonext/reference/recv_aio_signal.html</loc>
-  </url>
-  <url>
     <loc>https://shikokuchuo.net/nanonext/reference/reply.html</loc>
   </url>
   <url>
     <loc>https://shikokuchuo.net/nanonext/reference/request.html</loc>
-  </url>
-  <url>
-    <loc>https://shikokuchuo.net/nanonext/reference/request_signal.html</loc>
   </url>
   <url>
     <loc>https://shikokuchuo.net/nanonext/reference/send.html</loc>
