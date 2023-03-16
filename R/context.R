@@ -206,23 +206,19 @@ request <- function(context,
 
 #' Request over Context and Signal a Condition Variable
 #'
-#' Implements a signalling version of the caller/client for the req node of the
-#'     req/rep protocol. Sends data to the rep node (executor/server) and
-#'     returns an Aio, which can be called when the result is required.
+#' A signalling version of the function takes a 'conditionVariable' as an
+#'     additional argument and signals it when the async receive is complete.
 #'
-#' @inheritParams request
 #' @inheritParams recv_aio_signal
 #'
-#' @return A 'recvAio' (object of class 'recvAio') (invisibly).
-#'
-#' @details Sending the request and receiving the result are both performed async,
-#'     hence the function will return immediately with a 'recvAio' object. Access
-#'     the return value at \code{$data}.
-#'
-#'     When the receive is complete, the supplied condition variable is
-#'     signalled by incrementing it by 1.
+#' @details \strong{For the signalling version}: when the receive is complete,
+#'     the supplied 'conditionVariable' is signalled by incrementing it by 1.
+#'     This happens asynchronously and independently of the main R execution
+#'     thread.
 #'
 #' @examples
+#' # Signalling a condition variable
+#'
 #' req <- socket("req", listen = "tcp://127.0.0.1:6546")
 #' ctxq <- context(req)
 #' cv <- cv()
@@ -236,6 +232,7 @@ request <- function(context,
 #' # reply(ctxp, execute = function(x) x + 1, timeout = 10)
 #' # close(rep)
 #'
+#' @rdname request
 #' @export
 #'
 request_signal <- function(context,

@@ -2,6 +2,7 @@
 % Please edit documentation in R/aio.R
 \name{recv_aio}
 \alias{recv_aio}
+\alias{recv_aio_signal}
 \title{Receive Async}
 \usage{
 recv_aio(
@@ -11,6 +12,16 @@ recv_aio(
   timeout = NULL,
   keep.raw = FALSE,
   n = 65536L
+)
+
+recv_aio_signal(
+  con,
+  mode = c("serial", "character", "complex", "double", "integer", "logical", "numeric",
+    "raw"),
+  timeout = NULL,
+  keep.raw = FALSE,
+  n = 65536L,
+  cv
 )
 }
 \arguments{
@@ -34,12 +45,18 @@ value will error.}
 \item{n}{[default 65536L] applicable to Streams only, the maximum number of
 bytes to receive. Can be an over-estimate, but note that a buffer of this
 size is reserved.}
+
+\item{cv}{\strong{For the signalling version}: a 'conditionVariable' that
+should be signalled when the async receive is complete.}
 }
 \value{
 A 'recvAio' (object of class 'recvAio') (invisibly).
 }
 \description{
 Receive data asynchronously over a connection (Socket, Context or Stream).
+
+A signalling version of the function takes a 'conditionVariable' as an
+    additional argument and signals it when the async receive is complete.
 }
 \details{
 Async receive is always non-blocking and returns a 'recvAio'
@@ -62,6 +79,11 @@ Async receive is always non-blocking and returns a 'recvAio'
     unserialisation or data conversion (for example if the incorrect mode was
     specified), the received raw vector will be stored at \code{$data} to
     allow for the data to be recovered.
+
+\strong{For the signalling version}: when the receive is complete,
+    the supplied 'conditionVariable' is signalled by incrementing it by 1.
+    This happens asynchronously and independently of the main R execution
+    thread.
 }
 \examples{
 s1 <- socket("pair", listen = "inproc://nanonext")
@@ -85,6 +107,20 @@ msg$raw
 msg$data
 
 close(s1)
+close(s2)
+
+# Signalling a condition variable
+
+s1 <- socket("pair", listen = "tcp://127.0.0.1:6546")
+cv <- cv()
+msg <- recv_aio_signal(s1, timeout = 100, cv = cv)
+until(cv, 10L)
+msg$data
+close(s1)
+
+# in another process in parallel
+s2 <- socket("pair", dial = "tcp://127.0.0.1:6546")
+res <- send_aio(s2, c(1.1, 2.2, 3.3), mode = "raw", timeout = 100)
 close(s2)
 
 }

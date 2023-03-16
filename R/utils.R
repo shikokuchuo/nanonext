@@ -264,34 +264,30 @@ status_code <- function(x) .Call(rnng_status_code, x)
 
 #' Condition Variables
 #'
-#' Use \code{cv()} to create a new condition variable (protected by a mutex).
-#'     Other functions wait on this condition being signalled by completion
-#'     of an asynchronous receive, wait until a signal or a certain time has
-#'     elapsed, or resets the internal state of the condition variable.
+#' Use \code{cv} to create a new condition variable (protected by a mutex).
 #'
-#' @return For \code{cv()}: a 'conditionVariable' object. For other functions:
-#'     invisible NULL.
+#' @return For \code{cv}: a 'conditionVariable' object.
 #'
-#' @details Pass the 'conditionVariable' object to the special signalling forms
-#'     of the functions returning 'recvAio' objects \code{\link{recv_aio_signal}}
-#'     and \code{\link{request_signal}}. Completion of the receive, which happens
+#'     For other functions: invisible NULL.
+#'
+#' @details Pass the 'conditionVariable' to the special signalling forms
+#'     of the asynchronous receive functions: \code{\link{recv_aio_signal}} or
+#'     \code{\link{request_signal}}.
+#'
+#'     Completion of the receive, which happens
 #'     asynchronously and independently of the main R thread, will signal the
-#'     condition variable by incrementing it by 1.
-#'
-#'     This will cause the R execution thread waiting on the condition variable
-#'     using \code{wait()} or \code{until()} to wake and continue.
+#'     condition variable by incrementing it by 1. This will cause the R
+#'     execution thread waiting on the condition variable using \code{wait} or
+#'     \code{until} to wake and continue.
 #'
 #'     The condition internal to this 'conditionVariable' maintains a state
-#'     (counter). Each signal increments the condition by 1. Each time
-#'     \code{wait()} or \code{until()} returns after being woken (i.e. not due
-#'     to timeout), the condition is decremented by 1.
+#'     (counter). Each signal increments the counter by 1. Each time
+#'     \code{wait} or \code{until} returns after being woken (i.e. not due
+#'     to timeout), the counter is decremented by 1.
 #'
 #'     This, coupled with the ability to reset the internal condition state at
-#'     any time using \code{reset()}, affords a high degree of flexibility in
+#'     any time using \code{reset}, affords a high degree of flexibility in
 #'     designing complex concurrent applications.
-#'
-#'     For \code{until()}, if 'msec' is non-integer, it will be coerced to
-#'     integer. Non-numeric input will be ignored and return immediately.
 #'
 #'     Technical information: internal to the 'conditionVariable' object is a
 #'     mutex. All actions on the condition variable are performed while holding
@@ -305,6 +301,11 @@ status_code <- function(x) .Call(rnng_status_code, x)
 #'
 cv <- function() .Call(rnng_cv_alloc)
 
+#' Condition Variables - Wait
+#'
+#' Use \code{wait} to wait on a condition being signalled by completion of an
+#'     asynchronous receive.
+#'
 #' @param cv a 'conditionVariable' object.
 #'
 #' @examples
@@ -315,8 +316,16 @@ cv <- function() .Call(rnng_cv_alloc)
 #'
 wait <- function(cv) invisible(.Call(rnng_cv_wait, cv))
 
+#' Condition Variables - Until
+#'
+#' Use \code{until} to wait until a future time on a condition being signalled
+#'     by completion of an asynchronous receive.
+#'
 #' @param msec maximum time in milliseconds to wait for the condition variable
 #'     to be signalled.
+#'
+#' @details For \code{until}: if 'msec' is non-integer, it will be coerced to
+#'     integer. Non-numeric input will be ignored and return immediately.
 #'
 #' @examples
 #' until(cv, 10L)
@@ -326,6 +335,10 @@ wait <- function(cv) invisible(.Call(rnng_cv_wait, cv))
 #'
 until <- function(cv, msec) invisible(.Call(rnng_cv_until, cv, msec))
 
+#' Condition Variables - Reset
+#'
+#' Use \code{reset} to reset the internal state of a condition variable.
+#'
 #' @examples
 #' reset(cv)
 #'

@@ -2,6 +2,7 @@
 % Please edit documentation in R/context.R
 \name{request}
 \alias{request}
+\alias{request_signal}
 \title{Request over Context (RPC Client for Req/Rep Protocol)}
 \usage{
 request(
@@ -12,6 +13,17 @@ request(
     "numeric", "raw"),
   timeout = NULL,
   keep.raw = FALSE
+)
+
+request_signal(
+  context,
+  data,
+  send_mode = c("serial", "raw"),
+  recv_mode = c("serial", "character", "complex", "double", "integer", "logical",
+    "numeric", "raw"),
+  timeout = NULL,
+  keep.raw = FALSE,
+  cv
 )
 }
 \arguments{
@@ -42,6 +54,9 @@ that this applies to receiving the result.}
 \item{keep.raw}{[default FALSE] logical flag whether to keep and return the
 received raw vector along with the converted data. Supplying a non-logical
 value will error.}
+
+\item{cv}{\strong{For the signalling version}: a 'conditionVariable' that
+should be signalled when the async receive is complete.}
 }
 \value{
 A 'recvAio' (object of class 'recvAio') (invisibly).
@@ -50,6 +65,9 @@ A 'recvAio' (object of class 'recvAio') (invisibly).
 Implements a caller/client for the req node of the req/rep protocol. Sends
     data to the rep node (executor/server) and returns an Aio, which can be
     called when the result is required.
+
+A signalling version of the function takes a 'conditionVariable' as an
+    additional argument and signals it when the async receive is complete.
 }
 \details{
 Sending the request and receiving the result are both performed async,
@@ -66,6 +84,11 @@ Sending the request and receiving the result are both performed async,
     received (as \code{$data} if 'recv_mode' = 'serial', as \code{$raw}
     otherwise). This allows an error to be easily distinguished from a NULL
     return value. \code{\link{is_nul_byte}} can be used to test for a nul byte.
+
+\strong{For the signalling version}: when the receive is complete,
+    the supplied 'conditionVariable' is signalled by incrementing it by 1.
+    This happens asynchronously and independently of the main R execution
+    thread.
 }
 \examples{
 req <- socket("req", listen = "tcp://127.0.0.1:6546")
@@ -81,5 +104,20 @@ call_aio(aio)$data
 
 close(req)
 close(rep)
+
+# Signalling a condition variable
+
+req <- socket("req", listen = "tcp://127.0.0.1:6546")
+ctxq <- context(req)
+cv <- cv()
+aio <- request_signal(ctxq, data = 2022, timeout = 10, cv = cv)
+until(cv, 10L)
+close(req)
+
+# The following should be run in another process
+# rep <- socket("rep", dial = "tcp://127.0.0.1:6546")
+# ctxp <- context(rep)
+# reply(ctxp, execute = function(x) x + 1, timeout = 10)
+# close(rep)
 
 }

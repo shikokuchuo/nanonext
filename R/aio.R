@@ -124,35 +124,20 @@ recv_aio <- function(con,
 
 #' Receive Async and Signal a Condition
 #'
-#' Implements a signalling version of \code{\link{recv_aio}} to receive data
-#'     asynchronously over a connection (Socket, Context or Stream).
+#' A signalling version of the function takes a 'conditionVariable' as an
+#'     additional argument and signals it when the async receive is complete.
 #'
-#' @inheritParams recv_aio
-#' @param cv a condition variable that should be signalled when the reply is
-#'     received.
+#' @param cv \strong{For the signalling version}: a 'conditionVariable' that
+#'     should be signalled when the async receive is complete.
 #'
-#' @return A 'recvAio' (object of class 'recvAio') (invisibly).
-#'
-#' @details Async receive is always non-blocking and returns a 'recvAio'
-#'     immediately.
-#'
-#'     For a 'recvAio', the received message is available at \code{$data}, and
-#'     the raw message at \code{$raw} (if kept). An 'unresolved' logical NA is
-#'     returned if the async operation is yet to complete.
-#'
-#'     In case of an error, an integer 'errorValue' is returned (to be
-#'     distiguishable from an integer message value). This can be verified using
-#'     \code{\link{is_error_value}}.
-#'
-#'     If the raw message was successfully received but an error occurred in
-#'     unserialisation or data conversion (for example if the incorrect mode was
-#'     specified), the received raw vector will be stored at \code{$data} to
-#'     allow for the data to be recovered.
-#'
-#'     When the receive is complete, the supplied condition variable is
-#'     signalled by incrementing it by 1.
+#' @details \strong{For the signalling version}: when the receive is complete,
+#'     the supplied 'conditionVariable' is signalled by incrementing it by 1.
+#'     This happens asynchronously and independently of the main R execution
+#'     thread.
 #'
 #' @examples
+#' # Signalling a condition variable
+#'
 #' s1 <- socket("pair", listen = "tcp://127.0.0.1:6546")
 #' cv <- cv()
 #' msg <- recv_aio_signal(s1, timeout = 100, cv = cv)
@@ -165,6 +150,7 @@ recv_aio <- function(con,
 #' res <- send_aio(s2, c(1.1, 2.2, 3.3), mode = "raw", timeout = 100)
 #' close(s2)
 #'
+#' @rdname recv_aio
 #' @export
 #'
 recv_aio_signal <- function(con,
