@@ -90,6 +90,43 @@ sha384 <- function(x, key = NULL, convert = TRUE) .Call(rnng_sha384, x, key, con
 #'
 sha512 <- function(x, key = NULL, convert = TRUE) .Call(rnng_sha512, x, key, convert)
 
+
+#' Cryptographic Hashing Using the SHA-1 Algorithm
+#'
+#' Returns a SHA-1 hash or HMAC of the supplied R object. Uses the optimised
+#'     implementation from the Mbed TLS library. For secure applications, one of
+#'     the SHA-2 algorithms such as \code{\link{sha256}} should be considered
+#'     instead.
+#'
+#' @inheritParams sha256
+#' @param key (optional) supply a secret key to generate an HMAC. If missing or
+#'     NULL, the SHA-1 hash of 'x' is returned.
+#'
+#' @return A raw vector or character string depending on 'convert', of byte
+#'     length 20.
+#'
+#' @details For arguments 'x' and 'key', a raw vector is hashed directly, a
+#'     scalar character string is translated to raw before hashing, whilst all
+#'     other objects are serialised first.
+#'
+#'     The result of hashing is always a raw vector, which is translated to a
+#'     character string if 'convert' is TRUE, or returned directly if 'convert'
+#'     is FALSE.
+#'
+#' @examples
+#' # SHA-1 hash as character string:
+#' sha1("hello world!")
+#'
+#' # SHA-1 hash as raw vector:
+#' sha1("hello world!", convert = FALSE)
+#'
+#' # Obtain HMAC:
+#' sha1("hello world!", "SECRET_KEY")
+#'
+#' @export
+#'
+sha1 <- function(x, key = NULL, convert = TRUE) .Call(rnng_sha1, x, key, convert)
+
 # nanonext - Base64 Encoding Decoding ------------------------------------------
 
 #' Base64 Encode / Decode

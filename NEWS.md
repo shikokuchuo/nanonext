@@ -3,6 +3,7 @@
 #### New Features
 
 * Implements condition variables (from the NNG library), which allows the R execution thread to wait until it is signalled by an incoming message - adding core functions `cv()`, `wait()`, `until()`, and `reset()`, as well as signalling receive functions `recv_aio_signal()` and `request_signal()`.
+* Adds the `sha1()` fast cryptographic hash and HMAC generation function from the 'Mbed TLS' library. Use one of the SHA-2 algorithms for secure applications.
 
 #### Updates
 

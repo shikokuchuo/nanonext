@@ -166,6 +166,7 @@ static const R_CallMethodDef callMethods[] = {
   {"rnng_send", (DL_FUNC) &rnng_send, 4},
   {"rnng_send_aio", (DL_FUNC) &rnng_send_aio, 5},
   {"rnng_set_opt", (DL_FUNC) &rnng_set_opt, 3},
+  {"rnng_sha1", (DL_FUNC) &rnng_sha1, 3},
   {"rnng_sha224", (DL_FUNC) &rnng_sha224, 3},
   {"rnng_sha256", (DL_FUNC) &rnng_sha256, 3},
   {"rnng_sha384", (DL_FUNC) &rnng_sha384, 3},

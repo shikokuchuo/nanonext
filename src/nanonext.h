@@ -49,6 +49,7 @@
 #ifdef NANONEXT_TLS
 #include <mbedtls/base64.h>
 #include <mbedtls/md.h>
+#include <mbedtls/sha1.h>
 #include <mbedtls/sha256.h>
 #include <mbedtls/sha512.h>
 #include <mbedtls/version.h>
@@ -157,6 +158,7 @@ extern SEXP rnng_request(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 extern SEXP rnng_send(SEXP, SEXP, SEXP, SEXP);
 extern SEXP rnng_send_aio(SEXP, SEXP, SEXP, SEXP, SEXP);
 extern SEXP rnng_set_opt(SEXP, SEXP, SEXP);
+extern SEXP rnng_sha1(SEXP, SEXP, SEXP);
 extern SEXP rnng_sha224(SEXP, SEXP, SEXP);
 extern SEXP rnng_sha256(SEXP, SEXP, SEXP);
 extern SEXP rnng_sha384(SEXP, SEXP, SEXP);

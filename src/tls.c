@@ -36,6 +36,7 @@ SEXP rnng_version(void) {
 
 // Definitions and Statics -----------------------------------------------------
 
+#define SHA1_KEY_SIZE 20
 #define SHA224_KEY_SIZE 28
 #define SHA256_KEY_SIZE 32
 #define SHA384_KEY_SIZE 48
@@ -299,6 +300,54 @@ SEXP rnng_sha512(SEXP x, SEXP key, SEXP convert) {
 
     out = Rf_allocVector(RAWSXP, SHA512_KEY_SIZE);
     memcpy(RAW(out), output, SHA512_KEY_SIZE);
+
+  }
+
+  return out;
+
+}
+
+SEXP rnng_sha1(SEXP x, SEXP key, SEXP convert) {
+
+  SEXP out;
+  int xc = 0;
+  unsigned char output[SHA1_KEY_SIZE];
+
+  nano_hash xhash = nano_anytoraw(x);
+
+  if (key == R_NilValue) {
+
+#if MBEDTLS_VERSION_MAJOR >= 3
+    xc = mbedtls_sha1(xhash.buf, xhash.sz, output);
+#elif MBEDTLS_VERSION_MAJOR == 2 && MBEDTLS_VERSION_MINOR >=5
+    xc = mbedtls_sha1_ret(xhash.buf, xhash.sz, output);
+#else
+    mbedtls_sha1(xhash.buf, xhash.sz, output);
+#endif
+
+  } else {
+
+    nano_hash khash = nano_anytoraw(key);
+    xc = mbedtls_md_hmac(mbedtls_md_info_from_type(MBEDTLS_MD_SHA1),
+                         khash.buf, khash.sz, xhash.buf, xhash.sz, output);
+
+  }
+
+  if (xc)
+    Rf_error("error generating hash");
+
+  if (LOGICAL(convert)[0]) {
+
+    SEXP vec;
+    PROTECT(vec = Rf_allocVector(RAWSXP, SHA1_KEY_SIZE));
+    memcpy(RAW(vec), output, SHA1_KEY_SIZE);
+    out = nano_hashToChar(vec);
+    UNPROTECT(1);
+
+  } else {
+
+    out = Rf_allocVector(RAWSXP, SHA1_KEY_SIZE);
+    memcpy(RAW(out), output, SHA1_KEY_SIZE);
 
   }
 
