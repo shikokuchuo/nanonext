@@ -465,6 +465,21 @@ SEXP rnng_unresolved(SEXP x) {
 
 }
 
+SEXP rnng_unresolved2(SEXP aio) {
+
+  if (TYPEOF(aio) != ENVSXP)
+    return Rf_ScalarLogical(0);
+
+  SEXP coreaio = Rf_findVarInFrame(aio, nano_AioSymbol);
+  if (R_ExternalPtrTag(coreaio) != nano_AioSymbol || R_ExternalPtrAddr(coreaio) == NULL)
+    return Rf_ScalarLogical(0);
+
+  nano_aio *aiop = (nano_aio *) R_ExternalPtrAddr(coreaio);
+
+  return nng_aio_busy(aiop->aio) ?  Rf_ScalarLogical(1) : Rf_ScalarLogical(0);
+
+}
+
 // send recv aio functions -----------------------------------------------------
 
 SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
