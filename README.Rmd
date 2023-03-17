@@ -47,7 +47,7 @@ Web utilities:
 - ncurl - (async) http(s) client
 - stream - secure websockets client (and generic low-level socket interface)
 - messenger - console-based instant messaging with authentication
-- sha[224|256|384|512] - cryptographic hash and HMAC algorithms
+- sha[1|224|256|384|512] - cryptographic hash and HMAC algorithms
 - base64[enc|dec] - base64 encoding and decoding
 
 ### Table of Contents
@@ -497,9 +497,9 @@ close(s)
 
 ### Cryptographic Hashing
 
-Functions performing hashing using the SHA-2 series of algorithms is included: `sha224()`, `sha256()`, `sha384()` and `sha512()`.
+Functions performing hashing using the SHA-1 and SHA-2 series of algorithms are included: `sha1()`, `sha224()`, `sha256()`, `sha384()` and `sha512()`.
 
-These call the secure, optimized implementations from the 'Mbed TLS' library and return a hash either directly as a raw vector or converted to a character string. For use in authentication, raw vectors can be compared directly for the highest performance.
+These expose the secure, optimized implementations from the 'Mbed TLS' library and return a hash either directly as a raw vector or converted to a character string. For use in authentication, raw vectors can be compared directly for the highest performance.
 
 To generate an HMAC (hash-based message authentication code), simply supply the value 'key' to use as the secret key.
 

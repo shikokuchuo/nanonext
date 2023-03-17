@@ -49,7 +49,7 @@ Web utilities:
 - stream - secure websockets client (and generic low-level socket
   interface)
 - messenger - console-based instant messaging with authentication
-- sha\[224\|256\|384\|512\] - cryptographic hash and HMAC algorithms
+- sha\[1\|224\|256\|384\|512\] - cryptographic hash and HMAC algorithms
 - base64\[enc\|dec\] - base64 encoding and decoding
 
 ### Table of Contents
@@ -366,7 +366,7 @@ aio
 #> < recvAio >
 #>  - $data for message data
 aio$data |> str()
-#>  num [1:100000000] -0.182 -0.18 0.383 -1.144 -0.9 ...
+#>  num [1:100000000] 0.717 0.762 -0.886 -0.38 -0.3 ...
 ```
 
 As `call_aio()` is blocking and will wait for completion, an alternative
@@ -534,11 +534,11 @@ ncurl("https://httpbin.org/headers")
 #>   [1] 7b 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73
 #>  [26] 74 22 3a 20 22 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22
 #>  [51] 58 2d 41 6d 7a 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31
-#>  [76] 2d 36 34 31 33 35 37 65 32 2d 35 32 65 30 66 38 63 33 36 35 61 38 32 64 64
-#> [101] 34 30 38 33 35 64 30 64 30 22 0a 20 20 7d 0a 7d 0a
+#>  [76] 2d 36 34 31 34 64 30 66 66 2d 32 32 65 35 62 35 61 33 36 37 30 36 32 62 35
+#> [101] 65 31 61 39 35 64 63 32 34 22 0a 20 20 7d 0a 7d 0a
 #> 
 #> $data
-#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-641357e2-52e0f8c365a82dd40835d0d0\"\n  }\n}\n"
+#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6414d0ff-22e5b5a367062b5e1a95dc24\"\n  }\n}\n"
 ```
 
 For advanced use, supports additional HTTP methods such as POST or PUT.
@@ -559,13 +559,13 @@ res
 
 call_aio(res)$headers
 #> $Date
-#> [1] "Thu, 16 Mar 2023 17:54:42 GMT"
+#> [1] "Fri, 17 Mar 2023 20:43:43 GMT"
 #> 
 #> $Server
 #> [1] "gunicorn/19.9.0"
 
 res$data
-#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-641357e2-033af6ca73bfdf2549816aba\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
+#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6414d0ff-2f4c03bf4b64a0ec16fa583a\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
 ```
 
 In this respect, it may be used as a performant and lightweight method
@@ -591,7 +591,7 @@ transact(sess)
 #> 
 #> $headers
 #> $headers$date
-#> [1] "Thu, 16 Mar 2023 17:54:43 GMT"
+#> [1] "Fri, 17 Mar 2023 20:43:44 GMT"
 #> 
 #> 
 #> $raw
@@ -601,15 +601,15 @@ transact(sess)
 #>  [76] 22 43 6f 6e 74 65 6e 74 2d 54 79 70 65 22 3a 20 22 61 70 70 6c 69 63 61 74
 #> [101] 69 6f 6e 2f 6a 73 6f 6e 22 2c 20 0a 20 20 20 20 22 48 6f 73 74 22 3a 20 22
 #> [126] 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22 58 2d 41 6d 7a
-#> [151] 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31 2d 36 34 31 33
-#> [176] 35 37 65 32 2d 32 30 62 35 66 63 61 61 35 62 66 33 65 66 32 36 33 33 34 38
-#> [201] 30 63 36 33 22 0a 20 20 7d 2c 20 0a 20 20 22 6f 72 69 67 69 6e 22 3a 20 22
-#> [226] 31 39 35 2e 31 36 37 2e 31 33 32 2e 31 32 32 22 2c 20 0a 20 20 22 75 72 6c
-#> [251] 22 3a 20 22 68 74 74 70 73 3a 2f 2f 68 74 74 70 62 69 6e 2e 6f 72 67 2f 67
-#> [276] 65 74 22 0a 7d 0a
+#> [151] 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31 2d 36 34 31 34
+#> [176] 64 31 30 30 2d 35 61 31 65 66 64 64 61 31 38 38 66 37 35 65 36 36 37 32 36
+#> [201] 30 32 38 64 22 0a 20 20 7d 2c 20 0a 20 20 22 6f 72 69 67 69 6e 22 3a 20 22
+#> [226] 31 38 35 2e 32 32 35 2e 34 35 2e 34 39 22 2c 20 0a 20 20 22 75 72 6c 22 3a
+#> [251] 20 22 68 74 74 70 73 3a 2f 2f 68 74 74 70 62 69 6e 2e 6f 72 67 2f 67 65 74
+#> [276] 22 0a 7d 0a
 #> 
 #> $data
-#> [1] "{\n  \"args\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-641357e2-20b5fcaa5bf3ef2633480c63\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"https://httpbin.org/get\"\n}\n"
+#> [1] "{\n  \"args\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6414d100-5a1efdda188f75e66726028d\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"https://httpbin.org/get\"\n}\n"
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -670,10 +670,11 @@ close(s)
 
 ### Cryptographic Hashing
 
-Functions performing hashing using the SHA-2 series of algorithms is
-included: `sha224()`, `sha256()`, `sha384()` and `sha512()`.
+Functions performing hashing using the SHA-1 and SHA-2 series of
+algorithms are included: `sha1()`, `sha224()`, `sha256()`, `sha384()`
+and `sha512()`.
 
-These call the secure, optimized implementations from the ‘Mbed TLS’
+These expose the secure, optimized implementations from the ‘Mbed TLS’
 library and return a hash either directly as a raw vector or converted
 to a character string. For use in authentication, raw vectors can be
 compared directly for the highest performance.
