@@ -4,7 +4,7 @@
 \alias{cv}
 \alias{wait}
 \alias{until}
-\alias{reset}
+\alias{cv_reset}
 \title{Condition Variables}
 \usage{
 cv()
@@ -13,7 +13,7 @@ wait(cv)
 
 until(cv, msec)
 
-reset(cv)
+cv_reset(cv)
 }
 \arguments{
 \item{cv}{a 'conditionVariable' object.}
@@ -35,7 +35,7 @@ Use \code{wait} to wait on a condition being signalled by completion of an
 Use \code{until} to wait until a future time on a condition being signalled
     by completion of an asynchronous receive.
 
-Use \code{reset} to reset the internal state of a condition variable.
+Use \code{cv_reset} to reset the internal state of a condition variable.
 }
 \details{
 Pass the 'conditionVariable' to the special signalling forms
@@ -54,7 +54,7 @@ Pass the 'conditionVariable' to the special signalling forms
     to timeout), the counter is decremented by 1.
 
     This, coupled with the ability to reset the internal condition state at
-    any time using \code{reset}, affords a high degree of flexibility in
+    any time using \code{cv_reset}, affords a high degree of flexibility in
     designing complex concurrent applications.
 
     Technical information: internal to the 'conditionVariable' object is a
@@ -72,6 +72,6 @@ cv <- cv()
 
 until(cv, 10L)
 
-reset(cv)
+cv_reset(cv)
 
 }

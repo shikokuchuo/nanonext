@@ -286,7 +286,7 @@ status_code <- function(x) .Call(rnng_status_code, x)
 #'     to timeout), the counter is decremented by 1.
 #'
 #'     This, coupled with the ability to reset the internal condition state at
-#'     any time using \code{reset}, affords a high degree of flexibility in
+#'     any time using \code{cv_reset}, affords a high degree of flexibility in
 #'     designing complex concurrent applications.
 #'
 #'     Technical information: internal to the 'conditionVariable' object is a
@@ -337,13 +337,13 @@ until <- function(cv, msec) invisible(.Call(rnng_cv_until, cv, msec))
 
 #' Condition Variables - Reset
 #'
-#' Use \code{reset} to reset the internal state of a condition variable.
+#' Use \code{cv_reset} to reset the internal state of a condition variable.
 #'
 #' @examples
-#' reset(cv)
+#' cv_reset(cv)
 #'
 #' @rdname cv
 #' @export
 #'
-reset <- function(cv) invisible(.Call(rnng_cv_reset, cv))
+cv_reset <- function(cv) invisible(.Call(rnng_cv_reset, cv))
 
