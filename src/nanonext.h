@@ -133,6 +133,7 @@ extern SEXP rnng_cv_recv_aio(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 extern SEXP rnng_cv_request(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 extern SEXP rnng_cv_reset(SEXP);
 extern SEXP rnng_cv_until(SEXP, SEXP);
+extern SEXP rnng_cv_value(SEXP);
 extern SEXP rnng_cv_wait(SEXP);
 extern SEXP rnng_device(SEXP, SEXP);
 extern SEXP rnng_dial(SEXP, SEXP, SEXP, SEXP);

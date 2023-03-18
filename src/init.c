@@ -139,6 +139,7 @@ static const R_CallMethodDef callMethods[] = {
   {"rnng_cv_request", (DL_FUNC) &rnng_cv_request, 8},
   {"rnng_cv_reset", (DL_FUNC) &rnng_cv_reset, 1},
   {"rnng_cv_until", (DL_FUNC) &rnng_cv_until, 2},
+  {"rnng_cv_value", (DL_FUNC) &rnng_cv_value, 1},
   {"rnng_cv_wait", (DL_FUNC) &rnng_cv_wait, 1},
   {"rnng_device", (DL_FUNC) &rnng_device, 2},
   {"rnng_dial", (DL_FUNC) &rnng_dial, 4},

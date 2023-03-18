@@ -47,7 +47,7 @@ typedef struct nano_handle_s {
 } nano_handle;
 
 typedef struct nano_cv_s {
-  R_xlen_t condition;
+  int condition;
   nng_mtx *mtx;
   nng_cv *cv;
 } nano_cv;
@@ -1374,7 +1374,18 @@ SEXP rnng_cv_reset(SEXP cv) {
   cvp->condition = 0;
   nng_mtx_unlock(cvp->mtx);
 
-  return R_NilValue;
+  return nano_success;
+
+}
+
+SEXP rnng_cv_value(SEXP cv) {
+
+  if (R_ExternalPtrTag(cv) != nano_CvSymbol)
+    Rf_error("'cv' is not a valid Condition Variable");
+
+  nano_cv *cvp = (nano_cv *) R_ExternalPtrAddr(cv);
+
+  return Rf_ScalarInteger(cvp->condition);
 
 }
 

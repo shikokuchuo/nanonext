@@ -264,35 +264,38 @@ status_code <- function(x) .Call(rnng_status_code, x)
 
 #' Condition Variables
 #'
-#' Use \code{cv} to create a new condition variable (protected by a mutex).
+#' \code{cv} creates a new condition variable (protected by a mutex).
 #'
 #' @return For \code{cv}: a 'conditionVariable' object.
 #'
-#'     For other functions: invisible NULL.
+#'     For \code{wait} and \code{until}: invisible NULL.
+#'
+#'     For \code{cv_value} and \code{cv_reset}: integer value of the condition
+#'     variable.
 #'
 #' @details Pass the 'conditionVariable' to the special signalling forms
 #'     of the asynchronous receive functions: \code{\link{recv_aio_signal}} or
 #'     \code{\link{request_signal}}.
 #'
-#'     Completion of the receive, which happens
-#'     asynchronously and independently of the main R thread, will signal the
-#'     condition variable by incrementing it by 1. This will cause the R
-#'     execution thread waiting on the condition variable using \code{wait} or
-#'     \code{until} to wake and continue.
+#'     Completion of the receive, which happens asynchronously and independently
+#'     of the main R thread, will signal the condition variable by incrementing
+#'     it by 1. This will cause the R execution thread waiting on the condition
+#'     variable using \code{wait} or \code{until} to wake and continue.
 #'
 #'     The condition internal to this 'conditionVariable' maintains a state
 #'     (counter). Each signal increments the counter by 1. Each time
 #'     \code{wait} or \code{until} returns after being woken (i.e. not due
 #'     to timeout), the counter is decremented by 1.
 #'
-#'     This, coupled with the ability to reset the internal condition state at
-#'     any time using \code{cv_reset}, affords a high degree of flexibility in
-#'     designing complex concurrent applications.
+#'     The internal condition may be queried at any time using \code{cv_value}
+#'     and reset to zero using \code{cv_reset}. This affords a high degree of
+#'     flexibility in designing complex concurrent applications.
 #'
 #'     Technical information: internal to the 'conditionVariable' object is a
 #'     mutex. All actions on the condition variable are performed while holding
-#'     the mutex. These functions are cross-platform and rely on the capabilities
-#'     exposed by the NNG library.
+#'     the mutex (apart from simply reading the value by \code{cv_value}). These
+#'     functions are cross-platform and expose capabilities present in the NNG
+#'     library.
 #'
 #' @examples
 #' cv <- cv()
@@ -303,7 +306,7 @@ cv <- function() .Call(rnng_cv_alloc)
 
 #' Condition Variables - Wait
 #'
-#' Use \code{wait} to wait on a condition being signalled by completion of an
+#' \code{wait} waits on a condition being signalled by completion of an
 #'     asynchronous receive.
 #'
 #' @param cv a 'conditionVariable' object.
@@ -318,8 +321,8 @@ wait <- function(cv) invisible(.Call(rnng_cv_wait, cv))
 
 #' Condition Variables - Until
 #'
-#' Use \code{until} to wait until a future time on a condition being signalled
-#'     by completion of an asynchronous receive.
+#' \code{until} waits until a future time on a condition being signalled by
+#'     completion of an asynchronous receive.
 #'
 #' @param msec maximum time in milliseconds to wait for the condition variable
 #'     to be signalled.
@@ -335,15 +338,24 @@ wait <- function(cv) invisible(.Call(rnng_cv_wait, cv))
 #'
 until <- function(cv, msec) invisible(.Call(rnng_cv_until, cv, msec))
 
-#' Condition Variables - Reset
+#' Condition Variables - Value
 #'
-#' Use \code{cv_reset} to reset the internal state of a condition variable.
+#' \code{cv_value} and \code{cv_reset} are auxiliary functions to respectively
+#'     obtain and reset the internal value of a condition variable.
 #'
+#' @examples
+#' cv_value(cv)
+#'
+#' @rdname cv
+#' @export
+#'
+cv_value <- function(cv) .Call(rnng_cv_value, cv)
+
 #' @examples
 #' cv_reset(cv)
 #'
 #' @rdname cv
 #' @export
 #'
-cv_reset <- function(cv) invisible(.Call(rnng_cv_reset, cv))
+cv_reset <- function(cv) .Call(rnng_cv_reset, cv)
 
