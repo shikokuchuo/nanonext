@@ -10,9 +10,29 @@ msg_pipe(aio)
 \item{aio}{a 'recvAio' object, not including 'ncurlAio' objects.}
 }
 \value{
-A 'connectionPipe' object.
+A 'nanoPipe' object.
 }
 \description{
-Returns the pipe associated with a received message. A pipe can be thought of
-    as a single connection.
+Returns the pipe (single connection) associated with a received message.
+}
+\details{
+Note: this function returns an external pointer to an existing pipe,
+    it does not allocate a new one.
+}
+\examples{
+s <- socket("req", listen = "inproc://nanopipe")
+s1 <- socket("rep", dial = "inproc://nanopipe")
+ctx <- context(s)
+ctx1 <- context(s1)
+
+send(ctx, "test")
+r <- recv_aio(ctx1)
+call_aio(r)
+
+pipe <- msg_pipe(r)
+pipe
+
+close(s)
+close(s1)
+
 }

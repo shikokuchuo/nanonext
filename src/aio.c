@@ -208,6 +208,15 @@ static void session_finalizer(SEXP xptr) {
 
 }
 
+static void pipe_finalizer(SEXP xptr) {
+
+  if (R_ExternalPtrAddr(xptr) == NULL)
+    return;
+  nng_pipe *xp = (nng_pipe *) R_ExternalPtrAddr(xptr);
+  R_Free(xp);
+
+}
+
 static SEXP mk_error_saio(const int xc, SEXP clo) {
 
   SEXP err = PROTECT(Rf_ScalarInteger(xc));
@@ -1648,18 +1657,33 @@ SEXP rnng_msg_pipe(SEXP aio) {
   if (aiop->result)
     Rf_error("the pipe can only be retrieved from a successfully completed Aio");
 
-  nng_pipe pipe = nng_msg_get_pipe(nng_aio_get_msg(aiop->aio));
+  nng_pipe *pp = R_Calloc(1, nng_pipe);
+  *pp = nng_msg_get_pipe(nng_aio_get_msg(aiop->aio));
 
   SEXP klass, out;
-  PROTECT(out = R_MakeExternalPtr(&pipe, nano_PipeSymbol, R_NilValue));
+  PROTECT(out = R_MakeExternalPtr(pp, nano_PipeSymbol, R_NilValue));
+  R_RegisterCFinalizerEx(out, pipe_finalizer, TRUE);
   PROTECT(klass = Rf_allocVector(STRSXP, 2));
   SET_STRING_ELT(klass, 0, Rf_mkChar("nanoPipe"));
   SET_STRING_ELT(klass, 1, Rf_mkChar("nano"));
   Rf_classgets(out, klass);
-  Rf_setAttrib(out, nano_IdSymbol, Rf_ScalarInteger(nng_pipe_id(pipe)));
+  Rf_setAttrib(out, nano_IdSymbol, Rf_ScalarInteger(nng_pipe_id(*pp)));
 
   UNPROTECT(2);
   return out;
+
+}
+
+SEXP rnng_pipe_close(SEXP pipe) {
+
+  if (R_ExternalPtrTag(pipe) != nano_PipeSymbol)
+    Rf_error("'pipe' is not a valid Pipe");
+  nng_pipe *p = (nng_pipe *) R_ExternalPtrAddr(pipe);
+  const int xc = nng_pipe_close(*p);
+  if (xc)
+    ERROR_RET(xc);
+
+  return nano_success;
 
 }
 

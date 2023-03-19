@@ -361,14 +361,38 @@ cv_reset <- function(cv) .Call(rnng_cv_reset, cv)
 
 #' Message Pipe
 #'
-#' Returns the pipe associated with a received message. A pipe can be thought of
-#'     as a single connection.
+#' Returns the pipe (single connection) associated with a received message.
 #'
 #' @param aio a 'recvAio' object, not including 'ncurlAio' objects.
 #'
-#' @return A 'connectionPipe' object.
+#' @details Note: this function returns an external pointer to an existing pipe,
+#'     it does not allocate a new one.
+#'
+#' @return A 'nanoPipe' object.
+#'
+#' @examples
+#' s <- socket("req", listen = "inproc://nanopipe")
+#' s1 <- socket("rep", dial = "inproc://nanopipe")
+#' ctx <- context(s)
+#' ctx1 <- context(s1)
+#'
+#' send(ctx, "test")
+#' r <- recv_aio(ctx1)
+#' call_aio(r)
+#'
+#' pipe <- msg_pipe(r)
+#' pipe
+#'
+#' close(s)
+#' close(s1)
 #'
 #' @export
 #'
 msg_pipe <- function(aio) .Call(rnng_msg_pipe, aio)
+
+#' @rdname close
+#' @method close nanoPipe
+#' @export
+#'
+close.nanoPipe <- function(con, ...) invisible(.Call(rnng_pipe_close, con))
 
