@@ -1627,3 +1627,39 @@ SEXP rnng_cv_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP tim
 
 }
 
+// pipes -----------------------------------------------------------------------
+
+SEXP rnng_msg_pipe(SEXP aio) {
+
+  if (TYPEOF(aio) != ENVSXP || Rf_inherits(aio, "ncurlAio") || Rf_inherits(aio, "sendAio"))
+    Rf_error("object is not a valid Aio");
+
+  const SEXP coreaio = Rf_findVarInFrame(aio, nano_AioSymbol);
+  if (R_ExternalPtrTag(coreaio) != nano_AioSymbol)
+    Rf_error("object is not a valid Aio");
+  if (R_ExternalPtrAddr(coreaio) == NULL)
+    Rf_error("object is not an active Aio");
+
+  nano_aio *aiop = (nano_aio *) R_ExternalPtrAddr(coreaio);
+
+  if (nng_aio_busy(aiop->aio))
+    Rf_error("the pipe can only be retrieved from a resolved Aio");
+
+  if (aiop->result)
+    Rf_error("the pipe can only be retrieved from a successfully completed Aio");
+
+  nng_pipe pipe = nng_msg_get_pipe(nng_aio_get_msg(aiop->aio));
+
+  SEXP klass, out;
+  PROTECT(out = R_MakeExternalPtr(&pipe, nano_PipeSymbol, R_NilValue));
+  PROTECT(klass = Rf_allocVector(STRSXP, 2));
+  SET_STRING_ELT(klass, 0, Rf_mkChar("nanoPipe"));
+  SET_STRING_ELT(klass, 1, Rf_mkChar("nano"));
+  Rf_classgets(out, klass);
+  Rf_setAttrib(out, nano_IdSymbol, Rf_ScalarInteger(nng_pipe_id(pipe)));
+
+  UNPROTECT(2);
+  return out;
+
+}
+

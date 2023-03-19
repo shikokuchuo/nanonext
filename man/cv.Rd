@@ -56,8 +56,8 @@ Pass the 'conditionVariable' to the special signalling forms
 
     The condition internal to this 'conditionVariable' maintains a state
     (counter). Each signal increments the counter by 1. Each time
-    \code{wait} or \code{until} returns after being woken (i.e. not due
-    to timeout), the counter is decremented by 1.
+    \code{wait} or \code{until} returns (apart from due to timeout), the
+    counter is decremented by 1.
 
     The internal condition may be queried at any time using \code{cv_value}
     and reset to zero using \code{cv_reset}. This affords a high degree of

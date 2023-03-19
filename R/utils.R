@@ -182,7 +182,7 @@ device <- function(s1, s2) .Call(rnng_device, s1, s2)
 #' @details Is the object an Aio (inheriting from class 'sendAio' or 'recvAio').
 #'
 #'     Is the object an object inheriting from class 'nano' i.e. a nanoSocket,
-#'     nanoContext, nanoStream, nanoListener, nanoDialer or nano Object.
+#'     nanoContext, nanoStream, nanoListener, nanoDialer, nanoPipe or nano Object.
 #'
 #' @examples
 #' sock <- socket(listen = "inproc://isaio")
@@ -284,8 +284,8 @@ status_code <- function(x) .Call(rnng_status_code, x)
 #'
 #'     The condition internal to this 'conditionVariable' maintains a state
 #'     (counter). Each signal increments the counter by 1. Each time
-#'     \code{wait} or \code{until} returns after being woken (i.e. not due
-#'     to timeout), the counter is decremented by 1.
+#'     \code{wait} or \code{until} returns (apart from due to timeout), the
+#'     counter is decremented by 1.
 #'
 #'     The internal condition may be queried at any time using \code{cv_value}
 #'     and reset to zero using \code{cv_reset}. This affords a high degree of
@@ -358,4 +358,17 @@ cv_value <- function(cv) .Call(rnng_cv_value, cv)
 #' @export
 #'
 cv_reset <- function(cv) .Call(rnng_cv_reset, cv)
+
+#' Message Pipe
+#'
+#' Returns the pipe associated with a received message. A pipe can be thought of
+#'     as a single connection.
+#'
+#' @param aio a 'recvAio' object, not including 'ncurlAio' objects.
+#'
+#' @return A 'connectionPipe' object.
+#'
+#' @export
+#'
+msg_pipe <- function(aio) .Call(rnng_msg_pipe, aio)
 

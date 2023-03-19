@@ -28,6 +28,7 @@ SEXP nano_HeadersSymbol;
 SEXP nano_IdSymbol;
 SEXP nano_ListenerSymbol;
 SEXP nano_NewEnvSymbol;
+SEXP nano_PipeSymbol;
 SEXP nano_ProtocolSymbol;
 SEXP nano_RawSymbol;
 SEXP nano_ResponseSymbol;
@@ -66,6 +67,7 @@ static void RegisterSymbols(void) {
   nano_IdSymbol = Rf_install("id");
   nano_ListenerSymbol = Rf_install("listener");
   nano_NewEnvSymbol = Rf_install("new.env");
+  nano_PipeSymbol = Rf_install("pipe");
   nano_ProtocolSymbol = Rf_install("protocol");
   nano_RawSymbol = Rf_install("raw");
   nano_ResponseSymbol = Rf_install("response");
@@ -154,6 +156,7 @@ static const R_CallMethodDef callMethods[] = {
   {"rnng_listener_start", (DL_FUNC) &rnng_listener_start, 1},
   {"rnng_messenger", (DL_FUNC) &rnng_messenger, 1},
   {"rnng_messenger_thread_create", (DL_FUNC) &rnng_messenger_thread_create, 1},
+  {"rnng_msg_pipe", (DL_FUNC) &rnng_msg_pipe, 1},
   {"rnng_ncurl", (DL_FUNC) &rnng_ncurl, 8},
   {"rnng_ncurl_aio", (DL_FUNC) &rnng_ncurl_aio, 7},
   {"rnng_ncurl_session", (DL_FUNC) &rnng_ncurl_session, 7},
