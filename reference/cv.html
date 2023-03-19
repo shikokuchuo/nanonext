@@ -117,8 +117,8 @@ to be signalled.</p></dd>
     variable using <code>wait</code> or <code>until</code> to wake and continue.</p>
 <p>The condition internal to this 'conditionVariable' maintains a state
     (counter). Each signal increments the counter by 1. Each time
-    <code>wait</code> or <code>until</code> returns after being woken (i.e. not due
-    to timeout), the counter is decremented by 1.</p>
+    <code>wait</code> or <code>until</code> returns (apart from due to timeout), the
+    counter is decremented by 1.</p>
 <p>The internal condition may be queried at any time using <code>cv_value</code>
     and reset to zero using <code>cv_reset</code>. This affords a high degree of
     flexibility in designing complex concurrent applications.</p>
