@@ -396,3 +396,40 @@ msg_pipe <- function(aio) .Call(rnng_msg_pipe, aio)
 #'
 close.nanoPipe <- function(con, ...) invisible(.Call(rnng_pipe_close, con))
 
+#' Pipe Notify
+#'
+#' Signals a 'conditionVariable' whenever pipes are created or closed at a socket.
+#'
+#' @inheritParams context
+#' @inheritParams wait
+#' @param open [default TRUE] logical value whether to signal on pipe open.
+#' @param close [default TRUE] logical value whether to signal on pipe close.
+#'
+#' @details For pipe open: this event occurs after the pipe is fully added to
+#'     the socket. Prior to this time, it is not possible to communicate over
+#'     the pipe with the socket.
+#'
+#'     For pipe close: this event occurs after the pipe has been removed from
+#'     the socket. The underlying transport may be closed at this point, and it
+#'     is not possible communicate using this pipe.
+#'
+#' @return Invisibly, an integer exit code (zero on success).
+#'
+#' @examples
+#' s <- socket(listen = "inproc://nanopipe")
+#' cv <- cv()
+#' pipe_notify(s, cv, open = TRUE, close = TRUE)
+#' cv_value(cv)
+#'
+#' s1 <- socket(dial = "inproc://nanopipe")
+#' cv_value(cv)
+#' close(s1)
+#' cv_value(cv)
+#'
+#' close(s)
+#'
+#' @export
+#'
+pipe_notify <- function(socket, cv, open = TRUE, close = TRUE)
+  invisible(.Call(rnng_pipe_notify, socket, cv, open, close))
+

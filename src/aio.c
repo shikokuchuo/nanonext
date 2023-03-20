@@ -1334,7 +1334,6 @@ SEXP rnng_cv_wait(SEXP cv) {
     Rf_error("'cv' is not a valid Condition Variable");
 
   nano_cv *cvp = (nano_cv *) R_ExternalPtrAddr(cv);
-
   nng_mtx_lock(cvp->mtx);
   while (cvp->condition == 0)
     nng_cv_wait(cvp->cv);
@@ -1682,6 +1681,43 @@ SEXP rnng_pipe_close(SEXP pipe) {
   const int xc = nng_pipe_close(*p);
   if (xc)
     ERROR_RET(xc);
+
+  return nano_success;
+
+}
+
+static void pipe_cb_signal_cv(nng_pipe p, nng_pipe_ev ev, void *arg) {
+
+  nano_cv *cv = (nano_cv *) arg;
+  nng_mtx_lock(cv->mtx);
+  cv->condition++;
+  nng_cv_wake(cv->cv);
+  nng_mtx_unlock(cv->mtx);
+
+}
+
+SEXP rnng_pipe_notify(SEXP socket, SEXP cv, SEXP open, SEXP close) {
+
+  if (R_ExternalPtrTag(socket) != nano_SocketSymbol)
+    Rf_error("'socket' is not a valid Socket");
+
+  if (R_ExternalPtrTag(cv) != nano_CvSymbol)
+    Rf_error("'cv' is not a valid Condition Variable");
+
+  nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(socket);
+  nano_cv *cvp = (nano_cv *) R_ExternalPtrAddr(cv);
+  int xc;
+
+  if (LOGICAL(open)[0]) {
+    xc = nng_pipe_notify(*sock, NNG_PIPE_EV_ADD_POST, pipe_cb_signal_cv, cvp);
+    if (xc)
+      ERROR_RET(xc);
+  }
+  if (LOGICAL(close)[0]) {
+    xc = nng_pipe_notify(*sock, NNG_PIPE_EV_REM_POST, pipe_cb_signal_cv, cvp);
+    if (xc)
+      ERROR_RET(xc);
+  }
 
   return nano_success;
 
