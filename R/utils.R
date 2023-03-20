@@ -264,7 +264,8 @@ status_code <- function(x) .Call(rnng_status_code, x)
 
 #' Condition Variables
 #'
-#' \code{cv} creates a new condition variable (protected by a mutex).
+#' \code{cv} creates a new condition variable (protected by a mutex internal to
+#'     the object).
 #'
 #' @return For \code{cv}: a 'conditionVariable' object.
 #'
@@ -273,14 +274,17 @@ status_code <- function(x) .Call(rnng_status_code, x)
 #'     For \code{cv_value} and \code{cv_reset}: integer value of the condition
 #'     variable.
 #'
-#' @details Pass the 'conditionVariable' to the special signalling forms
-#'     of the asynchronous receive functions: \code{\link{recv_aio_signal}} or
-#'     \code{\link{request_signal}}.
+#' @details Pass the 'conditionVariable' to the signalling forms of the
+#'     asynchronous receive functions: \code{\link{recv_aio_signal}} or
+#'     \code{\link{request_signal}}. Alternatively, to be notified of a pipe
+#'     event, pass it to \code{\link{pipe_notify}}.
 #'
-#'     Completion of the receive, which happens asynchronously and independently
-#'     of the main R thread, will signal the condition variable by incrementing
-#'     it by 1. This will cause the R execution thread waiting on the condition
-#'     variable using \code{wait} or \code{until} to wake and continue.
+#'     Completion of the receive or pipe event, which happens asynchronously and
+#'     independently of the main R thread, will signal the condition variable by
+#'     incrementing it by 1.
+#'
+#'     This will cause the R execution thread waiting on the condition variable
+#'     using \code{wait} or \code{until} to wake and continue.
 #'
 #'     The condition internal to this 'conditionVariable' maintains a state
 #'     (counter). Each signal increments the counter by 1. Each time
@@ -290,12 +294,6 @@ status_code <- function(x) .Call(rnng_status_code, x)
 #'     The internal condition may be queried at any time using \code{cv_value}
 #'     and reset to zero using \code{cv_reset}. This affords a high degree of
 #'     flexibility in designing complex concurrent applications.
-#'
-#'     Technical information: internal to the 'conditionVariable' object is a
-#'     mutex. All actions on the condition variable are performed while holding
-#'     the mutex (apart from simply reading the value by \code{cv_value}). These
-#'     functions are cross-platform and expose capabilities present in the NNG
-#'     library.
 #'
 #' @examples
 #' cv <- cv()
@@ -398,27 +396,29 @@ close.nanoPipe <- function(con, ...) invisible(.Call(rnng_pipe_close, con))
 
 #' Pipe Notify
 #'
-#' Signals a 'conditionVariable' whenever pipes are created or closed at a socket.
+#' Signals a 'conditionVariable' whenever pipes (individual connections) are
+#'     added or removed at a socket.
 #'
-#' @inheritParams context
-#' @inheritParams wait
-#' @param open [default TRUE] logical value whether to signal on pipe open.
-#' @param close [default TRUE] logical value whether to signal on pipe close.
+#' @param socket a Socket.
+#' @param cv a 'conditionVariable' to signal.
+#' @param add [default TRUE] logical value whether to signal when a pipe is added.
+#' @param remove [default TRUE] logical value whether to signal when a pipe is
+#'     removed.
 #'
-#' @details For pipe open: this event occurs after the pipe is fully added to
-#'     the socket. Prior to this time, it is not possible to communicate over
-#'     the pipe with the socket.
+#' @details For add: this event occurs after the pipe is fully added to the
+#'     socket. Prior to this time, it is not possible to communicate over the
+#'     pipe with the socket.
 #'
-#'     For pipe close: this event occurs after the pipe has been removed from
-#'     the socket. The underlying transport may be closed at this point, and it
-#'     is not possible communicate using this pipe.
+#'     For remove: this event occurs after the pipe has been removed from the
+#'     socket. The underlying transport may be closed at this point, and it is
+#'     not possible to communicate using this pipe.
 #'
 #' @return Invisibly, an integer exit code (zero on success).
 #'
 #' @examples
 #' s <- socket(listen = "inproc://nanopipe")
 #' cv <- cv()
-#' pipe_notify(s, cv, open = TRUE, close = TRUE)
+#' pipe_notify(s, cv, add = TRUE, remove = TRUE)
 #' cv_value(cv)
 #'
 #' s1 <- socket(dial = "inproc://nanopipe")
@@ -430,6 +430,6 @@ close.nanoPipe <- function(con, ...) invisible(.Call(rnng_pipe_close, con))
 #'
 #' @export
 #'
-pipe_notify <- function(socket, cv, open = TRUE, close = TRUE)
-  invisible(.Call(rnng_pipe_notify, socket, cv, open, close))
+pipe_notify <- function(socket, cv, add = TRUE, remove = TRUE)
+  invisible(.Call(rnng_pipe_notify, socket, cv, add, remove))
 

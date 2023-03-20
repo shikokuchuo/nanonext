@@ -1696,7 +1696,7 @@ static void pipe_cb_signal_cv(nng_pipe p, nng_pipe_ev ev, void *arg) {
 
 }
 
-SEXP rnng_pipe_notify(SEXP socket, SEXP cv, SEXP open, SEXP close) {
+SEXP rnng_pipe_notify(SEXP socket, SEXP cv, SEXP add, SEXP remove) {
 
   if (R_ExternalPtrTag(socket) != nano_SocketSymbol)
     Rf_error("'socket' is not a valid Socket");
@@ -1708,12 +1708,12 @@ SEXP rnng_pipe_notify(SEXP socket, SEXP cv, SEXP open, SEXP close) {
   nano_cv *cvp = (nano_cv *) R_ExternalPtrAddr(cv);
   int xc;
 
-  if (LOGICAL(open)[0]) {
+  if (LOGICAL(add)[0]) {
     xc = nng_pipe_notify(*sock, NNG_PIPE_EV_ADD_POST, pipe_cb_signal_cv, cvp);
     if (xc)
       ERROR_RET(xc);
   }
-  if (LOGICAL(close)[0]) {
+  if (LOGICAL(remove)[0]) {
     xc = nng_pipe_notify(*sock, NNG_PIPE_EV_REM_POST, pipe_cb_signal_cv, cvp);
     if (xc)
       ERROR_RET(xc);

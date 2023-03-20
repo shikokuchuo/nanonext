@@ -4,36 +4,38 @@
 \alias{pipe_notify}
 \title{Pipe Notify}
 \usage{
-pipe_notify(socket, cv, open = TRUE, close = TRUE)
+pipe_notify(socket, cv, add = TRUE, remove = TRUE)
 }
 \arguments{
 \item{socket}{a Socket.}
 
-\item{cv}{a 'conditionVariable' object.}
+\item{cv}{a 'conditionVariable' to signal.}
 
-\item{open}{[default TRUE] logical value whether to signal on pipe open.}
+\item{add}{[default TRUE] logical value whether to signal when a pipe is added.}
 
-\item{close}{[default TRUE] logical value whether to signal on pipe close.}
+\item{remove}{[default TRUE] logical value whether to signal when a pipe is
+removed.}
 }
 \value{
 Invisibly, an integer exit code (zero on success).
 }
 \description{
-Signals a 'conditionVariable' whenever pipes are created or closed at a socket.
+Signals a 'conditionVariable' whenever pipes (individual connections) are
+    added or removed at a socket.
 }
 \details{
-For pipe open: this event occurs after the pipe is fully added to
-    the socket. Prior to this time, it is not possible to communicate over
-    the pipe with the socket.
+For add: this event occurs after the pipe is fully added to the
+    socket. Prior to this time, it is not possible to communicate over the
+    pipe with the socket.
 
-    For pipe close: this event occurs after the pipe has been removed from
-    the socket. The underlying transport may be closed at this point, and it
-    is not possible communicate using this pipe.
+    For remove: this event occurs after the pipe has been removed from the
+    socket. The underlying transport may be closed at this point, and it is
+    not possible to communicate using this pipe.
 }
 \examples{
 s <- socket(listen = "inproc://nanopipe")
 cv <- cv()
-pipe_notify(s, cv, open = TRUE, close = TRUE)
+pipe_notify(s, cv, add = TRUE, remove = TRUE)
 cv_value(cv)
 
 s1 <- socket(dial = "inproc://nanopipe")
