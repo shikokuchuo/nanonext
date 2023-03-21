@@ -81,7 +81,7 @@ cv_value and cv_reset are auxiliary functions to respectively
 <span></span>
 <span><span class="fu">cv_value</span><span class="op">(</span><span class="va">cv</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">cv_reset</span><span class="op">(</span><span class="va">cv</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">cv_reset</span><span class="op">(</span><span class="va">cv</span>, condition <span class="op">=</span> <span class="cn">TRUE</span>, flag <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -94,6 +94,15 @@ cv_value and cv_reset are auxiliary functions to respectively
 <dd><p>maximum time in milliseconds to wait for the condition variable
 to be signalled.</p></dd>
 
+
+<dt>condition</dt>
+<dd><p>[default TRUE] logical value whether to reset the
+condition (counter).</p></dd>
+
+
+<dt>flag</dt>
+<dd><p>[default TRUE] logical value whether to reset the flag.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
@@ -102,7 +111,8 @@ to be signalled.</p></dd>
 <p>For <code>cv</code>: a 'conditionVariable' object.</p>
 
 
-<p>For <code>wait</code> and <code>until</code>: invisible NULL.</p>
+<p>For <code>wait</code> and <code>until</code>: logical value TRUE, or else FALSE if a
+    flag has been set.</p>
 
 
 <p>For <code>cv_value</code> and <code>cv_reset</code>: integer value of the condition
@@ -119,6 +129,14 @@ to be signalled.</p></dd>
     incrementing it by 1.</p>
 <p>This will cause the R execution thread waiting on the condition variable
     using <code>wait</code> or <code>until</code> to wake and continue.</p>
+<p>For <code>until</code>: if 'msec' is non-integer, it will be coerced to
+    integer. Non-numeric input will be ignored and return immediately.</p>
+    </div>
+    <div id="condition">
+    <h2>Condition</h2>
+    
+
+
 <p>The condition internal to this 'conditionVariable' maintains a state
     (counter). Each signal increments the counter by 1. Each time
     <code>wait</code> or <code>until</code> returns (apart from due to timeout), the
@@ -126,8 +144,18 @@ to be signalled.</p></dd>
 <p>The internal condition may be queried at any time using <code>cv_value</code>
     and reset to zero using <code>cv_reset</code>. This affords a high degree of
     flexibility in designing complex concurrent applications.</p>
-<p>For <code>until</code>: if 'msec' is non-integer, it will be coerced to
-    integer. Non-numeric input will be ignored and return immediately.</p>
+    </div>
+    <div id="flag">
+    <h2>Flag</h2>
+    
+
+
+<p>The condition variable also contains a flag that certain signalling
+    functions such as <code><a href="pipe_notify.html">pipe_notify</a></code> can set. When this flag has
+    been set, all subsequent <code>wait</code> or <code>until</code> calls will return
+    logical FALSE instead of TRUE.</p>
+<p>Note that the flag is not automatically reset, but may be reset manually
+    using <code>cv_reset</code>.</p>
     </div>
 
     <div id="ref-examples">
