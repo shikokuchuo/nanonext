@@ -59,7 +59,7 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">listen</span><span class="op">(</span><span class="va">socket</span>, url <span class="op">=</span> <span class="st">"inproc://nanonext"</span>, autostart <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">listen</span><span class="op">(</span><span class="va">socket</span>, url <span class="op">=</span> <span class="st">"inproc://nanonext"</span>, autostart <span class="op">=</span> <span class="cn">TRUE</span>, error <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -69,9 +69,9 @@
 
 
 <dt>url</dt>
-<dd><p>[default 'inproc://nanonext'] a URL to dial or listen at, specifying
-the transport and address as a character string e.g. 'inproc://anyvalue'
-or 'tcp://127.0.0.1:5555' (see <a href="transports.html">transports</a>).</p></dd>
+<dd><p>[default 'inproc://nanonext'] a URL to dial, specifying the
+transport and address as a character string e.g. 'inproc://anyvalue' or
+'tcp://127.0.0.1:5555' (see <a href="transports.html">transports</a>).</p></dd>
 
 
 <dt>autostart</dt>
@@ -79,6 +79,12 @@ or 'tcp://127.0.0.1:5555' (see <a href="transports.html">transports</a>).</p></d
 if setting configuration options on the listener as it is not generally
 possible to change these once started. Supplying a non-logical value will
 error.</p></dd>
+
+
+<dt>error</dt>
+<dd><p>[default FALSE] behaviour on error: if FALSE, returns an integer
+exit code accompanied by a warning, or, if TRUE, generates an error and
+halts execution.</p></dd>
 
 </dl></div>
     <div id="value">
