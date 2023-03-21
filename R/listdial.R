@@ -31,6 +31,9 @@
 #'     Set to FALSE if setting configuration options on the dialer as it is not
 #'     generally possible to change these once started. Supplying a non-logical
 #'     value will error.
+#' @param error [default FALSE] behaviour on error: if FALSE, returns an integer
+#'     exit code accompanied by a warning, or, if TRUE, generates an error and
+#'     halts execution.
 #'
 #' @return Invisibly, an integer exit code (zero on success). A new Dialer
 #'     (object of class 'nanoDialer' and 'nano') is created and bound to the
@@ -83,17 +86,14 @@
 #'
 #' @export
 #'
-dial <- function(socket, url = "inproc://nanonext", autostart = TRUE)
-  invisible(.Call(rnng_dial, socket, url, autostart, NULL))
+dial <- function(socket, url = "inproc://nanonext", autostart = TRUE, error = FALSE)
+  invisible(.Call(rnng_dial, socket, url, autostart, error))
 
 #' Listen to an Address from a Socket
 #'
 #' Creates a new Listener and binds it to a Socket.
 #'
-#' @param socket a Socket.
-#' @param url [default 'inproc://nanonext'] a URL to dial or listen at, specifying
-#'     the transport and address as a character string e.g. 'inproc://anyvalue'
-#'     or 'tcp://127.0.0.1:5555' (see \link{transports}).
+#' @inheritParams dial
 #' @param autostart [default TRUE] whether to start the listener. Set to FALSE
 #'     if setting configuration options on the listener as it is not generally
 #'     possible to change these once started. Supplying a non-logical value will
@@ -150,8 +150,8 @@ dial <- function(socket, url = "inproc://nanonext", autostart = TRUE)
 #'
 #' @export
 #'
-listen <- function(socket, url = "inproc://nanonext", autostart = TRUE)
-  invisible(.Call(rnng_listen, socket, url, autostart, NULL))
+listen <- function(socket, url = "inproc://nanonext", autostart = TRUE, error = FALSE)
+  invisible(.Call(rnng_listen, socket, url, autostart, error))
 
 #' Start Listener/Dialer
 #'

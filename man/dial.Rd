@@ -4,7 +4,7 @@
 \alias{dial}
 \title{Dial an Address from a Socket}
 \usage{
-dial(socket, url = "inproc://nanonext", autostart = TRUE)
+dial(socket, url = "inproc://nanonext", autostart = TRUE, error = FALSE)
 }
 \arguments{
 \item{socket}{a Socket.}
@@ -20,6 +20,10 @@ from attempting to use the socket before an asynchronous dial has completed.
 Set to FALSE if setting configuration options on the dialer as it is not
 generally possible to change these once started. Supplying a non-logical
 value will error.}
+
+\item{error}{[default FALSE] behaviour on error: if FALSE, returns an integer
+exit code accompanied by a warning, or, if TRUE, generates an error and
+halts execution.}
 }
 \value{
 Invisibly, an integer exit code (zero on success). A new Dialer

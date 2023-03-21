@@ -11,6 +11,7 @@
 
 #### Updates
 
+* `listen()` and `dial()` gain the new logical argument 'error' to specify the function behaviour upon error.
 * Internal performance enhancements.
 
 # nanonext 0.8.0
