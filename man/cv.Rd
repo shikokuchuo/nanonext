@@ -16,18 +16,24 @@ until(cv, msec)
 
 cv_value(cv)
 
-cv_reset(cv)
+cv_reset(cv, condition = TRUE, flag = TRUE)
 }
 \arguments{
 \item{cv}{a 'conditionVariable' object.}
 
 \item{msec}{maximum time in milliseconds to wait for the condition variable
 to be signalled.}
+
+\item{condition}{[default TRUE] logical value whether to reset the
+condition (counter).}
+
+\item{flag}{[default TRUE] logical value whether to reset the flag.}
 }
 \value{
 For \code{cv}: a 'conditionVariable' object.
 
-    For \code{wait} and \code{until}: invisible NULL.
+    For \code{wait} and \code{until}: logical value TRUE, or else FALSE if a
+    flag has been set.
 
     For \code{cv_value} and \code{cv_reset}: integer value of the condition
     variable.
@@ -58,6 +64,12 @@ Pass the 'conditionVariable' to the signalling forms of the
     This will cause the R execution thread waiting on the condition variable
     using \code{wait} or \code{until} to wake and continue.
 
+    For \code{until}: if 'msec' is non-integer, it will be coerced to
+    integer. Non-numeric input will be ignored and return immediately.
+}
+\section{Condition}{
+
+
     The condition internal to this 'conditionVariable' maintains a state
     (counter). Each signal increments the counter by 1. Each time
     \code{wait} or \code{until} returns (apart from due to timeout), the
@@ -66,10 +78,20 @@ Pass the 'conditionVariable' to the signalling forms of the
     The internal condition may be queried at any time using \code{cv_value}
     and reset to zero using \code{cv_reset}. This affords a high degree of
     flexibility in designing complex concurrent applications.
-
-For \code{until}: if 'msec' is non-integer, it will be coerced to
-    integer. Non-numeric input will be ignored and return immediately.
 }
+
+\section{Flag}{
+
+
+    The condition variable also contains a flag that certain signalling
+    functions such as \code{\link{pipe_notify}} can set. When this flag has
+    been set, all subsequent \code{wait} or \code{until} calls will return
+    logical FALSE instead of TRUE.
+
+    Note that the flag is not automatically reset, but may be reset manually
+    using \code{cv_reset}.
+}
+
 \examples{
 cv <- cv()
 

@@ -48,6 +48,7 @@ typedef struct nano_handle_s {
 
 typedef struct nano_cv_s {
   int condition;
+  uint8_t flag;
   nng_mtx *mtx;
   nng_cv *cv;
 } nano_cv;
@@ -56,6 +57,27 @@ typedef struct nano_cv_aio_s {
   nano_cv *cv;
   nano_aio *aio;
 } nano_cv_aio;
+
+static void pipe_cb_signal_cv(nng_pipe p, nng_pipe_ev ev, void *arg) {
+
+  nano_cv *cv = (nano_cv *) arg;
+  nng_mtx_lock(cv->mtx);
+  cv->condition++;
+  nng_cv_wake(cv->cv);
+  nng_mtx_unlock(cv->mtx);
+
+}
+
+static void pipe_cb_flag_cv(nng_pipe p, nng_pipe_ev ev, void *arg) {
+
+  nano_cv *cv = (nano_cv *) arg;
+  nng_mtx_lock(cv->mtx);
+  cv->flag = 1;
+  cv->condition++;
+  nng_cv_wake(cv->cv);
+  nng_mtx_unlock(cv->mtx);
+
+}
 
 static void saio_complete(void *arg) {
 
@@ -1341,7 +1363,7 @@ SEXP rnng_cv_wait(SEXP cv) {
   cvp->condition--;
   nng_mtx_unlock(cvp->mtx);
 
-  return R_NilValue;
+  return cvp->flag ? Rf_ScalarLogical(0) : Rf_ScalarLogical(1);
 
 }
 
@@ -1368,18 +1390,22 @@ SEXP rnng_cv_until(SEXP cv, SEXP msec) {
   }
   nng_mtx_unlock(cvp->mtx);
 
-  return R_NilValue;
+  return cvp->flag ? Rf_ScalarLogical(0) : Rf_ScalarLogical(1);
 
 }
 
-SEXP rnng_cv_reset(SEXP cv) {
+SEXP rnng_cv_reset(SEXP cv, SEXP condition, SEXP flag) {
 
   if (R_ExternalPtrTag(cv) != nano_CvSymbol)
     Rf_error("'cv' is not a valid Condition Variable");
 
   nano_cv *cvp = (nano_cv *) R_ExternalPtrAddr(cv);
+  const int cond = LOGICAL(condition)[0];
+  const int flg = LOGICAL(flag)[0];
+
   nng_mtx_lock(cvp->mtx);
-  cvp->condition = 0;
+  cvp->flag = flg ? 0 : cvp->flag;
+  cvp->condition = cond ? 0 : cvp->condition;
   nng_mtx_unlock(cvp->mtx);
 
   return nano_success;
@@ -1686,17 +1712,7 @@ SEXP rnng_pipe_close(SEXP pipe) {
 
 }
 
-static void pipe_cb_signal_cv(nng_pipe p, nng_pipe_ev ev, void *arg) {
-
-  nano_cv *cv = (nano_cv *) arg;
-  nng_mtx_lock(cv->mtx);
-  cv->condition++;
-  nng_cv_wake(cv->cv);
-  nng_mtx_unlock(cv->mtx);
-
-}
-
-SEXP rnng_pipe_notify(SEXP socket, SEXP cv, SEXP add, SEXP remove) {
+SEXP rnng_pipe_notify(SEXP socket, SEXP cv, SEXP add, SEXP remove, SEXP flag) {
 
   if (R_ExternalPtrTag(socket) != nano_SocketSymbol)
     Rf_error("'socket' is not a valid Socket");
@@ -1709,12 +1725,14 @@ SEXP rnng_pipe_notify(SEXP socket, SEXP cv, SEXP add, SEXP remove) {
   int xc;
 
   if (LOGICAL(add)[0]) {
-    xc = nng_pipe_notify(*sock, NNG_PIPE_EV_ADD_POST, pipe_cb_signal_cv, cvp);
+    xc = nng_pipe_notify(*sock, NNG_PIPE_EV_ADD_POST,
+                         LOGICAL(flag)[0] ? pipe_cb_flag_cv : pipe_cb_signal_cv, cvp);
     if (xc)
       ERROR_RET(xc);
   }
   if (LOGICAL(remove)[0]) {
-    xc = nng_pipe_notify(*sock, NNG_PIPE_EV_REM_POST, pipe_cb_signal_cv, cvp);
+    xc = nng_pipe_notify(*sock, NNG_PIPE_EV_REM_POST,
+                         LOGICAL(flag)[0] ? pipe_cb_flag_cv : pipe_cb_signal_cv, cvp);
     if (xc)
       ERROR_RET(xc);
   }

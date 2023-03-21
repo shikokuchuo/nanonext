@@ -269,7 +269,8 @@ status_code <- function(x) .Call(rnng_status_code, x)
 #'
 #' @return For \code{cv}: a 'conditionVariable' object.
 #'
-#'     For \code{wait} and \code{until}: invisible NULL.
+#'     For \code{wait} and \code{until}: logical value TRUE, or else FALSE if a
+#'     flag has been set.
 #'
 #'     For \code{cv_value} and \code{cv_reset}: integer value of the condition
 #'     variable.
@@ -286,6 +287,11 @@ status_code <- function(x) .Call(rnng_status_code, x)
 #'     This will cause the R execution thread waiting on the condition variable
 #'     using \code{wait} or \code{until} to wake and continue.
 #'
+#'     For \code{until}: if 'msec' is non-integer, it will be coerced to
+#'     integer. Non-numeric input will be ignored and return immediately.
+#'
+#' @section Condition:
+#'
 #'     The condition internal to this 'conditionVariable' maintains a state
 #'     (counter). Each signal increments the counter by 1. Each time
 #'     \code{wait} or \code{until} returns (apart from due to timeout), the
@@ -294,6 +300,16 @@ status_code <- function(x) .Call(rnng_status_code, x)
 #'     The internal condition may be queried at any time using \code{cv_value}
 #'     and reset to zero using \code{cv_reset}. This affords a high degree of
 #'     flexibility in designing complex concurrent applications.
+#'
+#' @section Flag:
+#'
+#'     The condition variable also contains a flag that certain signalling
+#'     functions such as \code{\link{pipe_notify}} can set. When this flag has
+#'     been set, all subsequent \code{wait} or \code{until} calls will return
+#'     logical FALSE instead of TRUE.
+#'
+#'     Note that the flag is not automatically reset, but may be reset manually
+#'     using \code{cv_reset}.
 #'
 #' @examples
 #' cv <- cv()
@@ -325,9 +341,6 @@ wait <- function(cv) invisible(.Call(rnng_cv_wait, cv))
 #' @param msec maximum time in milliseconds to wait for the condition variable
 #'     to be signalled.
 #'
-#' @details For \code{until}: if 'msec' is non-integer, it will be coerced to
-#'     integer. Non-numeric input will be ignored and return immediately.
-#'
 #' @examples
 #' until(cv, 10L)
 #'
@@ -349,13 +362,17 @@ until <- function(cv, msec) invisible(.Call(rnng_cv_until, cv, msec))
 #'
 cv_value <- function(cv) .Call(rnng_cv_value, cv)
 
+#' @param condition [default TRUE] logical value whether to reset the
+#'     condition (counter).
+#' @param flag [default TRUE] logical value whether to reset the flag.
+#'
 #' @examples
 #' cv_reset(cv)
 #'
 #' @rdname cv
 #' @export
 #'
-cv_reset <- function(cv) .Call(rnng_cv_reset, cv)
+cv_reset <- function(cv, condition = TRUE, flag = TRUE) .Call(rnng_cv_reset, cv, condition, flag)
 
 #' Message Pipe
 #'
@@ -404,6 +421,10 @@ close.nanoPipe <- function(con, ...) invisible(.Call(rnng_pipe_close, con))
 #' @param add [default TRUE] logical value whether to signal when a pipe is added.
 #' @param remove [default TRUE] logical value whether to signal when a pipe is
 #'     removed.
+#' @param flag [default TRUE] logical value whether to also set a flag in the
+#'     'conditionVariable'. This allows pipe events to be easily distinguishable
+#'     from other signals, and causes any subsequent \code{\link{wait}} or
+#'     \code{\link{until}} to return FALSE instead of TRUE.
 #'
 #' @details For add: this event occurs after the pipe is fully added to the
 #'     socket. Prior to this time, it is not possible to communicate over the
@@ -418,7 +439,7 @@ close.nanoPipe <- function(con, ...) invisible(.Call(rnng_pipe_close, con))
 #' @examples
 #' s <- socket(listen = "inproc://nanopipe")
 #' cv <- cv()
-#' pipe_notify(s, cv, add = TRUE, remove = TRUE)
+#' pipe_notify(s, cv, add = TRUE, remove = TRUE, flag = TRUE)
 #' cv_value(cv)
 #'
 #' s1 <- socket(dial = "inproc://nanopipe")
@@ -430,6 +451,6 @@ close.nanoPipe <- function(con, ...) invisible(.Call(rnng_pipe_close, con))
 #'
 #' @export
 #'
-pipe_notify <- function(socket, cv, add = TRUE, remove = TRUE)
-  invisible(.Call(rnng_pipe_notify, socket, cv, add, remove))
+pipe_notify <- function(socket, cv, add = TRUE, remove = TRUE, flag = TRUE)
+  invisible(.Call(rnng_pipe_notify, socket, cv, add, remove, flag))
 

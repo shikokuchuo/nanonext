@@ -4,7 +4,7 @@
 \alias{pipe_notify}
 \title{Pipe Notify}
 \usage{
-pipe_notify(socket, cv, add = TRUE, remove = TRUE)
+pipe_notify(socket, cv, add = TRUE, remove = TRUE, flag = TRUE)
 }
 \arguments{
 \item{socket}{a Socket.}
@@ -15,6 +15,11 @@ pipe_notify(socket, cv, add = TRUE, remove = TRUE)
 
 \item{remove}{[default TRUE] logical value whether to signal when a pipe is
 removed.}
+
+\item{flag}{[default TRUE] logical value whether to also set a flag in the
+'conditionVariable'. This allows pipe events to be easily distinguishable
+from other signals, and causes any subsequent \code{\link{wait}} or
+\code{\link{until}} to return FALSE instead of TRUE.}
 }
 \value{
 Invisibly, an integer exit code (zero on success).
@@ -35,7 +40,7 @@ For add: this event occurs after the pipe is fully added to the
 \examples{
 s <- socket(listen = "inproc://nanopipe")
 cv <- cv()
-pipe_notify(s, cv, add = TRUE, remove = TRUE)
+pipe_notify(s, cv, add = TRUE, remove = TRUE, flag = TRUE)
 cv_value(cv)
 
 s1 <- socket(dial = "inproc://nanopipe")
