@@ -58,6 +58,11 @@ typedef struct nano_cv_aio_s {
   nano_aio *aio;
 } nano_cv_aio;
 
+typedef struct nano_cv_duo_s {
+  nano_cv *cv;
+  nano_cv *cv2;
+} nano_cv_duo;
+
 static void pipe_cb_signal_cv(nng_pipe p, nng_pipe_ev ev, void *arg) {
 
   nano_cv *cv = (nano_cv *) arg;
@@ -65,6 +70,20 @@ static void pipe_cb_signal_cv(nng_pipe p, nng_pipe_ev ev, void *arg) {
   cv->condition++;
   nng_cv_wake(cv->cv);
   nng_mtx_unlock(cv->mtx);
+
+}
+
+static void pipe_cb_signal_cv_duo(nng_pipe p, nng_pipe_ev ev, void *arg) {
+
+  nano_cv_duo *duo = (nano_cv_duo *) arg;
+  nng_mtx_lock(duo->cv->mtx);
+  duo->cv->condition++;
+  nng_cv_wake(duo->cv->cv);
+  nng_mtx_unlock(duo->cv->mtx);
+  nng_mtx_lock(duo->cv2->mtx);
+  duo->cv2->condition++;
+  nng_cv_wake(duo->cv2->cv);
+  nng_mtx_unlock(duo->cv2->mtx);
 
 }
 
@@ -76,6 +95,22 @@ static void pipe_cb_flag_cv(nng_pipe p, nng_pipe_ev ev, void *arg) {
   cv->condition++;
   nng_cv_wake(cv->cv);
   nng_mtx_unlock(cv->mtx);
+
+}
+
+static void pipe_cb_flag_cv_duo(nng_pipe p, nng_pipe_ev ev, void *arg) {
+
+  nano_cv_duo *duo = (nano_cv_duo *) arg;
+  nng_mtx_lock(duo->cv->mtx);
+  duo->cv->flag = 1;
+  duo->cv->condition++;
+  nng_cv_wake(duo->cv->cv);
+  nng_mtx_unlock(duo->cv->mtx);
+  nng_mtx_lock(duo->cv2->mtx);
+  duo->cv2->flag = 1;
+  duo->cv2->condition++;
+  nng_cv_wake(duo->cv2->cv);
+  nng_mtx_unlock(duo->cv2->mtx);
 
 }
 
@@ -163,6 +198,15 @@ static void cv_aio_finalizer(SEXP xptr) {
   if (R_ExternalPtrAddr(xptr) == NULL)
     return;
   nano_cv_aio *xp = (nano_cv_aio *) R_ExternalPtrAddr(xptr);
+  R_Free(xp);
+
+}
+
+static void cv_duo_finalizer(SEXP xptr) {
+
+  if (R_ExternalPtrAddr(xptr) == NULL)
+    return;
+  nano_cv_duo *xp = (nano_cv_duo *) R_ExternalPtrAddr(xptr);
   R_Free(xp);
 
 }
@@ -1412,32 +1456,6 @@ SEXP rnng_cv_reset(SEXP cv, SEXP condition, SEXP flag) {
 
 }
 
-SEXP rnng_cv_adjust(SEXP cv, SEXP adjust) {
-
-  if (R_ExternalPtrTag(cv) != nano_CvSymbol)
-    Rf_error("'cv' is not a valid Condition Variable");
-
-  nano_cv *cvp = (nano_cv *) R_ExternalPtrAddr(cv);
-  int adj;
-  switch (TYPEOF(adjust)) {
-  case INTSXP:
-    adj = INTEGER(adjust)[0];
-    break;
-  case REALSXP:
-    adj = Rf_asInteger(adjust);
-    break;
-  default:
-    adj = 0;
-  }
-
-  nng_mtx_lock(cvp->mtx);
-  cvp->condition = cvp->condition + adj;
-  nng_mtx_unlock(cvp->mtx);
-
-  return R_NilValue;
-
-}
-
 SEXP rnng_cv_value(SEXP cv) {
 
   if (R_ExternalPtrTag(cv) != nano_CvSymbol)
@@ -1738,7 +1756,7 @@ SEXP rnng_pipe_close(SEXP pipe) {
 
 }
 
-SEXP rnng_pipe_notify(SEXP socket, SEXP cv, SEXP add, SEXP remove, SEXP flag) {
+SEXP rnng_pipe_notify(SEXP socket, SEXP cv, SEXP cv2, SEXP add, SEXP remove, SEXP flag) {
 
   if (R_ExternalPtrTag(socket) != nano_SocketSymbol)
     Rf_error("'socket' is not a valid Socket");
@@ -1750,17 +1768,49 @@ SEXP rnng_pipe_notify(SEXP socket, SEXP cv, SEXP add, SEXP remove, SEXP flag) {
   nano_cv *cvp = (nano_cv *) R_ExternalPtrAddr(cv);
   int xc;
 
-  if (LOGICAL(add)[0]) {
-    xc = nng_pipe_notify(*sock, NNG_PIPE_EV_ADD_POST,
-                         LOGICAL(flag)[0] ? pipe_cb_flag_cv : pipe_cb_signal_cv, cvp);
-    if (xc)
-      ERROR_RET(xc);
-  }
-  if (LOGICAL(remove)[0]) {
-    xc = nng_pipe_notify(*sock, NNG_PIPE_EV_REM_POST,
-                         LOGICAL(flag)[0] ? pipe_cb_flag_cv : pipe_cb_signal_cv, cvp);
-    if (xc)
-      ERROR_RET(xc);
+  if (cv2 != R_NilValue) {
+
+    if (R_ExternalPtrTag(cv2) != nano_CvSymbol)
+      Rf_error("'cv2' is not a valid Condition Variable");
+    nano_cv *cvp2 = (nano_cv *) R_ExternalPtrAddr(cv2);
+    nano_cv_duo *duo = R_Calloc(1, nano_cv_duo);
+    duo->cv = cvp;
+    duo->cv2 = cvp2;
+
+    if (LOGICAL(add)[0]) {
+      xc = nng_pipe_notify(*sock, NNG_PIPE_EV_ADD_POST,
+                           LOGICAL(flag)[0] ? pipe_cb_flag_cv_duo : pipe_cb_signal_cv_duo, duo);
+      if (xc)
+        ERROR_RET(xc);
+    }
+    if (LOGICAL(remove)[0]) {
+      xc = nng_pipe_notify(*sock, NNG_PIPE_EV_REM_POST,
+                           LOGICAL(flag)[0] ? pipe_cb_flag_cv_duo : pipe_cb_signal_cv_duo, duo);
+      if (xc)
+        ERROR_RET(xc);
+    }
+
+    SEXP duoptr;
+    PROTECT(duoptr = R_MakeExternalPtr(duo, R_NilValue, R_NilValue));
+    R_RegisterCFinalizerEx(duoptr, cv_duo_finalizer, TRUE);
+    Rf_setAttrib(socket, nano_PipeSymbol, duoptr);
+    UNPROTECT(1);
+
+  } else {
+
+    if (LOGICAL(add)[0]) {
+      xc = nng_pipe_notify(*sock, NNG_PIPE_EV_ADD_POST,
+                           LOGICAL(flag)[0] ? pipe_cb_flag_cv : pipe_cb_signal_cv, cvp);
+      if (xc)
+        ERROR_RET(xc);
+    }
+    if (LOGICAL(remove)[0]) {
+      xc = nng_pipe_notify(*sock, NNG_PIPE_EV_REM_POST,
+                           LOGICAL(flag)[0] ? pipe_cb_flag_cv : pipe_cb_signal_cv, cvp);
+      if (xc)
+        ERROR_RET(xc);
+    }
+
   }
 
   return nano_success;

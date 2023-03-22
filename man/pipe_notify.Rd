@@ -4,12 +4,16 @@
 \alias{pipe_notify}
 \title{Pipe Notify}
 \usage{
-pipe_notify(socket, cv, add = TRUE, remove = TRUE, flag = TRUE)
+pipe_notify(socket, cv, cv2 = NULL, add = TRUE, remove = TRUE, flag = TRUE)
 }
 \arguments{
 \item{socket}{a Socket.}
 
 \item{cv}{a 'conditionVariable' to signal.}
+
+\item{cv2}{[default NULL] optionally, if specified, a second 'conditionVariable'
+to signal. Note that this cv is signalled sequentially after the first
+condition variable.}
 
 \item{add}{[default TRUE] logical value whether to signal when a pipe is added.}
 
@@ -40,13 +44,21 @@ For add: this event occurs after the pipe is fully added to the
 \examples{
 s <- socket(listen = "inproc://nanopipe")
 cv <- cv()
-pipe_notify(s, cv, add = TRUE, remove = TRUE, flag = TRUE)
+cv2 <- cv()
+
+pipe_notify(s, cv, cv2, add = TRUE, remove = TRUE, flag = TRUE)
 cv_value(cv)
+cv_value(cv2)
 
 s1 <- socket(dial = "inproc://nanopipe")
 cv_value(cv)
+cv_value(cv2)
 close(s1)
 cv_value(cv)
+cv_value(cv2)
+
+(wait(cv))
+(wait(cv2))
 
 close(s)
 
