@@ -46,7 +46,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.0.9001</span>
       </span>
     </div>
 
@@ -125,6 +125,7 @@
 <li><a href="#cross-language-exchange">Cross-language Exchange</a></li>
 <li><a href="#async-and-concurrency">Async and Concurrency</a></li>
 <li><a href="#rpc-and-distributed-computing">RPC and Distributed Computing</a></li>
+<li><a href="#synchronisation-primitives">Synchronisation Primitives</a></li>
 <li><a href="#publisher-subscriber-model">Publisher / Subscriber Model</a></li>
 <li><a href="#surveyor-respondent-model">Surveyor / Respondent Model</a></li>
 <li><a href="#ncurl-async-http-client">ncurl: (Async) HTTP Client</a></li>
@@ -256,7 +257,7 @@
 <span><span class="co">#&gt;   a b</span></span>
 <span><span class="co">#&gt; 1 1 2</span></span>
 <span><span class="va">msg</span><span class="op">$</span><span class="va">raw</span></span>
-<span><span class="co">#&gt;   [1] 58 0a 00 00 00 03 00 04 02 02 00 03 05 00 00 00 00 05 55 54 46 2d 38 00 00</span></span>
+<span><span class="co">#&gt;   [1] 58 0a 00 00 00 03 00 04 02 03 00 03 05 00 00 00 00 05 55 54 46 2d 38 00 00</span></span>
 <span><span class="co">#&gt;  [26] 03 13 00 00 00 02 00 00 00 0e 00 00 00 01 3f f0 00 00 00 00 00 00 00 00 00</span></span>
 <span><span class="co">#&gt;  [51] 0e 00 00 00 01 40 00 00 00 00 00 00 00 00 00 04 02 00 00 00 01 00 04 00 09</span></span>
 <span><span class="co">#&gt;  [76] 00 00 00 05 6e 61 6d 65 73 00 00 00 10 00 00 00 02 00 04 00 09 00 00 00 01</span></span>
@@ -322,18 +323,88 @@
 <span><span class="co">#&gt; &lt; recvAio &gt;</span></span>
 <span><span class="co">#&gt;  - $data for message data</span></span>
 <span><span class="va">aio</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] 0.717 0.762 -0.886 -0.38 -0.3 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] 0.4905 -0.6613 0.4074 -0.7236 -0.0115 ...</span></span></code></pre></div>
 <p>As <code><a href="reference/call_aio.html">call_aio()</a></code> is blocking and will wait for completion, an alternative is to query <code>aio$data</code> directly. This will return an ‘unresolved’ logical NA value if the calculation is yet to complete.</p>
 <p>In this example the calculation is returned, but other operations may reside entirely on the server side, for example writing data to disk.</p>
 <p>In such a case, calling or querying the value confirms that the operation has completed, and provides the return value of the function, which may typically be NULL or an exit code.</p>
 <p>The {mirai} package <a href="https://shikokuchuo.net/mirai/" class="external-link uri">https://shikokuchuo.net/mirai/</a> (available on CRAN) uses {nanonext} as the back-end to provide asynchronous execution of arbitrary R code using the RPC model.</p>
+<p>The {crew} package <a href="https://wlandau.github.io/crew/" class="external-link uri">https://wlandau.github.io/crew/</a> (available on CRAN) by William Landau further extends {mirai} to different computing platforms for distributed workers.</p>
+<p><a href="#table-of-contents">« Back to ToC</a></p>
+</div>
+<div class="section level3">
+<h3 id="synchronisation-primitives">Synchronisation Primitives<a class="anchor" aria-label="anchor" href="#synchronisation-primitives"></a>
+</h3>
+<p>{nanonext} exposes synchronisation primitives implemented in the NNG library, available for cross-platform use.</p>
+<p>As the R interpreter runs on a single thread, synchronisation primitives such as mutexes and condition variables are not natively implemented in the R language. However, as NNG is inherently threaded and messaging can be asynchronous, it is possible to synchronise between NNG events happening independently and the main R execution thread.</p>
+<p>The events that can be signalled include asynchronous receive completions, and pipe events - these are when connections are established or when they are dropped.</p>
+<p>Condition variables can be used simply to record such events, or more powerfully, to wait upon these events. The condition variables implemented in {nanonext} include a both a condition (counter) and flag (binary). Each signal increments the counter, and each return of <code><a href="reference/cv.html">wait()</a></code> or <code><a href="reference/cv.html">until()</a></code> decrements the counter. A non-zero condition allows waiting threads to continue.</p>
+<p>In any situation where polling for an event presents a solution, waiting upon a condition to be signalled can be more efficient, both in terms of consuming no resources while waiting, and also being synchronised with the event (having no latency).</p>
+<p>The following shows how condition variables and signalling work in practice.</p>
+<p>Example 1: set up a socket, and wait for the other side to connect:</p>
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">sock</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/socket.html">socket</a></span><span class="op">(</span><span class="st">"pair"</span>, listen <span class="op">=</span> <span class="st">"inproc://nanopipe"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">cv</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/cv.html">cv</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># create new condition variable</span></span>
+<span><span class="fu"><a href="reference/cv.html">cv_value</a></span><span class="op">(</span><span class="va">cv</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 0</span></span>
+<span></span>
+<span><span class="fu"><a href="reference/pipe_notify.html">pipe_notify</a></span><span class="op">(</span><span class="va">sock</span>, cv <span class="op">=</span> <span class="va">cv</span>, add <span class="op">=</span> <span class="cn">TRUE</span>, remove <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># wait(cv) # uncomment in normal usage - but would block</span></span>
+<span></span>
+<span><span class="co"># for illustration:</span></span>
+<span><span class="va">sock2</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/socket.html">socket</a></span><span class="op">(</span><span class="st">"pair"</span>, dial <span class="op">=</span> <span class="st">"inproc://nanopipe"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="reference/cv.html">cv_value</a></span><span class="op">(</span><span class="va">cv</span><span class="op">)</span> <span class="co"># incremented when pipe to 'sock2' was created</span></span>
+<span><span class="co">#&gt; [1] 1</span></span>
+<span></span>
+<span><span class="fu"><a href="reference/cv.html">wait</a></span><span class="op">(</span><span class="va">cv</span><span class="op">)</span> <span class="co"># wait() now does not block</span></span>
+<span></span>
+<span><span class="fu"><a href="reference/cv.html">cv_value</a></span><span class="op">(</span><span class="va">cv</span><span class="op">)</span> <span class="co"># wait() decrements the CV value - calling wait() again will block</span></span>
+<span><span class="co">#&gt; [1] 0</span></span>
+<span></span>
+<span><span class="fu"><a href="reference/close.html">close</a></span><span class="op">(</span><span class="va">sock2</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="reference/cv.html">cv_value</a></span><span class="op">(</span><span class="va">cv</span><span class="op">)</span> <span class="co"># incremented when pipe to 'sock2' was destroyed</span></span>
+<span><span class="co">#&gt; [1] 1</span></span>
+<span></span>
+<span><span class="fu"><a href="reference/close.html">close</a></span><span class="op">(</span><span class="va">sock</span><span class="op">)</span></span></code></pre></div>
+<p>Example 2: wait until a message is received or connection is dropped:</p>
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">sock</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/socket.html">socket</a></span><span class="op">(</span><span class="st">"pair"</span>, listen <span class="op">=</span> <span class="st">"inproc://nanosignal"</span><span class="op">)</span></span>
+<span><span class="va">sock2</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/socket.html">socket</a></span><span class="op">(</span><span class="st">"pair"</span>, dial <span class="op">=</span> <span class="st">"inproc://nanosignal"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">cv</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/cv.html">cv</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># create new condition variable</span></span>
+<span><span class="fu"><a href="reference/cv.html">cv_value</a></span><span class="op">(</span><span class="va">cv</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 0</span></span>
+<span></span>
+<span><span class="fu"><a href="reference/pipe_notify.html">pipe_notify</a></span><span class="op">(</span><span class="va">sock</span>, cv <span class="op">=</span> <span class="va">cv</span>, add <span class="op">=</span> <span class="cn">FALSE</span>, remove <span class="op">=</span> <span class="cn">TRUE</span>, flag <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="reference/send.html">send</a></span><span class="op">(</span><span class="va">sock2</span>, <span class="st">"this message will wake waiting thread"</span><span class="op">)</span> <span class="co"># in real usage happens concurrently with wait()</span></span>
+<span><span class="co">#&gt; [1] 0</span></span>
+<span></span>
+<span><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/recv_aio.html">recv_aio_signal</a></span><span class="op">(</span><span class="va">sock</span>, cv <span class="op">=</span> <span class="va">cv</span><span class="op">)</span> <span class="co"># same cv passed to signalling form of recv_aio()</span></span>
+<span></span>
+<span><span class="co"># wakes as soon as the asynchronous receive completes</span></span>
+<span><span class="fu"><a href="reference/cv.html">wait</a></span><span class="op">(</span><span class="va">cv</span><span class="op">)</span> <span class="op">||</span> <span class="kw"><a href="https://rdrr.io/r/base/stop.html" class="external-link">stop</a></span><span class="op">(</span><span class="st">"peer disconnected"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] TRUE</span></span>
+<span></span>
+<span><span class="va">r</span><span class="op">$</span><span class="va">data</span></span>
+<span><span class="co">#&gt; [1] "this message will wake waiting thread"</span></span>
+<span></span>
+<span><span class="fu"><a href="reference/close.html">close</a></span><span class="op">(</span><span class="va">sock</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/close.html">close</a></span><span class="op">(</span><span class="va">sock2</span><span class="op">)</span></span></code></pre></div>
+<p>The above example shows the working of the flag within the condition variable. As the pipe notification was specified to raise a flag, this can be used to distinguish between a pipe event signal and a message receive signal.</p>
+<p>In the case a flag is raised, <code><a href="reference/cv.html">wait()</a></code> returns FALSE rather than TRUE. So the above code will stop with the custom error message upon disconnect or else continue. This affords a way of handling disconnects that would not be possible if simply using <code><a href="reference/call_aio.html">call_aio()</a></code>, which is also a blocking wait (on a single message).</p>
+<p>As can be seen, this type of mechanism presents a powerful way of waiting simulatenously on multiple events, and also distinguishing between them. <code><a href="reference/pipe_notify.html">pipe_notify()</a></code> can also be set to signal two condition variables upon each event, providing even more flexibility in creating complex concurrent applications.</p>
+<p>For further details, please refer to the function documentation for <code><a href="reference/cv.html">cv()</a></code>.</p>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
 <div class="section level3">
 <h3 id="publisher-subscriber-model">Publisher Subscriber Model<a class="anchor" aria-label="anchor" href="#publisher-subscriber-model"></a>
 </h3>
 <p>{nanonext} fully implements NNG’s pub/sub protocol as per the below example. A subscriber can subscribe to one or multiple topics broadcast by a publisher.</p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pub</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/socket.html">socket</a></span><span class="op">(</span><span class="st">"pub"</span>, listen <span class="op">=</span> <span class="st">"inproc://nanobroadcast"</span><span class="op">)</span></span>
 <span><span class="va">sub</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/socket.html">socket</a></span><span class="op">(</span><span class="st">"sub"</span>, dial <span class="op">=</span> <span class="st">"inproc://nanobroadcast"</span><span class="op">)</span></span>
 <span></span>
@@ -373,7 +444,7 @@
 <span><span class="va">sub</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/recv.html">recv</a></span><span class="op">(</span>mode <span class="op">=</span> <span class="st">"character"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "examples will still be received"</span></span></code></pre></div>
 <p>The subscribed topic can be of any atomic type (not just character), allowing integer, double, logical, complex and raw vectors to be sent and received.</p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sub</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/subscribe.html">subscribe</a></span><span class="op">(</span>topic <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="va">pub</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/send.html">send</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">10</span>, <span class="fl">10</span>, <span class="fl">20</span><span class="op">)</span>, mode <span class="op">=</span> <span class="st">"raw"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 0</span></span>
@@ -393,7 +464,7 @@
 </h3>
 <p>This type of pattern is useful for applications such as service discovery.</p>
 <p>A surveyor sends a survey, which is broadcast to all peer respondents. Respondents are then able to reply, but are not obliged to. The survey itself is a timed event, and responses received after the timeout are discarded.</p>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sur</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/socket.html">socket</a></span><span class="op">(</span><span class="st">"surveyor"</span>, listen <span class="op">=</span> <span class="st">"inproc://nanoservice"</span><span class="op">)</span></span>
 <span><span class="va">res1</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/socket.html">socket</a></span><span class="op">(</span><span class="st">"respondent"</span>, dial <span class="op">=</span> <span class="st">"inproc://nanoservice"</span><span class="op">)</span></span>
 <span><span class="va">res2</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/socket.html">socket</a></span><span class="op">(</span><span class="st">"respondent"</span>, dial <span class="op">=</span> <span class="st">"inproc://nanoservice"</span><span class="op">)</span></span>
@@ -440,7 +511,7 @@
 <p><code><a href="reference/ncurl.html">ncurl()</a></code> is a minimalist http(s) client.</p>
 <p>By setting <code>async = TRUE</code>, it performs requests asynchronously, returning immediately with an ‘ncurlAio’.</p>
 <p>For normal use, it takes just the URL. It can follow redirects.</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/ncurl.html">ncurl</a></span><span class="op">(</span><span class="st">"https://httpbin.org/headers"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $status</span></span>
 <span><span class="co">#&gt; [1] 200</span></span>
@@ -452,13 +523,13 @@
 <span><span class="co">#&gt;   [1] 7b 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73</span></span>
 <span><span class="co">#&gt;  [26] 74 22 3a 20 22 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22</span></span>
 <span><span class="co">#&gt;  [51] 58 2d 41 6d 7a 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31</span></span>
-<span><span class="co">#&gt;  [76] 2d 36 34 31 34 64 30 66 66 2d 32 32 65 35 62 35 61 33 36 37 30 36 32 62 35</span></span>
-<span><span class="co">#&gt; [101] 65 31 61 39 35 64 63 32 34 22 0a 20 20 7d 0a 7d 0a</span></span>
+<span><span class="co">#&gt;  [76] 2d 36 34 31 62 36 64 30 30 2d 31 38 35 65 66 31 64 65 37 31 34 31 34 65 33</span></span>
+<span><span class="co">#&gt; [101] 34 35 63 64 63 35 34 35 37 22 0a 20 20 7d 0a 7d 0a</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $data</span></span>
-<span><span class="co">#&gt; [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6414d0ff-22e5b5a367062b5e1a95dc24\"\n  }\n}\n"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-641b6d00-185ef1de71414e345cdc5457\"\n  }\n}\n"</span></span></code></pre></div>
 <p>For advanced use, supports additional HTTP methods such as POST or PUT.</p>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ncurl.html">ncurl</a></span><span class="op">(</span><span class="st">"http://httpbin.org/post"</span>,</span>
 <span>             async <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>             method <span class="op">=</span> <span class="st">"POST"</span>,</span>
@@ -474,16 +545,16 @@
 <span></span>
 <span><span class="fu"><a href="reference/call_aio.html">call_aio</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span><span class="op">$</span><span class="va">headers</span></span>
 <span><span class="co">#&gt; $Date</span></span>
-<span><span class="co">#&gt; [1] "Fri, 17 Mar 2023 20:43:43 GMT"</span></span>
+<span><span class="co">#&gt; [1] "Wed, 22 Mar 2023 21:02:56 GMT"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $Server</span></span>
 <span><span class="co">#&gt; [1] "gunicorn/19.9.0"</span></span>
 <span></span>
 <span><span class="va">res</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt; [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6414d0ff-2f4c03bf4b64a0ec16fa583a\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-641b6d00-4e94393a5393f2d4210c7334\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"</span></span></code></pre></div>
 <p>In this respect, it may be used as a performant and lightweight method for making REST API requests.</p>
 <p><code><a href="reference/ncurl_session.html">ncurl_session()</a></code> creates a re-usable open connection and presents a much faster and more efficient solution for repeated polling of an API endpoint. <code><a href="reference/ncurl_session.html">transact()</a></code> is then used to request data multiple times as required. This method allows a polling frequency that exceeds a server’s new connection limits, where this is permitted.</p>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sess</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ncurl_session.html">ncurl_session</a></span><span class="op">(</span><span class="st">"https://httpbin.org/get"</span>,</span>
 <span>                      headers <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>`Content-Type` <span class="op">=</span> <span class="st">"application/json"</span>, Authorization <span class="op">=</span> <span class="st">"Bearer APIKEY"</span><span class="op">)</span>,</span>
 <span>                      response <span class="op">=</span> <span class="st">"date"</span><span class="op">)</span></span>
@@ -497,7 +568,7 @@
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $headers</span></span>
 <span><span class="co">#&gt; $headers$date</span></span>
-<span><span class="co">#&gt; [1] "Fri, 17 Mar 2023 20:43:44 GMT"</span></span>
+<span><span class="co">#&gt; [1] "Wed, 22 Mar 2023 21:02:57 GMT"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $raw</span></span>
@@ -507,15 +578,15 @@
 <span><span class="co">#&gt;  [76] 22 43 6f 6e 74 65 6e 74 2d 54 79 70 65 22 3a 20 22 61 70 70 6c 69 63 61 74</span></span>
 <span><span class="co">#&gt; [101] 69 6f 6e 2f 6a 73 6f 6e 22 2c 20 0a 20 20 20 20 22 48 6f 73 74 22 3a 20 22</span></span>
 <span><span class="co">#&gt; [126] 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22 58 2d 41 6d 7a</span></span>
-<span><span class="co">#&gt; [151] 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31 2d 36 34 31 34</span></span>
-<span><span class="co">#&gt; [176] 64 31 30 30 2d 35 61 31 65 66 64 64 61 31 38 38 66 37 35 65 36 36 37 32 36</span></span>
-<span><span class="co">#&gt; [201] 30 32 38 64 22 0a 20 20 7d 2c 20 0a 20 20 22 6f 72 69 67 69 6e 22 3a 20 22</span></span>
+<span><span class="co">#&gt; [151] 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31 2d 36 34 31 62</span></span>
+<span><span class="co">#&gt; [176] 36 64 30 31 2d 34 37 38 35 65 30 31 62 33 31 61 34 61 61 31 65 32 61 64 33</span></span>
+<span><span class="co">#&gt; [201] 39 65 64 65 22 0a 20 20 7d 2c 20 0a 20 20 22 6f 72 69 67 69 6e 22 3a 20 22</span></span>
 <span><span class="co">#&gt; [226] 31 38 35 2e 32 32 35 2e 34 35 2e 34 39 22 2c 20 0a 20 20 22 75 72 6c 22 3a</span></span>
 <span><span class="co">#&gt; [251] 20 22 68 74 74 70 73 3a 2f 2f 68 74 74 70 62 69 6e 2e 6f 72 67 2f 67 65 74</span></span>
 <span><span class="co">#&gt; [276] 22 0a 7d 0a</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $data</span></span>
-<span><span class="co">#&gt; [1] "{\n  \"args\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6414d100-5a1efdda188f75e66726028d\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"https://httpbin.org/get\"\n}\n"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "{\n  \"args\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-641b6d01-4785e01b31a4aa1e2ad39ede\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"https://httpbin.org/get\"\n}\n"</span></span></code></pre></div>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
 <div class="section level3">
@@ -523,7 +594,7 @@
 </h3>
 <p><code><a href="reference/stream.html">stream()</a></code> exposes NNG’s low-level byte stream interface for communicating with raw sockets. This may be used for connecting to arbitrary non-NNG endpoints.</p>
 <p>The stream interface can be used to communicate with (secure) websocket servers. The argument <code>textframes = TRUE</code> can be specified where the websocket server uses text rather than binary frames.</p>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># connecting to an echo service</span></span>
 <span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/stream.html">stream</a></span><span class="op">(</span>dial <span class="op">=</span> <span class="st">"wss://echo.websocket.events/"</span>, textframes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="va">s</span></span>
@@ -532,7 +603,7 @@
 <span><span class="co">#&gt;  - url: wss://echo.websocket.events/</span></span>
 <span><span class="co">#&gt;  - textframes: TRUE</span></span></code></pre></div>
 <p><code><a href="reference/send.html">send()</a></code> and <code><a href="reference/recv.html">recv()</a></code>, as well as their asynchronous counterparts <code><a href="reference/send_aio.html">send_aio()</a></code> and <code><a href="reference/recv_aio.html">recv_aio()</a></code> can be used on Streams in the same way as Sockets. This affords a great deal of flexibility in ingesting and processing streaming data.</p>
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">s</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/recv.html">recv</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "echo.websocket.events sponsored by Lob.com"</span></span>
 <span></span>
@@ -565,7 +636,7 @@
 <p>Functions performing hashing using the SHA-1 and SHA-2 series of algorithms are included: <code><a href="reference/sha1.html">sha1()</a></code>, <code><a href="reference/sha256.html">sha224()</a></code>, <code><a href="reference/sha256.html">sha256()</a></code>, <code><a href="reference/sha256.html">sha384()</a></code> and <code><a href="reference/sha256.html">sha512()</a></code>.</p>
 <p>These expose the secure, optimized implementations from the ‘Mbed TLS’ library and return a hash either directly as a raw vector or converted to a character string. For use in authentication, raw vectors can be compared directly for the highest performance.</p>
 <p>To generate an HMAC (hash-based message authentication code), simply supply the value ‘key’ to use as the secret key.</p>
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/sha256.html">sha256</a></span><span class="op">(</span><span class="st">"hello world!"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "7509e5bda0c762d2bac7f90d758b5b2263fa01ccbc542ab5e3df163be08e6ca9"</span></span>
 <span></span>
@@ -576,7 +647,7 @@
 <span><span class="fu"><a href="reference/sha256.html">sha256</a></span><span class="op">(</span><span class="st">"hello world!"</span>, key <span class="op">=</span> <span class="st">"MY_SECRET"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "d8f0e2d368ff632682d55e2c1ccd49c15f8a6a3862d8eb68f1906b6ee658890a"</span></span></code></pre></div>
 <p>Optimised functions for base64 encoding and decoding from the ‘Mbed TLS’ library are also provided:</p>
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/base64enc.html">base64enc</a></span><span class="op">(</span><span class="st">"hello world!"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "aGVsbG8gd29ybGQh"</span></span>
 <span></span>
@@ -591,7 +662,7 @@
 <p>Use <code><a href="reference/opt.html">opt()</a></code> and <code><a href="reference/opt.html">'opt&lt;-'()</a></code> to get and set options on a Socket, Context, Stream, Listener or Dialer.</p>
 <p>See the function documentation page for a list of common options.</p>
 <p>Once a dialer or listener has started, it is not generally possible to change its configuration. In this case, the dialer or listener should be created specifying ‘autostart = FALSE’.</p>
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/socket.html">socket</a></span><span class="op">(</span>listen <span class="op">=</span> <span class="st">"inproc://options"</span>, autostart <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># no maximum message size</span></span>
@@ -608,7 +679,7 @@
 <p>Similarly <code><a href="reference/stat.html">stat()</a></code> has been implemented as the interface to NNG’s statistics framework.</p>
 <p>This can be used on a Socket, Listener or Dialer to query useful statistics such as the total number of connection attempts, the current number of connections etc.</p>
 <p>See the function documentation page for available statistics.</p>
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/socket.html">socket</a></span><span class="op">(</span>listen <span class="op">=</span> <span class="st">"inproc://stat"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># no active connections (pipes)</span></span>
