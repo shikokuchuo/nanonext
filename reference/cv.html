@@ -6,8 +6,7 @@ wait waits on a condition being signalled by completion of an
 until waits until a future time on a condition being signalled by
     completion of an asynchronous receive.
 cv_value inspects the internal value of a condition variable.
-cv_adjust and cv_reset respectively adjust (by an integer
-    value) or reset the internal value of a condition variable."><meta property="og:image" content="https://shikokuchuo.net/nanonext/logo.png"><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
+cv_reset resets the internal value of a condition variable."><meta property="og:image" content="https://shikokuchuo.net/nanonext/logo.png"><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]--></head><body data-spy="scroll" data-target="#toc">
@@ -70,8 +69,7 @@ cv_adjust and cv_reset respectively adjust (by an integer
 <p><code>until</code> waits until a future time on a condition being signalled by
     completion of an asynchronous receive.</p>
 <p><code>cv_value</code> inspects the internal value of a condition variable.</p>
-<p><code>cv_adjust</code> and <code>cv_reset</code> respectively adjust (by an integer
-    value) or reset the internal value of a condition variable.</p>
+<p><code>cv_reset</code> resets the internal value of a condition variable.</p>
     </div>
 
     <div id="ref-usage">
@@ -82,8 +80,6 @@ cv_adjust and cv_reset respectively adjust (by an integer
 <span><span class="fu">until</span><span class="op">(</span><span class="va">cv</span>, <span class="va">msec</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">cv_value</span><span class="op">(</span><span class="va">cv</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">cv_adjust</span><span class="op">(</span><span class="va">cv</span>, <span class="va">value</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">cv_reset</span><span class="op">(</span><span class="va">cv</span>, condition <span class="op">=</span> <span class="cn">TRUE</span>, flag <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -99,13 +95,9 @@ cv_adjust and cv_reset respectively adjust (by an integer
 to be signalled.</p></dd>
 
 
-<dt>value</dt>
-<dd><p>integer value by which to adjust the condition (counter).</p></dd>
-
-
 <dt>condition</dt>
 <dd><p>[default TRUE] logical value whether to reset the
-condition (counter).</p></dd>
+condition (counter) to zero.</p></dd>
 
 
 <dt>flag</dt>
@@ -126,7 +118,7 @@ condition (counter).</p></dd>
 <p>For <code>cv_value</code>: integer value of the condition variable.</p>
 
 
-<p>For <code>cv_adjust</code> and <code>cv_reset</code>: invisible NULL.</p>
+<p>For <code>cv_reset</code>: invisible NULL.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -139,8 +131,8 @@ condition (counter).</p></dd>
     incrementing it by 1.</p>
 <p>This will cause the R execution thread waiting on the condition variable
     using <code>wait</code> or <code>until</code> to wake and continue.</p>
-<p>For arguments 'msec' and 'value', non-integer values will be coerced to
-    integer. Non-numeric input will be ignored and return immediately.</p>
+<p>For argument 'msec', non-integer values will be coerced to integer.
+    Non-numeric input will be ignored and return immediately.</p>
     </div>
     <div id="condition">
     <h2>Condition</h2>
@@ -151,10 +143,9 @@ condition (counter).</p></dd>
     (counter). Each signal increments the counter by 1. Each time
     <code>wait</code> or <code>until</code> returns (apart from due to timeout), the
     counter is decremented by 1.</p>
-<p>The internal condition may be inspected at any time using <code>cv_value</code>,
-    adjusted using <code>cv_adjust</code> and reset to zero using <code>cv_reset</code>.
-    This affords a high degree of flexibility in designing complex concurrent
-    applications.</p>
+<p>The internal condition may be inspected at any time using <code>cv_value</code>
+    and reset to zero using <code>cv_reset</code>. This affords a high degree of
+    flexibility in designing complex concurrent applications.</p>
     </div>
     <div id="flag">
     <h2>Flag</h2>
@@ -180,13 +171,7 @@ condition (counter).</p></dd>
 <span class="r-in"><span><span class="fu">cv_value</span><span class="op">(</span><span class="va">cv</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu">cv_adjust</span><span class="op">(</span><span class="va">cv</span>, <span class="fl">2L</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu">cv_value</span><span class="op">(</span><span class="va">cv</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2</span>
-<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">cv_reset</span><span class="op">(</span><span class="va">cv</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu">cv_value</span><span class="op">(</span><span class="va">cv</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
