@@ -59,14 +59,15 @@ Web utilities:
 3.  [Cross-language Exchange](#cross-language-exchange)
 4.  [Async and Concurrency](#async-and-concurrency)
 5.  [RPC and Distributed Computing](#rpc-and-distributed-computing)
-6.  [Publisher / Subscriber Model](#publisher-subscriber-model)
-7.  [Surveyor / Respondent Model](#surveyor-respondent-model)
-8.  [ncurl: (Async) HTTP Client](#ncurl-async-http-client)
-9.  [stream: Websocket Client](#stream-websocket-client)
-10. [Cryptographic Hashing](#cryptographic-hashing)
-11. [Options and Statistics](#options-and-statistics)
-12. [Building from Source](#building-from-source)
-13. [Links](#links)
+6.  [Synchronisation Primitives](#synchronisation-primitives)
+7.  [Publisher / Subscriber Model](#publisher-subscriber-model)
+8.  [Surveyor / Respondent Model](#surveyor-respondent-model)
+9.  [ncurl: (Async) HTTP Client](#ncurl-async-http-client)
+10. [stream: Websocket Client](#stream-websocket-client)
+11. [Cryptographic Hashing](#cryptographic-hashing)
+12. [Options and Statistics](#options-and-statistics)
+13. [Building from Source](#building-from-source)
+14. [Links](#links)
 
 ### Installation
 
@@ -268,7 +269,7 @@ msg$data
 #>   a b
 #> 1 1 2
 msg$raw
-#>   [1] 58 0a 00 00 00 03 00 04 02 02 00 03 05 00 00 00 00 05 55 54 46 2d 38 00 00
+#>   [1] 58 0a 00 00 00 03 00 04 02 03 00 03 05 00 00 00 00 05 55 54 46 2d 38 00 00
 #>  [26] 03 13 00 00 00 02 00 00 00 0e 00 00 00 01 3f f0 00 00 00 00 00 00 00 00 00
 #>  [51] 0e 00 00 00 01 40 00 00 00 00 00 00 00 00 00 04 02 00 00 00 01 00 04 00 09
 #>  [76] 00 00 00 05 6e 61 6d 65 73 00 00 00 10 00 00 00 02 00 04 00 09 00 00 00 01
@@ -366,7 +367,7 @@ aio
 #> < recvAio >
 #>  - $data for message data
 aio$data |> str()
-#>  num [1:100000000] 0.717 0.762 -0.886 -0.38 -0.3 ...
+#>  num [1:100000000] 0.4905 -0.6613 0.4074 -0.7236 -0.0115 ...
 ```
 
 As `call_aio()` is blocking and will wait for completion, an alternative
@@ -383,6 +384,122 @@ which may typically be NULL or an exit code.
 The {mirai} package <https://shikokuchuo.net/mirai/> (available on CRAN)
 uses {nanonext} as the back-end to provide asynchronous execution of
 arbitrary R code using the RPC model.
+
+The {crew} package <https://wlandau.github.io/crew/> (available on CRAN)
+by William Landau further extends {mirai} to different computing
+platforms for distributed workers.
+
+[« Back to ToC](#table-of-contents)
+
+### Synchronisation Primitives
+
+{nanonext} exposes synchronisation primitives implemented in the NNG
+library, available for cross-platform use.
+
+As the R interpreter runs on a single thread, synchronisation primitives
+such as mutexes and condition variables are not natively implemented in
+the R language. However, as NNG is inherently threaded and messaging can
+be asynchronous, it is possible to synchronise between NNG events
+happening independently and the main R execution thread.
+
+The events that can be signalled include asynchronous receive
+completions, and pipe events - these are when connections are
+established or when they are dropped.
+
+Condition variables can be used simply to record such events, or more
+powerfully, to wait upon these events. The condition variables
+implemented in {nanonext} include a both a condition (counter) and flag
+(binary). Each signal increments the counter, and each return of
+`wait()` or `until()` decrements the counter. A non-zero condition
+allows waiting threads to continue.
+
+In any situation where polling for an event presents a solution, waiting
+upon a condition to be signalled can be more efficient, both in terms of
+consuming no resources while waiting, and also being synchronised with
+the event (having no latency).
+
+The following shows how condition variables and signalling work in
+practice.
+
+Example 1: set up a socket, and wait for the other side to connect:
+
+``` r
+sock <- socket("pair", listen = "inproc://nanopipe")
+
+cv <- cv() # create new condition variable
+cv_value(cv)
+#> [1] 0
+
+pipe_notify(sock, cv = cv, add = TRUE, remove = TRUE)
+
+# wait(cv) # uncomment in normal usage - but would block
+
+# for illustration:
+sock2 <- socket("pair", dial = "inproc://nanopipe")
+
+cv_value(cv) # incremented when pipe to 'sock2' was created
+#> [1] 1
+
+wait(cv) # wait() now does not block
+
+cv_value(cv) # wait() decrements the CV value - calling wait() again will block
+#> [1] 0
+
+close(sock2)
+
+cv_value(cv) # incremented when pipe to 'sock2' was destroyed
+#> [1] 1
+
+close(sock)
+```
+
+Example 2: wait until a message is received or connection is dropped:
+
+``` r
+sock <- socket("pair", listen = "inproc://nanosignal")
+sock2 <- socket("pair", dial = "inproc://nanosignal")
+
+cv <- cv() # create new condition variable
+cv_value(cv)
+#> [1] 0
+
+pipe_notify(sock, cv = cv, add = FALSE, remove = TRUE, flag = TRUE)
+
+send(sock2, "this message will wake waiting thread") # in real usage happens concurrently with wait()
+#> [1] 0
+
+r <- recv_aio_signal(sock, cv = cv) # same cv passed to signalling form of recv_aio()
+
+# wakes as soon as the asynchronous receive completes
+wait(cv) || stop("peer disconnected")
+#> [1] TRUE
+
+r$data
+#> [1] "this message will wake waiting thread"
+
+close(sock)
+close(sock2)
+```
+
+The above example shows the working of the flag within the condition
+variable. As the pipe notification was specified to raise a flag, this
+can be used to distinguish between a pipe event signal and a message
+receive signal.
+
+In the case a flag is raised, `wait()` returns FALSE rather than TRUE.
+So the above code will stop with the custom error message upon
+disconnect or else continue. This affords a way of handling disconnects
+that would not be possible if simply using `call_aio()`, which is also a
+blocking wait (on a single message).
+
+As can be seen, this type of mechanism presents a powerful way of
+waiting simulatenously on multiple events, and also distinguishing
+between them. `pipe_notify()` can also be set to signal two condition
+variables upon each event, providing even more flexibility in creating
+complex concurrent applications.
+
+For further details, please refer to the function documentation for
+`cv()`.
 
 [« Back to ToC](#table-of-contents)
 
@@ -534,11 +651,11 @@ ncurl("https://httpbin.org/headers")
 #>   [1] 7b 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73
 #>  [26] 74 22 3a 20 22 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22
 #>  [51] 58 2d 41 6d 7a 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31
-#>  [76] 2d 36 34 31 34 64 30 66 66 2d 32 32 65 35 62 35 61 33 36 37 30 36 32 62 35
-#> [101] 65 31 61 39 35 64 63 32 34 22 0a 20 20 7d 0a 7d 0a
+#>  [76] 2d 36 34 31 62 36 64 30 30 2d 31 38 35 65 66 31 64 65 37 31 34 31 34 65 33
+#> [101] 34 35 63 64 63 35 34 35 37 22 0a 20 20 7d 0a 7d 0a
 #> 
 #> $data
-#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6414d0ff-22e5b5a367062b5e1a95dc24\"\n  }\n}\n"
+#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-641b6d00-185ef1de71414e345cdc5457\"\n  }\n}\n"
 ```
 
 For advanced use, supports additional HTTP methods such as POST or PUT.
@@ -559,13 +676,13 @@ res
 
 call_aio(res)$headers
 #> $Date
-#> [1] "Fri, 17 Mar 2023 20:43:43 GMT"
+#> [1] "Wed, 22 Mar 2023 21:02:56 GMT"
 #> 
 #> $Server
 #> [1] "gunicorn/19.9.0"
 
 res$data
-#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6414d0ff-2f4c03bf4b64a0ec16fa583a\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
+#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-641b6d00-4e94393a5393f2d4210c7334\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
 ```
 
 In this respect, it may be used as a performant and lightweight method
@@ -591,7 +708,7 @@ transact(sess)
 #> 
 #> $headers
 #> $headers$date
-#> [1] "Fri, 17 Mar 2023 20:43:44 GMT"
+#> [1] "Wed, 22 Mar 2023 21:02:57 GMT"
 #> 
 #> 
 #> $raw
@@ -601,15 +718,15 @@ transact(sess)
 #>  [76] 22 43 6f 6e 74 65 6e 74 2d 54 79 70 65 22 3a 20 22 61 70 70 6c 69 63 61 74
 #> [101] 69 6f 6e 2f 6a 73 6f 6e 22 2c 20 0a 20 20 20 20 22 48 6f 73 74 22 3a 20 22
 #> [126] 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22 58 2d 41 6d 7a
-#> [151] 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31 2d 36 34 31 34
-#> [176] 64 31 30 30 2d 35 61 31 65 66 64 64 61 31 38 38 66 37 35 65 36 36 37 32 36
-#> [201] 30 32 38 64 22 0a 20 20 7d 2c 20 0a 20 20 22 6f 72 69 67 69 6e 22 3a 20 22
+#> [151] 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31 2d 36 34 31 62
+#> [176] 36 64 30 31 2d 34 37 38 35 65 30 31 62 33 31 61 34 61 61 31 65 32 61 64 33
+#> [201] 39 65 64 65 22 0a 20 20 7d 2c 20 0a 20 20 22 6f 72 69 67 69 6e 22 3a 20 22
 #> [226] 31 38 35 2e 32 32 35 2e 34 35 2e 34 39 22 2c 20 0a 20 20 22 75 72 6c 22 3a
 #> [251] 20 22 68 74 74 70 73 3a 2f 2f 68 74 74 70 62 69 6e 2e 6f 72 67 2f 67 65 74
 #> [276] 22 0a 7d 0a
 #> 
 #> $data
-#> [1] "{\n  \"args\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6414d100-5a1efdda188f75e66726028d\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"https://httpbin.org/get\"\n}\n"
+#> [1] "{\n  \"args\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-641b6d01-4785e01b31a4aa1e2ad39ede\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"https://httpbin.org/get\"\n}\n"
 ```
 
 [« Back to ToC](#table-of-contents)

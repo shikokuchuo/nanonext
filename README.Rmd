@@ -57,14 +57,15 @@ Web utilities:
 3. [Cross-language Exchange](#cross-language-exchange)
 4. [Async and Concurrency](#async-and-concurrency)
 5. [RPC and Distributed Computing](#rpc-and-distributed-computing)
-6. [Publisher / Subscriber Model](#publisher-subscriber-model)
-7. [Surveyor / Respondent Model](#surveyor-respondent-model)
-8. [ncurl: (Async) HTTP Client](#ncurl-async-http-client)
-9. [stream: Websocket Client](#stream-websocket-client)
-10. [Cryptographic Hashing](#cryptographic-hashing)
-11. [Options and Statistics](#options-and-statistics)
-12. [Building from Source](#building-from-source)
-13. [Links](#links)
+6. [Synchronisation Primitives](#synchronisation-primitives)
+7. [Publisher / Subscriber Model](#publisher-subscriber-model)
+8. [Surveyor / Respondent Model](#surveyor-respondent-model)
+9. [ncurl: (Async) HTTP Client](#ncurl-async-http-client)
+10. [stream: Websocket Client](#stream-websocket-client)
+11. [Cryptographic Hashing](#cryptographic-hashing)
+12. [Options and Statistics](#options-and-statistics)
+13. [Building from Source](#building-from-source)
+14. [Links](#links)
 
 ### Installation
 
@@ -312,6 +313,86 @@ In this example the calculation is returned, but other operations may reside ent
 In such a case, calling or querying the value confirms that the operation has completed, and provides the return value of the function, which may typically be NULL or an exit code.
 
 The {mirai} package <https://shikokuchuo.net/mirai/> (available on CRAN) uses {nanonext} as the back-end to provide asynchronous execution of arbitrary R code using the RPC model.
+
+The {crew} package <https://wlandau.github.io/crew/> (available on CRAN) by William Landau further extends {mirai} to different computing platforms for distributed workers.
+
+[&laquo; Back to ToC](#table-of-contents)
+
+### Synchronisation Primitives
+
+{nanonext} exposes synchronisation primitives implemented in the NNG library, available for cross-platform use.
+
+As the R interpreter runs on a single thread, synchronisation primitives such as mutexes and condition variables are not natively implemented in the R language. However, as NNG is inherently threaded and messaging can be asynchronous, it is possible to synchronise between NNG events happening independently and the main R execution thread.
+
+The events that can be signalled include asynchronous receive completions, and pipe events - these are when connections are established or when they are dropped.
+
+Condition variables can be used simply to record such events, or more powerfully, to wait upon these events. The condition variables implemented in {nanonext} include a both a condition (counter) and flag (binary). Each signal increments the counter, and each return of `wait()` or `until()` decrements the counter. A non-zero condition allows waiting threads to continue.
+
+In any situation where polling for an event presents a solution, waiting upon a condition to be signalled can be more efficient, both in terms of consuming no resources while waiting, and also being synchronised with the event (having no latency).
+
+The following shows how condition variables and signalling work in practice.
+
+Example 1: set up a socket, and wait for the other side to connect:
+
+```{r pipeevt}
+sock <- socket("pair", listen = "inproc://nanopipe")
+
+cv <- cv() # create new condition variable
+cv_value(cv)
+
+pipe_notify(sock, cv = cv, add = TRUE, remove = TRUE)
+
+# wait(cv) # uncomment in normal usage - but would block
+
+# for illustration:
+sock2 <- socket("pair", dial = "inproc://nanopipe")
+
+cv_value(cv) # incremented when pipe to 'sock2' was created
+
+wait(cv) # wait() now does not block
+
+cv_value(cv) # wait() decrements the CV value - calling wait() again will block
+
+close(sock2)
+
+cv_value(cv) # incremented when pipe to 'sock2' was destroyed
+
+close(sock)
+
+```
+
+Example 2: wait until a message is received or connection is dropped:
+
+```{r signalevt}
+sock <- socket("pair", listen = "inproc://nanosignal")
+sock2 <- socket("pair", dial = "inproc://nanosignal")
+
+cv <- cv() # create new condition variable
+cv_value(cv)
+
+pipe_notify(sock, cv = cv, add = FALSE, remove = TRUE, flag = TRUE)
+
+send(sock2, "this message will wake waiting thread") # in real usage happens concurrently with wait()
+
+r <- recv_aio_signal(sock, cv = cv) # same cv passed to signalling form of recv_aio()
+
+# wakes as soon as the asynchronous receive completes
+wait(cv) || stop("peer disconnected")
+
+r$data
+
+close(sock)
+close(sock2)
+
+```
+
+The above example shows the working of the flag within the condition variable. As the pipe notification was specified to raise a flag, this can be used to distinguish between a pipe event signal and a message receive signal.
+
+In the case a flag is raised, `wait()` returns FALSE rather than TRUE. So the above code will stop with the custom error message upon disconnect or else continue. This affords a way of handling disconnects that would not be possible if simply using `call_aio()`, which is also a blocking wait (on a single message).
+
+As can be seen, this type of mechanism presents a powerful way of waiting simulatenously on multiple events, and also distinguishing between them. `pipe_notify()` can also be set to signal two condition variables upon each event, providing even more flexibility in creating complex concurrent applications.
+
+For further details, please refer to the function documentation for `cv()`.
 
 [&laquo; Back to ToC](#table-of-contents)
 
