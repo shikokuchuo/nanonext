@@ -136,6 +136,7 @@ static const R_CallMethodDef callMethods[] = {
   {"rnng_close", (DL_FUNC) &rnng_close, 1},
   {"rnng_ctx_close", (DL_FUNC) &rnng_ctx_close, 1},
   {"rnng_ctx_open", (DL_FUNC) &rnng_ctx_open, 1},
+  {"rnng_cv_adjust", (DL_FUNC) &rnng_cv_adjust, 2},
   {"rnng_cv_alloc", (DL_FUNC) &rnng_cv_alloc, 0},
   {"rnng_cv_recv_aio", (DL_FUNC) &rnng_cv_recv_aio, 7},
   {"rnng_cv_request", (DL_FUNC) &rnng_cv_request, 8},

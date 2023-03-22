@@ -2,16 +2,16 @@
 
 #### New Features
 
-* Implements condition variables (from the NNG library), which allows the R execution thread to wait until it is signalled by an incoming message or pipe event - adding functions `cv()`, `wait()`, `until()`, `cv_value()` and `cv_reset()`
+* Implements condition variables (from the NNG library), which allows the R execution thread to wait until it is signalled by an incoming message or pipe event - adding functions `cv()`, `wait()`, `until()`, `cv_value()`, `cv_adjust()` and `cv_reset()`.
 * Adds signalling receive functions `recv_aio_signal()` and `request_signal()`.
 * Implements `pipe_notify()` to signal a condition variable whenever pipes are added or removed at a socket.
 * Implements `msg_pipe()` to return the pipe connection associated with a 'recvAio' message.
-* Exposes the `sha1()` cryptographic hash and HMAC generation function from the 'Mbed TLS' library. Use one of the SHA-2 algorithms for secure applications.
-* Implements `.unresolved()` as a fast method (not for general use) that just queries the status of an Aio without attempting to retrieve result status or messages.
+* Exposes the `sha1()` cryptographic hash and HMAC generation function from the 'Mbed TLS' library (for secure applications, use one of the SHA-2 algorithms instead).
 
 #### Updates
 
 * `listen()` and `dial()` gain the new logical argument 'error' to specify the function behaviour upon error.
+* `.unresolved()` is introduced as a technical utility (not recommended for general use) that just queries the status of an Aio without attempting to retrieve results status or messages.
 * Internal performance enhancements.
 
 # nanonext 0.8.0

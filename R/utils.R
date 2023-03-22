@@ -272,8 +272,9 @@ status_code <- function(x) .Call(rnng_status_code, x)
 #'     For \code{wait} and \code{until}: logical value TRUE, or else FALSE if a
 #'     flag has been set.
 #'
-#'     For \code{cv_value} and \code{cv_reset}: integer value of the condition
-#'     variable.
+#'     For \code{cv_value}: integer value of the condition variable.
+#'
+#'     For \code{cv_adjust} and \code{cv_reset}: invisible NULL.
 #'
 #' @details Pass the 'conditionVariable' to the signalling forms of the
 #'     asynchronous receive functions: \code{\link{recv_aio_signal}} or
@@ -287,7 +288,7 @@ status_code <- function(x) .Call(rnng_status_code, x)
 #'     This will cause the R execution thread waiting on the condition variable
 #'     using \code{wait} or \code{until} to wake and continue.
 #'
-#'     For \code{until}: if 'msec' is non-integer, it will be coerced to
+#'     For arguments 'msec' and 'value', non-integer values will be coerced to
 #'     integer. Non-numeric input will be ignored and return immediately.
 #'
 #' @section Condition:
@@ -297,9 +298,10 @@ status_code <- function(x) .Call(rnng_status_code, x)
 #'     \code{wait} or \code{until} returns (apart from due to timeout), the
 #'     counter is decremented by 1.
 #'
-#'     The internal condition may be queried at any time using \code{cv_value}
-#'     and reset to zero using \code{cv_reset}. This affords a high degree of
-#'     flexibility in designing complex concurrent applications.
+#'     The internal condition may be inspected at any time using \code{cv_value},
+#'     adjusted using \code{cv_adjust} and reset to zero using \code{cv_reset}.
+#'     This affords a high degree of flexibility in designing complex concurrent
+#'     applications.
 #'
 #' @section Flag:
 #'
@@ -351,8 +353,7 @@ until <- function(cv, msec) invisible(.Call(rnng_cv_until, cv, msec))
 
 #' Condition Variables - Value
 #'
-#' \code{cv_value} and \code{cv_reset} are auxiliary functions to respectively
-#'     obtain and reset the internal value of a condition variable.
+#' \code{cv_value} inspects the internal value of a condition variable.
 #'
 #' @examples
 #' cv_value(cv)
@@ -362,17 +363,34 @@ until <- function(cv, msec) invisible(.Call(rnng_cv_until, cv, msec))
 #'
 cv_value <- function(cv) .Call(rnng_cv_value, cv)
 
+#' Condition Variables - Adjust
+#'
+#' \code{cv_adjust} and \code{cv_reset} respectively adjust (by an integer
+#'     value) or reset the internal value of a condition variable.
+#'
+#' @param value integer value by which to adjust the condition (counter).
+#'
+#' @examples
+#' cv_adjust(cv, 2L)
+#' cv_value(cv)
+#'
+#' @rdname cv
+#' @export
+#'
+cv_adjust <- function(cv, value) invisible(.Call(rnng_cv_adjust, cv, value))
+
 #' @param condition [default TRUE] logical value whether to reset the
 #'     condition (counter).
 #' @param flag [default TRUE] logical value whether to reset the flag.
 #'
 #' @examples
 #' cv_reset(cv)
+#' cv_value(cv)
 #'
 #' @rdname cv
 #' @export
 #'
-cv_reset <- function(cv, condition = TRUE, flag = TRUE) .Call(rnng_cv_reset, cv, condition, flag)
+cv_reset <- function(cv, condition = TRUE, flag = TRUE) invisible(.Call(rnng_cv_reset, cv, condition, flag))
 
 #' Message Pipe
 #'

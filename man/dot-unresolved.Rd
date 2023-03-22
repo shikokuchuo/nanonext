@@ -13,9 +13,9 @@
 Logical TRUE if 'aio' is an unresolved Aio, or FALSE otherwise.
 }
 \description{
-Query whether an Aio remains unresolved. This function is a specialist
+Query whether an Aio remains unresolved. This function is a technical utility
     version of \code{\link{unresolved}} not intended for ordinary use.
-    Provides a fast method of querying the busy status of an Aio and does not
-    alter its state in any way i.e. does not attempt to retrieve any result
-    status or messages.
+    Provides a method of querying the busy status of an Aio without altering
+    its state in any way i.e. not attempting to retrieve any results status
+    or messages.
 }

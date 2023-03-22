@@ -5,6 +5,7 @@
 \alias{wait}
 \alias{until}
 \alias{cv_value}
+\alias{cv_adjust}
 \alias{cv_reset}
 \title{Condition Variables}
 \usage{
@@ -16,6 +17,8 @@ until(cv, msec)
 
 cv_value(cv)
 
+cv_adjust(cv, value)
+
 cv_reset(cv, condition = TRUE, flag = TRUE)
 }
 \arguments{
@@ -23,6 +26,8 @@ cv_reset(cv, condition = TRUE, flag = TRUE)
 
 \item{msec}{maximum time in milliseconds to wait for the condition variable
 to be signalled.}
+
+\item{value}{integer value by which to adjust the condition (counter).}
 
 \item{condition}{[default TRUE] logical value whether to reset the
 condition (counter).}
@@ -35,8 +40,9 @@ For \code{cv}: a 'conditionVariable' object.
     For \code{wait} and \code{until}: logical value TRUE, or else FALSE if a
     flag has been set.
 
-    For \code{cv_value} and \code{cv_reset}: integer value of the condition
-    variable.
+    For \code{cv_value}: integer value of the condition variable.
+
+    For \code{cv_adjust} and \code{cv_reset}: invisible NULL.
 }
 \description{
 \code{cv} creates a new condition variable (protected by a mutex internal to
@@ -48,8 +54,10 @@ For \code{cv}: a 'conditionVariable' object.
 \code{until} waits until a future time on a condition being signalled by
     completion of an asynchronous receive.
 
-\code{cv_value} and \code{cv_reset} are auxiliary functions to respectively
-    obtain and reset the internal value of a condition variable.
+\code{cv_value} inspects the internal value of a condition variable.
+
+\code{cv_adjust} and \code{cv_reset} respectively adjust (by an integer
+    value) or reset the internal value of a condition variable.
 }
 \details{
 Pass the 'conditionVariable' to the signalling forms of the
@@ -64,7 +72,7 @@ Pass the 'conditionVariable' to the signalling forms of the
     This will cause the R execution thread waiting on the condition variable
     using \code{wait} or \code{until} to wake and continue.
 
-    For \code{until}: if 'msec' is non-integer, it will be coerced to
+    For arguments 'msec' and 'value', non-integer values will be coerced to
     integer. Non-numeric input will be ignored and return immediately.
 }
 \section{Condition}{
@@ -75,9 +83,10 @@ Pass the 'conditionVariable' to the signalling forms of the
     \code{wait} or \code{until} returns (apart from due to timeout), the
     counter is decremented by 1.
 
-    The internal condition may be queried at any time using \code{cv_value}
-    and reset to zero using \code{cv_reset}. This affords a high degree of
-    flexibility in designing complex concurrent applications.
+    The internal condition may be inspected at any time using \code{cv_value},
+    adjusted using \code{cv_adjust} and reset to zero using \code{cv_reset}.
+    This affords a high degree of flexibility in designing complex concurrent
+    applications.
 }
 
 \section{Flag}{
@@ -101,6 +110,10 @@ until(cv, 10L)
 
 cv_value(cv)
 
+cv_adjust(cv, 2L)
+cv_value(cv)
+
 cv_reset(cv)
+cv_value(cv)
 
 }

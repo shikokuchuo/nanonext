@@ -1408,7 +1408,33 @@ SEXP rnng_cv_reset(SEXP cv, SEXP condition, SEXP flag) {
   cvp->condition = cond ? 0 : cvp->condition;
   nng_mtx_unlock(cvp->mtx);
 
-  return nano_success;
+  return R_NilValue;
+
+}
+
+SEXP rnng_cv_adjust(SEXP cv, SEXP adjust) {
+
+  if (R_ExternalPtrTag(cv) != nano_CvSymbol)
+    Rf_error("'cv' is not a valid Condition Variable");
+
+  nano_cv *cvp = (nano_cv *) R_ExternalPtrAddr(cv);
+  int adj;
+  switch (TYPEOF(adjust)) {
+  case INTSXP:
+    adj = INTEGER(adjust)[0];
+    break;
+  case REALSXP:
+    adj = Rf_asInteger(adjust);
+    break;
+  default:
+    adj = 0;
+  }
+
+  nng_mtx_lock(cvp->mtx);
+  cvp->condition = cvp->condition + adj;
+  nng_mtx_unlock(cvp->mtx);
+
+  return R_NilValue;
 
 }
 
