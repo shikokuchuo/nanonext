@@ -1793,7 +1793,7 @@ SEXP rnng_pipe_notify(SEXP socket, SEXP cv, SEXP cv2, SEXP add, SEXP remove, SEX
     SEXP duoptr;
     PROTECT(duoptr = R_MakeExternalPtr(duo, R_NilValue, R_NilValue));
     R_RegisterCFinalizerEx(duoptr, cv_duo_finalizer, TRUE);
-    Rf_setAttrib(socket, nano_PipeSymbol, duoptr);
+    R_MakeWeakRef(cv, duoptr, R_NilValue, TRUE);
     UNPROTECT(1);
 
   } else {
