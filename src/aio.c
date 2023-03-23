@@ -1748,8 +1748,8 @@ SEXP rnng_cv_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP tim
 
 SEXP rnng_msg_pipe(SEXP aio) {
 
-  if (TYPEOF(aio) != ENVSXP || Rf_inherits(aio, "ncurlAio") || Rf_inherits(aio, "sendAio"))
-    Rf_error("object is not a valid Aio");
+  if (TYPEOF(aio) != ENVSXP || !Rf_inherits(aio, "recvAio") || Rf_inherits(aio, "ncurlAio"))
+    Rf_error("object is not a valid recvAio");
 
   const SEXP coreaio = Rf_findVarInFrame(aio, nano_AioSymbol);
   if (R_ExternalPtrTag(coreaio) != nano_AioSymbol)
@@ -1760,10 +1760,10 @@ SEXP rnng_msg_pipe(SEXP aio) {
   nano_aio *aiop = (nano_aio *) R_ExternalPtrAddr(coreaio);
 
   if (nng_aio_busy(aiop->aio))
-    Rf_error("the pipe can only be retrieved from a resolved Aio");
+    Rf_error("pipe can only be retrieved from a resolved Aio");
 
   if (aiop->result)
-    Rf_error("the pipe can only be retrieved from a successfully completed Aio");
+    Rf_error("pipe can only be retrieved from a successful Aio");
 
   nng_pipe *pp = R_Calloc(1, nng_pipe);
   *pp = nng_msg_get_pipe(nng_aio_get_msg(aiop->aio));

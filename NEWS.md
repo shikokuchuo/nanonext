@@ -2,9 +2,10 @@
 
 #### New Features
 
-* Implements condition variables (from the NNG library), which allows the R execution thread to wait until it is signalled by an incoming message or pipe event - adding functions `cv()`, `wait()`, `until()`, `cv_value()`, and `cv_reset()`.
-* Adds signalling receive functions `recv_aio_signal()` and `request_signal()`.
-* Implements `pipe_notify()` to signal a condition variable (or 2 condition variables) whenever pipes are added or removed at a socket.
+* Implements synchronisation primitives (from the NNG library)
+  + condition variables allows the R execution thread to wait until it is signalled by an incoming message or pipe event: new functions `cv()`, `wait()`, `until()`, `cv_value()`, and `cv_reset()`.
+  + adds signalling receive functions `recv_aio_signal()` and `request_signal()`.
+  + `pipe_notify()` signals up to 2 condition variables whenever pipes are added or removed at a socket.
 * Implements `msg_pipe()` to return the pipe connection associated with a 'recvAio' message.
 * Exposes the `sha1()` cryptographic hash and HMAC generation function from the 'Mbed TLS' library (for secure applications, use one of the SHA-2 algorithms instead).
 
