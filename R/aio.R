@@ -285,8 +285,7 @@ unresolved <- function(aio) .Call(rnng_unresolved, aio)
 #' Query whether an Aio remains unresolved. This function is a technical utility
 #'     version of \code{\link{unresolved}} not intended for ordinary use.
 #'     Provides a method of querying the busy status of an Aio without altering
-#'     its state in any way i.e. not attempting to retrieve any results status
-#'     or messages.
+#'     its state in any way i.e. not attempting to retrieve the result or message.
 #'
 #' @param aio an Aio (object of class 'sendAio' or 'recvAio').
 #'
