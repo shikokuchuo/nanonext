@@ -1,4 +1,4 @@
-// Copyright (C) 2022 Hibiki AI Limited <info@hibiki-ai.com>
+// Copyright (C) 2022-2023 Hibiki AI Limited <info@hibiki-ai.com>
 //
 // This file is part of nanonext.
 //
@@ -65,52 +65,74 @@ typedef struct nano_cv_duo_s {
 
 static void pipe_cb_signal_cv(nng_pipe p, nng_pipe_ev ev, void *arg) {
 
-  nano_cv *cv = (nano_cv *) arg;
-  nng_mtx_lock(cv->mtx);
-  cv->condition++;
-  nng_cv_wake(cv->cv);
-  nng_mtx_unlock(cv->mtx);
+  nano_cv *ncv = (nano_cv *) (arg);
+  nng_cv *cv = ncv->cv;
+  nng_mtx *mtx = ncv->mtx;
+
+  nng_mtx_lock(mtx);
+  ncv->condition++;
+  nng_cv_wake(cv);
+  nng_mtx_unlock(mtx);
 
 }
 
 static void pipe_cb_signal_cv_duo(nng_pipe p, nng_pipe_ev ev, void *arg) {
 
-  nano_cv_duo *duo = (nano_cv_duo *) arg;
-  nng_mtx_lock(duo->cv->mtx);
-  duo->cv->condition++;
-  nng_cv_wake(duo->cv->cv);
-  nng_mtx_unlock(duo->cv->mtx);
-  nng_mtx_lock(duo->cv2->mtx);
-  duo->cv2->condition++;
-  nng_cv_wake(duo->cv2->cv);
-  nng_mtx_unlock(duo->cv2->mtx);
+  nano_cv_duo *duo = (nano_cv_duo *) (arg);
+  nano_cv *ncv = duo->cv;
+  nano_cv *ncv2 = duo->cv2;
+  nng_cv *cv = ncv->cv;
+  nng_cv *cv2 = ncv2->cv;
+  nng_mtx *mtx = ncv->mtx;
+  nng_mtx *mtx2 = ncv2->mtx;
+
+  nng_mtx_lock(mtx);
+  ncv->condition++;
+  nng_cv_wake(cv);
+  nng_mtx_unlock(mtx);
+
+  nng_mtx_lock(mtx2);
+  ncv2->condition++;
+  nng_cv_wake(cv2);
+  nng_mtx_unlock(mtx2);
 
 }
 
 static void pipe_cb_flag_cv(nng_pipe p, nng_pipe_ev ev, void *arg) {
 
-  nano_cv *cv = (nano_cv *) arg;
-  nng_mtx_lock(cv->mtx);
-  cv->flag = 1;
-  cv->condition++;
-  nng_cv_wake(cv->cv);
-  nng_mtx_unlock(cv->mtx);
+  nano_cv *ncv = (nano_cv *) (arg);
+  nng_cv *cv = ncv->cv;
+  nng_mtx *mtx = ncv->mtx;
+
+  nng_mtx_lock(mtx);
+  ncv->flag = 1;
+  ncv->condition++;
+  nng_cv_wake(cv);
+  nng_mtx_unlock(mtx);
 
 }
 
 static void pipe_cb_flag_cv_duo(nng_pipe p, nng_pipe_ev ev, void *arg) {
 
-  nano_cv_duo *duo = (nano_cv_duo *) arg;
-  nng_mtx_lock(duo->cv->mtx);
-  duo->cv->flag = 1;
-  duo->cv->condition++;
-  nng_cv_wake(duo->cv->cv);
-  nng_mtx_unlock(duo->cv->mtx);
-  nng_mtx_lock(duo->cv2->mtx);
-  duo->cv2->flag = 1;
-  duo->cv2->condition++;
-  nng_cv_wake(duo->cv2->cv);
-  nng_mtx_unlock(duo->cv2->mtx);
+  nano_cv_duo *duo = (nano_cv_duo *) (arg);
+  nano_cv *ncv = duo->cv;
+  nano_cv *ncv2 = duo->cv2;
+  nng_cv *cv = ncv->cv;
+  nng_cv *cv2 = ncv2->cv;
+  nng_mtx *mtx = ncv->mtx;
+  nng_mtx *mtx2 = ncv2->mtx;
+
+  nng_mtx_lock(mtx);
+  ncv->flag = 1;
+  ncv->condition++;
+  nng_cv_wake(cv);
+  nng_mtx_unlock(mtx);
+
+  nng_mtx_lock(mtx2);
+  ncv2->flag = 1;
+  ncv2->condition++;
+  nng_cv_wake(cv2);
+  nng_mtx_unlock(mtx2);
 
 }
 
@@ -1399,15 +1421,18 @@ SEXP rnng_cv_wait(SEXP cv) {
   if (R_ExternalPtrTag(cv) != nano_CvSymbol)
     Rf_error("'cv' is not a valid Condition Variable");
 
-  nano_cv *cvp = (nano_cv *) R_ExternalPtrAddr(cv);
-  nng_mtx_lock(cvp->mtx);
-  while (cvp->condition == 0)
-    nng_cv_wait(cvp->cv);
+  nano_cv *ncv = (nano_cv *) R_ExternalPtrAddr(cv);
+  nng_cv *cvp = ncv->cv;
+  nng_mtx *mtx = ncv->mtx;
 
-  cvp->condition--;
-  nng_mtx_unlock(cvp->mtx);
+  nng_mtx_lock(mtx);
+  while (ncv->condition == 0)
+    nng_cv_wait(cvp);
 
-  return cvp->flag ? Rf_ScalarLogical(0) : Rf_ScalarLogical(1);
+  ncv->condition--;
+  nng_mtx_unlock(mtx);
+
+  return ncv->flag ? Rf_ScalarLogical(0) : Rf_ScalarLogical(1);
 
 }
 
@@ -1416,7 +1441,10 @@ SEXP rnng_cv_until(SEXP cv, SEXP msec) {
   if (R_ExternalPtrTag(cv) != nano_CvSymbol)
     Rf_error("'cv' is not a valid Condition Variable");
 
-  nano_cv *cvp = (nano_cv *) R_ExternalPtrAddr(cv);
+  nano_cv *ncv = (nano_cv *) R_ExternalPtrAddr(cv);
+  nng_cv *cvp = ncv->cv;
+  nng_mtx *mtx = ncv->mtx;
+
   nng_time time = nng_clock();
   switch (TYPEOF(msec)) {
   case INTSXP:
@@ -1427,14 +1455,14 @@ SEXP rnng_cv_until(SEXP cv, SEXP msec) {
     break;
   }
 
-  nng_mtx_lock(cvp->mtx);
-  while (cvp->condition == 0) {
-    if (nng_cv_until(cvp->cv, time) == NNG_ETIMEDOUT) break;
-    cvp->condition--;
+  nng_mtx_lock(mtx);
+  while (ncv->condition == 0) {
+    if (nng_cv_until(cvp, time) == NNG_ETIMEDOUT) break;
+    ncv->condition--;
   }
-  nng_mtx_unlock(cvp->mtx);
+  nng_mtx_unlock(mtx);
 
-  return cvp->flag ? Rf_ScalarLogical(0) : Rf_ScalarLogical(1);
+  return ncv->flag ? Rf_ScalarLogical(0) : Rf_ScalarLogical(1);
 
 }
 
@@ -1443,14 +1471,15 @@ SEXP rnng_cv_reset(SEXP cv, SEXP condition, SEXP flag) {
   if (R_ExternalPtrTag(cv) != nano_CvSymbol)
     Rf_error("'cv' is not a valid Condition Variable");
 
-  nano_cv *cvp = (nano_cv *) R_ExternalPtrAddr(cv);
+  nano_cv *ncv = (nano_cv *) R_ExternalPtrAddr(cv);
+  nng_mtx *mtx = ncv->mtx;
   const int cond = LOGICAL(condition)[0];
   const int flg = LOGICAL(flag)[0];
 
-  nng_mtx_lock(cvp->mtx);
-  cvp->flag = flg ? 0 : cvp->flag;
-  cvp->condition = cond ? 0 : cvp->condition;
-  nng_mtx_unlock(cvp->mtx);
+  nng_mtx_lock(mtx);
+  ncv->flag = flg ? 0 : ncv->flag;
+  ncv->condition = cond ? 0 : ncv->condition;
+  nng_mtx_unlock(mtx);
 
   return R_NilValue;
 
@@ -1460,7 +1489,6 @@ SEXP rnng_cv_value(SEXP cv) {
 
   if (R_ExternalPtrTag(cv) != nano_CvSymbol)
     Rf_error("'cv' is not a valid Condition Variable");
-
   nano_cv *cvp = (nano_cv *) R_ExternalPtrAddr(cv);
 
   return Rf_ScalarInteger(cvp->condition);
