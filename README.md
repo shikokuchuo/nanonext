@@ -14,13 +14,13 @@ badge](https://shikokuchuo.r-universe.dev/badges/nanonext?color=3f72af)](https:/
 <!-- badges: end -->
 
 R binding for NNG (Nanomsg Next Gen), a successor to ZeroMQ. NNG is a
-socket library implementing high-performance scalability protocols, a
+socket library providing high-performance scalability protocols, a
 cross-platform standard for messaging and communications. Serves as a
 concurrency framework for building distributed applications, utilising
 ‘aio’ objects which resolve automatically upon completion of
-asynchronous operations. Provides synchronisation primitives which allow
+asynchronous operations. Implements synchronisation primitives, allowing
 R to wait upon socket events or message receives being signalled by
-other underlying threads.
+concurrent threads.
 
 Designed for performance and reliability, the NNG library is written in
 C and {nanonext} is a lightweight zero-dependency wrapper. Provides the
@@ -369,7 +369,7 @@ aio
 #> < recvAio >
 #>  - $data for message data
 aio$data |> str()
-#>  num [1:100000000] 0.741 -0.123 0.41 -0.82 -0.109 ...
+#>  num [1:100000000] -0.3184 -0.5206 0.0942 -0.7144 0.1338 ...
 ```
 
 As `call_aio()` is blocking and will wait for completion, an alternative
@@ -653,11 +653,11 @@ ncurl("https://httpbin.org/headers")
 #>   [1] 7b 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73
 #>  [26] 74 22 3a 20 22 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22
 #>  [51] 58 2d 41 6d 7a 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31
-#>  [76] 2d 36 34 31 64 39 62 38 39 2d 33 32 39 38 36 33 35 36 35 31 37 35 61 35 63
-#> [101] 64 30 39 36 64 31 34 32 38 22 0a 20 20 7d 0a 7d 0a
+#>  [76] 2d 36 34 31 64 39 66 33 63 2d 32 37 65 35 66 36 32 31 32 33 66 63 66 33 61
+#> [101] 63 33 66 64 65 31 65 32 33 22 0a 20 20 7d 0a 7d 0a
 #> 
 #> $data
-#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-641d9b89-329863565175a5cd096d1428\"\n  }\n}\n"
+#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-641d9f3c-27e5f62123fcf3ac3fde1e23\"\n  }\n}\n"
 ```
 
 For advanced use, supports additional HTTP methods such as POST or PUT.
@@ -678,13 +678,13 @@ res
 
 call_aio(res)$headers
 #> $Date
-#> [1] "Fri, 24 Mar 2023 12:46:02 GMT"
+#> [1] "Fri, 24 Mar 2023 13:01:48 GMT"
 #> 
 #> $Server
 #> [1] "gunicorn/19.9.0"
 
 res$data
-#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-641d9b8a-2943c4756324ceec68482488\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
+#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-641d9f3c-0e871ca3155cd46f0e923b0a\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
 ```
 
 In this respect, it may be used as a performant and lightweight method
@@ -710,7 +710,7 @@ transact(sess)
 #> 
 #> $headers
 #> $headers$date
-#> [1] "Fri, 24 Mar 2023 12:46:03 GMT"
+#> [1] "Fri, 24 Mar 2023 13:01:49 GMT"
 #> 
 #> 
 #> $raw
@@ -721,14 +721,14 @@ transact(sess)
 #> [101] 69 6f 6e 2f 6a 73 6f 6e 22 2c 20 0a 20 20 20 20 22 48 6f 73 74 22 3a 20 22
 #> [126] 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22 58 2d 41 6d 7a
 #> [151] 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31 2d 36 34 31 64
-#> [176] 39 62 38 62 2d 37 64 66 32 33 34 37 66 31 35 30 61 64 38 30 36 33 64 63 62
-#> [201] 31 36 66 30 22 0a 20 20 7d 2c 20 0a 20 20 22 6f 72 69 67 69 6e 22 3a 20 22
+#> [176] 39 66 33 64 2d 36 30 61 63 36 35 35 30 30 37 37 34 39 66 33 34 34 31 34 34
+#> [201] 34 64 66 62 22 0a 20 20 7d 2c 20 0a 20 20 22 6f 72 69 67 69 6e 22 3a 20 22
 #> [226] 37 39 2e 31 37 33 2e 31 32 39 2e 32 22 2c 20 0a 20 20 22 75 72 6c 22 3a 20
 #> [251] 22 68 74 74 70 73 3a 2f 2f 68 74 74 70 62 69 6e 2e 6f 72 67 2f 67 65 74 22
 #> [276] 0a 7d 0a
 #> 
 #> $data
-#> [1] "{\n  \"args\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-641d9b8b-7df2347f150ad8063dcb16f0\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"https://httpbin.org/get\"\n}\n"
+#> [1] "{\n  \"args\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-641d9f3d-60ac655007749f3441444dfb\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"https://httpbin.org/get\"\n}\n"
 ```
 
 [« Back to ToC](#table-of-contents)

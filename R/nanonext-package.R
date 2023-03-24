@@ -19,13 +19,13 @@
 #' nanonext: NNG (Nanomsg Next Gen) Lightweight Messaging Library
 #'
 #' R binding for NNG (Nanomsg Next Gen), a successor to ZeroMQ. NNG is a socket
-#'     library implementing high-performance scalability protocols, a
+#'     library providing high-performance scalability protocols, a
 #'     cross-platform standard for messaging and communications. Serves as a
 #'     concurrency framework for building distributed applications, utilising
 #'     'aio' objects which resolve automatically upon completion of asynchronous
-#'     operations. Provides synchronisation primitives which allow R to wait
-#'     upon socket events or message receives being signalled by other
-#'     underlying threads.
+#'     operations. Implements synchronisation primitives, allowing R to wait
+#'     upon socket events or message receives being signalled by concurrent
+#'     threads.
 #'
 #' @section Usage notes:
 #'
