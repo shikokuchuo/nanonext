@@ -1477,19 +1477,17 @@ SEXP rnng_cv_until(SEXP cvar, SEXP msec) {
 
 }
 
-SEXP rnng_cv_reset(SEXP cvar, SEXP condition, SEXP flag) {
+SEXP rnng_cv_reset(SEXP cvar) {
 
   if (R_ExternalPtrTag(cvar) != nano_CvSymbol)
     Rf_error("'cv' is not a valid Condition Variable");
 
   nano_cv *ncv = (nano_cv *) R_ExternalPtrAddr(cvar);
   nng_mtx *mtx = ncv->mtx;
-  const int cond = LOGICAL(condition)[0];
-  const int flg = LOGICAL(flag)[0];
 
   nng_mtx_lock(mtx);
-  ncv->flag = flg ? 0 : ncv->flag;
-  ncv->condition = cond ? 0 : ncv->condition;
+  ncv->flag = 0;
+  ncv->condition = 0;
   nng_mtx_unlock(mtx);
 
   return R_NilValue;

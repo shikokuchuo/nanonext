@@ -326,7 +326,7 @@ As the R interpreter runs on a single thread, synchronisation primitives such as
 
 The events that can be signalled include asynchronous receive completions, and pipe events - these are when connections are established or when they are dropped.
 
-Condition variables can be used simply to record such events, or more powerfully, to wait upon these events. The condition variables implemented in {nanonext} include a both a condition (counter) and flag (binary). Each signal increments the counter, and each return of `wait()` or `until()` decrements the counter. A non-zero condition allows waiting threads to continue.
+Condition variables can be used simply to record such events, or more powerfully, to wait upon these events. The condition variables implemented in {nanonext} include a both a condition (value) and flag (binary). Each signal increments the value, and each return of `wait()` or `until()` decrements the value. A non-zero condition allows waiting threads to continue.
 
 In any situation where polling for an event presents a solution, waiting upon a condition to be signalled can be more efficient, both in terms of consuming no resources while waiting, and also being synchronised with the event (having no latency).
 

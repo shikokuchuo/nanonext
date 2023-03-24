@@ -48,9 +48,9 @@
 #' @section Condition:
 #'
 #'     The condition internal to this 'conditionVariable' maintains a state
-#'     (counter). Each signal increments the counter by 1. Each time
+#'     (value). Each signal increments the value by 1. Each time
 #'     \code{wait} or \code{until} returns (apart from due to timeout), the
-#'     counter is decremented by 1.
+#'     value is decremented by 1.
 #'
 #'     The internal condition may be inspected at any time using \code{cv_value}
 #'     and reset to zero using \code{cv_reset}. This affords a high degree of
@@ -118,11 +118,7 @@ cv_value <- function(cv) .Call(rnng_cv_value, cv)
 
 #' Condition Variables - Reset
 #'
-#' \code{cv_reset} resets the internal value and/or flag of a condition variable.
-#'
-#' @param condition [default TRUE] logical value whether to reset the
-#'     condition (counter) to zero.
-#' @param flag [default TRUE] logical value whether to reset the flag.
+#' \code{cv_reset} resets the internal value and flag of a condition variable.
 #'
 #' @examples
 #' cv_reset(cv)
@@ -130,7 +126,7 @@ cv_value <- function(cv) .Call(rnng_cv_value, cv)
 #' @rdname cv
 #' @export
 #'
-cv_reset <- function(cv, condition = TRUE, flag = TRUE) invisible(.Call(rnng_cv_reset, cv, condition, flag))
+cv_reset <- function(cv) invisible(.Call(rnng_cv_reset, cv))
 
 #' Pipe Notify
 #'

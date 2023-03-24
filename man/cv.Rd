@@ -16,18 +16,13 @@ until(cv, msec)
 
 cv_value(cv)
 
-cv_reset(cv, condition = TRUE, flag = TRUE)
+cv_reset(cv)
 }
 \arguments{
 \item{cv}{a 'conditionVariable' object.}
 
 \item{msec}{maximum time in milliseconds to wait for the condition variable
 to be signalled.}
-
-\item{condition}{[default TRUE] logical value whether to reset the
-condition (counter) to zero.}
-
-\item{flag}{[default TRUE] logical value whether to reset the flag.}
 }
 \value{
 For \code{cv}: a 'conditionVariable' object.
@@ -51,7 +46,7 @@ For \code{cv}: a 'conditionVariable' object.
 
 \code{cv_value} inspects the internal value of a condition variable.
 
-\code{cv_reset} resets the internal value and/or flag of a condition variable.
+\code{cv_reset} resets the internal value and flag of a condition variable.
 }
 \details{
 Pass the 'conditionVariable' to the signalling forms of the
@@ -73,9 +68,9 @@ Pass the 'conditionVariable' to the signalling forms of the
 
 
     The condition internal to this 'conditionVariable' maintains a state
-    (counter). Each signal increments the counter by 1. Each time
+    (value). Each signal increments the value by 1. Each time
     \code{wait} or \code{until} returns (apart from due to timeout), the
-    counter is decremented by 1.
+    value is decremented by 1.
 
     The internal condition may be inspected at any time using \code{cv_value}
     and reset to zero using \code{cv_reset}. This affords a high degree of
