@@ -22,7 +22,7 @@ knitr::opts_chunk$set(
 [![codecov](https://codecov.io/gh/shikokuchuo/nanonext/branch/main/graph/badge.svg)](https://app.codecov.io/gh/shikokuchuo/nanonext)
 <!-- badges: end -->
 
-R binding for NNG (Nanomsg Next Gen), a successor to ZeroMQ. NNG is a socket library providing high-performance scalability protocols, implementing a cross-platform standard for messaging and communications. Serves as a concurrency framework for building distributed applications, utilising 'aio' objects which resolve automatically upon completion of asynchronous operations.
+R binding for NNG (Nanomsg Next Gen), a successor to ZeroMQ. NNG is a socket library providing high-performance scalability protocols, implementing a cross-platform standard for messaging and communications. Serves as a concurrency framework for building distributed applications, utilising 'aio' objects which resolve automatically upon completion of asynchronous operations. Provides synchronisation primitives which allow R to wait upon socket events or message receives being signalled by other underlying threads.
 
 Designed for performance and reliability, the NNG library is written in C and {nanonext} is a lightweight zero-dependency wrapper. Provides the interface for code and processes to communicate with each other - receive data generated in Python, perform analysis in R, and send results to a C++ program – all on the same computer or on networks spanning the globe.
 
