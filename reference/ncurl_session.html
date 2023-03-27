@@ -20,7 +20,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.0.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.1</span>
       </span>
     </div>
 
@@ -72,6 +72,7 @@
 <span>  headers <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  data <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  response <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  timeout <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  pem <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -111,6 +112,11 @@ headers to return e.g. <code>c("date", "server")</code> or <code>list("Date", "S
 These are case-insensitive and will return NULL if not present.</p></dd>
 
 
+<dt>timeout</dt>
+<dd><p>(optional) integer value in milliseconds after which the
+connection and subsequent transact attempts time out.</p></dd>
+
+
 <dt>pem</dt>
 <dd><p>(optional) applicable to secure HTTPS sites only. The path to a
 file containing X.509 certificate(s) in PEM format, comprising the
@@ -126,7 +132,8 @@ If missing or NULL, certificates are not validated.</p></dd>
     <h2>Value</h2>
     
 
-<p>For <code>ncurl_session</code>: an 'ncurlSession' object.</p>
+<p>For <code>ncurl_session</code>: an 'ncurlSession' object if successful, or
+    else an 'errorValue'.</p>
 
 
 <p>For <code>transact</code>: a named list of 4 elements:</p>
@@ -146,33 +153,33 @@ If missing or NULL, certificates are not validated.</p></dd>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">s</span> <span class="op">&lt;-</span> <span class="kw"><a href="https://rdrr.io/r/base/conditions.html" class="external-link">tryCatch</a></span><span class="op">(</span><span class="fu">ncurl_session</span><span class="op">(</span><span class="st">"https://httpbin.org/get"</span>, response <span class="op">=</span> <span class="st">"date"</span><span class="op">)</span>, error <span class="op">=</span> <span class="va">identity</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu">ncurl_session</span><span class="op">(</span><span class="st">"https://httpbin.org/get"</span>, response <span class="op">=</span> <span class="st">"date"</span>, timeout <span class="op">=</span> <span class="fl">1000L</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">s</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt; ncurlSession &gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - use transact() to return data</span>
-<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">inherits</a></span><span class="op">(</span><span class="va">s</span>, <span class="st">"error"</span><span class="op">)</span><span class="op">)</span> <span class="fu">transact</span><span class="op">(</span><span class="va">s</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="is_error_value.html">is_error_value</a></span><span class="op">(</span><span class="va">s</span><span class="op">)</span><span class="op">)</span> <span class="fu">transact</span><span class="op">(</span><span class="va">s</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $status</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 200</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $headers</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $headers$date</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Fri, 24 Mar 2023 13:08:00 GMT"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Mon, 27 Mar 2023 11:02:34 GMT"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $raw</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   [1] 7b 0a 20 20 22 61 72 67 73 22 3a 20 7b 7d 2c 20 0a 20 20 22 68 65 61 64 65</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [26] 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73 74 22 3a 20 22 68 74 74 70 62</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [51] 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22 58 2d 41 6d 7a 6e 2d 54 72 61</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [76] 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31 2d 36 34 31 64 61 30 62 30 2d</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [101] 34 30 31 62 31 64 64 31 34 64 63 66 61 39 66 34 33 37 33 39 62 61 64 39 22</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [126] 0a 20 20 7d 2c 20 0a 20 20 22 6f 72 69 67 69 6e 22 3a 20 22 31 35 37 2e 35</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [151] 35 2e 31 38 39 2e 33 32 22 2c 20 0a 20 20 22 75 72 6c 22 3a 20 22 68 74 74</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [76] 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31 2d 36 34 32 31 37 37 63 61 2d</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [101] 34 66 35 36 64 33 36 64 34 33 66 64 36 34 61 30 33 31 39 37 36 64 65 30 22</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [126] 0a 20 20 7d 2c 20 0a 20 20 22 6f 72 69 67 69 6e 22 3a 20 22 31 37 32 2e 31</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [151] 37 37 2e 39 36 2e 34 33 22 2c 20 0a 20 20 22 75 72 6c 22 3a 20 22 68 74 74</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [176] 70 73 3a 2f 2f 68 74 74 70 62 69 6e 2e 6f 72 67 2f 67 65 74 22 0a 7d 0a</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $data</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "{\n  \"args\": {}, \n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-641da0b0-401b1dd14dcfa9f43739bad9\"\n  }, \n  \"origin\": \"157.55.189.32\", \n  \"url\": \"https://httpbin.org/get\"\n}\n"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "{\n  \"args\": {}, \n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-642177ca-4f56d36d43fd64a031976de0\"\n  }, \n  \"origin\": \"172.177.96.43\", \n  \"url\": \"https://httpbin.org/get\"\n}\n"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">inherits</a></span><span class="op">(</span><span class="va">s</span>, <span class="st">"error"</span><span class="op">)</span><span class="op">)</span> <span class="fu"><a href="close.html">close</a></span><span class="op">(</span><span class="va">s</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="is_error_value.html">is_error_value</a></span><span class="op">(</span><span class="va">s</span><span class="op">)</span><span class="op">)</span> <span class="fu"><a href="close.html">close</a></span><span class="op">(</span><span class="va">s</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

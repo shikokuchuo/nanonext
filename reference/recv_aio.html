@@ -19,7 +19,7 @@ A signalling version of the function takes a 'conditionVariable' as an
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.0.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.1</span>
       </span>
     </div>
 
@@ -145,8 +145,8 @@ should be signalled when the async receive is complete.</p></dd>
     specified), the received raw vector will be stored at <code>$data</code> to
     allow for the data to be recovered.</p>
 <p><strong>For the signalling version</strong>: when the receive is complete,
-    the supplied 'conditionVariable' is signalled by incrementing it by 1.
-    This happens asynchronously and independently of the main R execution
+    the supplied 'conditionVariable' is signalled by incrementing its value
+    by 1. This happens asynchronously and independently of the R execution
     thread.</p>
     </div>
 
