@@ -151,7 +151,7 @@ reply <- function(context,
 #'
 #' Implements a caller/client for the req node of the req/rep protocol. Sends
 #'     data to the rep node (executor/server) and returns an Aio, which can be
-#'     called when the result is required.
+#'     called for the value when required.
 #'
 #' @inheritParams reply
 #' @inheritParams recv
@@ -212,8 +212,8 @@ request <- function(context,
 #' @inheritParams recv_aio_signal
 #'
 #' @details \strong{For the signalling version}: when the receive is complete,
-#'     the supplied 'conditionVariable' is signalled by incrementing it by 1.
-#'     This happens asynchronously and independently of the main R execution
+#'     the supplied 'conditionVariable' is signalled by incrementing its value
+#'     by 1. This happens asynchronously and independently of the R execution
 #'     thread.
 #'
 #' @examples

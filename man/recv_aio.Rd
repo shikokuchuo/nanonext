@@ -81,8 +81,8 @@ Async receive is always non-blocking and returns a 'recvAio'
     allow for the data to be recovered.
 
 \strong{For the signalling version}: when the receive is complete,
-    the supplied 'conditionVariable' is signalled by incrementing it by 1.
-    This happens asynchronously and independently of the main R execution
+    the supplied 'conditionVariable' is signalled by incrementing its value
+    by 1. This happens asynchronously and independently of the R execution
     thread.
 }
 \examples{

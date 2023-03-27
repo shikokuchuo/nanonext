@@ -86,7 +86,7 @@ static void RegisterSymbols(void) {
 
 static void PreserveObjects(void) {
   R_PreserveObject(nano_addRedirect = Rf_allocVector(STRSXP, 1));
-  R_PreserveObject(nano_aioFormals = Rf_list1(nano_AioSymbol));
+  R_PreserveObject(nano_aioFormals = Rf_cons(nano_AioSymbol, R_NilValue));
   R_PreserveObject(nano_aioFuncs = Rf_allocVector(LISTSXP, 3));
   SETCAR(nano_aioFuncs, Rf_lang3(nano_DotcallSymbol, Rf_install("rnng_aio_result"), nano_DataSymbol));
   SETCADR(nano_aioFuncs, Rf_lang3(nano_DotcallSymbol, Rf_install("rnng_aio_get_msgdata"), nano_DataSymbol));
@@ -99,7 +99,6 @@ static void PreserveObjects(void) {
   SETCADDDR(nano_aioNFuncs, Rf_lang5(nano_DotcallSymbol, nano_AioHttpSymbol, nano_DataSymbol, nano_ResponseSymbol, Rf_ScalarInteger(4)));
   R_PreserveObject(nano_error = Rf_cons(Rf_mkString("errorValue"), R_NilValue));
   SET_TAG(nano_error, R_ClassSymbol);
-  Rf_classgets(nano_error, Rf_mkString("errorValue"));
   R_PreserveObject(nano_ncurlAio = Rf_allocVector(STRSXP, 2));
   SET_STRING_ELT(nano_ncurlAio, 0, Rf_mkChar("ncurlAio"));
   SET_STRING_ELT(nano_ncurlAio, 1, Rf_mkChar("recvAio"));
@@ -154,12 +153,13 @@ static const R_CallMethodDef callMethods[] = {
   {"rnng_listen", (DL_FUNC) &rnng_listen, 4},
   {"rnng_listener_close", (DL_FUNC) &rnng_listener_close, 1},
   {"rnng_listener_start", (DL_FUNC) &rnng_listener_start, 1},
+  {"rnng_make_weakref", (DL_FUNC) &rnng_make_weakref, 2},
   {"rnng_messenger", (DL_FUNC) &rnng_messenger, 1},
   {"rnng_messenger_thread_create", (DL_FUNC) &rnng_messenger_thread_create, 1},
   {"rnng_msg_pipe", (DL_FUNC) &rnng_msg_pipe, 1},
   {"rnng_ncurl", (DL_FUNC) &rnng_ncurl, 8},
   {"rnng_ncurl_aio", (DL_FUNC) &rnng_ncurl_aio, 7},
-  {"rnng_ncurl_session", (DL_FUNC) &rnng_ncurl_session, 7},
+  {"rnng_ncurl_session", (DL_FUNC) &rnng_ncurl_session, 8},
   {"rnng_ncurl_session_close", (DL_FUNC) &rnng_ncurl_session_close, 1},
   {"rnng_ncurl_transact", (DL_FUNC) &rnng_ncurl_transact, 1},
   {"rnng_pipe_close", (DL_FUNC) &rnng_pipe_close, 1},

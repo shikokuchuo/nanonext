@@ -64,7 +64,7 @@ A 'recvAio' (object of class 'recvAio') (invisibly).
 \description{
 Implements a caller/client for the req node of the req/rep protocol. Sends
     data to the rep node (executor/server) and returns an Aio, which can be
-    called when the result is required.
+    called for the value when required.
 
 A signalling version of the function takes a 'conditionVariable' as an
     additional argument and signals it when the async receive is complete.
@@ -86,8 +86,8 @@ Sending the request and receiving the result are both performed async,
     return value. \code{\link{is_nul_byte}} can be used to test for a nul byte.
 
 \strong{For the signalling version}: when the receive is complete,
-    the supplied 'conditionVariable' is signalled by incrementing it by 1.
-    This happens asynchronously and independently of the main R execution
+    the supplied 'conditionVariable' is signalled by incrementing its value
+    by 1. This happens asynchronously and independently of the R execution
     thread.
 }
 \examples{

@@ -12,6 +12,7 @@ ncurl_session(
   headers = NULL,
   data = NULL,
   response = NULL,
+  timeout = NULL,
   pem = NULL
 )
 
@@ -37,6 +38,9 @@ vector will error.}
 headers to return e.g. \code{c("date", "server")} or \code{list("Date", "Server")}.
 These are case-insensitive and will return NULL if not present.}
 
+\item{timeout}{(optional) integer value in milliseconds after which the
+connection and subsequent transact attempts time out.}
+
 \item{pem}{(optional) applicable to secure HTTPS sites only. The path to a
 file containing X.509 certificate(s) in PEM format, comprising the
 certificate authority certificate chain (and revocation list if present).
@@ -45,7 +49,8 @@ If missing or NULL, certificates are not validated.}
 \item{session}{an 'ncurlSession' object.}
 }
 \value{
-For \code{ncurl_session}: an 'ncurlSession' object.
+For \code{ncurl_session}: an 'ncurlSession' object if successful, or
+    else an 'errorValue'.
 
 For \code{transact}: a named list of 4 elements:
     \itemize{
@@ -69,9 +74,9 @@ nano cURL - a minimalist http(s) client. A session encapsulates a connection,
     once over the connection.
 }
 \examples{
-s <- tryCatch(ncurl_session("https://httpbin.org/get", response = "date"), error = identity)
+s <- ncurl_session("https://httpbin.org/get", response = "date", timeout = 1000L)
 s
-if (!inherits(s, "error")) transact(s)
-if (!inherits(s, "error")) close(s)
+if (!is_error_value(s)) transact(s)
+if (!is_error_value(s)) close(s)
 
 }

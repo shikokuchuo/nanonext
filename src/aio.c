@@ -1094,7 +1094,7 @@ SEXP rnng_aio_http(SEXP env, SEXP response, SEXP type) {
 // ncurl session ---------------------------------------------------------------
 
 SEXP rnng_ncurl_session(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP data,
-                        SEXP response, SEXP pem) {
+                        SEXP response, SEXP timeout, SEXP pem) {
 
   const char *httr = CHAR(STRING_ELT(http, 0));
   nano_aio *haio = R_Calloc(1, nano_aio);
@@ -1178,6 +1178,8 @@ SEXP rnng_ncurl_session(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP
 
   }
 
+  if (timeout != R_NilValue)
+    nng_aio_set_timeout(haio->aio, (nng_duration) Rf_asInteger(timeout));
   nng_http_client_connect(handle->cli, haio->aio);
   nng_aio_wait(haio->aio);
   if ((xc = haio->result))
@@ -1217,7 +1219,7 @@ SEXP rnng_ncurl_session(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP
   exitlevel1:
     R_Free(handle);
   R_Free(haio);
-  ERROR_OUT(xc);
+  ERROR_RET(xc);
 
 }
 
@@ -1379,7 +1381,7 @@ SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeou
   Rf_defineVar(nano_AioSymbol, aio, env);
   PROTECT(sendaio = R_MakeExternalPtr(reqsaio, R_NilValue, R_NilValue));
   R_RegisterCFinalizerEx(sendaio, reqsaio_finalizer, TRUE);
-  R_MakeWeakRef(aio, sendaio, R_NilValue, TRUE);
+  R_MakeWeakRef(aio, sendaio, R_NilValue, FALSE);
 
   if (kpr) {
     PROTECT(fun = Rf_allocSExp(CLOSXP));
@@ -1403,7 +1405,7 @@ SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeou
 
 // cv specials -----------------------------------------------------------------
 
-SEXP rnng_cv_alloc() {
+SEXP rnng_cv_alloc(void) {
 
   nano_cv *cvp = R_Calloc(1, nano_cv);
   SEXP xp;
@@ -1626,7 +1628,7 @@ SEXP rnng_cv_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP keep, SEXP bytes, 
   Rf_defineVar(nano_AioSymbol, aio, env);
   PROTECT(signal = R_MakeExternalPtr(cv_raio, R_NilValue, R_NilValue));
   R_RegisterCFinalizerEx(signal, cv_aio_finalizer, TRUE);
-  R_MakeWeakRef(aio, signal, R_NilValue, TRUE);
+  R_MakeWeakRef(aio, signal, R_NilValue, FALSE);
 
   if (kpr) {
     PROTECT(fun = Rf_allocSExp(CLOSXP));
@@ -1717,10 +1719,10 @@ SEXP rnng_cv_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP tim
   Rf_defineVar(nano_AioSymbol, aio, env);
   PROTECT(sendaio = R_MakeExternalPtr(reqsaio, R_NilValue, R_NilValue));
   R_RegisterCFinalizerEx(sendaio, reqsaio_finalizer, TRUE);
-  R_MakeWeakRef(aio, sendaio, R_NilValue, TRUE);
+  R_MakeWeakRef(aio, sendaio, R_NilValue, FALSE);
   PROTECT(signal = R_MakeExternalPtr(cv_raio, R_NilValue, R_NilValue));
   R_RegisterCFinalizerEx(signal, cv_aio_finalizer, TRUE);
-  R_MakeWeakRef(aio, signal, R_NilValue, TRUE);
+  R_MakeWeakRef(aio, signal, R_NilValue, FALSE);
 
   if (kpr) {
     PROTECT(fun = Rf_allocSExp(CLOSXP));
@@ -1830,7 +1832,7 @@ SEXP rnng_pipe_notify(SEXP socket, SEXP cv, SEXP cv2, SEXP add, SEXP remove, SEX
     SEXP duoptr;
     PROTECT(duoptr = R_MakeExternalPtr(duo, R_NilValue, R_NilValue));
     R_RegisterCFinalizerEx(duoptr, cv_duo_finalizer, TRUE);
-    R_MakeWeakRef(cv, duoptr, R_NilValue, TRUE);
+    R_MakeWeakRef(cv, duoptr, R_NilValue, FALSE);
     UNPROTECT(1);
 
   } else {

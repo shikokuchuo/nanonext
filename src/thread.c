@@ -129,7 +129,7 @@ SEXP rnng_messenger(SEXP url) {
   } else {
     R_RegisterCFinalizerEx(con, listener_finalizer, TRUE);
   }
-  R_MakeWeakRef(socket, con, R_NilValue, TRUE);
+  R_MakeWeakRef(socket, con, R_NilValue, FALSE);
 
   UNPROTECT(2);
   return socket;
@@ -146,7 +146,7 @@ SEXP rnng_messenger_thread_create(SEXP list) {
 
   PROTECT(xptr = R_MakeExternalPtr(thr, R_NilValue, R_NilValue));
   R_RegisterCFinalizerEx(xptr, thread_finalizer, TRUE);
-  R_MakeWeakRef(socket, xptr, R_NilValue, TRUE);
+  R_MakeWeakRef(socket, xptr, R_NilValue, FALSE);
 
   UNPROTECT(1);
   return socket;

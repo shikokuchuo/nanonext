@@ -262,3 +262,22 @@ is_nul_byte <- function(x) .Call(rnng_is_nul_byte, x)
 #'
 status_code <- function(x) .Call(rnng_status_code, x)
 
+#' Make Weak Reference
+#'
+#' Exposes R's C API function \code{R_MakeWeakRef}, for registering a 'value' to
+#'     a 'key' as a weak reference. The object 'value' is kept alive as long as
+#'     'key' remains reachable.
+#'
+#' @param key a reference object i.e. an environment or external pointer.
+#' @param value an object.
+#'
+#' @return 'key' (with 'value' registered as a weak reference).
+#'
+#' @details If 'value' is an external pointer, an appropriate finaliser for
+#'     'value' should be registered separately, as this function does not
+#'     register any finalisers to be run when 'key' becomes unreachable.
+#'
+#' @export
+#'
+`weakref<-` <- function(key, value) .Call(rnng_make_weakref, key, value)
+

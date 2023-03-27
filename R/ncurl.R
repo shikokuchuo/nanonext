@@ -90,14 +90,17 @@ ncurl <- function(url,
 #'     once over the connection.
 #'
 #' @inheritParams ncurl
+#' @param timeout (optional) integer value in milliseconds after which the
+#'     connection and subsequent transact attempts time out.
 #'
-#' @return For \code{ncurl_session}: an 'ncurlSession' object.
+#' @return For \code{ncurl_session}: an 'ncurlSession' object if successful, or
+#'     else an 'errorValue'.
 #'
 #' @examples
-#' s <- tryCatch(ncurl_session("https://httpbin.org/get", response = "date"), error = identity)
+#' s <- ncurl_session("https://httpbin.org/get", response = "date", timeout = 1000L)
 #' s
-#' if (!inherits(s, "error")) transact(s)
-#' if (!inherits(s, "error")) close(s)
+#' if (!is_error_value(s)) transact(s)
+#' if (!is_error_value(s)) close(s)
 #'
 #' @export
 #'
@@ -107,8 +110,9 @@ ncurl_session <- function(url,
                           headers = NULL,
                           data = NULL,
                           response = NULL,
+                          timeout = NULL,
                           pem = NULL)
-    .Call(rnng_ncurl_session, url, convert, method, headers, data, response, pem)
+    .Call(rnng_ncurl_session, url, convert, method, headers, data, response, timeout, pem)
 
 #' @param session an 'ncurlSession' object.
 #'

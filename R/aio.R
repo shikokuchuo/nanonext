@@ -131,8 +131,8 @@ recv_aio <- function(con,
 #'     should be signalled when the async receive is complete.
 #'
 #' @details \strong{For the signalling version}: when the receive is complete,
-#'     the supplied 'conditionVariable' is signalled by incrementing it by 1.
-#'     This happens asynchronously and independently of the main R execution
+#'     the supplied 'conditionVariable' is signalled by incrementing its value
+#'     by 1. This happens asynchronously and independently of the R execution
 #'     thread.
 #'
 #' @examples
@@ -282,10 +282,11 @@ unresolved <- function(aio) .Call(rnng_unresolved, aio)
 
 #' Technical Utility: Query if an Aio is Unresolved
 #'
-#' Query whether an Aio remains unresolved. This function is a technical utility
-#'     version of \code{\link{unresolved}} not intended for ordinary use.
-#'     Provides a method of querying the busy status of an Aio without altering
-#'     its state in any way i.e. not attempting to retrieve the result or message.
+#' Query whether an Aio remains unresolved. This function is an experimental
+#'     technical utility version of \code{\link{unresolved}} not intended for
+#'     ordinary use. Provides a method of querying the busy status of an Aio
+#'     without altering its state in any way i.e. not attempting to retrieve the
+#'     result or message.
 #'
 #' @param aio an Aio (object of class 'sendAio' or 'recvAio').
 #'
