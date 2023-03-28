@@ -44,7 +44,7 @@ Note: the values of individual statistics are guaranteed to be
     The following stats may be requested for a Listener / Dialer:
     \itemize{
     \item{'id'} {- numeric id of the listener / dialer.}
-    \item{'socket'} {- mueric id of the socket of the listener / dialer.}
+    \item{'socket'} {- numeric id of the socket of the listener / dialer.}
     \item{'url'} {- character URL address.}
     \item{'pipes'} {- numeric number of pipes (active connections).}
     }
