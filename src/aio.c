@@ -217,18 +217,7 @@ static void cv_duo_finalizer(SEXP xptr) {
 
 }
 
-static void isaio_finalizer(SEXP xptr) {
-
-  if (R_ExternalPtrAddr(xptr) == NULL)
-    return;
-  nano_aio *xp = (nano_aio *) R_ExternalPtrAddr(xptr);
-  nng_aio_free(xp->aio);
-  R_Free(xp->data);
-  R_Free(xp);
-
-}
-
-static void iraio_finalizer(SEXP xptr) {
+static void iaio_finalizer(SEXP xptr) {
 
   if (R_ExternalPtrAddr(xptr) == NULL)
     return;
@@ -621,25 +610,25 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
     nng_stream *sp = (nng_stream *) R_ExternalPtrAddr(con);
     const int frames = LOGICAL(Rf_getAttrib(con, nano_TextframesSymbol))[0];
     nano_aio *iaio = R_Calloc(1, nano_aio);
-    nng_iov *iov = R_Calloc(1, nng_iov);
+    nng_iov iov;
     enc = nano_encode(data);
     xlen = Rf_xlength(enc);
-    dp = RAW(enc);
 
     iaio->type = IOV_SENDAIO;
-    iaio->data = iov;
-    iov->iov_len = frames == 1 ? xlen - 1 : xlen;
-    iov->iov_buf = dp;
+    iaio->data = R_Calloc(xlen, unsigned char);
+    memcpy(iaio->data, RAW(enc), xlen);
+    iov.iov_len = frames == 1 ? xlen - 1 : xlen;
+    iov.iov_buf = iaio->data;
 
     if ((xc = nng_aio_alloc(&iaio->aio, raio_complete, iaio))) {
-      R_Free(iov);
+      R_Free(iaio->data);
       R_Free(iaio);
       return mk_error_data(-xc);
     }
 
-    if ((xc = nng_aio_set_iov(iaio->aio, 1u, iov))) {
+    if ((xc = nng_aio_set_iov(iaio->aio, 1u, &iov))) {
       nng_aio_free(iaio->aio);
-      R_Free(iov);
+      R_Free(iaio->data);
       R_Free(iaio);
       return mk_error_data(-xc);
     }
@@ -648,7 +637,7 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
     nng_stream_send(sp, iaio->aio);
 
     PROTECT(aio = R_MakeExternalPtr(iaio, nano_AioSymbol, R_NilValue));
-    R_RegisterCFinalizerEx(aio, isaio_finalizer, TRUE);
+    R_RegisterCFinalizerEx(aio, iaio_finalizer, TRUE);
     UNPROTECT(1);
 
   } else {
@@ -757,7 +746,7 @@ SEXP rnng_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP keep, SEXP bytes, SEX
     nng_stream_recv(sp, iaio->aio);
 
     PROTECT(aio = R_MakeExternalPtr(iaio, nano_AioSymbol, R_NilValue));
-    R_RegisterCFinalizerEx(aio, iraio_finalizer, TRUE);
+    R_RegisterCFinalizerEx(aio, iaio_finalizer, TRUE);
     UNPROTECT(1);
 
   } else {
@@ -1560,7 +1549,7 @@ SEXP rnng_cv_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP keep, SEXP bytes, 
     nng_stream_recv(sp, iaio->aio);
 
     PROTECT(aio = R_MakeExternalPtr(iaio, nano_AioSymbol, R_NilValue));
-    R_RegisterCFinalizerEx(aio, iraio_finalizer, TRUE);
+    R_RegisterCFinalizerEx(aio, iaio_finalizer, TRUE);
     UNPROTECT(1);
 
   } else {
