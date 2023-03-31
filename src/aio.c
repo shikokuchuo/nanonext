@@ -149,38 +149,10 @@ static void raio_complete(void *arg) {
 
   nano_aio *raio = (nano_aio *) arg;
   raio->result = nng_aio_result(raio->aio);
-  if(!raio->result)
-    raio->data = nng_aio_get_msg(raio->aio);
 
 }
 
 static void raio_complete_signal(void *arg) {
-
-  nano_cv_aio *cv_aio = (nano_cv_aio *) arg;
-  nano_aio *aio = cv_aio->aio;
-  nano_cv *ncv = cv_aio->cv;
-  nng_cv *cv = ncv->cv;
-  nng_mtx *mtx = ncv->mtx;
-
-  aio->result = nng_aio_result(aio->aio);
-  if(!aio->result)
-    aio->data = nng_aio_get_msg(aio->aio);
-
-  nng_mtx_lock(mtx);
-  ncv->condition++;
-  nng_cv_wake(cv);
-  nng_mtx_unlock(mtx);
-
-}
-
-static void iaio_complete(void *arg) {
-
-  nano_aio *iaio = (nano_aio *) arg;
-  iaio->result = nng_aio_result(iaio->aio);
-
-}
-
-static void iaio_complete_signal(void *arg) {
 
   nano_cv_aio *cv_aio = (nano_cv_aio *) arg;
   nano_aio *aio = cv_aio->aio;
@@ -251,8 +223,6 @@ static void raio_finalizer(SEXP xptr) {
     return;
   nano_aio *xp = (nano_aio *) R_ExternalPtrAddr(xptr);
   nng_aio_free(xp->aio);
-  if (xp->data != NULL)
-    nng_msg_free(xp->data);
   R_Free(xp);
 
 }
@@ -414,6 +384,7 @@ SEXP rnng_aio_get_msgraw(SEXP env) {
   if (raio->result)
     return mk_error_raio(raio->result, ENCLOS(env));
 
+  nng_msg *msg = nng_aio_get_msg(raio->aio);
   SEXP out;
   const int mod = -raio->mode, kpr = 1;
   unsigned char *buf;
@@ -424,11 +395,12 @@ SEXP rnng_aio_get_msgraw(SEXP env) {
     buf = iov->iov_buf;
     sz = nng_aio_count(raio->aio);
   } else {
-    buf = nng_msg_body(raio->data);
-    sz = nng_msg_len(raio->data);
+    buf = nng_msg_body(msg);
+    sz = nng_msg_len(msg);
   }
 
   PROTECT(out = nano_decode(buf, sz, mod, kpr));
+  nng_msg_free(msg);
   Rf_defineVar(nano_RawSymbol, VECTOR_ELT(out, 0), ENCLOS(env));
   Rf_defineVar(nano_ResultSymbol, VECTOR_ELT(out, 1), ENCLOS(env));
   out = VECTOR_ELT(out, 0);
@@ -458,6 +430,7 @@ SEXP rnng_aio_get_msgdata(SEXP env) {
   if (raio->result)
     return mk_error_raio(raio->result, ENCLOS(env));
 
+  nng_msg *msg = nng_aio_get_msg(raio->aio);
   SEXP out;
   const int kpr = raio->mode > 0 ? 0 : 1, mod = kpr ? -raio->mode : raio->mode;
   unsigned char *buf;
@@ -468,11 +441,12 @@ SEXP rnng_aio_get_msgdata(SEXP env) {
     buf = iov->iov_buf;
     sz = nng_aio_count(raio->aio);
   } else {
-    buf = nng_msg_body(raio->data);
-    sz = nng_msg_len(raio->data);
+    buf = nng_msg_body(msg);
+    sz = nng_msg_len(msg);
   }
 
   PROTECT(out = nano_decode(buf, sz, mod, kpr));
+  nng_msg_free(msg);
   if (kpr) {
     Rf_defineVar(nano_RawSymbol, VECTOR_ELT(out, 0), ENCLOS(env));
     Rf_defineVar(nano_ResultSymbol, VECTOR_ELT(out, 1), ENCLOS(env));
@@ -531,10 +505,7 @@ SEXP rnng_aio_stop(SEXP aio) {
   nano_handle *handle;
   switch (aiop->type) {
   case SENDAIO:
-    break;
   case RECVAIO:
-    if (aiop->data != NULL)
-      nng_msg_free(aiop->data);
     break;
   case IOV_SENDAIO:
     R_Free(aiop->data);
@@ -678,7 +649,7 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
     iov->iov_len = frames == 1 ? xlen - 1 : xlen;
     iov->iov_buf = dp;
 
-    if ((xc = nng_aio_alloc(&iaio->aio, iaio_complete, iaio))) {
+    if ((xc = nng_aio_alloc(&iaio->aio, raio_complete, iaio))) {
       R_Free(iov);
       R_Free(iaio);
       return mk_error_data(-xc);
@@ -787,7 +758,7 @@ SEXP rnng_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP keep, SEXP bytes, SEX
     iov->iov_len = xlen;
     iov->iov_buf = R_Calloc(xlen, unsigned char);
 
-    if ((xc = nng_aio_alloc(&iaio->aio, iaio_complete, iaio))) {
+    if ((xc = nng_aio_alloc(&iaio->aio, raio_complete, iaio))) {
       R_Free(iov->iov_buf);
       R_Free(iov);
       R_Free(iaio);
@@ -907,7 +878,7 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP dat
   if ((xc = nng_http_res_alloc(&handle->res)))
     goto exitlevel4;
 
-  if ((xc = nng_aio_alloc(&haio->aio, iaio_complete, haio)))
+  if ((xc = nng_aio_alloc(&haio->aio, raio_complete, haio)))
     goto exitlevel5;
 
   if (!strcmp(handle->url->u_scheme, "https")) {
@@ -1155,7 +1126,7 @@ SEXP rnng_ncurl_session(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP
   if ((xc = nng_http_res_alloc(&handle->res)))
     goto exitlevel4;
 
-  if ((xc = nng_aio_alloc(&haio->aio, iaio_complete, haio)))
+  if ((xc = nng_aio_alloc(&haio->aio, raio_complete, haio)))
     goto exitlevel5;
 
   if (!strcmp(handle->url->u_scheme, "https")) {
@@ -1588,7 +1559,7 @@ SEXP rnng_cv_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP keep, SEXP bytes, 
     cv_raio->aio = iaio;
     cv_raio->cv = cvp;
 
-    if ((xc = nng_aio_alloc(&iaio->aio, iaio_complete_signal, cv_raio))) {
+    if ((xc = nng_aio_alloc(&iaio->aio, raio_complete_signal, cv_raio))) {
       R_Free(cv_raio);
       R_Free(iov->iov_buf);
       R_Free(iov);
