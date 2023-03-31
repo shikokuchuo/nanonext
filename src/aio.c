@@ -476,7 +476,6 @@ SEXP rnng_aio_stop(SEXP aio) {
   nng_aio_stop(aiop->aio);
   nng_aio_free(aiop->aio);
 
-  nng_iov *iov;
   nano_handle *handle;
   switch (aiop->type) {
   case SENDAIO:
