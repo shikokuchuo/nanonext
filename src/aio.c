@@ -169,7 +169,7 @@ static void raio_complete_signal(void *arg) {
 
 }
 
-static void saio_finalizer(SEXP xptr) {
+static void aio_finalizer(SEXP xptr) {
 
   if (R_ExternalPtrAddr(xptr) == NULL)
     return;
@@ -213,16 +213,6 @@ static void cv_duo_finalizer(SEXP xptr) {
   if (R_ExternalPtrAddr(xptr) == NULL)
     return;
   nano_cv_duo *xp = (nano_cv_duo *) R_ExternalPtrAddr(xptr);
-  R_Free(xp);
-
-}
-
-static void raio_finalizer(SEXP xptr) {
-
-  if (R_ExternalPtrAddr(xptr) == NULL)
-    return;
-  nano_aio *xp = (nano_aio *) R_ExternalPtrAddr(xptr);
-  nng_aio_free(xp->aio);
   R_Free(xp);
 
 }
@@ -599,7 +589,7 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
     nng_send_aio(*sock, saio->aio);
 
     PROTECT(aio = R_MakeExternalPtr(saio, nano_AioSymbol, R_NilValue));
-    R_RegisterCFinalizerEx(aio, saio_finalizer, TRUE);
+    R_RegisterCFinalizerEx(aio, aio_finalizer, TRUE);
     UNPROTECT(1);
 
   } else if (ptrtag == nano_ContextSymbol) {
@@ -631,7 +621,7 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
     nng_ctx_send(*ctxp, saio->aio);
 
     PROTECT(aio = R_MakeExternalPtr(saio, nano_AioSymbol, R_NilValue));
-    R_RegisterCFinalizerEx(aio, saio_finalizer, TRUE);
+    R_RegisterCFinalizerEx(aio, aio_finalizer, TRUE);
     UNPROTECT(1);
 
   } else if (ptrtag == nano_StreamSymbol) {
@@ -721,7 +711,7 @@ SEXP rnng_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP keep, SEXP bytes, SEX
     nng_recv_aio(*sock, raio->aio);
 
     PROTECT(aio = R_MakeExternalPtr(raio, nano_AioSymbol, R_NilValue));
-    R_RegisterCFinalizerEx(aio, raio_finalizer, TRUE);
+    R_RegisterCFinalizerEx(aio, aio_finalizer, TRUE);
     UNPROTECT(1);
 
   } else if (ptrtag == nano_ContextSymbol) {
@@ -742,7 +732,7 @@ SEXP rnng_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP keep, SEXP bytes, SEX
     nng_ctx_recv(*ctxp, raio->aio);
 
     PROTECT(aio = R_MakeExternalPtr(raio, nano_AioSymbol, R_NilValue));
-    R_RegisterCFinalizerEx(aio, raio_finalizer, TRUE);
+    R_RegisterCFinalizerEx(aio, aio_finalizer, TRUE);
     UNPROTECT(1);
 
   } else if (ptrtag == nano_StreamSymbol) {
@@ -1340,7 +1330,7 @@ SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeou
   nng_ctx_recv(*ctxp, raio->aio);
 
   PROTECT(aio = R_MakeExternalPtr(raio, nano_AioSymbol, R_NilValue));
-  R_RegisterCFinalizerEx(aio, raio_finalizer, TRUE);
+  R_RegisterCFinalizerEx(aio, aio_finalizer, TRUE);
 
 #if defined(R_VERSION) && R_VERSION >= R_Version(4, 1, 0)
   PROTECT(env = R_NewEnv(clo, 0, 4));
@@ -1513,7 +1503,7 @@ SEXP rnng_cv_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP keep, SEXP bytes, 
     nng_recv_aio(*sock, raio->aio);
 
     PROTECT(aio = R_MakeExternalPtr(raio, nano_AioSymbol, R_NilValue));
-    R_RegisterCFinalizerEx(aio, raio_finalizer, TRUE);
+    R_RegisterCFinalizerEx(aio, aio_finalizer, TRUE);
     UNPROTECT(1);
 
   } else if (ptrtag == nano_ContextSymbol) {
@@ -1539,7 +1529,7 @@ SEXP rnng_cv_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP keep, SEXP bytes, 
     nng_ctx_recv(*ctxp, raio->aio);
 
     PROTECT(aio = R_MakeExternalPtr(raio, nano_AioSymbol, R_NilValue));
-    R_RegisterCFinalizerEx(aio, raio_finalizer, TRUE);
+    R_RegisterCFinalizerEx(aio, aio_finalizer, TRUE);
     UNPROTECT(1);
 
   } else if (ptrtag == nano_StreamSymbol) {
@@ -1678,7 +1668,7 @@ SEXP rnng_cv_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP tim
   nng_ctx_recv(*ctxp, raio->aio);
 
   PROTECT(aio = R_MakeExternalPtr(raio, nano_AioSymbol, R_NilValue));
-  R_RegisterCFinalizerEx(aio, raio_finalizer, TRUE);
+  R_RegisterCFinalizerEx(aio, aio_finalizer, TRUE);
 
 #if defined(R_VERSION) && R_VERSION >= R_Version(4, 1, 0)
   PROTECT(env = R_NewEnv(clo, 0, 4));
