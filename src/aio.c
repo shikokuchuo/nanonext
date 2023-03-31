@@ -233,10 +233,8 @@ static void iraio_finalizer(SEXP xptr) {
   if (R_ExternalPtrAddr(xptr) == NULL)
     return;
   nano_aio *xp = (nano_aio *) R_ExternalPtrAddr(xptr);
-  nng_iov *iov = (nng_iov *) xp->data;
   nng_aio_free(xp->aio);
-  R_Free(iov->iov_buf);
-  R_Free(iov);
+  R_Free(xp->data);
   R_Free(xp);
 
 }
@@ -381,8 +379,7 @@ SEXP rnng_aio_get_msgraw(SEXP env) {
   size_t sz;
 
   if (raio->type == IOV_RECVAIO) {
-    nng_iov *iov = (nng_iov *) raio->data;
-    buf = iov->iov_buf;
+    buf = raio->data;
     sz = nng_aio_count(raio->aio);
   } else {
     buf = nng_msg_body(msg);
@@ -427,8 +424,7 @@ SEXP rnng_aio_get_msgdata(SEXP env) {
   size_t sz;
 
   if (raio->type == IOV_RECVAIO) {
-    nng_iov *iov = (nng_iov *) raio->data;
-    buf = iov->iov_buf;
+    buf = raio->data;
     sz = nng_aio_count(raio->aio);
   } else {
     buf = nng_msg_body(msg);
@@ -498,12 +494,8 @@ SEXP rnng_aio_stop(SEXP aio) {
   case RECVAIO:
     break;
   case IOV_SENDAIO:
-    R_Free(aiop->data);
-    break;
   case IOV_RECVAIO:
-    iov = (nng_iov *) aiop->data;
-    R_Free(iov->iov_buf);
-    R_Free(iov);
+    R_Free(aiop->data);
     break;
   case HTTP_AIO:
     handle = (nano_handle *) aiop->data;
@@ -740,25 +732,23 @@ SEXP rnng_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP keep, SEXP bytes, SEX
     nng_stream *sp = (nng_stream *) R_ExternalPtrAddr(con);
     const size_t xlen = (size_t) Rf_asInteger(bytes);
     nano_aio *iaio = R_Calloc(1, nano_aio);
-    nng_iov *iov = R_Calloc(1, nng_iov);
+    nng_iov iov;
 
     iaio->type = IOV_RECVAIO;
     iaio->mode = kpr ? -nano_matchargs(mode) : nano_matchargs(mode);
-    iaio->data = iov;
-    iov->iov_len = xlen;
-    iov->iov_buf = R_Calloc(xlen, unsigned char);
+    iaio->data = R_Calloc(xlen, unsigned char);
+    iov.iov_len = xlen;
+    iov.iov_buf = iaio->data;
 
     if ((xc = nng_aio_alloc(&iaio->aio, raio_complete, iaio))) {
-      R_Free(iov->iov_buf);
-      R_Free(iov);
+      R_Free(iaio->data);
       R_Free(iaio);
       return kpr ? mk_error_recv(xc) : mk_error_data(xc);
     }
 
-    if ((xc = nng_aio_set_iov(iaio->aio, 1u, iov))) {
+    if ((xc = nng_aio_set_iov(iaio->aio, 1u, &iov))) {
       nng_aio_free(iaio->aio);
-      R_Free(iov->iov_buf);
-      R_Free(iov);
+      R_Free(iaio->data);
       R_Free(iaio);
       return kpr ? mk_error_recv(xc) : mk_error_data(xc);
     }
