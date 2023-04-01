@@ -145,6 +145,15 @@ static void saio_complete(void *arg) {
 
 }
 
+static void isaio_complete(void *arg) {
+
+  nano_aio *iaio = (nano_aio *) arg;
+  iaio->result = nng_aio_result(iaio->aio);
+  if (iaio->data != NULL)
+    R_Free(iaio->data);
+
+}
+
 static void raio_complete(void *arg) {
 
   nano_aio *raio = (nano_aio *) arg;
@@ -484,8 +493,8 @@ SEXP rnng_aio_stop(SEXP aio) {
   switch (aiop->type) {
   case SENDAIO:
   case RECVAIO:
-  case IOV_SENDAIO:
     break;
+  case IOV_SENDAIO:
   case IOV_RECVAIO:
     if (aiop->data != NULL)
       R_Free(aiop->data);
@@ -619,16 +628,20 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
     xlen = Rf_xlength(enc);
 
     iaio->type = IOV_SENDAIO;
+    iaio->data = R_Calloc(xlen, unsigned char);
+    memcpy(iaio->data, RAW(enc), xlen);
     iov.iov_len = frames == 1 ? xlen - 1 : xlen;
-    iov.iov_buf = RAW(enc);
+    iov.iov_buf = iaio->data;
 
-    if ((xc = nng_aio_alloc(&iaio->aio, raio_complete, iaio))) {
+    if ((xc = nng_aio_alloc(&iaio->aio, isaio_complete, iaio))) {
+      R_Free(iaio->data);
       R_Free(iaio);
       return mk_error_data(-xc);
     }
 
     if ((xc = nng_aio_set_iov(iaio->aio, 1u, &iov))) {
       nng_aio_free(iaio->aio);
+      R_Free(iaio->data);
       R_Free(iaio);
       return mk_error_data(-xc);
     }
@@ -637,7 +650,7 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
     nng_stream_send(sp, iaio->aio);
 
     PROTECT(aio = R_MakeExternalPtr(iaio, nano_AioSymbol, R_NilValue));
-    R_RegisterCFinalizerEx(aio, aio_finalizer, TRUE);
+    R_RegisterCFinalizerEx(aio, iaio_finalizer, TRUE);
     UNPROTECT(1);
 
   } else {
@@ -1705,8 +1718,12 @@ SEXP rnng_msg_pipe(SEXP aio) {
   if (aiop->result)
     Rf_error("pipe can only be retrieved from a successful Aio");
 
+  nng_msg *msg = nng_aio_get_msg(aiop->aio);
+  if (msg == NULL)
+    Rf_error("pipe cannot be retrieved from a Stream");
+
   nng_pipe *pp = R_Calloc(1, nng_pipe);
-  *pp = nng_msg_get_pipe(nng_aio_get_msg(aiop->aio));
+  *pp = nng_msg_get_pipe(msg);
 
   SEXP klass, out;
   PROTECT(out = R_MakeExternalPtr(pp, nano_PipeSymbol, R_NilValue));

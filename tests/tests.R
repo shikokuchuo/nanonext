@@ -378,6 +378,7 @@ if (length(s)) {
   nanotestnn(call_aio(sr)[["data"]])
   nanotest(cv_value(cv) > 0L)
   nanotest(!wait(cv))
+  nanotesterr(msg_pipe(sr), "Stream")
   nanotest(is.character(opt(s, "ws:request-headers")))
   nanotesterr(recv(s, mode = "none", block = FALSE), "mode")
   nanotesterr(recv(s, mode = "c", block = FALSE), "mode")
