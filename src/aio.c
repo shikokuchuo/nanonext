@@ -637,7 +637,7 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
     nng_stream_send(sp, iaio->aio);
 
     PROTECT(aio = R_MakeExternalPtr(iaio, nano_AioSymbol, R_NilValue));
-    R_RegisterCFinalizerEx(aio, iaio_finalizer, TRUE);
+    R_RegisterCFinalizerEx(aio, aio_finalizer, TRUE);
     UNPROTECT(1);
 
   } else {
