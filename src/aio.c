@@ -223,7 +223,8 @@ static void iaio_finalizer(SEXP xptr) {
     return;
   nano_aio *xp = (nano_aio *) R_ExternalPtrAddr(xptr);
   nng_aio_free(xp->aio);
-  R_Free(xp->data);
+  if (xp->data != NULL)
+    R_Free(xp->data);
   R_Free(xp);
 
 }
@@ -361,7 +362,6 @@ SEXP rnng_aio_get_msgraw(SEXP env) {
   if (raio->result)
     return mk_error_raio(raio->result, ENCLOS(env));
 
-  nng_msg *msg = nng_aio_get_msg(raio->aio);
   SEXP out;
   const int mod = -raio->mode, kpr = 1;
   unsigned char *buf;
@@ -370,13 +370,16 @@ SEXP rnng_aio_get_msgraw(SEXP env) {
   if (raio->type == IOV_RECVAIO) {
     buf = raio->data;
     sz = nng_aio_count(raio->aio);
+    PROTECT(out = nano_decode(buf, sz, mod, kpr));
+    R_Free(raio->data);
   } else {
+    nng_msg *msg = nng_aio_get_msg(raio->aio);
     buf = nng_msg_body(msg);
     sz = nng_msg_len(msg);
+    PROTECT(out = nano_decode(buf, sz, mod, kpr));
+    nng_msg_free(msg);
   }
 
-  PROTECT(out = nano_decode(buf, sz, mod, kpr));
-  nng_msg_free(msg);
   Rf_defineVar(nano_RawSymbol, VECTOR_ELT(out, 0), ENCLOS(env));
   Rf_defineVar(nano_ResultSymbol, VECTOR_ELT(out, 1), ENCLOS(env));
   out = VECTOR_ELT(out, 0);
@@ -406,7 +409,6 @@ SEXP rnng_aio_get_msgdata(SEXP env) {
   if (raio->result)
     return mk_error_raio(raio->result, ENCLOS(env));
 
-  nng_msg *msg = nng_aio_get_msg(raio->aio);
   SEXP out;
   const int kpr = raio->mode > 0 ? 0 : 1, mod = kpr ? -raio->mode : raio->mode;
   unsigned char *buf;
@@ -415,13 +417,16 @@ SEXP rnng_aio_get_msgdata(SEXP env) {
   if (raio->type == IOV_RECVAIO) {
     buf = raio->data;
     sz = nng_aio_count(raio->aio);
+    PROTECT(out = nano_decode(buf, sz, mod, kpr));
+    R_Free(raio->data);
   } else {
+    nng_msg *msg = nng_aio_get_msg(raio->aio);
     buf = nng_msg_body(msg);
     sz = nng_msg_len(msg);
+    PROTECT(out = nano_decode(buf, sz, mod, kpr));
+    nng_msg_free(msg);
   }
 
-  PROTECT(out = nano_decode(buf, sz, mod, kpr));
-  nng_msg_free(msg);
   if (kpr) {
     Rf_defineVar(nano_RawSymbol, VECTOR_ELT(out, 0), ENCLOS(env));
     Rf_defineVar(nano_ResultSymbol, VECTOR_ELT(out, 1), ENCLOS(env));
@@ -476,17 +481,17 @@ SEXP rnng_aio_stop(SEXP aio) {
   nng_aio_stop(aiop->aio);
   nng_aio_free(aiop->aio);
 
-  nano_handle *handle;
   switch (aiop->type) {
   case SENDAIO:
   case RECVAIO:
-    break;
   case IOV_SENDAIO:
-  case IOV_RECVAIO:
-    R_Free(aiop->data);
     break;
-  case HTTP_AIO:
-    handle = (nano_handle *) aiop->data;
+  case IOV_RECVAIO:
+    if (aiop->data != NULL)
+      R_Free(aiop->data);
+    break;
+  case HTTP_AIO: ;
+    nano_handle *handle = (nano_handle *) aiop->data;
     if (handle->cfg != NULL)
       nng_tls_config_free(handle->cfg);
     nng_http_res_free(handle->res);
@@ -614,20 +619,16 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
     xlen = Rf_xlength(enc);
 
     iaio->type = IOV_SENDAIO;
-    iaio->data = R_Calloc(xlen, unsigned char);
-    memcpy(iaio->data, RAW(enc), xlen);
     iov.iov_len = frames == 1 ? xlen - 1 : xlen;
-    iov.iov_buf = iaio->data;
+    iov.iov_buf = RAW(enc);
 
     if ((xc = nng_aio_alloc(&iaio->aio, raio_complete, iaio))) {
-      R_Free(iaio->data);
       R_Free(iaio);
       return mk_error_data(-xc);
     }
 
     if ((xc = nng_aio_set_iov(iaio->aio, 1u, &iov))) {
       nng_aio_free(iaio->aio);
-      R_Free(iaio->data);
       R_Free(iaio);
       return mk_error_data(-xc);
     }
