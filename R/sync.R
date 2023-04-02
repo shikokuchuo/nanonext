@@ -28,6 +28,8 @@
 #'
 #'     For \code{cv_value}: integer value of the condition variable.
 #'
+#'     For \code{cv_reset}: invisible NULL.
+#'
 #' @details Pass the 'conditionVariable' to the signalling forms of the
 #'     asynchronous receive functions: \code{\link{recv_aio_signal}} or
 #'     \code{\link{request_signal}}. Alternatively, to be notified of a pipe
@@ -50,9 +52,10 @@
 #'     \code{wait} or \code{until} returns (apart from due to timeout), the
 #'     value is decremented by 1.
 #'
-#'     The internal condition may be inspected at any time using \code{cv_value}
-#'     and reset to zero using \code{cv_reset}. This affords a high degree of
-#'     flexibility in designing complex concurrent applications.
+#'     The internal condition may be inspected at any time using \code{cv_value},
+#'     set to an arbitrary integer value using \code{cv_value<-} and reset using
+#'     \code{cv_reset}. This affords a high degree of flexibility in designing
+#'     complex concurrent applications.
 #'
 #' @section Flag:
 #'
@@ -128,6 +131,19 @@ cv_value <- function(cv) .Call(rnng_cv_value, cv)
 #' @export
 #'
 `cv_value<-` <- function(cv, value) .Call(rnng_cv_value_set, cv, value)
+
+#' Condition Variables - Reset
+#'
+#' \code{cv_reset} resets the internal value and flag of a condition variable.
+#'
+#' @examples
+#' cv_reset(cv)
+#' cv_value(cv)
+#'
+#' @rdname cv
+#' @export
+#'
+cv_reset <- function(cv) invisible(.Call(rnng_cv_reset, cv))
 
 #' Pipe Notify
 #'

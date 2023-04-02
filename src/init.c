@@ -138,6 +138,7 @@ static const R_CallMethodDef callMethods[] = {
   {"rnng_cv_alloc", (DL_FUNC) &rnng_cv_alloc, 0},
   {"rnng_cv_recv_aio", (DL_FUNC) &rnng_cv_recv_aio, 7},
   {"rnng_cv_request", (DL_FUNC) &rnng_cv_request, 8},
+  {"rnng_cv_reset", (DL_FUNC) &rnng_cv_reset, 1},
   {"rnng_cv_until", (DL_FUNC) &rnng_cv_until, 2},
   {"rnng_cv_value", (DL_FUNC) &rnng_cv_value, 1},
   {"rnng_cv_value_set", (DL_FUNC) &rnng_cv_value_set, 2},

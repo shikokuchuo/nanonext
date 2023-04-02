@@ -1,8 +1,8 @@
-# nanonext 0.8.1.9001 (development)
+# nanonext 0.8.1.9002 (development)
 
 #### New Features
 
-* `'cv_value<-'()` implemented to set the value of a condition value, as a more general replacement of `cv_reset()`.
+* `'cv_value<-'()` implemented to set the value of a condition value, allowing for more flexibility in usage.
 
 #### Updates
 

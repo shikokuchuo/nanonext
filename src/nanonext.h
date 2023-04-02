@@ -132,6 +132,7 @@ extern SEXP rnng_ctx_open(SEXP);
 extern SEXP rnng_cv_alloc(void);
 extern SEXP rnng_cv_recv_aio(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 extern SEXP rnng_cv_request(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
+extern SEXP rnng_cv_reset(SEXP);
 extern SEXP rnng_cv_until(SEXP, SEXP);
 extern SEXP rnng_cv_value(SEXP);
 extern SEXP rnng_cv_value_set(SEXP, SEXP);
