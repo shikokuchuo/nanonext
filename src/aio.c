@@ -694,7 +694,6 @@ SEXP rnng_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP keep, SEXP bytes, SEX
 
     raio->type = RECVAIO;
     raio->mode = kpr ? -nano_matcharg(mode) : nano_matcharg(mode);
-    raio->data = NULL;
 
     if ((xc = nng_aio_alloc(&raio->aio, raio_complete, raio))) {
       R_Free(raio);
@@ -715,7 +714,6 @@ SEXP rnng_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP keep, SEXP bytes, SEX
 
     raio->type = RECVAIO;
     raio->mode = kpr ? -nano_matcharg(mode) : nano_matcharg(mode);
-    raio->data = NULL;
 
     if ((xc = nng_aio_alloc(&raio->aio, raio_complete, raio))) {
       R_Free(raio);
@@ -1310,7 +1308,6 @@ SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeou
 
   raio->type = RECVAIO;
   raio->mode = kpr ? -nano_matcharg(recvmode) : nano_matcharg(recvmode);
-  raio->data = NULL;
 
   if ((xc = nng_aio_alloc(&raio->aio, raio_complete, raio))) {
     R_Free(raio);
@@ -1496,7 +1493,6 @@ SEXP rnng_cv_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP keep, SEXP bytes, 
 
     raio->type = RECVAIO;
     raio->mode = kpr ? -nano_matcharg(mode) : nano_matcharg(mode);
-    raio->data = NULL;
 
     cv_raio = R_Calloc(1, nano_cv_aio);
     cv_raio->aio = raio;
@@ -1522,7 +1518,6 @@ SEXP rnng_cv_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP keep, SEXP bytes, 
 
     raio->type = RECVAIO;
     raio->mode = kpr ? -nano_matcharg(mode) : nano_matcharg(mode);
-    raio->data = NULL;
 
     cv_raio = R_Calloc(1, nano_cv_aio);
     cv_raio->aio = raio;
@@ -1660,7 +1655,6 @@ SEXP rnng_cv_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP tim
   nano_aio *raio = R_Calloc(1, nano_aio);
   raio->type = RECVAIO;
   raio->mode = kpr ? -nano_matcharg(recvmode) : nano_matcharg(recvmode);
-  raio->data = NULL;
 
   nano_cv_aio *cv_raio = R_Calloc(1, nano_cv_aio);
   cv_raio->aio = raio;

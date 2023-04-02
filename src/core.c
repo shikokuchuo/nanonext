@@ -747,7 +747,7 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
     if ((xc = nng_aio_alloc(&aiop, NULL, NULL)))
       return mk_error(xc);
 
-    if ((xc = nng_aio_set_iov(aiop, 1, &iov))) {
+    if ((xc = nng_aio_set_iov(aiop, 1u, &iov))) {
       nng_aio_free(aiop);
       return mk_error(xc);
     }
@@ -878,7 +878,7 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP keep, SEXP bytes) {
       return kpr ? mk_error_recv(xc) : mk_error(xc);
     }
 
-    if ((xc = nng_aio_set_iov(aiop, 1, &iov))) {
+    if ((xc = nng_aio_set_iov(aiop, 1u, &iov))) {
       nng_aio_free(aiop);
       R_Free(iov.iov_buf);
       return kpr ? mk_error_recv(xc) : mk_error(xc);
