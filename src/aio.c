@@ -1432,23 +1432,6 @@ SEXP rnng_cv_until(SEXP cvar, SEXP msec) {
 
 }
 
-SEXP rnng_cv_reset(SEXP cvar) {
-
-  if (R_ExternalPtrTag(cvar) != nano_CvSymbol)
-    Rf_error("'cv' is not a valid Condition Variable");
-
-  nano_cv *ncv = (nano_cv *) R_ExternalPtrAddr(cvar);
-  nng_mtx *mtx = ncv->mtx;
-
-  nng_mtx_lock(mtx);
-  ncv->flag = 0;
-  ncv->condition = 0;
-  nng_mtx_unlock(mtx);
-
-  return R_NilValue;
-
-}
-
 SEXP rnng_cv_value(SEXP cvar) {
 
   if (R_ExternalPtrTag(cvar) != nano_CvSymbol)
@@ -1456,6 +1439,23 @@ SEXP rnng_cv_value(SEXP cvar) {
   nano_cv *ncv = (nano_cv *) R_ExternalPtrAddr(cvar);
 
   return Rf_ScalarInteger(ncv->condition);
+
+}
+
+SEXP rnng_cv_value_set(SEXP cvar, SEXP value) {
+
+  if (R_ExternalPtrTag(cvar) != nano_CvSymbol)
+    Rf_error("'cv' is not a valid Condition Variable");
+
+  const int val = INTEGER(value)[0];
+  nano_cv *ncv = (nano_cv *) R_ExternalPtrAddr(cvar);
+  nng_mtx *mtx = ncv->mtx;
+
+  nng_mtx_lock(mtx);
+  ncv->condition = val;
+  nng_mtx_unlock(mtx);
+
+  return cvar;
 
 }
 

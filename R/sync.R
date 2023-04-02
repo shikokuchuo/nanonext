@@ -28,8 +28,6 @@
 #'
 #'     For \code{cv_value}: integer value of the condition variable.
 #'
-#'     For \code{cv_reset}: invisible NULL.
-#'
 #' @details Pass the 'conditionVariable' to the signalling forms of the
 #'     asynchronous receive functions: \code{\link{recv_aio_signal}} or
 #'     \code{\link{request_signal}}. Alternatively, to be notified of a pipe
@@ -116,17 +114,20 @@ until <- function(cv, msec) invisible(.Call(rnng_cv_until, cv, msec))
 #'
 cv_value <- function(cv) .Call(rnng_cv_value, cv)
 
-#' Condition Variables - Reset
+#' Condition Variables - Set Value
 #'
-#' \code{cv_reset} resets the internal value and flag of a condition variable.
+#' \code{cv_value<-} sets the internal value of a condition variable.
+#'
+#' @param value an integer (non-integer types will error).
 #'
 #' @examples
-#' cv_reset(cv)
+#' cv_value(cv) <- 1L
+#' cv_value(cv)
 #'
 #' @rdname cv
 #' @export
 #'
-cv_reset <- function(cv) invisible(.Call(rnng_cv_reset, cv))
+`cv_value<-` <- function(cv, value) .Call(rnng_cv_value_set, cv, value)
 
 #' Pipe Notify
 #'

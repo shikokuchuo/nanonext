@@ -5,7 +5,7 @@
 \alias{wait}
 \alias{until}
 \alias{cv_value}
-\alias{cv_reset}
+\alias{cv_value<-}
 \title{Condition Variables}
 \usage{
 cv()
@@ -16,13 +16,15 @@ until(cv, msec)
 
 cv_value(cv)
 
-cv_reset(cv)
+cv_value(cv) <- value
 }
 \arguments{
 \item{cv}{a 'conditionVariable' object.}
 
 \item{msec}{maximum time in milliseconds to wait for the condition variable
 to be signalled.}
+
+\item{value}{an integer (non-integer types will error).}
 }
 \value{
 For \code{cv}: a 'conditionVariable' object.
@@ -31,8 +33,6 @@ For \code{cv}: a 'conditionVariable' object.
     flag has been set.
 
     For \code{cv_value}: integer value of the condition variable.
-
-    For \code{cv_reset}: invisible NULL.
 }
 \description{
 \code{cv} creates a new condition variable (protected by a mutex internal to
@@ -46,7 +46,7 @@ For \code{cv}: a 'conditionVariable' object.
 
 \code{cv_value} inspects the internal value of a condition variable.
 
-\code{cv_reset} resets the internal value and flag of a condition variable.
+\code{cv_value<-} sets the internal value of a condition variable.
 }
 \details{
 Pass the 'conditionVariable' to the signalling forms of the
@@ -98,6 +98,7 @@ until(cv, 10L)
 
 cv_value(cv)
 
-cv_reset(cv)
+cv_value(cv) <- 1L
+cv_value(cv)
 
 }
