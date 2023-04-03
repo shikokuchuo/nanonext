@@ -236,3 +236,43 @@ msg_pipe <- function(aio) .Call(rnng_msg_pipe, aio)
 #'
 close.nanoPipe <- function(con, ...) invisible(.Call(rnng_pipe_close, con))
 
+#' Lock / Unlock a Socket
+#'
+#' Prevents further pipe connections from being established at a Socket.
+#'
+#' @param socket a Socket.
+#' @param cv (optional) a 'conditionVariable'. If supplied, the socket is locked
+#'     only while the value of the condition variable is non-zero.
+#'
+#' @return Invisibly, an integer exit code (zero on success).
+#'
+#' @examples
+#' s <- socket("bus", listen = "inproc://nanolock")
+#' s1 <- socket("bus", dial = "inproc://nanolock")
+#' lock(s)
+#' s2 <- socket("bus", dial = "inproc://nanolock")
+#'
+#' send(s, "test")
+#' recv(s1)
+#' recv(s2)
+#'
+#' unlock(s)
+#' s3 <- socket("bus", dial = "inproc://nanolock")
+#' send(s, "test")
+#' recv(s1)
+#' recv(s3)
+#'
+#' close(s)
+#' close(s1)
+#' close(s2)
+#' close(s3)
+#'
+#' @export
+#'
+lock <- function(socket, cv = NULL) invisible(.Call(rnng_socket_lock, socket, cv))
+
+#' @rdname lock
+#' @export
+#'
+unlock <- function(socket) invisible(.Call(rnng_socket_unlock, socket))
+

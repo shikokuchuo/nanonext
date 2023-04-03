@@ -136,6 +136,18 @@ static void pipe_cb_flag_cv_duo(nng_pipe p, nng_pipe_ev ev, void *arg) {
 
 }
 
+static void pipe_cb_dropcon(nng_pipe p, nng_pipe_ev ev, void *arg) {
+
+  if (arg != NULL) {
+    nano_cv *ncv = (nano_cv *) arg;
+    if (ncv->condition)
+      nng_pipe_close(p);
+  } else {
+    nng_pipe_close(p);
+  }
+
+}
+
 static void saio_complete(void *arg) {
 
   nano_aio *saio = (nano_aio *) arg;
@@ -1819,6 +1831,44 @@ SEXP rnng_pipe_notify(SEXP socket, SEXP cv, SEXP cv2, SEXP add, SEXP remove, SEX
     }
 
   }
+
+  return nano_success;
+
+}
+
+SEXP rnng_socket_lock(SEXP socket, SEXP cv) {
+
+  if (R_ExternalPtrTag(socket) != nano_SocketSymbol)
+    Rf_error("'socket' is not a valid Socket");
+  nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(socket);
+
+  int xc;
+  if (cv != R_NilValue) {
+    if (R_ExternalPtrTag(cv) != nano_CvSymbol)
+      Rf_error("'cv' is not a valid Condition Variable");
+    nano_cv *ncv = (nano_cv *) R_ExternalPtrAddr(cv);
+    xc = nng_pipe_notify(*sock, NNG_PIPE_EV_ADD_PRE, pipe_cb_dropcon, ncv);
+  } else {
+    xc = nng_pipe_notify(*sock, NNG_PIPE_EV_ADD_PRE, pipe_cb_dropcon, NULL);
+  }
+
+  if (xc)
+    ERROR_RET(xc);
+
+  return nano_success;
+
+}
+
+SEXP rnng_socket_unlock(SEXP socket) {
+
+  if (R_ExternalPtrTag(socket) != nano_SocketSymbol)
+    Rf_error("'socket' is not a valid Socket");
+
+  nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(socket);
+  int xc;
+  xc = nng_pipe_notify(*sock, NNG_PIPE_EV_ADD_PRE, NULL, NULL);
+  if (xc)
+    ERROR_RET(xc);
 
   return nano_success;
 
