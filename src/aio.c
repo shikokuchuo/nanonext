@@ -561,6 +561,7 @@ SEXP rnng_unresolved2(SEXP aio) {
 SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
 
   const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) Rf_asInteger(timeout);
+  nano_aio *saio = R_Calloc(1, nano_aio);
   SEXP enc, aio;
   R_xlen_t xlen;
   unsigned char *dp;
@@ -570,7 +571,6 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
   if (ptrtag == nano_SocketSymbol) {
 
     nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(con);
-    nano_aio *saio = R_Calloc(1, nano_aio);
     nng_msg *msg;
 
     enc = nano_encodes(data, mode);
@@ -601,7 +601,6 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
   } else if (ptrtag == nano_ContextSymbol) {
 
     nng_ctx *ctxp = (nng_ctx *) R_ExternalPtrAddr(con);
-    nano_aio *saio = R_Calloc(1, nano_aio);
     nng_msg *msg;
 
     enc = nano_encodes(data, mode);
@@ -634,34 +633,33 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
 
     nng_stream *sp = (nng_stream *) R_ExternalPtrAddr(con);
     const int frames = LOGICAL(Rf_getAttrib(con, nano_TextframesSymbol))[0];
-    nano_aio *iaio = R_Calloc(1, nano_aio);
     nng_iov iov;
     enc = nano_encode(data);
     xlen = Rf_xlength(enc);
 
-    iaio->type = IOV_SENDAIO;
-    iaio->data = R_Calloc(xlen, unsigned char);
-    memcpy(iaio->data, RAW(enc), xlen);
+    saio->type = IOV_SENDAIO;
+    saio->data = R_Calloc(xlen, unsigned char);
+    memcpy(saio->data, RAW(enc), xlen);
     iov.iov_len = frames == 1 ? xlen - 1 : xlen;
-    iov.iov_buf = iaio->data;
+    iov.iov_buf = saio->data;
 
-    if ((xc = nng_aio_alloc(&iaio->aio, isaio_complete, iaio))) {
-      R_Free(iaio->data);
-      R_Free(iaio);
+    if ((xc = nng_aio_alloc(&saio->aio, isaio_complete, saio))) {
+      R_Free(saio->data);
+      R_Free(saio);
       return mk_error_data(-xc);
     }
 
-    if ((xc = nng_aio_set_iov(iaio->aio, 1u, &iov))) {
-      nng_aio_free(iaio->aio);
-      R_Free(iaio->data);
-      R_Free(iaio);
+    if ((xc = nng_aio_set_iov(saio->aio, 1u, &iov))) {
+      nng_aio_free(saio->aio);
+      R_Free(saio->data);
+      R_Free(saio);
       return mk_error_data(-xc);
     }
 
-    nng_aio_set_timeout(iaio->aio, dur);
-    nng_stream_send(sp, iaio->aio);
+    nng_aio_set_timeout(saio->aio, dur);
+    nng_stream_send(sp, saio->aio);
 
-    PROTECT(aio = R_MakeExternalPtr(iaio, nano_AioSymbol, R_NilValue));
+    PROTECT(aio = R_MakeExternalPtr(saio, nano_AioSymbol, R_NilValue));
     R_RegisterCFinalizerEx(aio, iaio_finalizer, TRUE);
     UNPROTECT(1);
 
@@ -695,6 +693,7 @@ SEXP rnng_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP keep, SEXP bytes, SEX
 
   const int kpr = LOGICAL(keep)[0];
   const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) Rf_asInteger(timeout);
+  nano_aio *raio = R_Calloc(1, nano_aio);
   SEXP aio;
   int xc;
 
@@ -702,8 +701,6 @@ SEXP rnng_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP keep, SEXP bytes, SEX
   if (ptrtag == nano_SocketSymbol) {
 
     nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(con);
-    nano_aio *raio = R_Calloc(1, nano_aio);
-
     raio->type = RECVAIO;
     raio->mode = kpr ? -nano_matcharg(mode) : nano_matcharg(mode);
 
@@ -722,8 +719,6 @@ SEXP rnng_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP keep, SEXP bytes, SEX
   } else if (ptrtag == nano_ContextSymbol) {
 
     nng_ctx *ctxp = (nng_ctx *) R_ExternalPtrAddr(con);
-    nano_aio *raio = R_Calloc(1, nano_aio);
-
     raio->type = RECVAIO;
     raio->mode = kpr ? -nano_matcharg(mode) : nano_matcharg(mode);
 
@@ -743,32 +738,31 @@ SEXP rnng_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP keep, SEXP bytes, SEX
 
     nng_stream *sp = (nng_stream *) R_ExternalPtrAddr(con);
     const size_t xlen = (size_t) Rf_asInteger(bytes);
-    nano_aio *iaio = R_Calloc(1, nano_aio);
     nng_iov iov;
 
-    iaio->type = IOV_RECVAIO;
-    iaio->mode = kpr ? -nano_matchargs(mode) : nano_matchargs(mode);
-    iaio->data = R_Calloc(xlen, unsigned char);
+    raio->type = IOV_RECVAIO;
+    raio->mode = kpr ? -nano_matchargs(mode) : nano_matchargs(mode);
+    raio->data = R_Calloc(xlen, unsigned char);
     iov.iov_len = xlen;
-    iov.iov_buf = iaio->data;
+    iov.iov_buf = raio->data;
 
-    if ((xc = nng_aio_alloc(&iaio->aio, raio_complete, iaio))) {
-      R_Free(iaio->data);
-      R_Free(iaio);
+    if ((xc = nng_aio_alloc(&raio->aio, raio_complete, raio))) {
+      R_Free(raio->data);
+      R_Free(raio);
       return kpr ? mk_error_recv(xc) : mk_error_data(xc);
     }
 
-    if ((xc = nng_aio_set_iov(iaio->aio, 1u, &iov))) {
-      nng_aio_free(iaio->aio);
-      R_Free(iaio->data);
-      R_Free(iaio);
+    if ((xc = nng_aio_set_iov(raio->aio, 1u, &iov))) {
+      nng_aio_free(raio->aio);
+      R_Free(raio->data);
+      R_Free(raio);
       return kpr ? mk_error_recv(xc) : mk_error_data(xc);
     }
 
-    nng_aio_set_timeout(iaio->aio, dur);
-    nng_stream_recv(sp, iaio->aio);
+    nng_aio_set_timeout(raio->aio, dur);
+    nng_stream_recv(sp, raio->aio);
 
-    PROTECT(aio = R_MakeExternalPtr(iaio, nano_AioSymbol, R_NilValue));
+    PROTECT(aio = R_MakeExternalPtr(raio, nano_AioSymbol, R_NilValue));
     R_RegisterCFinalizerEx(aio, iaio_finalizer, TRUE);
     UNPROTECT(1);
 
@@ -1493,22 +1487,20 @@ SEXP rnng_cv_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP keep, SEXP bytes, 
   nano_cv *cvp = (nano_cv *) R_ExternalPtrAddr(cvar);
   const int kpr = LOGICAL(keep)[0];
   const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) Rf_asInteger(timeout);
-  nano_cv_aio *cv_raio;
+  nano_cv_aio *cv_raio = R_Calloc(1, nano_cv_aio);
+  nano_aio *raio = R_Calloc(1, nano_aio);
   SEXP aio;
   int xc;
+
+  cv_raio->aio = raio;
+  cv_raio->cv = cvp;
 
   const SEXP ptrtag = R_ExternalPtrTag(con);
   if (ptrtag == nano_SocketSymbol) {
 
     nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(con);
-    nano_aio *raio = R_Calloc(1, nano_aio);
-
     raio->type = RECVAIO;
     raio->mode = kpr ? -nano_matcharg(mode) : nano_matcharg(mode);
-
-    cv_raio = R_Calloc(1, nano_cv_aio);
-    cv_raio->aio = raio;
-    cv_raio->cv = cvp;
 
     if ((xc = nng_aio_alloc(&raio->aio, raio_complete_signal, cv_raio))) {
       R_Free(cv_raio);
@@ -1526,14 +1518,8 @@ SEXP rnng_cv_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP keep, SEXP bytes, 
   } else if (ptrtag == nano_ContextSymbol) {
 
     nng_ctx *ctxp = (nng_ctx *) R_ExternalPtrAddr(con);
-    nano_aio *raio = R_Calloc(1, nano_aio);
-
     raio->type = RECVAIO;
     raio->mode = kpr ? -nano_matcharg(mode) : nano_matcharg(mode);
-
-    cv_raio = R_Calloc(1, nano_cv_aio);
-    cv_raio->aio = raio;
-    cv_raio->cv = cvp;
 
     if ((xc = nng_aio_alloc(&raio->aio, raio_complete_signal, cv_raio))) {
       R_Free(cv_raio);
@@ -1552,38 +1538,33 @@ SEXP rnng_cv_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP keep, SEXP bytes, 
 
     nng_stream *sp = (nng_stream *) R_ExternalPtrAddr(con);
     const size_t xlen = (size_t) Rf_asInteger(bytes);
-    nano_aio *iaio = R_Calloc(1, nano_aio);
     nng_iov iov;
 
-    iaio->type = IOV_RECVAIO;
-    iaio->mode = kpr ? -nano_matchargs(mode) : nano_matchargs(mode);
-    iaio->data = R_Calloc(xlen, unsigned char);
+    raio->type = IOV_RECVAIO;
+    raio->mode = kpr ? -nano_matchargs(mode) : nano_matchargs(mode);
+    raio->data = R_Calloc(xlen, unsigned char);
     iov.iov_len = xlen;
-    iov.iov_buf = iaio->data;
+    iov.iov_buf = raio->data;
 
-    cv_raio = R_Calloc(1, nano_cv_aio);
-    cv_raio->aio = iaio;
-    cv_raio->cv = cvp;
-
-    if ((xc = nng_aio_alloc(&iaio->aio, raio_complete_signal, cv_raio))) {
+    if ((xc = nng_aio_alloc(&raio->aio, raio_complete_signal, cv_raio))) {
       R_Free(cv_raio);
-      R_Free(iaio->data);
-      R_Free(iaio);
+      R_Free(raio->data);
+      R_Free(raio);
       return kpr ? mk_error_recv(xc) : mk_error_data(xc);
     }
 
-    if ((xc = nng_aio_set_iov(iaio->aio, 1u, &iov))) {
-      nng_aio_free(iaio->aio);
+    if ((xc = nng_aio_set_iov(raio->aio, 1u, &iov))) {
+      nng_aio_free(raio->aio);
       R_Free(cv_raio);
-      R_Free(iaio->data);
-      R_Free(iaio);
+      R_Free(raio->data);
+      R_Free(raio);
       return kpr ? mk_error_recv(xc) : mk_error_data(xc);
     }
 
-    nng_aio_set_timeout(iaio->aio, dur);
-    nng_stream_recv(sp, iaio->aio);
+    nng_aio_set_timeout(raio->aio, dur);
+    nng_stream_recv(sp, raio->aio);
 
-    PROTECT(aio = R_MakeExternalPtr(iaio, nano_AioSymbol, R_NilValue));
+    PROTECT(aio = R_MakeExternalPtr(raio, nano_AioSymbol, R_NilValue));
     R_RegisterCFinalizerEx(aio, iaio_finalizer, TRUE);
     UNPROTECT(1);
 
