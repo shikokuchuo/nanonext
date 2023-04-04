@@ -870,17 +870,18 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP keep, SEXP bytes) {
       dur = (nng_duration) Rf_asInteger(block);
     }
 
+    buf = R_Calloc(xlen, unsigned char);
     iov.iov_len = xlen;
-    iov.iov_buf = R_Calloc(xlen, unsigned char);
+    iov.iov_buf = buf;
 
     if ((xc = nng_aio_alloc(&aiop, NULL, NULL))) {
-      R_Free(iov.iov_buf);
+      R_Free(buf);
       return kpr ? mk_error_recv(xc) : mk_error(xc);
     }
 
     if ((xc = nng_aio_set_iov(aiop, 1u, &iov))) {
       nng_aio_free(aiop);
-      R_Free(iov.iov_buf);
+      R_Free(buf);
       return kpr ? mk_error_recv(xc) : mk_error(xc);
     }
 
@@ -890,15 +891,14 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP keep, SEXP bytes) {
     nng_aio_wait(aiop);
     if ((xc = nng_aio_result(aiop))) {
       nng_aio_free(aiop);
-      R_Free(iov.iov_buf);
+      R_Free(buf);
       return kpr ? mk_error_recv(xc) : mk_error(xc);
     }
 
-    buf = iov.iov_buf;
     sz = nng_aio_count(aiop);
     nng_aio_free(aiop);
     res = nano_decode(buf, sz, mod, kpr);
-    R_Free(iov.iov_buf);
+    R_Free(buf);
 
   } else {
     Rf_error("'con' is not a valid Socket, Context or Stream");
