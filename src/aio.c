@@ -1553,13 +1553,13 @@ SEXP rnng_cv_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP keep, SEXP bytes, 
     nng_stream *sp = (nng_stream *) R_ExternalPtrAddr(con);
     const size_t xlen = (size_t) Rf_asInteger(bytes);
     nano_aio *iaio = R_Calloc(1, nano_aio);
-    nng_iov *iov = R_Calloc(1, nng_iov);
+    nng_iov iov;
 
     iaio->type = IOV_RECVAIO;
     iaio->mode = kpr ? -nano_matchargs(mode) : nano_matchargs(mode);
-    iaio->data = iov;
-    iov->iov_len = xlen;
-    iov->iov_buf = R_Calloc(xlen, unsigned char);
+    iaio->data = R_Calloc(xlen, unsigned char);
+    iov.iov_len = xlen;
+    iov.iov_buf = iaio->data;
 
     cv_raio = R_Calloc(1, nano_cv_aio);
     cv_raio->aio = iaio;
@@ -1567,17 +1567,15 @@ SEXP rnng_cv_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP keep, SEXP bytes, 
 
     if ((xc = nng_aio_alloc(&iaio->aio, raio_complete_signal, cv_raio))) {
       R_Free(cv_raio);
-      R_Free(iov->iov_buf);
-      R_Free(iov);
+      R_Free(iaio->data);
       R_Free(iaio);
       return kpr ? mk_error_recv(xc) : mk_error_data(xc);
     }
 
-    if ((xc = nng_aio_set_iov(iaio->aio, 1u, iov))) {
+    if ((xc = nng_aio_set_iov(iaio->aio, 1u, &iov))) {
       nng_aio_free(iaio->aio);
       R_Free(cv_raio);
-      R_Free(iov->iov_buf);
-      R_Free(iov);
+      R_Free(iaio->data);
       R_Free(iaio);
       return kpr ? mk_error_recv(xc) : mk_error_data(xc);
     }
