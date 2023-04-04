@@ -93,13 +93,10 @@ static SEXP nano_rawToChar(SEXP x) {
 
 }
 
-static SEXP nano_hashToChar(SEXP hash) {
+static SEXP nano_hashToChar(unsigned char *buf, size_t sz) {
 
-  const unsigned char *buf = RAW(hash);
-  const R_xlen_t sz = Rf_xlength(hash);
   char out[sz * 2 + 1];
-
-  for (R_xlen_t i = 0; i < sz; i++)
+  for (size_t i = 0; i < sz; i++)
     snprintf(&out[i * 2], 3, "%.2x", buf[i]);
 
   return Rf_mkString(out);
@@ -142,11 +139,7 @@ SEXP rnng_sha224(SEXP x, SEXP key, SEXP convert) {
 
   if (LOGICAL(convert)[0]) {
 
-    SEXP vec;
-    PROTECT(vec = Rf_allocVector(RAWSXP, SHA224_KEY_SIZE));
-    memcpy(RAW(vec), output, SHA224_KEY_SIZE);
-    out = nano_hashToChar(vec);
-    UNPROTECT(1);
+    out = nano_hashToChar(output, SHA224_KEY_SIZE);
 
   } else {
 
@@ -190,11 +183,7 @@ SEXP rnng_sha256(SEXP x, SEXP key, SEXP convert) {
 
   if (LOGICAL(convert)[0]) {
 
-    SEXP vec;
-    PROTECT(vec = Rf_allocVector(RAWSXP, SHA256_KEY_SIZE));
-    memcpy(RAW(vec), output, SHA256_KEY_SIZE);
-    out = nano_hashToChar(vec);
-    UNPROTECT(1);
+    out = nano_hashToChar(output, SHA256_KEY_SIZE);
 
   } else {
 
@@ -242,11 +231,7 @@ SEXP rnng_sha384(SEXP x, SEXP key, SEXP convert) {
 
   if (LOGICAL(convert)[0]) {
 
-    SEXP vec;
-    PROTECT(vec = Rf_allocVector(RAWSXP, SHA384_KEY_SIZE));
-    memcpy(RAW(vec), output, SHA384_KEY_SIZE);
-    out = nano_hashToChar(vec);
-    UNPROTECT(1);
+    out = nano_hashToChar(output, SHA384_KEY_SIZE);
 
   } else {
 
@@ -290,11 +275,7 @@ SEXP rnng_sha512(SEXP x, SEXP key, SEXP convert) {
 
   if (LOGICAL(convert)[0]) {
 
-    SEXP vec;
-    PROTECT(vec = Rf_allocVector(RAWSXP, SHA512_KEY_SIZE));
-    memcpy(RAW(vec), output, SHA512_KEY_SIZE);
-    out = nano_hashToChar(vec);
-    UNPROTECT(1);
+    out = nano_hashToChar(output, SHA512_KEY_SIZE);
 
   } else {
 
@@ -338,11 +319,7 @@ SEXP rnng_sha1(SEXP x, SEXP key, SEXP convert) {
 
   if (LOGICAL(convert)[0]) {
 
-    SEXP vec;
-    PROTECT(vec = Rf_allocVector(RAWSXP, SHA1_KEY_SIZE));
-    memcpy(RAW(vec), output, SHA1_KEY_SIZE);
-    out = nano_hashToChar(vec);
-    UNPROTECT(1);
+    out = nano_hashToChar(output, SHA1_KEY_SIZE);
 
   } else {
 

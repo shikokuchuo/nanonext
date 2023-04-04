@@ -90,7 +90,6 @@ sha384 <- function(x, key = NULL, convert = TRUE) .Call(rnng_sha384, x, key, con
 #'
 sha512 <- function(x, key = NULL, convert = TRUE) .Call(rnng_sha512, x, key, convert)
 
-
 #' Cryptographic Hashing Using the SHA-1 Algorithm
 #'
 #' Returns a SHA-1 hash or HMAC of the supplied R object. Uses the optimised
