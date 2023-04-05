@@ -431,15 +431,12 @@ SEXP rnng_aio_get_msgraw(SEXP env) {
   if (raio->type == IOV_RECVAIO) {
     buf = raio->data;
     sz = nng_aio_count(raio->aio);
-    PROTECT(out = nano_decode(buf, sz, mod, kpr));
-    R_Free(raio->data);
   } else {
     buf = nng_msg_body(raio->data);
     sz = nng_msg_len(raio->data);
-    PROTECT(out = nano_decode(buf, sz, mod, kpr));
-    nng_msg_free(raio->data);
   }
 
+  PROTECT(out = nano_decode(buf, sz, mod, kpr));
   Rf_defineVar(nano_RawSymbol, VECTOR_ELT(out, 0), ENCLOS(env));
   Rf_defineVar(nano_ResultSymbol, VECTOR_ELT(out, 1), ENCLOS(env));
   out = VECTOR_ELT(out, 0);
@@ -477,15 +474,12 @@ SEXP rnng_aio_get_msgdata(SEXP env) {
   if (raio->type == IOV_RECVAIO) {
     buf = raio->data;
     sz = nng_aio_count(raio->aio);
-    PROTECT(out = nano_decode(buf, sz, mod, kpr));
-    R_Free(raio->data);
   } else {
     buf = nng_msg_body(raio->data);
     sz = nng_msg_len(raio->data);
-    PROTECT(out = nano_decode(buf, sz, mod, kpr));
-    nng_msg_free(raio->data);
   }
 
+  PROTECT(out = nano_decode(buf, sz, mod, kpr));
   if (kpr) {
     Rf_defineVar(nano_RawSymbol, VECTOR_ELT(out, 0), ENCLOS(env));
     Rf_defineVar(nano_ResultSymbol, VECTOR_ELT(out, 1), ENCLOS(env));
