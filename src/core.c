@@ -147,13 +147,11 @@ SEXP nano_encodes(SEXP data, SEXP mode) {
 
   SEXP out;
   if (TYPEOF(data) == LANGSXP) {
-    SEXP lang;
-    PROTECT_INDEX pxi;
-    PROTECT_WITH_INDEX(lang = Rf_lang2(R_QuoteSymbol, data), &pxi);
-    REPROTECT(out = Rf_lang3(nano_SerialSymbol, lang, R_NilValue), pxi);
+    out = Rf_lang3(nano_SerialSymbol, Rf_lang2(R_QuoteSymbol, data), R_NilValue);
   } else {
-    PROTECT(out = Rf_lang3(nano_SerialSymbol, data, R_NilValue));
+    out = Rf_lang3(nano_SerialSymbol, data, R_NilValue);
   }
+  PROTECT(out);
   out = Rf_eval(out, R_BaseEnv);
   UNPROTECT(1);
 
