@@ -631,7 +631,6 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
 
     PROTECT(aio = R_MakeExternalPtr(saio, nano_AioSymbol, R_NilValue));
     R_RegisterCFinalizerEx(aio, saio_finalizer, TRUE);
-    UNPROTECT(1);
 
   } else if (ptrtag == nano_ContextSymbol) {
 
@@ -662,7 +661,6 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
 
     PROTECT(aio = R_MakeExternalPtr(saio, nano_AioSymbol, R_NilValue));
     R_RegisterCFinalizerEx(aio, saio_finalizer, TRUE);
-    UNPROTECT(1);
 
   } else if (ptrtag == nano_StreamSymbol) {
 
@@ -696,13 +694,11 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
 
     PROTECT(aio = R_MakeExternalPtr(saio, nano_AioSymbol, R_NilValue));
     R_RegisterCFinalizerEx(aio, iaio_finalizer, TRUE);
-    UNPROTECT(1);
 
   } else {
-    Rf_error("'con' is not a valid Socket, Context or Stream");
+    error_return("'con' is not a valid Socket, Context or Stream");
   }
 
-  PROTECT(aio);
   SEXP env, fun;
 #if defined(R_VERSION) && R_VERSION >= R_Version(4, 1, 0)
   PROTECT(env = R_NewEnv(clo, 0, 2));
@@ -749,7 +745,6 @@ SEXP rnng_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP keep, SEXP bytes, SEX
 
     PROTECT(aio = R_MakeExternalPtr(raio, nano_AioSymbol, R_NilValue));
     R_RegisterCFinalizerEx(aio, raio_finalizer, TRUE);
-    UNPROTECT(1);
 
   } else if (ptrtag == nano_ContextSymbol) {
 
@@ -767,7 +762,6 @@ SEXP rnng_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP keep, SEXP bytes, SEX
 
     PROTECT(aio = R_MakeExternalPtr(raio, nano_AioSymbol, R_NilValue));
     R_RegisterCFinalizerEx(aio, raio_finalizer, TRUE);
-    UNPROTECT(1);
 
   } else if (ptrtag == nano_StreamSymbol) {
 
@@ -799,13 +793,11 @@ SEXP rnng_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP keep, SEXP bytes, SEX
 
     PROTECT(aio = R_MakeExternalPtr(raio, nano_AioSymbol, R_NilValue));
     R_RegisterCFinalizerEx(aio, iaio_finalizer, TRUE);
-    UNPROTECT(1);
 
   } else {
-    Rf_error("'con' is not a valid Socket, Context or Stream");
+    error_return("'con' is not a valid Socket, Context or Stream");
   }
 
-  PROTECT(aio);
   SEXP env, fun;
 #if defined(R_VERSION) && R_VERSION >= R_Version(4, 1, 0)
   PROTECT(env = R_NewEnv(clo, 0, 4));

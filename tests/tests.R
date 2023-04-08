@@ -83,10 +83,12 @@ nanotesterr(n$send("wrong mode", mode = "none"), "mode")
 raio <- n1$recv_aio(timeout = 500, keep.raw = TRUE)
 nanotestp(raio)
 raio$newfield <- "doesnotwork"
+raio[["newfield"]] <- "doesnotwork"
 nanotestn(raio$newfield)
 nanotest(is_aio(raio))
 saio <- n$send_aio(c(1.1, 2.2), mode = "raw", timeout = 500)
 saio$newfield <- "doesnotwork"
+saio[["newfield"]] <- "doesnotwork"
 nanotestn(saio$newfield)
 nanotest(is_aio(saio))
 nanotest(is.logical(.unresolved(saio)))
