@@ -475,6 +475,7 @@ nanotest(sha224(as.raw(0L)) == "fff9292b4201617bdc4d3053fce02734166a683d7d858a7f
 nanotest(length(sha1("testingnoncrypto", convert = FALSE)) == 20L)
 nanotest(nchar(sha1(c(1, 2), key = "secret")) == 40L)
 nanotest(is.raw(sha1(quote(a + 2), convert = FALSE)))
+nanotest(is.character(sha256(quote(a))))
 nanotest(base64enc("test") == "dGVzdA==")
 nanotest(base64dec(base64enc("test")) == "test")
 nanotest(is.raw(base64enc(data.frame(), convert = FALSE)))
