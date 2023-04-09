@@ -1,4 +1,4 @@
-# nanonext 0.8.1.9009 (development)
+# nanonext 0.8.1.9010 (development)
 
 #### New Features
 
@@ -7,7 +7,7 @@
 
 #### Updates
 
-* Permits sending of serialised language objects.
+* Sending and hashing of language objects is now possible after fixes to serialisation.
 * Internal performance enhancements.
 
 # nanonext 0.8.1
