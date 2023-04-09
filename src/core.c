@@ -66,9 +66,8 @@ SEXP nano_encode(SEXP object) {
   size_t sz;
   SEXP out;
 
-  if (!Rf_isVectorAtomic(object))
-    Rf_error("'data' must be an atomic vector type to send in mode 'raw'");
-  if (TYPEOF(object) == STRSXP) {
+  switch (TYPEOF(object)) {
+  case STRSXP: ;
     const char *s;
     unsigned char *buf;
     size_t np, outlen = 0;
@@ -83,34 +82,34 @@ SEXP nano_encode(SEXP object) {
       np += strlen(s) + 1;
     }
     UNPROTECT(1);
-  } else {
-    switch (TYPEOF(object)) {
-    case REALSXP:
-      sz = xlen * sizeof(double);
-      out = Rf_allocVector(RAWSXP, sz);
-      memcpy(RAW(out), REAL(object), sz);
-      break;
-    case INTSXP:
-      sz = xlen * sizeof(int);
-      out = Rf_allocVector(RAWSXP, sz);
-      memcpy(RAW(out), INTEGER(object), sz);
-      break;
-    case LGLSXP:
-      sz = xlen * sizeof(int);
-      out = Rf_allocVector(RAWSXP, sz);
-      memcpy(RAW(out), LOGICAL(object), sz);
-      break;
-    case CPLXSXP:
-      sz = xlen * 2 * sizeof(double);
-      out = Rf_allocVector(RAWSXP, sz);
-      memcpy(RAW(out), COMPLEX(object), sz);
-      break;
-    case RAWSXP:
-      out = object;
-      break;
-    default:
+    break;
+  case REALSXP:
+    sz = xlen * sizeof(double);
+    out = Rf_allocVector(RAWSXP, sz);
+    memcpy(RAW(out), REAL(object), sz);
+    break;
+  case INTSXP:
+    sz = xlen * sizeof(int);
+    out = Rf_allocVector(RAWSXP, sz);
+    memcpy(RAW(out), INTEGER(object), sz);
+    break;
+  case LGLSXP:
+    sz = xlen * sizeof(int);
+    out = Rf_allocVector(RAWSXP, sz);
+    memcpy(RAW(out), LOGICAL(object), sz);
+    break;
+  case CPLXSXP:
+    sz = xlen * 2 * sizeof(double);
+    out = Rf_allocVector(RAWSXP, sz);
+    memcpy(RAW(out), COMPLEX(object), sz);
+    break;
+  case RAWSXP:
+    out = object;
+    break;
+  default:
+    if (Rf_isVectorAtomic(object))
       Rf_error("vector type for 'data' is unimplemented");
-    }
+    Rf_error("'data' must be an atomic vector type to send in mode 'raw'");
   }
 
   return out;
