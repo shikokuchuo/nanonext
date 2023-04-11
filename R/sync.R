@@ -52,10 +52,9 @@
 #'     \code{wait} or \code{until} returns (apart from due to timeout), the
 #'     value is decremented by 1.
 #'
-#'     The internal condition may be inspected at any time using \code{cv_value},
-#'     set to an arbitrary integer value using \code{cv_value<-} and reset using
-#'     \code{cv_reset}. This affords a high degree of flexibility in designing
-#'     complex concurrent applications.
+#'     The internal condition may be inspected at any time using \code{cv_value}
+#'     and reset using \code{cv_reset}. This affords a high degree of
+#'     flexibility in designing complex concurrent applications.
 #'
 #' @section Flag:
 #'
@@ -117,28 +116,12 @@ until <- function(cv, msec) invisible(.Call(rnng_cv_until, cv, msec))
 #'
 cv_value <- function(cv) .Call(rnng_cv_value, cv)
 
-#' Condition Variables - Set Value
-#'
-#' \code{cv_value<-} sets the internal value of a condition variable.
-#'
-#' @param value an integer (non-integer types will error).
-#'
-#' @examples
-#' cv_value(cv) <- 1L
-#' cv_value(cv)
-#'
-#' @rdname cv
-#' @export
-#'
-`cv_value<-` <- function(cv, value) .Call(rnng_cv_value_set, cv, value)
-
 #' Condition Variables - Reset
 #'
 #' \code{cv_reset} resets the internal value and flag of a condition variable.
 #'
 #' @examples
 #' cv_reset(cv)
-#' cv_value(cv)
 #'
 #' @rdname cv
 #' @export

@@ -1,8 +1,7 @@
-# nanonext 0.8.1.9012 (development)
+# nanonext 0.8.1.9013
 
 #### New Features
 
-* `'cv_value<-'()` implemented to set the value of a condition variable, providing greater flexibility in use.
 * `lock()` and `unlock()` implemented to prevent further pipe connections from being established at a socket, optionally tied to the value of a condition variable.
 
 #### Updates

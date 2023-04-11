@@ -5,7 +5,6 @@
 \alias{wait}
 \alias{until}
 \alias{cv_value}
-\alias{cv_value<-}
 \alias{cv_reset}
 \title{Condition Variables}
 \usage{
@@ -17,8 +16,6 @@ until(cv, msec)
 
 cv_value(cv)
 
-cv_value(cv) <- value
-
 cv_reset(cv)
 }
 \arguments{
@@ -26,8 +23,6 @@ cv_reset(cv)
 
 \item{msec}{maximum time in milliseconds to wait for the condition variable
 to be signalled.}
-
-\item{value}{an integer (non-integer types will error).}
 }
 \value{
 For \code{cv}: a 'conditionVariable' object.
@@ -50,8 +45,6 @@ For \code{cv}: a 'conditionVariable' object.
     completion of an asynchronous receive.
 
 \code{cv_value} inspects the internal value of a condition variable.
-
-\code{cv_value<-} sets the internal value of a condition variable.
 
 \code{cv_reset} resets the internal value and flag of a condition variable.
 }
@@ -79,10 +72,9 @@ Pass the 'conditionVariable' to the signalling forms of the
     \code{wait} or \code{until} returns (apart from due to timeout), the
     value is decremented by 1.
 
-    The internal condition may be inspected at any time using \code{cv_value},
-    set to an arbitrary integer value using \code{cv_value<-} and reset using
-    \code{cv_reset}. This affords a high degree of flexibility in designing
-    complex concurrent applications.
+    The internal condition may be inspected at any time using \code{cv_value}
+    and reset using \code{cv_reset}. This affords a high degree of
+    flexibility in designing complex concurrent applications.
 }
 
 \section{Flag}{
@@ -106,10 +98,6 @@ until(cv, 10L)
 
 cv_value(cv)
 
-cv_value(cv) <- 1L
-cv_value(cv)
-
 cv_reset(cv)
-cv_value(cv)
 
 }
