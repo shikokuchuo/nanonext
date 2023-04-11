@@ -47,7 +47,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.1.9012</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.1.9013</span>
       </span>
     </div>
 
@@ -324,7 +324,7 @@
 <span><span class="co">#&gt; &lt; recvAio &gt;</span></span>
 <span><span class="co">#&gt;  - $data for message data</span></span>
 <span><span class="va">aio</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] 1.57 -1.08 -1.59 -1.1 1.36 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] 0.21 0.012 -1.352 2.168 3.019 ...</span></span></code></pre></div>
 <p>As <code><a href="reference/call_aio.html">call_aio()</a></code> is blocking and will wait for completion, an alternative is to query <code>aio$data</code> directly. This will return an ‘unresolved’ logical NA value if the calculation is yet to complete.</p>
 <p>In this example the calculation is returned, but other operations may reside entirely on the server side, for example writing data to disk.</p>
 <p>In such a case, calling or querying the value confirms that the operation has completed, and provides the return value of the function, which may typically be NULL or an exit code.</p>
@@ -524,11 +524,11 @@
 <span><span class="co">#&gt;   [1] 7b 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73</span></span>
 <span><span class="co">#&gt;  [26] 74 22 3a 20 22 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22</span></span>
 <span><span class="co">#&gt;  [51] 58 2d 41 6d 7a 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31</span></span>
-<span><span class="co">#&gt;  [76] 2d 36 34 32 62 66 61 64 61 2d 31 62 33 64 32 37 63 32 34 39 37 30 64 66 34</span></span>
-<span><span class="co">#&gt; [101] 64 31 62 65 66 34 33 35 38 22 0a 20 20 7d 0a 7d 0a</span></span>
+<span><span class="co">#&gt;  [76] 2d 36 34 33 35 34 38 39 65 2d 30 38 64 39 62 33 62 30 34 62 35 32 64 64 63</span></span>
+<span><span class="co">#&gt; [101] 33 35 62 36 33 39 64 34 61 22 0a 20 20 7d 0a 7d 0a</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $data</span></span>
-<span><span class="co">#&gt; [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-642bfada-1b3d27c24970df4d1bef4358\"\n  }\n}\n"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6435489e-08d9b3b04b52ddc35b639d4a\"\n  }\n}\n"</span></span></code></pre></div>
 <p>For advanced use, supports additional HTTP methods such as POST or PUT.</p>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ncurl.html">ncurl</a></span><span class="op">(</span><span class="st">"http://httpbin.org/post"</span>,</span>
@@ -546,13 +546,13 @@
 <span></span>
 <span><span class="fu"><a href="reference/call_aio.html">call_aio</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span><span class="op">$</span><span class="va">headers</span></span>
 <span><span class="co">#&gt; $Date</span></span>
-<span><span class="co">#&gt; [1] "Tue, 04 Apr 2023 10:24:27 GMT"</span></span>
+<span><span class="co">#&gt; [1] "Tue, 11 Apr 2023 11:46:39 GMT"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $Server</span></span>
 <span><span class="co">#&gt; [1] "gunicorn/19.9.0"</span></span>
 <span></span>
 <span><span class="va">res</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt; [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-642bfada-28f2dde63cda1d2231828b14\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6435489e-170ad28a68da8ee85b7f1cbb\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"</span></span></code></pre></div>
 <p>In this respect, it may be used as a performant and lightweight method for making REST API requests.</p>
 <p><code><a href="reference/ncurl_session.html">ncurl_session()</a></code> creates a re-usable open connection and presents a much faster and more efficient solution for repeated polling of an API endpoint. <code><a href="reference/ncurl_session.html">transact()</a></code> is then used to request data multiple times as required. This method allows a polling frequency that exceeds a server’s new connection limits, where this is permitted.</p>
 <div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
@@ -569,7 +569,7 @@
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $headers</span></span>
 <span><span class="co">#&gt; $headers$date</span></span>
-<span><span class="co">#&gt; [1] "Tue, 04 Apr 2023 10:24:27 GMT"</span></span>
+<span><span class="co">#&gt; [1] "Tue, 11 Apr 2023 11:46:40 GMT"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $raw</span></span>
@@ -579,15 +579,15 @@
 <span><span class="co">#&gt;  [76] 22 43 6f 6e 74 65 6e 74 2d 54 79 70 65 22 3a 20 22 61 70 70 6c 69 63 61 74</span></span>
 <span><span class="co">#&gt; [101] 69 6f 6e 2f 6a 73 6f 6e 22 2c 20 0a 20 20 20 20 22 48 6f 73 74 22 3a 20 22</span></span>
 <span><span class="co">#&gt; [126] 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22 58 2d 41 6d 7a</span></span>
-<span><span class="co">#&gt; [151] 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31 2d 36 34 32 62</span></span>
-<span><span class="co">#&gt; [176] 66 61 64 62 2d 34 36 38 34 36 66 61 37 36 64 35 61 32 30 33 34 34 34 63 31</span></span>
-<span><span class="co">#&gt; [201] 39 62 33 38 22 0a 20 20 7d 2c 20 0a 20 20 22 6f 72 69 67 69 6e 22 3a 20 22</span></span>
-<span><span class="co">#&gt; [226] 38 30 2e 31 36 39 2e 31 30 33 2e 32 31 38 22 2c 20 0a 20 20 22 75 72 6c 22</span></span>
-<span><span class="co">#&gt; [251] 3a 20 22 68 74 74 70 73 3a 2f 2f 68 74 74 70 62 69 6e 2e 6f 72 67 2f 67 65</span></span>
-<span><span class="co">#&gt; [276] 74 22 0a 7d 0a</span></span>
+<span><span class="co">#&gt; [151] 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31 2d 36 34 33 35</span></span>
+<span><span class="co">#&gt; [176] 34 38 39 66 2d 34 33 62 38 35 64 65 38 35 32 65 64 34 35 37 65 31 34 35 62</span></span>
+<span><span class="co">#&gt; [201] 62 37 62 61 22 0a 20 20 7d 2c 20 0a 20 20 22 6f 72 69 67 69 6e 22 3a 20 22</span></span>
+<span><span class="co">#&gt; [226] 37 39 2e 31 37 33 2e 31 32 39 2e 32 22 2c 20 0a 20 20 22 75 72 6c 22 3a 20</span></span>
+<span><span class="co">#&gt; [251] 22 68 74 74 70 73 3a 2f 2f 68 74 74 70 62 69 6e 2e 6f 72 67 2f 67 65 74 22</span></span>
+<span><span class="co">#&gt; [276] 0a 7d 0a</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $data</span></span>
-<span><span class="co">#&gt; [1] "{\n  \"args\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-642bfadb-46846fa76d5a203444c19b38\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"https://httpbin.org/get\"\n}\n"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "{\n  \"args\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6435489f-43b85de852ed457e145bb7ba\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"https://httpbin.org/get\"\n}\n"</span></span></code></pre></div>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
 <div class="section level3">
