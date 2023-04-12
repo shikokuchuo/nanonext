@@ -235,7 +235,7 @@ static void raio_finalizer(SEXP xptr) {
   nano_aio *xp = (nano_aio *) R_ExternalPtrAddr(xptr);
   nng_aio_free(xp->aio);
   if (xp->data != NULL)
-    nng_msg_free(xp->data);
+    nng_msg_free((nng_msg *) xp->data);
   R_Free(xp);
 
 }
@@ -423,8 +423,9 @@ SEXP rnng_aio_get_msgraw(SEXP env) {
     buf = raio->data;
     sz = nng_aio_count(raio->aio);
   } else {
-    buf = nng_msg_body(raio->data);
-    sz = nng_msg_len(raio->data);
+    nng_msg *msg = (nng_msg *) raio->data;
+    buf = nng_msg_body(msg);
+    sz = nng_msg_len(msg);
   }
 
   PROTECT(out = nano_decode(buf, sz, mod, kpr));
@@ -465,8 +466,9 @@ SEXP rnng_aio_get_msgdata(SEXP env) {
     buf = raio->data;
     sz = nng_aio_count(raio->aio);
   } else {
-    buf = nng_msg_body(raio->data);
-    sz = nng_msg_len(raio->data);
+    nng_msg *msg = (nng_msg *) raio->data;
+    buf = nng_msg_body(msg);
+    sz = nng_msg_len(msg);
   }
 
   PROTECT(out = nano_decode(buf, sz, mod, kpr));
