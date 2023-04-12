@@ -145,7 +145,6 @@ extern SEXP rnng_is_nul_byte(SEXP);
 extern SEXP rnng_listen(SEXP, SEXP, SEXP, SEXP);
 extern SEXP rnng_listener_close(SEXP);
 extern SEXP rnng_listener_start(SEXP);
-extern SEXP rnng_make_weakref(SEXP, SEXP);
 extern SEXP rnng_messenger(SEXP);
 extern SEXP rnng_messenger_thread_create(SEXP);
 extern SEXP rnng_ncurl(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);

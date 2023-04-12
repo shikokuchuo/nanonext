@@ -1,4 +1,4 @@
-# nanonext 0.8.1.9017
+# nanonext 0.8.1.9018
 
 #### New Features
 
@@ -7,7 +7,7 @@
 #### Updates
 
 * Sending and hashing of language objects and symbols is now possible after fixes to serialisation.
-* Removes `msg_pipe()` introduced in the last release as it is not useful in the context of the current user interface.
+* Removes `msg_pipe()` and `'weakref<-'()` introduced in the last release to maintain simplicity of user interface.
 * Internal performance enhancements.
 
 # nanonext 0.8.1

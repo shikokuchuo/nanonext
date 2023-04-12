@@ -412,15 +412,6 @@ static void context_finalizer(SEXP xptr) {
 
 }
 
-// language utils --------------------------------------------------------------
-
-SEXP rnng_make_weakref(SEXP key, SEXP value) {
-
-  R_MakeWeakRef(key, value, R_NilValue, FALSE);
-  return key;
-
-}
-
 // contexts --------------------------------------------------------------------
 
 SEXP rnng_ctx_open(SEXP socket) {
