@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.1.9017</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.1.9018</span>
       </span>
     </div>
 
@@ -54,16 +54,16 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.8.1.9017" id="nanonext-0819017">nanonext 0.8.1.9017<a class="anchor" aria-label="anchor" href="#nanonext-0819017"></a></h2>
+<h2 class="page-header" data-toc-text="0.8.1.9018" id="nanonext-0819018">nanonext 0.8.1.9018<a class="anchor" aria-label="anchor" href="#nanonext-0819018"></a></h2>
 <div class="section level5">
-<h5 id="new-features-0-8-1-9017">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-8-1-9017"></a></h5>
+<h5 id="new-features-0-8-1-9018">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-8-1-9018"></a></h5>
 <ul><li>
 <code><a href="../reference/lock.html">lock()</a></code> and <code><a href="../reference/lock.html">unlock()</a></code> implemented to prevent further pipe connections from being established at a socket, optionally tied to the value of a condition variable.</li>
 </ul></div>
 <div class="section level5">
-<h5 id="updates-0-8-1-9017">Updates<a class="anchor" aria-label="anchor" href="#updates-0-8-1-9017"></a></h5>
+<h5 id="updates-0-8-1-9018">Updates<a class="anchor" aria-label="anchor" href="#updates-0-8-1-9018"></a></h5>
 <ul><li>Sending and hashing of language objects and symbols is now possible after fixes to serialisation.</li>
-<li>Removes <code>msg_pipe()</code> introduced in the last release as it is not useful in the context of the current user interface.</li>
+<li>Removes <code>msg_pipe()</code> and <code>'weakref&lt;-'()</code> introduced in the last release to maintain simplicity of user interface.</li>
 <li>Internal performance enhancements.</li>
 </ul></div>
 </div>
@@ -79,7 +79,7 @@
 </ul></li>
 <li>Adds <code>msg_pipe()</code> to return the pipe connection associated with a ‘recvAio’ message.</li>
 <li>Exposes the <code><a href="../reference/sha1.html">sha1()</a></code> cryptographic hash and HMAC generation function from the ‘Mbed TLS’ library (for secure applications, use one of the SHA-2 algorithms instead).</li>
-<li>Utility function <code><a href="../reference/weakref-set.html">'weakref&lt;-'()</a></code> exposes <code>R_MakeWeakRef</code> from R’s C API. Useful for keeping objects alive for as long as required by a dependent object.</li>
+<li>Utility function <code>'weakref&lt;-'()</code> exposes <code>R_MakeWeakRef</code> from R’s C API. Useful for keeping objects alive for as long as required by a dependent object.</li>
 </ul></div>
 <div class="section level5">
 <h5 id="updates-0-8-1">Updates<a class="anchor" aria-label="anchor" href="#updates-0-8-1"></a></h5>
