@@ -379,9 +379,7 @@ SEXP rnng_aio_result(SEXP env) {
 
   const SEXP aio = Rf_findVarInFrame(env, nano_AioSymbol);
   if (R_ExternalPtrTag(aio) != nano_AioSymbol)
-    Rf_error("object is not a valid Aio");
-  if (R_ExternalPtrAddr(aio) == NULL)
-    Rf_error("object is not an active Aio");
+    Rf_error("object is not a valid or active Aio");
 
   nano_aio *aiop = (nano_aio *) R_ExternalPtrAddr(aio);
 
@@ -405,9 +403,7 @@ SEXP rnng_aio_get_msgraw(SEXP env) {
 
   const SEXP aio = Rf_findVarInFrame(env, nano_AioSymbol);
   if (R_ExternalPtrTag(aio) != nano_AioSymbol)
-    Rf_error("object is not a valid Aio");
-  if (R_ExternalPtrAddr(aio) == NULL)
-    Rf_error("object is not an active Aio");
+    Rf_error("object is not a valid or active Aio");
 
   nano_aio *raio = (nano_aio *) R_ExternalPtrAddr(aio);
 
@@ -449,9 +445,7 @@ SEXP rnng_aio_get_msgdata(SEXP env) {
 
   const SEXP aio = Rf_findVarInFrame(env, nano_AioSymbol);
   if (R_ExternalPtrTag(aio) != nano_AioSymbol)
-    Rf_error("object is not a valid Aio");
-  if (R_ExternalPtrAddr(aio) == NULL)
-    Rf_error("object is not an active Aio");
+    Rf_error("object is not a valid or active Aio");
 
   nano_aio *raio = (nano_aio *) R_ExternalPtrAddr(aio);
 
@@ -522,41 +516,13 @@ SEXP rnng_aio_stop(SEXP aio) {
     return R_NilValue;
 
   SEXP coreaio = Rf_findVarInFrame(aio, nano_AioSymbol);
-  if (R_ExternalPtrTag(coreaio) != nano_AioSymbol || R_ExternalPtrAddr(coreaio) == NULL)
+  if (R_ExternalPtrTag(coreaio) != nano_AioSymbol)
     return R_NilValue;
 
-  PROTECT(coreaio);
   nano_aio *aiop = (nano_aio *) R_ExternalPtrAddr(coreaio);
   nng_aio_stop(aiop->aio);
-  nng_aio_free(aiop->aio);
+  Rf_defineVar(nano_AioSymbol, R_NilValue, aio);
 
-  switch (aiop->type) {
-  case SENDAIO:
-    break;
-  case RECVAIO:
-    if (aiop->data != NULL)
-      nng_msg_free(aiop->data);
-    break;
-  case IOV_SENDAIO:
-  case IOV_RECVAIO:
-    if (aiop->data != NULL)
-      R_Free(aiop->data);
-    break;
-  case HTTP_AIO: ;
-    nano_handle *handle = (nano_handle *) aiop->data;
-    if (handle->cfg != NULL)
-      nng_tls_config_free(handle->cfg);
-    nng_http_res_free(handle->res);
-    nng_http_req_free(handle->req);
-    nng_http_client_free(handle->cli);
-    nng_url_free(handle->url);
-    R_Free(handle);
-    break;
-  }
-  R_Free(aiop);
-  R_ClearExternalPtr(coreaio);
-
-  UNPROTECT(1);
   return R_NilValue;
 
 }
@@ -977,9 +943,7 @@ SEXP rnng_aio_http(SEXP env, SEXP response, SEXP type) {
 
   const SEXP aio = Rf_findVarInFrame(env, nano_AioSymbol);
   if (R_ExternalPtrTag(aio) != nano_AioSymbol)
-    Rf_error("object is not a valid Aio");
-  if (R_ExternalPtrAddr(aio) == NULL)
-    Rf_error("object is not an active Aio");
+    Rf_error("object is not a valid or active Aio");
 
   nano_aio *haio = (nano_aio *) R_ExternalPtrAddr(aio);
 
@@ -1207,7 +1171,7 @@ SEXP rnng_ncurl_session(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP
 SEXP rnng_ncurl_transact(SEXP session) {
 
   if (R_ExternalPtrTag(session) != nano_SessionSymbol)
-    Rf_error("'session' is not a valid/active ncurlSession");
+    Rf_error("'session' is not a valid or active ncurlSession");
 
   nng_http_conn *conn = (nng_http_conn *) R_ExternalPtrAddr(session);
   SEXP aio = Rf_getAttrib(session, nano_AioSymbol);
@@ -1285,7 +1249,7 @@ SEXP rnng_ncurl_transact(SEXP session) {
 SEXP rnng_ncurl_session_close(SEXP session) {
 
   if (R_ExternalPtrTag(session) != nano_SessionSymbol)
-    Rf_error("'session' is not a valid/active ncurlSession");
+    Rf_error("'session' is not a valid or active ncurlSession");
 
   nng_http_conn *sp = (nng_http_conn *) R_ExternalPtrAddr(session);
   nng_http_conn_close(sp);

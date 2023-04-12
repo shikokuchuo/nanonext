@@ -182,7 +182,7 @@ device <- function(s1, s2) .Call(rnng_device, s1, s2)
 #' @details Is the object an Aio (inheriting from class 'sendAio' or 'recvAio').
 #'
 #'     Is the object an object inheriting from class 'nano' i.e. a nanoSocket,
-#'     nanoContext, nanoStream, nanoListener, nanoDialer, nanoPipe or nano Object.
+#'     nanoContext, nanoStream, nanoListener, nanoDialer, or nano Object.
 #'
 #' @examples
 #' sock <- socket(listen = "inproc://isaio")
