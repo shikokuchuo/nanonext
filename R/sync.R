@@ -182,43 +182,6 @@ cv_reset <- function(cv) invisible(.Call(rnng_cv_reset, cv))
 pipe_notify <- function(socket, cv, cv2 = NULL, add = TRUE, remove = TRUE, flag = TRUE)
   invisible(.Call(rnng_pipe_notify, socket, cv, cv2, add, remove, flag))
 
-#' Message Pipe
-#'
-#' Returns the pipe (single connection) associated with a received message.
-#'
-#' @param aio a 'recvAio' object, not including 'ncurlAio' objects.
-#'
-#' @details Note: this function returns an external pointer to an existing pipe,
-#'     it does not allocate a new one.
-#'
-#' @return A 'nanoPipe' object.
-#'
-#' @examples
-#' s <- socket("req", listen = "inproc://nanopipe")
-#' s1 <- socket("rep", dial = "inproc://nanopipe")
-#' ctx <- context(s)
-#' ctx1 <- context(s1)
-#'
-#' send(ctx, "test")
-#' r <- recv_aio(ctx1)
-#' call_aio(r)
-#'
-#' pipe <- msg_pipe(r)
-#' pipe
-#'
-#' close(s)
-#' close(s1)
-#'
-#' @export
-#'
-msg_pipe <- function(aio) .Call(rnng_msg_pipe, aio)
-
-#' @rdname close
-#' @method close nanoPipe
-#' @export
-#'
-close.nanoPipe <- function(con, ...) invisible(.Call(rnng_pipe_close, con))
-
 #' Lock / Unlock a Socket
 #'
 #' Prevents further pipe connections from being established at a Socket.

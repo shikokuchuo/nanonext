@@ -410,15 +410,6 @@ print.conditionVariable <- function(x, ...) {
 
 #' @export
 #'
-print.nanoPipe <- function(x, ...) {
-
-  cat(sprintf("< nanoPipe >\n - id: %d\n", attr(x, "id")), file = stdout())
-  invisible(x)
-
-}
-
-#' @export
-#'
 `[[.nano` <- function(x, i, exact = FALSE)
   attr(x, i, exact = exact)
 

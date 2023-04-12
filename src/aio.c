@@ -317,33 +317,26 @@ static void session_finalizer(SEXP xptr) {
 
 }
 
-static void pipe_finalizer(SEXP xptr) {
-
-  if (R_ExternalPtrAddr(xptr) == NULL)
-    return;
-  nng_pipe *xp = (nng_pipe *) R_ExternalPtrAddr(xptr);
-  R_Free(xp);
-
-}
-
-static SEXP mk_error_saio(const int xc, SEXP clo) {
+static SEXP mk_error_saio(const int xc, SEXP env) {
 
   SEXP err = PROTECT(Rf_ScalarInteger(xc));
   SET_ATTRIB(err, nano_error);
   SET_OBJECT(err, 1);
-  Rf_defineVar(nano_ResultSymbol, err, clo);
+  Rf_defineVar(nano_ResultSymbol, err, ENCLOS(env));
+  Rf_defineVar(nano_AioSymbol, R_NilValue, env);
   UNPROTECT(1);
   return err;
 
 }
 
-static SEXP mk_error_raio(const int xc, SEXP clo) {
+static SEXP mk_error_raio(const int xc, SEXP env) {
 
   SEXP err = PROTECT(Rf_ScalarInteger(xc));
   SET_ATTRIB(err, nano_error);
   SET_OBJECT(err, 1);
-  Rf_defineVar(nano_RawSymbol, err, clo);
-  Rf_defineVar(nano_ResultSymbol, err, clo);
+  Rf_defineVar(nano_RawSymbol, err, ENCLOS(env));
+  Rf_defineVar(nano_ResultSymbol, err, ENCLOS(env));
+  Rf_defineVar(nano_AioSymbol, R_NilValue, env);
   UNPROTECT(1);
   return err;
 
@@ -396,9 +389,10 @@ SEXP rnng_aio_result(SEXP env) {
     return nano_unresolved;
 
   if (aiop->result)
-    return mk_error_saio(aiop->result, ENCLOS(env));
+    return mk_error_saio(aiop->result, env);
 
   Rf_defineVar(nano_ResultSymbol, nano_success, ENCLOS(env));
+  Rf_defineVar(nano_AioSymbol, R_NilValue, env);
   return nano_success;
 
 }
@@ -421,7 +415,7 @@ SEXP rnng_aio_get_msgraw(SEXP env) {
     return nano_unresolved;
 
   if (raio->result)
-    return mk_error_raio(raio->result, ENCLOS(env));
+    return mk_error_raio(raio->result, env);
 
   SEXP out;
   const int mod = -raio->mode, kpr = 1;
@@ -439,6 +433,7 @@ SEXP rnng_aio_get_msgraw(SEXP env) {
   PROTECT(out = nano_decode(buf, sz, mod, kpr));
   Rf_defineVar(nano_RawSymbol, VECTOR_ELT(out, 0), ENCLOS(env));
   Rf_defineVar(nano_ResultSymbol, VECTOR_ELT(out, 1), ENCLOS(env));
+  Rf_defineVar(nano_AioSymbol, R_NilValue, env);
   out = VECTOR_ELT(out, 0);
 
   UNPROTECT(1);
@@ -464,7 +459,7 @@ SEXP rnng_aio_get_msgdata(SEXP env) {
     return nano_unresolved;
 
   if (raio->result)
-    return mk_error_raio(raio->result, ENCLOS(env));
+    return mk_error_raio(raio->result, env);
 
   SEXP out;
   const int kpr = raio->mode > 0 ? 0 : 1, mod = kpr ? -raio->mode : raio->mode;
@@ -487,6 +482,7 @@ SEXP rnng_aio_get_msgdata(SEXP env) {
   } else {
     Rf_defineVar(nano_ResultSymbol, out, ENCLOS(env));
   }
+  Rf_defineVar(nano_AioSymbol, R_NilValue, env);
 
   UNPROTECT(1);
   return out;
@@ -1064,6 +1060,7 @@ SEXP rnng_aio_http(SEXP env, SEXP response, SEXP type) {
     cvec = R_NilValue;
   }
   Rf_defineVar(nano_ResultSymbol, cvec, ENCLOS(env));
+  Rf_defineVar(nano_AioSymbol, R_NilValue, env);
 
   switch (typ) {
   case 1: out = Rf_findVarInFrame(ENCLOS(env), nano_StatusSymbol); break;
@@ -1710,59 +1707,6 @@ SEXP rnng_cv_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP tim
 }
 
 // pipes -----------------------------------------------------------------------
-
-SEXP rnng_msg_pipe(SEXP aio) {
-
-  if (TYPEOF(aio) != ENVSXP || !Rf_inherits(aio, "recvAio") || Rf_inherits(aio, "ncurlAio"))
-    Rf_error("object is not a valid recvAio");
-
-  const SEXP coreaio = Rf_findVarInFrame(aio, nano_AioSymbol);
-  if (R_ExternalPtrTag(coreaio) != nano_AioSymbol)
-    Rf_error("object is not a valid Aio");
-  if (R_ExternalPtrAddr(coreaio) == NULL)
-    Rf_error("object is not an active Aio");
-
-  nano_aio *aiop = (nano_aio *) R_ExternalPtrAddr(coreaio);
-
-  if (nng_aio_busy(aiop->aio))
-    Rf_error("pipe can only be retrieved from a resolved Aio");
-
-  if (aiop->result)
-    Rf_error("pipe can only be retrieved from a successful Aio");
-
-  nng_msg *msg = nng_aio_get_msg(aiop->aio);
-  if (msg == NULL)
-    Rf_error("pipe cannot be retrieved from a Stream");
-
-  nng_pipe *pp = R_Calloc(1, nng_pipe);
-  *pp = nng_msg_get_pipe(msg);
-
-  SEXP klass, out;
-  PROTECT(out = R_MakeExternalPtr(pp, nano_PipeSymbol, R_NilValue));
-  R_RegisterCFinalizerEx(out, pipe_finalizer, TRUE);
-  PROTECT(klass = Rf_allocVector(STRSXP, 2));
-  SET_STRING_ELT(klass, 0, Rf_mkChar("nanoPipe"));
-  SET_STRING_ELT(klass, 1, Rf_mkChar("nano"));
-  Rf_classgets(out, klass);
-  Rf_setAttrib(out, nano_IdSymbol, Rf_ScalarInteger(nng_pipe_id(*pp)));
-
-  UNPROTECT(2);
-  return out;
-
-}
-
-SEXP rnng_pipe_close(SEXP pipe) {
-
-  if (R_ExternalPtrTag(pipe) != nano_PipeSymbol)
-    Rf_error("'pipe' is not a valid Pipe");
-  nng_pipe *p = (nng_pipe *) R_ExternalPtrAddr(pipe);
-  const int xc = nng_pipe_close(*p);
-  if (xc)
-    ERROR_RET(xc);
-
-  return nano_success;
-
-}
 
 SEXP rnng_pipe_notify(SEXP socket, SEXP cv, SEXP cv2, SEXP add, SEXP remove, SEXP flag) {
 

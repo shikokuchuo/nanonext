@@ -95,10 +95,10 @@ socket <- function(protocol = c("bus", "pair", "push", "pull", "pub", "sub",
 
 #' Close Connection
 #'
-#' Close Connection on a Socket, Context, Dialer, Listener, Stream, Pipe or
-#'     ncurl Session.
+#' Close Connection on a Socket, Context, Dialer, Listener, Stream, or ncurl
+#'     Session.
 #'
-#' @param con a Socket, Context, Dialer, Listener, Stream, Pipe or 'ncurlSession'.
+#' @param con a Socket, Context, Dialer, Listener, Stream, or 'ncurlSession'.
 #' @param ... not used.
 #'
 #' @return Invisibly, an integer exit code (zero on success).
@@ -112,9 +112,6 @@ socket <- function(protocol = c("bus", "pair", "push", "pull", "pub", "sub",
 #'     Dialers and Listeners are implicitly closed when the Socket they are
 #'     associated with is closed.
 #'
-#'     Pipes are automatically closed when their creator closes, or when the
-#'     remote peer closes the underlying connection.
-#'
 #'     Closing a Socket or a Context: messages that have been submitted for
 #'     sending may be flushed or delivered, depending upon the transport. Closing
 #'     the Socket while data is in transmission will likely lead to loss of that
@@ -124,9 +121,6 @@ socket <- function(protocol = c("bus", "pair", "push", "pull", "pub", "sub",
 #'     Closing a Stream: if any send or receive operations are pending, they
 #'     will be terminated and any new operations will fail after the connection
 #'     is closed.
-#'
-#'     Closing a pipe: messages that have been submitted for sending may be
-#'     flushed or delivered, depending upon the transport.
 #'
 #' @name close
 #' @rdname close
