@@ -680,7 +680,8 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
       nng_aio_set_timeout(aiop, dur);
       nng_send_aio(*sock, aiop);
       nng_aio_wait(aiop);
-      xc = nng_aio_result(aiop);
+      if ((xc = nng_aio_result(aiop)))
+        nng_msg_free(nng_aio_get_msg(aiop));
       nng_aio_free(aiop);
 
     }
@@ -715,7 +716,8 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
     nng_aio_set_timeout(aiop, dur);
     nng_ctx_send(*ctxp, aiop);
     nng_aio_wait(aiop);
-    xc = nng_aio_result(aiop);
+    if ((xc = nng_aio_result(aiop)))
+      nng_msg_free(nng_aio_get_msg(aiop));
     nng_aio_free(aiop);
 
   } else if (ptrtag == nano_StreamSymbol) {
