@@ -12,6 +12,7 @@ request(
   recv_mode = c("serial", "character", "complex", "double", "integer", "logical",
     "numeric", "raw"),
   timeout = NULL,
+  socket = NULL,
   keep.raw = FALSE
 )
 
@@ -22,6 +23,7 @@ request_signal(
   recv_mode = c("serial", "character", "complex", "double", "integer", "logical",
     "numeric", "raw"),
   timeout = NULL,
+  socket = NULL,
   keep.raw = FALSE,
   cv
 )
@@ -48,8 +50,13 @@ position in the vector of choices e.g. 1L for 'serial', 2L for 'character'
 etc.}
 
 \item{timeout}{[default NULL] integer value in milliseconds or NULL, which
-applies a socket-specific default, usually the same as no timeout. Note
-that this applies to receiving the result.}
+applies a socket-specific default, usually the same as no timeout. A
+valid socket \emph{must} also be supplied for 'socket' or this value will
+be disregarded.}
+
+\item{socket}{(only used if setting 'timeout') the Socket used to create the
+Context. This is required to check that there is an active connection
+as it is an error to specify a timeout otherwise.}
 
 \item{keep.raw}{[default FALSE] logical flag whether to keep and return the
 received raw vector along with the converted data. Supplying a non-logical
@@ -98,8 +105,8 @@ ctxq <- context(req)
 ctxp <- context(rep)
 
 # works if req and rep are running in parallel in different processes
-reply(ctxp, execute = function(x) x + 1, timeout = 10)
-aio <- request(ctxq, data = 2022, timeout = 10)
+reply(ctxp, execute = function(x) x + 1, timeout = 50)
+aio <- request(ctxq, data = 2022, timeout = 50, socket = req)
 call_aio(aio)$data
 
 close(req)

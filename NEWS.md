@@ -1,4 +1,4 @@
-# nanonext 0.8.1.9022
+# nanonext 0.8.1.9023
 
 #### New Features
 
@@ -7,6 +7,7 @@
 #### Updates
 
 * Sending and hashing of language objects and symbols is now possible after fixes to serialisation.
+* Made safe the use of `request()` and `request_signal()`, which now check for a valid socket connection before accepting a timeout value.
 * Removes `msg_pipe()` and `'weakref<-'()` introduced in the last release to maintain simplicity of user interface.
 * Internal performance enhancements.
 

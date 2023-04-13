@@ -157,8 +157,12 @@ reply <- function(context,
 #' @inheritParams recv
 #' @param data an object (if send_mode = 'raw', a vector).
 #' @param timeout [default NULL] integer value in milliseconds or NULL, which
-#'     applies a socket-specific default, usually the same as no timeout. Note
-#'     that this applies to receiving the result.
+#'     applies a socket-specific default, usually the same as no timeout. A
+#'     valid socket \emph{must} also be supplied for 'socket' or this value will
+#'     be disregarded.
+#' @param socket (only used if setting 'timeout') the Socket used to create the
+#'     Context. This is required to check that there is an active connection
+#'     as it is an error to specify a timeout otherwise.
 #'
 #' @return A 'recvAio' (object of class 'recvAio') (invisibly).
 #'
@@ -185,8 +189,8 @@ reply <- function(context,
 #' ctxp <- context(rep)
 #'
 #' # works if req and rep are running in parallel in different processes
-#' reply(ctxp, execute = function(x) x + 1, timeout = 10)
-#' aio <- request(ctxq, data = 2022, timeout = 10)
+#' reply(ctxp, execute = function(x) x + 1, timeout = 50)
+#' aio <- request(ctxq, data = 2022, timeout = 50, socket = req)
 #' call_aio(aio)$data
 #'
 #' close(req)
@@ -200,9 +204,10 @@ request <- function(context,
                     recv_mode = c("serial", "character", "complex", "double",
                                   "integer", "logical", "numeric", "raw"),
                     timeout = NULL,
+                    socket = NULL,
                     keep.raw = FALSE)
   data <- .Call(rnng_request, context, data, send_mode, recv_mode, timeout,
-                keep.raw, environment())
+                socket, keep.raw, environment())
 
 #' Request over Context and Signal a Condition Variable
 #'
@@ -241,8 +246,9 @@ request_signal <- function(context,
                            recv_mode = c("serial", "character", "complex", "double",
                                          "integer", "logical", "numeric", "raw"),
                            timeout = NULL,
+                           socket = NULL,
                            keep.raw = FALSE,
                            cv)
   data <- .Call(rnng_cv_request, context, data, send_mode, recv_mode, timeout,
-                keep.raw, environment(), cv)
+                socket, keep.raw, environment(), cv)
 

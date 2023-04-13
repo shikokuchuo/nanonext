@@ -1258,18 +1258,32 @@ SEXP rnng_ncurl_session_close(SEXP session) {
 
 // request ---------------------------------------------------------------------
 
-SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeout, SEXP keep, SEXP clo) {
+SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeout, SEXP sock, SEXP keep, SEXP clo) {
 
   if (R_ExternalPtrTag(con) != nano_ContextSymbol)
     Rf_error("'context' is not a valid Context");
 
+  int xc;
   const int kpr = LOGICAL(keep)[0];
-  const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) Rf_asInteger(timeout);
+  nng_duration dur;
+  if (timeout == R_NilValue || R_ExternalPtrTag(sock) != nano_SocketSymbol) {
+    dur = NNG_DURATION_DEFAULT;
+  } else {
+    nng_socket *sockp = (nng_socket *) R_ExternalPtrAddr(sock);
+    nng_stat *nst, *sst;
+    xc = nng_stats_get(&nst);
+    if (xc) {
+      dur = NNG_DURATION_DEFAULT;
+    } else {
+      sst = nng_stat_find_socket(nst, *sockp);
+      sst = nng_stat_find(sst, "pipes");
+      dur = sst != NULL && nng_stat_value(sst) ? (nng_duration) Rf_asInteger(timeout) : NNG_DURATION_DEFAULT;
+    }
+  }
 
   SEXP enc, sendaio, aio, env, fun;
   R_xlen_t xlen;
   unsigned char *dp;
-  int xc;
 
   nng_ctx *ctxp = (nng_ctx *) R_ExternalPtrAddr(con);
   nng_msg *msg;
@@ -1573,20 +1587,34 @@ SEXP rnng_cv_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP keep, SEXP bytes, 
 
 }
 
-SEXP rnng_cv_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeout, SEXP keep, SEXP clo, SEXP cvar) {
+SEXP rnng_cv_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeout, SEXP sock, SEXP keep, SEXP clo, SEXP cvar) {
 
   if (R_ExternalPtrTag(con) != nano_ContextSymbol)
     Rf_error("'context' is not a valid Context");
   if (R_ExternalPtrTag(cvar) != nano_CvSymbol)
     Rf_error("'cv' is not a valid Condition Variable");
 
+  int xc;
   const int kpr = LOGICAL(keep)[0];
-  const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) Rf_asInteger(timeout);
+  nng_duration dur;
+  if (timeout == R_NilValue || R_ExternalPtrTag(sock) != nano_SocketSymbol) {
+    dur = NNG_DURATION_DEFAULT;
+  } else {
+    nng_socket *sockp = (nng_socket *) R_ExternalPtrAddr(sock);
+    nng_stat *nst, *sst;
+    xc = nng_stats_get(&nst);
+    if (xc) {
+      dur = NNG_DURATION_DEFAULT;
+    } else {
+      sst = nng_stat_find_socket(nst, *sockp);
+      sst = nng_stat_find(sst, "pipes");
+      dur = sst != NULL && nng_stat_value(sst) ? (nng_duration) Rf_asInteger(timeout) : NNG_DURATION_DEFAULT;
+    }
+  }
 
   SEXP enc, sendaio, aio, env, fun, signal;
   R_xlen_t xlen;
   unsigned char *dp;
-  int xc;
 
   nng_ctx *ctxp = (nng_ctx *) R_ExternalPtrAddr(con);
   nano_cv *cvp = (nano_cv *) R_ExternalPtrAddr(cvar);
