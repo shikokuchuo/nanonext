@@ -1268,8 +1268,8 @@ SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeou
   nng_duration dur;
   if (timeout == R_NilValue) {
     dur = NNG_DURATION_DEFAULT;
-  } else if (sock == R_MissingArg) {
-    dur = (nng_duration) Rf_asInteger(timeout);
+  } else if (TYPEOF(sock) == LGLSXP) {
+    dur = LOGICAL(sock)[0] ? (nng_duration) Rf_asInteger(timeout) : NNG_DURATION_DEFAULT;
   } else if (R_ExternalPtrTag(sock) != nano_SocketSymbol) {
     dur = NNG_DURATION_DEFAULT;
   } else {
@@ -1603,8 +1603,8 @@ SEXP rnng_cv_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP tim
   nng_duration dur;
   if (timeout == R_NilValue) {
     dur = NNG_DURATION_DEFAULT;
-  } else if (sock == R_MissingArg) {
-    dur = (nng_duration) Rf_asInteger(timeout);
+  } else if (TYPEOF(sock) == LGLSXP) {
+    dur = LOGICAL(sock)[0] ? (nng_duration) Rf_asInteger(timeout) : NNG_DURATION_DEFAULT;
   } else if (R_ExternalPtrTag(sock) != nano_SocketSymbol) {
     dur = NNG_DURATION_DEFAULT;
   } else {
