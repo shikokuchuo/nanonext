@@ -19,7 +19,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.1.9028</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.2</span>
       </span>
     </div>
 
@@ -74,8 +74,10 @@
 
 <dt>verify</dt>
 <dd><p>[default TRUE] logical value whether to verify there is a
-connection at the socket with the result stored internally (required for
-features of certain functions). Supplying a non-logical value will error.</p></dd>
+connection at the socket with the result stored internally within the
+context (required for features of certain functions). Set to FALSE for
+performance if not using features which explicitly require verification.
+Supplying a non-logical value will error.</p></dd>
 
 </dl></div>
     <div id="value">
