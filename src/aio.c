@@ -1258,38 +1258,20 @@ SEXP rnng_ncurl_session_close(SEXP session) {
 
 // request ---------------------------------------------------------------------
 
-SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeout, SEXP sock, SEXP keep, SEXP clo) {
+SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeout, SEXP keep, SEXP clo) {
 
   if (R_ExternalPtrTag(con) != nano_ContextSymbol)
     Rf_error("'context' is not a valid Context");
 
+  nano_ctx *nctx = (nano_ctx *) R_ExternalPtrAddr(con);
+
   int xc;
   const int kpr = LOGICAL(keep)[0];
-  nng_duration dur;
-  if (timeout == R_NilValue) {
-    dur = NNG_DURATION_DEFAULT;
-  } else if (TYPEOF(sock) == LGLSXP) {
-    dur = LOGICAL(sock)[0] ? (nng_duration) Rf_asInteger(timeout) : NNG_DURATION_DEFAULT;
-  } else if (R_ExternalPtrTag(sock) != nano_SocketSymbol) {
-    dur = NNG_DURATION_DEFAULT;
-  } else {
-    nng_socket *sockp = (nng_socket *) R_ExternalPtrAddr(sock);
-    nng_stat *nst, *sst;
-    xc = nng_stats_get(&nst);
-    if (xc) {
-      dur = NNG_DURATION_DEFAULT;
-    } else {
-      sst = nng_stat_find_socket(nst, *sockp);
-      sst = nng_stat_find(sst, "pipes");
-      dur = sst != NULL && nng_stat_value(sst) ? (nng_duration) Rf_asInteger(timeout) : NNG_DURATION_DEFAULT;
-    }
-  }
+  const nng_duration dur = timeout == R_NilValue || !nctx->verified ? NNG_DURATION_DEFAULT : (nng_duration) Rf_asInteger(timeout);
 
   SEXP enc, sendaio, aio, env, fun;
   R_xlen_t xlen;
   unsigned char *dp;
-
-  nng_ctx *ctxp = (nng_ctx *) R_ExternalPtrAddr(con);
   nng_msg *msg;
 
   enc = nano_encodes(data, sendmode);
@@ -1309,7 +1291,7 @@ SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeou
 
   nng_aio_set_msg(saio->aio, msg);
   nng_aio_set_timeout(saio->aio, dur);
-  nng_ctx_send(*ctxp, saio->aio);
+  nng_ctx_send(nctx->ctx, saio->aio);
 
   nano_aio *raio = R_Calloc(1, nano_aio);
 
@@ -1324,7 +1306,7 @@ SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeou
   }
 
   nng_aio_set_timeout(raio->aio, dur);
-  nng_ctx_recv(*ctxp, raio->aio);
+  nng_ctx_recv(nctx->ctx, raio->aio);
 
   PROTECT(aio = R_MakeExternalPtr(raio, nano_AioSymbol, R_NilValue));
   R_RegisterCFinalizerEx(aio, raio_finalizer, TRUE);
@@ -1472,6 +1454,7 @@ SEXP rnng_cv_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP keep, SEXP bytes, 
   nano_cv *cvp = (nano_cv *) R_ExternalPtrAddr(cvar);
   const int kpr = LOGICAL(keep)[0];
   const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) Rf_asInteger(timeout);
+
   nano_cv_aio *cv_raio = R_Calloc(1, nano_cv_aio);
   nano_aio *raio = R_Calloc(1, nano_aio);
   SEXP aio;
@@ -1591,41 +1574,23 @@ SEXP rnng_cv_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP keep, SEXP bytes, 
 
 }
 
-SEXP rnng_cv_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeout, SEXP sock, SEXP keep, SEXP clo, SEXP cvar) {
+SEXP rnng_cv_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeout, SEXP keep, SEXP clo, SEXP cvar) {
 
   if (R_ExternalPtrTag(con) != nano_ContextSymbol)
     Rf_error("'context' is not a valid Context");
   if (R_ExternalPtrTag(cvar) != nano_CvSymbol)
     Rf_error("'cv' is not a valid Condition Variable");
 
+  nano_ctx *nctx = (nano_ctx *) R_ExternalPtrAddr(con);
+  nano_cv *cvp = (nano_cv *) R_ExternalPtrAddr(cvar);
+
   int xc;
   const int kpr = LOGICAL(keep)[0];
-  nng_duration dur;
-  if (timeout == R_NilValue) {
-    dur = NNG_DURATION_DEFAULT;
-  } else if (TYPEOF(sock) == LGLSXP) {
-    dur = LOGICAL(sock)[0] ? (nng_duration) Rf_asInteger(timeout) : NNG_DURATION_DEFAULT;
-  } else if (R_ExternalPtrTag(sock) != nano_SocketSymbol) {
-    dur = NNG_DURATION_DEFAULT;
-  } else {
-    nng_socket *sockp = (nng_socket *) R_ExternalPtrAddr(sock);
-    nng_stat *nst, *sst;
-    xc = nng_stats_get(&nst);
-    if (xc) {
-      dur = NNG_DURATION_DEFAULT;
-    } else {
-      sst = nng_stat_find_socket(nst, *sockp);
-      sst = nng_stat_find(sst, "pipes");
-      dur = sst != NULL && nng_stat_value(sst) ? (nng_duration) Rf_asInteger(timeout) : NNG_DURATION_DEFAULT;
-    }
-  }
+  const nng_duration dur = timeout == R_NilValue || !nctx->verified ? NNG_DURATION_DEFAULT : (nng_duration) Rf_asInteger(timeout);
 
   SEXP enc, sendaio, aio, env, fun, signal;
   R_xlen_t xlen;
   unsigned char *dp;
-
-  nng_ctx *ctxp = (nng_ctx *) R_ExternalPtrAddr(con);
-  nano_cv *cvp = (nano_cv *) R_ExternalPtrAddr(cvar);
   nng_msg *msg;
 
   enc = nano_encodes(data, sendmode);
@@ -1645,7 +1610,7 @@ SEXP rnng_cv_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP tim
 
   nng_aio_set_msg(saio->aio, msg);
   nng_aio_set_timeout(saio->aio, dur);
-  nng_ctx_send(*ctxp, saio->aio);
+  nng_ctx_send(nctx->ctx, saio->aio);
 
   nano_aio *raio = R_Calloc(1, nano_aio);
   raio->type = RECVAIO;
@@ -1664,7 +1629,7 @@ SEXP rnng_cv_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP tim
   }
 
   nng_aio_set_timeout(raio->aio, dur);
-  nng_ctx_recv(*ctxp, raio->aio);
+  nng_ctx_recv(nctx->ctx, raio->aio);
 
   PROTECT(aio = R_MakeExternalPtr(raio, nano_AioSymbol, R_NilValue));
   R_RegisterCFinalizerEx(aio, raio_finalizer, TRUE);

@@ -1,4 +1,4 @@
-# nanonext 0.8.1.9025
+# nanonext 0.8.1.9026
 
 #### New Features
 
@@ -6,8 +6,8 @@
 
 #### Updates
 
+* `context()` gains the argument 'verify' with a default of TRUE. This adds additional protection to notably the `request()` and `request_signal()` functions when using timeouts, as these require a connection to be present.
 * Sending and hashing of language objects and symbols is now possible after fixes to serialisation.
-* Made safe the use of `request()` and `request_signal()`, which now check for a valid socket connection before accepting a timeout value.
 * Removes `msg_pipe()` and `'weakref<-'()` introduced in the last release to maintain simplicity of user interface.
 * Internal performance enhancements.
 

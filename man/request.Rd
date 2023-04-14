@@ -12,7 +12,6 @@ request(
   recv_mode = c("serial", "character", "complex", "double", "integer", "logical",
     "numeric", "raw"),
   timeout = NULL,
-  socket = NULL,
   keep.raw = FALSE
 )
 
@@ -23,7 +22,6 @@ request_signal(
   recv_mode = c("serial", "character", "complex", "double", "integer", "logical",
     "numeric", "raw"),
   timeout = NULL,
-  socket = NULL,
   keep.raw = FALSE,
   cv
 )
@@ -50,13 +48,9 @@ position in the vector of choices e.g. 1L for 'serial', 2L for 'character'
 etc.}
 
 \item{timeout}{[default NULL] integer value in milliseconds or NULL, which
-applies a socket-specific default, usually the same as no timeout. A
-valid socket \emph{must} also be supplied for 'socket' or this value will
-be disregarded.}
-
-\item{socket}{(only used if setting 'timeout') the Socket used to create the
-Context. This is required to check that there is an active connection
-as it is an error to specify a timeout otherwise.}
+applies a socket-specific default, usually the same as no timeout. The
+context must be verified - created with \code{context(verify = TRUE)}, or
+else this value will be ignored.}
 
 \item{keep.raw}{[default FALSE] logical flag whether to keep and return the
 received raw vector along with the converted data. Supplying a non-logical
@@ -92,6 +86,11 @@ Sending the request and receiving the result are both performed async,
     otherwise). This allows an error to be easily distinguished from a NULL
     return value. \code{\link{is_nul_byte}} can be used to test for a nul byte.
 
+    The value for 'timeout' is valid only when using a verified context
+    created with \code{context(verify = TRUE)}, and ignored otherwise. This
+    is as it is an error to specify a timeout without there being an existing
+    connection.
+
 \strong{For the signalling version}: when the receive is complete,
     the supplied 'conditionVariable' is signalled by incrementing its value
     by 1. This happens asynchronously and independently of the R execution
@@ -106,8 +105,8 @@ ctxp <- context(rep)
 
 # works if req and rep are running in parallel in different processes
 reply(ctxp, execute = function(x) x + 1, timeout = 50)
-aio <- request(ctxq, data = 2022, timeout = 50, socket = req)
-call_aio(aio)$data
+aio <- request(ctxq, data = 2022)
+aio$data
 
 close(req)
 close(rep)
