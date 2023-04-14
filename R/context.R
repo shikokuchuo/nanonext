@@ -161,8 +161,8 @@ reply <- function(context,
 #' @param data an object (if send_mode = 'raw', a vector).
 #' @param timeout [default NULL] integer value in milliseconds or NULL, which
 #'     applies a socket-specific default, usually the same as no timeout. The
-#'     context must be verified - created with \code{context(verify = TRUE)}, or
-#'     else this value will be ignored.
+#'     context must have created with \code{context(verify = TRUE)}, or else
+#'     this value will be ignored.
 #'
 #' @return A 'recvAio' (object of class 'recvAio') (invisibly).
 #'

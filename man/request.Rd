@@ -49,8 +49,8 @@ etc.}
 
 \item{timeout}{[default NULL] integer value in milliseconds or NULL, which
 applies a socket-specific default, usually the same as no timeout. The
-context must be verified - created with \code{context(verify = TRUE)}, or
-else this value will be ignored.}
+context must have created with \code{context(verify = TRUE)}, or else
+this value will be ignored.}
 
 \item{keep.raw}{[default FALSE] logical flag whether to keep and return the
 received raw vector along with the converted data. Supplying a non-logical
