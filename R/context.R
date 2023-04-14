@@ -24,8 +24,10 @@
 #'
 #' @param socket a Socket.
 #' @param verify [default TRUE] logical value whether to verify there is a
-#'     connection at the socket with the result stored internally (required for
-#'     features of certain functions). Supplying a non-logical value will error.
+#'     connection at the socket with the result stored internally within the
+#'     context (required for features of certain functions). Set to FALSE for
+#'     performance if not using features which explicitly require verification.
+#'     Supplying a non-logical value will error.
 #'
 #' @return A new Context (object of class 'nanoContext' and 'nano').
 #'
@@ -161,8 +163,8 @@ reply <- function(context,
 #' @param data an object (if send_mode = 'raw', a vector).
 #' @param timeout [default NULL] integer value in milliseconds or NULL, which
 #'     applies a socket-specific default, usually the same as no timeout. The
-#'     context must have created with \code{context(verify = TRUE)}, or else
-#'     this value will be ignored.
+#'     context must have been created with \code{context(verify = TRUE)}, or
+#'     else this value will be ignored.
 #'
 #' @return A 'recvAio' (object of class 'recvAio') (invisibly).
 #'

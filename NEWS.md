@@ -1,4 +1,4 @@
-# nanonext 0.8.1.9028
+# nanonext 0.8.2
 
 #### New Features
 

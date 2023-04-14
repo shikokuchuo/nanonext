@@ -467,8 +467,8 @@ SEXP rnng_ctx_close(SEXP context) {
 
   if (R_ExternalPtrTag(context) != nano_ContextSymbol)
     Rf_error("'context' is not a valid Context");
-  nng_ctx *ctxp = (nng_ctx *) R_ExternalPtrAddr(context);
-  const int xc = nng_ctx_close(*ctxp);
+  nano_ctx *nctx = (nano_ctx *) R_ExternalPtrAddr(context);
+  const int xc = nng_ctx_close(nctx->ctx);
 
   if (xc)
     ERROR_RET(xc);
