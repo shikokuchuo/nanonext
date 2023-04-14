@@ -1408,11 +1408,15 @@ SEXP rnng_cv_until(SEXP cvar, SEXP msec) {
     break;
   }
 
+  uint8_t success = 1;
   nng_mtx_lock(mtx);
   while (ncv->condition == 0) {
-    if (nng_cv_until(cv, time) == NNG_ETIMEDOUT) break;
+    if (nng_cv_until(cv, time) == NNG_ETIMEDOUT) {
+      success = 0;
+      break;
+    }
   }
-  if (ncv->condition > 0) ncv->condition--;
+  if (success) ncv->condition--;
   nng_mtx_unlock(mtx);
 
   return ncv->flag ? Rf_ScalarLogical(0) : Rf_ScalarLogical(1);

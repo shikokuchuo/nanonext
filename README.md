@@ -368,7 +368,7 @@ aio
 #> < recvAio >
 #>  - $data for message data
 aio$data |> str()
-#>  num [1:100000000] 0.21 0.012 -1.352 2.168 3.019 ...
+#>  num [1:100000000] 0.196 -1.443 0.464 0.223 1.442 ...
 ```
 
 As `call_aio()` is blocking and will wait for completion, an alternative
@@ -654,11 +654,11 @@ ncurl("https://httpbin.org/headers")
 #>   [1] 7b 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73
 #>  [26] 74 22 3a 20 22 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22
 #>  [51] 58 2d 41 6d 7a 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31
-#>  [76] 2d 36 34 33 35 34 38 39 65 2d 30 38 64 39 62 33 62 30 34 62 35 32 64 64 63
-#> [101] 33 35 62 36 33 39 64 34 61 22 0a 20 20 7d 0a 7d 0a
+#>  [76] 2d 36 34 33 39 36 39 61 36 2d 31 62 30 39 36 38 33 64 32 33 34 35 31 62 63
+#> [101] 66 37 31 63 37 33 39 31 38 22 0a 20 20 7d 0a 7d 0a
 #> 
 #> $data
-#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6435489e-08d9b3b04b52ddc35b639d4a\"\n  }\n}\n"
+#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-643969a6-1b09683d23451bcf71c73918\"\n  }\n}\n"
 ```
 
 For advanced use, supports additional HTTP methods such as POST or PUT.
@@ -679,13 +679,13 @@ res
 
 call_aio(res)$headers
 #> $Date
-#> [1] "Tue, 11 Apr 2023 11:46:39 GMT"
+#> [1] "Fri, 14 Apr 2023 14:57:08 GMT"
 #> 
 #> $Server
 #> [1] "gunicorn/19.9.0"
 
 res$data
-#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6435489e-170ad28a68da8ee85b7f1cbb\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
+#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-643969c1-76e205a6192b089d75afa6cd\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
 ```
 
 In this respect, it may be used as a performant and lightweight method
@@ -711,7 +711,7 @@ transact(sess)
 #> 
 #> $headers
 #> $headers$date
-#> [1] "Tue, 11 Apr 2023 11:46:40 GMT"
+#> [1] "Fri, 14 Apr 2023 14:57:32 GMT"
 #> 
 #> 
 #> $raw
@@ -721,15 +721,15 @@ transact(sess)
 #>  [76] 22 43 6f 6e 74 65 6e 74 2d 54 79 70 65 22 3a 20 22 61 70 70 6c 69 63 61 74
 #> [101] 69 6f 6e 2f 6a 73 6f 6e 22 2c 20 0a 20 20 20 20 22 48 6f 73 74 22 3a 20 22
 #> [126] 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22 58 2d 41 6d 7a
-#> [151] 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31 2d 36 34 33 35
-#> [176] 34 38 39 66 2d 34 33 62 38 35 64 65 38 35 32 65 64 34 35 37 65 31 34 35 62
-#> [201] 62 37 62 61 22 0a 20 20 7d 2c 20 0a 20 20 22 6f 72 69 67 69 6e 22 3a 20 22
-#> [226] 37 39 2e 31 37 33 2e 31 32 39 2e 32 22 2c 20 0a 20 20 22 75 72 6c 22 3a 20
-#> [251] 22 68 74 74 70 73 3a 2f 2f 68 74 74 70 62 69 6e 2e 6f 72 67 2f 67 65 74 22
-#> [276] 0a 7d 0a
+#> [151] 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31 2d 36 34 33 39
+#> [176] 36 39 63 35 2d 33 30 66 36 35 64 35 39 36 35 62 65 66 30 36 32 37 62 62 66
+#> [201] 65 63 66 31 22 0a 20 20 7d 2c 20 0a 20 20 22 6f 72 69 67 69 6e 22 3a 20 22
+#> [226] 33 31 2e 39 34 2e 37 2e 31 31 38 22 2c 20 0a 20 20 22 75 72 6c 22 3a 20 22
+#> [251] 68 74 74 70 73 3a 2f 2f 68 74 74 70 62 69 6e 2e 6f 72 67 2f 67 65 74 22 0a
+#> [276] 7d 0a
 #> 
 #> $data
-#> [1] "{\n  \"args\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6435489f-43b85de852ed457e145bb7ba\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"https://httpbin.org/get\"\n}\n"
+#> [1] "{\n  \"args\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-643969c5-30f65d5965bef0627bbfecf1\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"https://httpbin.org/get\"\n}\n"
 ```
 
 [« Back to ToC](#table-of-contents)
