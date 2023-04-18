@@ -18,6 +18,12 @@
 
 #define NANONEXT_INTERNALS
 #define NANONEXT_SUPPLEMENTALS
+#ifdef __has_include
+#  if __has_include(<stdatomic.h>)
+#    include <stdatomic.h>
+#    define HAS_ATOMIC 1
+#  endif
+#endif
 #include "nanonext.h"
 
 // definitions and statics -----------------------------------------------------
@@ -47,7 +53,11 @@ typedef struct nano_handle_s {
 } nano_handle;
 
 typedef struct nano_cv_s {
+#ifdef HAS_ATOMIC
+  _Atomic int condition;
+#else
   int condition;
+#endif
   uint8_t flag;
   nng_mtx *mtx;
   nng_cv *cv;

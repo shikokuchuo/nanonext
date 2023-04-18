@@ -19,7 +19,7 @@
 #define NANONEXT_INTERNALS
 #define NANONEXT_PROTOCOLS
 #define NANONEXT_SUPPLEMENTALS
-#define NANONEXT_TIME
+#include <time.h>
 #include "nanonext.h"
 
 // messenger -------------------------------------------------------------------

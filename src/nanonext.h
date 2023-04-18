@@ -19,10 +19,6 @@
 #ifndef NANONEXT_H
 #define NANONEXT_H
 
-#ifdef NANONEXT_TIME
-#include <time.h>
-#endif
-
 #ifdef NANONEXT_INTERNALS
 #include <nng/nng.h>
 typedef struct nano_ctx_s {
