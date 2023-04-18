@@ -97,7 +97,7 @@ ncurl <- function(url,
 #'     else an 'errorValue'.
 #'
 #' @examples
-#' s <- ncurl_session("https://httpbin.org/get", response = "date", timeout = 2000L)
+#' s <- ncurl_session("https://httpbin.org/get", response = "date", timeout = 5000L)
 #' s
 #' if (!is_error_value(s)) transact(s)
 #' if (!is_error_value(s)) close(s)

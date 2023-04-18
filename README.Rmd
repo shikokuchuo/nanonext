@@ -664,6 +664,8 @@ Package installation will automatically build the libraries if required.
 
 *Additional requirements for Solaris: (i) the 'xz' package - available on OpenCSW, and (ii) a more recent version of 'cmake' than available on OpenCSW - refer to the 'cmake' website for the latest source file (requiring only a C compiler to build).*
 
+*Note for system 'libmbedtls' >= 3.3.0: MBEDTLS_SSL_DTLS_CONNECTION_ID has been enabled by default, which is not compatible with NNG. The following lines in the source file 'include/mbedtls/mbedtls_config.h' need to be commented out prior to building the library: (i) #define MBEDTLS_SSL_DTLS_CONNECTION_ID and (ii) #define MBEDTLS_SSL_DTLS_CONNECTION_ID_COMPAT 0.*
+
 #### Windows
 
 For R >= 4.2 using the 'Rtools42' or 'Rtools43' toolchains, 'libnng' v1.6.0 (8e1836f) and 'libmbedtls' v3.2.1 will be automatically compiled from the package sources during installation.
