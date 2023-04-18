@@ -18,12 +18,6 @@
 
 #define NANONEXT_INTERNALS
 #define NANONEXT_SUPPLEMENTALS
-#ifdef __has_include
-#  if __has_include(<stdatomic.h>)
-#    include <stdatomic.h>
-#    define HAS_ATOMIC 1
-#  endif
-#endif
 #include "nanonext.h"
 
 // definitions and statics -----------------------------------------------------
@@ -53,11 +47,7 @@ typedef struct nano_handle_s {
 } nano_handle;
 
 typedef struct nano_cv_s {
-#ifdef HAS_ATOMIC
-  _Atomic int condition;
-#else
   int condition;
-#endif
   uint8_t flag;
   nng_mtx *mtx;
   nng_cv *cv;
@@ -1455,8 +1445,13 @@ SEXP rnng_cv_value(SEXP cvar) {
   if (R_ExternalPtrTag(cvar) != nano_CvSymbol)
     Rf_error("'cv' is not a valid Condition Variable");
   nano_cv *ncv = (nano_cv *) R_ExternalPtrAddr(cvar);
+  nng_mtx *mtx = ncv->mtx;
+  int cond;
+  nng_mtx_lock(mtx);
+  cond = ncv->condition;
+  nng_mtx_unlock(mtx);
 
-  return Rf_ScalarInteger(ncv->condition);
+  return Rf_ScalarInteger(cond);
 
 }
 
