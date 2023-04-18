@@ -1,5 +1,10 @@
 # nanonext 0.8.2.9000 (development)
 
+#### Updates
+
+* For compiling the bundled 'libmbedtls' and 'libnng' libraries from source, R's configured C compiler is now used when this is not the default system compiler.
+* Bundled 'libmbedtls' version updated to v3.4.0.
+
 # nanonext 0.8.2
 
 #### New Features
