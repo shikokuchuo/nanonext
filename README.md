@@ -368,7 +368,7 @@ aio
 #> < recvAio >
 #>  - $data for message data
 aio$data |> str()
-#>  num [1:100000000] -0.498 -0.624 -0.429 0.792 0.585 ...
+#>  num [1:100000000] -0.40989 1.7351 0.00408 -1.35361 1.74684 ...
 ```
 
 As `call_aio()` is blocking and will wait for completion, an alternative
@@ -654,11 +654,11 @@ ncurl("https://httpbin.org/headers")
 #>   [1] 7b 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73
 #>  [26] 74 22 3a 20 22 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22
 #>  [51] 58 2d 41 6d 7a 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31
-#>  [76] 2d 36 34 33 65 35 31 64 35 2d 31 34 30 35 37 66 37 35 31 36 30 63 32 38 37
-#> [101] 65 34 62 62 32 62 34 30 64 22 0a 20 20 7d 0a 7d 0a
+#>  [76] 2d 36 34 33 65 66 66 35 32 2d 30 31 38 38 32 32 61 39 34 65 39 65 63 35 64
+#> [101] 64 36 38 36 36 66 65 38 35 22 0a 20 20 7d 0a 7d 0a
 #> 
 #> $data
-#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-643e51d5-14057f75160c287e4bb2b40d\"\n  }\n}\n"
+#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-643eff52-018822a94e9ec5dd6866fe85\"\n  }\n}\n"
 ```
 
 For advanced use, supports additional HTTP methods such as POST or PUT.
@@ -679,13 +679,13 @@ res
 
 call_aio(res)$headers
 #> $Date
-#> [1] "Tue, 18 Apr 2023 08:16:22 GMT"
+#> [1] "Tue, 18 Apr 2023 20:36:35 GMT"
 #> 
 #> $Server
 #> [1] "gunicorn/19.9.0"
 
 res$data
-#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-643e51d5-4296ad495678bea617e9bbf3\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
+#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-643eff53-0e7b9cf97f81b36c03049692\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
 ```
 
 In this respect, it may be used as a performant and lightweight method
@@ -711,7 +711,7 @@ transact(sess)
 #> 
 #> $headers
 #> $headers$date
-#> [1] "Tue, 18 Apr 2023 08:16:24 GMT"
+#> [1] "Tue, 18 Apr 2023 20:36:36 GMT"
 #> 
 #> 
 #> $raw
@@ -722,14 +722,14 @@ transact(sess)
 #> [101] 69 6f 6e 2f 6a 73 6f 6e 22 2c 20 0a 20 20 20 20 22 48 6f 73 74 22 3a 20 22
 #> [126] 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22 58 2d 41 6d 7a
 #> [151] 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31 2d 36 34 33 65
-#> [176] 35 31 64 36 2d 34 34 33 39 37 34 35 39 35 64 35 32 30 66 32 64 33 62 36 35
-#> [201] 32 31 35 34 22 0a 20 20 7d 2c 20 0a 20 20 22 6f 72 69 67 69 6e 22 3a 20 22
-#> [226] 38 32 2e 31 36 33 2e 31 39 36 2e 32 36 22 2c 20 0a 20 20 22 75 72 6c 22 3a
+#> [176] 66 66 35 34 2d 33 34 32 30 64 62 30 61 34 36 63 61 34 37 30 64 35 64 34 64
+#> [201] 65 37 35 65 22 0a 20 20 7d 2c 20 0a 20 20 22 6f 72 69 67 69 6e 22 3a 20 22
+#> [226] 31 38 35 2e 32 32 35 2e 34 35 2e 34 39 22 2c 20 0a 20 20 22 75 72 6c 22 3a
 #> [251] 20 22 68 74 74 70 73 3a 2f 2f 68 74 74 70 62 69 6e 2e 6f 72 67 2f 67 65 74
 #> [276] 22 0a 7d 0a
 #> 
 #> $data
-#> [1] "{\n  \"args\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-643e51d6-443974595d520f2d3b652154\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"https://httpbin.org/get\"\n}\n"
+#> [1] "{\n  \"args\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-643eff54-3420db0a46ca470d5d4de75e\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"https://httpbin.org/get\"\n}\n"
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -889,7 +889,8 @@ stat(s, "pipes")
 Installation from source requires ‘libnng’ \>= v1.6.0 and ‘libmbedtls’
 \>= 2 - suitable installations are automatically detected - or else
 ‘cmake’ to compile ‘libnng’ v1.6.0 pre-release (8e1836f) and
-‘libmbedtls’ v3.2.1 included within the package sources.
+‘libmbedtls’ v3.2.1 \[v3.4.0 in dev version\] included within the
+package sources.
 
 Note: ‘libnng’ v1.6.0 is not yet available in system repositories;
 ‘libmbedtls’ is available as libmbedtls-dev (deb) or libmbedtls-devel
@@ -916,12 +917,12 @@ MBEDTLS_SSL_DTLS_CONNECTION_ID_COMPAT 0.*
 #### Windows
 
 For R \>= 4.2 using the ‘Rtools42’ or ‘Rtools43’ toolchains, ‘libnng’
-v1.6.0 (8e1836f) and ‘libmbedtls’ v3.2.1 will be automatically compiled
-from the package sources during installation.
+v1.6.0 (8e1836f) and ‘libmbedtls’ v3.2.1 \[v3.4.0 in dev version\] will
+be automatically compiled from the package sources during installation.
 
 For previous R versions, pre-compiled ‘libnng’ v1.6.0 (8e1836f) and
-‘libmbedtls’ v3.2.1 libraries are downloaded and used for installation
-instead.
+‘libmbedtls’ v3.2.1 \[v3.4.0 in dev version\] libraries are downloaded
+and used for installation instead.
 
 [« Back to ToC](#table-of-contents)
 
