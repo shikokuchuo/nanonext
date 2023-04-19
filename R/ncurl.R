@@ -65,7 +65,7 @@
 #'     and 'recvAio') (invisibly).
 #'
 #' @examples
-#' ncurl("https://httpbin.org/get", response = c("date", "server"), timeout = 2000L)
+#' ncurl("https://www.cam.ac.uk/", response = c("date", "server"), timeout = 1000L)
 #' ncurl("http://httpbin.org/put",
 #'       method = "PUT",
 #'       headers = list(Authorization = "Bearer APIKEY"),
