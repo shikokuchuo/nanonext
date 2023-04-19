@@ -13,6 +13,7 @@ ncurl(
   headers = NULL,
   data = NULL,
   response = NULL,
+  timeout = NULL,
   pem = NULL
 )
 }
@@ -44,6 +45,9 @@ vector will error.}
 headers to return e.g. \code{c("date", "server")} or \code{list("Date", "Server")}.
 These are case-insensitive and will return NULL if not present.}
 
+\item{timeout}{(optional) integer value in milliseconds after which the
+transaction times out if not yet complete.}
+
 \item{pem}{(optional) applicable to secure HTTPS sites only. The path to a
 file containing X.509 certificate(s) in PEM format, comprising the
 certificate authority certificate chain (and revocation list if present).
@@ -72,8 +76,16 @@ Named list of 4 elements:
 nano cURL - a minimalist http(s) client.
 }
 \examples{
-ncurl("https://httpbin.org/get", response = c("date", "server"))
-ncurl("http://httpbin.org/put",,,,"PUT", list(Authorization = "Bearer APIKEY"), "hello world")
-ncurl("http://httpbin.org/post",,,,"POST", c(`Content-Type` = "application/json"),'{"k":"v"}')
+ncurl("https://httpbin.org/get", response = c("date", "server"), timeout = 2000L)
+ncurl("http://httpbin.org/put",
+      method = "PUT",
+      headers = list(Authorization = "Bearer APIKEY"),
+      data = "hello world",
+      timeout = 2000L)
+ncurl("http://httpbin.org/post",
+      method = "POST",
+      headers = c(`Content-Type` = "application/json"),
+      data = '{"k":"v"}',
+      timeout = 2000L)
 
 }

@@ -787,7 +787,7 @@ SEXP rnng_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP keep, SEXP bytes, SEX
 // ncurl aio -------------------------------------------------------------------
 
 SEXP rnng_ncurl_aio(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP data,
-                    SEXP pem, SEXP clo) {
+                    SEXP timeout, SEXP pem, SEXP clo) {
 
   const char *httr = CHAR(STRING_ELT(http, 0));
   nano_aio *haio = R_Calloc(1, nano_aio);
@@ -870,6 +870,8 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP dat
 
   }
 
+  if (timeout != R_NilValue)
+    nng_aio_set_timeout(haio->aio, (nng_duration) Rf_asInteger(timeout));
   nng_http_client_transact(handle->cli, handle->req, handle->res, haio->aio);
 
   PROTECT(aio = R_MakeExternalPtr(haio, nano_AioSymbol, R_NilValue));

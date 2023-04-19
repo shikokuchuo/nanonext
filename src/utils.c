@@ -169,7 +169,7 @@ SEXP rnng_is_nul_byte(SEXP x) {
 // ncurl - minimalist http client ----------------------------------------------
 
 SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP follow, SEXP method, SEXP headers,
-                SEXP data, SEXP response, SEXP pem) {
+                SEXP data, SEXP response, SEXP timeout, SEXP pem) {
 
   const int conv = LOGICAL(convert)[0];
   nng_url *url;
@@ -246,6 +246,8 @@ SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP follow, SEXP method, SEXP headers,
 
   }
 
+  if (timeout != R_NilValue)
+    nng_aio_set_timeout(aio, (nng_duration) Rf_asInteger(timeout));
   nng_http_client_transact(client, req, res, aio);
   nng_aio_wait(aio);
   if ((xc = nng_aio_result(aio)))
@@ -259,7 +261,7 @@ SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP follow, SEXP method, SEXP headers,
 
   if (relo && LOGICAL(follow)[0]) {
     SET_STRING_ELT(nano_addRedirect, 0, Rf_mkChar(nng_http_res_get_header(res, "Location")));
-    return rnng_ncurl(nano_addRedirect, convert, follow, method, headers, data, response, pem);
+    return rnng_ncurl(nano_addRedirect, convert, follow, method, headers, data, response, timeout, pem);
   }
 
   SEXP out, vec, cvec, rvec;

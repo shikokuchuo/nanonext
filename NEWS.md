@@ -1,4 +1,8 @@
-# nanonext 0.8.2.9000 (development)
+# nanonext 0.8.2.9001 (development)
+
+#### New Features
+
+* `ncurl()` gains a 'timeout' argument.
 
 #### Updates
 
