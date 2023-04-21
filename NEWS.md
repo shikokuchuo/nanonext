@@ -1,4 +1,4 @@
-# nanonext 0.8.2.9001 (development)
+# nanonext 0.8.2.9002 (development)
 
 #### New Features
 
