@@ -38,7 +38,6 @@ static void rnng_messenger_thread(void *arg) {
   SEXP list = (SEXP) arg;
   SEXP socket = VECTOR_ELT(list, 0);
   SEXP key = VECTOR_ELT(list, 1);
-  SEXP two = VECTOR_ELT(list, 2);
   nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(socket);
   unsigned char *buf;
   size_t sz;
@@ -64,7 +63,16 @@ static void rnng_messenger_thread(void *arg) {
                  tms->tm_year + 1900, tms->tm_mon + 1, tms->tm_mday,
                  tms->tm_hour, tms->tm_min, tms->tm_sec);
         nng_free(buf, sz);
-        rnng_send(socket, key, two, Rf_ScalarLogical(0));
+        const SEXP enc = nano_encode(key);
+        const R_xlen_t xlen = Rf_xlength(enc);
+        unsigned char *dp = RAW(enc);
+        xc = nng_send(*sock, dp, xlen, NNG_FLAG_NONBLOCK);
+        if (xc) {
+          REprintf("| messenger session ended: %d-%02d-%02d %02d:%02d:%02d\n",
+                   tms->tm_year + 1900, tms->tm_mon + 1, tms->tm_mday,
+                   tms->tm_hour, tms->tm_min, tms->tm_sec);
+          break;
+        }
         continue;
       }
       if (!strcmp((char *) buf, ":d ")) {

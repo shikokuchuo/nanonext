@@ -78,13 +78,13 @@ messenger <- function(url, auth = NULL) {
     r <- recv(sock, mode = 5L, block = TRUE)
     for (i in seq_len(32L))
       lock[r[i]] == r[i + 32L] || {
-        cat("| authentication error\n", file = stderr())
+        cat("| authentication failed\n", file = stderr())
         return(invisible())
       }
     cat("| authenticated\n", file = stderr())
   }
 
-  sock <- .Call(rnng_messenger_thread_create, list(sock, key, 2L))
+  sock <- .Call(rnng_messenger_thread_create, list(sock, key))
   cat("type your message:\n", file = stdout())
 
   repeat {
