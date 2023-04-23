@@ -1,4 +1,4 @@
-# nanonext 0.8.2.9002 (development)
+# nanonext 0.8.2.9003 (development)
 
 #### New Features
 
@@ -6,6 +6,7 @@
 
 #### Updates
 
+* Functions `pipe_notify()`, `lock()` and `unlock()` now error if unsuccessful rather than returning with a warning.
 * For compiling bundled 'libmbedtls' and 'libnng' libraries from source, R's configured C compiler is now chosen over the system default where this is different.
 * Bundled 'libmbedtls' source updated to v3.4.0.
 

@@ -26,7 +26,7 @@ from other signals, and causes any subsequent \code{\link{wait}} or
 \code{\link{until}} to return FALSE instead of TRUE.}
 }
 \value{
-Invisibly, an integer exit code (zero on success).
+Invisibly, zero on success (will otherwise error).
 }
 \description{
 Signals a 'conditionVariable' whenever pipes (individual connections) are

@@ -16,7 +16,7 @@ unlock(socket)
 only while the value of the condition variable is non-zero.}
 }
 \value{
-Invisibly, an integer exit code (zero on success).
+Invisibly, zero on success (will otherwise error).
 }
 \description{
 Prevents further pipe connections from being established at a Socket.

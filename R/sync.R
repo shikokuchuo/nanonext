@@ -154,7 +154,7 @@ cv_reset <- function(cv) invisible(.Call(rnng_cv_reset, cv))
 #'     socket. The underlying transport may be closed at this point, and it is
 #'     not possible to communicate using this pipe.
 #'
-#' @return Invisibly, an integer exit code (zero on success).
+#' @return Invisibly, zero on success (will otherwise error).
 #'
 #' @examples
 #' s <- socket(listen = "inproc://nanopipe")
@@ -190,7 +190,7 @@ pipe_notify <- function(socket, cv, cv2 = NULL, add = TRUE, remove = TRUE, flag 
 #' @param cv (optional) a 'conditionVariable'. If supplied, the socket is locked
 #'     only while the value of the condition variable is non-zero.
 #'
-#' @return Invisibly, an integer exit code (zero on success).
+#' @return Invisibly, zero on success (will otherwise error).
 #'
 #' @examples
 #' s <- socket("bus", listen = "inproc://nanolock")

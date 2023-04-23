@@ -1707,13 +1707,13 @@ SEXP rnng_pipe_notify(SEXP socket, SEXP cv, SEXP cv2, SEXP add, SEXP remove, SEX
       xc = nng_pipe_notify(*sock, NNG_PIPE_EV_ADD_POST,
                            LOGICAL(flag)[0] ? pipe_cb_flag_cv_duo : pipe_cb_signal_cv_duo, duo);
       if (xc)
-        ERROR_RET(xc);
+        ERROR_OUT(xc);
     }
     if (LOGICAL(remove)[0]) {
       xc = nng_pipe_notify(*sock, NNG_PIPE_EV_REM_POST,
                            LOGICAL(flag)[0] ? pipe_cb_flag_cv_duo : pipe_cb_signal_cv_duo, duo);
       if (xc)
-        ERROR_RET(xc);
+        ERROR_OUT(xc);
     }
 
     SEXP duoptr;
@@ -1728,13 +1728,13 @@ SEXP rnng_pipe_notify(SEXP socket, SEXP cv, SEXP cv2, SEXP add, SEXP remove, SEX
       xc = nng_pipe_notify(*sock, NNG_PIPE_EV_ADD_POST,
                            LOGICAL(flag)[0] ? pipe_cb_flag_cv : pipe_cb_signal_cv, cvp);
       if (xc)
-        ERROR_RET(xc);
+        ERROR_OUT(xc);
     }
     if (LOGICAL(remove)[0]) {
       xc = nng_pipe_notify(*sock, NNG_PIPE_EV_REM_POST,
                            LOGICAL(flag)[0] ? pipe_cb_flag_cv : pipe_cb_signal_cv, cvp);
       if (xc)
-        ERROR_RET(xc);
+        ERROR_OUT(xc);
     }
 
   }
@@ -1760,7 +1760,7 @@ SEXP rnng_socket_lock(SEXP socket, SEXP cv) {
   }
 
   if (xc)
-    ERROR_RET(xc);
+    ERROR_OUT(xc);
 
   return nano_success;
 
@@ -1775,7 +1775,7 @@ SEXP rnng_socket_unlock(SEXP socket) {
   int xc;
   xc = nng_pipe_notify(*sock, NNG_PIPE_EV_ADD_PRE, NULL, NULL);
   if (xc)
-    ERROR_RET(xc);
+    ERROR_OUT(xc);
 
   return nano_success;
 
