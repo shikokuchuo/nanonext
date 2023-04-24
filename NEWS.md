@@ -1,4 +1,4 @@
-# nanonext 0.8.2.9004 (development)
+# nanonext 0.8.2.9005 (development)
 
 #### New Features
 
@@ -10,6 +10,7 @@
 * The name of the single argument to `msleep()` has been changed to 'time' from 'msec'.
 * Functions `pipe_notify()`, `lock()` and `unlock()` now error if unsuccessful rather than returning with a warning.
 * For compiling bundled 'libmbedtls' and 'libnng' libraries from source, R's configured C compiler is now chosen over the system default where this is different.
+* Bundled 'libnng' source updated to v1.6.0 alpha (c5e9d8a).
 * Bundled 'libmbedtls' source updated to v3.4.0.
 
 # nanonext 0.8.2
