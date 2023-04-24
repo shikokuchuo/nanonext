@@ -47,7 +47,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.2.9004</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.2.9005</span>
       </span>
     </div>
 
@@ -258,7 +258,7 @@
 <span><span class="co">#&gt;   a b</span></span>
 <span><span class="co">#&gt; 1 1 2</span></span>
 <span><span class="va">msg</span><span class="op">$</span><span class="va">raw</span></span>
-<span><span class="co">#&gt;   [1] 58 0a 00 00 00 03 00 04 02 03 00 03 05 00 00 00 00 05 55 54 46 2d 38 00 00</span></span>
+<span><span class="co">#&gt;   [1] 58 0a 00 00 00 03 00 04 03 00 00 03 05 00 00 00 00 05 55 54 46 2d 38 00 00</span></span>
 <span><span class="co">#&gt;  [26] 03 13 00 00 00 02 00 00 00 0e 00 00 00 01 3f f0 00 00 00 00 00 00 00 00 00</span></span>
 <span><span class="co">#&gt;  [51] 0e 00 00 00 01 40 00 00 00 00 00 00 00 00 00 04 02 00 00 00 01 00 04 00 09</span></span>
 <span><span class="co">#&gt;  [76] 00 00 00 05 6e 61 6d 65 73 00 00 00 10 00 00 00 02 00 04 00 09 00 00 00 01</span></span>
@@ -324,7 +324,7 @@
 <span><span class="co">#&gt; &lt; recvAio &gt;</span></span>
 <span><span class="co">#&gt;  - $data for message data</span></span>
 <span><span class="va">aio</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] -0.40989 1.7351 0.00408 -1.35361 1.74684 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] -1.137 0.427 0.254 -0.912 0.382 ...</span></span></code></pre></div>
 <p>As <code><a href="reference/call_aio.html">call_aio()</a></code> is blocking and will wait for completion, an alternative is to query <code>aio$data</code> directly. This will return an ‘unresolved’ logical NA value if the calculation is yet to complete.</p>
 <p>In this example the calculation is returned, but other operations may reside entirely on the server side, for example writing data to disk.</p>
 <p>In such a case, calling or querying the value confirms that the operation has completed, and provides the return value of the function, which may typically be NULL or an exit code.</p>
@@ -524,11 +524,11 @@
 <span><span class="co">#&gt;   [1] 7b 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73</span></span>
 <span><span class="co">#&gt;  [26] 74 22 3a 20 22 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22</span></span>
 <span><span class="co">#&gt;  [51] 58 2d 41 6d 7a 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31</span></span>
-<span><span class="co">#&gt;  [76] 2d 36 34 33 65 66 66 35 32 2d 30 31 38 38 32 32 61 39 34 65 39 65 63 35 64</span></span>
-<span><span class="co">#&gt; [101] 64 36 38 36 36 66 65 38 35 22 0a 20 20 7d 0a 7d 0a</span></span>
+<span><span class="co">#&gt;  [76] 2d 36 34 34 36 64 39 33 32 2d 33 30 39 33 32 34 31 65 35 66 32 63 63 31 62</span></span>
+<span><span class="co">#&gt; [101] 31 34 64 65 63 30 64 34 39 22 0a 20 20 7d 0a 7d 0a</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $data</span></span>
-<span><span class="co">#&gt; [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-643eff52-018822a94e9ec5dd6866fe85\"\n  }\n}\n"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6446d932-3093241e5f2cc1b14dec0d49\"\n  }\n}\n"</span></span></code></pre></div>
 <p>For advanced use, supports additional HTTP methods such as POST or PUT.</p>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ncurl.html">ncurl</a></span><span class="op">(</span><span class="st">"http://httpbin.org/post"</span>,</span>
@@ -546,13 +546,13 @@
 <span></span>
 <span><span class="fu"><a href="reference/call_aio.html">call_aio</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span><span class="op">$</span><span class="va">headers</span></span>
 <span><span class="co">#&gt; $Date</span></span>
-<span><span class="co">#&gt; [1] "Tue, 18 Apr 2023 20:36:35 GMT"</span></span>
+<span><span class="co">#&gt; [1] "Mon, 24 Apr 2023 19:32:03 GMT"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $Server</span></span>
 <span><span class="co">#&gt; [1] "gunicorn/19.9.0"</span></span>
 <span></span>
 <span><span class="va">res</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt; [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-643eff53-0e7b9cf97f81b36c03049692\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6446d933-2b431bb5216a771c647f2402\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"</span></span></code></pre></div>
 <p>In this respect, it may be used as a performant and lightweight method for making REST API requests.</p>
 <p><code><a href="reference/ncurl_session.html">ncurl_session()</a></code> creates a re-usable open connection and presents a much faster and more efficient solution for repeated polling of an API endpoint. <code><a href="reference/ncurl_session.html">transact()</a></code> is then used to request data multiple times as required. This method allows a polling frequency that exceeds a server’s new connection limits, where this is permitted.</p>
 <div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
@@ -569,7 +569,7 @@
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $headers</span></span>
 <span><span class="co">#&gt; $headers$date</span></span>
-<span><span class="co">#&gt; [1] "Tue, 18 Apr 2023 20:36:36 GMT"</span></span>
+<span><span class="co">#&gt; [1] "Mon, 24 Apr 2023 19:32:03 GMT"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $raw</span></span>
@@ -579,15 +579,15 @@
 <span><span class="co">#&gt;  [76] 22 43 6f 6e 74 65 6e 74 2d 54 79 70 65 22 3a 20 22 61 70 70 6c 69 63 61 74</span></span>
 <span><span class="co">#&gt; [101] 69 6f 6e 2f 6a 73 6f 6e 22 2c 20 0a 20 20 20 20 22 48 6f 73 74 22 3a 20 22</span></span>
 <span><span class="co">#&gt; [126] 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22 58 2d 41 6d 7a</span></span>
-<span><span class="co">#&gt; [151] 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31 2d 36 34 33 65</span></span>
-<span><span class="co">#&gt; [176] 66 66 35 34 2d 33 34 32 30 64 62 30 61 34 36 63 61 34 37 30 64 35 64 34 64</span></span>
-<span><span class="co">#&gt; [201] 65 37 35 65 22 0a 20 20 7d 2c 20 0a 20 20 22 6f 72 69 67 69 6e 22 3a 20 22</span></span>
+<span><span class="co">#&gt; [151] 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31 2d 36 34 34 36</span></span>
+<span><span class="co">#&gt; [176] 64 39 33 33 2d 33 37 30 31 66 39 33 30 33 33 38 64 34 31 63 66 32 37 34 39</span></span>
+<span><span class="co">#&gt; [201] 62 61 64 39 22 0a 20 20 7d 2c 20 0a 20 20 22 6f 72 69 67 69 6e 22 3a 20 22</span></span>
 <span><span class="co">#&gt; [226] 31 38 35 2e 32 32 35 2e 34 35 2e 34 39 22 2c 20 0a 20 20 22 75 72 6c 22 3a</span></span>
 <span><span class="co">#&gt; [251] 20 22 68 74 74 70 73 3a 2f 2f 68 74 74 70 62 69 6e 2e 6f 72 67 2f 67 65 74</span></span>
 <span><span class="co">#&gt; [276] 22 0a 7d 0a</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $data</span></span>
-<span><span class="co">#&gt; [1] "{\n  \"args\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-643eff54-3420db0a46ca470d5d4de75e\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"https://httpbin.org/get\"\n}\n"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "{\n  \"args\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6446d933-3701f930338d41cf2749bad9\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"https://httpbin.org/get\"\n}\n"</span></span></code></pre></div>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
 <div class="section level3">
@@ -700,7 +700,7 @@
 <div class="section level4">
 <h4 id="linux--mac--solaris">Linux / Mac / Solaris<a class="anchor" aria-label="anchor" href="#linux--mac--solaris"></a>
 </h4>
-<p>Installation from source requires ‘libnng’ &gt;= v1.6.0 and ‘libmbedtls’ &gt;= 2 - suitable installations are automatically detected - or else ‘cmake’ to compile ‘libnng’ v1.6.0 pre-release (8e1836f) and ‘libmbedtls’ v3.2.1 [v3.4.0 in dev version] included within the package sources.</p>
+<p>Installation from source requires ‘libnng’ &gt;= v1.6.0 and ‘libmbedtls’ &gt;= 2 - suitable installations are automatically detected - or else ‘cmake’ to compile ‘libnng’ v1.6.0 pre-release (8e1836f) [alpha (c5e9d8a) in dev version] and ‘libmbedtls’ v3.2.1 [v3.4.0 in dev version] included within the package sources.</p>
 <p>Note: ‘libnng’ v1.6.0 is not yet available in system repositories; ‘libmbedtls’ is available as libmbedtls-dev (deb) or libmbedtls-devel (rpm).</p>
 <p>The ‘INCLUDE_DIR’ and ‘LIB_DIR’ environment variables may be set prior to package installation to specify a custom location for ‘libmbedtls’ or ‘libnng’ other than the standard filesystem locations.</p>
 <p>Package installation will automatically build the libraries if required.</p>
@@ -710,8 +710,8 @@
 <div class="section level4">
 <h4 id="windows">Windows<a class="anchor" aria-label="anchor" href="#windows"></a>
 </h4>
-<p>For R &gt;= 4.2 using the ‘Rtools42’ or ‘Rtools43’ toolchains, ‘libnng’ v1.6.0 (8e1836f) and ‘libmbedtls’ v3.2.1 [v3.4.0 in dev version] will be automatically compiled from the package sources during installation.</p>
-<p>For previous R versions, pre-compiled ‘libnng’ v1.6.0 (8e1836f) and ‘libmbedtls’ v3.2.1 [v3.4.0 in dev version] libraries are downloaded and used for installation instead.</p>
+<p>For R &gt;= 4.2 using the ‘Rtools42’ or ‘Rtools43’ toolchains, ‘libnng’ v1.6.0 (8e1836f) [alpha (c5e9d8a) in dev version] and ‘libmbedtls’ v3.2.1 [v3.4.0 in dev version] will be automatically compiled from the package sources during installation.</p>
+<p>For previous R versions, pre-compiled ‘libnng’ v1.6.0 (8e1836f) [alpha (c5e9d8a) in dev version] and ‘libmbedtls’ v3.2.1 [v3.4.0 in dev version] libraries are downloaded and used for installation instead.</p>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
 </div>
