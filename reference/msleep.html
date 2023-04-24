@@ -18,7 +18,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.2.9003</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.2.9004</span>
       </span>
     </div>
 
@@ -61,12 +61,12 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">msleep</span><span class="op">(</span><span class="va">msec</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">msleep</span><span class="op">(</span><span class="va">time</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <dl><dt>msec</dt>
+    <dl><dt>time</dt>
 <dd><p>integer number of milliseconds to block the caller.</p></dd>
 
 </dl></div>
@@ -78,8 +78,9 @@
     </div>
     <div id="details">
     <h2>Details</h2>
-    <p>If 'msec' is non-integer, it will be coerced to integer. Non-numeric
-    input will be ignored and return immediately.</p>
+    <p>Non-integer values for 'time' are coerced to integer, and the
+    absolute value is taken (the sign is ignored). Non-numeric values are
+    ignored, causing the function to return immediately.</p>
 <p>Note that unlike <code><a href="https://rdrr.io/r/base/Sys.sleep.html" class="external-link">Sys.sleep</a></code>, this function is not
     user-interruptible by sending SIGINT e.g. with ctrl + c.</p>
     </div>
@@ -87,7 +88,7 @@
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">time</span> <span class="op">&lt;-</span> <span class="fu"><a href="mclock.html">mclock</a></span><span class="op">(</span><span class="op">)</span>; <span class="fu">msleep</span><span class="op">(</span><span class="fl">100</span><span class="op">)</span>; <span class="fu"><a href="mclock.html">mclock</a></span><span class="op">(</span><span class="op">)</span> <span class="op">-</span> <span class="va">time</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 102</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 101</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

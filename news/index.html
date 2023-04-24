@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.2.9003</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.2.9004</span>
       </span>
     </div>
 
@@ -54,15 +54,17 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.8.2.9003" id="nanonext-0829003-development">nanonext 0.8.2.9003 (development)<a class="anchor" aria-label="anchor" href="#nanonext-0829003-development"></a></h2>
+<h2 class="page-header" data-toc-text="0.8.2.9004" id="nanonext-0829004-development">nanonext 0.8.2.9004 (development)<a class="anchor" aria-label="anchor" href="#nanonext-0829004-development"></a></h2>
 <div class="section level5">
-<h5 id="new-features-0-8-2-9003">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-8-2-9003"></a></h5>
-<ul><li>
+<h5 id="new-features-0-8-2-9004">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-8-2-9004"></a></h5>
+<ul><li>New <code><a href="../reference/signal.html">signal()</a></code> function signals a condition variable after a specified time (from a newly-created thread).</li>
+<li>
 <code><a href="../reference/ncurl.html">ncurl()</a></code> gains a ‘timeout’ argument.</li>
 </ul></div>
 <div class="section level5">
-<h5 id="updates-0-8-2-9003">Updates<a class="anchor" aria-label="anchor" href="#updates-0-8-2-9003"></a></h5>
-<ul><li>Functions <code><a href="../reference/pipe_notify.html">pipe_notify()</a></code>, <code><a href="../reference/lock.html">lock()</a></code> and <code><a href="../reference/lock.html">unlock()</a></code> now error if unsuccessful rather than returning with a warning.</li>
+<h5 id="updates-0-8-2-9004">Updates<a class="anchor" aria-label="anchor" href="#updates-0-8-2-9004"></a></h5>
+<ul><li>The name of the single argument to <code><a href="../reference/msleep.html">msleep()</a></code> has been changed to ‘time’ from ‘msec’.</li>
+<li>Functions <code><a href="../reference/pipe_notify.html">pipe_notify()</a></code>, <code><a href="../reference/lock.html">lock()</a></code> and <code><a href="../reference/lock.html">unlock()</a></code> now error if unsuccessful rather than returning with a warning.</li>
 <li>For compiling bundled ‘libmbedtls’ and ‘libnng’ libraries from source, R’s configured C compiler is now chosen over the system default where this is different.</li>
 <li>Bundled ‘libmbedtls’ source updated to v3.4.0.</li>
 </ul></div>
