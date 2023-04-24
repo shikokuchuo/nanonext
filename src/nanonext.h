@@ -21,10 +21,12 @@
 
 #ifdef NANONEXT_INTERNALS
 #include <nng/nng.h>
+
 typedef struct nano_ctx_s {
   nng_ctx ctx;
   uint8_t verified;
 } nano_ctx;
+
 #endif
 
 #ifdef NANONEXT_PROTOCOLS
@@ -44,6 +46,14 @@ typedef struct nano_ctx_s {
 #include <nng/supplemental/http/http.h>
 #include <nng/supplemental/tls/tls.h>
 #include <nng/supplemental/util/platform.h>
+
+typedef struct nano_cv_s {
+  int condition;
+  uint8_t flag;
+  nng_mtx *mtx;
+  nng_cv *cv;
+} nano_cv;
+
 #endif
 
 #ifdef NANONEXT_TLS
@@ -176,6 +186,7 @@ extern SEXP rnng_stream_dial(SEXP, SEXP, SEXP);
 extern SEXP rnng_stream_listen(SEXP, SEXP, SEXP);
 extern SEXP rnng_strerror(SEXP);
 extern SEXP rnng_subscribe(SEXP, SEXP, SEXP);
+extern SEXP rnng_timedsignal_create(SEXP);
 extern SEXP rnng_unresolved(SEXP);
 extern SEXP rnng_unresolved2(SEXP);
 extern SEXP rnng_url_parse(SEXP);

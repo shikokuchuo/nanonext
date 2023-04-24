@@ -192,10 +192,15 @@ static const R_CallMethodDef callMethods[] = {
   {NULL, NULL, 0}
 };
 
+static const R_ExternalMethodDef externalMethods[] = {
+  {"rnng_timedsignal_create", (DL_FUNC) &rnng_timedsignal_create, -1},
+  {NULL, NULL, 0}
+};
+
 void attribute_visible R_init_nanonext(DllInfo* dll) {
   RegisterSymbols();
   PreserveObjects();
-  R_registerRoutines(dll, NULL, callMethods, NULL, NULL);
+  R_registerRoutines(dll, NULL, callMethods, NULL, externalMethods);
   R_useDynamicSymbols(dll, FALSE);
   R_forceSymbols(dll, TRUE);
 }

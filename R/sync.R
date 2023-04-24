@@ -142,9 +142,9 @@ cv_reset <- function(cv) invisible(.Call(rnng_cv_reset, cv))
 #' @param remove [default TRUE] logical value whether to signal when a pipe is
 #'     removed.
 #' @param flag [default TRUE] logical value whether to also set a flag in the
-#'     'conditionVariable'. This allows pipe events to be easily distinguishable
-#'     from other signals, and causes any subsequent \code{\link{wait}} or
-#'     \code{\link{until}} to return FALSE instead of TRUE.
+#'     'conditionVariable'. This can help distinguish between different types of
+#'     signal, and causes any subsequent \code{\link{wait}} or \code{\link{until}}
+#'     to return FALSE instead of TRUE.
 #'
 #' @details For add: this event occurs after the pipe is fully added to the
 #'     socket. Prior to this time, it is not possible to communicate over the
@@ -221,4 +221,38 @@ lock <- function(socket, cv = NULL) invisible(.Call(rnng_socket_lock, socket, cv
 #' @export
 #'
 unlock <- function(socket) invisible(.Call(rnng_socket_unlock, socket))
+
+#' Signal a Condition Variable
+#'
+#' Creates a new thread which signals a condition variable after a specified time,
+#'     causing its internal condition to increment by one (and threads waiting
+#'     on the condition to wake).
+#'
+#' @param cv a 'conditionVariable',
+#' @param time integer number of milliseconds after which to signal the
+#'     condition variable.
+#' @inheritParams pipe_notify
+#'
+#' @return Invisible NULL.
+#'
+#' @details Non-integer values for 'time' are coerced to integer, and the
+#'     absolute value is taken (the sign is ignored). Non-numeric values are
+#'     ignored, in which case the condition variable is signalled immediately.
+#'
+#' @examples
+#' cv <- cv()
+#' cv_value(cv)
+#' start <- mclock()
+#'
+#' signal(cv, time = 100L, flag = FALSE)
+#' wait(cv) == TRUE
+#' mclock() - start
+#'
+#' signal(cv, time = 100L, flag = TRUE)
+#' wait(cv) == FALSE
+#' mclock() - start
+#'
+#' @export
+#'
+signal <- function(cv, time, flag = TRUE) invisible(.External(rnng_timedsignal_create, cv, time, flag))
 

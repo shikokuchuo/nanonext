@@ -33,9 +33,9 @@ static void thread_finalizer(SEXP xptr) {
 
 }
 
-static void rnng_messenger_thread(void *arg) {
+static void rnng_messenger_thread(void *args) {
 
-  SEXP list = (SEXP) arg;
+  SEXP list = (SEXP) args;
   SEXP socket = VECTOR_ELT(list, 0);
   SEXP key = VECTOR_ELT(list, 1);
   nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(socket);
@@ -158,6 +158,61 @@ SEXP rnng_messenger_thread_create(SEXP list) {
 
   UNPROTECT(1);
   return socket;
+
+}
+
+static void rnng_timer_thread(void *args) {
+
+  SEXP pairlist = (SEXP) args;
+  SEXP cvar = CADR(pairlist);
+  SEXP time = CADDR(pairlist);
+  SEXP flag = CADDDR(pairlist);
+
+  nano_cv *ncv = R_ExternalPtrAddr(cvar);
+  nng_cv *cv = ncv->cv;
+  nng_mtx *mtx = ncv->mtx;
+
+  switch (TYPEOF(time)) {
+  case INTSXP:
+    nng_msleep((nng_duration) abs(INTEGER(time)[0]));
+    break;
+  case REALSXP:
+    nng_msleep((nng_duration) abs(Rf_asInteger(time)));
+    break;
+  }
+
+  if (Rf_asLogical(flag) == 1) {
+    nng_mtx_lock(mtx);
+    ncv->flag = 1;
+    ncv->condition++;
+    nng_cv_wake(cv);
+    nng_mtx_unlock(mtx);
+  } else {
+    nng_mtx_lock(mtx);
+    ncv->condition++;
+    nng_cv_wake(cv);
+    nng_mtx_unlock(mtx);
+  }
+
+}
+
+SEXP rnng_timedsignal_create(SEXP args) {
+
+  nng_thread *thr;
+  SEXP cvar, xptr;
+
+  cvar = CADR(args);
+  if (R_ExternalPtrTag(cvar) != nano_CvSymbol)
+    Rf_error("'cv' is not a valid Condition Variable");
+
+  nng_thread_create(&thr, rnng_timer_thread, args);
+
+  PROTECT(xptr = R_MakeExternalPtr(thr, R_NilValue, R_NilValue));
+  R_RegisterCFinalizerEx(xptr, thread_finalizer, TRUE);
+  R_MakeWeakRef(cvar, xptr, R_NilValue, FALSE);
+
+  UNPROTECT(1);
+  return R_NilValue;
 
 }
 

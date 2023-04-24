@@ -4,10 +4,10 @@
 \alias{msleep}
 \title{Sleep Utility}
 \usage{
-msleep(msec)
+msleep(time)
 }
 \arguments{
-\item{msec}{integer number of milliseconds to block the caller.}
+\item{time}{integer number of milliseconds to block the caller.}
 }
 \value{
 Invisible NULL.
@@ -17,8 +17,9 @@ Sleep function. May block for longer than requested, with the actual wait
     time determined by the capabilities of the underlying system.
 }
 \details{
-If 'msec' is non-integer, it will be coerced to integer. Non-numeric
-    input will be ignored and return immediately.
+Non-integer values for 'time' are coerced to integer, and the
+    absolute value is taken (the sign is ignored). Non-numeric values are
+    ignored, causing the function to return immediately.
 
     Note that unlike \code{\link{Sys.sleep}}, this function is not
     user-interruptible by sending SIGINT e.g. with ctrl + c.

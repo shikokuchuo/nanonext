@@ -21,9 +21,9 @@ condition variable.}
 removed.}
 
 \item{flag}{[default TRUE] logical value whether to also set a flag in the
-'conditionVariable'. This allows pipe events to be easily distinguishable
-from other signals, and causes any subsequent \code{\link{wait}} or
-\code{\link{until}} to return FALSE instead of TRUE.}
+'conditionVariable'. This can help distinguish between different types of
+signal, and causes any subsequent \code{\link{wait}} or \code{\link{until}}
+to return FALSE instead of TRUE.}
 }
 \value{
 Invisibly, zero on success (will otherwise error).

@@ -73,10 +73,10 @@ SEXP rnng_sleep(SEXP msec) {
 
   switch (TYPEOF(msec)) {
   case INTSXP:
-    nng_msleep((nng_duration) INTEGER(msec)[0]);
+    nng_msleep((nng_duration) abs(INTEGER(msec)[0]));
     break;
   case REALSXP:
-    nng_msleep((nng_duration) Rf_asInteger(msec));
+    nng_msleep((nng_duration) abs(Rf_asInteger(msec)));
     break;
   }
 

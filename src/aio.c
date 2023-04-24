@@ -46,13 +46,6 @@ typedef struct nano_handle_s {
   nng_tls_config *cfg;
 } nano_handle;
 
-typedef struct nano_cv_s {
-  int condition;
-  uint8_t flag;
-  nng_mtx *mtx;
-  nng_cv *cv;
-} nano_cv;
-
 typedef struct nano_cv_aio_s {
   nano_cv *cv;
   nano_aio *aio;
