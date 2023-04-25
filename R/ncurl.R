@@ -152,4 +152,3 @@ transact <- function(session) .Call(rnng_ncurl_transact, session)
 #' @export
 #'
 close.ncurlSession <- function(con, ...) invisible(.Call(rnng_ncurl_session_close, con))
-

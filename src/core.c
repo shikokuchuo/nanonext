@@ -1317,4 +1317,3 @@ SEXP rnng_stats_get(SEXP object, SEXP stat) {
   return out;
 
 }
-

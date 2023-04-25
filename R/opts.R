@@ -396,4 +396,3 @@ unsubscribe <- function(con, topic = NULL)
 #'
 `survey_time` <- function(con, value = 1000L)
   invisible(.Call(rnng_set_opt, con, "surveyor:survey-time", value))
-

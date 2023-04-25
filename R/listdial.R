@@ -200,4 +200,3 @@ close.nanoDialer <- function(con, ...)
 #'
 close.nanoListener <- function(con, ...)
   invisible(.Call(rnng_listener_close, con))
-

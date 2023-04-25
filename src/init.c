@@ -208,4 +208,3 @@ void attribute_visible R_init_nanonext(DllInfo* dll) {
 void attribute_visible R_unload_nanonext(DllInfo *info) {
   ReleaseObjects();
 }
-

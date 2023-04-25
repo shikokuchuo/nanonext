@@ -98,4 +98,3 @@
 #' @name nanonext-package
 #'
 NULL
-

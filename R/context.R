@@ -256,4 +256,3 @@ request_signal <- function(context,
                            cv)
   data <- .Call(rnng_cv_request, context, data, send_mode, recv_mode, timeout,
                 keep.raw, environment(), cv)
-

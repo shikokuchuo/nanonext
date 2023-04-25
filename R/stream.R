@@ -1,4 +1,4 @@
-# Copyright (C) 2022 Hibiki AI Limited <info@hibiki-ai.com>
+# Copyright (C) 2022-2023 Hibiki AI Limited <info@hibiki-ai.com>
 #
 # This file is part of nanonext.
 #
@@ -68,4 +68,3 @@ stream <- function(dial = NULL, listen = NULL, textframes = FALSE, pem = NULL)
 #' @export
 #'
 close.nanoStream <- function(con, ...) invisible(.Call(rnng_stream_close, con))
-

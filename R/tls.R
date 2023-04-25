@@ -165,4 +165,3 @@ base64enc <- function(x, convert = TRUE) .Call(rnng_base64enc, x, convert)
 #' @export
 #'
 base64dec <- function(x, convert = TRUE) .Call(rnng_base64dec, x, convert)
-

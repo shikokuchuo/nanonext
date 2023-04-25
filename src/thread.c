@@ -215,4 +215,3 @@ SEXP rnng_timedsignal_create(SEXP args) {
   return xptr;
 
 }
-

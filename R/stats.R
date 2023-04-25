@@ -88,4 +88,3 @@
 #' @export
 #'
 stat <- function(object, name) .Call(rnng_stats_get, object, name)
-

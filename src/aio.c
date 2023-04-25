@@ -1773,4 +1773,3 @@ SEXP rnng_socket_unlock(SEXP socket) {
   return nano_success;
 
 }
-

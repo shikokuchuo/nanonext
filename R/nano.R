@@ -194,7 +194,7 @@ nano <- function(protocol = c("bus", "pair", "push", "pull", "pub", "sub",
   nano[["stat"]] <- function(name) stat(socket, name = name)
 
   switch(attr(socket, "protocol"),
-         req =,
+         req = ,
          rep = {
            nano[["context_open"]] <- function(verify = TRUE) {
              if (is.null(sock2)) sock2 <<- socket
@@ -376,7 +376,7 @@ print.ncurlAio <- function(x, ...) {
 print.ncurlSession <- function(x, ...) {
 
   cat(sprintf("< ncurlSession >\n - %s\n",
-              if (length(attr(x, "aio"))) "use transact() to return data" else "not active" ), file = stdout())
+              if (length(attr(x, "aio"))) "use transact() to return data" else "not active"), file = stdout())
   invisible(x)
 
 }
@@ -475,4 +475,3 @@ print.thread <- function(x, ...) {
 #'
 .DollarNames.ncurlAio <- function(x, pattern = "")
   grep(pattern, c("status", "headers", "raw", "data"), value = TRUE, fixed = TRUE)
-

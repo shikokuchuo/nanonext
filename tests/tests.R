@@ -473,4 +473,3 @@ nanotest(base64dec(base64enc("test")) == "test")
 nanotest(is.raw(base64enc(data.frame(), convert = FALSE)))
 nanotest(is.integer(unserialize(base64dec(base64enc(c(1L, 2L)), convert = FALSE))))
 nanotesterr(base64dec("__"), "not valid base64")
-

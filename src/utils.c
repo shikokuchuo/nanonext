@@ -638,4 +638,3 @@ SEXP rnng_status_code(SEXP x) {
   return Rf_mkString(code);
 
 }
-

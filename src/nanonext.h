@@ -193,4 +193,3 @@ extern SEXP rnng_url_parse(SEXP);
 extern SEXP rnng_version(void);
 
 #endif
-

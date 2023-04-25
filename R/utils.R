@@ -262,4 +262,3 @@ is_nul_byte <- function(x) .Call(rnng_is_nul_byte, x)
 #' @export
 #'
 status_code <- function(x) .Call(rnng_status_code, x)
-

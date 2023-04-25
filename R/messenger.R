@@ -100,4 +100,3 @@ messenger <- function(url, auth = NULL) {
   invisible()
 
 }
-
