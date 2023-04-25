@@ -157,9 +157,7 @@ reply <- function(context,
 #' @inheritParams recv
 #' @param data an object (if send_mode = 'raw', a vector).
 #' @param timeout [default NULL] integer value in milliseconds or NULL, which
-#'     applies a socket-specific default, usually the same as no timeout. The
-#'     context must have been created with \code{context(verify = TRUE)}, or
-#'     else this value will be ignored.
+#'     applies a socket-specific default, usually the same as no timeout.
 #'
 #' @return A 'recvAio' (object of class 'recvAio') (invisibly).
 #'
@@ -177,11 +175,6 @@ reply <- function(context,
 #'     received (as \code{$data} if 'recv_mode' = 'serial', as \code{$raw}
 #'     otherwise). This allows an error to be easily distinguished from a NULL
 #'     return value. \code{\link{is_nul_byte}} can be used to test for a nul byte.
-#'
-#'     The value for 'timeout' is valid only when using a verified context
-#'     created with \code{context(verify = TRUE)}, and ignored otherwise. This
-#'     is as it is an error to specify a timeout without there being an existing
-#'     connection.
 #'
 #' @examples
 #' req <- socket("req", listen = "tcp://127.0.0.1:6546")

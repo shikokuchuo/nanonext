@@ -48,9 +48,7 @@ position in the vector of choices e.g. 1L for 'serial', 2L for 'character'
 etc.}
 
 \item{timeout}{[default NULL] integer value in milliseconds or NULL, which
-applies a socket-specific default, usually the same as no timeout. The
-context must have been created with \code{context(verify = TRUE)}, or
-else this value will be ignored.}
+applies a socket-specific default, usually the same as no timeout.}
 
 \item{keep.raw}{[default FALSE] logical flag whether to keep and return the
 received raw vector along with the converted data. Supplying a non-logical
@@ -85,11 +83,6 @@ Sending the request and receiving the result are both performed async,
     received (as \code{$data} if 'recv_mode' = 'serial', as \code{$raw}
     otherwise). This allows an error to be easily distinguished from a NULL
     return value. \code{\link{is_nul_byte}} can be used to test for a nul byte.
-
-    The value for 'timeout' is valid only when using a verified context
-    created with \code{context(verify = TRUE)}, and ignored otherwise. This
-    is as it is an error to specify a timeout without there being an existing
-    connection.
 
 \strong{For the signalling version}: when the receive is complete,
     the supplied 'conditionVariable' is signalled by incrementing its value
