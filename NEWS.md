@@ -1,4 +1,4 @@
-# nanonext 0.8.2.9006 (development)
+# nanonext 0.8.2.9007 (development)
 
 #### New Features
 
@@ -7,6 +7,7 @@
 
 #### Updates
 
+* Reverts 'verify' argument of `context()` as the latest NNG build has addressed this issue, rendering `request()` instances safe under all conditions. A `request()` initiated with a timeout but no connection now waits for a connection to be established.
 * The name of the single argument to `msleep()` has been changed to 'time' from 'msec'.
 * Functions `pipe_notify()`, `lock()` and `unlock()` now error if unsuccessful rather than returning with a warning.
 * For compiling bundled 'libmbedtls' and 'libnng' libraries from source, R's configured C compiler is now chosen over the system default where this is different.

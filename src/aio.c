@@ -1258,11 +1258,11 @@ SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeou
   if (R_ExternalPtrTag(con) != nano_ContextSymbol)
     Rf_error("'context' is not a valid Context");
 
-  nano_ctx *nctx = (nano_ctx *) R_ExternalPtrAddr(con);
+  nng_ctx *ctx = (nng_ctx *) R_ExternalPtrAddr(con);
 
   int xc;
   const int kpr = LOGICAL(keep)[0];
-  const nng_duration dur = timeout == R_NilValue || !nctx->verified ? NNG_DURATION_DEFAULT : (nng_duration) Rf_asInteger(timeout);
+  const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) Rf_asInteger(timeout);
 
   SEXP enc, sendaio, aio, env, fun;
   R_xlen_t xlen;
@@ -1286,7 +1286,7 @@ SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeou
 
   nng_aio_set_msg(saio->aio, msg);
   nng_aio_set_timeout(saio->aio, dur);
-  nng_ctx_send(nctx->ctx, saio->aio);
+  nng_ctx_send(*ctx, saio->aio);
 
   nano_aio *raio = R_Calloc(1, nano_aio);
 
@@ -1301,7 +1301,7 @@ SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeou
   }
 
   nng_aio_set_timeout(raio->aio, dur);
-  nng_ctx_recv(nctx->ctx, raio->aio);
+  nng_ctx_recv(*ctx, raio->aio);
 
   PROTECT(aio = R_MakeExternalPtr(raio, nano_AioSymbol, R_NilValue));
   R_RegisterCFinalizerEx(aio, raio_finalizer, TRUE);
@@ -1585,12 +1585,12 @@ SEXP rnng_cv_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP tim
   if (R_ExternalPtrTag(cvar) != nano_CvSymbol)
     Rf_error("'cv' is not a valid Condition Variable");
 
-  nano_ctx *nctx = (nano_ctx *) R_ExternalPtrAddr(con);
+  nng_ctx *ctx = (nng_ctx *) R_ExternalPtrAddr(con);
   nano_cv *cvp = (nano_cv *) R_ExternalPtrAddr(cvar);
 
   int xc;
   const int kpr = LOGICAL(keep)[0];
-  const nng_duration dur = timeout == R_NilValue || !nctx->verified ? NNG_DURATION_DEFAULT : (nng_duration) Rf_asInteger(timeout);
+  const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) Rf_asInteger(timeout);
 
   SEXP enc, sendaio, aio, env, fun, signal;
   R_xlen_t xlen;
@@ -1614,7 +1614,7 @@ SEXP rnng_cv_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP tim
 
   nng_aio_set_msg(saio->aio, msg);
   nng_aio_set_timeout(saio->aio, dur);
-  nng_ctx_send(nctx->ctx, saio->aio);
+  nng_ctx_send(*ctx, saio->aio);
 
   nano_aio *raio = R_Calloc(1, nano_aio);
   raio->type = RECVAIO;
@@ -1633,7 +1633,7 @@ SEXP rnng_cv_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP tim
   }
 
   nng_aio_set_timeout(raio->aio, dur);
-  nng_ctx_recv(nctx->ctx, raio->aio);
+  nng_ctx_recv(*ctx, raio->aio);
 
   PROTECT(aio = R_MakeExternalPtr(raio, nano_AioSymbol, R_NilValue));
   R_RegisterCFinalizerEx(aio, raio_finalizer, TRUE);

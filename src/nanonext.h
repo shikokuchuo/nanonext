@@ -21,12 +21,6 @@
 
 #ifdef NANONEXT_INTERNALS
 #include <nng/nng.h>
-
-typedef struct nano_ctx_s {
-  nng_ctx ctx;
-  uint8_t verified;
-} nano_ctx;
-
 #endif
 
 #ifdef NANONEXT_PROTOCOLS
@@ -138,7 +132,7 @@ extern SEXP rnng_base64enc(SEXP, SEXP);
 extern SEXP rnng_clock(void);
 extern SEXP rnng_close(SEXP);
 extern SEXP rnng_ctx_close(SEXP);
-extern SEXP rnng_ctx_open(SEXP, SEXP);
+extern SEXP rnng_ctx_open(SEXP);
 extern SEXP rnng_cv_alloc(void);
 extern SEXP rnng_cv_recv_aio(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 extern SEXP rnng_cv_request(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);

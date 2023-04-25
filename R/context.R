@@ -23,11 +23,6 @@
 #'     and listeners, while still benefiting from separate state tracking.
 #'
 #' @param socket a Socket.
-#' @param verify [default TRUE] logical value whether to verify there is a
-#'     connection at the socket with the result stored internally within the
-#'     context (required for features of certain functions). Set to FALSE for
-#'     performance if not using features which explicitly require verification.
-#'     Supplying a non-logical value will error.
 #'
 #' @return A new Context (object of class 'nanoContext' and 'nano').
 #'
@@ -63,7 +58,7 @@
 #'
 #' @export
 #'
-context <- function(socket, verify = TRUE) .Call(rnng_ctx_open, socket, verify)
+context <- function(socket) .Call(rnng_ctx_open, socket)
 
 #' @rdname close
 #' @method close nanoContext

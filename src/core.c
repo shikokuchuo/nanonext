@@ -406,54 +406,38 @@ static void context_finalizer(SEXP xptr) {
 
   if (R_ExternalPtrAddr(xptr) == NULL)
     return;
-  nano_ctx *xp = (nano_ctx *) R_ExternalPtrAddr(xptr);
-  nng_ctx_close(xp->ctx);
+  nng_ctx *xp = (nng_ctx *) R_ExternalPtrAddr(xptr);
+  nng_ctx_close(*xp);
   R_Free(xp);
 
 }
 
 // contexts --------------------------------------------------------------------
 
-SEXP rnng_ctx_open(SEXP socket, SEXP verify) {
+SEXP rnng_ctx_open(SEXP socket) {
 
   if (R_ExternalPtrTag(socket) != nano_SocketSymbol)
     Rf_error("'socket' is not a valid Socket");
 
   nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(socket);
-  nano_ctx *nctx = R_Calloc(1, nano_ctx);
+  nng_ctx *ctx = R_Calloc(1, nng_ctx);
   SEXP context, klass;
   int xc;
 
-  xc = nng_ctx_open(&nctx->ctx, *sock);
+  xc = nng_ctx_open(ctx, *sock);
   if (xc) {
-    R_Free(nctx);
+    R_Free(ctx);
     ERROR_OUT(xc);
   }
-  switch (LOGICAL(verify)[0]) {
-  case 0:
-    break;
-  case 1: ;
-    nng_stat *nst, *sst;
-    xc = nng_stats_get(&nst);
-    if (xc == 0) {
-      sst = nng_stat_find_socket(nst, *sock);
-      sst = nng_stat_find(sst, "pipes");
-      if (sst != NULL && nng_stat_value(sst))
-        nctx->verified = 1;
-    }
-    break;
-  default:
-    nctx->verified = 1;
-  }
 
-  PROTECT(context = R_MakeExternalPtr(nctx, nano_ContextSymbol, R_NilValue));
+  PROTECT(context = R_MakeExternalPtr(ctx, nano_ContextSymbol, R_NilValue));
   R_RegisterCFinalizerEx(context, context_finalizer, TRUE);
 
   PROTECT(klass = Rf_allocVector(STRSXP, 2));
   SET_STRING_ELT(klass, 0, Rf_mkChar("nanoContext"));
   SET_STRING_ELT(klass, 1, Rf_mkChar("nano"));
   Rf_classgets(context, klass);
-  Rf_setAttrib(context, nano_IdSymbol, Rf_ScalarInteger((int) nctx->ctx.id));
+  Rf_setAttrib(context, nano_IdSymbol, Rf_ScalarInteger((int) ctx->id));
   Rf_setAttrib(context, nano_StateSymbol, Rf_mkString("opened"));
   Rf_setAttrib(context, nano_ProtocolSymbol, Rf_getAttrib(socket, nano_ProtocolSymbol));
   Rf_setAttrib(context, nano_SocketSymbol, Rf_ScalarInteger((int) sock->id));
@@ -467,8 +451,8 @@ SEXP rnng_ctx_close(SEXP context) {
 
   if (R_ExternalPtrTag(context) != nano_ContextSymbol)
     Rf_error("'context' is not a valid Context");
-  nano_ctx *nctx = (nano_ctx *) R_ExternalPtrAddr(context);
-  const int xc = nng_ctx_close(nctx->ctx);
+  nng_ctx *ctx = (nng_ctx *) R_ExternalPtrAddr(context);
+  const int xc = nng_ctx_close(*ctx);
 
   if (xc)
     ERROR_RET(xc);

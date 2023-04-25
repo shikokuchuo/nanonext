@@ -196,7 +196,7 @@ nano <- function(protocol = c("bus", "pair", "push", "pull", "pub", "sub",
   switch(attr(socket, "protocol"),
          req = ,
          rep = {
-           nano[["context_open"]] <- function(verify = TRUE) {
+           nano[["context_open"]] <- function() {
              if (is.null(sock2)) sock2 <<- socket
              nano[["context_close"]] <- function() if (length(sock2)) {
                r <- close(socket)
@@ -205,11 +205,11 @@ nano <- function(protocol = c("bus", "pair", "push", "pull", "pub", "sub",
                rm(list = c("context", "context_close"), envir = nano)
                r
              }
-            socket <<- nano[["context"]] <- context(sock2, verify = verify)
+            socket <<- nano[["context"]] <- context(sock2)
            }
          },
          sub = {
-           nano[["context_open"]] <- function(verify = TRUE) {
+           nano[["context_open"]] <- function() {
              if (is.null(sock2)) sock2 <<- socket
              nano[["context_close"]] <- function() if (length(sock2)) {
                r <- close(socket)
@@ -218,7 +218,7 @@ nano <- function(protocol = c("bus", "pair", "push", "pull", "pub", "sub",
                rm(list = c("context", "context_close"), envir = nano)
                r
              }
-             socket <<- nano[["context"]] <- context(sock2, verify = verify)
+             socket <<- nano[["context"]] <- context(sock2)
            }
            nano[["subscribe"]] <- function(topic = NULL)
              subscribe(socket, topic = topic)
@@ -226,7 +226,7 @@ nano <- function(protocol = c("bus", "pair", "push", "pull", "pub", "sub",
              unsubscribe(socket, topic = topic)
          },
          surveyor = {
-           nano[["context_open"]] <- function(verify = TRUE) {
+           nano[["context_open"]] <- function() {
              if (is.null(sock2)) sock2 <<- socket
              nano[["context_close"]] <- function() if (length(sock2)) {
                r <- close(socket)
@@ -235,13 +235,13 @@ nano <- function(protocol = c("bus", "pair", "push", "pull", "pub", "sub",
                rm(list = c("context", "context_close"), envir = nano)
                r
              }
-             socket <<- nano[["context"]] <- context(sock2, verify = verify)
+             socket <<- nano[["context"]] <- context(sock2)
            }
            nano[["survey_time"]] <- function(value = 1000L)
              survey_time(socket, value = value)
          },
          respondent = {
-           nano[["context_open"]] <- function(verify = TRUE) {
+           nano[["context_open"]] <- function() {
              if (is.null(sock2)) sock2 <<- socket
              nano[["context_close"]] <- function() if (length(sock2)) {
                r <- close(socket)
@@ -250,7 +250,7 @@ nano <- function(protocol = c("bus", "pair", "push", "pull", "pub", "sub",
                rm(list = c("context", "context_close"), envir = nano)
                r
              }
-             socket <<- nano[["context"]] <- context(sock2, verify = verify)
+             socket <<- nano[["context"]] <- context(sock2)
            }
          },
          NULL)
