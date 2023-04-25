@@ -233,7 +233,9 @@ unlock <- function(socket) invisible(.Call(rnng_socket_unlock, socket))
 #'     condition variable.
 #' @inheritParams pipe_notify
 #'
-#' @return Invisible NULL.
+#' @return A 'thread', which is an external pointer to the created thread. The
+#'     return value must be assigned to an object, otherwise the thread may be
+#'     garbage collected before it has performed its purpose.
 #'
 #' @details Non-integer values for 'time' are coerced to integer, and the
 #'     absolute value is taken (the sign is ignored). Non-numeric values are
@@ -244,15 +246,15 @@ unlock <- function(socket) invisible(.Call(rnng_socket_unlock, socket))
 #' cv_value(cv)
 #' start <- mclock()
 #'
-#' signal(cv, time = 100L, flag = FALSE)
+#' s <- signal(cv, time = 100L, flag = FALSE)
 #' wait(cv) == TRUE
 #' mclock() - start
 #'
-#' signal(cv, time = 100L, flag = TRUE)
+#' s <- signal(cv, time = 100L, flag = TRUE)
 #' wait(cv) == FALSE
 #' mclock() - start
 #'
 #' @export
 #'
-signal <- function(cv, time, flag = TRUE) invisible(.External(rnng_timedsignal_create, cv, time, flag))
+signal <- function(cv, time, flag = TRUE) .External(rnng_timedsignal_create, cv, time, flag)
 

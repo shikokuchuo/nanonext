@@ -410,6 +410,15 @@ print.conditionVariable <- function(x, ...) {
 
 #' @export
 #'
+print.thread <- function(x, ...) {
+
+  cat("< thread >\n", file = stdout())
+  invisible(x)
+
+}
+
+#' @export
+#'
 `[[.nano` <- function(x, i, exact = FALSE)
   attr(x, i, exact = exact)
 

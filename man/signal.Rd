@@ -18,7 +18,9 @@ signal, and causes any subsequent \code{\link{wait}} or \code{\link{until}}
 to return FALSE instead of TRUE.}
 }
 \value{
-Invisible NULL.
+A 'thread', which is an external pointer to the created thread. The
+    return value must be assigned to an object, otherwise the thread may be
+    garbage collected before it has performed its purpose.
 }
 \description{
 Creates a new thread which signals a condition variable after a specified time,
@@ -35,11 +37,11 @@ cv <- cv()
 cv_value(cv)
 start <- mclock()
 
-signal(cv, time = 100L, flag = FALSE)
+s <- signal(cv, time = 100L, flag = FALSE)
 wait(cv) == TRUE
 mclock() - start
 
-signal(cv, time = 100L, flag = TRUE)
+s <- signal(cv, time = 100L, flag = TRUE)
 wait(cv) == FALSE
 mclock() - start
 
