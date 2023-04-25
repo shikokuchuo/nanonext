@@ -19,7 +19,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.2.9005</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.2.9006</span>
       </span>
     </div>
 
@@ -88,7 +88,9 @@ to return FALSE instead of TRUE.</p></dd>
     <h2>Value</h2>
     
 
-<p>Invisible NULL.</p>
+<p>A 'thread', which is an external pointer to the created thread. The
+    return value must be assigned to an object, otherwise the thread may be
+    garbage collected before it has performed its purpose.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -104,17 +106,17 @@ to return FALSE instead of TRUE.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
 <span class="r-in"><span><span class="va">start</span> <span class="op">&lt;-</span> <span class="fu"><a href="mclock.html">mclock</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu">signal</span><span class="op">(</span><span class="va">cv</span>, time <span class="op">=</span> <span class="fl">100L</span>, flag <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu">signal</span><span class="op">(</span><span class="va">cv</span>, time <span class="op">=</span> <span class="fl">100L</span>, flag <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="cv.html">wait</a></span><span class="op">(</span><span class="va">cv</span><span class="op">)</span> <span class="op">==</span> <span class="cn">TRUE</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span><span class="fu"><a href="mclock.html">mclock</a></span><span class="op">(</span><span class="op">)</span> <span class="op">-</span> <span class="va">start</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 103</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu">signal</span><span class="op">(</span><span class="va">cv</span>, time <span class="op">=</span> <span class="fl">100L</span>, flag <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu">signal</span><span class="op">(</span><span class="va">cv</span>, time <span class="op">=</span> <span class="fl">100L</span>, flag <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="cv.html">wait</a></span><span class="op">(</span><span class="va">cv</span><span class="op">)</span> <span class="op">==</span> <span class="cn">FALSE</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span><span class="fu"><a href="mclock.html">mclock</a></span><span class="op">(</span><span class="op">)</span> <span class="op">-</span> <span class="va">start</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 207</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 206</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
