@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.2.9006</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.2.9007</span>
       </span>
     </div>
 
@@ -54,16 +54,17 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.8.2.9006" id="nanonext-0829006-development">nanonext 0.8.2.9006 (development)<a class="anchor" aria-label="anchor" href="#nanonext-0829006-development"></a></h2>
+<h2 class="page-header" data-toc-text="0.8.2.9007" id="nanonext-0829007-development">nanonext 0.8.2.9007 (development)<a class="anchor" aria-label="anchor" href="#nanonext-0829007-development"></a></h2>
 <div class="section level5">
-<h5 id="new-features-0-8-2-9006">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-8-2-9006"></a></h5>
+<h5 id="new-features-0-8-2-9007">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-8-2-9007"></a></h5>
 <ul><li>New <code><a href="../reference/signal.html">signal()</a></code> function signals a condition variable after a specified time (from a newly-created thread).</li>
 <li>
 <code><a href="../reference/ncurl.html">ncurl()</a></code> gains a ‘timeout’ argument.</li>
 </ul></div>
 <div class="section level5">
-<h5 id="updates-0-8-2-9006">Updates<a class="anchor" aria-label="anchor" href="#updates-0-8-2-9006"></a></h5>
-<ul><li>The name of the single argument to <code><a href="../reference/msleep.html">msleep()</a></code> has been changed to ‘time’ from ‘msec’.</li>
+<h5 id="updates-0-8-2-9007">Updates<a class="anchor" aria-label="anchor" href="#updates-0-8-2-9007"></a></h5>
+<ul><li>Reverts ‘verify’ argument of <code><a href="../reference/context.html">context()</a></code> as the latest NNG build has addressed this issue, rendering <code><a href="../reference/request.html">request()</a></code> instances safe under all conditions. A <code><a href="../reference/request.html">request()</a></code> initiated with a timeout but no connection now waits for a connection to be established.</li>
+<li>The name of the single argument to <code><a href="../reference/msleep.html">msleep()</a></code> has been changed to ‘time’ from ‘msec’.</li>
 <li>Functions <code><a href="../reference/pipe_notify.html">pipe_notify()</a></code>, <code><a href="../reference/lock.html">lock()</a></code> and <code><a href="../reference/lock.html">unlock()</a></code> now error if unsuccessful rather than returning with a warning.</li>
 <li>For compiling bundled ‘libmbedtls’ and ‘libnng’ libraries from source, R’s configured C compiler is now chosen over the system default where this is different.</li>
 <li>Bundled ‘libnng’ source updated to v1.6.0 alpha (c5e9d8a).</li>
