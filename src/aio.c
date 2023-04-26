@@ -1328,7 +1328,7 @@ SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeou
   PROTECT(sendaio = R_MakeExternalPtr(saio, R_NilValue, R_NilValue));
   Rf_setAttrib(sendaio, nano_ContextSymbol, con);
   R_RegisterCFinalizerEx(sendaio, reqsaio_finalizer, TRUE);
-  Rf_setAttrib(env, nano_AioSymbol, sendaio);
+  Rf_defineVar(nano_ContextSymbol, sendaio, ENCLOS(env));
 
   if (kpr) {
     PROTECT(fun = Rf_allocSExp(CLOSXP));
@@ -1663,7 +1663,7 @@ SEXP rnng_cv_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP tim
   PROTECT(sendaio = R_MakeExternalPtr(saio, R_NilValue, R_NilValue));
   Rf_setAttrib(sendaio, nano_ContextSymbol, con);
   R_RegisterCFinalizerEx(sendaio, reqsaio_finalizer, TRUE);
-  Rf_setAttrib(env, nano_AioSymbol, sendaio);
+  Rf_defineVar(nano_ContextSymbol, sendaio, ENCLOS(env));
 
   if (kpr) {
     PROTECT(fun = Rf_allocSExp(CLOSXP));
