@@ -1285,7 +1285,6 @@ SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeou
   }
 
   nng_aio_set_msg(saio->aio, msg);
-  nng_aio_set_timeout(saio->aio, dur);
   nng_ctx_send(*ctx, saio->aio);
 
   nano_aio *raio = R_Calloc(1, nano_aio);
@@ -1613,7 +1612,6 @@ SEXP rnng_cv_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP tim
   }
 
   nng_aio_set_msg(saio->aio, msg);
-  nng_aio_set_timeout(saio->aio, dur);
   nng_ctx_send(*ctx, saio->aio);
 
   nano_aio *raio = R_Calloc(1, nano_aio);
