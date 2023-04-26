@@ -84,6 +84,11 @@ Sending the request and receiving the result are both performed async,
     otherwise). This allows an error to be easily distinguished from a NULL
     return value. \code{\link{is_nul_byte}} can be used to test for a nul byte.
 
+    It is recommended to use a new context for each request to ensure
+    consistent state tracking. For safety, the context used for the request
+    is closed when all references to the returned 'recvAio' are removed and
+    the object is garbage collected.
+
 \strong{For the signalling version}: when the receive is complete,
     the supplied 'conditionVariable' is signalled by incrementing its value
     by 1. This happens asynchronously and independently of the R execution

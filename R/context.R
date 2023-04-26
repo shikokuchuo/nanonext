@@ -23,6 +23,7 @@
 #'     and listeners, while still benefiting from separate state tracking.
 #'
 #' @param socket a Socket.
+#' @param ... not used, present for compatibility purposes only.
 #'
 #' @return A new Context (object of class 'nanoContext' and 'nano').
 #'
@@ -58,7 +59,7 @@
 #'
 #' @export
 #'
-context <- function(socket) .Call(rnng_ctx_open, socket)
+context <- function(socket, ...) .Call(rnng_ctx_open, socket)
 
 #' @rdname close
 #' @method close nanoContext
@@ -175,6 +176,11 @@ reply <- function(context,
 #'     received (as \code{$data} if 'recv_mode' = 'serial', as \code{$raw}
 #'     otherwise). This allows an error to be easily distinguished from a NULL
 #'     return value. \code{\link{is_nul_byte}} can be used to test for a nul byte.
+#'
+#'     It is recommended to use a new context for each request to ensure
+#'     consistent state tracking. For safety, the context used for the request
+#'     is closed when all references to the returned 'recvAio' are removed and
+#'     the object is garbage collected.
 #'
 #' @examples
 #' req <- socket("req", listen = "tcp://127.0.0.1:6546")

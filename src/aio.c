@@ -244,6 +244,13 @@ static void cv_finalizer(SEXP xptr) {
 
 }
 
+static void env_finalizer(SEXP env) {
+
+  nng_ctx *ctx = R_ExternalPtrAddr(Rf_getAttrib(env, nano_ContextSymbol));
+  nng_ctx_close(*ctx);
+
+}
+
 static void cv_aio_finalizer(SEXP xptr) {
 
   if (R_ExternalPtrAddr(xptr) == NULL)
@@ -1315,7 +1322,9 @@ SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeou
   Rf_defineVar(nano_AioSymbol, aio, env);
   PROTECT(sendaio = R_MakeExternalPtr(saio, R_NilValue, R_NilValue));
   R_RegisterCFinalizerEx(sendaio, saio_finalizer, TRUE);
-  Rf_defineVar(nano_AioSymbol, sendaio, ENCLOS(env));
+  Rf_setAttrib(env, nano_AioSymbol, sendaio);
+  Rf_setAttrib(env, nano_ContextSymbol, con);
+  R_RegisterCFinalizerEx(env, env_finalizer, TRUE);
 
   if (kpr) {
     PROTECT(fun = Rf_allocSExp(CLOSXP));
