@@ -49,6 +49,7 @@ SEXP nano_addRedirect;
 SEXP nano_aioFormals;
 SEXP nano_aioFuncs;
 SEXP nano_aioNFuncs;
+SEXP nano_context;
 SEXP nano_error;
 SEXP nano_ncurlAio;
 SEXP nano_ncurlSession;
@@ -98,6 +99,10 @@ static void PreserveObjects(void) {
   SETCADR(nano_aioNFuncs, Rf_lang5(nano_DotcallSymbol, nano_AioHttpSymbol, nano_DataSymbol, nano_ResponseSymbol, Rf_ScalarInteger(2)));
   SETCADDR(nano_aioNFuncs, Rf_lang5(nano_DotcallSymbol, nano_AioHttpSymbol, nano_DataSymbol, nano_ResponseSymbol, Rf_ScalarInteger(3)));
   SETCADDDR(nano_aioNFuncs, Rf_lang5(nano_DotcallSymbol, nano_AioHttpSymbol, nano_DataSymbol, nano_ResponseSymbol, Rf_ScalarInteger(4)));
+  R_PreserveObject(nano_context = Rf_cons(Rf_allocVector(STRSXP, 2), R_NilValue));
+  SET_TAG(nano_context, R_ClassSymbol);
+  SET_STRING_ELT(CAR(nano_context), 0, Rf_mkChar("nanoContext"));
+  SET_STRING_ELT(CAR(nano_context), 1, Rf_mkChar("nano"));
   R_PreserveObject(nano_error = Rf_cons(Rf_mkString("errorValue"), R_NilValue));
   SET_TAG(nano_error, R_ClassSymbol);
   R_PreserveObject(nano_ncurlAio = Rf_allocVector(STRSXP, 2));
@@ -119,6 +124,7 @@ static void ReleaseObjects(void) {
   R_ReleaseObject(nano_ncurlSession);
   R_ReleaseObject(nano_ncurlAio);
   R_ReleaseObject(nano_error);
+  R_ReleaseObject(nano_context);
   R_ReleaseObject(nano_aioNFuncs);
   R_ReleaseObject(nano_aioFuncs);
   R_ReleaseObject(nano_aioFormals);

@@ -113,6 +113,7 @@ extern SEXP nano_addRedirect;
 extern SEXP nano_aioFormals;
 extern SEXP nano_aioFuncs;
 extern SEXP nano_aioNFuncs;
+extern SEXP nano_context;
 extern SEXP nano_error;
 extern SEXP nano_ncurlAio;
 extern SEXP nano_ncurlSession;
