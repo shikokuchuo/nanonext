@@ -1315,7 +1315,7 @@ SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeou
   Rf_defineVar(nano_AioSymbol, aio, env);
   PROTECT(sendaio = R_MakeExternalPtr(saio, R_NilValue, R_NilValue));
   R_RegisterCFinalizerEx(sendaio, saio_finalizer, TRUE);
-  Rf_setAttrib(aio, nano_AioSymbol, sendaio);
+  Rf_defineVar(nano_AioSymbol, sendaio, ENCLOS(env));
 
   if (kpr) {
     PROTECT(fun = Rf_allocSExp(CLOSXP));
@@ -1646,7 +1646,7 @@ SEXP rnng_cv_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP tim
   Rf_defineVar(nano_AioSymbol, aio, env);
   PROTECT(sendaio = R_MakeExternalPtr(saio, R_NilValue, R_NilValue));
   R_RegisterCFinalizerEx(sendaio, saio_finalizer, TRUE);
-  Rf_setAttrib(aio, nano_AioSymbol, sendaio);
+  Rf_defineVar(nano_AioSymbol, sendaio, ENCLOS(env));
   PROTECT(signal = R_MakeExternalPtr(cv_raio, R_NilValue, R_NilValue));
   R_RegisterCFinalizerEx(signal, cv_aio_finalizer, TRUE);
   Rf_setAttrib(aio, nano_CvSymbol, signal);
