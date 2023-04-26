@@ -244,10 +244,15 @@ static void cv_finalizer(SEXP xptr) {
 
 }
 
-static void env_finalizer(SEXP env) {
+static void reqsaio_finalizer(SEXP xptr) {
 
-  nng_ctx *ctx = R_ExternalPtrAddr(Rf_getAttrib(env, nano_ContextSymbol));
+  if (R_ExternalPtrAddr(xptr) == NULL)
+    return;
+  nng_ctx *ctx = (nng_ctx *) R_ExternalPtrAddr(Rf_getAttrib(xptr, nano_ContextSymbol));
   nng_ctx_close(*ctx);
+  nano_aio *xp = (nano_aio *) R_ExternalPtrAddr(xptr);
+  nng_aio_free(xp->aio);
+  R_Free(xp);
 
 }
 
@@ -1321,10 +1326,9 @@ SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeou
 #endif
   Rf_defineVar(nano_AioSymbol, aio, env);
   PROTECT(sendaio = R_MakeExternalPtr(saio, R_NilValue, R_NilValue));
-  R_RegisterCFinalizerEx(sendaio, saio_finalizer, TRUE);
+  Rf_setAttrib(sendaio, nano_ContextSymbol, con);
+  R_RegisterCFinalizerEx(sendaio, reqsaio_finalizer, TRUE);
   Rf_setAttrib(env, nano_AioSymbol, sendaio);
-  Rf_setAttrib(env, nano_ContextSymbol, con);
-  R_RegisterCFinalizerEx(env, env_finalizer, TRUE);
 
   if (kpr) {
     PROTECT(fun = Rf_allocSExp(CLOSXP));
@@ -1564,7 +1568,7 @@ SEXP rnng_cv_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP keep, SEXP bytes, 
   Rf_defineVar(nano_AioSymbol, aio, env);
   PROTECT(signal = R_MakeExternalPtr(cv_raio, R_NilValue, R_NilValue));
   R_RegisterCFinalizerEx(signal, cv_aio_finalizer, TRUE);
-  R_MakeWeakRef(aio, signal, R_NilValue, FALSE);
+  Rf_setAttrib(aio, nano_CvSymbol, signal);
 
   if (kpr) {
     PROTECT(fun = Rf_allocSExp(CLOSXP));
@@ -1653,12 +1657,13 @@ SEXP rnng_cv_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP tim
   REPROTECT(env = Rf_eval(env, clo), pxi);
 #endif
   Rf_defineVar(nano_AioSymbol, aio, env);
-  PROTECT(sendaio = R_MakeExternalPtr(saio, R_NilValue, R_NilValue));
-  R_RegisterCFinalizerEx(sendaio, saio_finalizer, TRUE);
-  Rf_defineVar(nano_AioSymbol, sendaio, ENCLOS(env));
   PROTECT(signal = R_MakeExternalPtr(cv_raio, R_NilValue, R_NilValue));
   R_RegisterCFinalizerEx(signal, cv_aio_finalizer, TRUE);
   Rf_setAttrib(aio, nano_CvSymbol, signal);
+  PROTECT(sendaio = R_MakeExternalPtr(saio, R_NilValue, R_NilValue));
+  Rf_setAttrib(sendaio, nano_ContextSymbol, con);
+  R_RegisterCFinalizerEx(sendaio, reqsaio_finalizer, TRUE);
+  Rf_setAttrib(env, nano_AioSymbol, sendaio);
 
   if (kpr) {
     PROTECT(fun = Rf_allocSExp(CLOSXP));

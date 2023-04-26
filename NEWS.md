@@ -1,4 +1,4 @@
-# nanonext 0.8.2.9009 (development)
+# nanonext 0.8.2.9010 (development)
 
 #### New Features
 
@@ -7,7 +7,7 @@
 
 #### Updates
 
-* Deprecates 'verify' argument of `context()` as `request()` instances have been rendered safe internally.
+* Removes 'verify' argument of `context()` (changed to '...' for compatibility) as `request()` and `request_signal()` have been rendered safe internally for use with timeouts.
 * The name of the single argument to `msleep()` has been changed to 'time' from 'msec'.
 * Functions `pipe_notify()`, `lock()` and `unlock()` now error if unsuccessful rather than returning with a warning.
 * For compiling bundled 'libmbedtls' and 'libnng' libraries from source, R's configured C compiler is now chosen over the system default where this is different.
