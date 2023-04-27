@@ -421,7 +421,7 @@ SEXP rnng_ctx_open(SEXP socket) {
 
   nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(socket);
   nng_ctx *ctx = R_Calloc(1, nng_ctx);
-  SEXP context;
+  SEXP context, klass;
   int xc;
 
   xc = nng_ctx_open(ctx, *sock);
@@ -433,13 +433,38 @@ SEXP rnng_ctx_open(SEXP socket) {
   PROTECT(context = R_MakeExternalPtr(ctx, nano_ContextSymbol, R_NilValue));
   R_RegisterCFinalizerEx(context, context_finalizer, TRUE);
 
-  SET_ATTRIB(context, nano_context);
-  SET_OBJECT(context, 1);
+  PROTECT(klass = Rf_allocVector(STRSXP, 2));
+  SET_STRING_ELT(klass, 0, Rf_mkChar("nanoContext"));
+  SET_STRING_ELT(klass, 1, Rf_mkChar("nano"));
+  Rf_classgets(context, klass);
   Rf_setAttrib(context, nano_IdSymbol, Rf_ScalarInteger((int) ctx->id));
   Rf_setAttrib(context, nano_StateSymbol, Rf_mkString("opened"));
   Rf_setAttrib(context, nano_ProtocolSymbol, Rf_getAttrib(socket, nano_ProtocolSymbol));
   Rf_setAttrib(context, nano_SocketSymbol, Rf_ScalarInteger((int) sock->id));
 
+  UNPROTECT(2);
+  return context;
+
+}
+
+SEXP rnng_ctx_create(SEXP socket) {
+
+  if (R_ExternalPtrTag(socket) != nano_SocketSymbol)
+    Rf_error("'socket' is not a valid Socket");
+
+  nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(socket);
+  nng_ctx *ctx = R_Calloc(1, nng_ctx);
+  SEXP context;
+  int xc;
+
+  xc = nng_ctx_open(ctx, *sock);
+  if (xc) {
+    R_Free(ctx);
+    ERROR_OUT(xc);
+  }
+
+  PROTECT(context = R_MakeExternalPtr(ctx, nano_ContextSymbol, R_NilValue));
+  R_RegisterCFinalizerEx(context, context_finalizer, TRUE);
   UNPROTECT(1);
   return context;
 

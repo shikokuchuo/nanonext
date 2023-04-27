@@ -2,9 +2,12 @@
 % Please edit documentation in R/context.R
 \name{context}
 \alias{context}
+\alias{ctx}
 \title{Open Context}
 \usage{
 context(socket, ...)
+
+ctx(socket)
 }
 \arguments{
 \item{socket}{a Socket.}
@@ -12,12 +15,17 @@ context(socket, ...)
 \item{...}{not used, present for compatibility purposes only.}
 }
 \value{
-A new Context (object of class 'nanoContext' and 'nano').
+For context: a new Context (object of class 'nanoContext' and 'nano').
+
+    For ctx: an external pointer.
 }
 \description{
 Open a new Context to be used with a Socket. The purpose of a Context is to
     permit applications to share a single socket, with its underlying dialers
     and listeners, while still benefiting from separate state tracking.
+    \code{ctx} is a performance variant of \code{context}, designed to wrap a
+    socket in a function argument when calling \code{\link{request}} or
+    \code{\link{reply}}, rather than returning an object.
 }
 \details{
 Contexts allow the independent and concurrent use of stateful
@@ -34,12 +42,18 @@ Contexts allow the independent and concurrent use of stateful
 
     For nano objects, use the \code{$context_open()} method, which will
     attach a new context at \code{$context}. See \code{\link{nano}}.
+
+    For external pointers created by \code{ctx}, these are unclassed, hence
+    methods for contexts such as \code{\link{close}} will not work. However
+    they function as a Context would when passed to all messaging functions.
+    The context is automatically closed when the object is garbage collected.
 }
 \examples{
 s <- socket("req", listen = "inproc://nanonext")
 ctx <- context(s)
 ctx
 close(ctx)
+r <- request(ctx(s), "request data")
 close(s)
 
 n <- nano("req", listen = "inproc://nanonext")

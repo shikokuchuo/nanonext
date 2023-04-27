@@ -196,7 +196,7 @@ static void rnng_timer_thread(void *args) {
 
 }
 
-SEXP rnng_timedsignal_create(SEXP args) {
+SEXP rnng_signal_create(SEXP args) {
 
   nng_thread *thr;
   SEXP cvar, xptr;

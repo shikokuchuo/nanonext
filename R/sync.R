@@ -256,4 +256,4 @@ unlock <- function(socket) invisible(.Call(rnng_socket_unlock, socket))
 #'
 #' @export
 #'
-signal <- function(cv, time, flag = TRUE) .External(rnng_timedsignal_create, cv, time, flag)
+signal <- function(cv, time, flag = TRUE) .External(rnng_signal_create, cv, time, flag)

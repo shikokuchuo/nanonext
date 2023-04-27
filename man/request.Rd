@@ -98,12 +98,9 @@ Sending the request and receiving the result are both performed async,
 req <- socket("req", listen = "tcp://127.0.0.1:6546")
 rep <- socket("rep", dial = "tcp://127.0.0.1:6546")
 
-ctxq <- context(req)
-ctxp <- context(rep)
-
 # works if req and rep are running in parallel in different processes
-reply(ctxp, execute = function(x) x + 1, timeout = 50)
-aio <- request(ctxq, data = 2022)
+reply(ctx(rep), execute = function(x) x + 1, timeout = 50)
+aio <- request(ctx(req), data = 2022)
 aio$data
 
 close(req)
