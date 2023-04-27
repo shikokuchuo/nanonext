@@ -661,20 +661,16 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
   }
 
   SEXP env, fun;
-#if defined(R_VERSION) && R_VERSION >= R_Version(4, 1, 0)
-  PROTECT(env = R_NewEnv(clo, 0, 2));
-#else
-  PROTECT_INDEX pxi;
-  PROTECT_WITH_INDEX(env = Rf_lang2(nano_NewEnvSymbol, Rf_ScalarLogical(0)), &pxi);
-  REPROTECT(env = Rf_eval(env, clo), pxi);
-#endif
+  PROTECT(env = Rf_allocSExp(ENVSXP));
+  SET_ENCLOS(env, clo);
+  SET_ATTRIB(env, nano_sendAio);
+  SET_OBJECT(env, 1);
   Rf_defineVar(nano_AioSymbol, aio, env);
   PROTECT(fun = Rf_allocSExp(CLOSXP));
   SET_FORMALS(fun, nano_aioFormals);
   SET_BODY(fun, CAR(nano_aioFuncs));
   SET_CLOENV(fun, clo);
   R_MakeActiveBinding(nano_ResultSymbol, fun, env);
-  Rf_classgets(env, nano_sendAio);
 
   UNPROTECT(3);
   return env;
@@ -760,13 +756,10 @@ SEXP rnng_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP keep, SEXP bytes, SEX
   }
 
   SEXP env, fun;
-#if defined(R_VERSION) && R_VERSION >= R_Version(4, 1, 0)
-  PROTECT(env = R_NewEnv(clo, 0, 4));
-#else
-  PROTECT_INDEX pxi;
-  PROTECT_WITH_INDEX(env = Rf_lang2(nano_NewEnvSymbol, Rf_ScalarLogical(0)), &pxi);
-  REPROTECT(env = Rf_eval(env, clo), pxi);
-#endif
+  PROTECT(env = Rf_allocSExp(ENVSXP));
+  SET_ENCLOS(env, clo);
+  SET_ATTRIB(env, nano_recvAio);
+  SET_OBJECT(env, 1);
   Rf_defineVar(nano_AioSymbol, aio, env);
 
   if (kpr) {
@@ -782,7 +775,6 @@ SEXP rnng_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP keep, SEXP bytes, SEX
   SET_BODY(fun, CADR(nano_aioFuncs));
   SET_CLOENV(fun, clo);
   R_MakeActiveBinding(nano_DataSymbol, fun, env);
-  Rf_classgets(env, nano_recvAio);
 
   UNPROTECT(3);
   return env;
@@ -883,13 +875,10 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP dat
   R_RegisterCFinalizerEx(aio, haio_finalizer, TRUE);
 
   SEXP env, fun;
-#if defined(R_VERSION) && R_VERSION >= R_Version(4, 1, 0)
-  PROTECT(env = R_NewEnv(clo, 0, 5));
-#else
-  PROTECT_INDEX pxi;
-  PROTECT_WITH_INDEX(env = Rf_lang2(nano_NewEnvSymbol, Rf_ScalarLogical(0)), &pxi);
-  REPROTECT(env = Rf_eval(env, clo), pxi);
-#endif
+  PROTECT(env = Rf_allocSExp(ENVSXP));
+  SET_ENCLOS(env, clo);
+  SET_ATTRIB(env, nano_ncurlAio);
+  SET_OBJECT(env, 1);
   Rf_defineVar(nano_AioSymbol, aio, env);
   int i = 0;
   for (SEXP fnlist = nano_aioNFuncs; fnlist != R_NilValue; fnlist = CDR(fnlist)) {
@@ -905,7 +894,6 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP dat
     }
     UNPROTECT(1);
   }
-  Rf_classgets(env, nano_ncurlAio);
 
   UNPROTECT(2);
   return env;
@@ -1136,6 +1124,8 @@ SEXP rnng_ncurl_session(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP
 
   PROTECT(sess = R_MakeExternalPtr(conn, nano_SessionSymbol, R_NilValue));
   R_RegisterCFinalizerEx(sess, session_finalizer, TRUE);
+  SET_ATTRIB(sess, nano_ncurlSession);
+  SET_OBJECT(sess, 1);
 
   PROTECT(aio = R_MakeExternalPtr(haio, nano_AioSymbol, R_NilValue));
   R_RegisterCFinalizerEx(aio, haio_finalizer, TRUE);
@@ -1143,8 +1133,6 @@ SEXP rnng_ncurl_session(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP
 
   if (response != R_NilValue)
     Rf_setAttrib(sess, nano_ResponseSymbol, response);
-
-  Rf_classgets(sess, nano_ncurlSession);
 
   UNPROTECT(2);
   return sess;
@@ -1317,13 +1305,10 @@ SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeou
   PROTECT(aio = R_MakeExternalPtr(raio, nano_AioSymbol, R_NilValue));
   R_RegisterCFinalizerEx(aio, raio_finalizer, TRUE);
 
-#if defined(R_VERSION) && R_VERSION >= R_Version(4, 1, 0)
-  PROTECT(env = R_NewEnv(clo, 0, 4));
-#else
-  PROTECT_INDEX pxi;
-  PROTECT_WITH_INDEX(env = Rf_lang2(nano_NewEnvSymbol, Rf_ScalarLogical(0)), &pxi);
-  REPROTECT(env = Rf_eval(env, clo), pxi);
-#endif
+  PROTECT(env = Rf_allocSExp(ENVSXP));
+  SET_ENCLOS(env, clo);
+  SET_ATTRIB(env, nano_recvAio);
+  SET_OBJECT(env, 1);
   Rf_defineVar(nano_AioSymbol, aio, env);
   PROTECT(sendaio = R_MakeExternalPtr(saio, R_NilValue, R_NilValue));
   Rf_setAttrib(sendaio, nano_ContextSymbol, con);
@@ -1343,7 +1328,6 @@ SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeou
   SET_BODY(fun, CADR(nano_aioFuncs));
   SET_CLOENV(fun, clo);
   R_MakeActiveBinding(nano_DataSymbol, fun, env);
-  Rf_classgets(env, nano_recvAio);
 
   UNPROTECT(4);
   return env;
@@ -1558,13 +1542,10 @@ SEXP rnng_cv_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP keep, SEXP bytes, 
 
   PROTECT(aio);
   SEXP env, fun, signal;
-#if defined(R_VERSION) && R_VERSION >= R_Version(4, 1, 0)
-  PROTECT(env = R_NewEnv(clo, 0, 4));
-#else
-  PROTECT_INDEX pxi;
-  PROTECT_WITH_INDEX(env = Rf_lang2(nano_NewEnvSymbol, Rf_ScalarLogical(0)), &pxi);
-  REPROTECT(env = Rf_eval(env, clo), pxi);
-#endif
+  PROTECT(env = Rf_allocSExp(ENVSXP));
+  SET_ENCLOS(env, clo);
+  SET_ATTRIB(env, nano_recvAio);
+  SET_OBJECT(env, 1);
   Rf_defineVar(nano_AioSymbol, aio, env);
   PROTECT(signal = R_MakeExternalPtr(cv_raio, R_NilValue, R_NilValue));
   R_RegisterCFinalizerEx(signal, cv_aio_finalizer, TRUE);
@@ -1583,7 +1564,6 @@ SEXP rnng_cv_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP keep, SEXP bytes, 
   SET_BODY(fun, CADR(nano_aioFuncs));
   SET_CLOENV(fun, clo);
   R_MakeActiveBinding(nano_DataSymbol, fun, env);
-  Rf_classgets(env, nano_recvAio);
 
   UNPROTECT(4);
   return env;
@@ -1649,13 +1629,10 @@ SEXP rnng_cv_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP tim
   PROTECT(aio = R_MakeExternalPtr(raio, nano_AioSymbol, R_NilValue));
   R_RegisterCFinalizerEx(aio, raio_finalizer, TRUE);
 
-#if defined(R_VERSION) && R_VERSION >= R_Version(4, 1, 0)
-  PROTECT(env = R_NewEnv(clo, 0, 4));
-#else
-  PROTECT_INDEX pxi;
-  PROTECT_WITH_INDEX(env = Rf_lang2(nano_NewEnvSymbol, Rf_ScalarLogical(0)), &pxi);
-  REPROTECT(env = Rf_eval(env, clo), pxi);
-#endif
+  PROTECT(env = Rf_allocSExp(ENVSXP));
+  SET_ENCLOS(env, clo);
+  SET_ATTRIB(env, nano_recvAio);
+  SET_OBJECT(env, 1);
   Rf_defineVar(nano_AioSymbol, aio, env);
   PROTECT(signal = R_MakeExternalPtr(cv_raio, R_NilValue, R_NilValue));
   R_RegisterCFinalizerEx(signal, cv_aio_finalizer, TRUE);
@@ -1678,7 +1655,6 @@ SEXP rnng_cv_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP tim
   SET_BODY(fun, CADR(nano_aioFuncs));
   SET_CLOENV(fun, clo);
   R_MakeActiveBinding(nano_DataSymbol, fun, env);
-  Rf_classgets(env, nano_recvAio);
 
   UNPROTECT(5);
   return env;
