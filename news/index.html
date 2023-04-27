@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.2.9013</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.2.9014</span>
       </span>
     </div>
 
@@ -54,16 +54,16 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.8.2.9013" id="nanonext-0829013-development">nanonext 0.8.2.9013 (development)<a class="anchor" aria-label="anchor" href="#nanonext-0829013-development"></a></h2>
+<h2 class="page-header" data-toc-text="0.8.2.9014" id="nanonext-0829014-development">nanonext 0.8.2.9014 (development)<a class="anchor" aria-label="anchor" href="#nanonext-0829014-development"></a></h2>
 <div class="section level5">
-<h5 id="new-features-0-8-2-9013">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-8-2-9013"></a></h5>
+<h5 id="new-features-0-8-2-9014">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-8-2-9014"></a></h5>
 <ul><li>New <code><a href="../reference/signal.html">signal()</a></code> function signals a condition variable after a specified time (from a newly-created thread).</li>
 <li>New <code><a href="../reference/context.html">ctx()</a></code> function, a more performant alternative to <code><a href="../reference/context.html">context()</a></code> that does not create the full object.</li>
 <li>
 <code><a href="../reference/ncurl.html">ncurl()</a></code> gains a ‘timeout’ argument.</li>
 </ul></div>
 <div class="section level5">
-<h5 id="updates-0-8-2-9013">Updates<a class="anchor" aria-label="anchor" href="#updates-0-8-2-9013"></a></h5>
+<h5 id="updates-0-8-2-9014">Updates<a class="anchor" aria-label="anchor" href="#updates-0-8-2-9014"></a></h5>
 <ul><li>Removes ‘verify’ argument of <code><a href="../reference/context.html">context()</a></code> (changed to ‘…’ for compatibility) as <code><a href="../reference/request.html">request()</a></code> and <code><a href="../reference/request.html">request_signal()</a></code> have been rendered safe internally for use with timeouts.</li>
 <li>The name of the single argument to <code><a href="../reference/msleep.html">msleep()</a></code> has been changed to ‘time’ from ‘msec’.</li>
 <li>Functions <code><a href="../reference/pipe_notify.html">pipe_notify()</a></code>, <code><a href="../reference/lock.html">lock()</a></code> and <code><a href="../reference/lock.html">unlock()</a></code> now error if unsuccessful rather than returning with a warning.</li>
