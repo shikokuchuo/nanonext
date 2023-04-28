@@ -28,7 +28,7 @@
 #'
 #'     For \code{cv_value}: integer value of the condition variable.
 #'
-#'     For \code{cv_reset}: invisible NULL.
+#'     For \code{cv_reset} and \code{cv_signal}: invisible NULL.
 #'
 #' @details Pass the 'conditionVariable' to the signalling forms of the
 #'     asynchronous receive functions: \code{\link{recv_aio_signal}} or
@@ -128,6 +128,20 @@ cv_value <- function(cv) .Call(rnng_cv_value, cv)
 #'
 cv_reset <- function(cv) invisible(.Call(rnng_cv_reset, cv))
 
+#' Condition Variables - Signal
+#'
+#' \code{cv_signal} signals a condition variable.
+#'
+#' @examples
+#' cv_value(cv)
+#' cv_signal(cv)
+#' cv_value(cv)
+#'
+#' @rdname cv
+#' @export
+#'
+cv_signal <- function(cv) invisible(.Call(rnng_cv_signal, cv))
+
 #' Pipe Notify
 #'
 #' Signals a 'conditionVariable' whenever pipes (individual connections) are
@@ -222,11 +236,11 @@ lock <- function(socket, cv = NULL) invisible(.Call(rnng_socket_lock, socket, cv
 #'
 unlock <- function(socket) invisible(.Call(rnng_socket_unlock, socket))
 
-#' Signal a Condition Variable
+#' Signal a Condition Variable After a Specified Time
 #'
-#' Creates a new thread which signals a condition variable after a specified time,
-#'     causing its internal condition to increment by one (and threads waiting
-#'     on the condition to wake).
+#' Creates a new thread which signals a condition variable after a specified
+#'     time, causing its internal condition to increment by one (and threads
+#'     waiting on the condition to wake).
 #'
 #' @param cv a 'conditionVariable',
 #' @param time integer number of milliseconds after which to signal the
@@ -246,14 +260,15 @@ unlock <- function(socket) invisible(.Call(rnng_socket_unlock, socket))
 #' cv_value(cv)
 #' start <- mclock()
 #'
-#' s <- signal(cv, time = 100L, flag = FALSE)
+#' s <- timed_signal(cv, time = 100L, flag = FALSE)
 #' wait(cv) == TRUE
 #' mclock() - start
 #'
-#' s <- signal(cv, time = 100L, flag = TRUE)
+#' s <- timed_signal(cv, time = 100L, flag = TRUE)
 #' wait(cv) == FALSE
 #' mclock() - start
 #'
 #' @export
 #'
-signal <- function(cv, time, flag = TRUE) .External(rnng_signal_create, cv, time, flag)
+timed_signal <- function(cv, time, flag = TRUE)
+  .External(rnng_timed_signal, cv, time, flag)

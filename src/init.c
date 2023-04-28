@@ -143,6 +143,7 @@ static const R_CallMethodDef callMethods[] = {
   {"rnng_cv_recv_aio", (DL_FUNC) &rnng_cv_recv_aio, 7},
   {"rnng_cv_request", (DL_FUNC) &rnng_cv_request, 8},
   {"rnng_cv_reset", (DL_FUNC) &rnng_cv_reset, 1},
+  {"rnng_cv_signal", (DL_FUNC) &rnng_cv_signal, 1},
   {"rnng_cv_until", (DL_FUNC) &rnng_cv_until, 2},
   {"rnng_cv_value", (DL_FUNC) &rnng_cv_value, 1},
   {"rnng_cv_wait", (DL_FUNC) &rnng_cv_wait, 1},
@@ -196,7 +197,7 @@ static const R_CallMethodDef callMethods[] = {
 };
 
 static const R_ExternalMethodDef externalMethods[] = {
-  {"rnng_signal_create", (DL_FUNC) &rnng_signal_create, -1},
+  {"rnng_timed_signal", (DL_FUNC) &rnng_timed_signal, -1},
   {NULL, NULL, 0}
 };
 

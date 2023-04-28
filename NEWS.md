@@ -1,9 +1,9 @@
-# nanonext 0.8.2.9014 (development)
+# nanonext 0.8.2.9015 (development)
 
 #### New Features
 
-* New `signal()` function signals a condition variable after a specified time (from a newly-created thread).
-* New `ctx()` function, a more performant alternative to `context()` that does not create the full object.
+* Implements `cv_signal()` and `timed_signal()` for signalling a condition variable, the latter after a specified time (from a newly-created thread).
+* Implements `.context()`, a performance alternative to `context()` that does not create the full object.
 * `ncurl()` gains a 'timeout' argument.
 
 #### Updates
