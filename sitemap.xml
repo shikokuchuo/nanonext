@@ -124,9 +124,6 @@
     <loc>https://shikokuchuo.net/nanonext/reference/sha256.html</loc>
   </url>
   <url>
-    <loc>https://shikokuchuo.net/nanonext/reference/signal.html</loc>
-  </url>
-  <url>
     <loc>https://shikokuchuo.net/nanonext/reference/socket.html</loc>
   </url>
   <url>
@@ -149,6 +146,9 @@
   </url>
   <url>
     <loc>https://shikokuchuo.net/nanonext/reference/survey_time.html</loc>
+  </url>
+  <url>
+    <loc>https://shikokuchuo.net/nanonext/reference/timed_signal.html</loc>
   </url>
   <url>
     <loc>https://shikokuchuo.net/nanonext/reference/transports.html</loc>
