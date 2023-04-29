@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.2.9015</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.2.9016</span>
       </span>
     </div>
 
@@ -54,16 +54,17 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.8.2.9015" id="nanonext-0829015-development">nanonext 0.8.2.9015 (development)<a class="anchor" aria-label="anchor" href="#nanonext-0829015-development"></a></h2>
+<h2 class="page-header" data-toc-text="0.8.2.9016" id="nanonext-0829016-development">nanonext 0.8.2.9016 (development)<a class="anchor" aria-label="anchor" href="#nanonext-0829016-development"></a></h2>
 <div class="section level5">
-<h5 id="new-features-0-8-2-9015">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-8-2-9015"></a></h5>
+<h5 id="new-features-0-8-2-9016">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-8-2-9016"></a></h5>
 <ul><li>Implements <code><a href="../reference/cv.html">cv_signal()</a></code> and <code><a href="../reference/timed_signal.html">timed_signal()</a></code> for signalling a condition variable, the latter after a specified time (from a newly-created thread).</li>
 <li>Implements <code><a href="../reference/context.html">.context()</a></code>, a performance alternative to <code><a href="../reference/context.html">context()</a></code> that does not create the full object.</li>
+<li>Adds utility <code><a href="../reference/nanonext_version.html">nanonext_version()</a></code> for providing the package version, NNG and mbed TLS library versions in a single string.</li>
 <li>
 <code><a href="../reference/ncurl.html">ncurl()</a></code> gains a ‘timeout’ argument.</li>
 </ul></div>
 <div class="section level5">
-<h5 id="updates-0-8-2-9015">Updates<a class="anchor" aria-label="anchor" href="#updates-0-8-2-9015"></a></h5>
+<h5 id="updates-0-8-2-9016">Updates<a class="anchor" aria-label="anchor" href="#updates-0-8-2-9016"></a></h5>
 <ul><li>Removes ‘verify’ argument of <code><a href="../reference/context.html">context()</a></code> (changed to ‘…’ for compatibility) as <code><a href="../reference/request.html">request()</a></code> and <code><a href="../reference/request.html">request_signal()</a></code> have been rendered safe internally for use with timeouts.</li>
 <li>The name of the single argument to <code><a href="../reference/msleep.html">msleep()</a></code> has been changed to ‘time’ from ‘msec’.</li>
 <li>Functions <code><a href="../reference/pipe_notify.html">pipe_notify()</a></code>, <code><a href="../reference/lock.html">lock()</a></code> and <code><a href="../reference/lock.html">unlock()</a></code> now error if unsuccessful rather than returning with a warning.</li>
