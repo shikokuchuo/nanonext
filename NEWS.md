@@ -1,9 +1,10 @@
-# nanonext 0.8.2.9015 (development)
+# nanonext 0.8.2.9016 (development)
 
 #### New Features
 
 * Implements `cv_signal()` and `timed_signal()` for signalling a condition variable, the latter after a specified time (from a newly-created thread).
 * Implements `.context()`, a performance alternative to `context()` that does not create the full object.
+* Adds utility `nanonext_version()` for providing the package version, NNG and mbed TLS library versions in a single string.
 * `ncurl()` gains a 'timeout' argument.
 
 #### Updates
