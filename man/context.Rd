@@ -2,12 +2,9 @@
 % Please edit documentation in R/context.R
 \name{context}
 \alias{context}
-\alias{.context}
 \title{Open Context}
 \usage{
 context(socket, ...)
-
-.context(socket)
 }
 \arguments{
 \item{socket}{a Socket.}
@@ -15,10 +12,7 @@ context(socket, ...)
 \item{...}{not used, present for compatibility purposes only.}
 }
 \value{
-For \code{context}: a new Context (object of class 'nanoContext' and
-    'nano').
-
-    For \code{.context}: an external pointer.
+A Context (object of class 'nanoContext' and 'nano').
 }
 \description{
 Open a new Context to be used with a Socket. The purpose of a Context is to
@@ -40,21 +34,12 @@ Contexts allow the independent and concurrent use of stateful
 
     For nano objects, use the \code{$context_open()} method, which will
     attach a new context at \code{$context}. See \code{\link{nano}}.
-
-    \code{.context} is a performance variant of \code{context}, designed to
-    wrap a socket in a function argument when calling \code{\link{request}}
-    or \code{\link{reply}}. External pointers created by \code{.context}
-    are unclassed, hence methods for contexts such as \code{\link{close}}
-    will not work. However they function as a Context would when passed to
-    all messaging functions. The context is automatically closed when the
-    object is garbage collected.
 }
 \examples{
 s <- socket("req", listen = "inproc://nanonext")
 ctx <- context(s)
 ctx
 close(ctx)
-r <- request(.context(s), "request data")
 close(s)
 
 n <- nano("req", listen = "inproc://nanonext")

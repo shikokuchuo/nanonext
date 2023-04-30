@@ -25,10 +25,7 @@
 #' @param socket a Socket.
 #' @param ... not used, present for compatibility purposes only.
 #'
-#' @return For \code{context}: a new Context (object of class 'nanoContext' and
-#'     'nano').
-#'
-#'     For \code{.context}: an external pointer.
+#' @return A Context (object of class 'nanoContext' and 'nano').
 #'
 #' @details Contexts allow the independent and concurrent use of stateful
 #'     operations using the same socket. For example, two different contexts
@@ -45,20 +42,11 @@
 #'     For nano objects, use the \code{$context_open()} method, which will
 #'     attach a new context at \code{$context}. See \code{\link{nano}}.
 #'
-#'     \code{.context} is a performance variant of \code{context}, designed to
-#'     wrap a socket in a function argument when calling \code{\link{request}}
-#'     or \code{\link{reply}}. External pointers created by \code{.context}
-#'     are unclassed, hence methods for contexts such as \code{\link{close}}
-#'     will not work. However they function as a Context would when passed to
-#'     all messaging functions. The context is automatically closed when the
-#'     object is garbage collected.
-#'
 #' @examples
 #' s <- socket("req", listen = "inproc://nanonext")
 #' ctx <- context(s)
 #' ctx
 #' close(ctx)
-#' r <- request(.context(s), "request data")
 #' close(s)
 #'
 #' n <- nano("req", listen = "inproc://nanonext")
@@ -73,7 +61,26 @@
 #'
 context <- function(socket, ...) .Call(rnng_ctx_open, socket)
 
-#' @rdname context
+#' Technical Utility: Open Context
+#'
+#' Open a new Context to be used with a Socket. This function is a performance
+#'     variant of \code{\link{context}}, designed to wrap a socket in a function
+#'     argument when calling \code{\link{request}} or \code{\link{reply}}.
+#'
+#' @param socket a Socket.
+#'
+#' @details External pointers created by this function are unclassed, hence
+#'     methods for contexts such as \code{\link{close}} will not work. However
+#'     they function as a Context would when passed to all messaging functions.
+#'     The context is automatically closed when the object is garbage collected.
+#'
+#' @return An external pointer.
+#'
+#' @examples
+#' s <- socket("req", listen = "inproc://nanonext")
+#' r <- request(.context(s), "request data")
+#' close(s)
+#'
 #' @export
 #'
 .context <- function(socket) .Call(rnng_ctx_create, socket)
