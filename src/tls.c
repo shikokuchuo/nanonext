@@ -24,13 +24,27 @@
 
 SEXP rnng_version(void) {
 
+  char mbed_version[18];
+  mbedtls_version_get_string_full(mbed_version);
   SEXP version;
   PROTECT(version = Rf_allocVector(STRSXP, 2));
   SET_STRING_ELT(version, 0, Rf_mkChar(nng_version()));
-  SET_STRING_ELT(version, 1, Rf_mkChar(MBEDTLS_VERSION_STRING_FULL));
+  SET_STRING_ELT(version, 1, Rf_mkChar(mbed_version));
   UNPROTECT(1);
 
   return version;
+
+}
+
+SEXP rnng_version_string(void) {
+
+  char ver[60] = "";
+  char mbed_version[9];
+  mbedtls_version_get_string(mbed_version);
+  snprintf(ver, sizeof(ver), "nanonext %s | nng %s | mbed TLS %s",
+           NANONEXT_VERSION, nng_version(), mbed_version);
+
+  return Rf_mkString(ver);
 
 }
 

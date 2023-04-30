@@ -20,6 +20,7 @@
 #define NANONEXT_H
 
 #ifdef NANONEXT_INTERNALS
+#define NANONEXT_VERSION "0.8.2.9017"
 #include <nng/nng.h>
 #endif
 
@@ -187,5 +188,6 @@ extern SEXP rnng_unresolved(SEXP);
 extern SEXP rnng_unresolved2(SEXP);
 extern SEXP rnng_url_parse(SEXP);
 extern SEXP rnng_version(void);
+extern SEXP rnng_version_string(void);
 
 #endif

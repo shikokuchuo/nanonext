@@ -275,9 +275,4 @@ status_code <- function(x) .Call(rnng_status_code, x)
 #'
 #' @export
 #'
-nanonext_version <- function() {
-
-  nng <- nng_version()
-  sprintf("nanonext 0.8.2.9016 | nng %s | %s", nng[1L], nng[2L])
-
-}
+nanonext_version <- function() .Call(rnng_version_string)
