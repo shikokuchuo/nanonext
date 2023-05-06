@@ -24,12 +24,12 @@
 
 SEXP rnng_version(void) {
 
-  char mbed_version[18];
-  mbedtls_version_get_string_full(mbed_version);
+  char mbed_version_string[18];
+  mbedtls_version_get_string_full(mbed_version_string);
   SEXP version;
   PROTECT(version = Rf_allocVector(STRSXP, 2));
   SET_STRING_ELT(version, 0, Rf_mkChar(nng_version()));
-  SET_STRING_ELT(version, 1, Rf_mkChar(mbed_version));
+  SET_STRING_ELT(version, 1, Rf_mkChar(mbed_version_string));
   UNPROTECT(1);
 
   return version;

@@ -368,7 +368,7 @@ aio
 #> < recvAio >
 #>  - $data for message data
 aio$data |> str()
-#>  num [1:100000000] -1.137 0.427 0.254 -0.912 0.382 ...
+#>  num [1:100000000] 0.85 0.994 0.498 1.802 -0.144 ...
 ```
 
 As `call_aio()` is blocking and will wait for completion, an alternative
@@ -386,11 +386,6 @@ The {mirai} package <https://shikokuchuo.net/mirai/>
 (<https://cran.r-project.org/package=mirai>) uses {nanonext} as the
 back-end to provide asynchronous execution of arbitrary R code using the
 RPC model.
-
-The {crew} package <https://wlandau.github.io/crew/>
-(<https://cran.r-project.org/package=crew>) by William Landau further
-extends {mirai} to different computing platforms for distributed
-workers.
 
 [« Back to ToC](#table-of-contents)
 
@@ -654,11 +649,11 @@ ncurl("https://httpbin.org/headers")
 #>   [1] 7b 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73
 #>  [26] 74 22 3a 20 22 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22
 #>  [51] 58 2d 41 6d 7a 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31
-#>  [76] 2d 36 34 34 36 64 39 33 32 2d 33 30 39 33 32 34 31 65 35 66 32 63 63 31 62
-#> [101] 31 34 64 65 63 30 64 34 39 22 0a 20 20 7d 0a 7d 0a
+#>  [76] 2d 36 34 35 36 33 37 34 31 2d 34 36 33 34 36 39 31 66 36 63 37 36 36 30 37
+#> [101] 32 33 64 32 34 61 62 32 30 22 0a 20 20 7d 0a 7d 0a
 #> 
 #> $data
-#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6446d932-3093241e5f2cc1b14dec0d49\"\n  }\n}\n"
+#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-64563741-4634691f6c7660723d24ab20\"\n  }\n}\n"
 ```
 
 For advanced use, supports additional HTTP methods such as POST or PUT.
@@ -679,13 +674,13 @@ res
 
 call_aio(res)$headers
 #> $Date
-#> [1] "Mon, 24 Apr 2023 19:32:03 GMT"
+#> [1] "Sat, 06 May 2023 11:17:27 GMT"
 #> 
 #> $Server
 #> [1] "gunicorn/19.9.0"
 
 res$data
-#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6446d933-2b431bb5216a771c647f2402\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
+#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-64563742-3979941e4cd984a4053d85a6\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
 ```
 
 In this respect, it may be used as a performant and lightweight method
@@ -711,7 +706,7 @@ transact(sess)
 #> 
 #> $headers
 #> $headers$date
-#> [1] "Mon, 24 Apr 2023 19:32:03 GMT"
+#> [1] "Sat, 06 May 2023 11:17:28 GMT"
 #> 
 #> 
 #> $raw
@@ -721,15 +716,15 @@ transact(sess)
 #>  [76] 22 43 6f 6e 74 65 6e 74 2d 54 79 70 65 22 3a 20 22 61 70 70 6c 69 63 61 74
 #> [101] 69 6f 6e 2f 6a 73 6f 6e 22 2c 20 0a 20 20 20 20 22 48 6f 73 74 22 3a 20 22
 #> [126] 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22 58 2d 41 6d 7a
-#> [151] 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31 2d 36 34 34 36
-#> [176] 64 39 33 33 2d 33 37 30 31 66 39 33 30 33 33 38 64 34 31 63 66 32 37 34 39
-#> [201] 62 61 64 39 22 0a 20 20 7d 2c 20 0a 20 20 22 6f 72 69 67 69 6e 22 3a 20 22
+#> [151] 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31 2d 36 34 35 36
+#> [176] 33 37 34 37 2d 30 65 30 65 61 36 36 30 34 39 63 65 36 30 36 31 36 62 61 30
+#> [201] 62 39 36 32 22 0a 20 20 7d 2c 20 0a 20 20 22 6f 72 69 67 69 6e 22 3a 20 22
 #> [226] 31 38 35 2e 32 32 35 2e 34 35 2e 34 39 22 2c 20 0a 20 20 22 75 72 6c 22 3a
 #> [251] 20 22 68 74 74 70 73 3a 2f 2f 68 74 74 70 62 69 6e 2e 6f 72 67 2f 67 65 74
 #> [276] 22 0a 7d 0a
 #> 
 #> $data
-#> [1] "{\n  \"args\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6446d933-3701f930338d41cf2749bad9\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"https://httpbin.org/get\"\n}\n"
+#> [1] "{\n  \"args\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-64563747-0e0ea66049ce60616ba0b962\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"https://httpbin.org/get\"\n}\n"
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -888,9 +883,8 @@ stat(s, "pipes")
 
 Installation from source requires ‘libnng’ \>= v1.6.0 and ‘libmbedtls’
 \>= 2 - suitable installations are automatically detected - or else
-‘cmake’ to compile ‘libnng’ v1.6.0 pre-release (8e1836f) \[alpha
-(c5e9d8a) in dev version\] and ‘libmbedtls’ v3.2.1 \[v3.4.0 in dev
-version\] included within the package sources.
+‘cmake’ to compile ‘libnng’ v1.6.0 alpha (c5e9d8a) and ‘libmbedtls’
+v3.4.0 included within the package sources.
 
 Note: ‘libnng’ v1.6.0 is not yet available in system repositories;
 ‘libmbedtls’ is available as libmbedtls-dev (deb) or libmbedtls-devel
@@ -917,13 +911,12 @@ MBEDTLS_SSL_DTLS_CONNECTION_ID_COMPAT 0.*
 #### Windows
 
 For R \>= 4.2 using the ‘Rtools42’ or ‘Rtools43’ toolchains, ‘libnng’
-v1.6.0 (8e1836f) \[alpha (c5e9d8a) in dev version\] and ‘libmbedtls’
-v3.2.1 \[v3.4.0 in dev version\] will be automatically compiled from the
-package sources during installation.
+v1.6.0 alpha (c5e9d8a) and ‘libmbedtls’ v3.4.0 will be automatically
+compiled from the package sources during installation.
 
-For previous R versions, pre-compiled ‘libnng’ v1.6.0 (8e1836f) \[alpha
-(c5e9d8a) in dev version\] and ‘libmbedtls’ v3.2.1 \[v3.4.0 in dev
-version\] libraries are downloaded and used for installation instead.
+For previous R versions, pre-compiled ‘libnng’ v1.6.0 alpha (c5e9d8a)
+and ‘libmbedtls’ v3.4.0 libraries are downloaded and used for
+installation instead.
 
 [« Back to ToC](#table-of-contents)
 
