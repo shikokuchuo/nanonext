@@ -9,6 +9,7 @@
 status](https://www.r-pkg.org/badges/version/nanonext?color=112d4e)](https://CRAN.R-project.org/package=nanonext)
 [![nanonext status
 badge](https://shikokuchuo.r-universe.dev/badges/nanonext?color=3f72af)](https://shikokuchuo.r-universe.dev)
+[![DOI](https://zenodo.org/badge/451104675.svg)](https://zenodo.org/badge/latestdoi/451104675)
 [![R-CMD-check](https://github.com/shikokuchuo/nanonext/workflows/R-CMD-check/badge.svg)](https://github.com/shikokuchuo/nanonext/actions)
 [![codecov](https://codecov.io/gh/shikokuchuo/nanonext/branch/main/graph/badge.svg)](https://app.codecov.io/gh/shikokuchuo/nanonext)
 <!-- badges: end -->
@@ -368,7 +369,7 @@ aio
 #> < recvAio >
 #>  - $data for message data
 aio$data |> str()
-#>  num [1:100000000] 0.85 0.994 0.498 1.802 -0.144 ...
+#>  num [1:100000000] -0.00562 -1.68167 -0.68047 0.08631 0.3319 ...
 ```
 
 As `call_aio()` is blocking and will wait for completion, an alternative
@@ -649,11 +650,11 @@ ncurl("https://httpbin.org/headers")
 #>   [1] 7b 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73
 #>  [26] 74 22 3a 20 22 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22
 #>  [51] 58 2d 41 6d 7a 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31
-#>  [76] 2d 36 34 35 36 33 37 34 31 2d 34 36 33 34 36 39 31 66 36 63 37 36 36 30 37
-#> [101] 32 33 64 32 34 61 62 32 30 22 0a 20 20 7d 0a 7d 0a
+#>  [76] 2d 36 34 35 36 64 63 65 31 2d 34 62 32 66 30 31 38 31 35 32 38 66 32 66 61
+#> [101] 38 37 30 33 31 33 63 34 30 22 0a 20 20 7d 0a 7d 0a
 #> 
 #> $data
-#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-64563741-4634691f6c7660723d24ab20\"\n  }\n}\n"
+#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6456dce1-4b2f0181528f2fa870313c40\"\n  }\n}\n"
 ```
 
 For advanced use, supports additional HTTP methods such as POST or PUT.
@@ -674,13 +675,13 @@ res
 
 call_aio(res)$headers
 #> $Date
-#> [1] "Sat, 06 May 2023 11:17:27 GMT"
+#> [1] "Sat, 06 May 2023 23:04:01 GMT"
 #> 
 #> $Server
 #> [1] "gunicorn/19.9.0"
 
 res$data
-#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-64563742-3979941e4cd984a4053d85a6\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
+#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6456dce1-70f6cf4c3926d0bc32e56b17\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
 ```
 
 In this respect, it may be used as a performant and lightweight method
@@ -706,7 +707,7 @@ transact(sess)
 #> 
 #> $headers
 #> $headers$date
-#> [1] "Sat, 06 May 2023 11:17:28 GMT"
+#> [1] "Sat, 06 May 2023 23:04:01 GMT"
 #> 
 #> 
 #> $raw
@@ -717,14 +718,14 @@ transact(sess)
 #> [101] 69 6f 6e 2f 6a 73 6f 6e 22 2c 20 0a 20 20 20 20 22 48 6f 73 74 22 3a 20 22
 #> [126] 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22 58 2d 41 6d 7a
 #> [151] 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31 2d 36 34 35 36
-#> [176] 33 37 34 37 2d 30 65 30 65 61 36 36 30 34 39 63 65 36 30 36 31 36 62 61 30
-#> [201] 62 39 36 32 22 0a 20 20 7d 2c 20 0a 20 20 22 6f 72 69 67 69 6e 22 3a 20 22
+#> [176] 64 63 65 31 2d 34 32 36 34 30 31 34 65 33 33 32 36 30 36 36 61 32 64 39 38
+#> [201] 63 35 65 38 22 0a 20 20 7d 2c 20 0a 20 20 22 6f 72 69 67 69 6e 22 3a 20 22
 #> [226] 31 38 35 2e 32 32 35 2e 34 35 2e 34 39 22 2c 20 0a 20 20 22 75 72 6c 22 3a
 #> [251] 20 22 68 74 74 70 73 3a 2f 2f 68 74 74 70 62 69 6e 2e 6f 72 67 2f 67 65 74
 #> [276] 22 0a 7d 0a
 #> 
 #> $data
-#> [1] "{\n  \"args\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-64563747-0e0ea66049ce60616ba0b962\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"https://httpbin.org/get\"\n}\n"
+#> [1] "{\n  \"args\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6456dce1-4264014e3326066a2d98c5e8\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"https://httpbin.org/get\"\n}\n"
 ```
 
 [« Back to ToC](#table-of-contents)
