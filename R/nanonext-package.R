@@ -28,8 +28,8 @@
 #'
 #' @section Usage notes:
 #'
-#'     \{nanonext\} offers 2 equivalent interfaces: a functional interface, and
-#'     an object-oriented interface.
+#'     \code{nanonext} offers 2 equivalent interfaces: a functional interface,
+#'     and an object-oriented interface.
 #'
 #'     The primary object in the functional interface is the Socket. Use
 #'     \code{\link{socket}} to create a socket and dial or listen at an address.

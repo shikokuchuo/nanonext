@@ -18,14 +18,14 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 [![CRAN status](https://www.r-pkg.org/badges/version/nanonext?color=112d4e)](https://CRAN.R-project.org/package=nanonext)
 [![nanonext status badge](https://shikokuchuo.r-universe.dev/badges/nanonext?color=3f72af)](https://shikokuchuo.r-universe.dev)
-[![DOI](https://zenodo.org/badge/451104675.svg)](https://zenodo.org/badge/latestdoi/451104675)
 [![R-CMD-check](https://github.com/shikokuchuo/nanonext/workflows/R-CMD-check/badge.svg)](https://github.com/shikokuchuo/nanonext/actions)
 [![codecov](https://codecov.io/gh/shikokuchuo/nanonext/branch/main/graph/badge.svg)](https://app.codecov.io/gh/shikokuchuo/nanonext)
+[![DOI](https://zenodo.org/badge/451104675.svg)](https://zenodo.org/badge/latestdoi/451104675)
 <!-- badges: end -->
 
 R binding for NNG (Nanomsg Next Gen), a successor to ZeroMQ. NNG is a socket library providing high-performance scalability protocols, a cross-platform standard for messaging and communications. Serves as a concurrency framework for building distributed applications, utilising 'aio' objects which resolve automatically upon completion of asynchronous operations. Implements synchronisation primitives, allowing R to wait upon events being signalled by concurrent messaging threads.
 
-Designed for performance and reliability, the NNG library is written in C and {nanonext} is a lightweight zero-dependency wrapper. Provides the interface for code and processes to communicate with each other - receive data generated in Python, perform analysis in R, and send results to a C++ program – all on the same computer or on networks spanning the globe.
+Designed for performance and reliability, the NNG library is written in C and [`nanonext`](https://doi.org/10.5281/zenodo.7903429) is a lightweight zero-dependency wrapper. Provides the interface for code and processes to communicate with each other - receive data generated in Python, perform analysis in R, and send results to a C++ program – all on the same computer or on networks spanning the globe.
 
 Implemented scalability protocols:
 
@@ -84,7 +84,7 @@ install.packages("nanonext", repos = "https://shikokuchuo.r-universe.dev")
 
 ### Interfaces
 
-{nanonext} offers 2 equivalent interfaces: a functional interface, and an object-oriented interface.
+`nanonext` offers 2 equivalent interfaces: a functional interface, and an object-oriented interface.
 
 #### Functional Interface 
 
@@ -145,7 +145,7 @@ nano2$recv()
 
 ### Cross-language Exchange
 
-{nanonext} provides a fast and reliable data interface between different programming languages where NNG has an implementation, including C, C++, Java, Python, Go, Rust etc. 
+`nanonext` provides a fast and reliable data interface between different programming languages where NNG has an implementation, including C, C++, Java, Python, Go, Rust etc. 
 
 The following example demonstrates the exchange of numerical data between R and Python (NumPy), two of the most commonly-used languages for data science and machine learning. 
 
@@ -163,7 +163,7 @@ import pynng
 socket = pynng.Pair0(listen="ipc:///tmp/nanonext.socket")
 ```
 
-Create nano object in R using {nanonext}, then send a vector of 'doubles', specifying mode as 'raw':
+Create nano object in R using `nanonext`, then send a vector of 'doubles', specifying mode as 'raw':
 
 ```{r rnpy2}
 library(nanonext)
@@ -192,7 +192,7 @@ n$recv(mode = "double")
 
 ### Async and Concurrency
 
-{nanonext} implements true async send and receive, leveraging NNG as a massively-scaleable concurrency framework.
+`nanonext` implements true async send and receive, leveraging NNG as a massively-scaleable concurrency framework.
 
 ```{r async}
 s1 <- socket("pair", listen = "inproc://nano")
@@ -265,7 +265,7 @@ close(s2)
 
 ### RPC and Distributed Computing
 
-{nanonext} implements remote procedure calls (RPC) using NNG's req/rep protocol to provide a basis for distributed computing.
+`nanonext` implements remote procedure calls (RPC) using NNG's req/rep protocol to provide a basis for distributed computing.
 
 Can be used to perform computationally-expensive calculations or I/O-bound operations such as writing large amounts of data to disk in a separate 'server' process running concurrently.
 
@@ -313,19 +313,19 @@ In this example the calculation is returned, but other operations may reside ent
 
 In such a case, calling or querying the value confirms that the operation has completed, and provides the return value of the function, which may typically be NULL or an exit code.
 
-The {mirai} package <https://shikokuchuo.net/mirai/> (<https://cran.r-project.org/package=mirai>) uses {nanonext} as the back-end to provide asynchronous execution of arbitrary R code using the RPC model.
+The [`mirai`](https://shikokuchuo.net/mirai/) package (<https://cran.r-project.org/package=mirai>) uses `nanonext` as the back-end to provide asynchronous execution of arbitrary R code using the RPC model.
 
 [&laquo; Back to ToC](#table-of-contents)
 
 ### Synchronisation Primitives
 
-{nanonext} implements synchronisation primitives provided by the NNG library for cross-platform use.
+`nanonext` implements synchronisation primitives provided by the NNG library for cross-platform use.
 
 As the R interpreter runs on a single thread, synchronisation primitives such as mutexes and condition variables are not natively implemented in the R language. However, as NNG is inherently threaded and messaging can be asynchronous, it is possible to synchronise between NNG events happening independently and the main R execution thread.
 
 The events that can be signalled include asynchronous receive completions, and pipe events - these are when connections are established or when they are dropped.
 
-Condition variables can be used simply to record such events, or more powerfully, to wait upon these events. The condition variables implemented in {nanonext} include a both a condition (value) and flag (binary). Each signal increments the value, and each return of `wait()` or `until()` decrements the value. A non-zero condition allows waiting threads to continue.
+Condition variables can be used simply to record such events, or more powerfully, to wait upon these events. The condition variables implemented in `nanonext` include a both a condition (value) and flag (binary). Each signal increments the value, and each return of `wait()` or `until()` decrements the value. A non-zero condition allows waiting threads to continue.
 
 In any situation where polling for an event presents a solution, waiting upon a condition to be signalled can be more efficient, both in terms of consuming no resources while waiting, and also being synchronised with the event (having no latency).
 
@@ -397,7 +397,7 @@ For further details, please refer to the function documentation for `cv()`.
 
 ### Publisher Subscriber Model
 
-{nanonext} fully implements NNG's pub/sub protocol as per the below example. A subscriber can subscribe to one or multiple topics broadcast by a publisher.
+`nanonext` fully implements NNG's pub/sub protocol as per the below example. A subscriber can subscribe to one or multiple topics broadcast by a publisher.
 
 ```{r pub}
 pub <- socket("pub", listen = "inproc://nanobroadcast")
@@ -675,10 +675,10 @@ For previous R versions, pre-compiled 'libnng' v1.6.0 alpha (c5e9d8a) and 'libmb
 
 ### Links
 
-nanonext on CRAN: <https://cran.r-project.org/package=nanonext><br />
-Package website: <https://shikokuchuo.net/nanonext/><br />
+`nanonext` website: <https://shikokuchuo.net/nanonext/><br />
+`nanonext` on CRAN: <https://cran.r-project.org/package=nanonext><br />
 
-nanonext is listed in CRAN Task Views:<br />
+`nanonext` is listed in CRAN Task Views:<br />
 - High Performance Computing: <https://cran.r-project.org/view=HighPerformanceComputing><br />
 - Web Technologies: <https://cran.r-project.org/view=WebTechnologies><br />
 
@@ -688,4 +688,3 @@ Mbed TLS website: <https://www.trustedfirmware.org/projects/mbed-tls/><br />
 --
 
 Please note that this project is released with a [Contributor Code of Conduct](https://shikokuchuo.net/nanonext/CODE_OF_CONDUCT.html). By participating in this project you agree to abide by its terms.
-
