@@ -4,12 +4,10 @@
 \alias{context}
 \title{Open Context}
 \usage{
-context(socket, ...)
+context(socket)
 }
 \arguments{
 \item{socket}{a Socket.}
-
-\item{...}{not used, present for compatibility purposes only.}
 }
 \value{
 A Context (object of class 'nanoContext' and 'nano').

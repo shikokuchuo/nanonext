@@ -23,7 +23,6 @@
 #'     and listeners, while still benefiting from separate state tracking.
 #'
 #' @param socket a Socket.
-#' @param ... not used, present for compatibility purposes only.
 #'
 #' @return A Context (object of class 'nanoContext' and 'nano').
 #'
@@ -59,7 +58,7 @@
 #'
 #' @export
 #'
-context <- function(socket, ...) .Call(rnng_ctx_open, socket)
+context <- function(socket) .Call(rnng_ctx_open, socket)
 
 #' Technical Utility: Open Context
 #'
