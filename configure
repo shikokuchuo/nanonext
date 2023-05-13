@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Library versions
-LIB_VER="c5e9d8a"
+LIB_VER="539e559"
 TLS_VER="1873d3b"
 
 # Initialise
