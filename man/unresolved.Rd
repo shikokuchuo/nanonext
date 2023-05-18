@@ -31,13 +31,11 @@ aio <- send_aio(s1, "test", timeout = 100)
 while (unresolved(aio)) {
   # do stuff before checking resolution again
   cat("unresolved\n")
-  s2 <- socket("pair", dial = "inproc://nanonext")
-  Sys.sleep(0.01)
+  msleep(20)
 }
 
 unresolved(aio)
 
 close(s1)
-close(s2)
 
 }
