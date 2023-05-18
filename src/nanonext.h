@@ -20,7 +20,7 @@
 #define NANONEXT_H
 
 #ifdef NANONEXT_INTERNALS
-#define NANONEXT_VERSION "0.8.3.9001"
+#define NANONEXT_VERSION "0.8.3.9002"
 #include <nng/nng.h>
 #endif
 

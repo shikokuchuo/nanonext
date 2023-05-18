@@ -1,5 +1,5 @@
 # Library versions
-LIB_VER="539e559"
+LIB_VER="8e1836f"
 TLS_VER="1873d3b"
 
 tar -xf inst/mbedtls-$TLS_VER.tar.xz
@@ -22,4 +22,3 @@ rm -rf nng-$LIB_VER
 
 # Success
 exit 0
-
