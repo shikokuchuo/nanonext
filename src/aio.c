@@ -552,7 +552,7 @@ SEXP rnng_unresolved2(SEXP aio) {
 
 }
 
-SEXP rnng_unresolved3(SEXP aio) {
+SEXP rnng_unresolved3(SEXP aio, SEXP cvar) {
 
   if (TYPEOF(aio) != ENVSXP)
     return Rf_ScalarLogical(0);
@@ -561,9 +561,28 @@ SEXP rnng_unresolved3(SEXP aio) {
   if (R_ExternalPtrTag(coreaio) != nano_AioSymbol || R_ExternalPtrAddr(coreaio) == NULL)
     return Rf_ScalarLogical(0);
 
+  int cond;
   nano_aio *aiop = (nano_aio *) R_ExternalPtrAddr(coreaio);
 
-  return aiop->data == NULL ?  Rf_ScalarLogical(1) : Rf_ScalarLogical(0);
+  if (cvar != R_NilValue) {
+
+    if (R_ExternalPtrTag(cvar) != nano_CvSymbol)
+      Rf_error("'cv' is not a valid Condition Variable");
+
+    nano_cv *ncv = (nano_cv *) R_ExternalPtrAddr(cvar);
+    nng_mtx *mtx = ncv->mtx;
+
+    nng_mtx_lock(mtx);
+    cond = aiop->data == NULL;
+    nng_mtx_unlock(mtx);
+
+  } else {
+
+    cond = aiop->data == NULL;
+
+  }
+
+  return Rf_ScalarLogical(cond);
 
 }
 

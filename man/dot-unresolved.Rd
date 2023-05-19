@@ -7,18 +7,29 @@
 \usage{
 .unresolved(aio)
 
-.unresolved2(aio)
+.unresolved2(aio, cv = NULL)
 }
 \arguments{
 \item{aio}{an Aio (object of class 'sendAio' or 'recvAio').}
+
+\item{cv}{a 'conditionVariable' object.}
 }
 \value{
 Logical TRUE if 'aio' is an unresolved Aio, or FALSE otherwise.
 }
 \description{
-Query whether an Aio remains unresolved. This function is an experimental
-    technical utility version of \code{\link{unresolved}} not intended for
+Query whether an Aio remains unresolved. These are experimental technical
+    utility versions of \code{\link{unresolved}} not intended for
     ordinary use. Provides a method of querying the busy status of an Aio
     without altering its state in any way i.e. not attempting to retrieve the
     result or message.
+}
+\details{
+\code{.unresolved2()} is only to be used for 'recvAio' returned by a
+    signalling function, and should be called with 'cv' specifying the
+    'conditionVariable' that was used with the signalling function.
+
+    If relying on \code{.unresolved2()}, do not attempt to access the value
+    of a recvAio' without calling its value with \code{\link{call_aio}}
+    first, otherwise an 'unresolvedValue' may still be obtained.
 }
