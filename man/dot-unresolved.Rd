@@ -2,9 +2,12 @@
 % Please edit documentation in R/aio.R
 \name{.unresolved}
 \alias{.unresolved}
+\alias{.unresolved2}
 \title{Technical Utility: Query if an Aio is Unresolved}
 \usage{
 .unresolved(aio)
+
+.unresolved2(aio)
 }
 \arguments{
 \item{aio}{an Aio (object of class 'sendAio' or 'recvAio').}

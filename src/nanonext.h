@@ -186,6 +186,7 @@ extern SEXP rnng_subscribe(SEXP, SEXP, SEXP);
 extern SEXP rnng_timed_signal(SEXP);
 extern SEXP rnng_unresolved(SEXP);
 extern SEXP rnng_unresolved2(SEXP);
+extern SEXP rnng_unresolved3(SEXP);
 extern SEXP rnng_url_parse(SEXP);
 extern SEXP rnng_version(void);
 extern SEXP rnng_version_string(void);

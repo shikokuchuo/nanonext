@@ -293,3 +293,8 @@ unresolved <- function(aio) .Call(rnng_unresolved, aio)
 #' @export
 #'
 .unresolved <- function(aio) .Call(rnng_unresolved2, aio)
+
+#' @rdname dot-unresolved
+#' @export
+#'
+.unresolved2 <- function(aio) .Call(rnng_unresolved3, aio)

@@ -177,10 +177,10 @@ static void raio_complete_signal(void *arg) {
   nng_mtx *mtx = ncv->mtx;
 
   aio->result = nng_aio_result(aio->aio);
-  if (!aio->result)
-    aio->data = nng_aio_get_msg(aio->aio);
 
   nng_mtx_lock(mtx);
+  if (!aio->result)
+    aio->data = nng_aio_get_msg(aio->aio);
   ncv->condition++;
   nng_cv_wake(cv);
   nng_mtx_unlock(mtx);
@@ -549,6 +549,21 @@ SEXP rnng_unresolved2(SEXP aio) {
   nano_aio *aiop = (nano_aio *) R_ExternalPtrAddr(coreaio);
 
   return nng_aio_busy(aiop->aio) ?  Rf_ScalarLogical(1) : Rf_ScalarLogical(0);
+
+}
+
+SEXP rnng_unresolved3(SEXP aio) {
+
+  if (TYPEOF(aio) != ENVSXP)
+    return Rf_ScalarLogical(0);
+
+  SEXP coreaio = Rf_findVarInFrame(aio, nano_AioSymbol);
+  if (R_ExternalPtrTag(coreaio) != nano_AioSymbol || R_ExternalPtrAddr(coreaio) == NULL)
+    return Rf_ScalarLogical(0);
+
+  nano_aio *aiop = (nano_aio *) R_ExternalPtrAddr(coreaio);
+
+  return aiop->data == NULL ?  Rf_ScalarLogical(1) : Rf_ScalarLogical(0);
 
 }
 

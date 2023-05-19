@@ -191,6 +191,7 @@ static const R_CallMethodDef callMethods[] = {
   {"rnng_subscribe", (DL_FUNC) &rnng_subscribe, 3},
   {"rnng_unresolved", (DL_FUNC) &rnng_unresolved, 1},
   {"rnng_unresolved2", (DL_FUNC) &rnng_unresolved2, 1},
+  {"rnng_unresolved3", (DL_FUNC) &rnng_unresolved3, 1},
   {"rnng_url_parse", (DL_FUNC) &rnng_url_parse, 1},
   {"rnng_version", (DL_FUNC) &rnng_version, 0},
   {"rnng_version_string", (DL_FUNC) &rnng_version_string, 0},
