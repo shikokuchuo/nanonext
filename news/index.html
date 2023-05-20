@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.3.9005</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.3.9006</span>
       </span>
     </div>
 
@@ -54,11 +54,15 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.8.3.9005" id="nanonext-0839005-development">nanonext 0.8.3.9005 (development)<a class="anchor" aria-label="anchor" href="#nanonext-0839005-development"></a></h2>
+<h2 class="page-header" data-toc-text="0.8.3.9006" id="nanonext-0839006-development">nanonext 0.8.3.9006 (development)<a class="anchor" aria-label="anchor" href="#nanonext-0839006-development"></a></h2>
 <div class="section level5">
-<h5 id="updates-0-8-3-9005">Updates<a class="anchor" aria-label="anchor" href="#updates-0-8-3-9005"></a></h5>
+<h5 id="new-features-0-8-3-9006">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-8-3-9006"></a></h5>
+<ul><li>Adds <code><a href="../reference/dot-unresolved.html">.unresolved2()</a></code> utility for use with signalling functions - always use <code><a href="../reference/call_aio.html">call_aio()</a></code> before accessing an ‘aio’ value when using this function.</li>
+</ul></div>
+<div class="section level5">
+<h5 id="updates-0-8-3-9006">Updates<a class="anchor" aria-label="anchor" href="#updates-0-8-3-9006"></a></h5>
 <ul><li>Removes <code>...</code> argument for <code><a href="../reference/context.html">context()</a></code> - retained for compatibility with the ‘verify’ argument, which was removed in the previous release.</li>
-<li>Adds <code><a href="../reference/dot-unresolved.html">.unresolved2()</a></code> utility - always use <code><a href="../reference/call_aio.html">call_aio()</a></code> before accessing an ‘aio’ value when using this function.</li>
+<li>Package widens compatibility to support system ‘libnng’ versions &gt;= 1.5.0 [experimental implementation].</li>
 <li>Bundled ‘libnng’ source rolled back to v1.6.0 pre-release (8e1836f) for stability.</li>
 </ul></div>
 </div>
