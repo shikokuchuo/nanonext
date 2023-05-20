@@ -56,7 +56,8 @@ int main() {
 #if MBEDTLS_VERSION_MAJOR >= 2
       return 0;
 #else
-      error;
+      void *var;
+      return *var;
 #endif
 }" | ${CC} ${PKG_CFLAGS} -xc - -o /dev/null > /dev/null 2>&1
 if [ $? -ne 0 ]
@@ -117,8 +118,12 @@ fi
 
 echo "#include <nng/nng.h>
 int main() {
-    bool test = nng_aio_busy;
-    return 0;
+#if NNG_MAJOR_VERSION >= 1 && NNG_MINOR_VERSION >= 5
+      return 0;
+#else
+      void *var;
+      return *var;
+#endif
 }" | ${CC} ${NNG_CFLAGS} -xc - -o /dev/null > /dev/null 2>&1
 if [ $? -ne 0 ]
 then

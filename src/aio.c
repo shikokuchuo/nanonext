@@ -384,13 +384,17 @@ SEXP rnng_aio_result(SEXP env) {
   if (R_ExternalPtrTag(aio) != nano_AioSymbol)
     Rf_error("object is not a valid or active Aio");
 
-  nano_aio *aiop = (nano_aio *) R_ExternalPtrAddr(aio);
+  nano_aio *saio = (nano_aio *) R_ExternalPtrAddr(aio);
 
-  if (nng_aio_busy(aiop->aio))
+#if NNG_MAJOR_VERSION >= 1 && NNG_MINOR_VERSION >= 6
+  if (nng_aio_busy(saio->aio))
+#else
+  if (saio->result == 0)
+#endif
     return nano_unresolved;
 
-  if (aiop->result > 0)
-    return mk_error_saio(aiop->result, env);
+  if (saio->result > 0)
+    return mk_error_saio(saio->result, env);
 
   Rf_defineVar(nano_ResultSymbol, nano_success, ENCLOS(env));
   Rf_defineVar(nano_AioSymbol, R_NilValue, env);
@@ -410,7 +414,11 @@ SEXP rnng_aio_get_msgraw(SEXP env) {
 
   nano_aio *raio = (nano_aio *) R_ExternalPtrAddr(aio);
 
+#if NNG_MAJOR_VERSION >= 1 && NNG_MINOR_VERSION >= 6
   if (nng_aio_busy(raio->aio))
+#else
+  if (raio->result == 0)
+#endif
     return nano_unresolved;
 
   if (raio->result > 0)
@@ -453,7 +461,11 @@ SEXP rnng_aio_get_msgdata(SEXP env) {
 
   nano_aio *raio = (nano_aio *) R_ExternalPtrAddr(aio);
 
+#if NNG_MAJOR_VERSION >= 1 && NNG_MINOR_VERSION >= 6
   if (nng_aio_busy(raio->aio))
+#else
+  if (raio->result == 0)
+#endif
     return nano_unresolved;
 
   if (raio->result > 0)
@@ -554,7 +566,11 @@ SEXP rnng_unresolved2(SEXP aio) {
 
   nano_aio *aiop = (nano_aio *) R_ExternalPtrAddr(coreaio);
 
+#if NNG_MAJOR_VERSION >= 1 && NNG_MINOR_VERSION >= 6
   return Rf_ScalarLogical(nng_aio_busy(aiop->aio));
+#else
+  return Rf_ScalarLogical(aiop->result == 0);
+#endif
 
 }
 
@@ -976,7 +992,11 @@ SEXP rnng_aio_http(SEXP env, SEXP response, SEXP type) {
 
   nano_aio *haio = (nano_aio *) R_ExternalPtrAddr(aio);
 
+#if NNG_MAJOR_VERSION >= 1 && NNG_MINOR_VERSION >= 6
   if (nng_aio_busy(haio->aio))
+#else
+  if (haio->result == 0)
+#endif
     return nano_unresolved;
 
   if (haio->result > 0)
