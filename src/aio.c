@@ -144,8 +144,9 @@ static void pipe_cb_dropcon(nng_pipe p, nng_pipe_ev ev, void *arg) {
 static void saio_complete(void *arg) {
 
   nano_aio *saio = (nano_aio *) arg;
-  saio->result = nng_aio_result(saio->aio);
-  if (saio->result)
+  const int res = nng_aio_result(saio->aio);
+  saio->result = res ? res : -1;
+  if (res)
     nng_msg_free(nng_aio_get_msg(saio->aio));
 
 }
@@ -153,7 +154,8 @@ static void saio_complete(void *arg) {
 static void isaio_complete(void *arg) {
 
   nano_aio *iaio = (nano_aio *) arg;
-  iaio->result = nng_aio_result(iaio->aio);
+  const int res = nng_aio_result(iaio->aio);
+  iaio->result = res ? res : -1;
   if (iaio->data != NULL)
     R_Free(iaio->data);
 
@@ -162,9 +164,10 @@ static void isaio_complete(void *arg) {
 static void raio_complete(void *arg) {
 
   nano_aio *raio = (nano_aio *) arg;
-  raio->result = nng_aio_result(raio->aio);
-  if (!raio->result)
+  const int res = nng_aio_result(raio->aio);
+  if (res == 0)
     raio->data = nng_aio_get_msg(raio->aio);
+  raio->result = res ? res : -1;
 
 }
 
@@ -176,11 +179,12 @@ static void raio_complete_signal(void *arg) {
   nng_cv *cv = ncv->cv;
   nng_mtx *mtx = ncv->mtx;
 
-  aio->result = nng_aio_result(aio->aio);
+  const int res = nng_aio_result(aio->aio);
+  if (res == 0)
+    aio->data = nng_aio_get_msg(aio->aio);
 
   nng_mtx_lock(mtx);
-  if (!aio->result)
-    aio->data = nng_aio_get_msg(aio->aio);
+  aio->result = res ? res : -1;
   ncv->condition++;
   nng_cv_wake(cv);
   nng_mtx_unlock(mtx);
@@ -190,7 +194,8 @@ static void raio_complete_signal(void *arg) {
 static void iraio_complete(void *arg) {
 
   nano_aio *iaio = (nano_aio *) arg;
-  iaio->result = nng_aio_result(iaio->aio);
+  const int res = nng_aio_result(iaio->aio);
+  iaio->result = res ? res : -1;
 
 }
 
@@ -202,9 +207,10 @@ static void iraio_complete_signal(void *arg) {
   nng_cv *cv = ncv->cv;
   nng_mtx *mtx = ncv->mtx;
 
-  aio->result = nng_aio_result(aio->aio);
+  const int res = nng_aio_result(aio->aio);
 
   nng_mtx_lock(mtx);
+  aio->result = res ? res : -1;
   ncv->condition++;
   nng_cv_wake(cv);
   nng_mtx_unlock(mtx);
@@ -383,7 +389,7 @@ SEXP rnng_aio_result(SEXP env) {
   if (nng_aio_busy(aiop->aio))
     return nano_unresolved;
 
-  if (aiop->result)
+  if (aiop->result > 0)
     return mk_error_saio(aiop->result, env);
 
   Rf_defineVar(nano_ResultSymbol, nano_success, ENCLOS(env));
@@ -407,7 +413,7 @@ SEXP rnng_aio_get_msgraw(SEXP env) {
   if (nng_aio_busy(raio->aio))
     return nano_unresolved;
 
-  if (raio->result)
+  if (raio->result > 0)
     return mk_error_raio(raio->result, env);
 
   SEXP out;
@@ -450,7 +456,7 @@ SEXP rnng_aio_get_msgdata(SEXP env) {
   if (nng_aio_busy(raio->aio))
     return nano_unresolved;
 
-  if (raio->result)
+  if (raio->result > 0)
     return mk_error_raio(raio->result, env);
 
   SEXP out;
@@ -548,7 +554,7 @@ SEXP rnng_unresolved2(SEXP aio) {
 
   nano_aio *aiop = (nano_aio *) R_ExternalPtrAddr(coreaio);
 
-  return nng_aio_busy(aiop->aio) ?  Rf_ScalarLogical(1) : Rf_ScalarLogical(0);
+  return Rf_ScalarLogical(nng_aio_busy(aiop->aio));
 
 }
 
@@ -561,7 +567,7 @@ SEXP rnng_unresolved3(SEXP aio, SEXP cvar) {
   if (R_ExternalPtrTag(coreaio) != nano_AioSymbol || R_ExternalPtrAddr(coreaio) == NULL)
     return Rf_ScalarLogical(0);
 
-  int cond;
+  int res;
   nano_aio *aiop = (nano_aio *) R_ExternalPtrAddr(coreaio);
 
   if (cvar != R_NilValue) {
@@ -573,16 +579,16 @@ SEXP rnng_unresolved3(SEXP aio, SEXP cvar) {
     nng_mtx *mtx = ncv->mtx;
 
     nng_mtx_lock(mtx);
-    cond = aiop->data == NULL;
+    res = aiop->result;
     nng_mtx_unlock(mtx);
 
   } else {
 
-    cond = aiop->data == NULL;
+    res = aiop->result;
 
   }
 
-  return Rf_ScalarLogical(cond);
+  return Rf_ScalarLogical(!res);
 
 }
 
@@ -973,7 +979,7 @@ SEXP rnng_aio_http(SEXP env, SEXP response, SEXP type) {
   if (nng_aio_busy(haio->aio))
     return nano_unresolved;
 
-  if (haio->result)
+  if (haio->result > 0)
     return mk_error_haio(haio->result, env);
 
   void *dat;
@@ -1150,7 +1156,7 @@ SEXP rnng_ncurl_session(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP
     nng_aio_set_timeout(haio->aio, (nng_duration) Rf_asInteger(timeout));
   nng_http_client_connect(handle->cli, haio->aio);
   nng_aio_wait(haio->aio);
-  if ((xc = haio->result))
+  if ((xc = haio->result) > 0)
     goto exitlevel7;
 
   nng_http_conn *conn;
@@ -1203,7 +1209,7 @@ SEXP rnng_ncurl_transact(SEXP session) {
 
   nng_http_conn_transact(conn, handle->req, handle->res, haio->aio);
   nng_aio_wait(haio->aio);
-  if (haio->result)
+  if (haio->result > 0)
     return mk_error_ncurl(haio->result);
 
   SEXP out, vec, rvec, cvec, response;

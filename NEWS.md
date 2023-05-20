@@ -1,10 +1,10 @@
-# nanonext 0.8.3.9004 (development)
+# nanonext 0.8.3.9005 (development)
 
 #### Updates
 
 * Removes `...` argument for `context()` - retained for compatibility with the 'verify' argument, which was removed in the previous release.
 * Adds `.unresolved2()` utility - always use `call_aio()` before accessing an 'aio' value when using this function.
-* Bundled 'libnng' source reverted to v1.6.0 pre-release (8e1836f) for stability.
+* Bundled 'libnng' source rolled back to v1.6.0 pre-release (8e1836f) for stability.
 
 # nanonext 0.8.3
 
