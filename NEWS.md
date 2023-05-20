@@ -1,4 +1,4 @@
-# nanonext 0.8.3.9006 (development)
+# nanonext 0.8.3.9007 (development)
 
 #### New Features
 
@@ -7,7 +7,7 @@
 #### Updates
 
 * Removes `...` argument for `context()` - retained for compatibility with the 'verify' argument, which was removed in the previous release.
-* Package widens compatibility to support system 'libnng' versions >= 1.5.0 [experimental implementation].
+* Package widens compatibility to support system 'libnng' versions >= 1.5.0.
 * Bundled 'libnng' source rolled back to v1.6.0 pre-release (8e1836f) for stability.
 
 # nanonext 0.8.3
