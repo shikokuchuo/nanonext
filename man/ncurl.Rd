@@ -81,11 +81,11 @@ ncurl("http://httpbin.org/put",
       method = "PUT",
       headers = list(Authorization = "Bearer APIKEY"),
       data = "hello world",
-      timeout = 2000L)
+      timeout = 1500L)
 ncurl("http://httpbin.org/post",
       method = "POST",
       headers = c(`Content-Type` = "application/json"),
       data = '{"k":"v"}',
-      timeout = 2000L)
+      timeout = 1500L)
 
 }
