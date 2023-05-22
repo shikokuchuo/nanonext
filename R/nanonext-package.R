@@ -98,5 +98,3 @@
 #' @name nanonext-package
 #'
 NULL
-
-.nanonextVersion <- as.character(packageVersion("nanonext"))
