@@ -63,7 +63,8 @@ int main() {
 }" | ${CC} ${PKG_CFLAGS} -xc - -o /dev/null > /dev/null 2>&1
 
 else
-  build-all-nanonext-libs
+  echo "NANONEXT_LIBS is set... skipping detection"
+  build-all-nanonext-libs > /dev/null 2>&1
 fi
 
 if [ $? -ne 0 ]
@@ -135,7 +136,8 @@ int main() {
 }" | ${CC} ${NNG_CFLAGS} -xc - -o /dev/null > /dev/null 2>&1
 
 else
-  build-all-nanonext-libs
+  echo "NANONEXT_LIBS is set... skipping detection"
+  build-all-nanonext-libs > /dev/null 2>&1
 fi
 
 if [ $? -ne 0 ]
