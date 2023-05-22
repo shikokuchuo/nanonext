@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.3.9007</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.3.9008</span>
       </span>
     </div>
 
@@ -54,14 +54,16 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.8.3.9007" id="nanonext-0839007-development">nanonext 0.8.3.9007 (development)<a class="anchor" aria-label="anchor" href="#nanonext-0839007-development"></a></h2>
+<h2 class="page-header" data-toc-text="0.8.3.9008" id="nanonext-0839008-development">nanonext 0.8.3.9008 (development)<a class="anchor" aria-label="anchor" href="#nanonext-0839008-development"></a></h2>
+<p><em>The package is now compatible (again) with currently released ‘libnng’ versions. It will attempt to use system ‘libnng’ versions &gt;= 1.5 where detected, and only compile the bundled library where necessary.</em></p>
 <div class="section level5">
-<h5 id="new-features-0-8-3-9007">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-8-3-9007"></a></h5>
+<h5 id="new-features-0-8-3-9008">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-8-3-9008"></a></h5>
 <ul><li>Adds <code><a href="../reference/dot-unresolved.html">.unresolved2()</a></code> utility for use with signalling functions - always use <code><a href="../reference/call_aio.html">call_aio()</a></code> before accessing an ‘aio’ value when using this function.</li>
 </ul></div>
 <div class="section level5">
-<h5 id="updates-0-8-3-9007">Updates<a class="anchor" aria-label="anchor" href="#updates-0-8-3-9007"></a></h5>
-<ul><li>Removes <code>...</code> argument for <code><a href="../reference/context.html">context()</a></code> - retained for compatibility with the ‘verify’ argument, which was removed in the previous release.</li>
+<h5 id="updates-0-8-3-9008">Updates<a class="anchor" aria-label="anchor" href="#updates-0-8-3-9008"></a></h5>
+<ul><li>Replaces <code>nanonext_version()</code> utility with a new variable <code>nanonext:::.nanonextVersion</code>, which contains the package version as a string. This may then be more flexibly used with the existing <code><a href="../reference/nng_version.html">nng_version()</a></code>.</li>
+<li>Removes <code>...</code> argument for <code><a href="../reference/context.html">context()</a></code> - retained for compatibility with the ‘verify’ argument, which was removed in the previous release.</li>
 <li>Package widens compatibility to support system ‘libnng’ versions &gt;= 1.5.0.</li>
 <li>Bundled ‘libnng’ source rolled back to v1.6.0 pre-release (8e1836f) for stability.</li>
 </ul></div>
@@ -72,7 +74,7 @@
 <h5 id="new-features-0-8-3">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-8-3"></a></h5>
 <ul><li>Implements <code><a href="../reference/cv.html">cv_signal()</a></code> and <code><a href="../reference/timed_signal.html">timed_signal()</a></code> for signalling a condition variable, the latter after a specified time (from a newly-created thread).</li>
 <li>Implements <code><a href="../reference/dot-context.html">.context()</a></code>, a performance alternative to <code><a href="../reference/context.html">context()</a></code> that does not create the full object.</li>
-<li>Adds utility <code><a href="../reference/nanonext_version.html">nanonext_version()</a></code> for providing the package version, NNG and mbed TLS library versions in a single string.</li>
+<li>Adds utility <code>nanonext_version()</code> for providing the package version, NNG and mbed TLS library versions in a single string.</li>
 <li>
 <code><a href="../reference/ncurl.html">ncurl()</a></code> gains a ‘timeout’ argument.</li>
 </ul></div>
