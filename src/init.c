@@ -16,14 +16,10 @@
 
 // nanonext - package level registrations --------------------------------------
 
-#if NNG_MAJOR_VERSION < 1 || NNG_MINOR_VERSION < 6
-#define NANONEXT_INTERNALS
 #define NANONEXT_SUPPLEMENTALS
-#endif
-
 #include "nanonext.h"
 
-#if NNG_MAJOR_VERSION < 1 || NNG_MINOR_VERSION < 6
+#if NNG_MAJOR_VERSION == 1 && NNG_MINOR_VERSION < 6
 extern nng_mtx *shr_mtx;
 #endif
 
@@ -203,7 +199,6 @@ static const R_CallMethodDef callMethods[] = {
   {"rnng_unresolved3", (DL_FUNC) &rnng_unresolved3, 2},
   {"rnng_url_parse", (DL_FUNC) &rnng_url_parse, 1},
   {"rnng_version", (DL_FUNC) &rnng_version, 0},
-  {"rnng_version_string", (DL_FUNC) &rnng_version_string, 0},
   {NULL, NULL, 0}
 };
 
@@ -215,7 +210,7 @@ static const R_ExternalMethodDef externalMethods[] = {
 void attribute_visible R_init_nanonext(DllInfo* dll) {
   RegisterSymbols();
   PreserveObjects();
-#if NNG_MAJOR_VERSION < 1 || NNG_MINOR_VERSION < 6
+#if NNG_MAJOR_VERSION == 1 && NNG_MINOR_VERSION < 6
   nng_mtx_alloc(&shr_mtx);
 #endif
   R_registerRoutines(dll, NULL, callMethods, NULL, externalMethods);
@@ -225,7 +220,7 @@ void attribute_visible R_init_nanonext(DllInfo* dll) {
 
 void attribute_visible R_unload_nanonext(DllInfo *info) {
   ReleaseObjects();
-#if NNG_MAJOR_VERSION < 1 || NNG_MINOR_VERSION < 6
+#if NNG_MAJOR_VERSION == 1 && NNG_MINOR_VERSION < 6
   nng_mtx_free(shr_mtx);
 #endif
 }

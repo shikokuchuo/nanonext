@@ -16,13 +16,12 @@
 
 // nanonext - C level - Core Functions -----------------------------------------
 
-#define NANONEXT_INTERNALS
 #define NANONEXT_SUPPLEMENTALS
 #include "nanonext.h"
 
 // definitions and statics -----------------------------------------------------
 
-#if NNG_MAJOR_VERSION < 1 || NNG_MINOR_VERSION < 6
+#if NNG_MAJOR_VERSION == 1 && NNG_MINOR_VERSION < 6
 nng_mtx *shr_mtx;
 #endif
 
@@ -152,12 +151,12 @@ static void saio_complete(void *arg) {
   if (res)
     nng_msg_free(nng_aio_get_msg(saio->aio));
 
-#if NNG_MAJOR_VERSION >= 1 && NNG_MINOR_VERSION >= 6
-  saio->result = res ? res : -1;
-#else
+#if NNG_MAJOR_VERSION == 1 && NNG_MINOR_VERSION < 6
   nng_mtx_lock(shr_mtx);
   saio->result = res ? res : -1;
   nng_mtx_unlock(shr_mtx);
+#else
+  saio->result = res ? res : -1;
 #endif
 
 }
@@ -169,12 +168,12 @@ static void isaio_complete(void *arg) {
   if (iaio->data != NULL)
     R_Free(iaio->data);
 
-#if NNG_MAJOR_VERSION >= 1 && NNG_MINOR_VERSION >= 6
-  iaio->result = res ? res : -1;
-#else
+#if NNG_MAJOR_VERSION == 1 && NNG_MINOR_VERSION < 6
   nng_mtx_lock(shr_mtx);
   iaio->result = res ? res : -1;
   nng_mtx_unlock(shr_mtx);
+#else
+  iaio->result = res ? res : -1;
 #endif
 
 }
@@ -186,12 +185,12 @@ static void raio_complete(void *arg) {
   if (res == 0)
     raio->data = nng_aio_get_msg(raio->aio);
 
-#if NNG_MAJOR_VERSION >= 1 && NNG_MINOR_VERSION >= 6
-  raio->result = res ? res : -1;
-#else
+#if NNG_MAJOR_VERSION == 1 && NNG_MINOR_VERSION < 6
   nng_mtx_lock(shr_mtx);
   raio->result = res ? res : -1;
   nng_mtx_unlock(shr_mtx);
+#else
+  raio->result = res ? res : -1;
 #endif
 
 }
@@ -221,12 +220,12 @@ static void iraio_complete(void *arg) {
   nano_aio *iaio = (nano_aio *) arg;
   const int res = nng_aio_result(iaio->aio);
 
-#if NNG_MAJOR_VERSION >= 1 && NNG_MINOR_VERSION >= 6
-  iaio->result = res ? res : -1;
-#else
+#if NNG_MAJOR_VERSION == 1 && NNG_MINOR_VERSION < 6
   nng_mtx_lock(shr_mtx);
   iaio->result = res ? res : -1;
   nng_mtx_unlock(shr_mtx);
+#else
+  iaio->result = res ? res : -1;
 #endif
 
 }
@@ -418,14 +417,14 @@ SEXP rnng_aio_result(SEXP env) {
 
   nano_aio *saio = (nano_aio *) R_ExternalPtrAddr(aio);
 
-#if NNG_MAJOR_VERSION >= 1 && NNG_MINOR_VERSION >= 6
-  if (nng_aio_busy(saio->aio))
-#else
+#if NNG_MAJOR_VERSION == 1 && NNG_MINOR_VERSION < 6
   int res;
   nng_mtx_lock(shr_mtx);
   res = saio->result;
   nng_mtx_unlock(shr_mtx);
   if (res == 0)
+#else
+  if (nng_aio_busy(saio->aio))
 #endif
     return nano_unresolved;
 
@@ -450,14 +449,14 @@ SEXP rnng_aio_get_msgraw(SEXP env) {
 
   nano_aio *raio = (nano_aio *) R_ExternalPtrAddr(aio);
 
-#if NNG_MAJOR_VERSION >= 1 && NNG_MINOR_VERSION >= 6
-  if (nng_aio_busy(raio->aio))
-#else
+#if NNG_MAJOR_VERSION == 1 && NNG_MINOR_VERSION < 6
   int res;
   nng_mtx_lock(shr_mtx);
   res = raio->result;
   nng_mtx_unlock(shr_mtx);
   if (res == 0)
+#else
+  if (nng_aio_busy(raio->aio))
 #endif
     return nano_unresolved;
 
@@ -501,14 +500,14 @@ SEXP rnng_aio_get_msgdata(SEXP env) {
 
   nano_aio *raio = (nano_aio *) R_ExternalPtrAddr(aio);
 
-#if NNG_MAJOR_VERSION >= 1 && NNG_MINOR_VERSION >= 6
-  if (nng_aio_busy(raio->aio))
-#else
+#if NNG_MAJOR_VERSION == 1 && NNG_MINOR_VERSION < 6
   int res;
   nng_mtx_lock(shr_mtx);
   res = raio->result;
   nng_mtx_unlock(shr_mtx);
   if (res == 0)
+#else
+  if (nng_aio_busy(raio->aio))
 #endif
     return nano_unresolved;
 
@@ -610,14 +609,14 @@ SEXP rnng_unresolved2(SEXP aio) {
 
   nano_aio *aiop = (nano_aio *) R_ExternalPtrAddr(coreaio);
 
-#if NNG_MAJOR_VERSION >= 1 && NNG_MINOR_VERSION >= 6
-  return Rf_ScalarLogical(nng_aio_busy(aiop->aio));
-#else
+#if NNG_MAJOR_VERSION == 1 && NNG_MINOR_VERSION < 6
   int res;
   nng_mtx_lock(shr_mtx);
   res = aiop->result;
   nng_mtx_unlock(shr_mtx);
   return Rf_ScalarLogical(!res);
+#else
+  return Rf_ScalarLogical(nng_aio_busy(aiop->aio));
 #endif
 
 }
@@ -1040,14 +1039,14 @@ SEXP rnng_aio_http(SEXP env, SEXP response, SEXP type) {
 
   nano_aio *haio = (nano_aio *) R_ExternalPtrAddr(aio);
 
-#if NNG_MAJOR_VERSION >= 1 && NNG_MINOR_VERSION >= 6
-  if (nng_aio_busy(haio->aio))
-#else
+#if NNG_MAJOR_VERSION == 1 && NNG_MINOR_VERSION < 6
   int res;
   nng_mtx_lock(shr_mtx);
   res = haio->result;
   nng_mtx_unlock(shr_mtx);
   if (res == 0)
+#else
+  if (nng_aio_busy(haio->aio))
 #endif
     return nano_unresolved;
 

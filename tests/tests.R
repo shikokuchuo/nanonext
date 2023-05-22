@@ -10,7 +10,7 @@ nanotestxp <- function(x) invisible(typeof(x) == "externalptr" || stop("is not o
 nanotesterr <- function(x, e = "")
   invisible(grepl(e, tryCatch(x, error = identity)[["message"]], fixed = TRUE) || stop("expected error message '", e, "' not generated"))
 
-nanotest(is.character(ver <- nanonext_version()) && length(ver) == 1L)
+nng_version()
 n <- nano("pair", listen = "inproc://nanonext", autostart = FALSE)
 n1 <- nano("pair", dial = "inproc://nanonext", autostart = FALSE)
 nanotest(inherits(n, "nanoObject"))

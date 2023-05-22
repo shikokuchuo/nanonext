@@ -16,7 +16,6 @@
 
 // nanonext - C level - Core Functions -----------------------------------------
 
-#define NANONEXT_INTERNALS
 #define NANONEXT_PROTOCOLS
 #include "nanonext.h"
 

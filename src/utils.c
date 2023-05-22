@@ -16,7 +16,6 @@
 
 // nanonext - C level - Utilities ----------------------------------------------
 
-#define NANONEXT_INTERNALS
 #define NANONEXT_PROTOCOLS
 #define NANONEXT_SUPPLEMENTALS
 #include "nanonext.h"

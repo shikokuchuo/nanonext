@@ -27,6 +27,9 @@ then
   PKG_LIBS="$PKG_LIBS -latomic"
 fi
 
+# Force build bundled libs
+if [ -z "$NANONEXT_LIBS" ]; then
+
 # Find MbedTLS and compile if necessary
 if [ "$INCLUDE_DIR" ] || [ "$LIB_DIR" ]
 then
@@ -50,16 +53,19 @@ then
   PKG_LIBS="-L/usr/local/opt/mbedtls/lib $PKG_LIBS"
   echo "Found 'libmbedtls' $PKG_CFLAGS"
 fi
-
 echo "#include <mbedtls/version.h>
 int main() {
 #if MBEDTLS_VERSION_MAJOR >= 2
     return 0;
 #else
-    void *var;
-    return *var;
+    return
 #endif
 }" | ${CC} ${PKG_CFLAGS} -xc - -o /dev/null > /dev/null 2>&1
+
+else
+  build-all-nanonext-libs
+fi
+
 if [ $? -ne 0 ]
 then
   echo "No existing 'libmbedtls' >= 2 found"
@@ -97,6 +103,9 @@ then
   rm -rf mbedtls-$TLS_VER
 fi
 
+# Force build bundled libs
+if [ -z "$NANONEXT_LIBS" ]; then
+
 # Find NNG and compile if necessary
 if [ "$INCLUDE_DIR" ] || [ "$LIB_DIR" ]
 then
@@ -118,16 +127,20 @@ fi
 
 echo "#include <nng/nng.h>
 int main() {
-#if NNG_MAJOR_VERSION >= 1 && NNG_MINOR_VERSION >= 5
+#if NNG_MAJOR_VERSION == 1 && NNG_MINOR_VERSION >= 5 || NNG_MAJOR_VERSION > 1
     return 0;
 #else
-    void *var;
-    return *var;
+    return
 #endif
 }" | ${CC} ${NNG_CFLAGS} -xc - -o /dev/null > /dev/null 2>&1
+
+else
+  build-all-nanonext-libs
+fi
+
 if [ $? -ne 0 ]
 then
-  echo "No existing 'libnng' >= 1.6.0 found"
+  echo "No existing 'libnng' >= 1.5 found"
   echo "Detecting 'cmake'..."
   which cmake
   if [ $? -ne 0 ]

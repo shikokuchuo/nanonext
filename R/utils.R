@@ -262,17 +262,3 @@ is_nul_byte <- function(x) .Call(rnng_is_nul_byte, x)
 #' @export
 #'
 status_code <- function(x) .Call(rnng_status_code, x)
-
-#' nanonext Version Information
-#'
-#' Provides the package version, NNG and mbed TLS library versions in a single
-#'     string.
-#'
-#' @return A character vector of length one.
-#'
-#' @examples
-#' nanonext_version()
-#'
-#' @export
-#'
-nanonext_version <- function() .Call(rnng_version_string)

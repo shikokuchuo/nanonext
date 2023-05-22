@@ -16,7 +16,6 @@
 
 // nanonext - C level - Threaded Applications ----------------------------------
 
-#define NANONEXT_INTERNALS
 #define NANONEXT_PROTOCOLS
 #define NANONEXT_SUPPLEMENTALS
 #include <time.h>

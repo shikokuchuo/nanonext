@@ -1,4 +1,6 @@
-# nanonext 0.8.3.9007 (development)
+# nanonext 0.8.3.9008 (development)
+
+*The package is now compatible (again) with currently released 'libnng' versions. It will attempt to use system 'libnng' versions >= 1.5 where detected, and only compile the bundled library where necessary.*
 
 #### New Features
 
@@ -6,6 +8,7 @@
 
 #### Updates
 
+* Replaces `nanonext_version()` utility with a new variable `nanonext:::.nanonextVersion`, which contains the package version as a string. This may then be more flexibly used with the existing `nng_version()`.
 * Removes `...` argument for `context()` - retained for compatibility with the 'verify' argument, which was removed in the previous release.
 * Package widens compatibility to support system 'libnng' versions >= 1.5.0.
 * Bundled 'libnng' source rolled back to v1.6.0 pre-release (8e1836f) for stability.

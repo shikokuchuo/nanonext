@@ -16,7 +16,6 @@
 
 // nanonext - C level - Mbed TLS Functions -------------------------------------
 
-#define NANONEXT_INTERNALS
 #define NANONEXT_TLS
 #include "nanonext.h"
 
@@ -33,18 +32,6 @@ SEXP rnng_version(void) {
   UNPROTECT(1);
 
   return version;
-
-}
-
-SEXP rnng_version_string(void) {
-
-  char ver[60] = "";
-  char mbed_version[9];
-  mbedtls_version_get_string(mbed_version);
-  snprintf(ver, sizeof(ver), "nanonext %s | nng %s | mbed TLS %s",
-           NANONEXT_VERSION, nng_version(), mbed_version);
-
-  return Rf_mkString(ver);
 
 }
 
