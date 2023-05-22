@@ -280,31 +280,20 @@ unresolved <- function(aio) .Call(rnng_unresolved, aio)
 
 #' Technical Utility: Query if an Aio is Unresolved
 #'
-#' Query whether an Aio remains unresolved. These are experimental technical
-#'     utility versions of \code{\link{unresolved}} not intended for
-#'     ordinary use. Provides a method of querying the busy status of an Aio
-#'     without altering its state in any way i.e. not attempting to retrieve the
-#'     result or message.
+#' Query whether an Aio remains unresolved. This is an experimental technical
+#'     utility version of \code{\link{unresolved}} not intended for ordinary
+#'     use. Provides a method of querying the busy status of an Aio without
+#'     altering its state in any way i.e. not attempting to retrieve the result
+#'     or message.
 #'
 #' @param aio an Aio (object of class 'sendAio' or 'recvAio').
 #'
 #' @return Logical TRUE if 'aio' is an unresolved Aio, or FALSE otherwise.
 #'
-#' @details \code{.unresolved2()} is only to be used for 'recvAio' returned by a
-#'     signalling function, and should be called with 'cv' specifying the
-#'     'conditionVariable' that was used with the signalling function.
-#'
-#'     If relying on \code{.unresolved2()}, do not attempt to access the value
-#'     of a recvAio' without calling its value with \code{\link{call_aio}}
-#'     first, otherwise an 'unresolvedValue' may still be obtained.
+#' @details \code{.unresolved()} is not intended to be used for 'recvAio'
+#'     returned by a signalling function, in which case \code{\link{unresolved}}
+#'     must be used in all cases.
 #'
 #' @export
 #'
 .unresolved <- function(aio) .Call(rnng_unresolved2, aio)
-
-#' @inheritParams wait
-#'
-#' @rdname dot-unresolved
-#' @export
-#'
-.unresolved2 <- function(aio, cv = NULL) .Call(rnng_unresolved3, aio, cv)

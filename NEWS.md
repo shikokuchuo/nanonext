@@ -1,10 +1,6 @@
-# nanonext 0.8.3.9009 (development)
+# nanonext 0.8.3.9010 (development)
 
 *The package is now compatible (again) with currently released 'libnng' versions. It will attempt to use system 'libnng' versions >= 1.5 where detected, and only compile the bundled library where necessary.*
-
-#### New Features
-
-* Adds `.unresolved2()` utility for use with signalling functions - always use `call_aio()` before accessing an 'aio' value when using this function.
 
 #### Updates
 

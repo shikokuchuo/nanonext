@@ -119,7 +119,9 @@ extern SEXP nano_unresolved;
 
 extern SEXP rnng_aio_call(SEXP);
 extern SEXP rnng_aio_get_msgdata(SEXP);
+extern SEXP rnng_aio_get_msgdata2(SEXP);
 extern SEXP rnng_aio_get_msgraw(SEXP);
+extern SEXP rnng_aio_get_msgraw2(SEXP);
 extern SEXP rnng_aio_http(SEXP, SEXP, SEXP);
 extern SEXP rnng_aio_result(SEXP);
 extern SEXP rnng_aio_stop(SEXP);
@@ -181,7 +183,6 @@ extern SEXP rnng_subscribe(SEXP, SEXP, SEXP);
 extern SEXP rnng_timed_signal(SEXP);
 extern SEXP rnng_unresolved(SEXP);
 extern SEXP rnng_unresolved2(SEXP);
-extern SEXP rnng_unresolved3(SEXP, SEXP);
 extern SEXP rnng_url_parse(SEXP);
 extern SEXP rnng_version(void);
 

@@ -92,10 +92,12 @@ static void RegisterSymbols(void) {
 static void PreserveObjects(void) {
   R_PreserveObject(nano_addRedirect = Rf_allocVector(STRSXP, 1));
   R_PreserveObject(nano_aioFormals = Rf_cons(nano_AioSymbol, R_NilValue));
-  R_PreserveObject(nano_aioFuncs = Rf_allocVector(LISTSXP, 3));
+  R_PreserveObject(nano_aioFuncs = Rf_allocVector(LISTSXP, 5));
   SETCAR(nano_aioFuncs, Rf_lang3(nano_DotcallSymbol, Rf_install("rnng_aio_result"), nano_DataSymbol));
   SETCADR(nano_aioFuncs, Rf_lang3(nano_DotcallSymbol, Rf_install("rnng_aio_get_msgdata"), nano_DataSymbol));
   SETCADDR(nano_aioFuncs, Rf_lang3(nano_DotcallSymbol, Rf_install("rnng_aio_get_msgraw"), nano_DataSymbol));
+  SETCADDDR(nano_aioFuncs, Rf_lang3(nano_DotcallSymbol, Rf_install("rnng_aio_get_msgdata2"), nano_DataSymbol));
+  SETCAD4R(nano_aioFuncs, Rf_lang3(nano_DotcallSymbol, Rf_install("rnng_aio_get_msgraw2"), nano_DataSymbol));
   R_PreserveObject(nano_aioNFuncs = Rf_allocVector(LISTSXP, 4));
   SETCAR(nano_aioNFuncs, Rf_lang5(nano_DotcallSymbol, nano_AioHttpSymbol, nano_DataSymbol, nano_ResponseSymbol, Rf_ScalarInteger(1)));
   SETCADR(nano_aioNFuncs, Rf_lang5(nano_DotcallSymbol, nano_AioHttpSymbol, nano_DataSymbol, nano_ResponseSymbol, Rf_ScalarInteger(2)));
@@ -135,7 +137,9 @@ static void ReleaseObjects(void) {
 static const R_CallMethodDef callMethods[] = {
   {"rnng_aio_call", (DL_FUNC) &rnng_aio_call, 1},
   {"rnng_aio_get_msgdata", (DL_FUNC) &rnng_aio_get_msgdata, 1},
+  {"rnng_aio_get_msgdata2", (DL_FUNC) &rnng_aio_get_msgdata2, 1},
   {"rnng_aio_get_msgraw", (DL_FUNC) &rnng_aio_get_msgraw, 1},
+  {"rnng_aio_get_msgraw2", (DL_FUNC) &rnng_aio_get_msgraw2, 1},
   {"rnng_aio_http", (DL_FUNC) &rnng_aio_http, 3},
   {"rnng_aio_result", (DL_FUNC) &rnng_aio_result, 1},
   {"rnng_aio_stop", (DL_FUNC) &rnng_aio_stop, 1},
@@ -196,7 +200,6 @@ static const R_CallMethodDef callMethods[] = {
   {"rnng_subscribe", (DL_FUNC) &rnng_subscribe, 3},
   {"rnng_unresolved", (DL_FUNC) &rnng_unresolved, 1},
   {"rnng_unresolved2", (DL_FUNC) &rnng_unresolved2, 1},
-  {"rnng_unresolved3", (DL_FUNC) &rnng_unresolved3, 2},
   {"rnng_url_parse", (DL_FUNC) &rnng_url_parse, 1},
   {"rnng_version", (DL_FUNC) &rnng_version, 0},
   {NULL, NULL, 0}

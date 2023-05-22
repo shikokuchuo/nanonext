@@ -488,6 +488,55 @@ SEXP rnng_aio_get_msgraw(SEXP env) {
 
 }
 
+SEXP rnng_aio_get_msgraw2(SEXP env) {
+
+  const SEXP exist = Rf_findVarInFrame(ENCLOS(env), nano_RawSymbol);
+  if (exist != R_UnboundValue)
+    return exist;
+
+  const SEXP aio = Rf_findVarInFrame(env, nano_AioSymbol);
+  if (R_ExternalPtrTag(aio) != nano_AioSymbol)
+    Rf_error("object is not a valid or active Aio");
+
+  nano_aio *raio = (nano_aio *) R_ExternalPtrAddr(aio);
+
+  int res;
+  nano_cv_aio *ncva = (nano_cv_aio *) R_ExternalPtrAddr(Rf_getAttrib(aio, nano_CvSymbol));
+  nng_mtx *mtx = ncva->cv->mtx;
+  nng_mtx_lock(mtx);
+  res = raio->result;
+  nng_mtx_unlock(mtx);
+  if (res == 0)
+    return nano_unresolved;
+
+  if (res > 0)
+    return mk_error_raio(res, env);
+
+  SEXP out;
+  const int mod = -raio->mode, kpr = 1;
+  unsigned char *buf;
+  size_t sz;
+
+  if (raio->type == IOV_RECVAIO) {
+    buf = raio->data;
+    sz = nng_aio_count(raio->aio);
+  } else {
+    nng_msg *msg = (nng_msg *) raio->data;
+    buf = nng_msg_body(msg);
+    sz = nng_msg_len(msg);
+  }
+
+  PROTECT(out = nano_decode(buf, sz, mod, kpr));
+  Rf_defineVar(nano_RawSymbol, VECTOR_ELT(out, 0), ENCLOS(env));
+  Rf_defineVar(nano_ResultSymbol, VECTOR_ELT(out, 1), ENCLOS(env));
+  Rf_defineVar(nano_AioSymbol, R_NilValue, env);
+  out = VECTOR_ELT(out, 0);
+
+  UNPROTECT(1);
+  return out;
+
+}
+
 SEXP rnng_aio_get_msgdata(SEXP env) {
 
   const SEXP exist = Rf_findVarInFrame(ENCLOS(env), nano_ResultSymbol);
@@ -513,6 +562,60 @@ SEXP rnng_aio_get_msgdata(SEXP env) {
 
   if (raio->result > 0)
     return mk_error_raio(raio->result, env);
+
+  SEXP out;
+  const int kpr = raio->mode > 0 ? 0 : 1, mod = kpr ? -raio->mode : raio->mode;
+  unsigned char *buf;
+  size_t sz;
+
+  if (raio->type == IOV_RECVAIO) {
+    buf = raio->data;
+    sz = nng_aio_count(raio->aio);
+  } else {
+    nng_msg *msg = (nng_msg *) raio->data;
+    buf = nng_msg_body(msg);
+    sz = nng_msg_len(msg);
+  }
+
+  PROTECT(out = nano_decode(buf, sz, mod, kpr));
+  if (kpr) {
+    Rf_defineVar(nano_RawSymbol, VECTOR_ELT(out, 0), ENCLOS(env));
+    Rf_defineVar(nano_ResultSymbol, VECTOR_ELT(out, 1), ENCLOS(env));
+    out = VECTOR_ELT(out, 1);
+  } else {
+    Rf_defineVar(nano_ResultSymbol, out, ENCLOS(env));
+  }
+  Rf_defineVar(nano_AioSymbol, R_NilValue, env);
+
+  UNPROTECT(1);
+  return out;
+
+}
+
+SEXP rnng_aio_get_msgdata2(SEXP env) {
+
+  const SEXP exist = Rf_findVarInFrame(ENCLOS(env), nano_ResultSymbol);
+  if (exist != R_UnboundValue)
+    return exist;
+
+  const SEXP aio = Rf_findVarInFrame(env, nano_AioSymbol);
+  if (R_ExternalPtrTag(aio) != nano_AioSymbol)
+    Rf_error("object is not a valid or active Aio");
+
+  nano_aio *raio = (nano_aio *) R_ExternalPtrAddr(aio);
+
+  int res;
+  nano_cv_aio *ncva = (nano_cv_aio *) R_ExternalPtrAddr(Rf_getAttrib(aio, nano_CvSymbol));
+  nng_mtx *mtx = ncva->cv->mtx;
+  nng_mtx_lock(mtx);
+  res = raio->result;
+  nng_mtx_unlock(mtx);
+
+  if (res == 0)
+    return nano_unresolved;
+
+  if (res > 0)
+    return mk_error_raio(res, env);
 
   SEXP out;
   const int kpr = raio->mode > 0 ? 0 : 1, mod = kpr ? -raio->mode : raio->mode;
@@ -618,40 +721,6 @@ SEXP rnng_unresolved2(SEXP aio) {
 #else
   return Rf_ScalarLogical(nng_aio_busy(aiop->aio));
 #endif
-
-}
-
-SEXP rnng_unresolved3(SEXP aio, SEXP cvar) {
-
-  if (TYPEOF(aio) != ENVSXP)
-    return Rf_ScalarLogical(0);
-
-  SEXP coreaio = Rf_findVarInFrame(aio, nano_AioSymbol);
-  if (R_ExternalPtrTag(coreaio) != nano_AioSymbol || R_ExternalPtrAddr(coreaio) == NULL)
-    return Rf_ScalarLogical(0);
-
-  int res;
-  nano_aio *aiop = (nano_aio *) R_ExternalPtrAddr(coreaio);
-
-  if (cvar != R_NilValue) {
-
-    if (R_ExternalPtrTag(cvar) != nano_CvSymbol)
-      Rf_error("'cv' is not a valid Condition Variable");
-
-    nano_cv *ncv = (nano_cv *) R_ExternalPtrAddr(cvar);
-    nng_mtx *mtx = ncv->mtx;
-
-    nng_mtx_lock(mtx);
-    res = aiop->result;
-    nng_mtx_unlock(mtx);
-
-  } else {
-
-    res = aiop->result;
-
-  }
-
-  return Rf_ScalarLogical(!res);
 
 }
 
@@ -1683,14 +1752,14 @@ SEXP rnng_cv_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP keep, SEXP bytes, 
   if (kpr) {
     PROTECT(fun = Rf_allocSExp(CLOSXP));
     SET_FORMALS(fun, nano_aioFormals);
-    SET_BODY(fun, CADDR(nano_aioFuncs));
+    SET_BODY(fun, CAD4R(nano_aioFuncs));
     SET_CLOENV(fun, clo);
     R_MakeActiveBinding(nano_RawSymbol, fun, env);
     UNPROTECT(1);
   }
   PROTECT(fun = Rf_allocSExp(CLOSXP));
   SET_FORMALS(fun, nano_aioFormals);
-  SET_BODY(fun, CADR(nano_aioFuncs));
+  SET_BODY(fun, CADDDR(nano_aioFuncs));
   SET_CLOENV(fun, clo);
   R_MakeActiveBinding(nano_DataSymbol, fun, env);
 
@@ -1774,14 +1843,14 @@ SEXP rnng_cv_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP tim
   if (kpr) {
     PROTECT(fun = Rf_allocSExp(CLOSXP));
     SET_FORMALS(fun, nano_aioFormals);
-    SET_BODY(fun, CADDR(nano_aioFuncs));
+    SET_BODY(fun, CAD4R(nano_aioFuncs));
     SET_CLOENV(fun, clo);
     R_MakeActiveBinding(nano_RawSymbol, fun, env);
     UNPROTECT(1);
   }
   PROTECT(fun = Rf_allocSExp(CLOSXP));
   SET_FORMALS(fun, nano_aioFormals);
-  SET_BODY(fun, CADR(nano_aioFuncs));
+  SET_BODY(fun, CADDDR(nano_aioFuncs));
   SET_CLOENV(fun, clo);
   R_MakeActiveBinding(nano_DataSymbol, fun, env);
 
