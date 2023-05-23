@@ -41,10 +41,9 @@ These are case-insensitive and will return NULL if not present.}
 \item{timeout}{(optional) integer value in milliseconds after which the
 connection and subsequent transact attempts time out.}
 
-\item{pem}{(optional) applicable to secure HTTPS sites only. The path to a
-file containing X.509 certificate(s) in PEM format, comprising the
-certificate authority certificate chain (and revocation list if present).
-If missing or NULL, certificates are not validated.}
+\item{pem}{(optional) applicable to secure HTTPS sites only, a 'tlsConfig'
+object created by \code{\link{tls_config}}. If missing or NULL,
+certificates are not validated.}
 
 \item{session}{an 'ncurlSession' object.}
 }

@@ -419,6 +419,15 @@ print.thread <- function(x, ...) {
 
 #' @export
 #'
+print.tlsConfig <- function(x, ...) {
+
+  cat("< TLS Configuration >\n", file = stdout())
+  invisible(x)
+
+}
+
+#' @export
+#'
 `[[.nano` <- function(x, i, exact = FALSE)
   attr(x, i, exact = exact)
 

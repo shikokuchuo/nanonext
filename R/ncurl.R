@@ -41,10 +41,9 @@
 #'     These are case-insensitive and will return NULL if not present.
 #' @param timeout (optional) integer value in milliseconds after which the
 #'     transaction times out if not yet complete.
-#' @param pem (optional) applicable to secure HTTPS sites only. The path to a
-#'     file containing X.509 certificate(s) in PEM format, comprising the
-#'     certificate authority certificate chain (and revocation list if present).
-#'     If missing or NULL, certificates are not validated.
+#' @param pem (optional) applicable to secure HTTPS sites only, a 'tlsConfig'
+#'     object created by \code{\link{tls_config}}. If missing or NULL,
+#'     certificates are not validated.
 #'
 #' @return Named list of 4 elements:
 #'     \itemize{
@@ -152,3 +151,26 @@ transact <- function(session) .Call(rnng_ncurl_transact, session)
 #' @export
 #'
 close.ncurlSession <- function(con, ...) invisible(.Call(rnng_ncurl_session_close, con))
+
+#' TLS - Create Configuration
+#'
+#' Create a TLS configuration object to be used for secure connections.
+#'
+#' @param file An absolute path to a file containing X.509 certificate(s) in PEM
+#'     format, comprising the certificate authority certificate chain (and
+#'     revocation list if present).
+#' @param server [default FALSE] logical value whether to configure for a server
+#'     or else a client.
+#' @param auth [default TRUE] logical value whether to require authentication,
+#'     in which case a check is made to ensure that the peer has presented a
+#'     valid certificate. If the certificate is invalid or missing, then the
+#'     session is refused. Otherwise, authentication is optional, in which case
+#'     a certificate is validated if presented by the peer, but if not then the
+#'     session is allowed to proceed without authentication.
+#'
+#' @return A 'tlsConfig' object.
+#'
+#' @export
+#'
+tls_config <- function(file, server = FALSE, auth = TRUE)
+  .Call(rnng_tls_config, file, server, auth)

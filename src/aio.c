@@ -1017,18 +1017,23 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP dat
 
   if (!strcmp(handle->url->u_scheme, "https")) {
 
-    if ((xc = nng_tls_config_alloc(&handle->cfg, NNG_TLS_MODE_CLIENT)))
-      goto exitlevel6;
-
     if (pem == R_NilValue) {
+      if ((xc = nng_tls_config_alloc(&handle->cfg, NNG_TLS_MODE_CLIENT)))
+        goto exitlevel6;
+
       if ((xc = nng_tls_config_server_name(handle->cfg, handle->url->u_hostname)) ||
           (xc = nng_tls_config_auth_mode(handle->cfg, NNG_TLS_AUTH_MODE_NONE)) ||
           (xc = nng_http_client_set_tls(handle->cli, handle->cfg)))
         goto exitlevel7;
+
     } else {
+
+      if (R_ExternalPtrTag(pem) != nano_TlsSymbol)
+        Rf_error("'pem' is not a valid TLS Configuration");
+      handle->cfg = (nng_tls_config *) R_ExternalPtrAddr(pem);
+      nng_tls_config_hold(handle->cfg);
+
       if ((xc = nng_tls_config_server_name(handle->cfg, handle->url->u_hostname)) ||
-          (xc = nng_tls_config_ca_file(handle->cfg, CHAR(STRING_ELT(pem, 0)))) ||
-          (xc = nng_tls_config_auth_mode(handle->cfg, NNG_TLS_AUTH_MODE_REQUIRED)) ||
           (xc = nng_http_client_set_tls(handle->cli, handle->cfg)))
         goto exitlevel7;
     }
@@ -1270,18 +1275,23 @@ SEXP rnng_ncurl_session(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP
 
   if (!strcmp(handle->url->u_scheme, "https")) {
 
-    if ((xc = nng_tls_config_alloc(&handle->cfg, NNG_TLS_MODE_CLIENT)))
-      goto exitlevel6;
-
     if (pem == R_NilValue) {
+      if ((xc = nng_tls_config_alloc(&handle->cfg, NNG_TLS_MODE_CLIENT)))
+        goto exitlevel6;
+
       if ((xc = nng_tls_config_server_name(handle->cfg, handle->url->u_hostname)) ||
           (xc = nng_tls_config_auth_mode(handle->cfg, NNG_TLS_AUTH_MODE_NONE)) ||
           (xc = nng_http_client_set_tls(handle->cli, handle->cfg)))
         goto exitlevel7;
+
     } else {
+
+      if (R_ExternalPtrTag(pem) != nano_TlsSymbol)
+        Rf_error("'pem' is not a valid TLS Configuration");
+      handle->cfg = (nng_tls_config *) R_ExternalPtrAddr(pem);
+      nng_tls_config_hold(handle->cfg);
+
       if ((xc = nng_tls_config_server_name(handle->cfg, handle->url->u_hostname)) ||
-          (xc = nng_tls_config_ca_file(handle->cfg, CHAR(STRING_ELT(pem, 0)))) ||
-          (xc = nng_tls_config_auth_mode(handle->cfg, NNG_TLS_AUTH_MODE_REQUIRED)) ||
           (xc = nng_http_client_set_tls(handle->cli, handle->cfg)))
         goto exitlevel7;
     }

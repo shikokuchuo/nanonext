@@ -52,6 +52,15 @@ static void stream_finalizer(SEXP xptr) {
 
 }
 
+static void tls_finalizer(SEXP xptr) {
+
+  if (R_ExternalPtrAddr(xptr) == NULL)
+    return;
+  nng_tls_config *xp = (nng_tls_config *) R_ExternalPtrAddr(xptr);
+  nng_tls_config_free(xp);
+
+}
+
 // utils -----------------------------------------------------------------------
 
 SEXP rnng_strerror(SEXP error) {
@@ -227,18 +236,23 @@ SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP follow, SEXP method, SEXP headers,
     goto exitlevel5;
 
   if (!strcmp(url->u_scheme, "https")) {
-    if ((xc = nng_tls_config_alloc(&cfg, NNG_TLS_MODE_CLIENT)))
-      goto exitlevel6;
 
     if (pem == R_NilValue) {
+      if ((xc = nng_tls_config_alloc(&cfg, NNG_TLS_MODE_CLIENT)))
+        goto exitlevel6;
+
       if ((xc = nng_tls_config_server_name(cfg, url->u_hostname)) ||
           (xc = nng_tls_config_auth_mode(cfg, NNG_TLS_AUTH_MODE_NONE)) ||
           (xc = nng_http_client_set_tls(client, cfg)))
         goto exitlevel7;
     } else {
+
+      if (R_ExternalPtrTag(pem) != nano_TlsSymbol)
+        Rf_error("'pem' is not a valid TLS Configuration");
+      cfg = (nng_tls_config *) R_ExternalPtrAddr(pem);
+      nng_tls_config_hold(cfg);
+
       if ((xc = nng_tls_config_server_name(cfg, url->u_hostname)) ||
-          (xc = nng_tls_config_ca_file(cfg, CHAR(STRING_ELT(pem, 0)))) ||
-          (xc = nng_tls_config_auth_mode(cfg, NNG_TLS_AUTH_MODE_REQUIRED)) ||
           (xc = nng_http_client_set_tls(client, cfg)))
         goto exitlevel7;
     }
@@ -357,6 +371,29 @@ SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP follow, SEXP method, SEXP headers,
   nng_url_free(url);
   exitlevel1:
   return mk_error_ncurl(xc);
+
+}
+
+SEXP rnng_tls_config(SEXP pem, SEXP server, SEXP auth) {
+
+  const char *file = CHAR(STRING_ELT(pem, 0));
+  const int typ = LOGICAL(server)[0];
+  const int lvl = LOGICAL(auth)[0];
+  nng_tls_config *cfg;
+  int xc;
+  SEXP xp;
+
+  if ((xc = nng_tls_config_alloc(&cfg, typ ? NNG_TLS_MODE_SERVER : NNG_TLS_MODE_CLIENT)) ||
+      (xc = nng_tls_config_ca_file(cfg, file)) ||
+      (xc = nng_tls_config_auth_mode(cfg, lvl ? NNG_TLS_AUTH_MODE_REQUIRED : NNG_TLS_AUTH_MODE_OPTIONAL)))
+    ERROR_OUT(xc);
+
+  PROTECT(xp = R_MakeExternalPtr(cfg, nano_TlsSymbol, R_NilValue));
+  R_RegisterCFinalizerEx(xp, tls_finalizer, TRUE);
+  Rf_classgets(xp, Rf_mkString("tlsConfig"));
+
+  UNPROTECT(1);
+  return xp;
 
 }
 

@@ -106,6 +106,7 @@ extern SEXP nano_StateSymbol;
 extern SEXP nano_StatusSymbol;
 extern SEXP nano_StreamSymbol;
 extern SEXP nano_TextframesSymbol;
+extern SEXP nano_TlsSymbol;
 extern SEXP nano_UnserSymbol;
 extern SEXP nano_UrlSymbol;
 
@@ -185,6 +186,7 @@ extern SEXP rnng_stream_listen(SEXP, SEXP, SEXP);
 extern SEXP rnng_strerror(SEXP);
 extern SEXP rnng_subscribe(SEXP, SEXP, SEXP);
 extern SEXP rnng_timed_signal(SEXP);
+extern SEXP rnng_tls_config(SEXP, SEXP, SEXP);
 extern SEXP rnng_unresolved(SEXP);
 extern SEXP rnng_unresolved2(SEXP);
 extern SEXP rnng_url_parse(SEXP);

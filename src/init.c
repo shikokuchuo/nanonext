@@ -42,6 +42,7 @@ SEXP nano_StateSymbol;
 SEXP nano_StatusSymbol;
 SEXP nano_StreamSymbol;
 SEXP nano_TextframesSymbol;
+SEXP nano_TlsSymbol;
 SEXP nano_UnserSymbol;
 SEXP nano_UrlSymbol;
 
@@ -85,6 +86,7 @@ static void RegisterSymbols(void) {
   nano_StatusSymbol = Rf_install("status");
   nano_StreamSymbol = Rf_install("stream");
   nano_TextframesSymbol = Rf_install("textframes");
+  nano_TlsSymbol = Rf_install("tls");
   nano_UnserSymbol = Rf_install("unserialize");
   nano_UrlSymbol = Rf_install("url");
 }
@@ -198,6 +200,7 @@ static const R_CallMethodDef callMethods[] = {
   {"rnng_stream_listen", (DL_FUNC) &rnng_stream_listen, 3},
   {"rnng_strerror", (DL_FUNC) &rnng_strerror, 1},
   {"rnng_subscribe", (DL_FUNC) &rnng_subscribe, 3},
+  {"rnng_tls_config", (DL_FUNC) &rnng_tls_config, 3},
   {"rnng_unresolved", (DL_FUNC) &rnng_unresolved, 1},
   {"rnng_unresolved2", (DL_FUNC) &rnng_unresolved2, 1},
   {"rnng_url_parse", (DL_FUNC) &rnng_url_parse, 1},
