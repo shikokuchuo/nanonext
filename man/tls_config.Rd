@@ -12,14 +12,15 @@ format, comprising the certificate authority certificate chain (and
 revocation list if present).}
 
 \item{server}{[default FALSE] logical value whether to configure for a server
-or else a client.}
+or else a client. Supplying a non-logical value will error.}
 
 \item{auth}{[default TRUE] logical value whether to require authentication,
 in which case a check is made to ensure that the peer has presented a
 valid certificate. If the certificate is invalid or missing, then the
 session is refused. Otherwise, authentication is optional, in which case
 a certificate is validated if presented by the peer, but if not then the
-session is allowed to proceed without authentication.}
+session is allowed to proceed without authentication. Supplying a
+non-logical value will error.}
 }
 \value{
 A 'tlsConfig' object.

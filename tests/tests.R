@@ -481,3 +481,25 @@ nanotest(base64dec(base64enc("test")) == "test")
 nanotest(is.raw(base64enc(data.frame(), convert = FALSE)))
 nanotest(is.integer(unserialize(base64dec(base64enc(c(1L, 2L)), convert = FALSE))))
 nanotesterr(base64dec("__"), "not valid base64")
+
+file <- tempfile()
+pem <- "-----BEGIN CERTIFICATE----- -----END CERTIFICATE-----"
+cat(pem, file = file)
+nanotesterr(tls_config(file = file), "26")
+pem <- "-----BEGIN CERTIFICATE-----
+MIICGTCCAZ+gAwIBAgIQCeCTZaz32ci5PhwLBCou8zAKBggqhkjOPQQDAzBOMQswCQYDVQQGEwJV
+UzEXMBUGA1UEChMORGlnaUNlcnQsIEluYy4xJjAkBgNVBAMTHURpZ2lDZXJ0IFRMUyBFQ0MgUDM4
+NCBSb290IEc1MB4XDTIxMDExNTAwMDAwMFoXDTQ2MDExNDIzNTk1OVowTjELMAkGA1UEBhMCVVMx
+FzAVBgNVBAoTDkRpZ2lDZXJ0LCBJbmMuMSYwJAYDVQQDEx1EaWdpQ2VydCBUTFMgRUNDIFAzODQg
+Um9vdCBHNTB2MBAGByqGSM49AgEGBSuBBAAiA2IABMFEoc8Rl1Ca3iOCNQfN0MsYndLxf3c1Tzvd
+lHJS7cI7+Oz6e2tYIOyZrsn8aLN1udsJ7MgT9U7GCh1mMEy7H0cKPGEQQil8pQgO4CLp0zVozptj
+n4S1mU1YoI71VOeVyaNCMEAwHQYDVR0OBBYEFMFRRVBZqz7nLFr6ICISB4CIfBFqMA4GA1UdDwEB
+/wQEAwIBhjAPBgNVHRMBAf8EBTADAQH/MAoGCCqGSM49BAMDA2gAMGUCMQCJao1H5+z8blUD2Wds
+Jk6Dxv3J+ysTvLd6jLRl0mlpYxNjOyZQLgGheQaRnUi/wr4CMEfDFXuxoJGZSZOoPHzoRgaLLPIx
+AJSdYsiJvRmEFOml+wG4DXZDjC5Ty3zfDBeWUA==
+-----END CERTIFICATE-----"
+cat(pem, file = file)
+nanotestxp(tls <- tls_config(file = file))
+nanotest(inherits(tls, "tlsConfig"))
+nanotestp(tls)
+unlink(file)

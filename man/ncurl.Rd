@@ -14,7 +14,7 @@ ncurl(
   data = NULL,
   response = NULL,
   timeout = NULL,
-  tls = NULL
+  sec = NULL
 )
 }
 \arguments{
@@ -48,7 +48,7 @@ These are case-insensitive and will return NULL if not present.}
 \item{timeout}{(optional) integer value in milliseconds after which the
 transaction times out if not yet complete.}
 
-\item{tls}{(optional) applicable to secure HTTPS sites only, a 'tlsConfig'
+\item{sec}{(optional) applicable to secure HTTPS sites only, a 'tlsConfig'
 object created by \code{\link{tls_config}}. If missing or NULL,
 certificates are not validated.}
 }

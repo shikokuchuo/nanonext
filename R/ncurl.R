@@ -41,7 +41,7 @@
 #'     These are case-insensitive and will return NULL if not present.
 #' @param timeout (optional) integer value in milliseconds after which the
 #'     transaction times out if not yet complete.
-#' @param tls (optional) applicable to secure HTTPS sites only, a 'tlsConfig'
+#' @param sec (optional) applicable to secure HTTPS sites only, a 'tlsConfig'
 #'     object created by \code{\link{tls_config}}. If missing or NULL,
 #'     certificates are not validated.
 #'
@@ -87,10 +87,10 @@ ncurl <- function(url,
                   data = NULL,
                   response = NULL,
                   timeout = NULL,
-                  tls = NULL)
+                  sec = NULL)
   if (async)
-    data <- .Call(rnng_ncurl_aio, url, convert, method, headers, data, timeout, tls, environment()) else
-      .Call(rnng_ncurl, url, convert, follow, method, headers, data, response, timeout, tls)
+    data <- .Call(rnng_ncurl_aio, url, convert, method, headers, data, timeout, sec, environment()) else
+      .Call(rnng_ncurl, url, convert, follow, method, headers, data, response, timeout, sec)
 
 #' ncurl Session
 #'
@@ -121,8 +121,8 @@ ncurl_session <- function(url,
                           data = NULL,
                           response = NULL,
                           timeout = NULL,
-                          tls = NULL)
-    .Call(rnng_ncurl_session, url, convert, method, headers, data, response, timeout, tls)
+                          sec = NULL)
+    .Call(rnng_ncurl_session, url, convert, method, headers, data, response, timeout, sec)
 
 #' @param session an 'ncurlSession' object.
 #'
@@ -160,13 +160,14 @@ close.ncurlSession <- function(con, ...) invisible(.Call(rnng_ncurl_session_clos
 #'     format, comprising the certificate authority certificate chain (and
 #'     revocation list if present).
 #' @param server [default FALSE] logical value whether to configure for a server
-#'     or else a client.
+#'     or else a client. Supplying a non-logical value will error.
 #' @param auth [default TRUE] logical value whether to require authentication,
 #'     in which case a check is made to ensure that the peer has presented a
 #'     valid certificate. If the certificate is invalid or missing, then the
 #'     session is refused. Otherwise, authentication is optional, in which case
 #'     a certificate is validated if presented by the peer, but if not then the
-#'     session is allowed to proceed without authentication.
+#'     session is allowed to proceed without authentication. Supplying a
+#'     non-logical value will error.
 #'
 #' @return A 'tlsConfig' object.
 #'
