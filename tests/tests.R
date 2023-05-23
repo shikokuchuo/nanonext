@@ -322,7 +322,7 @@ relo <- ncurl("https://cran.r-project.org/package=nanonext", convert = FALSE, re
 nanotest(is.integer(call_aio(relo)$status))
 relo <- ncurl("https://cran.r-project.org/package=nanonext", convert = FALSE, response = list("server"), async = TRUE)
 nanotest(is.integer(call_aio(relo)$status))
-put1 <- ncurl("http://httpbin.org/put", async = TRUE, method = "PUT", headers = c(Authorization = "Bearer token"), data = "test", response = c("date", "server"))
+put1 <- ncurl("http://httpbin.org/put", async = TRUE, method = "PUT", headers = c(Authorization = "Bearer token"), data = "test", response = c("date", "server"), timeout = 3000L)
 nanotest(is.integer(call_aio(put1)$status))
 nanotestnn(put1$headers)
 nanotestnn(put1$raw)
@@ -485,7 +485,7 @@ nanotesterr(base64dec("__"), "not valid base64")
 file <- tempfile()
 pem <- "-----BEGIN CERTIFICATE----- -----END CERTIFICATE-----"
 cat(pem, file = file)
-nanotesterr(tls_config(file = file), "26")
+nanotesterr(tls_config(client = file), "26")
 pem <- "-----BEGIN CERTIFICATE-----
 MIICGTCCAZ+gAwIBAgIQCeCTZaz32ci5PhwLBCou8zAKBggqhkjOPQQDAzBOMQswCQYDVQQGEwJV
 UzEXMBUGA1UEChMORGlnaUNlcnQsIEluYy4xJjAkBgNVBAMTHURpZ2lDZXJ0IFRMUyBFQ0MgUDM4
@@ -499,9 +499,10 @@ Jk6Dxv3J+ysTvLd6jLRl0mlpYxNjOyZQLgGheQaRnUi/wr4CMEfDFXuxoJGZSZOoPHzoRgaLLPIx
 AJSdYsiJvRmEFOml+wG4DXZDjC5Ty3zfDBeWUA==
 -----END CERTIFICATE-----"
 cat(pem, file = file)
-nanotestxp(tls <- tls_config(file = file))
+nanotestxp(tls <- tls_config(client = file))
 unlink(file)
 nanotest(inherits(tls, "tlsConfig"))
 nanotestp(tls)
 nanotest(is_error_value(ncurl("https://www.cam.ac.uk/", sec = tls)$status))
 nanotest(is_error_value(call_aio(ncurl("https://www.cam.ac.uk/", async = TRUE, sec = tls))$status))
+nanotestxp(tls <- tls_config())

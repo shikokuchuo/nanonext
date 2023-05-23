@@ -374,19 +374,31 @@ SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP follow, SEXP method, SEXP headers,
 
 }
 
-SEXP rnng_tls_config(SEXP file, SEXP server, SEXP auth) {
+SEXP rnng_tls_config(SEXP client, SEXP server, SEXP pass, SEXP auth) {
 
-  const char *fil = CHAR(STRING_ELT(file, 0));
-  const int typ = LOGICAL(server)[0];
   const int lvl = LOGICAL(auth)[0];
   nng_tls_config *cfg;
   int xc;
   SEXP xp;
 
-  if ((xc = nng_tls_config_alloc(&cfg, typ ? NNG_TLS_MODE_SERVER : NNG_TLS_MODE_CLIENT)) ||
-      (xc = nng_tls_config_ca_file(cfg, fil)) ||
-      (xc = nng_tls_config_auth_mode(cfg, lvl ? NNG_TLS_AUTH_MODE_REQUIRED : NNG_TLS_AUTH_MODE_OPTIONAL)))
-    ERROR_OUT(xc);
+  if (client != R_NilValue) {
+    const char *file = CHAR(STRING_ELT(client, 0));
+    if ((xc = nng_tls_config_alloc(&cfg, NNG_TLS_MODE_CLIENT)) ||
+        (xc = nng_tls_config_ca_file(cfg, file)) ||
+        (xc = nng_tls_config_auth_mode(cfg, lvl ? NNG_TLS_AUTH_MODE_REQUIRED : NNG_TLS_AUTH_MODE_OPTIONAL)))
+      ERROR_OUT(xc);
+  } else if (server != R_NilValue) {
+    const char *file = CHAR(STRING_ELT(server, 0));
+    const char *pss = pass != R_NilValue ? CHAR(STRING_ELT(pass, 0)) : NULL;
+    if ((xc = nng_tls_config_alloc(&cfg, NNG_TLS_MODE_SERVER)) ||
+        (xc = nng_tls_config_cert_key_file(cfg, file, pss)) ||
+        (xc = nng_tls_config_auth_mode(cfg, lvl ? NNG_TLS_AUTH_MODE_REQUIRED : NNG_TLS_AUTH_MODE_OPTIONAL)))
+      ERROR_OUT(xc);
+  } else {
+    if ((xc = nng_tls_config_alloc(&cfg, NNG_TLS_MODE_CLIENT)) ||
+        (xc = nng_tls_config_auth_mode(cfg, NNG_TLS_AUTH_MODE_NONE)))
+      ERROR_OUT(xc);
+  }
 
   PROTECT(xp = R_MakeExternalPtr(cfg, nano_TlsSymbol, R_NilValue));
   R_RegisterCFinalizerEx(xp, tls_finalizer, TRUE);
@@ -524,8 +536,7 @@ SEXP rnng_stream_listen(SEXP url, SEXP textframes, SEXP sec) {
       if ((xc = nng_tls_config_alloc(&cfg, NNG_TLS_MODE_SERVER)))
         goto exitlevel3;
 
-      if ((xc = nng_tls_config_server_name(cfg, up->u_hostname)) ||
-          (xc = nng_tls_config_auth_mode(cfg, NNG_TLS_AUTH_MODE_NONE)) ||
+      if ((xc = nng_tls_config_auth_mode(cfg, NNG_TLS_AUTH_MODE_NONE)) ||
           (xc = nng_stream_listener_set_ptr(lp, "tls-config", cfg)))
         goto exitlevel4;
     } else {
@@ -535,8 +546,7 @@ SEXP rnng_stream_listen(SEXP url, SEXP textframes, SEXP sec) {
       cfg = (nng_tls_config *) R_ExternalPtrAddr(sec);
       nng_tls_config_hold(cfg);
 
-      if ((xc = nng_tls_config_server_name(cfg, up->u_hostname)) ||
-          (xc = nng_stream_listener_set_ptr(lp, "tls-config", cfg)))
+      if ((xc = nng_stream_listener_set_ptr(lp, "tls-config", cfg)))
         goto exitlevel4;
     }
 
