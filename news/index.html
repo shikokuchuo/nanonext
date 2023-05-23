@@ -62,7 +62,7 @@
 </ul></div>
 <div class="section level5">
 <h5 id="updates-0-8-3-9011">Updates<a class="anchor" aria-label="anchor" href="#updates-0-8-3-9011"></a></h5>
-<ul><li>‘pem’ argument of <code>ncurl</code> and <code>ncurlSession()</code> retired in favour of ‘tls’ which takes a ‘tlsConfig’ object created by <code><a href="../reference/tls_config.html">tls_config()</a></code> rather than a PEM certificate directly.</li>
+<ul><li>‘pem’ argument of <code><a href="../reference/ncurl.html">ncurl()</a></code> and <code><a href="../reference/ncurl_session.html">ncurl_session()</a></code> retired in favour of ‘tls’ which takes a ‘tlsConfig’ object created by <code><a href="../reference/tls_config.html">tls_config()</a></code> rather than a PEM certificate directly.</li>
 <li>Removes <code>nanonext_version()</code> in favour of the existing <code><a href="../reference/nng_version.html">nng_version()</a></code>, along with <code><a href="https://rdrr.io/r/utils/packageDescription.html" class="external-link">utils::packageVersion()</a></code> if required, for greater flexibility.</li>
 <li>Removes <code>...</code> argument for <code><a href="../reference/context.html">context()</a></code> - retained for compatibility with the ‘verify’ argument, which was removed in the previous release.</li>
 <li>Package widens compatibility to support system ‘libnng’ versions &gt;= 1.5.0.</li>
