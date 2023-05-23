@@ -24,23 +24,23 @@
 #'     path to a file containing X.509 certificate(s) in PEM format, comprising
 #'     the certificate authority certificate chain (and revocation list if
 #'     present), used to validate certificates presented by peers.
-#' @param server (optional) for creating a server configuration, absolute path
-#'     to a single file containing the PEM encoded certificate and associated
-#'     private key, and any additional certificates leading to a validation
-#'     chain, with the leaf certificate first. There is no need to include the
-#'     self-signed root.
+#' @param server (optional) for creating a server configuration, the absolute
+#'     path to a single file containing the PEM encoded certificate and
+#'     associated private key, along with any additional certificates leading to
+#'     a validation chain, the leaf certificate first. It is not required to
+#'     include the self-signed root.
 #' @param pass [default NULL] required only if the secret key contained in the
 #'     file supplied to 'server' is encrypted with a password. Do not provide
 #'     directly in case it is cached or recorded in history, but through an
 #'     object or function that returns the value.
 #' @param auth [default TRUE] logical value whether to require authentication,
 #'     in which case a check is made to ensure that the peer has presented a
-#'     valid certificate. If the certificate is invalid or missing, then the
-#'     session is refused. Otherwise, authentication is optional, in which case
-#'     a certificate is validated if presented by the peer, but if not then the
-#'     session is allowed to proceed without authentication. If both 'client'
-#'     and 'server' are not supplied, then no authentication is performed and
-#'     this argument has no effect. Supplying a non-logical value will error.
+#'     certificate, and the session is refused if it is invalid or missing.
+#'     Otherwise, authentication is optional, in which case a certificate is
+#'     validated if presented by the peer, but if not then the session is
+#'     allowed to proceed without authentication. If both 'client' and 'server'
+#'     are not supplied, then no authentication is performed and this argument
+#'     has no effect. Supplying a non-logical value will error.
 #'
 #' @return A 'tlsConfig' object.
 #'
