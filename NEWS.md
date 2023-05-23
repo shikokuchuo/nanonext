@@ -1,4 +1,4 @@
-# nanonext 0.8.3.9014 (development)
+# nanonext 0.8.3.9015 (development)
 
 *The package is now compatible (again) with currently released 'libnng' versions. It will attempt to use system 'libnng' versions >= 1.5 where detected, and only compile the bundled library where necessary.*
 
@@ -8,7 +8,7 @@
 
 #### Updates
 
-* 'pem' argument of `ncurl()`, `ncurl_session()` and `stream()` retired in favour of 'sec' which takes a 'tlsConfig' object created by `tls_config()` rather than a PEM certificate directly.
+* 'pem' argument of `ncurl()`, `ncurl_session()` and `stream()` retired in favour of 'secure' which takes a TLS Configuration object created by `tls_config()` rather than a PEM certificate directly.
 * Removes `nanonext_version()` in favour of the existing `nng_version()`, along with `utils::packageVersion()` if required, for greater flexibility.
 * Removes `...` argument for `context()` - retained for compatibility with the 'verify' argument, which was removed in the previous release.
 * Package widens compatibility to support system 'libnng' versions >= 1.5.0.

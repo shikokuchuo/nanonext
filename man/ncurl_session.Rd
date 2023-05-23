@@ -13,7 +13,7 @@ ncurl_session(
   data = NULL,
   response = NULL,
   timeout = NULL,
-  sec = NULL
+  secure = NULL
 )
 
 transact(session)
@@ -41,9 +41,9 @@ These are case-insensitive and will return NULL if not present.}
 \item{timeout}{(optional) integer value in milliseconds after which the
 connection and subsequent transact attempts time out.}
 
-\item{sec}{(optional) applicable to secure HTTPS sites only, a 'tlsConfig'
-object created by \code{\link{tls_config}}. If missing or NULL,
-certificates are not validated.}
+\item{secure}{(optional) applicable to secure HTTPS sites only, a client TLS
+Configuration object created by \code{\link{tls_config}}. If missing or
+NULL, certificates are not validated.}
 
 \item{session}{an 'ncurlSession' object.}
 }

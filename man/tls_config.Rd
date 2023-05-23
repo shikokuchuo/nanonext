@@ -45,6 +45,6 @@ Up-to-date CA certificates in PEM format, extracted from Mozilla,
 }
 \examples{
 cfg <- tls_config()
-ncurl("https://www.r-project.org/", timeout = 1000L, sec = cfg)
+ncurl("https://www.r-project.org/", timeout = 1000L, secure = cfg)
 
 }

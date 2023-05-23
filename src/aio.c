@@ -952,7 +952,7 @@ SEXP rnng_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP keep, SEXP bytes, SEX
 // ncurl aio -------------------------------------------------------------------
 
 SEXP rnng_ncurl_aio(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP data,
-                    SEXP timeout, SEXP sec, SEXP clo) {
+                    SEXP timeout, SEXP secure, SEXP clo) {
 
   const char *httr = CHAR(STRING_ELT(http, 0));
   nano_aio *haio = R_Calloc(1, nano_aio);
@@ -1017,7 +1017,7 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP dat
 
   if (!strcmp(handle->url->u_scheme, "https")) {
 
-    if (sec == R_NilValue) {
+    if (secure == R_NilValue) {
       if ((xc = nng_tls_config_alloc(&handle->cfg, NNG_TLS_MODE_CLIENT)))
         goto exitlevel6;
 
@@ -1028,9 +1028,9 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP dat
 
     } else {
 
-      if (R_ExternalPtrTag(sec) != nano_TlsSymbol)
+      if (R_ExternalPtrTag(secure) != nano_TlsSymbol)
         Rf_error("'sec' is not a valid TLS Configuration");
-      handle->cfg = (nng_tls_config *) R_ExternalPtrAddr(sec);
+      handle->cfg = (nng_tls_config *) R_ExternalPtrAddr(secure);
       nng_tls_config_hold(handle->cfg);
 
       if ((xc = nng_tls_config_server_name(handle->cfg, handle->url->u_hostname)) ||
@@ -1209,7 +1209,7 @@ SEXP rnng_aio_http(SEXP env, SEXP response, SEXP type) {
 // ncurl session ---------------------------------------------------------------
 
 SEXP rnng_ncurl_session(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP data,
-                        SEXP response, SEXP timeout, SEXP sec) {
+                        SEXP response, SEXP timeout, SEXP secure) {
 
   const char *httr = CHAR(STRING_ELT(http, 0));
   nano_aio *haio = R_Calloc(1, nano_aio);
@@ -1275,7 +1275,7 @@ SEXP rnng_ncurl_session(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP
 
   if (!strcmp(handle->url->u_scheme, "https")) {
 
-    if (sec == R_NilValue) {
+    if (secure == R_NilValue) {
       if ((xc = nng_tls_config_alloc(&handle->cfg, NNG_TLS_MODE_CLIENT)))
         goto exitlevel6;
 
@@ -1286,9 +1286,9 @@ SEXP rnng_ncurl_session(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP
 
     } else {
 
-      if (R_ExternalPtrTag(sec) != nano_TlsSymbol)
+      if (R_ExternalPtrTag(secure) != nano_TlsSymbol)
         Rf_error("'sec' is not a valid TLS Configuration");
-      handle->cfg = (nng_tls_config *) R_ExternalPtrAddr(sec);
+      handle->cfg = (nng_tls_config *) R_ExternalPtrAddr(secure);
       nng_tls_config_hold(handle->cfg);
 
       if ((xc = nng_tls_config_server_name(handle->cfg, handle->url->u_hostname)) ||

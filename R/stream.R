@@ -32,9 +32,9 @@
 #' @param textframes [default FALSE] applicable to the websocket transport only,
 #'     enables sending and receiving of TEXT frames (ignored otherwise).
 #'     Supplying a non-logical value will error.
-#' @param sec (optional) applicable to secure websockets only, a 'tlsConfig'
-#'     object created by \code{\link{tls_config}}. If missing or NULL,
-#'     certificates are not validated.
+#' @param secure (optional) applicable to secure websockets only, a client or
+#'     server TLS configuration object created by \code{\link{tls_config}}. If
+#'     missing or NULL, certificates are not validated.
 #'
 #' @return A Stream (object of class 'nanoStream' and 'nano').
 #'
@@ -55,11 +55,11 @@
 #'
 #' @export
 #'
-stream <- function(dial = NULL, listen = NULL, textframes = FALSE, sec = NULL)
+stream <- function(dial = NULL, listen = NULL, textframes = FALSE, secure = NULL)
   if (length(dial))
-    .Call(rnng_stream_dial, dial, textframes, sec) else
+    .Call(rnng_stream_dial, dial, textframes, secure) else
       if (length(listen))
-        .Call(rnng_stream_listen, listen, textframes, sec) else
+        .Call(rnng_stream_listen, listen, textframes, secure) else
           stop("specify a URL for either 'dial' or 'listen'")
 
 #' @rdname close
