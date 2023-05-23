@@ -46,6 +46,10 @@ typedef struct nano_cv_s {
   nng_cv *cv;
 } nano_cv;
 
+#if NNG_MAJOR_VERSION == 1 && NNG_MINOR_VERSION < 6
+extern nng_mtx *shr_mtx;
+#endif
+
 #endif
 
 #ifdef NANONEXT_TLS

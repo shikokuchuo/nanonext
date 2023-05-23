@@ -21,10 +21,6 @@
 
 // definitions and statics -----------------------------------------------------
 
-#if NNG_MAJOR_VERSION == 1 && NNG_MINOR_VERSION < 6
-nng_mtx *shr_mtx;
-#endif
-
 typedef enum nano_aio_typ {
   SENDAIO,
   RECVAIO,

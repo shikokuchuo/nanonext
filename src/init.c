@@ -19,10 +19,6 @@
 #define NANONEXT_SUPPLEMENTALS
 #include "nanonext.h"
 
-#if NNG_MAJOR_VERSION == 1 && NNG_MINOR_VERSION < 6
-extern nng_mtx *shr_mtx;
-#endif
-
 SEXP nano_AioSymbol;
 SEXP nano_AioHttpSymbol;
 SEXP nano_ContextSymbol;
@@ -60,6 +56,10 @@ SEXP nano_recvAio;
 SEXP nano_sendAio;
 SEXP nano_success;
 SEXP nano_unresolved;
+
+#if NNG_MAJOR_VERSION == 1 && NNG_MINOR_VERSION < 6
+nng_mtx *shr_mtx;
+#endif
 
 static void RegisterSymbols(void) {
   nano_AioSymbol = Rf_install("aio");
