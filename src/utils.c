@@ -177,7 +177,7 @@ SEXP rnng_is_nul_byte(SEXP x) {
 // ncurl - minimalist http client ----------------------------------------------
 
 SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP follow, SEXP method, SEXP headers,
-                SEXP data, SEXP response, SEXP timeout, SEXP pem) {
+                SEXP data, SEXP response, SEXP timeout, SEXP tls) {
 
   const int conv = LOGICAL(convert)[0];
   nng_url *url;
@@ -237,7 +237,7 @@ SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP follow, SEXP method, SEXP headers,
 
   if (!strcmp(url->u_scheme, "https")) {
 
-    if (pem == R_NilValue) {
+    if (tls == R_NilValue) {
       if ((xc = nng_tls_config_alloc(&cfg, NNG_TLS_MODE_CLIENT)))
         goto exitlevel6;
 
@@ -247,9 +247,9 @@ SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP follow, SEXP method, SEXP headers,
         goto exitlevel7;
     } else {
 
-      if (R_ExternalPtrTag(pem) != nano_TlsSymbol)
-        Rf_error("'pem' is not a valid TLS Configuration");
-      cfg = (nng_tls_config *) R_ExternalPtrAddr(pem);
+      if (R_ExternalPtrTag(tls) != nano_TlsSymbol)
+        Rf_error("'tls' is not a valid TLS Configuration");
+      cfg = (nng_tls_config *) R_ExternalPtrAddr(tls);
       nng_tls_config_hold(cfg);
 
       if ((xc = nng_tls_config_server_name(cfg, url->u_hostname)) ||
@@ -274,7 +274,7 @@ SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP follow, SEXP method, SEXP headers,
 
   if (relo && LOGICAL(follow)[0]) {
     SET_STRING_ELT(nano_addRedirect, 0, Rf_mkChar(nng_http_res_get_header(res, "Location")));
-    return rnng_ncurl(nano_addRedirect, convert, follow, method, headers, data, response, timeout, pem);
+    return rnng_ncurl(nano_addRedirect, convert, follow, method, headers, data, response, timeout, tls);
   }
 
   SEXP out, vec, cvec, rvec;
@@ -374,9 +374,9 @@ SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP follow, SEXP method, SEXP headers,
 
 }
 
-SEXP rnng_tls_config(SEXP pem, SEXP server, SEXP auth) {
+SEXP rnng_tls_config(SEXP file, SEXP server, SEXP auth) {
 
-  const char *file = CHAR(STRING_ELT(pem, 0));
+  const char *fil = CHAR(STRING_ELT(file, 0));
   const int typ = LOGICAL(server)[0];
   const int lvl = LOGICAL(auth)[0];
   nng_tls_config *cfg;
@@ -384,7 +384,7 @@ SEXP rnng_tls_config(SEXP pem, SEXP server, SEXP auth) {
   SEXP xp;
 
   if ((xc = nng_tls_config_alloc(&cfg, typ ? NNG_TLS_MODE_SERVER : NNG_TLS_MODE_CLIENT)) ||
-      (xc = nng_tls_config_ca_file(cfg, file)) ||
+      (xc = nng_tls_config_ca_file(cfg, fil)) ||
       (xc = nng_tls_config_auth_mode(cfg, lvl ? NNG_TLS_AUTH_MODE_REQUIRED : NNG_TLS_AUTH_MODE_OPTIONAL)))
     ERROR_OUT(xc);
 

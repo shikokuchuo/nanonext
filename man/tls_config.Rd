@@ -7,7 +7,7 @@
 tls_config(file, server = FALSE, auth = TRUE)
 }
 \arguments{
-\item{file}{An absolute path to a file containing X.509 certificate(s) in PEM
+\item{file}{absolute path to a file containing X.509 certificate(s) in PEM
 format, comprising the certificate authority certificate chain (and
 revocation list if present).}
 
@@ -26,4 +26,9 @@ A 'tlsConfig' object.
 }
 \description{
 Create a TLS configuration object to be used for secure connections.
+}
+\details{
+Up-to-date CA certificates in PEM format, extracted from Mozilla,
+    are available at the following URL:
+    \url{https://curl.se/docs/caextract.html}.
 }
