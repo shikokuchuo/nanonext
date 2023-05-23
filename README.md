@@ -369,7 +369,7 @@ aio
 #> < recvAio >
 #>  - $data for message data
 aio$data |> str()
-#>  num [1:100000000] -0.7902 -0.0227 0.3805 -0.1794 -0.6658 ...
+#>  num [1:100000000] -1.431 0.414 -0.501 -0.858 1.413 ...
 ```
 
 As `call_aio()` is blocking and will wait for completion, an alternative
@@ -650,11 +650,11 @@ ncurl("https://httpbin.org/headers")
 #>   [1] 7b 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73
 #>  [26] 74 22 3a 20 22 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22
 #>  [51] 58 2d 41 6d 7a 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31
-#>  [76] 2d 36 34 36 62 35 36 37 32 2d 37 36 61 63 32 66 32 61 30 64 38 33 66 31 35
-#> [101] 34 34 36 34 35 64 32 35 64 22 0a 20 20 7d 0a 7d 0a
+#>  [76] 2d 36 34 36 63 61 39 62 65 2d 33 64 30 39 38 37 66 32 35 35 39 64 66 63 38
+#> [101] 66 36 35 62 62 62 30 36 33 22 0a 20 20 7d 0a 7d 0a
 #> 
 #> $data
-#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-646b5672-76ac2f2a0d83f1544645d25d\"\n  }\n}\n"
+#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-646ca9be-3d0987f2559dfc8f65bbb063\"\n  }\n}\n"
 ```
 
 For advanced use, supports additional HTTP methods such as POST or PUT.
@@ -675,13 +675,13 @@ res
 
 call_aio(res)$headers
 #> $Date
-#> [1] "Mon, 22 May 2023 11:48:28 GMT"
+#> [1] "Tue, 23 May 2023 11:55:48 GMT"
 #> 
 #> $Server
 #> [1] "gunicorn/19.9.0"
 
 res$data
-#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-646b568a-77452d06544009950fd9d804\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
+#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-646ca9c2-3a881417464d70462f92ce36\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"82.163.196.106\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
 ```
 
 In this respect, it may be used as a performant and lightweight method
@@ -707,7 +707,7 @@ transact(sess)
 #> 
 #> $headers
 #> $headers$date
-#> [1] "Mon, 22 May 2023 11:48:29 GMT"
+#> [1] "Tue, 23 May 2023 11:55:53 GMT"
 #> 
 #> 
 #> $raw
@@ -717,15 +717,15 @@ transact(sess)
 #>  [76] 22 43 6f 6e 74 65 6e 74 2d 54 79 70 65 22 3a 20 22 61 70 70 6c 69 63 61 74
 #> [101] 69 6f 6e 2f 6a 73 6f 6e 22 2c 20 0a 20 20 20 20 22 48 6f 73 74 22 3a 20 22
 #> [126] 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22 58 2d 41 6d 7a
-#> [151] 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31 2d 36 34 36 62
-#> [176] 35 36 38 64 2d 34 64 65 39 39 32 30 34 34 34 39 64 64 36 61 31 30 61 31 32
-#> [201] 64 31 64 38 22 0a 20 20 7d 2c 20 0a 20 20 22 6f 72 69 67 69 6e 22 3a 20 22
-#> [226] 38 30 2e 31 36 39 2e 31 30 33 2e 32 31 38 22 2c 20 0a 20 20 22 75 72 6c 22
+#> [151] 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31 2d 36 34 36 63
+#> [176] 61 39 63 35 2d 34 34 30 61 61 66 36 63 35 61 64 39 38 33 30 37 32 62 63 61
+#> [201] 39 38 32 37 22 0a 20 20 7d 2c 20 0a 20 20 22 6f 72 69 67 69 6e 22 3a 20 22
+#> [226] 38 32 2e 31 36 33 2e 31 39 36 2e 31 30 36 22 2c 20 0a 20 20 22 75 72 6c 22
 #> [251] 3a 20 22 68 74 74 70 73 3a 2f 2f 68 74 74 70 62 69 6e 2e 6f 72 67 2f 67 65
 #> [276] 74 22 0a 7d 0a
 #> 
 #> $data
-#> [1] "{\n  \"args\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-646b568d-4de99204449dd6a10a12d1d8\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"https://httpbin.org/get\"\n}\n"
+#> [1] "{\n  \"args\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-646ca9c5-440aaf6c5ad983072bca9827\"\n  }, \n  \"origin\": \"82.163.196.106\", \n  \"url\": \"https://httpbin.org/get\"\n}\n"
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -887,21 +887,19 @@ Installation from source requires ‘libnng’ \>= v1.5.0 and ‘libmbedtls’
 ‘cmake’ to compile ‘libnng’ v1.6.0 pre-release (8e1836f) and
 ‘libmbedtls’ v3.4.0 included within the package sources.
 
-Note: it is recommended for stability and performance reasons to use the
-bundled library versions. To always compile the libraries from source
-even if system installations exist, set the environment variable
-`NANONEXT_LIBS` prior to installation e.g. by
-`Sys.setenv(NANONEXT_LIBS = 1)`.
+**It is recommended for both stability and performance to let the
+package automatically compile bundled versions of ‘libmbedtls’ and
+‘libnng’ during installation, and not install ‘libnng’ from a package
+manager.** To always compile the libraries from source even if system
+installations exist, set the `NANONEXT_LIBS` environment variable prior
+to installation e.g. by `Sys.setenv(NANONEXT_LIBS = 1)`.
 
-Alternatively, ‘libnng’ is available as libnng-dev (deb) or nng-devel
-(rpm), and ‘libmbedtls’ is available as libmbedtls-dev (deb) or
-libmbedtls-devel (rpm).
-
-The ‘INCLUDE_DIR’ and ‘LIB_DIR’ environment variables may be set prior
-to package installation to specify a custom location for ‘libmbedtls’ or
-‘libnng’ other than the standard filesystem locations.
-
-Package installation will automatically build the libraries if required.
+Alternatively, to use system libraries, ‘libnng’ is available as
+libnng-dev (deb) or nng-devel (rpm), and ‘libmbedtls’ is available as
+libmbedtls-dev (deb) or libmbedtls-devel (rpm). The `INCLUDE_DIR` and
+`LIB_DIR` environment variables may be set prior to package installation
+to specify a custom location for ‘libmbedtls’ or ‘libnng’ other than the
+standard filesystem locations.
 
 *Additional requirements for Solaris: (i) the ‘xz’ package - available
 on OpenCSW, and (ii) a more recent version of ‘cmake’ than available on

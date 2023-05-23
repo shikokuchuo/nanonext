@@ -29,6 +29,6 @@ Create a TLS configuration object to be used for secure connections.
 }
 \details{
 Up-to-date CA certificates in PEM format, extracted from Mozilla,
-    are available at the following URL:
-    \url{https://curl.se/docs/caextract.html}.
+    are available at the following URL: \url{https://curl.se/docs/caextract.html}.
+    This link is not endorsed, use at your own risk.
 }

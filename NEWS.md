@@ -8,7 +8,7 @@
 
 #### Updates
 
-* 'pem' argument of `ncurl` and `ncurlSession()` retired in favour of 'tls' which takes a 'tlsConfig' object created by `tls_config()` rather than a PEM certificate directly.
+* 'pem' argument of `ncurl()` and `ncurl_session()` retired in favour of 'tls' which takes a 'tlsConfig' object created by `tls_config()` rather than a PEM certificate directly.
 * Removes `nanonext_version()` in favour of the existing `nng_version()`, along with `utils::packageVersion()` if required, for greater flexibility.
 * Removes `...` argument for `context()` - retained for compatibility with the 'verify' argument, which was removed in the previous release.
 * Package widens compatibility to support system 'libnng' versions >= 1.5.0.

@@ -171,8 +171,8 @@ close.ncurlSession <- function(con, ...) invisible(.Call(rnng_ncurl_session_clos
 #' @return A 'tlsConfig' object.
 #'
 #' @details Up-to-date CA certificates in PEM format, extracted from Mozilla,
-#'     are available at the following URL:
-#'     \url{https://curl.se/docs/caextract.html}.
+#'     are available at the following URL: \url{https://curl.se/docs/caextract.html}.
+#'     This link is not endorsed, use at your own risk.
 #'
 #' @export
 #'
