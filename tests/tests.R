@@ -500,6 +500,8 @@ AJSdYsiJvRmEFOml+wG4DXZDjC5Ty3zfDBeWUA==
 -----END CERTIFICATE-----"
 cat(pem, file = file)
 nanotestxp(tls <- tls_config(file = file))
+unlink(file)
 nanotest(inherits(tls, "tlsConfig"))
 nanotestp(tls)
-unlink(file)
+nanotest(is_error_value(ncurl("https://www.cam.ac.uk/", sec = tls)$status))
+nanotest(is_error_value(call_aio(ncurl("https://www.cam.ac.uk/", async = TRUE, sec = tls))$status))
