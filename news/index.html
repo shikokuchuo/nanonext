@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.3.9014</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.3.9015</span>
       </span>
     </div>
 
@@ -54,15 +54,15 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.8.3.9014" id="nanonext-0839014-development">nanonext 0.8.3.9014 (development)<a class="anchor" aria-label="anchor" href="#nanonext-0839014-development"></a></h2>
+<h2 class="page-header" data-toc-text="0.8.3.9015" id="nanonext-0839015-development">nanonext 0.8.3.9015 (development)<a class="anchor" aria-label="anchor" href="#nanonext-0839015-development"></a></h2>
 <p><em>The package is now compatible (again) with currently released ‘libnng’ versions. It will attempt to use system ‘libnng’ versions &gt;= 1.5 where detected, and only compile the bundled library where necessary.</em></p>
 <div class="section level5">
-<h5 id="new-features-0-8-3-9014">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-8-3-9014"></a></h5>
+<h5 id="new-features-0-8-3-9015">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-8-3-9015"></a></h5>
 <ul><li>Implements <code><a href="../reference/tls_config.html">tls_config()</a></code> to create re-usable TLS configurations from PEM certificate files.</li>
 </ul></div>
 <div class="section level5">
-<h5 id="updates-0-8-3-9014">Updates<a class="anchor" aria-label="anchor" href="#updates-0-8-3-9014"></a></h5>
-<ul><li>‘pem’ argument of <code><a href="../reference/ncurl.html">ncurl()</a></code>, <code><a href="../reference/ncurl_session.html">ncurl_session()</a></code> and <code><a href="../reference/stream.html">stream()</a></code> retired in favour of ‘sec’ which takes a ‘tlsConfig’ object created by <code><a href="../reference/tls_config.html">tls_config()</a></code> rather than a PEM certificate directly.</li>
+<h5 id="updates-0-8-3-9015">Updates<a class="anchor" aria-label="anchor" href="#updates-0-8-3-9015"></a></h5>
+<ul><li>‘pem’ argument of <code><a href="../reference/ncurl.html">ncurl()</a></code>, <code><a href="../reference/ncurl_session.html">ncurl_session()</a></code> and <code><a href="../reference/stream.html">stream()</a></code> retired in favour of ‘secure’ which takes a TLS Configuration object created by <code><a href="../reference/tls_config.html">tls_config()</a></code> rather than a PEM certificate directly.</li>
 <li>Removes <code>nanonext_version()</code> in favour of the existing <code><a href="../reference/nng_version.html">nng_version()</a></code>, along with <code><a href="https://rdrr.io/r/utils/packageDescription.html" class="external-link">utils::packageVersion()</a></code> if required, for greater flexibility.</li>
 <li>Removes <code>...</code> argument for <code><a href="../reference/context.html">context()</a></code> - retained for compatibility with the ‘verify’ argument, which was removed in the previous release.</li>
 <li>Package widens compatibility to support system ‘libnng’ versions &gt;= 1.5.0.</li>
