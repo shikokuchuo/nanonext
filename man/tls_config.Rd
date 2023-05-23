@@ -2,7 +2,7 @@
 % Please edit documentation in R/tls.R
 \name{tls_config}
 \alias{tls_config}
-\title{TLS - Create Configuration}
+\title{Create TLS Configuration}
 \usage{
 tls_config(client = NULL, server = NULL, pass = NULL, auth = TRUE)
 }
@@ -42,4 +42,9 @@ Create a TLS configuration object to be used for secure connections.
 Up-to-date CA certificates in PEM format, extracted from Mozilla,
     are available at: \url{https://curl.se/docs/caextract.html}. This link is
     not endorsed; use at your own risk.
+}
+\examples{
+cfg <- tls_config()
+ncurl("https://www.r-project.org/", timeout = 1000L, sec = cfg)
+
 }

@@ -16,7 +16,7 @@
 
 # nanonext - TLS Configuration -------------------------------------------------
 
-#' TLS - Create Configuration
+#' Create TLS Configuration
 #'
 #' Create a TLS configuration object to be used for secure connections.
 #'
@@ -47,6 +47,10 @@
 #' @details Up-to-date CA certificates in PEM format, extracted from Mozilla,
 #'     are available at: \url{https://curl.se/docs/caextract.html}. This link is
 #'     not endorsed; use at your own risk.
+#'
+#' @examples
+#' cfg <- tls_config()
+#' ncurl("https://www.r-project.org/", timeout = 1000L, sec = cfg)
 #'
 #' @export
 #'
