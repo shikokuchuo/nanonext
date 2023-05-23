@@ -20,7 +20,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.3.9010</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.3.9011</span>
       </span>
     </div>
 
@@ -118,10 +118,9 @@ connection and subsequent transact attempts time out.</p></dd>
 
 
 <dt>pem</dt>
-<dd><p>(optional) applicable to secure HTTPS sites only. The path to a
-file containing X.509 certificate(s) in PEM format, comprising the
-certificate authority certificate chain (and revocation list if present).
-If missing or NULL, certificates are not validated.</p></dd>
+<dd><p>(optional) applicable to secure HTTPS sites only, a 'tlsConfig'
+object created by <code><a href="tls_config.html">tls_config</a></code>. If missing or NULL,
+certificates are not validated.</p></dd>
 
 
 <dt>session</dt>
