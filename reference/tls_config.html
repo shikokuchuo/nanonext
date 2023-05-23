@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.3.9013</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.3.9014</span>
       </span>
     </div>
 
@@ -50,7 +50,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>TLS - Create Configuration</h1>
-    <small class="dont-index">Source: <a href="https://github.com/shikokuchuo/nanonext/blob/HEAD/R/ncurl.R" class="external-link"><code>R/ncurl.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/shikokuchuo/nanonext/blob/HEAD/R/tls.R" class="external-link"><code>R/tls.R</code></a></small>
     <div class="hidden name"><code>tls_config.Rd</code></div>
     </div>
 
@@ -59,20 +59,31 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">tls_config</span><span class="op">(</span><span class="va">file</span>, server <span class="op">=</span> <span class="cn">FALSE</span>, auth <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">tls_config</span><span class="op">(</span>client <span class="op">=</span> <span class="cn">NULL</span>, server <span class="op">=</span> <span class="cn">NULL</span>, pass <span class="op">=</span> <span class="cn">NULL</span>, auth <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <dl><dt>file</dt>
-<dd><p>absolute path to a file containing X.509 certificate(s) in PEM
-format, comprising the certificate authority certificate chain (and
-revocation list if present).</p></dd>
+    <dl><dt>client</dt>
+<dd><p>(optional) for creating a client configuration, the absolute
+path to a file containing X.509 certificate(s) in PEM format, comprising
+the certificate authority certificate chain (and revocation list if
+present), used to validate certificates presented by peers.</p></dd>
 
 
 <dt>server</dt>
-<dd><p>[default FALSE] logical value whether to configure for a server
-or else a client. Supplying a non-logical value will error.</p></dd>
+<dd><p>(optional) for creating a server configuration, absolute path
+to a single file containing the PEM encoded certificate and associated
+private key, and any additional certificates leading to a validation
+chain, with the leaf certificate first. There is no need to include the
+self-signed root.</p></dd>
+
+
+<dt>pass</dt>
+<dd><p>[default NULL] required only if the secret key contained in the
+file supplied to 'server' is encrypted with a password. Do not provide
+directly in case it is cached or recorded in history, but through an
+object or function that returns the value.</p></dd>
 
 
 <dt>auth</dt>
@@ -81,8 +92,9 @@ in which case a check is made to ensure that the peer has presented a
 valid certificate. If the certificate is invalid or missing, then the
 session is refused. Otherwise, authentication is optional, in which case
 a certificate is validated if presented by the peer, but if not then the
-session is allowed to proceed without authentication. Supplying a
-non-logical value will error.</p></dd>
+session is allowed to proceed without authentication. If both 'client'
+and 'server' are not supplied, then no authentication is performed and
+this argument has no effect. Supplying a non-logical value will error.</p></dd>
 
 </dl></div>
     <div id="value">
@@ -94,8 +106,8 @@ non-logical value will error.</p></dd>
     <div id="details">
     <h2>Details</h2>
     <p>Up-to-date CA certificates in PEM format, extracted from Mozilla,
-    are available at the following URL: <a href="https://curl.se/docs/caextract.html" class="external-link">https://curl.se/docs/caextract.html</a>.
-    This link is not endorsed, use at your own risk.</p>
+    are available at: <a href="https://curl.se/docs/caextract.html" class="external-link">https://curl.se/docs/caextract.html</a>. This link is
+    not endorsed; use at your own risk.</p>
     </div>
 
   </div>
