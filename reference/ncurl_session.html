@@ -20,7 +20,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.3.9012</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.3.9013</span>
       </span>
     </div>
 
@@ -73,7 +73,7 @@
 <span>  data <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  response <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  timeout <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  tls <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  sec <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">transact</span><span class="op">(</span><span class="va">session</span><span class="op">)</span></span></code></pre></div>
@@ -117,7 +117,7 @@ These are case-insensitive and will return NULL if not present.</p></dd>
 connection and subsequent transact attempts time out.</p></dd>
 
 
-<dt>tls</dt>
+<dt>sec</dt>
 <dd><p>(optional) applicable to secure HTTPS sites only, a 'tlsConfig'
 object created by <code><a href="tls_config.html">tls_config</a></code>. If missing or NULL,
 certificates are not validated.</p></dd>
