@@ -424,6 +424,11 @@ nanotestz(close(s2))
 nanotestz(close(s3))
 nanotestz(close(s4))
 
+nanotest(nanonext:::.DollarNames.ncurlAio(NULL, "sta") == "status")
+nanotest(nanonext:::.DollarNames.recvAio(NULL, "dat") == "data")
+nanotest(nanonext:::.DollarNames.sendAio(NULL, "r") == "result")
+nanotestnn(nanonext:::.DollarNames.nano(NULL))
+
 fakesock <- `class<-`(new.env(), "nanoSocket")
 nanotesterr(dial(fakesock), "valid Socket")
 nanotesterr(dial(fakesock, autostart = FALSE), "valid Socket")
@@ -485,7 +490,7 @@ nanotesterr(base64dec("__"), "not valid base64")
 file <- tempfile()
 pem <- "-----BEGIN CERTIFICATE----- -----END CERTIFICATE-----"
 cat(pem, file = file)
-nanotesterr(tls_config(client = file), "26")
+nanotesterr(tls_config(server = file), "Cryptographic error")
 pem <- "-----BEGIN CERTIFICATE-----
 MIICGTCCAZ+gAwIBAgIQCeCTZaz32ci5PhwLBCou8zAKBggqhkjOPQQDAzBOMQswCQYDVQQGEwJV
 UzEXMBUGA1UEChMORGlnaUNlcnQsIEluYy4xJjAkBgNVBAMTHURpZ2lDZXJ0IFRMUyBFQ0MgUDM4

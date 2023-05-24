@@ -24,14 +24,13 @@ directly in case it is cached or recorded in history, but through an
 object or function that returns the value.}
 
 \item{auth}{(optional) logical value whether to require authentication - by
-default TRUE for client and FALSE for server configurations. If TRUE, it
-is always checked that the peer has presented a certificate, and if it is
-invalid or missing, the session is refused. If FALSE, authentication is
-optional, whereby a certificate is validated if presented by the peer,
-but the session is allowed to proceed without authentication if not. If
-both 'client' and 'server' are not supplied, then no authentication is
-performed and this argument has no effect. Supplying a non-logical value
-will error.}
+default TRUE for client and FALSE for server configurations. If TRUE, the
+session is only allowed to proceed if the peer has presented a valid
+certificate. If FALSE, authentication is optional, whereby a certificate
+is validated if presented by the peer, but the session still allowed to
+proceed if not. If neither 'client' nor 'server' are supplied, then no
+authentication is performed and this argument has no effect. Supplying a
+non-logical value will error.}
 }
 \value{
 A 'tlsConfig' object.
@@ -44,9 +43,10 @@ Specify one of 'client' or 'server' only, or neither (in which case
     an empty client configuration is created), as a configuration can only be
     of one type.
 
-    Up-to-date CA certificates in PEM format, extracted from Mozilla,
-    are available at: \url{https://curl.se/docs/caextract.html}. This link is
-    not endorsed; use at your own risk.
+    For use with \code{\link{ncurl}}, up-to-date CA certificates in PEM
+    format, extracted from Mozilla, are available at:
+    \url{https://curl.se/docs/caextract.html}. This link is not endorsed; use
+    at your own risk.
 }
 \examples{
 tls <- tls_config()
