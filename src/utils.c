@@ -177,7 +177,7 @@ SEXP rnng_is_nul_byte(SEXP x) {
 // ncurl - minimalist http client ----------------------------------------------
 
 SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP follow, SEXP method, SEXP headers,
-                SEXP data, SEXP response, SEXP timeout, SEXP secure) {
+                SEXP data, SEXP response, SEXP timeout, SEXP tls) {
 
   const int conv = LOGICAL(convert)[0];
   nng_url *url;
@@ -237,7 +237,7 @@ SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP follow, SEXP method, SEXP headers,
 
   if (!strcmp(url->u_scheme, "https")) {
 
-    if (secure == R_NilValue) {
+    if (tls == R_NilValue) {
       if ((xc = nng_tls_config_alloc(&cfg, NNG_TLS_MODE_CLIENT)))
         goto exitlevel6;
 
@@ -247,9 +247,9 @@ SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP follow, SEXP method, SEXP headers,
         goto exitlevel7;
     } else {
 
-      if (R_ExternalPtrTag(secure) != nano_TlsSymbol)
-        Rf_error("'sec' is not a valid TLS Configuration");
-      cfg = (nng_tls_config *) R_ExternalPtrAddr(secure);
+      if (R_ExternalPtrTag(tls) != nano_TlsSymbol)
+        Rf_error("'tls' is not a valid TLS Configuration");
+      cfg = (nng_tls_config *) R_ExternalPtrAddr(tls);
       nng_tls_config_hold(cfg);
 
       if ((xc = nng_tls_config_server_name(cfg, url->u_hostname)) ||
@@ -274,7 +274,7 @@ SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP follow, SEXP method, SEXP headers,
 
   if (relo && LOGICAL(follow)[0]) {
     SET_STRING_ELT(nano_addRedirect, 0, Rf_mkChar(nng_http_res_get_header(res, "Location")));
-    return rnng_ncurl(nano_addRedirect, convert, follow, method, headers, data, response, timeout, secure);
+    return rnng_ncurl(nano_addRedirect, convert, follow, method, headers, data, response, timeout, tls);
   }
 
   SEXP out, vec, cvec, rvec;
@@ -411,7 +411,7 @@ SEXP rnng_tls_config(SEXP client, SEXP server, SEXP pass, SEXP auth) {
 
 // streams ---------------------------------------------------------------------
 
-SEXP rnng_stream_dial(SEXP url, SEXP textframes, SEXP secure) {
+SEXP rnng_stream_dial(SEXP url, SEXP textframes, SEXP tls) {
 
   const char *add = CHAR(STRING_ELT(url, 0));
   nng_url *up;
@@ -437,7 +437,7 @@ SEXP rnng_stream_dial(SEXP url, SEXP textframes, SEXP secure) {
 
   if (!strcmp(up->u_scheme, "wss")) {
 
-    if (secure == R_NilValue) {
+    if (tls == R_NilValue) {
       if ((xc = nng_tls_config_alloc(&cfg, NNG_TLS_MODE_CLIENT)))
         goto exitlevel3;
 
@@ -447,9 +447,9 @@ SEXP rnng_stream_dial(SEXP url, SEXP textframes, SEXP secure) {
         goto exitlevel4;
     } else {
 
-      if (R_ExternalPtrTag(secure) != nano_TlsSymbol)
-        Rf_error("'sec' is not a valid TLS Configuration");
-      cfg = (nng_tls_config *) R_ExternalPtrAddr(secure);
+      if (R_ExternalPtrTag(tls) != nano_TlsSymbol)
+        Rf_error("'tls' is not a valid TLS Configuration");
+      cfg = (nng_tls_config *) R_ExternalPtrAddr(tls);
       nng_tls_config_hold(cfg);
 
       if ((xc = nng_tls_config_server_name(cfg, up->u_hostname)) ||
@@ -506,7 +506,7 @@ SEXP rnng_stream_dial(SEXP url, SEXP textframes, SEXP secure) {
 
 }
 
-SEXP rnng_stream_listen(SEXP url, SEXP textframes, SEXP secure) {
+SEXP rnng_stream_listen(SEXP url, SEXP textframes, SEXP tls) {
 
   const char *add = CHAR(STRING_ELT(url, 0));
   nng_url *up;
@@ -532,7 +532,7 @@ SEXP rnng_stream_listen(SEXP url, SEXP textframes, SEXP secure) {
 
   if (!strcmp(up->u_scheme, "wss")) {
 
-    if (secure == R_NilValue) {
+    if (tls == R_NilValue) {
       if ((xc = nng_tls_config_alloc(&cfg, NNG_TLS_MODE_SERVER)))
         goto exitlevel3;
 
@@ -541,12 +541,13 @@ SEXP rnng_stream_listen(SEXP url, SEXP textframes, SEXP secure) {
         goto exitlevel4;
     } else {
 
-      if (R_ExternalPtrTag(secure) != nano_TlsSymbol)
-        Rf_error("'sec' is not a valid TLS Configuration");
-      cfg = (nng_tls_config *) R_ExternalPtrAddr(secure);
+      if (R_ExternalPtrTag(tls) != nano_TlsSymbol)
+        Rf_error("'tls' is not a valid TLS Configuration");
+      cfg = (nng_tls_config *) R_ExternalPtrAddr(tls);
       nng_tls_config_hold(cfg);
 
-      if ((xc = nng_stream_listener_set_ptr(lp, "tls-config", cfg)))
+      if ((xc = nng_tls_config_server_name(cfg, up->u_hostname)) ||
+          (xc = nng_stream_listener_set_ptr(lp, "tls-config", cfg)))
         goto exitlevel4;
     }
 

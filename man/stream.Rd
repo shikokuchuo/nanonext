@@ -4,7 +4,7 @@
 \alias{stream}
 \title{Open Stream}
 \usage{
-stream(dial = NULL, listen = NULL, textframes = FALSE, secure = NULL)
+stream(dial = NULL, listen = NULL, textframes = FALSE, tls = NULL)
 }
 \arguments{
 \item{dial}{a URL to dial, specifying the transport and address as a character
@@ -19,7 +19,7 @@ character string e.g. 'ipc:///tmp/anyvalue' or 'tcp://127.0.0.1:5555'
 enables sending and receiving of TEXT frames (ignored otherwise).
 Supplying a non-logical value will error.}
 
-\item{secure}{(optional) applicable to secure websockets only, a client or
+\item{tls}{(optional) applicable to secure websockets only, a client or
 server TLS configuration object created by \code{\link{tls_config}}. If
 missing or NULL, certificates are not validated.}
 }

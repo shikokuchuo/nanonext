@@ -32,7 +32,7 @@
 #' @param textframes [default FALSE] applicable to the websocket transport only,
 #'     enables sending and receiving of TEXT frames (ignored otherwise).
 #'     Supplying a non-logical value will error.
-#' @param secure (optional) applicable to secure websockets only, a client or
+#' @param tls (optional) applicable to secure websockets only, a client or
 #'     server TLS configuration object created by \code{\link{tls_config}}. If
 #'     missing or NULL, certificates are not validated.
 #'
@@ -55,11 +55,11 @@
 #'
 #' @export
 #'
-stream <- function(dial = NULL, listen = NULL, textframes = FALSE, secure = NULL)
+stream <- function(dial = NULL, listen = NULL, textframes = FALSE, tls = NULL)
   if (length(dial))
-    .Call(rnng_stream_dial, dial, textframes, secure) else
+    .Call(rnng_stream_dial, dial, textframes, tls) else
       if (length(listen))
-        .Call(rnng_stream_listen, listen, textframes, secure) else
+        .Call(rnng_stream_listen, listen, textframes, tls) else
           stop("specify a URL for either 'dial' or 'listen'")
 
 #' @rdname close

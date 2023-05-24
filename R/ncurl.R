@@ -41,7 +41,7 @@
 #'     These are case-insensitive and will return NULL if not present.
 #' @param timeout (optional) integer value in milliseconds after which the
 #'     transaction times out if not yet complete.
-#' @param secure (optional) applicable to secure HTTPS sites only, a client TLS
+#' @param tls (optional) applicable to secure HTTPS sites only, a client TLS
 #'     Configuration object created by \code{\link{tls_config}}. If missing or
 #'     NULL, certificates are not validated.
 #'
@@ -87,10 +87,10 @@ ncurl <- function(url,
                   data = NULL,
                   response = NULL,
                   timeout = NULL,
-                  secure = NULL)
+                  tls = NULL)
   if (async)
-    data <- .Call(rnng_ncurl_aio, url, convert, method, headers, data, timeout, secure, environment()) else
-      .Call(rnng_ncurl, url, convert, follow, method, headers, data, response, timeout, secure)
+    data <- .Call(rnng_ncurl_aio, url, convert, method, headers, data, timeout, tls, environment()) else
+      .Call(rnng_ncurl, url, convert, follow, method, headers, data, response, timeout, tls)
 
 #' ncurl Session
 #'
@@ -121,8 +121,8 @@ ncurl_session <- function(url,
                           data = NULL,
                           response = NULL,
                           timeout = NULL,
-                          secure = NULL)
-    .Call(rnng_ncurl_session, url, convert, method, headers, data, response, timeout, secure)
+                          tls = NULL)
+    .Call(rnng_ncurl_session, url, convert, method, headers, data, response, timeout, tls)
 
 #' @param session an 'ncurlSession' object.
 #'
