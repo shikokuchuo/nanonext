@@ -421,7 +421,10 @@ print.thread <- function(x, ...) {
 #'
 print.tlsConfig <- function(x, ...) {
 
-  cat("< TLS Configuration >\n", file = stdout())
+  if (length(attr(x, "url")))
+    cat(sprintf("< TLS %s configuration >\n - %s\n - %s\n", attr(x, "context"), attr(x, "state"), attr(x, "url")), file = stdout())
+  else
+    cat(sprintf("< TLS %s configuration >\n - %s\n", attr(x, "context"), attr(x, "state")), file = stdout())
   invisible(x)
 
 }

@@ -403,6 +403,18 @@ SEXP rnng_tls_config(SEXP client, SEXP server, SEXP pass, SEXP auth) {
   PROTECT(xp = R_MakeExternalPtr(cfg, nano_TlsSymbol, R_NilValue));
   R_RegisterCFinalizerEx(xp, tls_finalizer, TRUE);
   Rf_classgets(xp, Rf_mkString("tlsConfig"));
+  if (client != R_NilValue) {
+    Rf_setAttrib(xp, nano_ContextSymbol, Rf_mkString("client"));
+    Rf_setAttrib(xp, nano_StateSymbol, Rf_mkString(lvl ? "auth mode required" : "auth mode optional"));
+    Rf_setAttrib(xp, nano_UrlSymbol, client);
+  } else if (server != R_NilValue) {
+    Rf_setAttrib(xp, nano_ContextSymbol, Rf_mkString("server"));
+    Rf_setAttrib(xp, nano_StateSymbol, Rf_mkString(lvl ? "auth mode required" : "auth mode optional"));
+    Rf_setAttrib(xp, nano_UrlSymbol, server);
+  } else {
+    Rf_setAttrib(xp, nano_ContextSymbol, Rf_mkString("client"));
+    Rf_setAttrib(xp, nano_StateSymbol, Rf_mkString("auth mode none"));
+  }
 
   UNPROTECT(1);
   return xp;
