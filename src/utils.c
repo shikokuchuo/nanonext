@@ -376,7 +376,7 @@ SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP follow, SEXP method, SEXP headers,
 
 SEXP rnng_tls_config(SEXP client, SEXP server, SEXP pass, SEXP auth) {
 
-  const int lvl = LOGICAL(auth)[0];
+  const nng_tls_auth_mode mod = LOGICAL(auth)[0] ? NNG_TLS_AUTH_MODE_REQUIRED : NNG_TLS_AUTH_MODE_OPTIONAL;
   nng_tls_config *cfg;
   int xc;
   SEXP xp;
@@ -385,14 +385,14 @@ SEXP rnng_tls_config(SEXP client, SEXP server, SEXP pass, SEXP auth) {
     const char *file = CHAR(STRING_ELT(client, 0));
     if ((xc = nng_tls_config_alloc(&cfg, NNG_TLS_MODE_CLIENT)) ||
         (xc = nng_tls_config_ca_file(cfg, file)) ||
-        (xc = nng_tls_config_auth_mode(cfg, lvl ? NNG_TLS_AUTH_MODE_REQUIRED : NNG_TLS_AUTH_MODE_OPTIONAL)))
+        (xc = nng_tls_config_auth_mode(cfg, mod)))
       ERROR_OUT(xc);
   } else if (server != R_NilValue) {
     const char *file = CHAR(STRING_ELT(server, 0));
     const char *pss = pass != R_NilValue ? CHAR(STRING_ELT(pass, 0)) : NULL;
     if ((xc = nng_tls_config_alloc(&cfg, NNG_TLS_MODE_SERVER)) ||
         (xc = nng_tls_config_cert_key_file(cfg, file, pss)) ||
-        (xc = nng_tls_config_auth_mode(cfg, lvl ? NNG_TLS_AUTH_MODE_REQUIRED : NNG_TLS_AUTH_MODE_OPTIONAL)))
+        (xc = nng_tls_config_auth_mode(cfg, mod)))
       ERROR_OUT(xc);
   } else {
     if ((xc = nng_tls_config_alloc(&cfg, NNG_TLS_MODE_CLIENT)) ||
@@ -405,15 +405,15 @@ SEXP rnng_tls_config(SEXP client, SEXP server, SEXP pass, SEXP auth) {
   Rf_classgets(xp, Rf_mkString("tlsConfig"));
   if (client != R_NilValue) {
     Rf_setAttrib(xp, nano_ContextSymbol, Rf_mkString("client"));
-    Rf_setAttrib(xp, nano_StateSymbol, Rf_mkString(lvl ? "auth mode required" : "auth mode optional"));
+    Rf_setAttrib(xp, nano_AuthSymbol, Rf_mkString(mod == NNG_TLS_AUTH_MODE_REQUIRED ? "required" : "optional"));
     Rf_setAttrib(xp, nano_UrlSymbol, client);
   } else if (server != R_NilValue) {
     Rf_setAttrib(xp, nano_ContextSymbol, Rf_mkString("server"));
-    Rf_setAttrib(xp, nano_StateSymbol, Rf_mkString(lvl ? "auth mode required" : "auth mode optional"));
+    Rf_setAttrib(xp, nano_AuthSymbol, Rf_mkString(mod == NNG_TLS_AUTH_MODE_REQUIRED ? "required" : "optional"));
     Rf_setAttrib(xp, nano_UrlSymbol, server);
   } else {
     Rf_setAttrib(xp, nano_ContextSymbol, Rf_mkString("client"));
-    Rf_setAttrib(xp, nano_StateSymbol, Rf_mkString("auth mode none"));
+    Rf_setAttrib(xp, nano_AuthSymbol, Rf_mkString("none"));
   }
 
   UNPROTECT(1);

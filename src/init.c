@@ -21,6 +21,7 @@
 
 SEXP nano_AioSymbol;
 SEXP nano_AioHttpSymbol;
+SEXP nano_AuthSymbol;
 SEXP nano_ContextSymbol;
 SEXP nano_CvSymbol;
 SEXP nano_DataSymbol;
@@ -65,6 +66,7 @@ nng_mtx *shr_mtx;
 static void RegisterSymbols(void) {
   nano_AioSymbol = Rf_install("aio");
   nano_AioHttpSymbol = Rf_install("rnng_aio_http");
+  nano_AuthSymbol = Rf_install("auth");
   nano_ContextSymbol = Rf_install("context");
   nano_CvSymbol = Rf_install("cv");
   nano_DataSymbol = Rf_install("data");

@@ -33,28 +33,34 @@
 #'     file supplied to 'server' is encrypted with a password. Do not provide
 #'     directly in case it is cached or recorded in history, but through an
 #'     object or function that returns the value.
-#' @param auth [default TRUE] logical value whether to require authentication,
-#'     in which case a check is made to ensure that the peer has presented a
-#'     certificate, and the session is refused if it is invalid or missing.
-#'     Otherwise, authentication is optional, in which case a certificate is
-#'     validated if presented by the peer, but if not then the session is
-#'     allowed to proceed without authentication. If both 'client' and 'server'
-#'     are not supplied, then no authentication is performed and this argument
-#'     has no effect. Supplying a non-logical value will error.
+#' @param auth (optional) logical value whether to require authentication - by
+#'     default TRUE for client and FALSE for server configurations. If TRUE, it
+#'     is always checked that the peer has presented a certificate, and if it is
+#'     invalid or missing, the session is refused. If FALSE, authentication is
+#'     optional, whereby a certificate is validated if presented by the peer,
+#'     but the session is allowed to proceed without authentication if not. If
+#'     both 'client' and 'server' are not supplied, then no authentication is
+#'     performed and this argument has no effect. Supplying a non-logical value
+#'     will error.
 #'
 #' @return A 'tlsConfig' object.
 #'
-#' @details Up-to-date CA certificates in PEM format, extracted from Mozilla,
+#' @details Specify one of 'client' or 'server' only, or neither (in which case
+#'     an empty client configuration is created), as a configuration can only be
+#'     of one type.
+#'
+#'     Up-to-date CA certificates in PEM format, extracted from Mozilla,
 #'     are available at: \url{https://curl.se/docs/caextract.html}. This link is
 #'     not endorsed; use at your own risk.
 #'
 #' @examples
 #' tls <- tls_config()
+#' tls
 #' ncurl("https://www.r-project.org/", timeout = 1000L, tls = tls)
 #'
 #' @export
 #'
-tls_config <- function(client = NULL, server = NULL, pass = NULL, auth = TRUE)
+tls_config <- function(client = NULL, server = NULL, pass = NULL, auth = is.null(server))
   .Call(rnng_tls_config, client, server, pass, auth)
 
 # nanonext - Cryptographic Hashing ---------------------------------------------

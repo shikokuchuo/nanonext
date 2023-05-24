@@ -422,9 +422,9 @@ print.thread <- function(x, ...) {
 print.tlsConfig <- function(x, ...) {
 
   if (length(attr(x, "url")))
-    cat(sprintf("< TLS %s configuration >\n - %s\n - %s\n", attr(x, "context"), attr(x, "state"), attr(x, "url")), file = stdout())
+    cat(sprintf("< TLS %s configuration >\n - auth mode: %s\n - %s\n", attr(x, "context"), attr(x, "auth"), attr(x, "url")), file = stdout())
   else
-    cat(sprintf("< TLS %s configuration >\n - %s\n", attr(x, "context"), attr(x, "state")), file = stdout())
+    cat(sprintf("< TLS %s configuration >\n - auth mode: none\n", attr(x, "context")), file = stdout())
   invisible(x)
 
 }
