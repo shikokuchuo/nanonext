@@ -20,7 +20,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.3.9015</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.3.9016</span>
       </span>
     </div>
 
@@ -65,7 +65,7 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">stream</span><span class="op">(</span>dial <span class="op">=</span> <span class="cn">NULL</span>, listen <span class="op">=</span> <span class="cn">NULL</span>, textframes <span class="op">=</span> <span class="cn">FALSE</span>, secure <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">stream</span><span class="op">(</span>dial <span class="op">=</span> <span class="cn">NULL</span>, listen <span class="op">=</span> <span class="cn">NULL</span>, textframes <span class="op">=</span> <span class="cn">FALSE</span>, tls <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -88,7 +88,7 @@ enables sending and receiving of TEXT frames (ignored otherwise).
 Supplying a non-logical value will error.</p></dd>
 
 
-<dt>secure</dt>
+<dt>tls</dt>
 <dd><p>(optional) applicable to secure websockets only, a client or
 server TLS configuration object created by <code><a href="tls_config.html">tls_config</a></code>. If
 missing or NULL, certificates are not validated.</p></dd>
