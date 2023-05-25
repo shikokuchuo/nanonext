@@ -58,13 +58,14 @@ int main() {
 #if MBEDTLS_VERSION_MAJOR >= 2
     return 0;
 #else
-    return
+    void *err;
+    return *err;
 #endif
 }" | ${CC} ${PKG_CFLAGS} -xc - -o /dev/null > /dev/null 2>&1
 
 else
   echo "NANONEXT_LIBS is set... skipping detection"
-  build-all-nanonext-libs > /dev/null 2>&1
+  false
 fi
 
 if [ $? -ne 0 ]
@@ -131,13 +132,14 @@ int main() {
 #if NNG_MAJOR_VERSION == 1 && NNG_MINOR_VERSION >= 5 || NNG_MAJOR_VERSION > 1
     return 0;
 #else
-    return
+    void *err;
+    return *err;
 #endif
 }" | ${CC} ${NNG_CFLAGS} -xc - -o /dev/null > /dev/null 2>&1
 
 else
   echo "NANONEXT_LIBS is set... skipping detection"
-  build-all-nanonext-libs > /dev/null 2>&1
+  false
 fi
 
 if [ $? -ne 0 ]
