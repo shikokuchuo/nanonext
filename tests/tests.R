@@ -490,7 +490,10 @@ nanotesterr(base64dec("__"), "not valid base64")
 file <- tempfile()
 pem <- "-----BEGIN CERTIFICATE----- -----END CERTIFICATE-----"
 cat(pem, file = file)
+nanotesterr(tls_config(client = file), "Cryptographic error")
 nanotesterr(tls_config(server = file), "Cryptographic error")
+nanotesterr(tls_config(client = c(pem, pem)), "Cryptographic error")
+nanotesterr(tls_config(server = c(pem, pem)), "Cryptographic error")
 unlink(file)
 nanotestxp(tls <- tls_config(client = c(
 "-----BEGIN CERTIFICATE-----
@@ -511,4 +514,3 @@ nanotestp(tls)
 nanotest(is_error_value(ncurl("https://www.cam.ac.uk/", tls = tls)$status))
 nanotest(is_error_value(call_aio(ncurl("https://www.cam.ac.uk/", async = TRUE, tls = tls))$status))
 nanotestxp(tls <- tls_config())
-nanotestp(tls)

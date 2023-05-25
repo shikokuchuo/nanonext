@@ -59,10 +59,10 @@
 #'     an empty client configuration is created), as a configuration can only be
 #'     of one type.
 #'
-#'     For creating client configurations for general public internet usage,
-#'     up-to-date CA certificates in PEM format, extracted from Mozilla, are
-#'     available at: \url{https://curl.se/docs/caextract.html}. This link is not
-#'     endorsed; use at your own risk.
+#'     For creating client configurations for public internet usage, up-to-date
+#'     CA certificates in PEM format, extracted from Mozilla, are available at:
+#'     \url{https://curl.se/docs/caextract.html}. This link is not endorsed; use
+#'     at your own risk.
 #'
 #' @examples
 #' tls <- tls_config()
