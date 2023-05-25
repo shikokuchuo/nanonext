@@ -671,7 +671,7 @@ SEXP rnng_tls_config(SEXP client, SEXP server, SEXP pass, SEXP auth) {
   int xc;
   SEXP xp;
 
-  if ((usefile = Rf_xlength(client))) {
+  if ((usefile = Rf_xlength(client)) > 0) {
     const char *file = CHAR(STRING_ELT(client, 0));
     if ((xc = nng_tls_config_alloc(&cfg, NNG_TLS_MODE_CLIENT)) ||
         (xc = nng_tls_config_auth_mode(cfg, mod)))
@@ -685,7 +685,7 @@ SEXP rnng_tls_config(SEXP client, SEXP server, SEXP pass, SEXP auth) {
         ERROR_OUT(xc);
     }
 
-  } else if ((usefile = Rf_xlength(server))) {
+  } else if ((usefile = Rf_xlength(server)) > 0) {
     const char *file = CHAR(STRING_ELT(server, 0));
     const char *pss = pass != R_NilValue ? CHAR(STRING_ELT(pass, 0)) : NULL;
     if ((xc = nng_tls_config_alloc(&cfg, NNG_TLS_MODE_SERVER)) ||
