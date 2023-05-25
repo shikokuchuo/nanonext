@@ -655,9 +655,9 @@ stat(s, "pipes")
 
 Installation from source requires 'libnng' >= v1.5.0 and 'libmbedtls' >= 2 (suitable installations are automatically detected), or else 'cmake' to compile 'libnng' v1.6.0 pre-release (8e1836f) and 'libmbedtls' v3.4.0 included within the package sources.
 
-**It is recommended for both stability and performance to let the package automatically compile bundled versions of 'libmbedtls' and 'libnng' during installation, and not install 'libnng' from a package manager.** To always compile the libraries from source even if system installations exist, set the `NANONEXT_LIBS` environment variable prior to installation e.g. by `Sys.setenv(NANONEXT_LIBS = 1)`.
+**It is recommended for stability and performance reasons to let the package automatically compile bundled versions of 'libmbedtls' and 'libnng' during installation.** To always compile the libraries from source even if system installations exist, set the `NANONEXT_LIBS` environment variable prior to installation e.g. by `Sys.setenv(NANONEXT_LIBS = 1)`.
 
-Alternatively, to use system libraries, 'libnng' is available as libnng-dev (deb) or nng-devel (rpm), and 'libmbedtls' is available as libmbedtls-dev (deb) or libmbedtls-devel (rpm). The `INCLUDE_DIR` and `LIB_DIR` environment variables may be set prior to package installation to specify a custom location for 'libmbedtls' or 'libnng' other than the standard filesystem locations.
+Alternatively, where use of system installations are desired, 'libnng' is available as libnng-dev (deb) or nng-devel (rpm), and 'libmbedtls' is available as libmbedtls-dev (deb) or libmbedtls-devel (rpm). The `INCLUDE_DIR` and `LIB_DIR` environment variables may be set prior to package installation to specify a custom location for 'libmbedtls' or 'libnng' other than the standard filesystem locations.
 
 *Additional requirements for Solaris: (i) the 'xz' package - available on OpenCSW, and (ii) a more recent version of 'cmake' than available on OpenCSW - refer to the 'cmake' website for the latest source file (requiring only a C compiler to build).*
 
