@@ -710,17 +710,17 @@ SEXP rnng_tls_config(SEXP client, SEXP server, SEXP pass, SEXP auth) {
   R_RegisterCFinalizerEx(xp, tls_finalizer, TRUE);
   Rf_classgets(xp, Rf_mkString("tlsConfig"));
   if (client != R_NilValue) {
-    Rf_setAttrib(xp, nano_ContextSymbol, Rf_mkString("client"));
-    Rf_setAttrib(xp, nano_AuthSymbol, Rf_mkString(mod == NNG_TLS_AUTH_MODE_REQUIRED ? "required" : "optional"));
-    Rf_setAttrib(xp, nano_UrlSymbol, usefile == 1 ? client : Rf_mkString("[ not from file ]"));
+    Rf_setAttrib(xp, R_SpecSymbol, Rf_mkString("client"));
+    Rf_setAttrib(xp, R_ModeSymbol, Rf_mkString(mod == NNG_TLS_AUTH_MODE_REQUIRED ? "required" : "optional"));
+    Rf_setAttrib(xp, R_SourceSymbol, usefile == 1 ? client : Rf_mkString("[ not from file ]"));
   } else if (server != R_NilValue) {
-    Rf_setAttrib(xp, nano_ContextSymbol, Rf_mkString("server"));
-    Rf_setAttrib(xp, nano_AuthSymbol, Rf_mkString(mod == NNG_TLS_AUTH_MODE_REQUIRED ? "required" : "optional"));
-    Rf_setAttrib(xp, nano_UrlSymbol, usefile == 1 ? server : Rf_mkString("[ not from file ]"));
+    Rf_setAttrib(xp, R_SpecSymbol, Rf_mkString("server"));
+    Rf_setAttrib(xp, R_ModeSymbol, Rf_mkString(mod == NNG_TLS_AUTH_MODE_REQUIRED ? "required" : "optional"));
+    Rf_setAttrib(xp, R_SourceSymbol, usefile == 1 ? server : Rf_mkString("[ not from file ]"));
   } else {
-    Rf_setAttrib(xp, nano_ContextSymbol, Rf_mkString("client"));
-    Rf_setAttrib(xp, nano_AuthSymbol, Rf_mkString("none"));
-    Rf_setAttrib(xp, nano_UrlSymbol, Rf_mkString("[ empty ]"));
+    Rf_setAttrib(xp, R_SpecSymbol, Rf_mkString("client"));
+    Rf_setAttrib(xp, R_ModeSymbol, Rf_mkString("none"));
+    Rf_setAttrib(xp, R_SourceSymbol, Rf_mkString("[ empty ]"));
   }
 
   UNPROTECT(1);
