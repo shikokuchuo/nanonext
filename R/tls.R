@@ -20,27 +20,38 @@
 #'
 #' Create a TLS configuration object to be used for secure connections.
 #'
-#' @param client (optional) for creating a client configuration, the absolute
-#'     path to a file containing X.509 certificate(s) in PEM format, comprising
-#'     the certificate authority certificate chain (and revocation list if
-#'     present), used to validate certificates presented by peers.
-#' @param server (optional) for creating a server configuration, the absolute
-#'     path to a single file containing the PEM encoded certificate and
-#'     associated private key, along with any additional certificates leading to
-#'     a validation chain, the leaf certificate first. It is not required to
-#'     include the self-signed root.
-#' @param pass [default NULL] required only if the secret key contained in the
-#'     file supplied to 'server' is encrypted with a password. Do not provide
-#'     directly in case it is cached or recorded in history, but through an
-#'     object or function that returns the value.
+#' @param client (optional) for creating a client configuration:
+#'
+#'     \strong{either} the absolute path to a file containing X.509
+#'     certificate(s) in PEM format, comprising the certificate authority
+#'     certificate chain (and revocation list if present), used to validate
+#'     certificates presented by peers,
+#'
+#'     \strong{or} a length 2 character vector comprising [i] the certificate
+#'     authority certificate chain and [ii] the certificate revocation list or
+#'     the empty character \code{""} if not applicable.
+#' @param server (optional) for creating a server configuration:
+#'
+#'     \strong{either} the absolute path to a single file containing the PEM
+#'     encoded certificate and associated private key (may contain additional
+#'     certificates leading to a validation chain, with the leaf certificate
+#'     first, although the self-signed root is not required as the client should
+#'     already have this),
+#'
+#'     \strong{or} a length 2 character vector comprising [i] the certificate
+#'     (optionally certificate chain) and [ii] the associated private or secret
+#'     key.
+#' @param pass [default NULL] required only if the secret key supplied to
+#'     'server' is encrypted with a password. For security, consider providing
+#'     through a function that returns this value, rather than directly.
 #' @param auth (optional) logical value whether to require authentication - by
 #'     default TRUE for client and FALSE for server configurations. If TRUE, the
-#'     session is only allowed to proceed if the peer has presented a valid
-#'     certificate. If FALSE, authentication is optional, whereby a certificate
-#'     is validated if presented by the peer, but the session still allowed to
-#'     proceed if not. If neither 'client' nor 'server' are supplied, then no
-#'     authentication is performed and this argument has no effect. Supplying a
-#'     non-logical value will error.
+#'     session is only allowed to proceed if the peer has presented a certificate
+#'     and it has been validated. If FALSE, authentication is optional, whereby
+#'     a certificate is validated if presented by the peer, but the session
+#'     allowed to proceed otherwise. If neither 'client' nor 'server' are
+#'     supplied, then no authentication is performed and this argument has no
+#'     effect. Supplying a non-logical value will error.
 #'
 #' @return A 'tlsConfig' object.
 #'
@@ -48,10 +59,10 @@
 #'     an empty client configuration is created), as a configuration can only be
 #'     of one type.
 #'
-#'     For use with \code{\link{ncurl}}, up-to-date CA certificates in PEM
-#'     format, extracted from Mozilla, are available at:
-#'     \url{https://curl.se/docs/caextract.html}. This link is not endorsed; use
-#'     at your own risk.
+#'     For creating client configurations for general public internet usage,
+#'     up-to-date CA certificates in PEM format, extracted from Mozilla, are
+#'     available at: \url{https://curl.se/docs/caextract.html}. This link is not
+#'     endorsed; use at your own risk.
 #'
 #' @examples
 #' tls <- tls_config()

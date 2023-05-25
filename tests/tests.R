@@ -491,7 +491,9 @@ file <- tempfile()
 pem <- "-----BEGIN CERTIFICATE----- -----END CERTIFICATE-----"
 cat(pem, file = file)
 nanotesterr(tls_config(server = file), "Cryptographic error")
-pem <- "-----BEGIN CERTIFICATE-----
+unlink(file)
+nanotestxp(tls <- tls_config(client = c(
+"-----BEGIN CERTIFICATE-----
 MIICGTCCAZ+gAwIBAgIQCeCTZaz32ci5PhwLBCou8zAKBggqhkjOPQQDAzBOMQswCQYDVQQGEwJV
 UzEXMBUGA1UEChMORGlnaUNlcnQsIEluYy4xJjAkBgNVBAMTHURpZ2lDZXJ0IFRMUyBFQ0MgUDM4
 NCBSb290IEc1MB4XDTIxMDExNTAwMDAwMFoXDTQ2MDExNDIzNTk1OVowTjELMAkGA1UEBhMCVVMx
@@ -502,10 +504,8 @@ n4S1mU1YoI71VOeVyaNCMEAwHQYDVR0OBBYEFMFRRVBZqz7nLFr6ICISB4CIfBFqMA4GA1UdDwEB
 /wQEAwIBhjAPBgNVHRMBAf8EBTADAQH/MAoGCCqGSM49BAMDA2gAMGUCMQCJao1H5+z8blUD2Wds
 Jk6Dxv3J+ysTvLd6jLRl0mlpYxNjOyZQLgGheQaRnUi/wr4CMEfDFXuxoJGZSZOoPHzoRgaLLPIx
 AJSdYsiJvRmEFOml+wG4DXZDjC5Ty3zfDBeWUA==
------END CERTIFICATE-----"
-cat(pem, file = file)
-nanotestxp(tls <- tls_config(client = file))
-unlink(file)
+-----END CERTIFICATE-----", ""
+)))
 nanotest(inherits(tls, "tlsConfig"))
 nanotestp(tls)
 nanotest(is_error_value(ncurl("https://www.cam.ac.uk/", tls = tls)$status))

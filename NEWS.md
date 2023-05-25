@@ -1,10 +1,10 @@
-# nanonext 0.8.3.9018 (development)
+# nanonext 0.8.3.9019 (development)
 
 *The package is now compatible (again) with currently released 'libnng' versions. It will attempt to use system 'libnng' versions >= 1.5 where detected, and only compile the bundled library where necessary.*
 
 #### New Features
 
-* Implements `tls_config()` to create re-usable TLS configurations from certificate / key files.
+* Implements `tls_config()` to create re-usable TLS configurations from certificate / key files (or provided directly as text).
 
 #### Updates
 
