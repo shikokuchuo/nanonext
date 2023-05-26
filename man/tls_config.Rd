@@ -54,10 +54,13 @@ Specify one of 'client' or 'server' only, or neither (in which case
     an empty client configuration is created), as a configuration can only be
     of one type.
 
-    For creating client configurations for public internet usage, up-to-date
-    CA certificates in PEM format, extracted from Mozilla, are available at:
-    \url{https://curl.se/docs/caextract.html}. This link is not endorsed; use
-    at your own risk.
+    For creating client configurations for public internet usage, root CA
+    ceritficates can usually be found at
+    \file{/etc/ssl/certs/ca-certificates.crt} on Linux systems. Otherwise,
+    root CA certificates in PEM format are available at the Common CA
+    Database site run by Mozilla: \url{https://www.ccadb.org/resources}
+    (select the Server Authentication SSL/TLS certificates text file).
+    \emph{This link is not endorsed; use at your own risk.}
 }
 \examples{
 tls <- tls_config()

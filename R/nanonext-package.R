@@ -28,7 +28,7 @@
 #'
 #' @section Usage notes:
 #'
-#'     \code{nanonext} offers 2 equivalent interfaces: a functional interface,
+#'     \pkg{nanonext} offers 2 equivalent interfaces: a functional interface,
 #'     and an object-oriented interface.
 #'
 #'     The primary object in the functional interface is the Socket. Use
