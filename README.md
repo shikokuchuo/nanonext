@@ -369,7 +369,7 @@ aio
 #> < recvAio >
 #>  - $data for message data
 aio$data |> str()
-#>  num [1:100000000] 0.5315 -1.3045 0.0247 -1.4468 -0.6919 ...
+#>  num [1:100000000] 0.821 -0.28 -0.7501 -0.0818 -0.1577 ...
 ```
 
 As `call_aio()` is blocking and will wait for completion, an alternative
@@ -650,11 +650,11 @@ ncurl("https://httpbin.org/headers")
 #>   [1] 7b 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73
 #>  [26] 74 22 3a 20 22 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22
 #>  [51] 58 2d 41 6d 7a 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31
-#>  [76] 2d 36 34 36 66 38 30 33 36 2d 36 61 37 30 31 32 65 34 34 63 62 38 62 30 30
-#> [101] 31 32 33 35 62 30 35 38 37 22 0a 20 20 7d 0a 7d 0a
+#>  [76] 2d 36 34 37 33 61 33 38 65 2d 33 66 61 31 39 62 33 34 31 64 62 38 30 63 32
+#> [101] 66 33 34 30 37 30 32 34 37 22 0a 20 20 7d 0a 7d 0a
 #> 
 #> $data
-#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-646f8036-6a7012e44cb8b001235b0587\"\n  }\n}\n"
+#> [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6473a38e-3fa19b341db80c2f34070247\"\n  }\n}\n"
 ```
 
 For advanced use, supports additional HTTP methods such as POST or PUT.
@@ -675,13 +675,13 @@ res
 
 call_aio(res)$headers
 #> $Date
-#> [1] "Thu, 25 May 2023 15:35:24 GMT"
+#> [1] "Sun, 28 May 2023 18:55:10 GMT"
 #> 
 #> $Server
 #> [1] "gunicorn/19.9.0"
 
 res$data
-#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-646f8037-556f240669ed94606fc5726f\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
+#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6473a38e-6d36a8dd29a484e23ae028be\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
 ```
 
 In this respect, it may be used as a performant and lightweight method
@@ -707,7 +707,7 @@ transact(sess)
 #> 
 #> $headers
 #> $headers$date
-#> [1] "Thu, 25 May 2023 15:35:50 GMT"
+#> [1] "Sun, 28 May 2023 18:55:10 GMT"
 #> 
 #> 
 #> $raw
@@ -717,15 +717,15 @@ transact(sess)
 #>  [76] 22 43 6f 6e 74 65 6e 74 2d 54 79 70 65 22 3a 20 22 61 70 70 6c 69 63 61 74
 #> [101] 69 6f 6e 2f 6a 73 6f 6e 22 2c 20 0a 20 20 20 20 22 48 6f 73 74 22 3a 20 22
 #> [126] 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22 58 2d 41 6d 7a
-#> [151] 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31 2d 36 34 36 66
-#> [176] 38 30 33 63 2d 36 61 33 66 38 38 36 63 36 33 62 36 37 35 35 38 30 61 63 38
-#> [201] 36 30 65 63 22 0a 20 20 7d 2c 20 0a 20 20 22 6f 72 69 67 69 6e 22 3a 20 22
-#> [226] 37 39 2e 31 37 33 2e 31 32 39 2e 32 22 2c 20 0a 20 20 22 75 72 6c 22 3a 20
-#> [251] 22 68 74 74 70 73 3a 2f 2f 68 74 74 70 62 69 6e 2e 6f 72 67 2f 67 65 74 22
-#> [276] 0a 7d 0a
+#> [151] 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31 2d 36 34 37 33
+#> [176] 61 33 38 65 2d 30 61 38 39 33 65 34 34 33 30 66 30 39 36 34 39 35 65 65 32
+#> [201] 37 63 32 65 22 0a 20 20 7d 2c 20 0a 20 20 22 6f 72 69 67 69 6e 22 3a 20 22
+#> [226] 38 38 2e 32 30 32 2e 31 33 36 2e 38 33 22 2c 20 0a 20 20 22 75 72 6c 22 3a
+#> [251] 20 22 68 74 74 70 73 3a 2f 2f 68 74 74 70 62 69 6e 2e 6f 72 67 2f 67 65 74
+#> [276] 22 0a 7d 0a
 #> 
 #> $data
-#> [1] "{\n  \"args\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-646f803c-6a3f886c63b675580ac860ec\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"https://httpbin.org/get\"\n}\n"
+#> [1] "{\n  \"args\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6473a38e-0a893e4430f096495ee27c2e\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"https://httpbin.org/get\"\n}\n"
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -887,7 +887,7 @@ Installation from source requires ‘libnng’ \>= v1.5.0 and ‘libmbedtls’
 ‘cmake’ to compile ‘libnng’ v1.6.0 pre-release (8e1836f) and
 ‘libmbedtls’ v3.4.0 included within the package sources.
 
-**It is recommended for stability and performance reasons to let the
+**It is recommended for optimal performance and stability to let the
 package automatically compile bundled versions of ‘libmbedtls’ and
 ‘libnng’ during installation.** To always compile the libraries from
 source even if system installations exist, set the `NANONEXT_LIBS`

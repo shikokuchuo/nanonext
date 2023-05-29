@@ -1,4 +1,4 @@
-# nanonext 0.8.3.9021 (development)
+# nanonext 0.9.0
 
 *The package is now compatible (again) with currently released 'libnng' versions. It will attempt to use system 'libnng' versions >= 1.5 where detected, and only compile the bundled library where necessary.*
 
