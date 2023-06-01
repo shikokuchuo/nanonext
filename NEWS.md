@@ -1,3 +1,9 @@
+# nanonext 0.9.0.9000 (development)
+
+#### New Features
+
+* `send()` and `recv()` gain the argument 'refhook', for supplying a function to handle reference objects, mapping to the same argument of base R functions `serialize()` and `unserialize()`.
+
 # nanonext 0.9.0
 
 *The package is now compatible (again) with currently released 'libnng' versions. It will attempt to use system 'libnng' versions >= 1.5 where detected, and only compile the bundled library where necessary.*

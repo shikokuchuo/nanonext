@@ -114,7 +114,7 @@ SEXP nano_encode(SEXP object) {
 
 }
 
-SEXP nano_encodes(SEXP data, SEXP mode) {
+SEXP nano_encodes(SEXP data, SEXP mode, SEXP refhook) {
 
   int xc;
   if (TYPEOF(mode) == INTSXP) {
@@ -142,17 +142,19 @@ SEXP nano_encodes(SEXP data, SEXP mode) {
   if (xc != 1)
     return nano_encode(data);
 
-  SEXP out;
+  SEXP args, out;
   switch (TYPEOF(data)) {
   case SYMSXP:
   case LANGSXP:
-    PROTECT(out = Rf_lang3(nano_SerialSymbol, Rf_lang2(R_QuoteSymbol, data), R_NilValue));
+    PROTECT(args = Rf_lang6(Rf_lang2(R_QuoteSymbol, data), R_NilValue, R_MissingArg, R_MissingArg, R_MissingArg, refhook));
+    PROTECT(out = Rf_lcons(nano_SerialSymbol, args));
     break;
   default:
-    PROTECT(out = Rf_lang3(nano_SerialSymbol, data, R_NilValue));
+    PROTECT(args = Rf_lang6(data, R_NilValue, R_MissingArg, R_MissingArg, R_MissingArg, refhook));
+    PROTECT(out = Rf_lcons(nano_SerialSymbol, args));
   }
   out = Rf_eval(out, R_BaseEnv);
-  UNPROTECT(1);
+  UNPROTECT(2);
 
   return out;
 
@@ -263,7 +265,7 @@ int nano_matchargs(SEXP mode) {
 
 }
 
-SEXP nano_decode(unsigned char *buf, size_t sz, const int mod, const int kpr) {
+SEXP nano_decode(unsigned char *buf, size_t sz, const int mod, const int kpr, SEXP refhook) {
 
   SEXP raw, data;
 
@@ -271,7 +273,7 @@ SEXP nano_decode(unsigned char *buf, size_t sz, const int mod, const int kpr) {
     int tryErr = 0;
     PROTECT(raw = Rf_allocVector(RAWSXP, sz));
     memcpy(RAW(raw), buf, sz);
-    PROTECT(data = Rf_lang2(nano_UnserSymbol, raw));
+    PROTECT(data = Rf_lang3(nano_UnserSymbol, raw, refhook));
     data = R_tryEval(data, R_BaseEnv, &tryErr);
     if (tryErr) {
       data = raw;
@@ -656,7 +658,7 @@ SEXP rnng_listener_close(SEXP listener) {
 
 // send and recv ---------------------------------------------------------------
 
-SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
+SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block, SEXP refhook) {
 
   SEXP enc;
   R_xlen_t xlen;
@@ -670,7 +672,7 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
 
     if (block == R_NilValue) {
 
-      enc = nano_encodes(data, mode);
+      enc = nano_encodes(data, mode, refhook);
       xlen = Rf_xlength(enc);
       dp = RAW(enc);
       xc = nng_send(*sock, dp, xlen, NNG_FLAG_NONBLOCK);
@@ -678,7 +680,7 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
     } else if (TYPEOF(block) == LGLSXP) {
 
       const int blk = LOGICAL(block)[0];
-      enc = nano_encodes(data, mode);
+      enc = nano_encodes(data, mode, refhook);
       xlen = Rf_xlength(enc);
       dp = RAW(enc);
       xc = blk ? nng_send(*sock, dp, xlen, 0) : nng_send(*sock, dp, xlen, NNG_FLAG_NONBLOCK);
@@ -688,7 +690,7 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
       nng_msg *msgp;
       nng_aio *aiop;
       nng_duration dur = (nng_duration) Rf_asInteger(block);
-      enc = nano_encodes(data, mode);
+      enc = nano_encodes(data, mode, refhook);
       xlen = Rf_xlength(enc);
       dp = RAW(enc);
 
@@ -724,7 +726,7 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
     } else {
       dur = (nng_duration) Rf_asInteger(block);
     }
-    enc = nano_encodes(data, mode);
+    enc = nano_encodes(data, mode, refhook);
     xlen = Rf_xlength(enc);
     dp = RAW(enc);
 
@@ -791,7 +793,7 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
 
 }
 
-SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP keep, SEXP bytes) {
+SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP keep, SEXP bytes, SEXP refhook) {
 
   int xc;
   const int kpr = LOGICAL(keep)[0];
@@ -810,7 +812,7 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP keep, SEXP bytes) {
       xc = nng_recv(*sock, &buf, &sz, NNG_FLAG_ALLOC + NNG_FLAG_NONBLOCK);
       if (xc)
         return kpr ? mk_error_recv(xc) : mk_error(xc);
-      res = nano_decode(buf, sz, mod, kpr);
+      res = nano_decode(buf, sz, mod, kpr, refhook);
       nng_free(buf, sz);
 
     } else if (TYPEOF(block) == LGLSXP) {
@@ -819,7 +821,7 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP keep, SEXP bytes) {
       xc = blk ? nng_recv(*sock, &buf, &sz, NNG_FLAG_ALLOC): nng_recv(*sock, &buf, &sz, NNG_FLAG_ALLOC + NNG_FLAG_NONBLOCK);
       if (xc)
         return kpr ? mk_error_recv(xc) : mk_error(xc);
-      res = nano_decode(buf, sz, mod, kpr);
+      res = nano_decode(buf, sz, mod, kpr, refhook);
       nng_free(buf, sz);
 
     } else {
@@ -839,7 +841,7 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP keep, SEXP bytes) {
       nng_aio_free(aiop);
       buf = nng_msg_body(msgp);
       sz = nng_msg_len(msgp);
-      res = nano_decode(buf, sz, mod, kpr);
+      res = nano_decode(buf, sz, mod, kpr, refhook);
       nng_msg_free(msgp);
     }
 
@@ -873,7 +875,7 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP keep, SEXP bytes) {
     nng_aio_free(aiop);
     buf = nng_msg_body(msgp);
     sz = nng_msg_len(msgp);
-    res = nano_decode(buf, sz, mod, kpr);
+    res = nano_decode(buf, sz, mod, kpr, refhook);
     nng_msg_free(msgp);
 
   } else if (ptrtag == nano_StreamSymbol) {
@@ -920,7 +922,7 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP keep, SEXP bytes) {
 
     sz = nng_aio_count(aiop);
     nng_aio_free(aiop);
-    res = nano_decode(buf, sz, mod, kpr);
+    res = nano_decode(buf, sz, mod, kpr, refhook);
     R_Free(buf);
 
   } else {

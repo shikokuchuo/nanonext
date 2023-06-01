@@ -473,7 +473,7 @@ SEXP rnng_aio_get_msgraw(SEXP env) {
     sz = nng_msg_len(msg);
   }
 
-  PROTECT(out = nano_decode(buf, sz, mod, kpr));
+  PROTECT(out = nano_decode(buf, sz, mod, kpr, R_NilValue));
   Rf_defineVar(nano_RawSymbol, VECTOR_ELT(out, 0), ENCLOS(env));
   Rf_defineVar(nano_ResultSymbol, VECTOR_ELT(out, 1), ENCLOS(env));
   Rf_defineVar(nano_AioSymbol, R_NilValue, env);
@@ -522,7 +522,7 @@ SEXP rnng_aio_get_msgraw2(SEXP env) {
     sz = nng_msg_len(msg);
   }
 
-  PROTECT(out = nano_decode(buf, sz, mod, kpr));
+  PROTECT(out = nano_decode(buf, sz, mod, kpr, R_NilValue));
   Rf_defineVar(nano_RawSymbol, VECTOR_ELT(out, 0), ENCLOS(env));
   Rf_defineVar(nano_ResultSymbol, VECTOR_ELT(out, 1), ENCLOS(env));
   Rf_defineVar(nano_AioSymbol, R_NilValue, env);
@@ -573,7 +573,7 @@ SEXP rnng_aio_get_msgdata(SEXP env) {
     sz = nng_msg_len(msg);
   }
 
-  PROTECT(out = nano_decode(buf, sz, mod, kpr));
+  PROTECT(out = nano_decode(buf, sz, mod, kpr, R_NilValue));
   if (kpr) {
     Rf_defineVar(nano_RawSymbol, VECTOR_ELT(out, 0), ENCLOS(env));
     Rf_defineVar(nano_ResultSymbol, VECTOR_ELT(out, 1), ENCLOS(env));
@@ -627,7 +627,7 @@ SEXP rnng_aio_get_msgdata2(SEXP env) {
     sz = nng_msg_len(msg);
   }
 
-  PROTECT(out = nano_decode(buf, sz, mod, kpr));
+  PROTECT(out = nano_decode(buf, sz, mod, kpr, R_NilValue));
   if (kpr) {
     Rf_defineVar(nano_RawSymbol, VECTOR_ELT(out, 0), ENCLOS(env));
     Rf_defineVar(nano_ResultSymbol, VECTOR_ELT(out, 1), ENCLOS(env));
@@ -737,7 +737,7 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
     nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(con);
     nng_msg *msg;
 
-    enc = nano_encodes(data, mode);
+    enc = nano_encodes(data, mode, R_NilValue);
     xlen = Rf_xlength(enc);
     dp = RAW(enc);
 
@@ -766,7 +766,7 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
     nng_ctx *ctxp = (nng_ctx *) R_ExternalPtrAddr(con);
     nng_msg *msg;
 
-    enc = nano_encodes(data, mode);
+    enc = nano_encodes(data, mode, R_NilValue);
     xlen = Rf_xlength(enc);
     dp = RAW(enc);
 
@@ -1455,7 +1455,7 @@ SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeou
   unsigned char *dp;
   nng_msg *msg;
 
-  enc = nano_encodes(data, sendmode);
+  enc = nano_encodes(data, sendmode, R_NilValue);
   xlen = Rf_xlength(enc);
   dp = RAW(enc);
 
@@ -1793,7 +1793,7 @@ SEXP rnng_cv_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP tim
   unsigned char *dp;
   nng_msg *msg;
 
-  enc = nano_encodes(data, sendmode);
+  enc = nano_encodes(data, sendmode, R_NilValue);
   xlen = Rf_xlength(enc);
   dp = RAW(enc);
 
