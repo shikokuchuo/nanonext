@@ -69,7 +69,8 @@ A signalling version of the function takes a 'conditionVariable' as an
 <span>    <span class="st">"raw"</span><span class="op">)</span>,</span>
 <span>  timeout <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  keep.raw <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  n <span class="op">=</span> <span class="fl">65536L</span></span>
+<span>  n <span class="op">=</span> <span class="fl">65536L</span>,</span>
+<span>  refhook <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">recv_aio_signal</span><span class="op">(</span></span>
@@ -79,6 +80,7 @@ A signalling version of the function takes a 'conditionVariable' as an
 <span>  timeout <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  keep.raw <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  n <span class="op">=</span> <span class="fl">65536L</span>,</span>
+<span>  refhook <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">cv</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -114,6 +116,12 @@ value will error.</p></dd>
 <dd><p>[default 65536L] applicable to Streams only, the maximum number of
 bytes to receive. Can be an over-estimate, but note that a buffer of this
 size is reserved.</p></dd>
+
+
+<dt>refhook</dt>
+<dd><p>[default NULL] if using mode = 'serial', maps to the 'refhook'
+argument of <code><a href="https://rdrr.io/r/base/serialize.html" class="external-link">unserialize</a></code> for providing a hook function to
+handle reference objects.</p></dd>
 
 
 <dt>cv</dt>
