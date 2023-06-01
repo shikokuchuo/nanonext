@@ -19,7 +19,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0.9001</span>
       </span>
     </div>
 
@@ -70,6 +70,7 @@
 <span>    <span class="st">"numeric"</span>, <span class="st">"raw"</span><span class="op">)</span>,</span>
 <span>  send_mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"serial"</span>, <span class="st">"raw"</span><span class="op">)</span>,</span>
 <span>  timeout <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  refhook <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -113,6 +114,14 @@ that this applies to receiving the request. The total elapsed time would
 also include performing 'execute' on the received data. The timeout then
 also applies to sending the result (in the event that the requestor has
 become unavailable since sending the request).</p></dd>
+
+
+<dt>refhook</dt>
+<dd><p>[default NULL] if using serialisation, maps to the 'refhook'
+argument of <code><a href="https://rdrr.io/r/base/serialize.html" class="external-link">serialize</a></code> or <code><a href="https://rdrr.io/r/base/serialize.html" class="external-link">unserialize</a></code> as the
+case may be for providing a hook function to handle reference objects. As
+this argument is used for both send and receive, the function should
+contain the logic to distinguish between these cases.</p></dd>
 
 
 <dt>...</dt>
