@@ -35,8 +35,8 @@
 #'     available), or else an integer value specifying the maximum time to block
 #'     in milliseconds, after which the operation will time out.
 #' @param refhook [default NULL] if using mode = 'serial', maps to the 'refhook'
-#'     argument of \code{\link{serialize}} for providing a hook function for
-#'     handling reference objects.
+#'     argument of \code{\link{serialize}} for providing a hook function to
+#'     handle reference objects.
 #'
 #' @return Integer exit code (zero on success).
 #'
@@ -98,8 +98,8 @@ send <- function(con, data, mode = c("serial", "raw"), block = NULL, refhook = N
 #'     bytes to receive. Can be an over-estimate, but note that a buffer of this
 #'     size is reserved.
 #' @param refhook [default NULL] if using mode = 'serial', maps to the 'refhook'
-#'     argument of \code{\link{unserialize}} for providing a hook function for
-#'     handling reference objects.
+#'     argument of \code{\link{unserialize}} for providing a hook function to
+#'     handle reference objects.
 #' @inheritParams send
 #'
 #' @return Depending on the value of 'keep.raw': if TRUE, a named list of 2

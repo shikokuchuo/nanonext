@@ -4,7 +4,7 @@
 \alias{send_aio}
 \title{Send Async}
 \usage{
-send_aio(con, data, mode = c("serial", "raw"), timeout = NULL)
+send_aio(con, data, mode = c("serial", "raw"), timeout = NULL, refhook = NULL)
 }
 \arguments{
 \item{con}{a Socket, Context or Stream.}
@@ -21,6 +21,10 @@ position in the vector of choices i.e. 1L for 'serial' or 2L for 'raw'.}
 
 \item{timeout}{[default NULL] integer value in milliseconds or NULL, which
 applies a socket-specific default, usually the same as no timeout.}
+
+\item{refhook}{[default NULL] if using mode = 'serial', maps to the 'refhook'
+argument of \code{\link{serialize}} for providing a hook function to
+handle reference objects.}
 }
 \value{
 A 'sendAio' (object of class 'sendAio') (invisibly).

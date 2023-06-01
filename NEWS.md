@@ -2,7 +2,7 @@
 
 #### New Features
 
-* `send()` and `recv()` gain the argument 'refhook', for supplying a function to handle reference objects, mapping to the same argument of base R functions `serialize()` and `unserialize()`.
+* `send()`, `send_aio()`, `recv()`, `recv_aio()`, `recv_aio_signal()` gain the argument 'refhook', for supplying a function to handle reference objects, mapping to the same argument of base R functions `serialize()` and `unserialize()`.
 
 # nanonext 0.9.0
 

@@ -40,8 +40,8 @@ bytes to receive. Can be an over-estimate, but note that a buffer of this
 size is reserved.}
 
 \item{refhook}{[default NULL] if using mode = 'serial', maps to the 'refhook'
-argument of \code{\link{unserialize}} for providing a hook function for
-handling reference objects.}
+argument of \code{\link{unserialize}} for providing a hook function to
+handle reference objects.}
 }
 \value{
 Depending on the value of 'keep.raw': if TRUE, a named list of 2

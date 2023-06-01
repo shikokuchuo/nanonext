@@ -11,7 +11,8 @@ recv_aio(
     "raw"),
   timeout = NULL,
   keep.raw = FALSE,
-  n = 65536L
+  n = 65536L,
+  refhook = NULL
 )
 
 recv_aio_signal(
@@ -21,6 +22,7 @@ recv_aio_signal(
   timeout = NULL,
   keep.raw = FALSE,
   n = 65536L,
+  refhook = NULL,
   cv
 )
 }
@@ -45,6 +47,10 @@ value will error.}
 \item{n}{[default 65536L] applicable to Streams only, the maximum number of
 bytes to receive. Can be an over-estimate, but note that a buffer of this
 size is reserved.}
+
+\item{refhook}{[default NULL] if using mode = 'serial', maps to the 'refhook'
+argument of \code{\link{unserialize}} for providing a hook function to
+handle reference objects.}
 
 \item{cv}{\strong{For the signalling version}: a 'conditionVariable' that
 should be signalled when the async receive is complete.}

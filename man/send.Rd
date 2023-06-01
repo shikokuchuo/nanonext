@@ -26,8 +26,8 @@ available), or else an integer value specifying the maximum time to block
 in milliseconds, after which the operation will time out.}
 
 \item{refhook}{[default NULL] if using mode = 'serial', maps to the 'refhook'
-argument of \code{\link{serialize}} for providing a hook function for
-handling reference objects.}
+argument of \code{\link{serialize}} for providing a hook function to
+handle reference objects.}
 }
 \value{
 Integer exit code (zero on success).
