@@ -1,8 +1,8 @@
-# nanonext 0.9.0.9000 (development)
+# nanonext 0.9.0.9001 (development)
 
 #### New Features
 
-* `send()`, `send_aio()`, `recv()`, `recv_aio()`, `recv_aio_signal()` gain the argument 'refhook', for supplying a function to handle reference objects, mapping to the same argument of base R functions `serialize()` and `unserialize()`.
+* All send and receive functions, including `request()` and `reply()`, gain the argument 'refhook', for supplying a function to handle reference objects, mapping to the same argument of base R functions `serialize()` and `unserialize()`.
 
 # nanonext 0.9.0
 

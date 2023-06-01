@@ -120,6 +120,11 @@ close.nanoContext <- function(con, ...) invisible(.Call(rnng_ctx_close, con))
 #'     also include performing 'execute' on the received data. The timeout then
 #'     also applies to sending the result (in the event that the requestor has
 #'     become unavailable since sending the request).
+#' @param refhook [default NULL] if using serialisation, maps to the 'refhook'
+#'     argument of \code{\link{serialize}} or \code{\link{unserialize}} as the
+#'     case may be for providing a hook function to handle reference objects. As
+#'     this argument is used for both send and receive, the function should
+#'     contain the logic to distinguish between these cases.
 #' @param ... additional arguments passed to the function specified by 'execute'.
 #'
 #' @return Integer exit code (zero on success).
@@ -160,14 +165,15 @@ reply <- function(context,
                                 "integer", "logical", "numeric", "raw"),
                   send_mode = c("serial", "raw"),
                   timeout = NULL,
+                  refhook = NULL,
                   ...) {
 
-  res <- recv(context, mode = recv_mode, block = timeout)
+  res <- recv(context, mode = recv_mode, block = timeout, refhook = refhook)
   is_error_value(res) && return(res)
   on.exit(expr = send(context, data = as.raw(0L), mode = send_mode))
   data <- execute(res, ...)
   on.exit()
-  send(context, data = data, mode = send_mode, block = timeout)
+  send(context, data = data, mode = send_mode, block = timeout, refhook = refhook)
 
 }
 
@@ -225,9 +231,10 @@ request <- function(context,
                     recv_mode = c("serial", "character", "complex", "double",
                                   "integer", "logical", "numeric", "raw"),
                     timeout = NULL,
-                    keep.raw = FALSE)
+                    keep.raw = FALSE,
+                    refhook = NULL)
   data <- .Call(rnng_request, context, data, send_mode, recv_mode, timeout,
-                keep.raw, environment())
+                keep.raw, refhook, environment())
 
 #' Request over Context and Signal a Condition Variable
 #'
@@ -267,6 +274,7 @@ request_signal <- function(context,
                                          "integer", "logical", "numeric", "raw"),
                            timeout = NULL,
                            keep.raw = FALSE,
+                           refhook = NULL,
                            cv)
   data <- .Call(rnng_cv_request, context, data, send_mode, recv_mode, timeout,
-                keep.raw, environment(), cv)
+                keep.raw, refhook, cv, environment())

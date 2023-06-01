@@ -1439,7 +1439,7 @@ SEXP rnng_ncurl_session_close(SEXP session) {
 
 // request ---------------------------------------------------------------------
 
-SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeout, SEXP keep, SEXP clo) {
+SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeout, SEXP keep, SEXP refhook, SEXP clo) {
 
   if (R_ExternalPtrTag(con) != nano_ContextSymbol)
     Rf_error("'context' is not a valid Context");
@@ -1455,7 +1455,7 @@ SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeou
   unsigned char *dp;
   nng_msg *msg;
 
-  enc = nano_encodes(data, sendmode, R_NilValue);
+  enc = nano_encodes(data, sendmode, refhook);
   xlen = Rf_xlength(enc);
   dp = RAW(enc);
 
@@ -1774,7 +1774,7 @@ SEXP rnng_cv_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP keep, SEXP bytes, 
 
 }
 
-SEXP rnng_cv_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeout, SEXP keep, SEXP clo, SEXP cvar) {
+SEXP rnng_cv_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeout, SEXP keep, SEXP refhook, SEXP cvar, SEXP clo) {
 
   if (R_ExternalPtrTag(con) != nano_ContextSymbol)
     Rf_error("'context' is not a valid Context");
@@ -1793,7 +1793,7 @@ SEXP rnng_cv_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP tim
   unsigned char *dp;
   nng_msg *msg;
 
-  enc = nano_encodes(data, sendmode, R_NilValue);
+  enc = nano_encodes(data, sendmode, refhook);
   xlen = Rf_xlength(enc);
   dp = RAW(enc);
 

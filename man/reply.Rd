@@ -11,6 +11,7 @@ reply(
     "numeric", "raw"),
   send_mode = c("serial", "raw"),
   timeout = NULL,
+  refhook = NULL,
   ...
 )
 }
@@ -43,6 +44,12 @@ that this applies to receiving the request. The total elapsed time would
 also include performing 'execute' on the received data. The timeout then
 also applies to sending the result (in the event that the requestor has
 become unavailable since sending the request).}
+
+\item{refhook}{[default NULL] if using serialisation, maps to the 'refhook'
+argument of \code{\link{serialize}} or \code{\link{unserialize}} as the
+case may be for providing a hook function to handle reference objects. As
+this argument is used for both send and receive, the function should
+contain the logic to distinguish between these cases.}
 
 \item{...}{additional arguments passed to the function specified by 'execute'.}
 }
