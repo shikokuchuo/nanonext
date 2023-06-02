@@ -676,6 +676,7 @@ SEXP rnng_refhook(SEXP func) {
     PROTECT(func = rnng_base64dec(func, Rf_ScalarLogical(0)));
     PROTECT(call = Rf_lang2(nano_UnserSymbol, func));
     func = R_tryEval(call, R_BaseEnv, &tryErr);
+    UNPROTECT(2);
     if (tryErr) break;
     if (TYPEOF(func) == CLOSXP || TYPEOF(func) == NILSXP)
       SETCAR(nano_refhook, func);
