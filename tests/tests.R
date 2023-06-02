@@ -398,6 +398,9 @@ if (length(s)) {
   nanotest(is.integer(close(s)))
 }
 
+nanotestn(refhook())
+nanotest(is.function(refhook(function(x) if (is.character(x)) "wrong")))
+nanotest(is.function(refhook(base64enc(function(x) if (is.character(x)) "wrong"))))
 s <- socket("bus", listen = "inproc://nanolock")
 s1 <- socket("bus", dial = "inproc://nanolock")
 nanotestz(lock(s))
@@ -423,6 +426,7 @@ nanotestz(close(s1))
 nanotestz(close(s2))
 nanotestz(close(s3))
 nanotestz(close(s4))
+nanotestn(refhook(NULL))
 
 nanotest(nanonext:::.DollarNames.ncurlAio(NULL, "sta") == "status")
 nanotest(nanonext:::.DollarNames.recvAio(NULL, "dat") == "data")
