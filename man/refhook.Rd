@@ -13,12 +13,21 @@ refhook(x = list())
 The current refhook function stored internally.
 }
 \description{
-Providing an argument sets the refhook function stored internally, used as
-    the argument 'refhook' in all subsequent \code{\link{serialize}} and
-    \code{\link{unserialize}} operations. Calling without an argument
-    retrieves the value stored.
+Sets the refhook function stored internally, used in all message send and
+    receive operations. Calling without an argument retrieves the stored value.
+}
+\details{
+The provided function maps to the 'refhook' argument of
+    \code{\link{serialize}} or \code{\link{unserialize}}, as the case may be.
+    As the same function is used in both cases, it should contain the logic
+    to distinguish between them if necessary.
 }
 \examples{
 refhook()
+
+refhook(function(x) if (is_aio(x)) base64enc(x) else
+    if (is.character(x)) unserialize(base64dec(x, convert = FALSE)))
+
+refhook(NULL)
 
 }
