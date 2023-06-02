@@ -10,8 +10,7 @@ recv(
     "raw"),
   block = NULL,
   keep.raw = FALSE,
-  n = 65536L,
-  refhook = NULL
+  n = 65536L
 )
 }
 \arguments{
@@ -38,10 +37,6 @@ value will error.}
 \item{n}{[default 65536L] applicable to Streams only, the maximum number of
 bytes to receive. Can be an over-estimate, but note that a buffer of this
 size is reserved.}
-
-\item{refhook}{[default NULL] if using mode = 'serial', maps to the 'refhook'
-argument of \code{\link{unserialize}} for providing a hook function to
-handle reference objects.}
 }
 \value{
 Depending on the value of 'keep.raw': if TRUE, a named list of 2

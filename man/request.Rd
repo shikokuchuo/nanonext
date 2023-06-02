@@ -12,8 +12,7 @@ request(
   recv_mode = c("serial", "character", "complex", "double", "integer", "logical",
     "numeric", "raw"),
   timeout = NULL,
-  keep.raw = FALSE,
-  refhook = NULL
+  keep.raw = FALSE
 )
 
 request_signal(
@@ -24,7 +23,6 @@ request_signal(
     "numeric", "raw"),
   timeout = NULL,
   keep.raw = FALSE,
-  refhook = NULL,
   cv
 )
 }
@@ -55,12 +53,6 @@ applies a socket-specific default, usually the same as no timeout.}
 \item{keep.raw}{[default FALSE] logical flag whether to keep and return the
 received raw vector along with the converted data. Supplying a non-logical
 value will error.}
-
-\item{refhook}{[default NULL] if using serialisation, maps to the 'refhook'
-argument of \code{\link{serialize}} or \code{\link{unserialize}} as the
-case may be for providing a hook function to handle reference objects. As
-this argument is used for both send and receive, the function should
-contain the logic to distinguish between these cases.}
 
 \item{cv}{\strong{For the signalling version}: a 'conditionVariable' that
 should be signalled when the async receive is complete.}

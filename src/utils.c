@@ -661,6 +661,30 @@ SEXP rnng_status_code(SEXP x) {
 
 }
 
+// refhook ---------------------------------------------------------------------
+
+SEXP rnng_refhook(SEXP func) {
+
+  switch (TYPEOF(func)) {
+  case NILSXP:
+  case CLOSXP:
+    SETCAR(nano_refhook, func);
+    break;
+  case STRSXP: ;
+    int tryErr;
+    SEXP call;
+    PROTECT(func = rnng_base64dec(func, Rf_ScalarLogical(0)));
+    PROTECT(call = Rf_lang2(nano_UnserSymbol, func));
+    func = R_tryEval(call, R_BaseEnv, &tryErr);
+    if (tryErr) break;
+    if (TYPEOF(func) == CLOSXP || TYPEOF(func) == NILSXP)
+      SETCAR(nano_refhook, func);
+  }
+
+  return CAR(nano_refhook);
+
+}
+
 // TLS Config ------------------------------------------------------------------
 
 SEXP rnng_tls_config(SEXP client, SEXP server, SEXP pass, SEXP auth) {

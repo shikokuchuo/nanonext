@@ -4,7 +4,7 @@
 \alias{send}
 \title{Send}
 \usage{
-send(con, data, mode = c("serial", "raw"), block = NULL, refhook = NULL)
+send(con, data, mode = c("serial", "raw"), block = NULL)
 }
 \arguments{
 \item{con}{a Socket, Context or Stream.}
@@ -24,10 +24,6 @@ position in the vector of choices i.e. 1L for 'serial' or 2L for 'raw'.}
 to return immediately even if unsuccessful (e.g. if no connection is
 available), or else an integer value specifying the maximum time to block
 in milliseconds, after which the operation will time out.}
-
-\item{refhook}{[default NULL] if using mode = 'serial', maps to the 'refhook'
-argument of \code{\link{serialize}} for providing a hook function to
-handle reference objects.}
 }
 \value{
 Integer exit code (zero on success).

@@ -32,7 +32,6 @@ SEXP nano_ListenerSymbol;
 SEXP nano_PipeSymbol;
 SEXP nano_ProtocolSymbol;
 SEXP nano_RawSymbol;
-SEXP nano_RefhookSymbol;
 SEXP nano_ResponseSymbol;
 SEXP nano_ResultSymbol;
 SEXP nano_RtcSymbol;
@@ -55,6 +54,7 @@ SEXP nano_error;
 SEXP nano_ncurlAio;
 SEXP nano_ncurlSession;
 SEXP nano_recvAio;
+SEXP nano_refhook;
 SEXP nano_sendAio;
 SEXP nano_success;
 SEXP nano_unresolved;
@@ -77,7 +77,6 @@ static void RegisterSymbols(void) {
   nano_PipeSymbol = Rf_install("pipe");
   nano_ProtocolSymbol = Rf_install("protocol");
   nano_RawSymbol = Rf_install("raw");
-  nano_RefhookSymbol = Rf_install("refhook");
   nano_ResponseSymbol = Rf_install("response");
   nano_ResultSymbol = Rf_install("result");
   nano_RtcSymbol = Rf_install("rawToChar");
@@ -117,6 +116,7 @@ static void PreserveObjects(void) {
   SET_TAG(nano_ncurlSession, R_ClassSymbol);
   R_PreserveObject(nano_recvAio = Rf_cons(Rf_mkString("recvAio"), R_NilValue));
   SET_TAG(nano_recvAio, R_ClassSymbol);
+  R_PreserveObject(nano_refhook = Rf_cons(R_NilValue, R_NilValue));
   R_PreserveObject(nano_sendAio = Rf_cons(Rf_mkString("sendAio"), R_NilValue));
   SET_TAG(nano_sendAio, R_ClassSymbol);
   R_PreserveObject(nano_success = Rf_ScalarInteger(0));
@@ -128,6 +128,7 @@ static void ReleaseObjects(void) {
   R_ReleaseObject(nano_unresolved);
   R_ReleaseObject(nano_success);
   R_ReleaseObject(nano_sendAio);
+  R_ReleaseObject(nano_refhook);
   R_ReleaseObject(nano_recvAio);
   R_ReleaseObject(nano_ncurlSession);
   R_ReleaseObject(nano_ncurlAio);
@@ -153,8 +154,8 @@ static const R_CallMethodDef callMethods[] = {
   {"rnng_ctx_create", (DL_FUNC) &rnng_ctx_create, 1},
   {"rnng_ctx_open", (DL_FUNC) &rnng_ctx_open, 1},
   {"rnng_cv_alloc", (DL_FUNC) &rnng_cv_alloc, 0},
-  {"rnng_cv_recv_aio", (DL_FUNC) &rnng_cv_recv_aio, 8},
-  {"rnng_cv_request", (DL_FUNC) &rnng_cv_request, 9},
+  {"rnng_cv_recv_aio", (DL_FUNC) &rnng_cv_recv_aio, 7},
+  {"rnng_cv_request", (DL_FUNC) &rnng_cv_request, 8},
   {"rnng_cv_reset", (DL_FUNC) &rnng_cv_reset, 1},
   {"rnng_cv_signal", (DL_FUNC) &rnng_cv_signal, 1},
   {"rnng_cv_until", (DL_FUNC) &rnng_cv_until, 2},
@@ -181,11 +182,12 @@ static const R_CallMethodDef callMethods[] = {
   {"rnng_pipe_notify", (DL_FUNC) &rnng_pipe_notify, 6},
   {"rnng_protocol_open", (DL_FUNC) &rnng_protocol_open, 2},
   {"rnng_random", (DL_FUNC) &rnng_random, 1},
-  {"rnng_recv", (DL_FUNC) &rnng_recv, 6},
-  {"rnng_recv_aio", (DL_FUNC) &rnng_recv_aio, 7},
-  {"rnng_request", (DL_FUNC) &rnng_request, 8},
-  {"rnng_send", (DL_FUNC) &rnng_send, 5},
-  {"rnng_send_aio", (DL_FUNC) &rnng_send_aio, 6},
+  {"rnng_recv", (DL_FUNC) &rnng_recv, 5},
+  {"rnng_recv_aio", (DL_FUNC) &rnng_recv_aio, 6},
+  {"rnng_refhook", (DL_FUNC) &rnng_refhook, 1},
+  {"rnng_request", (DL_FUNC) &rnng_request, 7},
+  {"rnng_send", (DL_FUNC) &rnng_send, 4},
+  {"rnng_send_aio", (DL_FUNC) &rnng_send_aio, 5},
   {"rnng_set_opt", (DL_FUNC) &rnng_set_opt, 3},
   {"rnng_sha1", (DL_FUNC) &rnng_sha1, 3},
   {"rnng_sha224", (DL_FUNC) &rnng_sha224, 3},

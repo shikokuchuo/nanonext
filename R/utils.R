@@ -262,3 +262,21 @@ is_nul_byte <- function(x) .Call(rnng_is_nul_byte, x)
 #' @export
 #'
 status_code <- function(x) .Call(rnng_status_code, x)
+
+#' Set and Retrieve Refhook Function
+#'
+#' Providing an argument sets the refhook function stored internally, used as
+#'     the argument 'refhook' in all subsequent \code{\link{serialize}} and
+#'     \code{\link{unserialize}} operations. Calling without an argument
+#'     retrieves the value stored.
+#'
+#' @param x a function or base64 encoded function, or NULL to reset.
+#'
+#' @return The current refhook function stored internally.
+#'
+#' @examples
+#' refhook()
+#'
+#' @export
+#'
+refhook <- function(x = list()) .Call(rnng_refhook, x)

@@ -34,9 +34,6 @@
 #'     to return immediately even if unsuccessful (e.g. if no connection is
 #'     available), or else an integer value specifying the maximum time to block
 #'     in milliseconds, after which the operation will time out.
-#' @param refhook [default NULL] if using mode = 'serial', maps to the 'refhook'
-#'     argument of \code{\link{serialize}} for providing a hook function to
-#'     handle reference objects.
 #'
 #' @return Integer exit code (zero on success).
 #'
@@ -76,8 +73,8 @@
 #'
 #' @export
 #'
-send <- function(con, data, mode = c("serial", "raw"), block = NULL, refhook = NULL)
-  .Call(rnng_send, con, data, mode, block, refhook)
+send <- function(con, data, mode = c("serial", "raw"), block = NULL)
+  .Call(rnng_send, con, data, mode, block)
 
 #' Receive
 #'
@@ -97,9 +94,6 @@ send <- function(con, data, mode = c("serial", "raw"), block = NULL, refhook = N
 #' @param n [default 65536L] applicable to Streams only, the maximum number of
 #'     bytes to receive. Can be an over-estimate, but note that a buffer of this
 #'     size is reserved.
-#' @param refhook [default NULL] if using mode = 'serial', maps to the 'refhook'
-#'     argument of \code{\link{unserialize}} for providing a hook function to
-#'     handle reference objects.
 #' @inheritParams send
 #'
 #' @return Depending on the value of 'keep.raw': if TRUE, a named list of 2
@@ -166,6 +160,5 @@ recv <- function(con,
                           "integer", "logical", "numeric", "raw"),
                  block = NULL,
                  keep.raw = FALSE,
-                 n = 65536L,
-                 refhook = NULL)
-  .Call(rnng_recv, con, mode, block, keep.raw, n, refhook)
+                 n = 65536L)
+  .Call(rnng_recv, con, mode, block, keep.raw, n)
