@@ -1,8 +1,8 @@
-# nanonext 0.9.0.9003 (development)
+# nanonext 0.9.0.9004 (development)
 
 #### New Features
 
-* Implements `refhook()` for supplying a function to handle reference objects, mapping to the same argument of base R functions `serialize()` and `unserialize()`, used on all subsequent operations.
+* Allows sending and receiving of reference objects such as those accessed via an external pointer. Implements `refhook()` for supplying a function to handle such objects, mapping to the same argument of base R functions `serialize()` and `unserialize()`.
 
 # nanonext 0.9.0
 
