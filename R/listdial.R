@@ -24,6 +24,8 @@
 #' @param url [default 'inproc://nanonext'] a URL to dial, specifying the
 #'     transport and address as a character string e.g. 'inproc://anyvalue' or
 #'     'tcp://127.0.0.1:5555' (see \link{transports}).
+#' @param tls [default NULL] only applicable for secure tls+tcp:// or wss://
+#'     connections, a TLS Configuration object created by \code{\link{tls_config}}.
 #' @param autostart [default TRUE] whether to start the dialer (by default
 #'     asynchronously). Set to NA to start synchronously - this is less resilient
 #'     if a connection is not immediately possible, but avoids subtle errors
@@ -86,8 +88,8 @@
 #'
 #' @export
 #'
-dial <- function(socket, url = "inproc://nanonext", autostart = TRUE, error = FALSE)
-  invisible(.Call(rnng_dial, socket, url, autostart, error))
+dial <- function(socket, url = "inproc://nanonext", tls = NULL, autostart = TRUE, error = FALSE)
+  invisible(.Call(rnng_dial, socket, url, tls, autostart, error))
 
 #' Listen to an Address from a Socket
 #'
@@ -150,8 +152,8 @@ dial <- function(socket, url = "inproc://nanonext", autostart = TRUE, error = FA
 #'
 #' @export
 #'
-listen <- function(socket, url = "inproc://nanonext", autostart = TRUE, error = FALSE)
-  invisible(.Call(rnng_listen, socket, url, autostart, error))
+listen <- function(socket, url = "inproc://nanonext", tls = NULL, autostart = TRUE, error = FALSE)
+  invisible(.Call(rnng_listen, socket, url, tls, autostart, error))
 
 #' Start Listener/Dialer
 #'

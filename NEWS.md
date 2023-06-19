@@ -1,8 +1,9 @@
-# nanonext 0.9.0.9005 (development)
+# nanonext 0.9.0.9006 (development)
 
 #### New Features
 
 * Allows sending and receiving of reference objects such as those accessed via an external pointer. Implements `refhook()` for supplying a function to handle such objects, mapping to the same argument of base R functions `serialize()` and `unserialize()`.
+* `listen()` and `dial()` gain the argument 'tls' for supplying a TLS configuration object, enabling secure 'tls+tcp' and 'wss' transports for scalability protocols.
 
 #### Updates
 

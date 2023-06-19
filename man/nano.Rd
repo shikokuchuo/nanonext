@@ -9,6 +9,7 @@ nano(
     "respondent"),
   dial = NULL,
   listen = NULL,
+  tls = NULL,
   autostart = TRUE
 )
 }
@@ -24,6 +25,9 @@ a character string e.g. 'inproc://anyvalue' or 'tcp://127.0.0.1:5555'
 \item{listen}{(optional) a URL to listen at, specifying the transport and
 address as a character string e.g. 'inproc://anyvalue' or
 'tcp://127.0.0.1:5555' (see \link{transports}).}
+
+\item{tls}{[default NULL] only applicable for secure tls+tcp:// or wss://
+connections, a TLS Configuration object created by \code{\link{tls_config}}.}
 
 \item{autostart}{[default TRUE] whether to start the dialer/listener. Set to
 FALSE if setting configuration options on the dialer/listener as it is

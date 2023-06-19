@@ -92,6 +92,7 @@ nano <- function(protocol = c("bus", "pair", "push", "pull", "pub", "sub",
                               "req", "rep", "surveyor", "respondent"),
                  dial = NULL,
                  listen = NULL,
+                 tls = NULL,
                  autostart = TRUE) {
 
   nano <- `class<-`(new.env(hash = FALSE), "nanoObject")
@@ -102,7 +103,7 @@ nano <- function(protocol = c("bus", "pair", "push", "pull", "pub", "sub",
                     env = nano)
 
   if (length(dial)) {
-    r <- dial(socket, url = dial, autostart = autostart)
+    r <- dial(socket, url = dial, tls = tls, autostart = autostart)
     if (r == 0L) {
       nano[["dialer"]] <- attr(socket, "dialer")
       nano[["dialer_opt"]] <- function(name, value)
@@ -118,7 +119,7 @@ nano <- function(protocol = c("bus", "pair", "push", "pull", "pub", "sub",
   }
 
   if (length(listen)) {
-    r <- listen(socket, url = listen, autostart = autostart)
+    r <- listen(socket, url = listen, tls = tls, autostart = autostart)
     if (r == 0L) {
       nano[["listener"]] <- attr(socket, "listener")
       nano[["listener_opt"]] <- function(name, value)
@@ -135,8 +136,8 @@ nano <- function(protocol = c("bus", "pair", "push", "pull", "pub", "sub",
 
   nano[["close"]] <- function() close(.subset2(nano, "socket"))
 
-  nano[["dial"]] <- function(url = "inproc://nanonext", autostart = TRUE) {
-    r <- dial(socket, url = url, autostart = autostart)
+  nano[["dial"]] <- function(url = "inproc://nanonext", tls = NULL, autostart = TRUE) {
+    r <- dial(socket, url = url, tls = tls, autostart = autostart)
     if (r == 0L) {
       nano[["dialer"]] <- attr(socket, "dialer")
       nano[["dialer_opt"]] <- function(name, value)
@@ -152,8 +153,8 @@ nano <- function(protocol = c("bus", "pair", "push", "pull", "pub", "sub",
     invisible(r)
   }
 
-  nano[["listen"]] <- function(url = "inproc://nanonext", autostart = TRUE) {
-    r <- listen(socket, url = url, autostart = autostart)
+  nano[["listen"]] <- function(url = "inproc://nanonext", tls = NULL, autostart = TRUE) {
+    r <- listen(socket, url = url, tls = tls, autostart = autostart)
     if (r == 0L) {
       nano[["listener"]] <- attr(socket, "listener")
       nano[["listener_opt"]] <- function(name, value)

@@ -16,6 +16,7 @@
 
 // nanonext - C level - Core Functions -----------------------------------------
 
+#define NANONEXT_SUPPLEMENTALS
 #include "nanonext.h"
 
 // internals -------------------------------------------------------------------
@@ -488,32 +489,51 @@ SEXP rnng_ctx_close(SEXP context) {
 
 // dialers and listeners -------------------------------------------------------
 
-SEXP rnng_dial(SEXP socket, SEXP url, SEXP autostart, SEXP error) {
+SEXP rnng_dial(SEXP socket, SEXP url, SEXP tls, SEXP autostart, SEXP error) {
 
   if (R_ExternalPtrTag(socket) != nano_SocketSymbol)
     Rf_error("'socket' is not a valid Socket");
   nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(socket);
   const int start = LOGICAL(autostart)[0];
-  const char *up = CHAR(STRING_ELT(url, 0));
+  const char *ur = CHAR(STRING_ELT(url, 0));
   nng_dialer *dp = R_Calloc(1, nng_dialer);
   SEXP dialer, klass, attr, newattr;
-
   int xc;
+
   switch (start) {
   case 0:
-    xc = nng_dialer_create(dp, *sock, up);
+    xc = nng_dialer_create(dp, *sock, ur);
     break;
   case 1:
-    xc = nng_dial(*sock, up, dp, NNG_FLAG_NONBLOCK);
+    xc = nng_dial(*sock, ur, dp, NNG_FLAG_NONBLOCK);
     break;
   default:
-    xc = nng_dial(*sock, up, dp, 0);
+    xc = nng_dial(*sock, ur, dp, 0);
   }
-
   if (xc) {
     R_Free(dp);
     if (LOGICAL(error)[0]) ERROR_OUT(xc);
     ERROR_RET(xc);
+  }
+
+  if (tls != R_NilValue) {
+    if (R_ExternalPtrTag(tls) != nano_TlsSymbol)
+      Rf_error("'tls' is not a valid TLS Configuration");
+    nng_tls_config *cfg = (nng_tls_config *) R_ExternalPtrAddr(tls);
+    nng_url *up;
+    if ((xc = nng_url_parse(&up, ur))) {
+      R_Free(dp);
+      if (LOGICAL(error)[0]) ERROR_OUT(xc);
+      ERROR_RET(xc);
+    }
+    if ((xc = nng_tls_config_server_name(cfg, up->u_hostname)) ||
+        (xc = nng_dialer_set_ptr(*dp, NNG_OPT_TLS_CONFIG, cfg))) {
+      nng_url_free(up);
+      R_Free(dp);
+      if (LOGICAL(error)[0]) ERROR_OUT(xc);
+      ERROR_RET(xc);
+    }
+    nng_url_free(up);
   }
 
   PROTECT(dialer = R_MakeExternalPtr(dp, nano_DialerSymbol, R_NilValue));
@@ -535,6 +555,7 @@ SEXP rnng_dial(SEXP socket, SEXP url, SEXP autostart, SEXP error) {
   if (attr == R_NilValue) {
     PROTECT(newattr = Rf_allocVector(VECSXP, 1));
     SET_VECTOR_ELT(newattr, 0, dialer);
+    UNPROTECT(1);
   } else {
     R_xlen_t xlen = Rf_xlength(attr);
     PROTECT(newattr = Rf_allocVector(VECSXP, xlen + 1));
@@ -549,21 +570,42 @@ SEXP rnng_dial(SEXP socket, SEXP url, SEXP autostart, SEXP error) {
 
 }
 
-SEXP rnng_listen(SEXP socket, SEXP url, SEXP autostart, SEXP error) {
+SEXP rnng_listen(SEXP socket, SEXP url, SEXP tls, SEXP autostart, SEXP error) {
 
   if (R_ExternalPtrTag(socket) != nano_SocketSymbol)
     Rf_error("'socket' is not a valid Socket");
   nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(socket);
   const int start = LOGICAL(autostart)[0];
-  const char *up = CHAR(STRING_ELT(url, 0));
+  const char *ur = CHAR(STRING_ELT(url, 0));
   nng_listener *lp = R_Calloc(1, nng_listener);
   SEXP listener, klass, attr, newattr;
+  int xc;
 
-  const int xc = start ? nng_listen(*sock, up, lp, 0) : nng_listener_create(lp, *sock, up);
+  xc = start ? nng_listen(*sock, ur, lp, 0) : nng_listener_create(lp, *sock, ur);
   if (xc) {
     R_Free(lp);
     if (LOGICAL(error)[0]) ERROR_OUT(xc);
     ERROR_RET(xc);
+  }
+
+  if (tls != R_NilValue) {
+    if (R_ExternalPtrTag(tls) != nano_TlsSymbol)
+      Rf_error("'tls' is not a valid TLS Configuration");
+    nng_tls_config *cfg = (nng_tls_config *) R_ExternalPtrAddr(tls);
+    nng_url *up;
+    if ((xc = nng_url_parse(&up, ur))) {
+      R_Free(lp);
+      if (LOGICAL(error)[0]) ERROR_OUT(xc);
+      ERROR_RET(xc);
+    }
+    if ((xc = nng_tls_config_server_name(cfg, up->u_hostname)) ||
+        (xc = nng_listener_set_ptr(*lp, NNG_OPT_TLS_CONFIG, cfg))) {
+      nng_url_free(up);
+      R_Free(lp);
+      if (LOGICAL(error)[0]) ERROR_OUT(xc);
+      ERROR_RET(xc);
+    }
+    nng_url_free(up);
   }
 
   PROTECT(listener = R_MakeExternalPtr(lp, nano_ListenerSymbol, R_NilValue));

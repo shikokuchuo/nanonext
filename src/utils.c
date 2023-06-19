@@ -502,7 +502,7 @@ SEXP rnng_stream_listen(SEXP url, SEXP textframes, SEXP tls) {
         goto exitlevel3;
 
       if ((xc = nng_tls_config_auth_mode(cfg, NNG_TLS_AUTH_MODE_NONE)) ||
-          (xc = nng_stream_listener_set_ptr(lp, "tls-config", cfg)))
+          (xc = nng_stream_listener_set_ptr(lp, NNG_OPT_TLS_CONFIG, cfg)))
         goto exitlevel4;
     } else {
 
@@ -512,7 +512,7 @@ SEXP rnng_stream_listen(SEXP url, SEXP textframes, SEXP tls) {
       nng_tls_config_hold(cfg);
 
       if ((xc = nng_tls_config_server_name(cfg, up->u_hostname)) ||
-          (xc = nng_stream_listener_set_ptr(lp, "tls-config", cfg)))
+          (xc = nng_stream_listener_set_ptr(lp, NNG_OPT_TLS_CONFIG, cfg)))
         goto exitlevel4;
     }
 

@@ -40,6 +40,7 @@
 #' @param raw [default FALSE] whether to open raw mode sockets. Note: not for
 #'     general use - do not enable unless you have a specific need, such as for
 #'     use with \code{\link{device}} (refer to NNG documentation).
+#' @inheritParams dial
 #'
 #' @return A Socket (object of class 'nanoSocket' and 'nano').
 #'
@@ -83,12 +84,13 @@ socket <- function(protocol = c("bus", "pair", "push", "pull", "pub", "sub",
                                 "req", "rep", "surveyor", "respondent"),
                    dial = NULL,
                    listen = NULL,
+                   tls = NULL,
                    autostart = TRUE,
                    raw = FALSE) {
 
   sock <- .Call(rnng_protocol_open, protocol, raw)
-  if (length(dial)) .Call(rnng_dial, sock, dial, autostart, TRUE)
-  if (length(listen)) .Call(rnng_listen, sock, listen, autostart, TRUE)
+  if (length(dial)) .Call(rnng_dial, sock, dial, tls, autostart, TRUE)
+  if (length(listen)) .Call(rnng_listen, sock, listen, tls, autostart, TRUE)
   sock
 
 }
