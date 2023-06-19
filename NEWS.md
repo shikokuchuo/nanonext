@@ -1,8 +1,12 @@
-# nanonext 0.9.0.9004 (development)
+# nanonext 0.9.0.9005 (development)
 
 #### New Features
 
 * Allows sending and receiving of reference objects such as those accessed via an external pointer. Implements `refhook()` for supplying a function to handle such objects, mapping to the same argument of base R functions `serialize()` and `unserialize()`.
+
+#### Updates
+
+* Fix cases where `base64enc()` failed for large objects.
 
 # nanonext 0.9.0
 
