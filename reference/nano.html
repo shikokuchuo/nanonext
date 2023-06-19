@@ -18,7 +18,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0.9005</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0.9006</span>
       </span>
     </div>
 
@@ -66,6 +66,7 @@
 <span>    <span class="st">"respondent"</span><span class="op">)</span>,</span>
 <span>  dial <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  listen <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  tls <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  autostart <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -88,6 +89,11 @@ a character string e.g. 'inproc://anyvalue' or 'tcp://127.0.0.1:5555'
 <dd><p>(optional) a URL to listen at, specifying the transport and
 address as a character string e.g. 'inproc://anyvalue' or
 'tcp://127.0.0.1:5555' (see <a href="transports.html">transports</a>).</p></dd>
+
+
+<dt>tls</dt>
+<dd><p>[default NULL] only applicable for secure tls+tcp:// or wss://
+connections, a TLS Configuration object created by <code><a href="tls_config.html">tls_config</a></code>.</p></dd>
 
 
 <dt>autostart</dt>
