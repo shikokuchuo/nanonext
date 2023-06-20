@@ -7,9 +7,7 @@
 tls_config(client = NULL, server = NULL, pass = NULL, auth = is.null(server))
 }
 \arguments{
-\item{client}{(optional) for creating a client configuration:
-
-    \strong{either} the absolute path to a file containing X.509
+\item{client}{\strong{either} the absolute path to a file containing X.509
     certificate(s) in PEM format, comprising the certificate authority
     certificate chain (and revocation list if present), used to validate
     certificates presented by peers,
@@ -18,27 +16,25 @@ tls_config(client = NULL, server = NULL, pass = NULL, auth = is.null(server))
     authority certificate chain and [ii] the certificate revocation list or
     the empty character \code{""} if not applicable.}
 
-\item{server}{(optional) for creating a server configuration:
-
-    \strong{either} the absolute path to a single file containing the PEM
-    encoded certificate and associated private key (may contain additional
-    certificates leading to a validation chain, with the leaf certificate
-    first, although the self-signed root is not required as the client should
-    already have this),
+\item{server}{\strong{either} the absolute path to a single file containing
+    the PEM encoded certificate and associated private key (may contain
+    additional certificates leading to a validation chain, with the leaf
+    certificate first, although the self-signed root is not required as the
+    client should already have this),
 
     \strong{or} a length 2 character vector comprising [i] the certificate
     (optionally certificate chain) and [ii] the associated private or secret
     key.}
 
-\item{pass}{[default NULL] required only if the secret key supplied to
-'server' is encrypted with a password. For security, consider providing
-through a function that returns this value, rather than directly.}
+\item{pass}{(optional) required only if the secret key supplied to 'server'
+is encrypted with a password. For security, consider providing through a
+function that returns this value, rather than directly.}
 
-\item{auth}{(optional) logical value whether to require authentication - by
-default TRUE for client and FALSE for server configurations. If TRUE, the
-session is only allowed to proceed if the peer has presented a certificate
-and it has been validated. If FALSE, authentication is optional, whereby
-a certificate is validated if presented by the peer, but the session
+\item{auth}{logical value whether to require authentication - by default TRUE
+for client and FALSE for server configurations. If TRUE, the session is
+only allowed to proceed if the peer has presented a certificate and it
+has been validated. If FALSE, authentication is optional, whereby a
+certificate is validated if presented by the peer, but the session
 allowed to proceed otherwise. If neither 'client' nor 'server' are
 supplied, then no authentication is performed and this argument has no
 effect. Supplying a non-logical value will error.}
@@ -47,7 +43,9 @@ effect. Supplying a non-logical value will error.}
 A 'tlsConfig' object.
 }
 \description{
-Create a TLS configuration object to be used for secure connections.
+Create a TLS configuration object to be used for secure connections. Specify
+    'client' to create a client configuration or 'server' to create a server
+    configuration.
 }
 \details{
 Specify one of 'client' or 'server' only, or neither (in which case

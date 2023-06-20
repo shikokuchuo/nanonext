@@ -24,8 +24,8 @@
 #' @param url [default 'inproc://nanonext'] a URL to dial, specifying the
 #'     transport and address as a character string e.g. 'inproc://anyvalue' or
 #'     'tcp://127.0.0.1:5555' (see \link{transports}).
-#' @param tls [default NULL] only applicable for secure tls+tcp:// or wss://
-#'     connections, a TLS Configuration object created by \code{\link{tls_config}}.
+#' @param tls [default NULL] for secure tls+tcp:// or wss:// connections only,
+#'     provide a TLS configuration object created by \code{\link{tls_config}}.
 #' @param autostart [default TRUE] whether to start the dialer (by default
 #'     asynchronously). Set to NA to start synchronously - this is less resilient
 #'     if a connection is not immediately possible, but avoids subtle errors

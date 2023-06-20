@@ -120,12 +120,33 @@ Transports supported by \{nanonext\}.
     }
 }
 
+\section{TLS}{
+
+
+    The tls transport provides communication support between peers across a
+    TCP/IP network using TLS v1.2 on top of TCP. Both IPv4 and IPv6 are
+    supported when the underlying platform also supports it.
+
+    [\strong{URI, tls+tcp://}] This transport uses URIs using the scheme
+    tls+tcp://, followed by an IP address or hostname, followed by a colon
+    and finally a TCP port number. For example, to contact port 4433 on the
+    localhost either of the following URIs could be used:
+    tls+tcp://127.0.0.1:4433 or tls+tcp://localhost:4433.
+
+    \itemize{
+
+    \item A URI may be restricted to IPv6 using the scheme tls+tcp6://, or IPv4
+    using the scheme tls+tcp4://.
+
+    }
+}
+
 \section{WebSocket}{
 
 
-    The ws transport provides communication support between peers across
-    a TCP/IP network using WebSockets. Both IPv4 and IPv6 are supported when
-    the underlying platform also supports it.
+    The ws and wss transport provides communication support between peers
+    across a TCP/IP network using WebSockets. Both IPv4 and IPv6 are
+    supported when the underlying platform also supports it.
 
     [\strong{URI, ws://}] This transport uses URIs using the scheme ws://,
     followed by an IP address or hostname, optionally followed by a colon and
@@ -134,7 +155,15 @@ Transports supported by \{nanonext\}.
     / is assumed.) For example, the URI ws://localhost/app/pubsub would use
     port 80 on localhost, with the path /app/pubsub.
 
+    [\strong{(URI, wss://)}] Secure WebSockets use the scheme wss://, and the
+    default TCP port number of 443. Otherwise the format is the same as for
+    regular WebSockets.
+
     \itemize{
+
+    \item A URI may be restricted to IPv6 using the scheme ws6:// or wss6://,
+    or IPv4 using the scheme ws4:// or wss4://.
+
     \item When specifying IPv6 addresses, the address must be enclosed in
     square brackets ([]) to avoid confusion with the final colon separating
     the port. For example, the same path and port on the IPv6 loopback

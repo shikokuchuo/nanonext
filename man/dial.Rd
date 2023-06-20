@@ -19,8 +19,8 @@ dial(
 transport and address as a character string e.g. 'inproc://anyvalue' or
 'tcp://127.0.0.1:5555' (see \link{transports}).}
 
-\item{tls}{[default NULL] only applicable for secure tls+tcp:// or wss://
-connections, a TLS Configuration object created by \code{\link{tls_config}}.}
+\item{tls}{[default NULL] for secure tls+tcp:// or wss:// connections only,
+provide a TLS configuration object created by \code{\link{tls_config}}.}
 
 \item{autostart}{[default TRUE] whether to start the dialer (by default
 asynchronously). Set to NA to start synchronously - this is less resilient
