@@ -555,7 +555,6 @@ SEXP rnng_dial(SEXP socket, SEXP url, SEXP tls, SEXP autostart, SEXP error) {
   if (attr == R_NilValue) {
     PROTECT(newattr = Rf_allocVector(VECSXP, 1));
     SET_VECTOR_ELT(newattr, 0, dialer);
-    UNPROTECT(1);
   } else {
     R_xlen_t xlen = Rf_xlength(attr);
     PROTECT(newattr = Rf_allocVector(VECSXP, xlen + 1));
