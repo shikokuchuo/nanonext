@@ -271,7 +271,7 @@ status_code <- function(x) .Call(rnng_status_code, x)
 #' @param x a function or function encoded by \code{\link{base64enc}}, or NULL
 #'     to reset.
 #'
-#' @return The current refhook function stored internally.
+#' @return The current stored refhook function.
 #'
 #' @details The provided function maps to the 'refhook' argument of
 #'     \code{\link{serialize}} or \code{\link{unserialize}}, as the case may be.
@@ -296,4 +296,4 @@ status_code <- function(x) .Call(rnng_status_code, x)
 #'
 #' @export
 #'
-refhook <- function(x = list()) .Call(rnng_refhook, x)
+refhook <- function(x = `=`) .Call(rnng_refhook, x)

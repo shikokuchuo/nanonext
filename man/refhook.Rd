@@ -4,14 +4,14 @@
 \alias{refhook}
 \title{Set and Retrieve Refhook Function}
 \usage{
-refhook(x = list())
+refhook(x = `=`)
 }
 \arguments{
 \item{x}{a function or function encoded by \code{\link{base64enc}}, or NULL
 to reset.}
 }
 \value{
-The current refhook function stored internally.
+The current stored refhook function.
 }
 \description{
 Sets the refhook function stored internally, used in all message send and
