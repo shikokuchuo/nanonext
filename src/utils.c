@@ -668,7 +668,8 @@ SEXP rnng_refhook(SEXP func) {
   switch (TYPEOF(func)) {
   case NILSXP:
   case CLOSXP:
-    SETCAR(nano_refhook, func);
+    R_ReleaseObject(nano_refhook);
+    R_PreserveObject(nano_refhook = func);
     break;
   case STRSXP: ;
     int tryErr;
@@ -678,11 +679,13 @@ SEXP rnng_refhook(SEXP func) {
     func = R_tryEval(call, R_BaseEnv, &tryErr);
     UNPROTECT(2);
     if (tryErr) break;
-    if (TYPEOF(func) == CLOSXP || TYPEOF(func) == NILSXP)
-      SETCAR(nano_refhook, func);
+    if (TYPEOF(func) == CLOSXP || TYPEOF(func) == NILSXP) {
+      R_ReleaseObject(nano_refhook);
+      R_PreserveObject(nano_refhook = func);
+    }
   }
 
-  return CAR(nano_refhook);
+  return nano_refhook;
 
 }
 
