@@ -701,37 +701,42 @@ SEXP rnng_tls_config(SEXP client, SEXP server, SEXP pass, SEXP auth) {
 
   if ((usefile = Rf_xlength(client)) > 0) {
     const char *file = CHAR(STRING_ELT(client, 0));
-    if ((xc = nng_tls_config_alloc(&cfg, NNG_TLS_MODE_CLIENT)) ||
-        (xc = nng_tls_config_auth_mode(cfg, mod)))
-      ERROR_OUT(xc);
+    if ((xc = nng_tls_config_alloc(&cfg, NNG_TLS_MODE_CLIENT)))
+      goto exitlevel1;
+    if ((xc = nng_tls_config_auth_mode(cfg, mod)))
+      goto exitlevel2;
+
     if (usefile == 1) {
       if ((xc = nng_tls_config_ca_file(cfg, file)))
-        ERROR_OUT(xc);
+        goto exitlevel2;
     } else {
       const char *crl = CHAR(STRING_ELT(client, 1));
       if ((xc = nng_tls_config_ca_chain(cfg, file, strncmp(crl, "", 1) ? crl : NULL)))
-        ERROR_OUT(xc);
+        goto exitlevel2;
     }
 
   } else if ((usefile = Rf_xlength(server)) > 0) {
     const char *file = CHAR(STRING_ELT(server, 0));
     const char *pss = pass != R_NilValue ? CHAR(STRING_ELT(pass, 0)) : NULL;
-    if ((xc = nng_tls_config_alloc(&cfg, NNG_TLS_MODE_SERVER)) ||
-        (xc = nng_tls_config_auth_mode(cfg, mod)))
-      ERROR_OUT(xc);
+    if ((xc = nng_tls_config_alloc(&cfg, NNG_TLS_MODE_SERVER)))
+      goto exitlevel1;
+    if ((xc = nng_tls_config_auth_mode(cfg, mod)))
+      goto exitlevel2;
+
     if (usefile == 1) {
       if ((xc = nng_tls_config_cert_key_file(cfg, file, pss)))
-        ERROR_OUT(xc);
+        goto exitlevel2;
     } else {
       const char *key = CHAR(STRING_ELT(server, 1));
       if ((xc = nng_tls_config_own_cert(cfg, file, key, pss)))
-        ERROR_OUT(xc);
+        goto exitlevel2;
     }
 
   } else {
-    if ((xc = nng_tls_config_alloc(&cfg, NNG_TLS_MODE_CLIENT)) ||
-        (xc = nng_tls_config_auth_mode(cfg, NNG_TLS_AUTH_MODE_NONE)))
-      ERROR_OUT(xc);
+    if ((xc = nng_tls_config_alloc(&cfg, NNG_TLS_MODE_CLIENT)))
+      goto exitlevel1;
+    if ((xc = nng_tls_config_auth_mode(cfg, NNG_TLS_AUTH_MODE_NONE)))
+      goto exitlevel2;
   }
 
   PROTECT(xp = R_MakeExternalPtr(cfg, nano_TlsSymbol, R_NilValue));
@@ -753,5 +758,10 @@ SEXP rnng_tls_config(SEXP client, SEXP server, SEXP pass, SEXP auth) {
 
   UNPROTECT(1);
   return xp;
+
+  exitlevel2:
+    nng_tls_config_free(cfg);
+  exitlevel1:
+    ERROR_OUT(xc);
 
 }
