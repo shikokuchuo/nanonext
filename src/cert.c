@@ -54,33 +54,6 @@
 #include <string.h>
 #include <errno.h>
 
-#define SET_OID(x, oid) \
-do { x.len = MBEDTLS_OID_SIZE(oid); x.p = (unsigned char *) oid; } while (0)
-
-#define DFL_SUBJECT_KEY         "subject.key"
-#define DFL_ISSUER_KEY          "ca.key"
-#define DFL_SUBJECT_PWD         ""
-#define DFL_ISSUER_PWD          ""
-#define DFL_OUTPUT_FILENAME     "cert.crt"
-#define DFL_SUBJECT_NAME        "CN=Cert,O=mbed TLS,C=UK"
-#define DFL_ISSUER_NAME         "CN=CA,O=mbed TLS,C=UK"
-#define DFL_NOT_BEFORE          "20010101000000"
-#define DFL_NOT_AFTER           "20301231235959"
-#define DFL_SERIAL              "1"
-#define DFL_SERIAL_HEX          "1"
-#define DFL_SELFSIGN            1
-#define DFL_IS_CA               1
-#define DFL_MAX_PATHLEN         0
-#define DFL_SIG_ALG             MBEDTLS_MD_SHA256
-#define DFL_VERSION             3
-#define DFL_AUTH_IDENT          1
-#define DFL_SUBJ_IDENT          1
-#define DFL_CONSTRAINTS         1
-#define DFL_DIGEST              MBEDTLS_MD_SHA256
-
-/*
- * global options
- */
 struct options {
 const char *subject_key;    /* filename of the subject key file     */
 const char *issuer_key;     /* filename of the issuer key file      */
@@ -92,7 +65,6 @@ const char *issuer_name;    /* issuer name for certificate          */
 const char *not_before;     /* validity period not before           */
 const char *not_after;      /* validity period not after            */
 const char *serial;         /* serial number string (decimal)       */
-const char *serial_hex;     /* serial number string (hex)           */
 int selfsign;               /* selfsign the certificate             */
 int is_ca;                  /* is a CA certificate                  */
 int max_pathlen;            /* maximum CA path length               */
@@ -158,7 +130,6 @@ static int parse_serial_decimal_format(unsigned char *obuf, size_t obufmax,
 
     val = (dec >> ((remaining_bytes - 1) * 8)) & 0xFF;
 
-    /* Skip leading zeros */
     if ((val != 0) || (*len != 0)) {
       *p = val;
       (*len)++;
@@ -175,26 +146,28 @@ static int parse_serial_decimal_format(unsigned char *obuf, size_t obufmax,
 SEXP rnng_cert_write(SEXP filename, SEXP key, SEXP cn, SEXP valid) {
 
   int ret = 1;
+  R_xlen_t clen = Rf_xlength(cn);
+  char issuer[clen + 19];
+  snprintf(issuer, clen + 19, "CN=%s,O=mbedTLS,C=UK", CHAR(STRING_ELT(cn, 0)));
 
-  opt.subject_key         = DFL_SUBJECT_KEY;
+  opt.subject_key         = "subject.key";
   opt.issuer_key          = CHAR(STRING_ELT(key, 0));
-  opt.subject_pwd         = DFL_SUBJECT_PWD;
-  opt.issuer_pwd          = DFL_ISSUER_PWD;
+  opt.subject_pwd         = "";
+  opt.issuer_pwd          = "";
   opt.output_file         = CHAR(STRING_ELT(filename, 0));
-  opt.subject_name        = DFL_SUBJECT_NAME;
-  opt.issuer_name         = CHAR(STRING_ELT(cn, 0));
-  opt.not_before          = DFL_NOT_BEFORE;
+  opt.subject_name        = "CN=Cert,O=mbedTLS,C=UK";
+  opt.issuer_name         = issuer;
+  opt.not_before          = "20010101000000";
   opt.not_after           = CHAR(STRING_ELT(valid, 0));
-  opt.serial              = DFL_SERIAL;
-  opt.serial_hex          = DFL_SERIAL_HEX;
-  opt.selfsign            = DFL_SELFSIGN;
-  opt.is_ca               = DFL_IS_CA;
-  opt.max_pathlen         = DFL_MAX_PATHLEN;
-  opt.version             = DFL_VERSION - 1;
-  opt.md                  = DFL_DIGEST;
-  opt.subject_identifier   = DFL_SUBJ_IDENT;
-  opt.authority_identifier = DFL_AUTH_IDENT;
-  opt.basic_constraints    = DFL_CONSTRAINTS;
+  opt.serial              = "1";
+  opt.selfsign            = 1;
+  opt.is_ca               = 1;
+  opt.max_pathlen         = 0;
+  opt.version             = 2;
+  opt.md                  = MBEDTLS_MD_SHA256;
+  opt.subject_identifier   = 1;
+  opt.authority_identifier = 1;
+  opt.basic_constraints    = 1;
 
   mbedtls_x509_crt issuer_crt;
   mbedtls_pk_context loaded_issuer_key, loaded_subject_key;
