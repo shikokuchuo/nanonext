@@ -25,6 +25,9 @@
     <loc>https://shikokuchuo.net/nanonext/reference/call_aio.html</loc>
   </url>
   <url>
+    <loc>https://shikokuchuo.net/nanonext/reference/cert_write.html</loc>
+  </url>
+  <url>
     <loc>https://shikokuchuo.net/nanonext/reference/close.html</loc>
   </url>
   <url>
@@ -44,6 +47,9 @@
   </url>
   <url>
     <loc>https://shikokuchuo.net/nanonext/reference/dot-unresolved.html</loc>
+  </url>
+  <url>
+    <loc>https://shikokuchuo.net/nanonext/reference/gen_key.html</loc>
   </url>
   <url>
     <loc>https://shikokuchuo.net/nanonext/reference/index.html</loc>
