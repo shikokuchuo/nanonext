@@ -57,38 +57,6 @@
 #include <string.h>
 #include <errno.h>
 
-static int write_certificate(mbedtls_x509write_cert *crt, const char *output_file,
-                             int (*f_rng)(void *, unsigned char *, size_t), void *p_rng) {
-
-  int ret;
-  FILE *f;
-  unsigned char output_buf[4096];
-  unsigned char *output_start;
-  size_t len = 0;
-
-  memset(output_buf, 0, 4096);
-
-  ret = mbedtls_x509write_crt_pem(crt, output_buf, 4096, f_rng, p_rng);
-  if (ret < 0)
-    return ret;
-
-  len = strlen((char *) output_buf);
-  output_start = output_buf;
-
-  if ((f = fopen(output_file, "w")) == NULL)
-    return -1;
-
-  if (fwrite(output_start, 1, len, f) != len) {
-    fclose(f);
-    return -1;
-  }
-
-  fclose(f);
-
-  return 0;
-
-}
-
 #if MBEDTLS_VERSION_MAJOR == 3 && MBEDTLS_VERSION_MINOR >= 4 || MBEDTLS_VERSION_MAJOR >= 4
 static int parse_serial_decimal_format(unsigned char *obuf, size_t obufmax,
                                        const char *ibuf, size_t *len) {
@@ -127,12 +95,11 @@ static int parse_serial_decimal_format(unsigned char *obuf, size_t obufmax,
 }
 #endif
 
-SEXP rnng_cert_write(SEXP key, SEXP cn, SEXP valid, SEXP filename) {
+SEXP rnng_cert_write(SEXP key, SEXP cn, SEXP valid) {
 
   const char *issuer_keyfile = CHAR(STRING_ELT(key, 0)); /* filename of the issuer key file */
   const char *issuer_pwd = "";          /* password for the issuer key file   */
   const char *serialvalue = "1";          /* serial number string (decimal)     */
-  const char *output_file = CHAR(STRING_ELT(filename, 0));  /* where to store the constructed CRT */
   const char *not_before = "20010101000000";  /* validity period not before   */
   const char *not_after = CHAR(STRING_ELT(valid, 0)); /* validity period not after */
   const int is_ca = 1;                  /* is a CA certificate                */
@@ -166,6 +133,9 @@ SEXP rnng_cert_write(SEXP key, SEXP cn, SEXP valid, SEXP filename) {
 #endif
   mbedtls_x509_crt_init(&issuer_crt);
   memset(buf, 0, sizeof(buf));
+
+  unsigned char output_buf[4096];
+  memset(output_buf, 0, 4096);
 
 #if MBEDTLS_VERSION_MAJOR == 3 && MBEDTLS_VERSION_MINOR >= 4 || MBEDTLS_VERSION_MAJOR >= 4
   unsigned char serial[MBEDTLS_X509_RFC5280_MAX_SERIAL_LEN];
@@ -214,10 +184,11 @@ SEXP rnng_cert_write(SEXP key, SEXP cn, SEXP valid, SEXP filename) {
       goto exitlevel1;
 #endif /* MBEDTLS_SHA1_C */
 
-  if ((ret = write_certificate(&crt, output_file, mbedtls_ctr_drbg_random, &ctr_drbg)) != 0)
+  ret = mbedtls_x509write_crt_pem(&crt, output_buf, 4096, mbedtls_ctr_drbg_random, &ctr_drbg);
+  if (ret < 0)
     goto exitlevel1;
 
-  return filename;
+  return Rf_mkString((char *) &output_buf);
 
   exitlevel1:
 

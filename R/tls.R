@@ -271,10 +271,8 @@ self_signed_cert <- function(cn = "localhost", valid = "20301231235959") {
 
   keyfile <- .Call(rnng_gen_key, tempfile())
   on.exit(unlink(keyfile))
-  certfile <- .Call(rnng_cert_write, keyfile, cn, valid, tempfile())
-  on.exit(unlink(certfile), add = TRUE)
+  cert <- .Call(rnng_cert_write, keyfile, cn, valid)
   key <- paste(readLines(keyfile), collapse = "\n")
-  cert <- paste(readLines(certfile), collapse = "\n")
   list(server = c(cert, key), client = c(cert, ""))
 
 }
