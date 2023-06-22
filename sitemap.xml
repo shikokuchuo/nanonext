@@ -25,6 +25,9 @@
     <loc>https://shikokuchuo.net/nanonext/reference/call_aio.html</loc>
   </url>
   <url>
+    <loc>https://shikokuchuo.net/nanonext/reference/cert_write.html</loc>
+  </url>
+  <url>
     <loc>https://shikokuchuo.net/nanonext/reference/close.html</loc>
   </url>
   <url>
@@ -116,9 +119,6 @@
   </url>
   <url>
     <loc>https://shikokuchuo.net/nanonext/reference/request.html</loc>
-  </url>
-  <url>
-    <loc>https://shikokuchuo.net/nanonext/reference/self_signed_cert.html</loc>
   </url>
   <url>
     <loc>https://shikokuchuo.net/nanonext/reference/send.html</loc>
