@@ -14,12 +14,10 @@
 // You should have received a copy of the GNU General Public License along with
 // nanonext. If not, see <https://www.gnu.org/licenses/>.
 
-// nanonext - Certificate Functions --------------------------------------------
+// nanonext - Key Generation and Certificates ----------------------------------
 
-// Contains modified code from file with the following copyright notice:
+// Contains modified code from files with the following copyright notice:
 /*
- *  Certificate generation and signing
- *
  *  Copyright The Mbed TLS Contributors
  *  SPDX-License-Identifier: Apache-2.0
  *
@@ -44,9 +42,10 @@
 #endif
 #include <mbedtls/platform.h>
 
+#include <mbedtls/pk.h>
+#include <mbedtls/rsa.h>
 #include <mbedtls/x509_crt.h>
 #include <mbedtls/x509_csr.h>
-#include <mbedtls/oid.h>
 #include <mbedtls/entropy.h>
 #include <mbedtls/ctr_drbg.h>
 #include <mbedtls/md.h>
@@ -95,8 +94,44 @@ static int parse_serial_decimal_format(unsigned char *obuf, size_t obufmax,
 }
 #endif
 
-SEXP rnng_cert_write(SEXP key, SEXP cn, SEXP valid) {
+static SEXP gen_key(void) {
 
+  int ret = 1;
+  mbedtls_pk_context key;
+  char buf[1024];
+  mbedtls_entropy_context entropy;
+  mbedtls_ctr_drbg_context ctr_drbg;
+  const char *pers = "gen_key";
+
+  unsigned char output_buf[16000];
+  memset(output_buf, 0, 16000);
+
+  mbedtls_pk_init(&key);
+  mbedtls_ctr_drbg_init(&ctr_drbg);
+  memset(buf, 0, sizeof(buf));
+  mbedtls_entropy_init(&entropy);
+
+  if ((ret = mbedtls_ctr_drbg_seed(&ctr_drbg, mbedtls_entropy_func, &entropy, (const unsigned char *) pers, strlen(pers))) ||
+      (ret = mbedtls_pk_setup(&key, mbedtls_pk_info_from_type((mbedtls_pk_type_t) MBEDTLS_PK_RSA))) ||
+      (ret = mbedtls_rsa_gen_key(mbedtls_pk_rsa(key), mbedtls_ctr_drbg_random, &ctr_drbg, 4096, 65537)) ||
+      (ret = mbedtls_pk_write_key_pem(&key, output_buf, 16000)))
+    goto exitlevel1;
+
+  return Rf_mkString((char *) &output_buf);
+
+  exitlevel1:
+
+  mbedtls_pk_free(&key);
+  mbedtls_ctr_drbg_free(&ctr_drbg);
+  mbedtls_entropy_free(&entropy);
+  mbedtls_strerror(ret, buf, sizeof(buf));
+  Rf_error("%d | %s", ret, buf);
+
+}
+
+SEXP rnng_cert_write(SEXP cn, SEXP valid) {
+
+  const SEXP key = gen_key();
   const unsigned char *keyvalue = (unsigned char *) CHAR(STRING_ELT(key, 0));
   size_t klen = strlen((char *) keyvalue);
   const char *serialvalue = "1";          /* serial number string (decimal)     */
@@ -188,7 +223,20 @@ SEXP rnng_cert_write(SEXP key, SEXP cn, SEXP valid) {
   if (ret < 0)
     goto exitlevel1;
 
-  return Rf_mkString((char *) &output_buf);
+  SEXP vec, kcstr, cstr;
+  const char *names[] = {"server", "client", ""};
+  PROTECT(vec = Rf_mkNamed(VECSXP, names));
+  kcstr = Rf_allocVector(STRSXP, 2);
+  SET_VECTOR_ELT(vec, 0, kcstr);
+  SET_STRING_ELT(kcstr, 0, Rf_mkChar((char *) &output_buf));
+  SET_STRING_ELT(kcstr, 1, Rf_mkChar((char *) keyvalue));
+  cstr = Rf_allocVector(STRSXP, 2);
+  SET_VECTOR_ELT(vec, 1, cstr);
+  SET_STRING_ELT(cstr, 0, Rf_mkChar((char *) &output_buf));
+  SET_STRING_ELT(cstr, 1, Rf_mkChar(""));
+
+  UNPROTECT(1);
+  return vec;
 
   exitlevel1:
 

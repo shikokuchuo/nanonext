@@ -229,10 +229,10 @@ base64dec <- function(x, convert = TRUE) .Call(rnng_base64dec, x, convert)
 
 # nanonext - Key Gen and Certificates ------------------------------------------
 
-#' Generate Self-Signed Certificate
+#' Generate Self-Signed Certificate and Key
 #'
-#' Generate a self-signed x509 certificate from a 4096 bit RSA private/public
-#'     key pair for use with encrypted TLS communications.
+#' Generate self-signed x509 certificate and 4096 bit RSA private/public key
+#'     pair for use with authenticated, encrypted TLS communications.
 #'
 #' @param cn [default 'localhost'] character issuer common name (CN) for the
 #'     certificate. This can be either a hostname or an IP address, but must
@@ -241,15 +241,14 @@ base64dec <- function(x, convert = TRUE) .Call(rnng_base64dec, x, convert)
 #'     'yyyymmddhhmmss' format. The certificate is not valid after this time.
 #'
 #' @return A list of length 2, comprising \code{$server} and \code{$client}.
-#'     These may be passed directly to the relevant argument of
-#'     \code{\link{tls_config}}.
+#'     These may be passed directly to the relevant argument of \code{\link{tls_config}}.
 #'
 #' @examples
 #'
 #' if (interactive()) {
 #' # Only run examples in interactive R sessions
 #'
-#' cert <- self_signed_cert(cn = "127.0.0.1")
+#' cert <- cert_write(cn = "127.0.0.1")
 #' ser <- tls_config(server = cert$server)
 #' cli <- tls_config(client = cert$client)
 #'
@@ -267,10 +266,5 @@ base64dec <- function(x, convert = TRUE) .Call(rnng_base64dec, x, convert)
 #'
 #' @export
 #'
-self_signed_cert <- function(cn = "localhost", valid = "20301231235959") {
-
-  key <- .Call(rnng_gen_key)
-  cert <- .Call(rnng_cert_write, key, cn, valid)
-  list(server = c(cert, key), client = c(cert, ""))
-
-}
+cert_write <- function(cn = "localhost", valid = "20301231235959")
+  .Call(rnng_cert_write, cn, valid)
