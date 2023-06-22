@@ -38,7 +38,10 @@
 
 #include "nanonext.h"
 
-#include <mbedtls/build_info.h>
+#include <mbedtls/version.h>
+#if MBEDTLS_VERSION_MAJOR == 2
+#include <mbedtls/config.h>
+#endif
 #include <mbedtls/platform.h>
 
 #include <mbedtls/error.h>
@@ -54,7 +57,6 @@
 
 #if !defined(_WIN32)
 #include <unistd.h>
-
 #endif /* !_WIN32 */
 
 static int write_private_key(mbedtls_pk_context *key, const char *output_file) {

@@ -38,7 +38,10 @@
 
 #include "nanonext.h"
 
-#include <mbedtls/build_info.h>
+#include <mbedtls/version.h>
+#if MBEDTLS_VERSION_MAJOR == 2
+#include <mbedtls/config.h>
+#endif
 #include <mbedtls/platform.h>
 
 #include <mbedtls/x509_crt.h>
@@ -107,7 +110,7 @@ static int write_certificate(mbedtls_x509write_cert *crt, const char *output_fil
 
 }
 
-#if MBEDTLS_VERSION_MAJOR >= 3 && MBEDTLS_VERSION_MINOR >= 4 || MBEDTLS_VERSION_MAJOR >= 4
+#if MBEDTLS_VERSION_MAJOR == 3 && MBEDTLS_VERSION_MINOR >= 4 || MBEDTLS_VERSION_MAJOR >= 4
 static int parse_serial_decimal_format(unsigned char *obuf, size_t obufmax,
                                        const char *ibuf, size_t *len) {
 
@@ -195,7 +198,7 @@ SEXP rnng_cert_write(SEXP filename, SEXP key, SEXP cn, SEXP valid) {
   mbedtls_x509_crt_init(&issuer_crt);
   memset(buf, 0, sizeof(buf));
 
-#if MBEDTLS_VERSION_MAJOR >= 3 && MBEDTLS_VERSION_MINOR >= 4 || MBEDTLS_VERSION_MAJOR >= 4
+#if MBEDTLS_VERSION_MAJOR == 3 && MBEDTLS_VERSION_MINOR >= 4 || MBEDTLS_VERSION_MAJOR >= 4
   unsigned char serial[MBEDTLS_X509_RFC5280_MAX_SERIAL_LEN];
   size_t serial_len;
   memset(serial, 0, sizeof(serial));
@@ -205,12 +208,16 @@ SEXP rnng_cert_write(SEXP filename, SEXP key, SEXP cn, SEXP valid) {
 #endif
 
   if ((ret = mbedtls_ctr_drbg_seed(&ctr_drbg, mbedtls_entropy_func, &entropy, (const unsigned char *) pers, strlen(pers))) ||
-#if MBEDTLS_VERSION_MAJOR >= 3 && MBEDTLS_VERSION_MINOR >= 3 || MBEDTLS_VERSION_MAJOR >= 4
+#if MBEDTLS_VERSION_MAJOR == 3 && MBEDTLS_VERSION_MINOR >= 4 || MBEDTLS_VERSION_MAJOR >= 4
       (ret = parse_serial_decimal_format(serial, sizeof(serial), opt.serial, &serial_len)) ||
 #else
       (ret = mbedtls_mpi_read_string(&cereal, 10, opt.serial)) ||
 #endif
+#if MBEDTLS_VERSION_MAJOR >= 3
       (ret = mbedtls_pk_parse_keyfile(&loaded_issuer_key, opt.issuer_key, opt.issuer_pwd, mbedtls_ctr_drbg_random, &ctr_drbg)))
+#else
+      (ret = mbedtls_pk_parse_keyfile(&loaded_issuer_key, opt.issuer_key, opt.issuer_pwd)))
+#endif
     goto exitlevel1;
 
   if (opt.selfsign) {
@@ -228,7 +235,7 @@ SEXP rnng_cert_write(SEXP filename, SEXP key, SEXP cn, SEXP valid) {
   mbedtls_x509write_crt_set_version(&crt, opt.version);
   mbedtls_x509write_crt_set_md_alg(&crt, opt.md);
 
-#if MBEDTLS_VERSION_MAJOR >= 3 && MBEDTLS_VERSION_MINOR >= 4 || MBEDTLS_VERSION_MAJOR >= 4
+#if MBEDTLS_VERSION_MAJOR == 3 && MBEDTLS_VERSION_MINOR >= 4 || MBEDTLS_VERSION_MAJOR >= 4
   if ((ret = mbedtls_x509write_crt_set_serial_raw(&crt, serial, serial_len)) ||
 #else
   if ((ret = mbedtls_x509write_crt_set_serial(&crt, &cereal)) ||
@@ -257,7 +264,7 @@ SEXP rnng_cert_write(SEXP filename, SEXP key, SEXP cn, SEXP valid) {
   mbedtls_x509write_crt_free(&crt);
   mbedtls_pk_free(&loaded_subject_key);
   mbedtls_pk_free(&loaded_issuer_key);
-#if MBEDTLS_VERSION_MAJOR == 3 && MBEDTLS_VERSION_MINOR < 4 || MBEDTLS_VERSION_MAJOR == 2
+#if MBEDTLS_VERSION_MAJOR == 3 && MBEDTLS_VERSION_MINOR < 4 || MBEDTLS_VERSION_MAJOR <= 2
   mbedtls_mpi_free(&cereal);
 #endif
   mbedtls_ctr_drbg_free(&ctr_drbg);
