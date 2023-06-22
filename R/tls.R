@@ -269,10 +269,8 @@ base64dec <- function(x, convert = TRUE) .Call(rnng_base64dec, x, convert)
 #'
 self_signed_cert <- function(cn = "localhost", valid = "20301231235959") {
 
-  keyfile <- .Call(rnng_gen_key, tempfile())
-  on.exit(unlink(keyfile))
-  cert <- .Call(rnng_cert_write, keyfile, cn, valid)
-  key <- paste(readLines(keyfile), collapse = "\n")
+  key <- .Call(rnng_gen_key)
+  cert <- .Call(rnng_cert_write, key, cn, valid)
   list(server = c(cert, key), client = c(cert, ""))
 
 }

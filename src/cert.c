@@ -97,8 +97,8 @@ static int parse_serial_decimal_format(unsigned char *obuf, size_t obufmax,
 
 SEXP rnng_cert_write(SEXP key, SEXP cn, SEXP valid) {
 
-  const char *issuer_keyfile = CHAR(STRING_ELT(key, 0)); /* filename of the issuer key file */
-  const char *issuer_pwd = "";          /* password for the issuer key file   */
+  const unsigned char *keyvalue = (unsigned char *) CHAR(STRING_ELT(key, 0));
+  size_t klen = strlen((char *) keyvalue);
   const char *serialvalue = "1";          /* serial number string (decimal)     */
   const char *not_before = "20010101000000";  /* validity period not before   */
   const char *not_after = CHAR(STRING_ELT(valid, 0)); /* validity period not after */
@@ -153,9 +153,9 @@ SEXP rnng_cert_write(SEXP key, SEXP cn, SEXP valid) {
       (ret = mbedtls_mpi_read_string(&serial, 10, serialvalue)) ||
 #endif
 #if MBEDTLS_VERSION_MAJOR >= 3
-      (ret = mbedtls_pk_parse_keyfile(&loaded_issuer_key, issuer_keyfile, issuer_pwd, mbedtls_ctr_drbg_random, &ctr_drbg)))
+      (ret = mbedtls_pk_parse_key(&loaded_issuer_key, keyvalue, klen + 1, NULL, 0, mbedtls_ctr_drbg_random, &ctr_drbg)))
 #else
-      (ret = mbedtls_pk_parse_keyfile(&loaded_issuer_key, issuer_keyfile, issuer_pwd)))
+      (ret = mbedtls_pk_parse_key(&loaded_issuer_key, keyvalue, klen + 1, NULL, 0)))
 #endif
     goto exitlevel1;
 

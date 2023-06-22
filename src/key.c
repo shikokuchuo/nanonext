@@ -59,44 +59,17 @@
 #include <unistd.h>
 #endif /* !_WIN32 */
 
-static int write_private_key(mbedtls_pk_context *key, const char *output_file) {
-
-  int ret;
-  FILE *f;
-  unsigned char output_buf[16000];
-  unsigned char *c = output_buf;
-  size_t len = 0;
-
-  memset(output_buf, 0, 16000);
-  if ((ret = mbedtls_pk_write_key_pem(key, output_buf, 16000)))
-    return ret;
-
-  len = strlen((char *) output_buf);
-
-  if ((f = fopen(output_file, "wb")) == NULL)
-    return -1;
-
-  if (fwrite(c, 1, len, f) != len) {
-    fclose(f);
-    return -1;
-  }
-
-  fclose(f);
-
-  return 0;
-
-}
-
-SEXP rnng_gen_key(SEXP filename) {
+SEXP rnng_gen_key(void) {
 
   int ret = 1;
-  const char *fname = CHAR(STRING_ELT(filename, 0));
-
   mbedtls_pk_context key;
   char buf[1024];
   mbedtls_entropy_context entropy;
   mbedtls_ctr_drbg_context ctr_drbg;
   const char *pers = "gen_key";
+
+  unsigned char output_buf[16000];
+  memset(output_buf, 0, 16000);
 
   mbedtls_pk_init(&key);
   mbedtls_ctr_drbg_init(&ctr_drbg);
@@ -106,10 +79,10 @@ SEXP rnng_gen_key(SEXP filename) {
   if ((ret = mbedtls_ctr_drbg_seed(&ctr_drbg, mbedtls_entropy_func, &entropy, (const unsigned char *) pers, strlen(pers))) ||
       (ret = mbedtls_pk_setup(&key, mbedtls_pk_info_from_type((mbedtls_pk_type_t) MBEDTLS_PK_RSA))) ||
       (ret = mbedtls_rsa_gen_key(mbedtls_pk_rsa(key), mbedtls_ctr_drbg_random, &ctr_drbg, 4096, 65537)) ||
-      (ret = write_private_key(&key, fname)))
+      (ret = mbedtls_pk_write_key_pem(&key, output_buf, 16000)))
     goto exitlevel1;
 
-  return filename;
+  return Rf_mkString((char *) &output_buf);
 
   exitlevel1:
 
