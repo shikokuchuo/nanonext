@@ -1,11 +1,10 @@
-# nanonext 0.9.0.9012 (development)
+# nanonext 0.9.0.9013 (development)
 
 #### New Features
 
-* Allows sending and receiving of reference objects such as those accessed via an external pointer. Implements `refhook()` for supplying a function to handle such objects, mapping to the same argument of base R functions `serialize()` and `unserialize()`.
+* `self_signed_cert()` for automatically generating self-signed certificates with 4096 bit RSA keys for use with `tls_config()`.
 * `listen()` and `dial()` gain the argument 'tls' for supplying a TLS configuration object, enabling secure 'tls+tcp' and 'wss' transports for scalability protocols.
-* `gen_key()` utility for generating 4096 bit RSA private/public key files using Mbed TLS.
-* `cert_write()` utility for generating self-signed certificates using Mbed TLS.
+* Allows sending and receiving of reference objects such as those accessed via an external pointer. Implements `refhook()` for supplying a function to handle such objects, mapping to the same argument of base R functions `serialize()` and `unserialize()`.
 
 #### Updates
 

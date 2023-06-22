@@ -29,7 +29,7 @@ to store the generated certificate.}
 Invisibly, 'filename'.
 }
 \description{
-Generate a self-signed certificate for use with encrypted TLS communications.
+Create a self-signed certificate for use with encrypted TLS communications.
 }
 \examples{
 
@@ -47,3 +47,4 @@ cert
 }
 
 }
+\keyword{internal}
