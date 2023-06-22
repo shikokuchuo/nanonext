@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0.9012</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0.9013</span>
       </span>
     </div>
 
@@ -54,19 +54,17 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.9.0.9012" id="nanonext-0909012-development">nanonext 0.9.0.9012 (development)<a class="anchor" aria-label="anchor" href="#nanonext-0909012-development"></a></h2>
+<h2 class="page-header" data-toc-text="0.9.0.9013" id="nanonext-0909013-development">nanonext 0.9.0.9013 (development)<a class="anchor" aria-label="anchor" href="#nanonext-0909013-development"></a></h2>
 <div class="section level5">
-<h5 id="new-features-0-9-0-9012">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-9-0-9012"></a></h5>
-<ul><li>Allows sending and receiving of reference objects such as those accessed via an external pointer. Implements <code><a href="../reference/refhook.html">refhook()</a></code> for supplying a function to handle such objects, mapping to the same argument of base R functions <code><a href="https://rdrr.io/r/base/serialize.html" class="external-link">serialize()</a></code> and <code><a href="https://rdrr.io/r/base/serialize.html" class="external-link">unserialize()</a></code>.</li>
+<h5 id="new-features-0-9-0-9013">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-9-0-9013"></a></h5>
+<ul><li>
+<code><a href="../reference/self_signed_cert.html">self_signed_cert()</a></code> for automatically generating self-signed certificates with 4096 bit RSA keys for use with <code><a href="../reference/tls_config.html">tls_config()</a></code>.</li>
 <li>
 <code><a href="../reference/listen.html">listen()</a></code> and <code><a href="../reference/dial.html">dial()</a></code> gain the argument ‘tls’ for supplying a TLS configuration object, enabling secure ‘tls+tcp’ and ‘wss’ transports for scalability protocols.</li>
-<li>
-<code><a href="../reference/gen_key.html">gen_key()</a></code> utility for generating 4096 bit RSA private/public key files using Mbed TLS.</li>
-<li>
-<code><a href="../reference/cert_write.html">cert_write()</a></code> utility for generating self-signed certificates using Mbed TLS.</li>
+<li>Allows sending and receiving of reference objects such as those accessed via an external pointer. Implements <code><a href="../reference/refhook.html">refhook()</a></code> for supplying a function to handle such objects, mapping to the same argument of base R functions <code><a href="https://rdrr.io/r/base/serialize.html" class="external-link">serialize()</a></code> and <code><a href="https://rdrr.io/r/base/serialize.html" class="external-link">unserialize()</a></code>.</li>
 </ul></div>
 <div class="section level5">
-<h5 id="updates-0-9-0-9012">Updates<a class="anchor" aria-label="anchor" href="#updates-0-9-0-9012"></a></h5>
+<h5 id="updates-0-9-0-9013">Updates<a class="anchor" aria-label="anchor" href="#updates-0-9-0-9013"></a></h5>
 <ul><li>Fix cases where <code><a href="../reference/base64enc.html">base64enc()</a></code> failed for objects exceeding a certain size.</li>
 </ul></div>
 </div>
