@@ -107,6 +107,7 @@ static int write_certificate(mbedtls_x509write_cert *crt, const char *output_fil
 
 }
 
+#if MBEDTLS_VERSION_MAJOR >= 3 && MBEDTLS_VERSION_MINOR >= 4 || MBEDTLS_VERSION_MAJOR >= 4
 static int parse_serial_decimal_format(unsigned char *obuf, size_t obufmax,
                                        const char *ibuf, size_t *len) {
 
@@ -142,6 +143,7 @@ static int parse_serial_decimal_format(unsigned char *obuf, size_t obufmax,
   return 0;
 
 }
+#endif
 
 SEXP rnng_cert_write(SEXP filename, SEXP key, SEXP cn, SEXP valid) {
 
@@ -178,8 +180,6 @@ SEXP rnng_cert_write(SEXP filename, SEXP key, SEXP cn, SEXP valid) {
   mbedtls_x509_csr csr;
 #endif
   mbedtls_x509write_cert crt;
-  unsigned char serial[MBEDTLS_X509_RFC5280_MAX_SERIAL_LEN];
-  size_t serial_len;
   mbedtls_entropy_context entropy;
   mbedtls_ctr_drbg_context ctr_drbg;
   const char *pers = "crt example app";
@@ -194,10 +194,22 @@ SEXP rnng_cert_write(SEXP filename, SEXP key, SEXP cn, SEXP valid) {
 #endif
   mbedtls_x509_crt_init(&issuer_crt);
   memset(buf, 0, sizeof(buf));
+
+#if MBEDTLS_VERSION_MAJOR >= 3 && MBEDTLS_VERSION_MINOR >= 4 || MBEDTLS_VERSION_MAJOR >= 4
+  unsigned char serial[MBEDTLS_X509_RFC5280_MAX_SERIAL_LEN];
+  size_t serial_len;
   memset(serial, 0, sizeof(serial));
+#else
+  mbedtls_mpi cereal;
+  mbedtls_mpi_init(&cereal);
+#endif
 
   if ((ret = mbedtls_ctr_drbg_seed(&ctr_drbg, mbedtls_entropy_func, &entropy, (const unsigned char *) pers, strlen(pers))) ||
+#if MBEDTLS_VERSION_MAJOR >= 3 && MBEDTLS_VERSION_MINOR >= 3 || MBEDTLS_VERSION_MAJOR >= 4
       (ret = parse_serial_decimal_format(serial, sizeof(serial), opt.serial, &serial_len)) ||
+#else
+      (ret = mbedtls_mpi_read_string(&cereal, 10, opt.serial)) ||
+#endif
       (ret = mbedtls_pk_parse_keyfile(&loaded_issuer_key, opt.issuer_key, opt.issuer_pwd, mbedtls_ctr_drbg_random, &ctr_drbg)))
     goto exitlevel1;
 
@@ -216,7 +228,11 @@ SEXP rnng_cert_write(SEXP filename, SEXP key, SEXP cn, SEXP valid) {
   mbedtls_x509write_crt_set_version(&crt, opt.version);
   mbedtls_x509write_crt_set_md_alg(&crt, opt.md);
 
+#if MBEDTLS_VERSION_MAJOR >= 3 && MBEDTLS_VERSION_MINOR >= 4 || MBEDTLS_VERSION_MAJOR >= 4
   if ((ret = mbedtls_x509write_crt_set_serial_raw(&crt, serial, serial_len)) ||
+#else
+  if ((ret = mbedtls_x509write_crt_set_serial(&crt, &cereal)) ||
+#endif
       (ret = mbedtls_x509write_crt_set_validity(&crt, opt.not_before, opt.not_after)) ||
       (ret = mbedtls_x509write_crt_set_basic_constraints(&crt, opt.is_ca, opt.max_pathlen)))
     goto exitlevel1;
@@ -241,6 +257,9 @@ SEXP rnng_cert_write(SEXP filename, SEXP key, SEXP cn, SEXP valid) {
   mbedtls_x509write_crt_free(&crt);
   mbedtls_pk_free(&loaded_subject_key);
   mbedtls_pk_free(&loaded_issuer_key);
+#if MBEDTLS_VERSION_MAJOR == 3 && MBEDTLS_VERSION_MINOR < 4 || MBEDTLS_VERSION_MAJOR == 2
+  mbedtls_mpi_free(&cereal);
+#endif
   mbedtls_ctr_drbg_free(&ctr_drbg);
   mbedtls_entropy_free(&entropy);
 
