@@ -57,27 +57,6 @@
 #include <string.h>
 #include <errno.h>
 
-struct options {
-const char *subject_key;    /* filename of the subject key file     */
-const char *issuer_key;     /* filename of the issuer key file      */
-const char *subject_pwd;    /* password for the subject key file    */
-const char *issuer_pwd;     /* password for the issuer key file     */
-const char *output_file;    /* where to store the constructed CRT   */
-const char *subject_name;   /* subject name for certificate         */
-const char *issuer_name;    /* issuer name for certificate          */
-const char *not_before;     /* validity period not before           */
-const char *not_after;      /* validity period not after            */
-const char *serial;         /* serial number string (decimal)       */
-int selfsign;               /* selfsign the certificate             */
-int is_ca;                  /* is a CA certificate                  */
-int max_pathlen;            /* maximum CA path length               */
-int authority_identifier;   /* add authority identifier to CRT      */
-int subject_identifier;     /* add subject identifier to CRT        */
-int basic_constraints;      /* add basic constraints ext to CRT     */
-int version;                /* CRT version                          */
-mbedtls_md_type_t md;       /* Hash used for signing                */
-} opt;
-
 static int write_certificate(mbedtls_x509write_cert *crt, const char *output_file,
                              int (*f_rng)(void *, unsigned char *, size_t), void *p_rng) {
 
@@ -150,34 +129,25 @@ static int parse_serial_decimal_format(unsigned char *obuf, size_t obufmax,
 
 SEXP rnng_cert_write(SEXP key, SEXP cn, SEXP valid, SEXP filename) {
 
-  int ret = 1;
+  const char *optissuer_key = CHAR(STRING_ELT(key, 0));     /* filename of the issuer key file */
+  const char *issuer_pwd = "";          /* password for the issuer key file   */
+  const char *optserial = "1";          /* serial number string (decimal)     */
+  const char *output_file = CHAR(STRING_ELT(filename, 0));  /* where to store the constructed CRT */
+  const char *not_before = "20010101000000";  /* validity period not before   */
+  const char *not_after = CHAR(STRING_ELT(valid, 0)); /* validity period not after */
+  const int is_ca = 1;                  /* is a CA certificate                */
+  const int max_pathlen = 0;            /* maximum CA path length             */
+  const int optversion = 2;             /* CRT version                        */
+  const mbedtls_md_type_t md = MBEDTLS_MD_SHA256;   /* Hash used for signing  */
+
   R_xlen_t clen = Rf_xlength(cn);
-  char issuer[clen + 19];
-  snprintf(issuer, clen + 19, "CN=%s,O=mbedTLS,C=UK", CHAR(STRING_ELT(cn, 0)));
+  char issuer_name[clen + 18];          /* issuer name for certificate        */
+  snprintf(issuer_name, clen + 18, "CN=%s,O=Hibiki,C=JP", CHAR(STRING_ELT(cn, 0)));
 
-  opt.subject_key         = "subject.key";
-  opt.issuer_key          = CHAR(STRING_ELT(key, 0));
-  opt.subject_pwd         = "";
-  opt.issuer_pwd          = "";
-  opt.output_file         = CHAR(STRING_ELT(filename, 0));
-  opt.subject_name        = "CN=Cert,O=mbedTLS,C=UK";
-  opt.issuer_name         = issuer;
-  opt.not_before          = "20010101000000";
-  opt.not_after           = CHAR(STRING_ELT(valid, 0));
-  opt.serial              = "1";
-  opt.selfsign            = 1;
-  opt.is_ca               = 1;
-  opt.max_pathlen         = 0;
-  opt.version             = 2;
-  opt.md                  = MBEDTLS_MD_SHA256;
-  opt.subject_identifier   = 1;
-  opt.authority_identifier = 1;
-  opt.basic_constraints    = 1;
-
+  int ret = 1;
   mbedtls_x509_crt issuer_crt;
-  mbedtls_pk_context loaded_issuer_key, loaded_subject_key;
-  mbedtls_pk_context *issuer_key = &loaded_issuer_key,
-    *subject_key = &loaded_subject_key;
+  mbedtls_pk_context loaded_issuer_key;
+  mbedtls_pk_context *issuer_key = &loaded_issuer_key;
   char buf[1024];
 #if defined(MBEDTLS_X509_CSR_PARSE_C)
   mbedtls_x509_csr csr;
@@ -189,7 +159,6 @@ SEXP rnng_cert_write(SEXP key, SEXP cn, SEXP valid, SEXP filename) {
 
   mbedtls_x509write_crt_init(&crt);
   mbedtls_pk_init(&loaded_issuer_key);
-  mbedtls_pk_init(&loaded_subject_key);
   mbedtls_ctr_drbg_init(&ctr_drbg);
   mbedtls_entropy_init(&entropy);
 #if defined(MBEDTLS_X509_CSR_PARSE_C)
@@ -203,45 +172,40 @@ SEXP rnng_cert_write(SEXP key, SEXP cn, SEXP valid, SEXP filename) {
   size_t serial_len;
   memset(serial, 0, sizeof(serial));
 #else
-  mbedtls_mpi cereal;
-  mbedtls_mpi_init(&cereal);
+  mbedtls_mpi serial;
+  mbedtls_mpi_init(&serial);
 #endif
 
   if ((ret = mbedtls_ctr_drbg_seed(&ctr_drbg, mbedtls_entropy_func, &entropy, (const unsigned char *) pers, strlen(pers))) ||
 #if MBEDTLS_VERSION_MAJOR == 3 && MBEDTLS_VERSION_MINOR >= 4 || MBEDTLS_VERSION_MAJOR >= 4
-      (ret = parse_serial_decimal_format(serial, sizeof(serial), opt.serial, &serial_len)) ||
+      (ret = parse_serial_decimal_format(serial, sizeof(serial), optserial, &serial_len)) ||
 #else
-      (ret = mbedtls_mpi_read_string(&cereal, 10, opt.serial)) ||
+      (ret = mbedtls_mpi_read_string(&serial, 10, optserial)) ||
 #endif
 #if MBEDTLS_VERSION_MAJOR >= 3
-      (ret = mbedtls_pk_parse_keyfile(&loaded_issuer_key, opt.issuer_key, opt.issuer_pwd, mbedtls_ctr_drbg_random, &ctr_drbg)))
+      (ret = mbedtls_pk_parse_keyfile(&loaded_issuer_key, optissuer_key, issuer_pwd, mbedtls_ctr_drbg_random, &ctr_drbg)))
 #else
-      (ret = mbedtls_pk_parse_keyfile(&loaded_issuer_key, opt.issuer_key, opt.issuer_pwd)))
+      (ret = mbedtls_pk_parse_keyfile(&loaded_issuer_key, optissuer_key, issuer_pwd)))
 #endif
     goto exitlevel1;
 
-  if (opt.selfsign) {
-    opt.subject_name = opt.issuer_name;
-    subject_key = issuer_key;
-  }
-
-  mbedtls_x509write_crt_set_subject_key(&crt, subject_key);
+  mbedtls_x509write_crt_set_subject_key(&crt, issuer_key);
   mbedtls_x509write_crt_set_issuer_key(&crt, issuer_key);
 
-  if ((ret = mbedtls_x509write_crt_set_subject_name(&crt, opt.subject_name)) ||
-      (ret = mbedtls_x509write_crt_set_issuer_name(&crt, opt.issuer_name)))
+  if ((ret = mbedtls_x509write_crt_set_subject_name(&crt, issuer_name)) ||
+      (ret = mbedtls_x509write_crt_set_issuer_name(&crt, issuer_name)))
     goto exitlevel1;
 
-  mbedtls_x509write_crt_set_version(&crt, opt.version);
-  mbedtls_x509write_crt_set_md_alg(&crt, opt.md);
+  mbedtls_x509write_crt_set_version(&crt, optversion);
+  mbedtls_x509write_crt_set_md_alg(&crt, md);
 
 #if MBEDTLS_VERSION_MAJOR == 3 && MBEDTLS_VERSION_MINOR >= 4 || MBEDTLS_VERSION_MAJOR >= 4
   if ((ret = mbedtls_x509write_crt_set_serial_raw(&crt, serial, serial_len)) ||
 #else
-  if ((ret = mbedtls_x509write_crt_set_serial(&crt, &cereal)) ||
+  if ((ret = mbedtls_x509write_crt_set_serial(&crt, &serial)) ||
 #endif
-      (ret = mbedtls_x509write_crt_set_validity(&crt, opt.not_before, opt.not_after)) ||
-      (ret = mbedtls_x509write_crt_set_basic_constraints(&crt, opt.is_ca, opt.max_pathlen)))
+      (ret = mbedtls_x509write_crt_set_validity(&crt, not_before, not_after)) ||
+      (ret = mbedtls_x509write_crt_set_basic_constraints(&crt, is_ca, max_pathlen)))
     goto exitlevel1;
 
 #if defined(MBEDTLS_SHA1_C)
@@ -250,7 +214,7 @@ SEXP rnng_cert_write(SEXP key, SEXP cn, SEXP valid, SEXP filename) {
       goto exitlevel1;
 #endif /* MBEDTLS_SHA1_C */
 
-  if ((ret = write_certificate(&crt, opt.output_file, mbedtls_ctr_drbg_random, &ctr_drbg)) != 0)
+  if ((ret = write_certificate(&crt, output_file, mbedtls_ctr_drbg_random, &ctr_drbg)) != 0)
     goto exitlevel1;
 
   return filename;
@@ -262,10 +226,9 @@ SEXP rnng_cert_write(SEXP key, SEXP cn, SEXP valid, SEXP filename) {
 #endif /* MBEDTLS_X509_CSR_PARSE_C */
   mbedtls_x509_crt_free(&issuer_crt);
   mbedtls_x509write_crt_free(&crt);
-  mbedtls_pk_free(&loaded_subject_key);
   mbedtls_pk_free(&loaded_issuer_key);
 #if MBEDTLS_VERSION_MAJOR == 3 && MBEDTLS_VERSION_MINOR < 4 || MBEDTLS_VERSION_MAJOR <= 2
-  mbedtls_mpi_free(&cereal);
+  mbedtls_mpi_free(&serial);
 #endif
   mbedtls_ctr_drbg_free(&ctr_drbg);
   mbedtls_entropy_free(&entropy);
