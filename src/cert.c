@@ -148,7 +148,7 @@ static int parse_serial_decimal_format(unsigned char *obuf, size_t obufmax,
 }
 #endif
 
-SEXP rnng_cert_write(SEXP filename, SEXP key, SEXP cn, SEXP valid) {
+SEXP rnng_cert_write(SEXP key, SEXP cn, SEXP valid, SEXP filename) {
 
   int ret = 1;
   R_xlen_t clen = Rf_xlength(cn);
