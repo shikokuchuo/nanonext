@@ -252,8 +252,8 @@ base64dec <- function(x, convert = TRUE) .Call(rnng_base64dec, x, convert)
 #' ser <- tls_config(server = cert$server)
 #' cli <- tls_config(client = cert$client)
 #'
-#' s <- socket(listen = "wss://127.0.0.1:5555", tls = ser)
-#' s1 <- socket(dial = "wss://127.0.0.1:5555", tls = cli)
+#' s <- socket(listen = "tls+tcp://127.0.0.1:5555", tls = ser)
+#' s1 <- socket(dial = "tls+tcp://127.0.0.1:5555", tls = cli)
 #'
 #' # secure TLS connection established
 #'

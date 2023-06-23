@@ -501,24 +501,14 @@ nanotesterr(tls_config(server = file), "Cryptographic error")
 nanotesterr(tls_config(client = c(pem, pem)), "Cryptographic error")
 nanotesterr(tls_config(server = c(pem, pem)), "Cryptographic error")
 unlink(file)
-nanotestxp(tls <- tls_config(client = c(
-"-----BEGIN CERTIFICATE-----
-MIICGTCCAZ+gAwIBAgIQCeCTZaz32ci5PhwLBCou8zAKBggqhkjOPQQDAzBOMQswCQYDVQQGEwJV
-UzEXMBUGA1UEChMORGlnaUNlcnQsIEluYy4xJjAkBgNVBAMTHURpZ2lDZXJ0IFRMUyBFQ0MgUDM4
-NCBSb290IEc1MB4XDTIxMDExNTAwMDAwMFoXDTQ2MDExNDIzNTk1OVowTjELMAkGA1UEBhMCVVMx
-FzAVBgNVBAoTDkRpZ2lDZXJ0LCBJbmMuMSYwJAYDVQQDEx1EaWdpQ2VydCBUTFMgRUNDIFAzODQg
-Um9vdCBHNTB2MBAGByqGSM49AgEGBSuBBAAiA2IABMFEoc8Rl1Ca3iOCNQfN0MsYndLxf3c1Tzvd
-lHJS7cI7+Oz6e2tYIOyZrsn8aLN1udsJ7MgT9U7GCh1mMEy7H0cKPGEQQil8pQgO4CLp0zVozptj
-n4S1mU1YoI71VOeVyaNCMEAwHQYDVR0OBBYEFMFRRVBZqz7nLFr6ICISB4CIfBFqMA4GA1UdDwEB
-/wQEAwIBhjAPBgNVHRMBAf8EBTADAQH/MAoGCCqGSM49BAMDA2gAMGUCMQCJao1H5+z8blUD2Wds
-Jk6Dxv3J+ysTvLd6jLRl0mlpYxNjOyZQLgGheQaRnUi/wr4CMEfDFXuxoJGZSZOoPHzoRgaLLPIx
-AJSdYsiJvRmEFOml+wG4DXZDjC5Ty3zfDBeWUA==
------END CERTIFICATE-----", ""
-)))
+cert <- cert_write()
+nanotest(is.list(cert) && length(cert) == 2L)
+nanotest(identical(names(cert), c("server", "client")))
+nanotestxp(tls <- tls_config(client = cert$client))
 nanotest(inherits(tls, "tlsConfig"))
 nanotestp(tls)
-nanotest(is_error_value(ncurl("https://www.cam.ac.uk/", tls = tls)$status))
-nanotest(is_error_value(call_aio(ncurl("https://www.cam.ac.uk/", async = TRUE, tls = tls))$status))
+nanotest(is_error_value(ncurl("https://www.r-project.org/", tls = tls)$status))
+nanotest(is_error_value(call_aio(ncurl("https://www.r-project.org/", async = TRUE, tls = tls))$status))
 nanotestxp(s <- socket(dial = "tls+tcp://127.0.0.1:5556", tls = tls))
 nanotestw(dial(s, url = "tls+tcp://[", tls = tls, error = FALSE) > 0)
 nanotestw(listen(s, url = "tls+tcp://[", tls = tls, error = FALSE) > 0)
