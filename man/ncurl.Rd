@@ -75,13 +75,13 @@ Named list of 4 elements:
 nano cURL - a minimalist http(s) client.
 }
 \examples{
-ncurl("https://www.cam.ac.uk/", response = c("date", "server"), timeout = 1000L)
-ncurl("http://httpbin.org/put",
+ncurl("https://www.r-project.org/", response = c("date", "server"), timeout = 1000L)
+ncurl("https://postman-echo.com/put",
       method = "PUT",
       headers = list(Authorization = "Bearer APIKEY"),
       data = "hello world",
       timeout = 1500L)
-ncurl("http://httpbin.org/post",
+ncurl("https://postman-echo.com/post",
       method = "POST",
       headers = c(`Content-Type` = "application/json"),
       data = '{"k":"v"}',

@@ -64,13 +64,13 @@
 #'     and 'recvAio') (invisibly).
 #'
 #' @examples
-#' ncurl("https://www.cam.ac.uk/", response = c("date", "server"), timeout = 1000L)
-#' ncurl("http://httpbin.org/put",
+#' ncurl("https://www.r-project.org/", response = c("date", "server"), timeout = 1000L)
+#' ncurl("https://postman-echo.com/put",
 #'       method = "PUT",
 #'       headers = list(Authorization = "Bearer APIKEY"),
 #'       data = "hello world",
 #'       timeout = 1500L)
-#' ncurl("http://httpbin.org/post",
+#' ncurl("https://postman-echo.com/post",
 #'       method = "POST",
 #'       headers = c(`Content-Type` = "application/json"),
 #'       data = '{"k":"v"}',
@@ -107,7 +107,7 @@ ncurl <- function(url,
 #'     else an 'errorValue'.
 #'
 #' @examples
-#' s <- ncurl_session("https://httpbin.org/get", response = "date", timeout = 2000L)
+#' s <- ncurl_session("https://www.r-project.org/", response = "date", timeout = 2000L)
 #' s
 #' if (!is_error_value(s)) transact(s)
 #' if (!is_error_value(s)) close(s)
