@@ -422,7 +422,7 @@ print.thread <- function(x, ...) {
 #'
 print.tlsConfig <- function(x, ...) {
 
-  cat(sprintf("< TLS %s configuration >\n - auth mode: %s\n - %s\n", attr(x, "spec"), attr(x, "mode"), attr(x, "source")), file = stdout())
+  cat(sprintf("< TLS %s configuration >\n - auth mode: %s\n", attr(x, "spec"), attr(x, "mode")), file = stdout())
   invisible(x)
 
 }

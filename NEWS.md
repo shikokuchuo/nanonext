@@ -8,6 +8,7 @@
 
 #### Updates
 
+* 'tlsConfig' objects no longer have a 'source' attribute.
 * Fix cases where `base64enc()` failed for objects exceeding a certain size.
 * Internal performance enhancements.
 
