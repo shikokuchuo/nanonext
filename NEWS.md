@@ -1,4 +1,4 @@
-# nanonext 0.9.0.9015 (development)
+# nanonext 0.9.0.9016 (development)
 
 #### New Features
 
@@ -9,6 +9,7 @@
 #### Updates
 
 * Fix cases where `base64enc()` failed for objects exceeding a certain size.
+* Internal performance enhancements.
 
 # nanonext 0.9.0
 

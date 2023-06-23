@@ -1187,7 +1187,7 @@ SEXP rnng_aio_http(SEXP env, SEXP response, SEXP type) {
 
   if (haio->mode) {
     int xc;
-    PROTECT(cvec = Rf_lang2(nano_RtcSymbol, vec));
+    PROTECT(cvec = Rf_lcons(nano_RtcSymbol, Rf_cons(vec, R_NilValue)));
     cvec = R_tryEvalSilent(cvec, R_BaseEnv, &xc);
     UNPROTECT(1);
   } else {
@@ -1408,7 +1408,7 @@ SEXP rnng_ncurl_transact(SEXP session) {
 
   if (haio->mode) {
     int xc;
-    PROTECT(cvec = Rf_lang2(nano_RtcSymbol, vec));
+    PROTECT(cvec = Rf_lcons(nano_RtcSymbol, Rf_cons(vec, R_NilValue)));
     cvec = R_tryEvalSilent(cvec, R_BaseEnv, &xc);
     UNPROTECT(1);
   } else {

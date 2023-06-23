@@ -116,7 +116,7 @@ static void PreserveObjects(void) {
   SET_TAG(nano_ncurlSession, R_ClassSymbol);
   R_PreserveObject(nano_recvAio = Rf_cons(Rf_mkString("recvAio"), R_NilValue));
   SET_TAG(nano_recvAio, R_ClassSymbol);
-  R_PreserveObject(nano_refhook = R_NilValue);
+  R_PreserveObject(nano_refhook = Rf_lang5(R_NilValue, R_MissingArg, R_MissingArg, R_MissingArg, R_NilValue));
   R_PreserveObject(nano_sendAio = Rf_cons(Rf_mkString("sendAio"), R_NilValue));
   SET_TAG(nano_sendAio, R_ClassSymbol);
   R_PreserveObject(nano_success = Rf_ScalarInteger(0));

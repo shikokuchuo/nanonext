@@ -340,7 +340,7 @@ SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP follow, SEXP method, SEXP headers,
   SET_VECTOR_ELT(out, 2, vec);
 
   if (conv) {
-    PROTECT(cvec = Rf_lang2(nano_RtcSymbol, vec));
+    PROTECT(cvec = Rf_lcons(nano_RtcSymbol, Rf_cons(vec, R_NilValue)));
     cvec = R_tryEvalSilent(cvec, R_BaseEnv, &xc);
     UNPROTECT(1);
   } else {
@@ -668,24 +668,21 @@ SEXP rnng_refhook(SEXP func) {
   switch (TYPEOF(func)) {
   case NILSXP:
   case CLOSXP:
-    R_ReleaseObject(nano_refhook);
-    R_PreserveObject(nano_refhook = func);
+    SETCAD4R(nano_refhook, func);
     break;
   case STRSXP: ;
     int tryErr;
     SEXP call;
     PROTECT(func = rnng_base64dec(func, Rf_ScalarLogical(0)));
-    PROTECT(call = Rf_lang2(nano_UnserSymbol, func));
+    PROTECT(call = Rf_lcons(nano_UnserSymbol, Rf_cons(func, R_NilValue)));
     func = R_tryEval(call, R_BaseEnv, &tryErr);
     UNPROTECT(2);
     if (tryErr) break;
-    if (TYPEOF(func) == CLOSXP || TYPEOF(func) == NILSXP) {
-      R_ReleaseObject(nano_refhook);
-      R_PreserveObject(nano_refhook = func);
-    }
+    if (TYPEOF(func) == CLOSXP || TYPEOF(func) == NILSXP)
+      SETCAD4R(nano_refhook, func);
   }
 
-  return nano_refhook;
+  return CAD4R(nano_refhook);
 
 }
 
