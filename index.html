@@ -108,11 +108,13 @@
 <li>IPC (inter-process)</li>
 <li>TCP (IPv4 or IPv6)</li>
 <li>WebSocket</li>
+<li>TLS (over TCP and WebSocket)</li>
 </ul>
+<p>Development of the TLS transport was supported by an R Consortium ISC grant (2023 first cycle).</p>
 <p>Web utilities:</p>
 <ul>
 <li>ncurl - (async) http(s) client</li>
-<li>stream - secure websockets client (and generic low-level socket interface)</li>
+<li>stream - secure websockets client / generic low-level socket interface</li>
 <li>messenger - console-based instant messaging with authentication</li>
 <li>sha[1|224|256|384|512] - cryptographic hash and HMAC algorithms</li>
 <li>base64[enc|dec] - base64 encoding and decoding</li>
@@ -127,6 +129,7 @@
 <li><a href="#async-and-concurrency">Async and Concurrency</a></li>
 <li><a href="#rpc-and-distributed-computing">RPC and Distributed Computing</a></li>
 <li><a href="#synchronisation-primitives">Synchronisation Primitives</a></li>
+<li><a href="#tls-secure-connections">TLS Secure Connections</a></li>
 <li><a href="#publisher-subscriber-model">Publisher / Subscriber Model</a></li>
 <li><a href="#surveyor-respondent-model">Surveyor / Respondent Model</a></li>
 <li><a href="#ncurl-async-http-client">ncurl: (Async) HTTP Client</a></li>
@@ -216,8 +219,9 @@
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>array <span class="op">=</span> np.frombuffer(raw)</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(array)</span>
 <span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1.1 2.2 3.3 4.4 5.5]</span></span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>msg <span class="op">=</span> array.tobytes()</span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>socket.send(msg)</span></code></pre></div>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>msg <span class="op">=</span> array.tobytes()</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>socket.send(msg)</span></code></pre></div>
 <p>Receive in R, specifying the receive mode as ‘double’:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">n</span><span class="op">$</span><span class="fu">recv</span><span class="op">(</span>mode <span class="op">=</span> <span class="st">"double"</span><span class="op">)</span></span>
@@ -324,7 +328,7 @@
 <span><span class="co">#&gt; &lt; recvAio &gt;</span></span>
 <span><span class="co">#&gt;  - $data for message data</span></span>
 <span><span class="va">aio</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] 0.821 -0.28 -0.7501 -0.0818 -0.1577 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] 1.084 -0.621 1.813 -0.501 1.882 ...</span></span></code></pre></div>
 <p>As <code><a href="reference/call_aio.html">call_aio()</a></code> is blocking and will wait for completion, an alternative is to query <code>aio$data</code> directly. This will return an ‘unresolved’ logical NA value if the calculation is yet to complete.</p>
 <p>In this example the calculation is returned, but other operations may reside entirely on the server side, for example writing data to disk.</p>
 <p>In such a case, calling or querying the value confirms that the operation has completed, and provides the return value of the function, which may typically be NULL or an exit code.</p>
@@ -401,10 +405,48 @@
 <p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
 <div class="section level3">
+<h3 id="tls-secure-connections">TLS Secure Connections<a class="anchor" aria-label="anchor" href="#tls-secure-connections"></a>
+</h3>
+<p>Secure connections are enabled through the combined use of NNG and Mbed TLS libraries.</p>
+<p>Authentication of endpoints and encryption of the TCP transport layer is achieved transparently by:</p>
+<ol style="list-style-type: decimal">
+<li>Specifying a secure <code>tls+tcp://</code> or <code>wss://</code> URL, and</li>
+<li>Passing a TLS configuration object to the ‘tls’ argument of <code><a href="reference/listen.html">listen()</a></code> or <code><a href="reference/dial.html">dial()</a></code>.</li>
+</ol>
+<p>A TLS configuration, or ‘tlsConfig’, object is created by the <code><a href="reference/tls_config.html">tls_config()</a></code> function. Specify the argument ‘client’ to create a client configuration, and ‘server’ to create a server configuration.</p>
+<p>A client configuration requires a PEM-encoded CA certificate (chain) used to verify the server identity. A server configuration requires the certificate and associated private key. These may be supplied as files or directly as character vectors. Valid certificates generated via a certificate signing request to a Certificate Authority are supported in this way.</p>
+<p>Additionally, the convenience function <code>write_cert()</code> can automatically generate a 4096 bit RSA key pair and self-signed certificate in the format required by <code><a href="reference/tls_config.html">tls_config()</a></code>. The ‘cn’ argument must be provided and match exactly the hostname / IP address of the URL that is being used, e.g. in the example below ‘127.0.0.1’ must be used throughout, or alternatively ‘localhost’, but not a mixture of the two.</p>
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">cert</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/cert_write.html">cert_write</a></span><span class="op">(</span>cn <span class="op">=</span> <span class="st">"127.0.0.1"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">cert</span><span class="op">)</span></span>
+<span><span class="co">#&gt; List of 2</span></span>
+<span><span class="co">#&gt;  $ server: chr [1:2] "-----BEGIN CERTIFICATE-----\nMIIFFTCCAv2gAwIBAgIBATANBgkqhkiG9w0BAQsFADAiMRIwEAYDVQQDDAkxMjcu\nMC4wLjExDDAKBgNV"| __truncated__ "-----BEGIN RSA PRIVATE KEY-----\nMIIJKQIBAAKCAgEAszvA2qOhJdqvgwzG+i2L+L8GAC7fB0FRjfUbV518RYtq3hSe\n4puZflJbDxoN"| __truncated__</span></span>
+<span><span class="co">#&gt;  $ client: chr [1:2] "-----BEGIN CERTIFICATE-----\nMIIFFTCCAv2gAwIBAgIBATANBgkqhkiG9w0BAQsFADAiMRIwEAYDVQQDDAkxMjcu\nMC4wLjExDDAKBgNV"| __truncated__ ""</span></span>
+<span></span>
+<span><span class="va">ser</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/tls_config.html">tls_config</a></span><span class="op">(</span>server <span class="op">=</span> <span class="va">cert</span><span class="op">$</span><span class="va">server</span><span class="op">)</span></span>
+<span><span class="va">ser</span></span>
+<span><span class="co">#&gt; &lt; TLS server configuration &gt;</span></span>
+<span><span class="co">#&gt;  - auth mode: optional</span></span>
+<span></span>
+<span><span class="va">cli</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/tls_config.html">tls_config</a></span><span class="op">(</span>client <span class="op">=</span> <span class="va">cert</span><span class="op">$</span><span class="va">client</span><span class="op">)</span></span>
+<span><span class="va">cli</span></span>
+<span><span class="co">#&gt; &lt; TLS client configuration &gt;</span></span>
+<span><span class="co">#&gt;  - auth mode: required</span></span>
+<span></span>
+<span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/socket.html">socket</a></span><span class="op">(</span>listen <span class="op">=</span> <span class="st">"tls+tcp://127.0.0.1:5558"</span>, tls <span class="op">=</span> <span class="va">ser</span><span class="op">)</span></span>
+<span><span class="va">s1</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/socket.html">socket</a></span><span class="op">(</span>dial <span class="op">=</span> <span class="st">"tls+tcp://127.0.0.1:5558"</span>, tls <span class="op">=</span> <span class="va">cli</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># secure TLS connection established</span></span>
+<span></span>
+<span><span class="fu"><a href="reference/close.html">close</a></span><span class="op">(</span><span class="va">s1</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/close.html">close</a></span><span class="op">(</span><span class="va">s</span><span class="op">)</span></span></code></pre></div>
+<p><a href="#table-of-contents">« Back to ToC</a></p>
+</div>
+<div class="section level3">
 <h3 id="publisher-subscriber-model">Publisher Subscriber Model<a class="anchor" aria-label="anchor" href="#publisher-subscriber-model"></a>
 </h3>
 <p><code>nanonext</code> fully implements NNG’s pub/sub protocol as per the below example. A subscriber can subscribe to one or multiple topics broadcast by a publisher.</p>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pub</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/socket.html">socket</a></span><span class="op">(</span><span class="st">"pub"</span>, listen <span class="op">=</span> <span class="st">"inproc://nanobroadcast"</span><span class="op">)</span></span>
 <span><span class="va">sub</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/socket.html">socket</a></span><span class="op">(</span><span class="st">"sub"</span>, dial <span class="op">=</span> <span class="st">"inproc://nanobroadcast"</span><span class="op">)</span></span>
 <span></span>
@@ -444,7 +486,7 @@
 <span><span class="va">sub</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/recv.html">recv</a></span><span class="op">(</span>mode <span class="op">=</span> <span class="st">"character"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "examples will still be received"</span></span></code></pre></div>
 <p>The subscribed topic can be of any atomic type (not just character), allowing integer, double, logical, complex and raw vectors to be sent and received.</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sub</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/subscribe.html">subscribe</a></span><span class="op">(</span>topic <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="va">pub</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/send.html">send</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">10</span>, <span class="fl">10</span>, <span class="fl">20</span><span class="op">)</span>, mode <span class="op">=</span> <span class="st">"raw"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 0</span></span>
@@ -464,7 +506,7 @@
 </h3>
 <p>This type of pattern is useful for applications such as service discovery.</p>
 <p>A surveyor sends a survey, which is broadcast to all peer respondents. Respondents are then able to reply, but are not obliged to. The survey itself is a timed event, and responses received after the timeout are discarded.</p>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sur</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/socket.html">socket</a></span><span class="op">(</span><span class="st">"surveyor"</span>, listen <span class="op">=</span> <span class="st">"inproc://nanoservice"</span><span class="op">)</span></span>
 <span><span class="va">res1</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/socket.html">socket</a></span><span class="op">(</span><span class="st">"respondent"</span>, dial <span class="op">=</span> <span class="st">"inproc://nanoservice"</span><span class="op">)</span></span>
 <span><span class="va">res2</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/socket.html">socket</a></span><span class="op">(</span><span class="st">"respondent"</span>, dial <span class="op">=</span> <span class="st">"inproc://nanoservice"</span><span class="op">)</span></span>
@@ -511,8 +553,8 @@
 <p><code><a href="reference/ncurl.html">ncurl()</a></code> is a minimalist http(s) client.</p>
 <p>By setting <code>async = TRUE</code>, it performs requests asynchronously, returning immediately with an ‘ncurlAio’.</p>
 <p>For normal use, it takes just the URL. It can follow redirects.</p>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="reference/ncurl.html">ncurl</a></span><span class="op">(</span><span class="st">"https://httpbin.org/headers"</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="reference/ncurl.html">ncurl</a></span><span class="op">(</span><span class="st">"https://httpbin.org/get"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $status</span></span>
 <span><span class="co">#&gt; [1] 200</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -520,16 +562,19 @@
 <span><span class="co">#&gt; NULL</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $raw</span></span>
-<span><span class="co">#&gt;   [1] 7b 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73</span></span>
-<span><span class="co">#&gt;  [26] 74 22 3a 20 22 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22</span></span>
-<span><span class="co">#&gt;  [51] 58 2d 41 6d 7a 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31</span></span>
-<span><span class="co">#&gt;  [76] 2d 36 34 37 33 61 33 38 65 2d 33 66 61 31 39 62 33 34 31 64 62 38 30 63 32</span></span>
-<span><span class="co">#&gt; [101] 66 33 34 30 37 30 32 34 37 22 0a 20 20 7d 0a 7d 0a</span></span>
+<span><span class="co">#&gt;   [1] 7b 0a 20 20 22 61 72 67 73 22 3a 20 7b 7d 2c 20 0a 20 20 22 68 65 61 64 65</span></span>
+<span><span class="co">#&gt;  [26] 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73 74 22 3a 20 22 68 74 74 70 62</span></span>
+<span><span class="co">#&gt;  [51] 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22 58 2d 41 6d 7a 6e 2d 54 72 61</span></span>
+<span><span class="co">#&gt;  [76] 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31 2d 36 34 39 37 35 32 33 38 2d</span></span>
+<span><span class="co">#&gt; [101] 33 62 62 36 39 36 32 64 34 37 35 30 37 36 66 36 30 66 30 31 65 64 62 32 22</span></span>
+<span><span class="co">#&gt; [126] 0a 20 20 7d 2c 20 0a 20 20 22 6f 72 69 67 69 6e 22 3a 20 22 31 38 35 2e 32</span></span>
+<span><span class="co">#&gt; [151] 32 35 2e 34 35 2e 34 39 22 2c 20 0a 20 20 22 75 72 6c 22 3a 20 22 68 74 74</span></span>
+<span><span class="co">#&gt; [176] 70 73 3a 2f 2f 68 74 74 70 62 69 6e 2e 6f 72 67 2f 67 65 74 22 0a 7d 0a</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $data</span></span>
-<span><span class="co">#&gt; [1] "{\n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6473a38e-3fa19b341db80c2f34070247\"\n  }\n}\n"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "{\n  \"args\": {}, \n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-64975238-3bb6962d475076f60f01edb2\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"https://httpbin.org/get\"\n}\n"</span></span></code></pre></div>
 <p>For advanced use, supports additional HTTP methods such as POST or PUT.</p>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ncurl.html">ncurl</a></span><span class="op">(</span><span class="st">"http://httpbin.org/post"</span>,</span>
 <span>             async <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>             method <span class="op">=</span> <span class="st">"POST"</span>,</span>
@@ -545,16 +590,16 @@
 <span></span>
 <span><span class="fu"><a href="reference/call_aio.html">call_aio</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span><span class="op">$</span><span class="va">headers</span></span>
 <span><span class="co">#&gt; $Date</span></span>
-<span><span class="co">#&gt; [1] "Sun, 28 May 2023 18:55:10 GMT"</span></span>
+<span><span class="co">#&gt; [1] "Sat, 24 Jun 2023 20:29:45 GMT"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $Server</span></span>
 <span><span class="co">#&gt; [1] "gunicorn/19.9.0"</span></span>
 <span></span>
 <span><span class="va">res</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt; [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6473a38e-6d36a8dd29a484e23ae028be\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-64975239-0ea1dc56292110ac718528fd\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"</span></span></code></pre></div>
 <p>In this respect, it may be used as a performant and lightweight method for making REST API requests.</p>
 <p><code><a href="reference/ncurl_session.html">ncurl_session()</a></code> creates a re-usable open connection and presents a much faster and more efficient solution for repeated polling of an API endpoint. <code><a href="reference/ncurl_session.html">transact()</a></code> is then used to request data multiple times as required. This method allows a polling frequency that exceeds a server’s new connection limits, where this is permitted.</p>
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sess</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ncurl_session.html">ncurl_session</a></span><span class="op">(</span><span class="st">"https://httpbin.org/get"</span>,</span>
 <span>                      headers <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>`Content-Type` <span class="op">=</span> <span class="st">"application/json"</span>, Authorization <span class="op">=</span> <span class="st">"Bearer APIKEY"</span><span class="op">)</span>,</span>
 <span>                      response <span class="op">=</span> <span class="st">"date"</span><span class="op">)</span></span>
@@ -568,7 +613,7 @@
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $headers</span></span>
 <span><span class="co">#&gt; $headers$date</span></span>
-<span><span class="co">#&gt; [1] "Sun, 28 May 2023 18:55:10 GMT"</span></span>
+<span><span class="co">#&gt; [1] "Sat, 24 Jun 2023 20:29:45 GMT"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $raw</span></span>
@@ -578,15 +623,15 @@
 <span><span class="co">#&gt;  [76] 22 43 6f 6e 74 65 6e 74 2d 54 79 70 65 22 3a 20 22 61 70 70 6c 69 63 61 74</span></span>
 <span><span class="co">#&gt; [101] 69 6f 6e 2f 6a 73 6f 6e 22 2c 20 0a 20 20 20 20 22 48 6f 73 74 22 3a 20 22</span></span>
 <span><span class="co">#&gt; [126] 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22 58 2d 41 6d 7a</span></span>
-<span><span class="co">#&gt; [151] 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31 2d 36 34 37 33</span></span>
-<span><span class="co">#&gt; [176] 61 33 38 65 2d 30 61 38 39 33 65 34 34 33 30 66 30 39 36 34 39 35 65 65 32</span></span>
-<span><span class="co">#&gt; [201] 37 63 32 65 22 0a 20 20 7d 2c 20 0a 20 20 22 6f 72 69 67 69 6e 22 3a 20 22</span></span>
-<span><span class="co">#&gt; [226] 38 38 2e 32 30 32 2e 31 33 36 2e 38 33 22 2c 20 0a 20 20 22 75 72 6c 22 3a</span></span>
+<span><span class="co">#&gt; [151] 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31 2d 36 34 39 37</span></span>
+<span><span class="co">#&gt; [176] 35 32 33 39 2d 31 64 61 39 39 33 39 34 30 64 39 35 39 33 38 62 35 62 32 62</span></span>
+<span><span class="co">#&gt; [201] 36 36 63 33 22 0a 20 20 7d 2c 20 0a 20 20 22 6f 72 69 67 69 6e 22 3a 20 22</span></span>
+<span><span class="co">#&gt; [226] 31 38 35 2e 32 32 35 2e 34 35 2e 34 39 22 2c 20 0a 20 20 22 75 72 6c 22 3a</span></span>
 <span><span class="co">#&gt; [251] 20 22 68 74 74 70 73 3a 2f 2f 68 74 74 70 62 69 6e 2e 6f 72 67 2f 67 65 74</span></span>
 <span><span class="co">#&gt; [276] 22 0a 7d 0a</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $data</span></span>
-<span><span class="co">#&gt; [1] "{\n  \"args\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6473a38e-0a893e4430f096495ee27c2e\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"https://httpbin.org/get\"\n}\n"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "{\n  \"args\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-64975239-1da993940d95938b5b2b66c3\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"https://httpbin.org/get\"\n}\n"</span></span></code></pre></div>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
 <div class="section level3">
@@ -594,7 +639,7 @@
 </h3>
 <p><code><a href="reference/stream.html">stream()</a></code> exposes NNG’s low-level byte stream interface for communicating with raw sockets. This may be used for connecting to arbitrary non-NNG endpoints.</p>
 <p>The stream interface can be used to communicate with (secure) websocket servers. The argument <code>textframes = TRUE</code> can be specified where the websocket server uses text rather than binary frames.</p>
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># connecting to an echo service</span></span>
 <span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/stream.html">stream</a></span><span class="op">(</span>dial <span class="op">=</span> <span class="st">"wss://echo.websocket.events/"</span>, textframes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="va">s</span></span>
@@ -603,7 +648,7 @@
 <span><span class="co">#&gt;  - url: wss://echo.websocket.events/</span></span>
 <span><span class="co">#&gt;  - textframes: TRUE</span></span></code></pre></div>
 <p><code><a href="reference/send.html">send()</a></code> and <code><a href="reference/recv.html">recv()</a></code>, as well as their asynchronous counterparts <code><a href="reference/send_aio.html">send_aio()</a></code> and <code><a href="reference/recv_aio.html">recv_aio()</a></code> can be used on Streams in the same way as Sockets. This affords a great deal of flexibility in ingesting and processing streaming data.</p>
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">s</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/recv.html">recv</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "echo.websocket.events sponsored by Lob.com"</span></span>
 <span></span>
@@ -636,7 +681,7 @@
 <p>Functions performing hashing using the SHA-1 and SHA-2 series of algorithms are included: <code><a href="reference/sha1.html">sha1()</a></code>, <code><a href="reference/sha256.html">sha224()</a></code>, <code><a href="reference/sha256.html">sha256()</a></code>, <code><a href="reference/sha256.html">sha384()</a></code> and <code><a href="reference/sha256.html">sha512()</a></code>.</p>
 <p>These expose the secure, optimized implementations from the ‘Mbed TLS’ library and return a hash either directly as a raw vector or converted to a character string. For use in authentication, raw vectors can be compared directly for the highest performance.</p>
 <p>To generate an HMAC (hash-based message authentication code), simply supply the value ‘key’ to use as the secret key.</p>
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/sha256.html">sha256</a></span><span class="op">(</span><span class="st">"hello world!"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "7509e5bda0c762d2bac7f90d758b5b2263fa01ccbc542ab5e3df163be08e6ca9"</span></span>
 <span></span>
@@ -647,7 +692,7 @@
 <span><span class="fu"><a href="reference/sha256.html">sha256</a></span><span class="op">(</span><span class="st">"hello world!"</span>, key <span class="op">=</span> <span class="st">"MY_SECRET"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "d8f0e2d368ff632682d55e2c1ccd49c15f8a6a3862d8eb68f1906b6ee658890a"</span></span></code></pre></div>
 <p>Optimised functions for base64 encoding and decoding from the ‘Mbed TLS’ library are also provided:</p>
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/base64enc.html">base64enc</a></span><span class="op">(</span><span class="st">"hello world!"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "aGVsbG8gd29ybGQh"</span></span>
 <span></span>
@@ -662,7 +707,7 @@
 <p>Use <code><a href="reference/opt.html">opt()</a></code> and <code><a href="reference/opt.html">'opt&lt;-'()</a></code> to get and set options on a Socket, Context, Stream, Listener or Dialer.</p>
 <p>See the function documentation page for a list of common options.</p>
 <p>Once a dialer or listener has started, it is not generally possible to change its configuration. In this case, the dialer or listener should be created specifying ‘autostart = FALSE’.</p>
-<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/socket.html">socket</a></span><span class="op">(</span>listen <span class="op">=</span> <span class="st">"inproc://options"</span>, autostart <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># no maximum message size</span></span>
@@ -679,12 +724,12 @@
 <p>Similarly <code><a href="reference/stat.html">stat()</a></code> has been implemented as the interface to NNG’s statistics framework.</p>
 <p>This can be used on a Socket, Listener or Dialer to query useful statistics such as the total number of connection attempts, the current number of connections etc.</p>
 <p>See the function documentation page for available statistics.</p>
-<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/socket.html">socket</a></span><span class="op">(</span>listen <span class="op">=</span> <span class="st">"inproc://stat"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># no active connections (pipes)</span></span>
 <span><span class="fu"><a href="reference/stat.html">stat</a></span><span class="op">(</span><span class="va">s</span>, <span class="st">"pipes"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 1</span></span>
+<span><span class="co">#&gt; [1] 0</span></span>
 <span></span>
 <span><span class="va">s1</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/socket.html">socket</a></span><span class="op">(</span>dial <span class="op">=</span> <span class="st">"inproc://stat"</span><span class="op">)</span></span>
 <span></span>
