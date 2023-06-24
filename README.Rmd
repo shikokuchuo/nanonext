@@ -42,11 +42,14 @@ Supported transports:
 - IPC (inter-process)
 - TCP (IPv4 or IPv6)
 - WebSocket
+- TLS (over TCP and WebSocket)
+
+Development of the TLS transport was supported by an R Consortium ISC grant (2023 first cycle).
 
 Web utilities:
 
 - ncurl - (async) http(s) client
-- stream - secure websockets client (and generic low-level socket interface)
+- stream - secure websockets client / generic low-level socket interface
 - messenger - console-based instant messaging with authentication
 - sha[1|224|256|384|512] - cryptographic hash and HMAC algorithms
 - base64[enc|dec] - base64 encoding and decoding
@@ -59,14 +62,15 @@ Web utilities:
 4. [Async and Concurrency](#async-and-concurrency)
 5. [RPC and Distributed Computing](#rpc-and-distributed-computing)
 6. [Synchronisation Primitives](#synchronisation-primitives)
-7. [Publisher / Subscriber Model](#publisher-subscriber-model)
-8. [Surveyor / Respondent Model](#surveyor-respondent-model)
-9. [ncurl: (Async) HTTP Client](#ncurl-async-http-client)
-10. [stream: Websocket Client](#stream-websocket-client)
-11. [Cryptographic Hashing](#cryptographic-hashing)
-12. [Options and Statistics](#options-and-statistics)
-13. [Building from Source](#building-from-source)
-14. [Links](#links)
+7. [TLS Secure Connections](#tls-secure-connections)
+8. [Publisher / Subscriber Model](#publisher-subscriber-model)
+9. [Surveyor / Respondent Model](#surveyor-respondent-model)
+10. [ncurl: (Async) HTTP Client](#ncurl-async-http-client)
+11. [stream: Websocket Client](#stream-websocket-client)
+12. [Cryptographic Hashing](#cryptographic-hashing)
+13. [Options and Statistics](#options-and-statistics)
+14. [Building from Source](#building-from-source)
+15. [Links](#links)
 
 ### Installation
 
@@ -395,6 +399,43 @@ For further details, please refer to the function documentation for `cv()`.
 
 [&laquo; Back to ToC](#table-of-contents)
 
+### TLS Secure Connections
+
+Secure connections are enabled through the combined use of NNG and Mbed TLS libraries.
+
+Authentication of endpoints and encryption of the TCP transport layer is achieved transparently by:
+
+i) Specifying a secure `tls+tcp://` or `wss://` URL, and
+ii) Passing a TLS configuration object to the 'tls' argument of `listen()` or `dial()`.
+
+A TLS configuration, or 'tlsConfig', object is created by the `tls_config()` function. Specify the argument 'client' to create a client configuration, and 'server' to create a server configuration.
+
+A client configuration requires a PEM-encoded CA certificate (chain) used to verify the server identity. A server configuration requires the certificate and associated private key. These may be supplied as files or directly as character vectors. Valid certificates generated via a certificate signing request to a Certificate Authority are supported in this way.
+
+Additionally, the convenience function `write_cert()` can automatically generate a 4096 bit RSA key pair and self-signed certificate in the format required by `tls_config()`. The 'cn' argument must be provided and match exactly the hostname / IP address of the URL that is being used, e.g. in the example below '127.0.0.1' must be used throughout, or alternatively 'localhost', but not a mixture of the two.
+
+```{r tlsconfig}
+cert <- cert_write(cn = "127.0.0.1")
+str(cert)
+
+ser <- tls_config(server = cert$server)
+ser
+
+cli <- tls_config(client = cert$client)
+cli
+
+s <- socket(listen = "tls+tcp://127.0.0.1:5558", tls = ser)
+s1 <- socket(dial = "tls+tcp://127.0.0.1:5558", tls = cli)
+
+# secure TLS connection established
+
+close(s1)
+close(s)
+
+```
+
+[&laquo; Back to ToC](#table-of-contents)
+
 ### Publisher Subscriber Model
 
 `nanonext` fully implements NNG's pub/sub protocol as per the below example. A subscriber can subscribe to one or multiple topics broadcast by a publisher.
@@ -500,7 +541,7 @@ By setting `async = TRUE`, it performs requests asynchronously, returning immedi
 For normal use, it takes just the URL. It can follow redirects.
 
 ```{r ncurl}
-ncurl("https://httpbin.org/headers")
+ncurl("https://httpbin.org/get")
 
 ```
 

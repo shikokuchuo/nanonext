@@ -2,7 +2,7 @@
 
 #### New Features
 
-* `cert_write()` for automatically generating self-signed certificates with 4096 bit RSA keys for use with `tls_config()`.
+* `cert_write()` automatically generates self-signed certificates with 4096 bit RSA keys for use with `tls_config()`.
 * `listen()` and `dial()` gain the argument 'tls' for supplying a TLS configuration object, enabling secure 'tls+tcp' and 'wss' transports for scalability protocols.
 * Allows sending and receiving of reference objects such as those accessed via an external pointer. Implements `refhook()` for supplying a function to handle such objects, mapping to the same argument of base R functions `serialize()` and `unserialize()`.
 

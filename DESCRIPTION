@@ -16,7 +16,6 @@ Authors@R:
              email = "charlie.gao@shikokuchuo.net",
              comment = c(ORCID = "0000-0002-0750-061X")),
       person(given = "Hibiki AI Limited",
-             email = "info@hibiki-ai.com",
              role = "cph"))
 License: GPL (>= 3)
 BugReports: https://github.com/shikokuchuo/nanonext/issues
