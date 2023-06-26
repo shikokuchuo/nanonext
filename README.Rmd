@@ -44,7 +44,7 @@ Supported transports:
 - WebSocket
 - TLS (over TCP and WebSocket)
 
-Development of the TLS transport was supported by an R Consortium ISC grant (2023 first cycle).
+Development of the TLS implementation was supported by an [R Consortium ISC grant (2023)](https://www.r-consortium.org/all-projects/awarded-projects/2023-group-1).
 
 Web utilities:
 
