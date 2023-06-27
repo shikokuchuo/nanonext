@@ -54,8 +54,6 @@ SEXP nano_error;
 SEXP nano_ncurlAio;
 SEXP nano_ncurlSession;
 SEXP nano_recvAio;
-SEXP nano_refhook;
-SEXP nano_refhookArgs;
 SEXP nano_sendAio;
 SEXP nano_success;
 SEXP nano_unresolved;
@@ -117,8 +115,6 @@ static void PreserveObjects(void) {
   SET_TAG(nano_ncurlSession, R_ClassSymbol);
   R_PreserveObject(nano_recvAio = Rf_cons(Rf_mkString("recvAio"), R_NilValue));
   SET_TAG(nano_recvAio, R_ClassSymbol);
-  R_PreserveObject(nano_refhook = Rf_cons(R_NilValue, R_NilValue));
-  R_PreserveObject(nano_refhookArgs = Rf_cons(R_NilValue, R_NilValue));
   R_PreserveObject(nano_sendAio = Rf_cons(Rf_mkString("sendAio"), R_NilValue));
   SET_TAG(nano_sendAio, R_ClassSymbol);
   R_PreserveObject(nano_success = Rf_ScalarInteger(0));
@@ -130,8 +126,6 @@ static void ReleaseObjects(void) {
   R_ReleaseObject(nano_unresolved);
   R_ReleaseObject(nano_success);
   R_ReleaseObject(nano_sendAio);
-  R_ReleaseObject(nano_refhookArgs);
-  R_ReleaseObject(nano_refhook);
   R_ReleaseObject(nano_recvAio);
   R_ReleaseObject(nano_ncurlSession);
   R_ReleaseObject(nano_ncurlAio);
@@ -188,7 +182,6 @@ static const R_CallMethodDef callMethods[] = {
   {"rnng_random", (DL_FUNC) &rnng_random, 1},
   {"rnng_recv", (DL_FUNC) &rnng_recv, 5},
   {"rnng_recv_aio", (DL_FUNC) &rnng_recv_aio, 6},
-  {"rnng_refhook", (DL_FUNC) &rnng_refhook, 1},
   {"rnng_request", (DL_FUNC) &rnng_request, 7},
   {"rnng_send", (DL_FUNC) &rnng_send, 4},
   {"rnng_send_aio", (DL_FUNC) &rnng_send_aio, 5},

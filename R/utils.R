@@ -262,38 +262,3 @@ is_nul_byte <- function(x) .Call(rnng_is_nul_byte, x)
 #' @export
 #'
 status_code <- function(x) .Call(rnng_status_code, x)
-
-#' Set and Retrieve Refhook Function
-#'
-#' Sets the refhook function stored internally, used in all message send and
-#'     receive operations. Calling without an argument retrieves the stored value.
-#'
-#' @param x a function or function encoded by \code{\link{base64enc}}, or NULL
-#'     to reset.
-#'
-#' @return The current stored refhook function.
-#'
-#' @details The provided function maps to the 'refhook' argument of
-#'     \code{\link{serialize}} or \code{\link{unserialize}}, as the case may be.
-#'     As the same function is used in both cases, it should contain the logic
-#'     to distinguish between them as necessary.
-#'
-#' @examples
-#' refhook()
-#'
-#' func <- function(x) if (is_nano(x)) base64enc(x) else
-#'     if (is.character(x)) unserialize(base64dec(x, convert = FALSE))
-#'
-#' refhook(func)
-#'
-#' enc <- base64enc(func)
-#' enc
-#' refhook(enc)
-#'
-#' refhook()
-#'
-#' refhook(NULL)
-#'
-#' @export
-#'
-refhook <- function(x = `=`) .Call(rnng_refhook, x)

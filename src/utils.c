@@ -661,42 +661,6 @@ SEXP rnng_status_code(SEXP x) {
 
 }
 
-// refhook ---------------------------------------------------------------------
-
-SEXP rnng_refhook(SEXP func) {
-
-  switch (TYPEOF(func)) {
-  case NILSXP:
-    R_ReleaseObject(nano_refhook);
-    R_ReleaseObject(nano_refhookArgs);
-    R_PreserveObject(nano_refhook = Rf_cons(R_NilValue, R_NilValue));
-    R_PreserveObject(nano_refhookArgs = Rf_cons(R_NilValue, R_NilValue));
-  case CLOSXP:
-    R_ReleaseObject(nano_refhook);
-    R_ReleaseObject(nano_refhookArgs);
-    R_PreserveObject(nano_refhook = Rf_cons(func, R_NilValue));
-    R_PreserveObject(nano_refhookArgs = Rf_list5(R_NilValue, R_MissingArg, R_MissingArg, R_MissingArg, func));
-    break;
-  case STRSXP: ;
-    int tryErr;
-    SEXP call;
-    PROTECT(func = rnng_base64dec(func, Rf_ScalarLogical(0)));
-    PROTECT(call = Rf_lcons(nano_UnserSymbol, Rf_cons(func, R_NilValue)));
-    func = R_tryEval(call, R_BaseEnv, &tryErr);
-    UNPROTECT(2);
-    if (tryErr) break;
-    if (TYPEOF(func) == CLOSXP || TYPEOF(func) == NILSXP) {
-      R_ReleaseObject(nano_refhook);
-      R_ReleaseObject(nano_refhookArgs);
-      R_PreserveObject(nano_refhook = Rf_cons(func, R_NilValue));
-      R_PreserveObject(nano_refhookArgs = Rf_list5(R_NilValue, R_MissingArg, R_MissingArg, R_MissingArg, func));
-    }
-  }
-
-  return CAR(nano_refhook);
-
-}
-
 // TLS Config ------------------------------------------------------------------
 
 SEXP rnng_tls_config(SEXP client, SEXP server, SEXP pass, SEXP auth) {
