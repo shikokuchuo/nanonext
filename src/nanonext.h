@@ -119,6 +119,7 @@ extern SEXP nano_ncurlAio;
 extern SEXP nano_ncurlSession;
 extern SEXP nano_recvAio;
 extern SEXP nano_refhook;
+extern SEXP nano_refhookArgs;
 extern SEXP nano_sendAio;
 extern SEXP nano_success;
 extern SEXP nano_unresolved;

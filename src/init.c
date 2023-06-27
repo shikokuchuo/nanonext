@@ -55,6 +55,7 @@ SEXP nano_ncurlAio;
 SEXP nano_ncurlSession;
 SEXP nano_recvAio;
 SEXP nano_refhook;
+SEXP nano_refhookArgs;
 SEXP nano_sendAio;
 SEXP nano_success;
 SEXP nano_unresolved;
@@ -116,7 +117,8 @@ static void PreserveObjects(void) {
   SET_TAG(nano_ncurlSession, R_ClassSymbol);
   R_PreserveObject(nano_recvAio = Rf_cons(Rf_mkString("recvAio"), R_NilValue));
   SET_TAG(nano_recvAio, R_ClassSymbol);
-  R_PreserveObject(nano_refhook = Rf_lang5(R_NilValue, R_MissingArg, R_MissingArg, R_MissingArg, R_NilValue));
+  R_PreserveObject(nano_refhook = Rf_cons(R_NilValue, R_NilValue));
+  R_PreserveObject(nano_refhookArgs = Rf_cons(R_NilValue, R_NilValue));
   R_PreserveObject(nano_sendAio = Rf_cons(Rf_mkString("sendAio"), R_NilValue));
   SET_TAG(nano_sendAio, R_ClassSymbol);
   R_PreserveObject(nano_success = Rf_ScalarInteger(0));
@@ -128,6 +130,7 @@ static void ReleaseObjects(void) {
   R_ReleaseObject(nano_unresolved);
   R_ReleaseObject(nano_success);
   R_ReleaseObject(nano_sendAio);
+  R_ReleaseObject(nano_refhookArgs);
   R_ReleaseObject(nano_refhook);
   R_ReleaseObject(nano_recvAio);
   R_ReleaseObject(nano_ncurlSession);

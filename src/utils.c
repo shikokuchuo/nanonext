@@ -667,8 +667,15 @@ SEXP rnng_refhook(SEXP func) {
 
   switch (TYPEOF(func)) {
   case NILSXP:
+    R_ReleaseObject(nano_refhook);
+    R_ReleaseObject(nano_refhookArgs);
+    R_PreserveObject(nano_refhook = Rf_cons(R_NilValue, R_NilValue));
+    R_PreserveObject(nano_refhookArgs = Rf_cons(R_NilValue, R_NilValue));
   case CLOSXP:
-    SETCAD4R(nano_refhook, func);
+    R_ReleaseObject(nano_refhook);
+    R_ReleaseObject(nano_refhookArgs);
+    R_PreserveObject(nano_refhook = Rf_cons(func, R_NilValue));
+    R_PreserveObject(nano_refhookArgs = Rf_list5(R_NilValue, R_MissingArg, R_MissingArg, R_MissingArg, func));
     break;
   case STRSXP: ;
     int tryErr;
@@ -678,11 +685,15 @@ SEXP rnng_refhook(SEXP func) {
     func = R_tryEval(call, R_BaseEnv, &tryErr);
     UNPROTECT(2);
     if (tryErr) break;
-    if (TYPEOF(func) == CLOSXP || TYPEOF(func) == NILSXP)
-      SETCAD4R(nano_refhook, func);
+    if (TYPEOF(func) == CLOSXP || TYPEOF(func) == NILSXP) {
+      R_ReleaseObject(nano_refhook);
+      R_ReleaseObject(nano_refhookArgs);
+      R_PreserveObject(nano_refhook = Rf_cons(func, R_NilValue));
+      R_PreserveObject(nano_refhookArgs = Rf_list5(R_NilValue, R_MissingArg, R_MissingArg, R_MissingArg, func));
+    }
   }
 
-  return CAD4R(nano_refhook);
+  return CAR(nano_refhook);
 
 }
 
