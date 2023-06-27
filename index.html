@@ -47,7 +47,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0.9016</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0.9017</span>
       </span>
     </div>
 
@@ -110,7 +110,7 @@
 <li>WebSocket</li>
 <li>TLS (over TCP and WebSocket)</li>
 </ul>
-<p>Development of the TLS implementation was supported by an <a href="https://www.r-consortium.org/all-projects/awarded-projects/2023-group-1" class="external-link">R Consortium ISC grant (2023)</a>.</p>
+<p>Development of the TLS implementation was generously supported by an <a href="https://www.r-consortium.org/all-projects/awarded-projects/2023-group-1" class="external-link">R Consortium ISC grant (2023)</a>.</p>
 <p>Web utilities:</p>
 <ul>
 <li>ncurl - (async) http(s) client</li>
@@ -328,7 +328,7 @@
 <span><span class="co">#&gt; &lt; recvAio &gt;</span></span>
 <span><span class="co">#&gt;  - $data for message data</span></span>
 <span><span class="va">aio</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] -0.12148 -0.82543 0.56968 -0.10674 -0.00399 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] -0.425 1.518 -1.146 0.132 -0.124 ...</span></span></code></pre></div>
 <p>As <code><a href="reference/call_aio.html">call_aio()</a></code> is blocking and will wait for completion, an alternative is to query <code>aio$data</code> directly. This will return an ‘unresolved’ logical NA value if the calculation is yet to complete.</p>
 <p>In this example the calculation is returned, but other operations may reside entirely on the server side, for example writing data to disk.</p>
 <p>In such a case, calling or querying the value confirms that the operation has completed, and provides the return value of the function, which may typically be NULL or an exit code.</p>
@@ -407,20 +407,20 @@
 <div class="section level3">
 <h3 id="tls-secure-connections">TLS Secure Connections<a class="anchor" aria-label="anchor" href="#tls-secure-connections"></a>
 </h3>
-<p>Secure connections are enabled through the combined use of NNG and Mbed TLS libraries.</p>
+<p>Secure connections are enabled through the combination of NNG and Mbed TLS libraries.</p>
 <p>Authentication of endpoints and encryption of the TCP transport layer is achieved transparently by:</p>
 <ol style="list-style-type: decimal">
 <li>Specifying a secure <code>tls+tcp://</code> or <code>wss://</code> URL, and</li>
 <li>Passing a TLS configuration object to the ‘tls’ argument of <code><a href="reference/listen.html">listen()</a></code> or <code><a href="reference/dial.html">dial()</a></code>.</li>
 </ol>
 <p>A TLS configuration, or ‘tlsConfig’, object is created by the <code><a href="reference/tls_config.html">tls_config()</a></code> function. Specify the argument ‘client’ to create a client configuration, and ‘server’ to create a server configuration.</p>
-<p>A client configuration requires a PEM-encoded CA certificate (chain) used to verify the server identity. A server configuration requires the certificate and associated private key. These may be supplied as files or directly as character vectors. Valid certificates generated via a certificate signing request to a Certificate Authority are supported in this way.</p>
-<p>Additionally, the convenience function <code>write_cert()</code> can automatically generate a 4096 bit RSA key pair and self-signed certificate in the format required by <code><a href="reference/tls_config.html">tls_config()</a></code>. The ‘cn’ argument must be provided and match exactly the hostname / IP address of the URL that is being used, e.g. in the example below ‘127.0.0.1’ must be used throughout, or alternatively ‘localhost’, but not a mixture of the two.</p>
+<p>A client configuration requires a PEM-encoded CA certificate (chain) used to verify the server identity. A server configuration requires the certificate and associated private key. These may be supplied as files or directly as character vectors. Valid X.509 certificates generated via a Certificate Signing Request to a Certificate Authority are supported in this way.</p>
+<p>Additionally, the convenience function <code><a href="reference/write_cert.html">write_cert()</a></code> can automatically generate a 4096 bit RSA key pair and self-signed X.509 certificate in the format required by <code><a href="reference/tls_config.html">tls_config()</a></code>. The ‘cn’ argument must be provided and match exactly the hostname / IP address of the URL that is being used, e.g. in the example below ‘127.0.0.1’ must be used throughout, or alternatively ‘localhost’, but not a mixture of the two.</p>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">cert</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/cert_write.html">cert_write</a></span><span class="op">(</span>cn <span class="op">=</span> <span class="st">"127.0.0.1"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">cert</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/write_cert.html">write_cert</a></span><span class="op">(</span>cn <span class="op">=</span> <span class="st">"127.0.0.1"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">cert</span><span class="op">)</span></span>
 <span><span class="co">#&gt; List of 2</span></span>
-<span><span class="co">#&gt;  $ server: chr [1:2] "-----BEGIN CERTIFICATE-----\nMIIFFTCCAv2gAwIBAgIBATANBgkqhkiG9w0BAQsFADAiMRIwEAYDVQQDDAkxMjcu\nMC4wLjExDDAKBgNV"| __truncated__ "-----BEGIN RSA PRIVATE KEY-----\nMIIJJwIBAAKCAgEAxwnLioje7lOKRX319jLy5i3iVdV2tAiH+ZmqGD9PBYZzzqji\nTWZDyE6IJ7Ji"| __truncated__</span></span>
+<span><span class="co">#&gt;  $ server: chr [1:2] "-----BEGIN CERTIFICATE-----\nMIIFFTCCAv2gAwIBAgIBATANBgkqhkiG9w0BAQsFADAiMRIwEAYDVQQDDAkxMjcu\nMC4wLjExDDAKBgNV"| __truncated__ "-----BEGIN RSA PRIVATE KEY-----\nMIIJKAIBAAKCAgEAx5NMexGjWoHWhlVzI8EumA/PBWmt7rjKrPBXmDgteDToDWlG\nWaZ8eX5cDIXn"| __truncated__</span></span>
 <span><span class="co">#&gt;  $ client: chr [1:2] "-----BEGIN CERTIFICATE-----\nMIIFFTCCAv2gAwIBAgIBATANBgkqhkiG9w0BAQsFADAiMRIwEAYDVQQDDAkxMjcu\nMC4wLjExDDAKBgNV"| __truncated__ ""</span></span>
 <span></span>
 <span><span class="va">ser</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/tls_config.html">tls_config</a></span><span class="op">(</span>server <span class="op">=</span> <span class="va">cert</span><span class="op">$</span><span class="va">server</span><span class="op">)</span></span>
@@ -565,14 +565,14 @@
 <span><span class="co">#&gt;   [1] 7b 0a 20 20 22 61 72 67 73 22 3a 20 7b 7d 2c 20 0a 20 20 22 68 65 61 64 65</span></span>
 <span><span class="co">#&gt;  [26] 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73 74 22 3a 20 22 68 74 74 70 62</span></span>
 <span><span class="co">#&gt;  [51] 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22 58 2d 41 6d 7a 6e 2d 54 72 61</span></span>
-<span><span class="co">#&gt;  [76] 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31 2d 36 34 39 61 30 31 64 65 2d</span></span>
-<span><span class="co">#&gt; [101] 33 33 33 35 35 37 31 61 36 62 62 38 37 64 32 33 32 35 65 38 33 31 32 32 22</span></span>
-<span><span class="co">#&gt; [126] 0a 20 20 7d 2c 20 0a 20 20 22 6f 72 69 67 69 6e 22 3a 20 22 31 38 35 2e 32</span></span>
-<span><span class="co">#&gt; [151] 32 35 2e 34 35 2e 34 39 22 2c 20 0a 20 20 22 75 72 6c 22 3a 20 22 68 74 74</span></span>
-<span><span class="co">#&gt; [176] 70 73 3a 2f 2f 68 74 74 70 62 69 6e 2e 6f 72 67 2f 67 65 74 22 0a 7d 0a</span></span>
+<span><span class="co">#&gt;  [76] 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31 2d 36 34 39 61 61 61 36 61 2d</span></span>
+<span><span class="co">#&gt; [101] 32 35 64 30 36 33 39 64 33 36 65 34 33 31 63 32 37 33 36 62 30 32 34 63 22</span></span>
+<span><span class="co">#&gt; [126] 0a 20 20 7d 2c 20 0a 20 20 22 6f 72 69 67 69 6e 22 3a 20 22 32 31 32 2e 33</span></span>
+<span><span class="co">#&gt; [151] 36 2e 31 37 32 2e 32 30 33 22 2c 20 0a 20 20 22 75 72 6c 22 3a 20 22 68 74</span></span>
+<span><span class="co">#&gt; [176] 74 70 73 3a 2f 2f 68 74 74 70 62 69 6e 2e 6f 72 67 2f 67 65 74 22 0a 7d 0a</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $data</span></span>
-<span><span class="co">#&gt; [1] "{\n  \"args\": {}, \n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-649a01de-3335571a6bb87d2325e83122\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"https://httpbin.org/get\"\n}\n"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "{\n  \"args\": {}, \n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-649aaa6a-25d0639d36e431c2736b024c\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"https://httpbin.org/get\"\n}\n"</span></span></code></pre></div>
 <p>For advanced use, supports additional HTTP methods such as POST or PUT.</p>
 <div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ncurl.html">ncurl</a></span><span class="op">(</span><span class="st">"http://httpbin.org/post"</span>,</span>
@@ -590,13 +590,13 @@
 <span></span>
 <span><span class="fu"><a href="reference/call_aio.html">call_aio</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span><span class="op">$</span><span class="va">headers</span></span>
 <span><span class="co">#&gt; $Date</span></span>
-<span><span class="co">#&gt; [1] "Mon, 26 Jun 2023 21:23:48 GMT"</span></span>
+<span><span class="co">#&gt; [1] "Tue, 27 Jun 2023 09:23:39 GMT"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $Server</span></span>
 <span><span class="co">#&gt; [1] "gunicorn/19.9.0"</span></span>
 <span></span>
 <span><span class="va">res</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt; [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-649a01e1-6950c3373e26491a2d624eaf\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-649aaa6f-0ca4f3d719ed39c04761b00c\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"</span></span></code></pre></div>
 <p>In this respect, it may be used as a performant and lightweight method for making REST API requests.</p>
 <p><code><a href="reference/ncurl_session.html">ncurl_session()</a></code> creates a re-usable open connection and presents a much faster and more efficient solution for repeated polling of an API endpoint. <code><a href="reference/ncurl_session.html">transact()</a></code> is then used to request data multiple times as required. This method allows a polling frequency that exceeds a server’s new connection limits, where this is permitted.</p>
 <div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
@@ -613,7 +613,7 @@
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $headers</span></span>
 <span><span class="co">#&gt; $headers$date</span></span>
-<span><span class="co">#&gt; [1] "Mon, 26 Jun 2023 21:23:52 GMT"</span></span>
+<span><span class="co">#&gt; [1] "Tue, 27 Jun 2023 09:23:41 GMT"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $raw</span></span>
@@ -624,14 +624,14 @@
 <span><span class="co">#&gt; [101] 69 6f 6e 2f 6a 73 6f 6e 22 2c 20 0a 20 20 20 20 22 48 6f 73 74 22 3a 20 22</span></span>
 <span><span class="co">#&gt; [126] 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22 58 2d 41 6d 7a</span></span>
 <span><span class="co">#&gt; [151] 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31 2d 36 34 39 61</span></span>
-<span><span class="co">#&gt; [176] 30 31 65 35 2d 37 66 37 63 38 30 65 66 32 66 34 65 62 37 38 32 36 65 33 33</span></span>
-<span><span class="co">#&gt; [201] 33 62 30 62 22 0a 20 20 7d 2c 20 0a 20 20 22 6f 72 69 67 69 6e 22 3a 20 22</span></span>
-<span><span class="co">#&gt; [226] 31 38 35 2e 32 32 35 2e 34 35 2e 34 39 22 2c 20 0a 20 20 22 75 72 6c 22 3a</span></span>
-<span><span class="co">#&gt; [251] 20 22 68 74 74 70 73 3a 2f 2f 68 74 74 70 62 69 6e 2e 6f 72 67 2f 67 65 74</span></span>
-<span><span class="co">#&gt; [276] 22 0a 7d 0a</span></span>
+<span><span class="co">#&gt; [176] 61 61 39 62 2d 37 35 31 34 65 62 34 66 37 61 34 37 65 32 64 66 32 35 34 30</span></span>
+<span><span class="co">#&gt; [201] 64 31 62 61 22 0a 20 20 7d 2c 20 0a 20 20 22 6f 72 69 67 69 6e 22 3a 20 22</span></span>
+<span><span class="co">#&gt; [226] 32 31 32 2e 33 36 2e 31 37 32 2e 32 30 33 22 2c 20 0a 20 20 22 75 72 6c 22</span></span>
+<span><span class="co">#&gt; [251] 3a 20 22 68 74 74 70 73 3a 2f 2f 68 74 74 70 62 69 6e 2e 6f 72 67 2f 67 65</span></span>
+<span><span class="co">#&gt; [276] 74 22 0a 7d 0a</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $data</span></span>
-<span><span class="co">#&gt; [1] "{\n  \"args\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-649a01e5-7f7c80ef2f4eb7826e333b0b\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"https://httpbin.org/get\"\n}\n"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "{\n  \"args\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-649aaa9b-7514eb4f7a47e2df2540d1ba\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"https://httpbin.org/get\"\n}\n"</span></span></code></pre></div>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
 <div class="section level3">
