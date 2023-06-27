@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0.9018</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0.9019</span>
       </span>
     </div>
 
@@ -54,17 +54,16 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.9.0.9018" id="nanonext-0909018-development">nanonext 0.9.0.9018 (development)<a class="anchor" aria-label="anchor" href="#nanonext-0909018-development"></a></h2>
+<h2 class="page-header" data-toc-text="0.9.0.9019" id="nanonext-0909019-development">nanonext 0.9.0.9019 (development)<a class="anchor" aria-label="anchor" href="#nanonext-0909019-development"></a></h2>
 <div class="section level5">
-<h5 id="new-features-0-9-0-9018">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-9-0-9018"></a></h5>
+<h5 id="new-features-0-9-0-9019">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-9-0-9019"></a></h5>
 <ul><li>
 <code><a href="../reference/write_cert.html">write_cert()</a></code> automatically generates self-signed X.509 certificates with 4096 bit RSA keys for use with <code><a href="../reference/tls_config.html">tls_config()</a></code>.</li>
 <li>
 <code><a href="../reference/listen.html">listen()</a></code> and <code><a href="../reference/dial.html">dial()</a></code> gain the argument ‘tls’ for supplying a TLS configuration object, enabling secure ‘tls+tcp’ and ‘wss’ transports for scalability protocols.</li>
-<li>Allows sending and receiving of reference objects such as those accessed via an external pointer. Implements <code><a href="../reference/refhook.html">refhook()</a></code> for supplying a function to handle such objects, mapping to the same argument of base R functions <code><a href="https://rdrr.io/r/base/serialize.html" class="external-link">serialize()</a></code> and <code><a href="https://rdrr.io/r/base/serialize.html" class="external-link">unserialize()</a></code>.</li>
 </ul></div>
 <div class="section level5">
-<h5 id="updates-0-9-0-9018">Updates<a class="anchor" aria-label="anchor" href="#updates-0-9-0-9018"></a></h5>
+<h5 id="updates-0-9-0-9019">Updates<a class="anchor" aria-label="anchor" href="#updates-0-9-0-9019"></a></h5>
 <ul><li>‘tlsConfig’ objects no longer have a ‘source’ attribute.</li>
 <li>Fix cases where <code><a href="../reference/base64enc.html">base64enc()</a></code> failed for objects exceeding a certain size.</li>
 <li>Internal performance enhancements.</li>
