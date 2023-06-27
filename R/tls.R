@@ -243,12 +243,15 @@ base64dec <- function(x, convert = TRUE) .Call(rnng_base64dec, x, convert)
 #' @return A list of length 2, comprising \code{$server} and \code{$client}.
 #'     These may be passed directly to the relevant argument of \code{\link{tls_config}}.
 #'
+#' @details For interactive sessions only, a status message is printed at the
+#'     start of key / certificate generation and also when complete.
+#'
 #' @examples
 #'
 #' if (interactive()) {
 #' # Only run examples in interactive R sessions
 #'
-#' cert <- cert_write(cn = "127.0.0.1")
+#' cert <- write_cert(cn = "127.0.0.1")
 #' ser <- tls_config(server = cert$server)
 #' cli <- tls_config(client = cert$client)
 #'
@@ -266,5 +269,5 @@ base64dec <- function(x, convert = TRUE) .Call(rnng_base64dec, x, convert)
 #'
 #' @export
 #'
-cert_write <- function(cn = "localhost", valid = "20301231235959")
-  .Call(rnng_cert_write, cn, valid)
+write_cert <- function(cn = "localhost", valid = "20301231235959")
+  .Call(rnng_cert_write, cn, valid, interactive())

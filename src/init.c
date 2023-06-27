@@ -148,7 +148,7 @@ static const R_CallMethodDef callMethods[] = {
   {"rnng_aio_http", (DL_FUNC) &rnng_aio_http, 3},
   {"rnng_aio_result", (DL_FUNC) &rnng_aio_result, 1},
   {"rnng_aio_stop", (DL_FUNC) &rnng_aio_stop, 1},
-  {"rnng_cert_write", (DL_FUNC) &rnng_cert_write, 2},
+  {"rnng_cert_write", (DL_FUNC) &rnng_cert_write, 3},
   {"rnng_clock", (DL_FUNC) &rnng_clock, 0},
   {"rnng_close", (DL_FUNC) &rnng_close, 1},
   {"rnng_ctx_close", (DL_FUNC) &rnng_ctx_close, 1},

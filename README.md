@@ -46,8 +46,8 @@ Supported transports:
 - WebSocket
 - TLS (over TCP and WebSocket)
 
-Development of the TLS implementation was supported by an [R Consortium
-ISC grant
+Development of the TLS implementation was generously supported by an [R
+Consortium ISC grant
 (2023)](https://www.r-consortium.org/all-projects/awarded-projects/2023-group-1).
 
 Web utilities:
@@ -375,7 +375,7 @@ aio
 #> < recvAio >
 #>  - $data for message data
 aio$data |> str()
-#>  num [1:100000000] -0.12148 -0.82543 0.56968 -0.10674 -0.00399 ...
+#>  num [1:100000000] -0.425 1.518 -1.146 0.132 -0.124 ...
 ```
 
 As `call_aio()` is blocking and will wait for completion, an alternative
@@ -510,7 +510,7 @@ For further details, please refer to the function documentation for
 
 ### TLS Secure Connections
 
-Secure connections are enabled through the combined use of NNG and Mbed
+Secure connections are enabled through the combination of NNG and Mbed
 TLS libraries.
 
 Authentication of endpoints and encryption of the TCP transport layer is
@@ -527,22 +527,22 @@ client configuration, and ‘server’ to create a server configuration.
 A client configuration requires a PEM-encoded CA certificate (chain)
 used to verify the server identity. A server configuration requires the
 certificate and associated private key. These may be supplied as files
-or directly as character vectors. Valid certificates generated via a
-certificate signing request to a Certificate Authority are supported in
-this way.
+or directly as character vectors. Valid X.509 certificates generated via
+a Certificate Signing Request to a Certificate Authority are supported
+in this way.
 
 Additionally, the convenience function `write_cert()` can automatically
-generate a 4096 bit RSA key pair and self-signed certificate in the
-format required by `tls_config()`. The ‘cn’ argument must be provided
-and match exactly the hostname / IP address of the URL that is being
-used, e.g. in the example below ‘127.0.0.1’ must be used throughout, or
-alternatively ‘localhost’, but not a mixture of the two.
+generate a 4096 bit RSA key pair and self-signed X.509 certificate in
+the format required by `tls_config()`. The ‘cn’ argument must be
+provided and match exactly the hostname / IP address of the URL that is
+being used, e.g. in the example below ‘127.0.0.1’ must be used
+throughout, or alternatively ‘localhost’, but not a mixture of the two.
 
 ``` r
-cert <- cert_write(cn = "127.0.0.1")
+cert <- write_cert(cn = "127.0.0.1")
 str(cert)
 #> List of 2
-#>  $ server: chr [1:2] "-----BEGIN CERTIFICATE-----\nMIIFFTCCAv2gAwIBAgIBATANBgkqhkiG9w0BAQsFADAiMRIwEAYDVQQDDAkxMjcu\nMC4wLjExDDAKBgNV"| __truncated__ "-----BEGIN RSA PRIVATE KEY-----\nMIIJJwIBAAKCAgEAxwnLioje7lOKRX319jLy5i3iVdV2tAiH+ZmqGD9PBYZzzqji\nTWZDyE6IJ7Ji"| __truncated__
+#>  $ server: chr [1:2] "-----BEGIN CERTIFICATE-----\nMIIFFTCCAv2gAwIBAgIBATANBgkqhkiG9w0BAQsFADAiMRIwEAYDVQQDDAkxMjcu\nMC4wLjExDDAKBgNV"| __truncated__ "-----BEGIN RSA PRIVATE KEY-----\nMIIJKAIBAAKCAgEAx5NMexGjWoHWhlVzI8EumA/PBWmt7rjKrPBXmDgteDToDWlG\nWaZ8eX5cDIXn"| __truncated__
 #>  $ client: chr [1:2] "-----BEGIN CERTIFICATE-----\nMIIFFTCCAv2gAwIBAgIBATANBgkqhkiG9w0BAQsFADAiMRIwEAYDVQQDDAkxMjcu\nMC4wLjExDDAKBgNV"| __truncated__ ""
 
 ser <- tls_config(server = cert$server)
@@ -714,14 +714,14 @@ ncurl("https://httpbin.org/get")
 #>   [1] 7b 0a 20 20 22 61 72 67 73 22 3a 20 7b 7d 2c 20 0a 20 20 22 68 65 61 64 65
 #>  [26] 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73 74 22 3a 20 22 68 74 74 70 62
 #>  [51] 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22 58 2d 41 6d 7a 6e 2d 54 72 61
-#>  [76] 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31 2d 36 34 39 61 30 31 64 65 2d
-#> [101] 33 33 33 35 35 37 31 61 36 62 62 38 37 64 32 33 32 35 65 38 33 31 32 32 22
-#> [126] 0a 20 20 7d 2c 20 0a 20 20 22 6f 72 69 67 69 6e 22 3a 20 22 31 38 35 2e 32
-#> [151] 32 35 2e 34 35 2e 34 39 22 2c 20 0a 20 20 22 75 72 6c 22 3a 20 22 68 74 74
-#> [176] 70 73 3a 2f 2f 68 74 74 70 62 69 6e 2e 6f 72 67 2f 67 65 74 22 0a 7d 0a
+#>  [76] 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31 2d 36 34 39 61 61 61 36 61 2d
+#> [101] 32 35 64 30 36 33 39 64 33 36 65 34 33 31 63 32 37 33 36 62 30 32 34 63 22
+#> [126] 0a 20 20 7d 2c 20 0a 20 20 22 6f 72 69 67 69 6e 22 3a 20 22 32 31 32 2e 33
+#> [151] 36 2e 31 37 32 2e 32 30 33 22 2c 20 0a 20 20 22 75 72 6c 22 3a 20 22 68 74
+#> [176] 74 70 73 3a 2f 2f 68 74 74 70 62 69 6e 2e 6f 72 67 2f 67 65 74 22 0a 7d 0a
 #> 
 #> $data
-#> [1] "{\n  \"args\": {}, \n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-649a01de-3335571a6bb87d2325e83122\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"https://httpbin.org/get\"\n}\n"
+#> [1] "{\n  \"args\": {}, \n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-649aaa6a-25d0639d36e431c2736b024c\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"https://httpbin.org/get\"\n}\n"
 ```
 
 For advanced use, supports additional HTTP methods such as POST or PUT.
@@ -742,13 +742,13 @@ res
 
 call_aio(res)$headers
 #> $Date
-#> [1] "Mon, 26 Jun 2023 21:23:48 GMT"
+#> [1] "Tue, 27 Jun 2023 09:23:39 GMT"
 #> 
 #> $Server
 #> [1] "gunicorn/19.9.0"
 
 res$data
-#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-649a01e1-6950c3373e26491a2d624eaf\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
+#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-649aaa6f-0ca4f3d719ed39c04761b00c\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
 ```
 
 In this respect, it may be used as a performant and lightweight method
@@ -774,7 +774,7 @@ transact(sess)
 #> 
 #> $headers
 #> $headers$date
-#> [1] "Mon, 26 Jun 2023 21:23:52 GMT"
+#> [1] "Tue, 27 Jun 2023 09:23:41 GMT"
 #> 
 #> 
 #> $raw
@@ -785,14 +785,14 @@ transact(sess)
 #> [101] 69 6f 6e 2f 6a 73 6f 6e 22 2c 20 0a 20 20 20 20 22 48 6f 73 74 22 3a 20 22
 #> [126] 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22 58 2d 41 6d 7a
 #> [151] 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31 2d 36 34 39 61
-#> [176] 30 31 65 35 2d 37 66 37 63 38 30 65 66 32 66 34 65 62 37 38 32 36 65 33 33
-#> [201] 33 62 30 62 22 0a 20 20 7d 2c 20 0a 20 20 22 6f 72 69 67 69 6e 22 3a 20 22
-#> [226] 31 38 35 2e 32 32 35 2e 34 35 2e 34 39 22 2c 20 0a 20 20 22 75 72 6c 22 3a
-#> [251] 20 22 68 74 74 70 73 3a 2f 2f 68 74 74 70 62 69 6e 2e 6f 72 67 2f 67 65 74
-#> [276] 22 0a 7d 0a
+#> [176] 61 61 39 62 2d 37 35 31 34 65 62 34 66 37 61 34 37 65 32 64 66 32 35 34 30
+#> [201] 64 31 62 61 22 0a 20 20 7d 2c 20 0a 20 20 22 6f 72 69 67 69 6e 22 3a 20 22
+#> [226] 32 31 32 2e 33 36 2e 31 37 32 2e 32 30 33 22 2c 20 0a 20 20 22 75 72 6c 22
+#> [251] 3a 20 22 68 74 74 70 73 3a 2f 2f 68 74 74 70 62 69 6e 2e 6f 72 67 2f 67 65
+#> [276] 74 22 0a 7d 0a
 #> 
 #> $data
-#> [1] "{\n  \"args\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-649a01e5-7f7c80ef2f4eb7826e333b0b\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"https://httpbin.org/get\"\n}\n"
+#> [1] "{\n  \"args\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-649aaa9b-7514eb4f7a47e2df2540d1ba\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"https://httpbin.org/get\"\n}\n"
 ```
 
 [« Back to ToC](#table-of-contents)

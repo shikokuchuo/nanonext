@@ -133,7 +133,7 @@ extern SEXP rnng_aio_result(SEXP);
 extern SEXP rnng_aio_stop(SEXP);
 extern SEXP rnng_base64dec(SEXP, SEXP);
 extern SEXP rnng_base64enc(SEXP, SEXP);
-extern SEXP rnng_cert_write(SEXP, SEXP);
+extern SEXP rnng_cert_write(SEXP, SEXP, SEXP);
 extern SEXP rnng_clock(void);
 extern SEXP rnng_close(SEXP);
 extern SEXP rnng_ctx_close(SEXP);
