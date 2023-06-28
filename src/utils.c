@@ -340,7 +340,7 @@ SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP follow, SEXP method, SEXP headers,
   SET_VECTOR_ELT(out, 2, vec);
 
   if (conv) {
-    PROTECT(cvec = Rf_lcons(nano_RtcSymbol, Rf_cons(vec, R_NilValue)));
+    PROTECT(cvec = Rf_lang2(nano_RtcSymbol, vec));
     cvec = R_tryEvalSilent(cvec, R_BaseEnv, &xc);
     UNPROTECT(1);
   } else {

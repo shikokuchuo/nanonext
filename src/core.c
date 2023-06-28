@@ -150,7 +150,7 @@ SEXP nano_encodes(SEXP data, SEXP mode) {
     PROTECT(out = Rf_lang3(nano_SerialSymbol, Rf_lang2(R_QuoteSymbol, data), R_NilValue));
     break;
   default:
-    PROTECT(out = Rf_lcons(nano_SerialSymbol, Rf_cons(data, Rf_cons(R_NilValue, R_NilValue))));
+    PROTECT(out = Rf_lang3(nano_SerialSymbol, data, R_NilValue));
   }
   out = Rf_eval(out, R_BaseEnv);
   UNPROTECT(1);
@@ -272,7 +272,7 @@ SEXP nano_decode(unsigned char *buf, size_t sz, const int mod, const int kpr) {
     int tryErr = 0;
     PROTECT(raw = Rf_allocVector(RAWSXP, sz));
     memcpy(RAW(raw), buf, sz);
-    PROTECT(data = Rf_lcons(nano_UnserSymbol, Rf_cons(raw, R_NilValue)));
+    PROTECT(data = Rf_lang2(nano_UnserSymbol, raw));
     data = R_tryEval(data, R_BaseEnv, &tryErr);
     if (tryErr) {
       data = raw;
