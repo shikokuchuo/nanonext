@@ -1,9 +1,9 @@
-# nanonext 0.9.0.9024 (development)
+# nanonext 0.9.0.9025 (development)
 
 #### New Features
 
 * `write_cert()` automatically generates self-signed X.509 certificates with 4096 bit RSA keys for use with `tls_config()`.
-* `listen()` and `dial()` gain the argument 'tls' for supplying a TLS configuration object, enabling secure 'tls+tcp' and 'wss' transports for scalability protocols.
+* `listen()` and `dial()` gain the argument 'tls' for supplying a TLS configuration object, enabling secure `tls+tcp://` and `wss://` transports for scalability protocols.
 
 #### Updates
 
