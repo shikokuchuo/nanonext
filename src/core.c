@@ -147,7 +147,7 @@ SEXP nano_encodes(SEXP data, SEXP mode) {
   switch (TYPEOF(data)) {
   case SYMSXP:
   case LANGSXP:
-    PROTECT(out = Rf_lang3(nano_SerialSymbol, Rf_lcons(R_QuoteSymbol, Rf_cons(data, R_NilValue)), R_NilValue));
+    PROTECT(out = Rf_lang3(nano_SerialSymbol, Rf_lang2(R_QuoteSymbol, data), R_NilValue));
     break;
   default:
     PROTECT(out = Rf_lcons(nano_SerialSymbol, Rf_cons(data, Rf_cons(R_NilValue, R_NilValue))));

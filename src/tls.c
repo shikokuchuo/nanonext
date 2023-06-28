@@ -75,7 +75,7 @@ static nano_hash nano_anytoraw(SEXP x) {
     break;
   case SYMSXP:
   case LANGSXP:
-    PROTECT(hash.vec = Rf_lang3(nano_SerialSymbol, Rf_lcons(R_QuoteSymbol, Rf_cons(x, R_NilValue)), R_NilValue));
+    PROTECT(hash.vec = Rf_lang3(nano_SerialSymbol, Rf_lang2(R_QuoteSymbol, x), R_NilValue));
     hash.vec = Rf_eval(hash.vec, R_BaseEnv);
     UNPROTECT(1);
     hash.buf = RAW(hash.vec);
