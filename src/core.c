@@ -387,6 +387,10 @@ void dialer_finalizer(SEXP xptr) {
   if (R_ExternalPtrAddr(xptr) == NULL)
     return;
   nng_dialer *xp = (nng_dialer *) R_ExternalPtrAddr(xptr);
+  void *cfg = NULL;
+  nng_dialer_get_ptr(*xp, NNG_OPT_TLS_CONFIG, &cfg);
+  if (cfg != NULL)
+    nng_tls_config_free((nng_tls_config *) cfg);
   nng_dialer_close(*xp);
   R_Free(xp);
 
@@ -397,6 +401,10 @@ void listener_finalizer(SEXP xptr) {
   if (R_ExternalPtrAddr(xptr) == NULL)
     return;
   nng_listener *xp = (nng_listener *) R_ExternalPtrAddr(xptr);
+  void *cfg = NULL;
+  nng_listener_get_ptr(*xp, NNG_OPT_TLS_CONFIG, &cfg);
+  if (cfg != NULL)
+    nng_tls_config_free((nng_tls_config *) cfg);
   nng_listener_close(*xp);
   R_Free(xp);
 
@@ -531,6 +539,7 @@ SEXP rnng_dial(SEXP socket, SEXP url, SEXP tls, SEXP autostart, SEXP error) {
       if (LOGICAL(error)[0]) ERROR_OUT(xc);
       ERROR_RET(xc);
     }
+    nng_tls_config_hold(cfg);
     nng_url_free(up);
   }
 
@@ -602,6 +611,7 @@ SEXP rnng_listen(SEXP socket, SEXP url, SEXP tls, SEXP autostart, SEXP error) {
       if (LOGICAL(error)[0]) ERROR_OUT(xc);
       ERROR_RET(xc);
     }
+    nng_tls_config_hold(cfg);
     nng_url_free(up);
   }
 
