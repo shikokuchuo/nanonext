@@ -52,7 +52,7 @@ static void stream_finalizer(SEXP xptr) {
 
 }
 
-void tls_finalizer(SEXP xptr) {
+static void tls_finalizer(SEXP xptr) {
 
   if (R_ExternalPtrAddr(xptr) == NULL)
     return;

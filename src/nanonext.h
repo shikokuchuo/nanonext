@@ -82,7 +82,6 @@ extern SEXP rawOneString(unsigned char *, R_xlen_t, R_xlen_t *);
 extern void socket_finalizer(SEXP);
 extern void dialer_finalizer(SEXP);
 extern void listener_finalizer(SEXP);
-extern void tls_finalizer(SEXP);
 
 extern SEXP nano_AioSymbol;
 extern SEXP nano_ContextSymbol;

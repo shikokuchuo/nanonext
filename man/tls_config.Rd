@@ -59,6 +59,9 @@ Specify one of 'client' or 'server' only, or neither (in which case
     Database site run by Mozilla: \url{https://www.ccadb.org/resources}
     (select the Server Authentication SSL/TLS certificates text file).
     \emph{This link is not endorsed; use at your own risk.}
+
+    A 'tlsConfig' object should be retained for as long as it is being used
+    by other objects such as Listeners or Dialers.
 }
 \examples{
 tls <- tls_config()

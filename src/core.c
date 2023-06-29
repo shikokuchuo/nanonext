@@ -495,8 +495,7 @@ SEXP rnng_dial(SEXP socket, SEXP url, SEXP tls, SEXP autostart, SEXP error) {
   const int start = LOGICAL(autostart)[0];
   const char *ur = CHAR(STRING_ELT(url, 0));
   nng_dialer *dp = R_Calloc(1, nng_dialer);
-  nng_tls_config *cfg = NULL;
-  SEXP dialer, klass, attr, newattr, tlsconfig;
+  SEXP dialer, klass, attr, newattr;
   int xc;
 
   switch (start) {
@@ -509,42 +508,28 @@ SEXP rnng_dial(SEXP socket, SEXP url, SEXP tls, SEXP autostart, SEXP error) {
   default:
     xc = nng_dial(*sock, ur, dp, 0);
   }
-  if (xc) {
-    R_Free(dp);
-    if (LOGICAL(error)[0]) ERROR_OUT(xc);
-    ERROR_RET(xc);
-  }
+  if (xc)
+    goto exitlevel1;
 
   if (tls != R_NilValue) {
     if (R_ExternalPtrTag(tls) != nano_TlsSymbol)
       Rf_error("'tls' is not a valid TLS Configuration");
-    cfg = (nng_tls_config *) R_ExternalPtrAddr(tls);
+    nng_tls_config *cfg = (nng_tls_config *) R_ExternalPtrAddr(tls);
     nng_url *up;
-    if ((xc = nng_url_parse(&up, ur))) {
-      R_Free(dp);
-      if (LOGICAL(error)[0]) ERROR_OUT(xc);
-      ERROR_RET(xc);
-    }
-    if ((xc = nng_tls_config_server_name(cfg, up->u_hostname)) ||
-        (xc = nng_dialer_set_ptr(*dp, NNG_OPT_TLS_CONFIG, cfg))) {
-      nng_url_free(up);
-      R_Free(dp);
-      if (LOGICAL(error)[0]) ERROR_OUT(xc);
-      ERROR_RET(xc);
-    }
-    nng_tls_config_hold(cfg);
+    xc = nng_url_parse(&up, ur);
+    if (xc)
+      goto exitlevel1;
+    xc = nng_tls_config_server_name(cfg, up->u_hostname);
     nng_url_free(up);
+    if (xc)
+      goto exitlevel1;
+    xc = nng_dialer_set_ptr(*dp, NNG_OPT_TLS_CONFIG, cfg);
+    if (xc)
+      goto exitlevel1;
   }
 
   PROTECT(dialer = R_MakeExternalPtr(dp, nano_DialerSymbol, R_NilValue));
   R_RegisterCFinalizerEx(dialer, dialer_finalizer, TRUE);
-
-  if (tls != R_NilValue) {
-    PROTECT(tlsconfig = R_MakeExternalPtr(cfg, nano_TlsSymbol, R_NilValue));
-    R_RegisterCFinalizerEx(tlsconfig, tls_finalizer, TRUE);
-    R_MakeWeakRef(dialer, tlsconfig, R_NilValue, FALSE);
-    UNPROTECT(1);
-  }
 
   PROTECT(klass = Rf_allocVector(STRSXP, 2));
   SET_STRING_ELT(klass, 0, Rf_mkChar("nanoDialer"));
@@ -574,6 +559,11 @@ SEXP rnng_dial(SEXP socket, SEXP url, SEXP tls, SEXP autostart, SEXP error) {
   UNPROTECT(3);
   return nano_success;
 
+  exitlevel1:
+  R_Free(dp);
+  if (LOGICAL(error)[0]) ERROR_OUT(xc);
+  ERROR_RET(xc);
+
 }
 
 SEXP rnng_listen(SEXP socket, SEXP url, SEXP tls, SEXP autostart, SEXP error) {
@@ -584,48 +574,32 @@ SEXP rnng_listen(SEXP socket, SEXP url, SEXP tls, SEXP autostart, SEXP error) {
   const int start = LOGICAL(autostart)[0];
   const char *ur = CHAR(STRING_ELT(url, 0));
   nng_listener *lp = R_Calloc(1, nng_listener);
-  nng_tls_config *cfg = NULL;
-  SEXP listener, klass, attr, newattr, tlsconfig;
+  SEXP listener, klass, attr, newattr;
   int xc;
 
   xc = start ? nng_listen(*sock, ur, lp, 0) : nng_listener_create(lp, *sock, ur);
-  if (xc) {
-    R_Free(lp);
-    if (LOGICAL(error)[0]) ERROR_OUT(xc);
-    ERROR_RET(xc);
-  }
+  if (xc)
+    goto exitlevel1;
 
   if (tls != R_NilValue) {
     if (R_ExternalPtrTag(tls) != nano_TlsSymbol)
       Rf_error("'tls' is not a valid TLS Configuration");
-    cfg = (nng_tls_config *) R_ExternalPtrAddr(tls);
+    nng_tls_config *cfg = (nng_tls_config *) R_ExternalPtrAddr(tls);
     nng_url *up;
-    if ((xc = nng_url_parse(&up, ur))) {
-      R_Free(lp);
-      if (LOGICAL(error)[0]) ERROR_OUT(xc);
-      ERROR_RET(xc);
-    }
-    if ((xc = nng_tls_config_server_name(cfg, up->u_hostname)) ||
-        (xc = nng_listener_set_ptr(*lp, NNG_OPT_TLS_CONFIG, cfg))) {
-      nng_url_free(up);
-      R_Free(lp);
-      if (LOGICAL(error)[0]) ERROR_OUT(xc);
-      ERROR_RET(xc);
-    }
-    nng_tls_config_hold(cfg);
+    xc = nng_url_parse(&up, ur);
+    if (xc)
+      goto exitlevel1;
+    xc = nng_tls_config_server_name(cfg, up->u_hostname);
     nng_url_free(up);
-
+    if (xc)
+      goto exitlevel1;
+    xc = nng_listener_set_ptr(*lp, NNG_OPT_TLS_CONFIG, cfg);
+    if (xc)
+      goto exitlevel1;
   }
 
   PROTECT(listener = R_MakeExternalPtr(lp, nano_ListenerSymbol, R_NilValue));
   R_RegisterCFinalizerEx(listener, listener_finalizer, TRUE);
-
-  if (tls != R_NilValue) {
-    PROTECT(tlsconfig = R_MakeExternalPtr(cfg, nano_TlsSymbol, R_NilValue));
-    R_RegisterCFinalizerEx(tlsconfig, tls_finalizer, TRUE);
-    R_MakeWeakRef(listener, tlsconfig, R_NilValue, FALSE);
-    UNPROTECT(1);
-  }
 
   PROTECT(klass = Rf_allocVector(STRSXP, 2));
   SET_STRING_ELT(klass, 0, Rf_mkChar("nanoListener"));
@@ -654,6 +628,11 @@ SEXP rnng_listen(SEXP socket, SEXP url, SEXP tls, SEXP autostart, SEXP error) {
 
   UNPROTECT(3);
   return nano_success;
+
+  exitlevel1:
+  R_Free(lp);
+  if (LOGICAL(error)[0]) ERROR_OUT(xc);
+  ERROR_RET(xc);
 
 }
 
