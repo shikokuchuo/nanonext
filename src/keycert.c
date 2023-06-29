@@ -124,7 +124,7 @@ SEXP rnng_cert_write(SEXP cn, SEXP valid, SEXP inter) {
 
   int ret = 1;
   if (interactive)
-    REprintf("TLS configuration - this may take a few seconds...\n");
+    REprintf("Generating keys and certificate - this may take a few seconds... ");
   mbedtls_x509_crt issuer_crt;
   mbedtls_pk_context loaded_issuer_key;
   mbedtls_pk_context *issuer_key = &loaded_issuer_key;
@@ -222,7 +222,7 @@ SEXP rnng_cert_write(SEXP cn, SEXP valid, SEXP inter) {
   SET_STRING_ELT(cstr, 1, Rf_mkChar(""));
 
   if (interactive)
-    REprintf("TLS configuration - complete\n");
+    REprintf("complete.\n");
   failed = 0;
 
   exitlevel1:
