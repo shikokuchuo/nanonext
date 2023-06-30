@@ -1362,3 +1362,12 @@ SEXP rnng_stats_get(SEXP object, SEXP stat) {
   return out;
 
 }
+
+// terminate the library -------------------------------------------------------
+
+SEXP rnng_fini(void) {
+
+  nng_fini();
+  return R_NilValue;
+
+}
