@@ -16,3 +16,4 @@ nng_fini is used to terminate the library, freeing certain global resources.
     concurrently with any other library function - it is not reentrant or
     threadsafe.
 }
+\keyword{internal}

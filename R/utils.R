@@ -273,6 +273,6 @@ status_code <- function(x) .Call(rnng_status_code, x)
 #'
 #' @return Invisible NULL.
 #'
-#' @export
+#' @keywords internal
 #'
 nng_fini <- function() invisible(.Call(rnng_fini))
