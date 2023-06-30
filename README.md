@@ -19,10 +19,9 @@ socket library providing high-performance scalability protocols, a
 cross-platform standard for messaging and communications. Serves as a
 concurrency framework for building distributed applications, utilising
 ‘aio’ objects which resolve automatically upon completion of
-asynchronous operations. Extends R with fast inter-process connections,
-transport layer security, and synchronisation primitives, which allow
-execution to wait upon events being signalled by concurrent messaging
-threads.
+asynchronous operations. Implements connections with transport layer
+security, and synchronisation primitives, which allow R execution to
+wait upon events being signalled by concurrent messaging threads.
 
 Designed for performance and reliability, the NNG library is written in
 C and [`nanonext`](https://doi.org/10.5281/zenodo.7903429) is a
@@ -377,7 +376,7 @@ aio
 #> < recvAio >
 #>  - $data for message data
 aio$data |> str()
-#>  num [1:100000000] -0.703 -0.282 1.004 -0.147 -0.116 ...
+#>  num [1:100000000] 0.509 -0.819 -0.305 -0.645 -1.277 ...
 ```
 
 As `call_aio()` is blocking and will wait for completion, an alternative
@@ -544,7 +543,7 @@ throughout, or alternatively ‘localhost’, but not a mixture of the two.
 cert <- write_cert(cn = "127.0.0.1")
 str(cert)
 #> List of 2
-#>  $ server: chr [1:2] "-----BEGIN CERTIFICATE-----\nMIIFFTCCAv2gAwIBAgIBATANBgkqhkiG9w0BAQsFADAiMRIwEAYDVQQDDAkxMjcu\nMC4wLjExDDAKBgNV"| __truncated__ "-----BEGIN RSA PRIVATE KEY-----\nMIIJKAIBAAKCAgEA2SMf6fWVbdgzWLXVcLvOJ8/lhhfwx9i1wZLalEJbJRGmYJaO\nLBP6QiKzNaJV"| __truncated__
+#>  $ server: chr [1:2] "-----BEGIN CERTIFICATE-----\nMIIFFTCCAv2gAwIBAgIBATANBgkqhkiG9w0BAQsFADAiMRIwEAYDVQQDDAkxMjcu\nMC4wLjExDDAKBgNV"| __truncated__ "-----BEGIN RSA PRIVATE KEY-----\nMIIJKQIBAAKCAgEAvW8WSk+mqpqy0J8Ii0d/oybhrHn4IG0gkfl+Kp+sPpWlKyBF\nygUjTvbxG8EV"| __truncated__
 #>  $ client: chr [1:2] "-----BEGIN CERTIFICATE-----\nMIIFFTCCAv2gAwIBAgIBATANBgkqhkiG9w0BAQsFADAiMRIwEAYDVQQDDAkxMjcu\nMC4wLjExDDAKBgNV"| __truncated__ ""
 
 ser <- tls_config(server = cert$server)
@@ -716,14 +715,14 @@ ncurl("https://httpbin.org/get")
 #>   [1] 7b 0a 20 20 22 61 72 67 73 22 3a 20 7b 7d 2c 20 0a 20 20 22 68 65 61 64 65
 #>  [26] 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73 74 22 3a 20 22 68 74 74 70 62
 #>  [51] 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22 58 2d 41 6d 7a 6e 2d 54 72 61
-#>  [76] 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31 2d 36 34 39 65 61 34 31 38 2d
-#> [101] 32 30 66 36 37 62 34 34 34 33 34 31 65 34 30 30 36 66 39 38 39 66 38 62 22
+#>  [76] 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31 2d 36 34 39 65 61 37 62 64 2d
+#> [101] 32 39 64 65 31 63 34 38 33 32 64 35 36 64 64 32 37 65 61 66 62 35 65 32 22
 #> [126] 0a 20 20 7d 2c 20 0a 20 20 22 6f 72 69 67 69 6e 22 3a 20 22 32 31 32 2e 33
 #> [151] 36 2e 31 37 32 2e 32 30 33 22 2c 20 0a 20 20 22 75 72 6c 22 3a 20 22 68 74
 #> [176] 74 70 73 3a 2f 2f 68 74 74 70 62 69 6e 2e 6f 72 67 2f 67 65 74 22 0a 7d 0a
 #> 
 #> $data
-#> [1] "{\n  \"args\": {}, \n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-649ea418-20f67b444341e4006f989f8b\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"https://httpbin.org/get\"\n}\n"
+#> [1] "{\n  \"args\": {}, \n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-649ea7bd-29de1c4832d56dd27eafb5e2\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"https://httpbin.org/get\"\n}\n"
 ```
 
 For advanced use, supports additional HTTP methods such as POST or PUT.
@@ -744,13 +743,13 @@ res
 
 call_aio(res)$headers
 #> $Date
-#> [1] "Fri, 30 Jun 2023 09:45:31 GMT"
+#> [1] "Fri, 30 Jun 2023 10:00:35 GMT"
 #> 
 #> $Server
 #> [1] "gunicorn/19.9.0"
 
 res$data
-#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-649ea41a-23d4778551f408ea7ff6f9c0\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
+#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-649ea7c1-1113ec495a7a47f754b97ae5\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
 ```
 
 In this respect, it may be used as a performant and lightweight method
@@ -776,7 +775,7 @@ transact(sess)
 #> 
 #> $headers
 #> $headers$date
-#> [1] "Fri, 30 Jun 2023 09:45:32 GMT"
+#> [1] "Fri, 30 Jun 2023 10:00:36 GMT"
 #> 
 #> 
 #> $raw
@@ -787,14 +786,14 @@ transact(sess)
 #> [101] 69 6f 6e 2f 6a 73 6f 6e 22 2c 20 0a 20 20 20 20 22 48 6f 73 74 22 3a 20 22
 #> [126] 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22 58 2d 41 6d 7a
 #> [151] 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31 2d 36 34 39 65
-#> [176] 61 34 33 62 2d 37 37 61 33 34 30 62 30 37 37 34 31 39 65 31 39 32 38 65 31
-#> [201] 61 36 62 34 22 0a 20 20 7d 2c 20 0a 20 20 22 6f 72 69 67 69 6e 22 3a 20 22
+#> [176] 61 37 63 33 2d 37 61 61 33 31 61 65 37 30 36 31 33 35 39 33 62 32 63 65 65
+#> [201] 33 30 31 61 22 0a 20 20 7d 2c 20 0a 20 20 22 6f 72 69 67 69 6e 22 3a 20 22
 #> [226] 32 31 32 2e 33 36 2e 31 37 32 2e 32 30 33 22 2c 20 0a 20 20 22 75 72 6c 22
 #> [251] 3a 20 22 68 74 74 70 73 3a 2f 2f 68 74 74 70 62 69 6e 2e 6f 72 67 2f 67 65
 #> [276] 74 22 0a 7d 0a
 #> 
 #> $data
-#> [1] "{\n  \"args\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-649ea43b-77a340b077419e1928e1a6b4\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"https://httpbin.org/get\"\n}\n"
+#> [1] "{\n  \"args\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-649ea7c3-7aa31ae70613593b2cee301a\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"https://httpbin.org/get\"\n}\n"
 ```
 
 [« Back to ToC](#table-of-contents)
