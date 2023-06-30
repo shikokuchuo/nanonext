@@ -1,4 +1,4 @@
-# nanonext 0.9.0.9033 (development)
+# nanonext 0.9.0.9034 (development)
 
 #### New Features
 
@@ -9,7 +9,8 @@
 
 * 'tlsConfig' objects no longer have a 'source' attribute.
 * Fix cases where `base64enc()` failed for objects exceeding a certain size.
-* Patches bundled 'libmbedtls' v3.4.0 source for one case of undefined behaviour.
+* Updates bundled 'libmbedtls' v3.4.0 source configuration for threading support and fixes one case of undefined behaviour.
+* Updates bundled `libnng` cmake helper to better detect the correct version of `libmbedtls`.
 
 # nanonext 0.9.0
 
