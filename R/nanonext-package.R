@@ -23,8 +23,9 @@
 #'     cross-platform standard for messaging and communications. Serves as a
 #'     concurrency framework for building distributed applications, utilising
 #'     'aio' objects which resolve automatically upon completion of asynchronous
-#'     operations. Implements synchronisation primitives, allowing R to wait
-#'     upon events being signalled by concurrent messaging threads.
+#'     operations. Extends R with fast inter-process connections, transport
+#'     layer security, and synchronisation primitives, which allow execution to
+#'     wait upon events being signalled by concurrent messaging threads.
 #'
 #' @section Usage notes:
 #'
