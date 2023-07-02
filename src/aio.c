@@ -793,7 +793,7 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
 
   } else if (ptrtag == nano_StreamSymbol) {
 
-    nng_stream *sp = (nng_stream *) R_ExternalPtrAddr(con);
+    nano_stream *sp = (nano_stream *) R_ExternalPtrAddr(con);
     const int frames = LOGICAL(Rf_getAttrib(con, nano_TextframesSymbol))[0];
     nng_iov iov;
     enc = nano_encode(data);
@@ -819,7 +819,7 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
     }
 
     nng_aio_set_timeout(saio->aio, dur);
-    nng_stream_send(sp, saio->aio);
+    nng_stream_send(sp->stream, saio->aio);
 
     PROTECT(aio = R_MakeExternalPtr(saio, nano_AioSymbol, R_NilValue));
     R_RegisterCFinalizerEx(aio, iaio_finalizer, TRUE);
@@ -890,7 +890,7 @@ SEXP rnng_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP keep, SEXP bytes, SEX
 
   } else if (ptrtag == nano_StreamSymbol) {
 
-    nng_stream *sp = (nng_stream *) R_ExternalPtrAddr(con);
+    nano_stream *sp = (nano_stream *) R_ExternalPtrAddr(con);
     const size_t xlen = (size_t) Rf_asInteger(bytes);
     nng_iov iov;
 
@@ -914,7 +914,7 @@ SEXP rnng_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP keep, SEXP bytes, SEX
     }
 
     nng_aio_set_timeout(raio->aio, dur);
-    nng_stream_recv(sp, raio->aio);
+    nng_stream_recv(sp->stream, raio->aio);
 
     PROTECT(aio = R_MakeExternalPtr(raio, nano_AioSymbol, R_NilValue));
     R_RegisterCFinalizerEx(aio, iaio_finalizer, TRUE);
@@ -1708,7 +1708,7 @@ SEXP rnng_cv_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP keep, SEXP bytes, 
 
   } else if (ptrtag == nano_StreamSymbol) {
 
-    nng_stream *sp = (nng_stream *) R_ExternalPtrAddr(con);
+    nano_stream *sp = (nano_stream *) R_ExternalPtrAddr(con);
     const size_t xlen = (size_t) Rf_asInteger(bytes);
     nng_iov iov;
 
@@ -1734,7 +1734,7 @@ SEXP rnng_cv_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP keep, SEXP bytes, 
     }
 
     nng_aio_set_timeout(raio->aio, dur);
-    nng_stream_recv(sp, raio->aio);
+    nng_stream_recv(sp->stream, raio->aio);
 
     PROTECT(aio = R_MakeExternalPtr(raio, nano_AioSymbol, R_NilValue));
     R_RegisterCFinalizerEx(aio, iaio_finalizer, TRUE);
