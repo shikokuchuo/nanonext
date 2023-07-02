@@ -97,7 +97,8 @@ SEXP rnng_messenger(SEXP url) {
 
   const char *up = CHAR(STRING_ELT(url, 0));
   nng_socket *sock = R_Calloc(1, nng_socket);
-  void *dlp;
+  nano_listener *lp;
+  nano_dialer *dp;
   uint8_t dialer = 0;
   int xc;
   SEXP socket, con;
@@ -107,21 +108,21 @@ SEXP rnng_messenger(SEXP url) {
     R_Free(sock);
     ERROR_OUT(xc);
   }
-  dlp = R_Calloc(1, nng_listener);
-  xc = nng_listen(*sock, up, dlp, 0);
+  lp = R_Calloc(1, nano_listener);
+  xc = nng_listen(*sock, up, &lp->list, 0);
   if (xc == 10 || xc == 15) {
-    R_Free(dlp);
-    dlp = R_Calloc(1, nng_dialer);
-    xc = nng_dial(*sock, up, dlp, 0);
+    R_Free(lp);
+    dp = R_Calloc(1, nano_dialer);
+    xc = nng_dial(*sock, up, &dp->dial, 0);
     if (xc) {
-      R_Free(dlp);
+      R_Free(dp);
       R_Free(sock);
       ERROR_OUT(xc);
     }
     dialer = 1;
 
   } else if (xc) {
-    R_Free(dlp);
+    R_Free(lp);
     R_Free(sock);
     ERROR_OUT(xc);
   }
@@ -129,11 +130,12 @@ SEXP rnng_messenger(SEXP url) {
   PROTECT(socket = R_MakeExternalPtr(sock, nano_SocketSymbol, R_NilValue));
   R_RegisterCFinalizerEx(socket, socket_finalizer, TRUE);
 
-  PROTECT(con = R_MakeExternalPtr(dlp, R_NilValue, R_NilValue));
   if (dialer) {
+    PROTECT(con = R_MakeExternalPtr(dp, R_NilValue, R_NilValue));
     R_RegisterCFinalizerEx(con, dialer_finalizer, TRUE);
     Rf_setAttrib(socket, nano_DialerSymbol, R_MissingArg);
   } else {
+    PROTECT(con = R_MakeExternalPtr(lp, R_NilValue, R_NilValue));
     R_RegisterCFinalizerEx(con, listener_finalizer, TRUE);
   }
   R_MakeWeakRef(socket, con, R_NilValue, FALSE);

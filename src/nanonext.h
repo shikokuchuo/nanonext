@@ -39,6 +39,16 @@
 #include <nng/supplemental/tls/tls.h>
 #include <nng/supplemental/util/platform.h>
 
+typedef struct nano_listener_s {
+  nng_listener list;
+  nng_tls_config *tls;
+} nano_listener;
+
+typedef struct nano_dialer_s {
+  nng_dialer dial;
+  nng_tls_config *tls;
+} nano_dialer;
+
 typedef struct nano_cv_s {
   int condition;
   uint8_t flag;

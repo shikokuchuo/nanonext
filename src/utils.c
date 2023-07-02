@@ -20,7 +20,7 @@
 #define NANONEXT_SUPPLEMENTALS
 #include "nanonext.h"
 
-// definitions and statics -----------------------------------------------------
+// definitions and finalizers --------------------------------------------------
 
 typedef struct nano_stream_listener_s {
   nng_stream_listener *list;
