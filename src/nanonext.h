@@ -39,13 +39,6 @@
 #include <nng/supplemental/tls/tls.h>
 #include <nng/supplemental/util/platform.h>
 
-typedef struct nano_stream_s {
-  nng_stream *stream;
-  nng_stream_dialer *dial;
-  nng_stream_listener *list;
-  nng_tls_config *tls;
-} nano_stream;
-
 typedef struct nano_cv_s {
   int condition;
   uint8_t flag;

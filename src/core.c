@@ -785,7 +785,7 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
 
   } else if (ptrtag == nano_StreamSymbol) {
 
-    nano_stream *sp = (nano_stream *) R_ExternalPtrAddr(con);
+    nng_stream *sp = (nng_stream *) R_ExternalPtrAddr(con);
     nng_aio *aiop;
     nng_iov iov;
     nng_duration dur;
@@ -814,7 +814,7 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
     }
 
     nng_aio_set_timeout(aiop, dur);
-    nng_stream_send(sp->stream, aiop);
+    nng_stream_send(sp, aiop);
     nng_aio_wait(aiop);
     xc = nng_aio_result(aiop);
     nng_aio_free(aiop);
@@ -917,7 +917,7 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP keep, SEXP bytes) {
 
   } else if (ptrtag == nano_StreamSymbol) {
 
-    nano_stream *sp = (nano_stream *) R_ExternalPtrAddr(con);
+    nng_stream *sp = (nng_stream *) R_ExternalPtrAddr(con);
     const int mod = nano_matchargs(mode);
     const size_t xlen = (size_t) Rf_asInteger(bytes);
     nng_duration dur;
@@ -948,7 +948,7 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP keep, SEXP bytes) {
     }
 
     nng_aio_set_timeout(aiop, dur);
-    nng_stream_recv(sp->stream, aiop);
+    nng_stream_recv(sp, aiop);
 
     nng_aio_wait(aiop);
     if ((xc = nng_aio_result(aiop))) {
@@ -1040,8 +1040,7 @@ SEXP rnng_set_opt(SEXP object, SEXP opt, SEXP value) {
 
   } else if (ptrtag == nano_StreamSymbol) {
 
-    nano_stream *nst = (nano_stream *) R_ExternalPtrAddr(object);
-    nng_stream *st = nst->stream;
+    nng_stream *st = (nng_stream *) R_ExternalPtrAddr(object);
     switch (typ) {
     case NILSXP:
       xc = nng_stream_set(st, op, NULL, 0);
@@ -1229,8 +1228,7 @@ SEXP rnng_get_opt(SEXP object, SEXP opt) {
 
   } else if (ptrtag == nano_StreamSymbol) {
 
-    nano_stream *nst = (nano_stream *) R_ExternalPtrAddr(object);
-    nng_stream *st = nst->stream;
+    nng_stream *st = (nng_stream *) R_ExternalPtrAddr(object);
     for (;;) {
       xc = nng_stream_get_string(st, op, &strval);
       if (xc == 0) { typ = 1; break; }
