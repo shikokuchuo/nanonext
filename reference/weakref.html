@@ -118,9 +118,9 @@ weakref_value retrieves the value associated with a weak reference."><meta prope
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/identical.html" class="external-link">identical</a></span><span class="op">(</span><span class="va">value</span>, <span class="va">v</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">read_only</span> <span class="op">&lt;-</span> <span class="fu">weakref</span><span class="op">(</span><span class="va">k</span>, <span class="st">"cannot be modified"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu">weakref_value</span><span class="op">(</span><span class="va">read_only</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "cannot be modified"</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/rm.html" class="external-link">rm</a></span><span class="op">(</span><span class="va">v</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">weakref_value</span><span class="op">(</span><span class="va">w</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "value"</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
