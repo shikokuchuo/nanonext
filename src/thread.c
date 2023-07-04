@@ -18,7 +18,7 @@
 
 #define NANONEXT_PROTOCOLS
 #define NANONEXT_SUPPLEMENTALS
-#include <time.h>
+#define NANONEXT_TIME
 #include "nanonext.h"
 
 // messenger -------------------------------------------------------------------

@@ -1379,3 +1379,23 @@ SEXP rnng_fini(void) {
   return R_NilValue;
 
 }
+
+// weakref ---------------------------------------------------------------------
+
+SEXP rnng_weakref_make(SEXP key, SEXP value) {
+
+  return R_MakeWeakRef(key, value, R_NilValue, FALSE);
+
+}
+
+SEXP rnng_weakref_key(SEXP w) {
+
+  return R_WeakRefKey(w);
+
+}
+
+SEXP rnng_weakref_value(SEXP w) {
+
+  return R_WeakRefValue(w);
+
+}

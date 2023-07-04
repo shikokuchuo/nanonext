@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License along with
 // nanonext. If not, see <https://www.gnu.org/licenses/>.
 
-// nanonext - C level - Core Functions -----------------------------------------
+// nanonext - C level - Async Functions ----------------------------------------
 
 #define NANONEXT_SUPPLEMENTALS
 #include "nanonext.h"

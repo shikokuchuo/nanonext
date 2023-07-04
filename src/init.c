@@ -207,6 +207,9 @@ static const R_CallMethodDef callMethods[] = {
   {"rnng_unresolved2", (DL_FUNC) &rnng_unresolved2, 1},
   {"rnng_url_parse", (DL_FUNC) &rnng_url_parse, 1},
   {"rnng_version", (DL_FUNC) &rnng_version, 0},
+  {"rnng_weakref_make", (DL_FUNC) &rnng_weakref_make, 2},
+  {"rnng_weakref_key", (DL_FUNC) &rnng_weakref_key, 1},
+  {"rnng_weakref_value", (DL_FUNC) &rnng_weakref_value, 1},
   {NULL, NULL, 0}
 };
 

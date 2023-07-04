@@ -38,6 +38,9 @@
 #include <nng/supplemental/http/http.h>
 #include <nng/supplemental/tls/tls.h>
 #include <nng/supplemental/util/platform.h>
+#if NNG_MAJOR_VERSION == 1 && NNG_MINOR_VERSION < 6
+extern nng_mtx *shr_mtx;
+#endif
 
 typedef struct nano_listener_s {
   nng_listener list;
@@ -56,10 +59,10 @@ typedef struct nano_cv_s {
   nng_cv *cv;
 } nano_cv;
 
-#if NNG_MAJOR_VERSION == 1 && NNG_MINOR_VERSION < 6
-extern nng_mtx *shr_mtx;
 #endif
 
+#ifdef NANONEXT_TIME
+#include <time.h>
 #endif
 
 #ifdef NANONEXT_TLS
@@ -223,5 +226,8 @@ extern SEXP rnng_unresolved(SEXP);
 extern SEXP rnng_unresolved2(SEXP);
 extern SEXP rnng_url_parse(SEXP);
 extern SEXP rnng_version(void);
+extern SEXP rnng_weakref_make(SEXP, SEXP);
+extern SEXP rnng_weakref_key(SEXP);
+extern SEXP rnng_weakref_value(SEXP);
 
 #endif

@@ -512,3 +512,9 @@ close(s)
 nanotestxp(tls <- tls_config())
 nanotestxp(s <- socket(listen = "wss://127.0.0.1:5557", tls = tls))
 nanotestz(close(s))
+
+k <- new.env()
+v <- "test"
+nanotest(typeof(w <- weakref(k, v)) == "weakref")
+nanotest(identical(weakref_key(w), k))
+nanotest(identical(weakref_value(w), v))
