@@ -324,8 +324,8 @@ weakref_key <- function(w) .Call(rnng_weakref_key, w)
 #' value <- weakref_value(w)
 #' identical(value, v)
 #'
-#' read_only <- weakref(k, "cannot be modified")
-#' weakref_value(read_only)
+#' rm(v)
+#' weakref_value(w)
 #'
 #' @rdname weakref
 #' @export

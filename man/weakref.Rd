@@ -48,7 +48,7 @@ identical(key, k)
 value <- weakref_value(w)
 identical(value, v)
 
-read_only <- weakref(k, "cannot be modified")
-weakref_value(read_only)
+rm(v)
+weakref_value(w)
 
 }
