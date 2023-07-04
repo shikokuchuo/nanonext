@@ -71,6 +71,26 @@ extern nng_mtx *shr_mtx;
 #include <mbedtls/version.h>
 #endif
 
+#ifdef NANONEXT_KEYCERT
+#include <mbedtls/version.h>
+#if MBEDTLS_VERSION_MAJOR == 2
+#include <mbedtls/config.h>
+#endif
+#include <mbedtls/platform.h>
+#include <mbedtls/pk.h>
+#include <mbedtls/rsa.h>
+#include <mbedtls/x509_crt.h>
+#include <mbedtls/x509_csr.h>
+#include <mbedtls/entropy.h>
+#include <mbedtls/ctr_drbg.h>
+#include <mbedtls/md.h>
+#include <mbedtls/error.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <errno.h>
+#endif
+
 #define R_NO_REMAP
 #define STRICT_R_HEADERS
 #include <R.h>

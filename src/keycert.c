@@ -34,27 +34,8 @@
  *  limitations under the License.
  */
 
+#define NANONEXT_KEYCERT
 #include "nanonext.h"
-
-#include <mbedtls/version.h>
-#if MBEDTLS_VERSION_MAJOR == 2
-#include <mbedtls/config.h>
-#endif
-#include <mbedtls/platform.h>
-
-#include <mbedtls/pk.h>
-#include <mbedtls/rsa.h>
-#include <mbedtls/x509_crt.h>
-#include <mbedtls/x509_csr.h>
-#include <mbedtls/entropy.h>
-#include <mbedtls/ctr_drbg.h>
-#include <mbedtls/md.h>
-#include <mbedtls/error.h>
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <errno.h>
 
 #if MBEDTLS_VERSION_MAJOR == 3 && MBEDTLS_VERSION_MINOR >= 4 || MBEDTLS_VERSION_MAJOR >= 4
 static int parse_serial_decimal_format(unsigned char *obuf, size_t obufmax,
