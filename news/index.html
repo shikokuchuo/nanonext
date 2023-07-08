@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0.9038</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0.9039</span>
       </span>
     </div>
 
@@ -54,9 +54,9 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.9.0.9038" id="nanonext-0909038-development">nanonext 0.9.0.9038 (development)<a class="anchor" aria-label="anchor" href="#nanonext-0909038-development"></a></h2>
+<h2 class="page-header" data-toc-text="0.9.0.9039" id="nanonext-0909039-development">nanonext 0.9.0.9039 (development)<a class="anchor" aria-label="anchor" href="#nanonext-0909039-development"></a></h2>
 <div class="section level5">
-<h5 id="new-features-0-9-0-9038">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-9-0-9038"></a></h5>
+<h5 id="new-features-0-9-0-9039">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-9-0-9039"></a></h5>
 <ul><li>Enables secure TLS transports <code>tls+tcp://</code> and <code>wss://</code> for scalability protocols.
 <ul><li>
 <code><a href="../reference/listen.html">listen()</a></code> and <code><a href="../reference/dial.html">dial()</a></code> gain the argument ‘tls’ for supplying a TLS configuration object</li>
@@ -64,16 +64,18 @@
 <code><a href="../reference/write_cert.html">write_cert()</a></code> generates 4096 bit RSA keys and self-signed X.509 certificates for use with <code><a href="../reference/tls_config.html">tls_config()</a></code>.</li>
 </ul></li>
 <li>
-<code><a href="../reference/weakref.html">weakref()</a></code>, <code><a href="../reference/weakref.html">weakref_key()</a></code> and <code><a href="../reference/weakref.html">weakref_value()</a></code> implement an interface to R’s weak reference system. These may be used for purposes including synchronising the lifetimes of objects or creating read-only objects.</li>
+<code><a href="../reference/weakref.html">weakref()</a></code>, <code><a href="../reference/weakref.html">weakref_key()</a></code> and <code><a href="../reference/weakref.html">weakref_value()</a></code> implement an interface to R’s weak reference system. These may be used for synchronising the lifetimes of objects with reference objects such as Sockets or Aios, or creating read-only objects accessible by the weakref value alone.</li>
+<li>
+<code><a href="../reference/strcat.html">strcat()</a></code> provides a simple, fast utility to concatenate two strings.</li>
 </ul></div>
 <div class="section level5">
-<h5 id="updates-0-9-0-9038">Updates<a class="anchor" aria-label="anchor" href="#updates-0-9-0-9038"></a></h5>
+<h5 id="updates-0-9-0-9039">Updates<a class="anchor" aria-label="anchor" href="#updates-0-9-0-9039"></a></h5>
 <ul><li>‘tlsConfig’ objects no longer have a ‘source’ attribute.</li>
 <li>Fix cases where <code><a href="../reference/base64enc.html">base64enc()</a></code> failed for objects exceeding a certain size.</li>
 <li>
 <code><a href="../reference/stream.html">stream()</a></code> has been updated internally for additional robustness.</li>
-<li>Updates bundled ‘libmbedtls’ v3.4.0 source configuration for threading support and fixes one case of undefined behaviour.</li>
-<li>Updates bundled <code>libnng</code> cmake helper to better detect the correct version of <code>libmbedtls</code>.</li>
+<li>Updates bundled ‘libmbedtls’ v3.4.0 source configuration for threading support.</li>
+<li>Updates bundled ‘libnng’ to v1.6.0 alpha (c5e9d8a) again, having resolved previous issues.</li>
 </ul></div>
 </div>
     <div class="section level2">
