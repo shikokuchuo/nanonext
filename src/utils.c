@@ -692,6 +692,7 @@ SEXP rnng_tls_config(SEXP client, SEXP server, SEXP pass, SEXP auth) {
       goto exitlevel2;
 
     if (usefile == 1) {
+      file = R_ExpandFileName(file);
       if ((xc = nng_tls_config_ca_file(cfg, file)))
         goto exitlevel2;
     } else {
@@ -709,6 +710,7 @@ SEXP rnng_tls_config(SEXP client, SEXP server, SEXP pass, SEXP auth) {
       goto exitlevel2;
 
     if (usefile == 1) {
+      file = R_ExpandFileName(file);
       if ((xc = nng_tls_config_cert_key_file(cfg, file, pss)))
         goto exitlevel2;
     } else {

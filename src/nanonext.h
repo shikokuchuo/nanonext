@@ -165,7 +165,6 @@ extern SEXP rnng_aio_result(SEXP);
 extern SEXP rnng_aio_stop(SEXP);
 extern SEXP rnng_base64dec(SEXP, SEXP);
 extern SEXP rnng_base64enc(SEXP, SEXP);
-extern SEXP rnng_cert_write(SEXP, SEXP, SEXP);
 extern SEXP rnng_clock(void);
 extern SEXP rnng_close(SEXP);
 extern SEXP rnng_ctx_close(SEXP);
@@ -218,6 +217,7 @@ extern SEXP rnng_status_code(SEXP);
 extern SEXP rnng_stream_close(SEXP);
 extern SEXP rnng_stream_dial(SEXP, SEXP, SEXP);
 extern SEXP rnng_stream_listen(SEXP, SEXP, SEXP);
+extern SEXP rnng_strcat(SEXP, SEXP);
 extern SEXP rnng_strerror(SEXP);
 extern SEXP rnng_subscribe(SEXP, SEXP, SEXP);
 extern SEXP rnng_timed_signal(SEXP);
@@ -229,5 +229,6 @@ extern SEXP rnng_version(void);
 extern SEXP rnng_weakref_make(SEXP, SEXP);
 extern SEXP rnng_weakref_key(SEXP);
 extern SEXP rnng_weakref_value(SEXP);
+extern SEXP rnng_write_cert(SEXP, SEXP, SEXP);
 
 #endif

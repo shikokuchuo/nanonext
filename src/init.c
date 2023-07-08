@@ -145,7 +145,6 @@ static const R_CallMethodDef callMethods[] = {
   {"rnng_aio_http", (DL_FUNC) &rnng_aio_http, 3},
   {"rnng_aio_result", (DL_FUNC) &rnng_aio_result, 1},
   {"rnng_aio_stop", (DL_FUNC) &rnng_aio_stop, 1},
-  {"rnng_cert_write", (DL_FUNC) &rnng_cert_write, 3},
   {"rnng_clock", (DL_FUNC) &rnng_clock, 0},
   {"rnng_close", (DL_FUNC) &rnng_close, 1},
   {"rnng_ctx_close", (DL_FUNC) &rnng_ctx_close, 1},
@@ -200,6 +199,7 @@ static const R_CallMethodDef callMethods[] = {
   {"rnng_stream_close", (DL_FUNC) &rnng_stream_close, 1},
   {"rnng_stream_dial", (DL_FUNC) &rnng_stream_dial, 3},
   {"rnng_stream_listen", (DL_FUNC) &rnng_stream_listen, 3},
+  {"rnng_strcat", (DL_FUNC) &rnng_strcat, 2},
   {"rnng_strerror", (DL_FUNC) &rnng_strerror, 1},
   {"rnng_subscribe", (DL_FUNC) &rnng_subscribe, 3},
   {"rnng_tls_config", (DL_FUNC) &rnng_tls_config, 4},
@@ -210,6 +210,7 @@ static const R_CallMethodDef callMethods[] = {
   {"rnng_weakref_make", (DL_FUNC) &rnng_weakref_make, 2},
   {"rnng_weakref_key", (DL_FUNC) &rnng_weakref_key, 1},
   {"rnng_weakref_value", (DL_FUNC) &rnng_weakref_value, 1},
+  {"rnng_write_cert", (DL_FUNC) &rnng_write_cert, 3},
   {NULL, NULL, 0}
 };
 

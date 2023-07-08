@@ -22,7 +22,7 @@
 #'     'client' to create a client configuration or 'server' to create a server
 #'     configuration.
 #'
-#' @param client \strong{either} the absolute path to a file containing X.509
+#' @param client \strong{either} the character path to a file containing X.509
 #'     certificate(s) in PEM format, comprising the certificate authority
 #'     certificate chain (and revocation list if present), used to validate
 #'     certificates presented by peers,
@@ -30,7 +30,7 @@
 #'     \strong{or} a length 2 character vector comprising [i] the certificate
 #'     authority certificate chain and [ii] the certificate revocation list or
 #'     the empty character \code{""} if not applicable.
-#' @param server \strong{either} the absolute path to a single file containing
+#' @param server \strong{either} the character path to a file containing
 #'     the PEM encoded certificate and associated private key (may contain
 #'     additional certificates leading to a validation chain, with the leaf
 #'     certificate first, although the self-signed root is not required as the
@@ -270,4 +270,4 @@ base64dec <- function(x, convert = TRUE) .Call(rnng_base64dec, x, convert)
 #' @export
 #'
 write_cert <- function(cn = "localhost", valid = "20301231235959")
-  .Call(rnng_cert_write, cn, valid, interactive())
+  .Call(rnng_write_cert, cn, valid, interactive())

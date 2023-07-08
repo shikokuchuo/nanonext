@@ -276,3 +276,22 @@ status_code <- function(x) .Call(rnng_status_code, x)
 #' @keywords internal
 #'
 nng_fini <- function() invisible(.Call(rnng_fini))
+
+#' Concatenate 2 Strings
+#'
+#' A fast implementation that simply combines two strings into one.
+#'
+#' @param a character value.
+#' @param b character value.
+#'
+#' @return A character vector of length 1.
+#'
+#' @details If either 'a' or 'b' is a vector of length greater than 1, only the
+#'     first element of each is concatenated.
+#'
+#' @examples
+#' strcat("hello ", "world!")
+#'
+#' @export
+#'
+strcat <- function(a, b) .Call(rnng_strcat, a, b)

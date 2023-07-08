@@ -75,7 +75,7 @@ static int parse_serial_decimal_format(unsigned char *obuf, size_t obufmax,
 }
 #endif
 
-SEXP rnng_cert_write(SEXP cn, SEXP valid, SEXP inter) {
+SEXP rnng_write_cert(SEXP cn, SEXP valid, SEXP inter) {
 
   uint8_t failed = 1;
   int interactive = LOGICAL(inter)[0];
@@ -104,8 +104,7 @@ SEXP rnng_cert_write(SEXP cn, SEXP valid, SEXP inter) {
   snprintf(issuer_name, clen + 18, "CN=%s,O=Hibiki,C=JP", CHAR(STRING_ELT(cn, 0)));
 
   int ret = 1;
-  if (interactive)
-    REprintf("Generating keys and certificate - this may take a few seconds... ");
+  if (interactive) REprintf("Generating key and certificate [    ]");
   mbedtls_x509_crt issuer_crt;
   mbedtls_pk_context loaded_issuer_key;
   mbedtls_pk_context *issuer_key = &loaded_issuer_key;
@@ -118,6 +117,8 @@ SEXP rnng_cert_write(SEXP cn, SEXP valid, SEXP inter) {
   mbedtls_ctr_drbg_context ctr_drbg;
   const char *pers = "crt example app";
 
+  if (interactive) REprintf("\b\b\b\b\b.   ]");
+
   mbedtls_x509write_crt_init(&crt);
   mbedtls_pk_init(&loaded_issuer_key);
   mbedtls_ctr_drbg_init(&ctr_drbg);
@@ -127,7 +128,6 @@ SEXP rnng_cert_write(SEXP cn, SEXP valid, SEXP inter) {
 #endif
   mbedtls_x509_crt_init(&issuer_crt);
   memset(buf, 0, sizeof(buf));
-
   unsigned char output_buf[4096];
   memset(output_buf, 0, 4096);
 
@@ -141,9 +141,17 @@ SEXP rnng_cert_write(SEXP cn, SEXP valid, SEXP inter) {
 #endif
 
   if ((ret = mbedtls_ctr_drbg_seed(&ctr_drbgk, mbedtls_entropy_func, &entropyk, (const unsigned char *) persk, strlen(persk))) ||
-      (ret = mbedtls_pk_setup(&key, mbedtls_pk_info_from_type((mbedtls_pk_type_t) MBEDTLS_PK_RSA))) ||
-      (ret = mbedtls_rsa_gen_key(mbedtls_pk_rsa(key), mbedtls_ctr_drbg_random, &ctr_drbgk, 4096, 65537)) ||
-      (ret = mbedtls_pk_write_key_pem(&key, key_buf, 16000)))
+      (ret = mbedtls_pk_setup(&key, mbedtls_pk_info_from_type((mbedtls_pk_type_t) MBEDTLS_PK_RSA))))
+    goto exitlevel1;
+
+  if (interactive) REprintf("\b\b\b\b\b..  ]");
+
+  if ((ret = mbedtls_rsa_gen_key(mbedtls_pk_rsa(key), mbedtls_ctr_drbg_random, &ctr_drbgk, 4096, 65537)))
+    goto exitlevel1;
+
+  if (interactive) REprintf("\b\b\b\b\b... ]");
+
+  if ((ret = mbedtls_pk_write_key_pem(&key, key_buf, 16000)))
     goto exitlevel1;
 
   size_t klen = strlen((char *) key_buf);
@@ -190,6 +198,8 @@ SEXP rnng_cert_write(SEXP cn, SEXP valid, SEXP inter) {
   if (ret < 0)
     goto exitlevel1;
 
+  if (interactive) REprintf("\b\b\b\b\b....]");
+
   SEXP vec, kcstr, cstr;
   const char *names[] = {"server", "client", ""};
   PROTECT(vec = Rf_mkNamed(VECSXP, names));
@@ -202,9 +212,8 @@ SEXP rnng_cert_write(SEXP cn, SEXP valid, SEXP inter) {
   SET_STRING_ELT(cstr, 0, Rf_mkChar((char *) &output_buf));
   SET_STRING_ELT(cstr, 1, Rf_mkChar(""));
 
-  if (interactive)
-    REprintf("complete.\n");
   failed = 0;
+  if (interactive) REprintf("\b\b\b\b\bdone]\n");
 
   exitlevel1:
 

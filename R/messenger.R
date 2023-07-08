@@ -64,28 +64,28 @@ messenger <- function(url, auth = NULL) {
     cat("\r", `length<-`(intro, i), sep = " ", file = stdout())
     msleep(32L)
   }
-  cat(sprintf("\n| url: %s\n", url), file = stdout())
+  cat(strcat("\n| url: ", url), file = stdout())
 
   s <- send(sock, data = writeBin(":c ", raw()), mode = 2L, block = FALSE)
   if (s) {
     length(attr(sock, "dialer")) && {
-      cat("| connection error... exiting\n", file = stderr())
+      cat("\n| connection error... exiting\n", file = stderr())
       return(invisible())
     }
-    cat(sprintf("| peer offline: %s\n", format.POSIXct(Sys.time())), file = stderr())
+    cat(strcat("\n| peer offline: ", format.POSIXct(Sys.time())), file = stderr())
   } else {
-    cat(sprintf("| peer online: %s\n", format.POSIXct(Sys.time())), file = stderr())
+    cat(strcat("\n| peer online: ", format.POSIXct(Sys.time())), file = stderr())
     r <- recv(sock, mode = 5L, block = TRUE)
     for (i in seq_len(32L))
       lock[r[i]] == r[i + 32L] || {
-        cat("| authentication failed\n", file = stderr())
+        cat("\n| authentication failed\n", file = stderr())
         return(invisible())
       }
-    cat("| authenticated\n", file = stderr())
+    cat("\n| authenticated", file = stderr())
   }
 
   sock <- .Call(rnng_messenger_thread_create, list(sock, key))
-  cat("type your message:\n", file = stdout())
+  cat("\ntype your message:\n", file = stdout())
 
   repeat {
     data <- readline()

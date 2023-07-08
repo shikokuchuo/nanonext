@@ -7,7 +7,7 @@
 tls_config(client = NULL, server = NULL, pass = NULL, auth = is.null(server))
 }
 \arguments{
-\item{client}{\strong{either} the absolute path to a file containing X.509
+\item{client}{\strong{either} the character path to a file containing X.509
     certificate(s) in PEM format, comprising the certificate authority
     certificate chain (and revocation list if present), used to validate
     certificates presented by peers,
@@ -16,7 +16,7 @@ tls_config(client = NULL, server = NULL, pass = NULL, auth = is.null(server))
     authority certificate chain and [ii] the certificate revocation list or
     the empty character \code{""} if not applicable.}
 
-\item{server}{\strong{either} the absolute path to a single file containing
+\item{server}{\strong{either} the character path to a file containing
     the PEM encoded certificate and associated private key (may contain
     additional certificates leading to a validation chain, with the leaf
     certificate first, although the self-signed root is not required as the
