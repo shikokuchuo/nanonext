@@ -1,4 +1,4 @@
-# nanonext 0.9.0.9039 (development)
+# nanonext 0.9.1
 
 #### New Features
 
@@ -10,6 +10,7 @@
 
 #### Updates
 
+* `tls_config()` now accepts a relative path if filenames are supplied for the 'client' or 'server' arguments.
 * 'tlsConfig' objects no longer have a 'source' attribute.
 * Fix cases where `base64enc()` failed for objects exceeding a certain size.
 * `stream()` has been updated internally for additional robustness.

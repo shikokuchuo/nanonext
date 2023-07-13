@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{strcat}
 \alias{strcat}
-\title{Concatenate 2 Strings}
+\title{Concatenate Strings}
 \usage{
 strcat(a, b)
 }
@@ -15,7 +15,7 @@ strcat(a, b)
 A character vector of length 1.
 }
 \description{
-A fast implementation that simply combines two strings into one.
+A fast implementation that appends one character value after another.
 }
 \details{
 If either 'a' or 'b' is a vector of length greater than 1, only the

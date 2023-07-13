@@ -277,9 +277,9 @@ status_code <- function(x) .Call(rnng_status_code, x)
 #'
 nng_fini <- function() invisible(.Call(rnng_fini))
 
-#' Concatenate 2 Strings
+#' Concatenate Strings
 #'
-#' A fast implementation that simply combines two strings into one.
+#' A fast implementation that appends one character value after another.
 #'
 #' @param a character value.
 #' @param b character value.
