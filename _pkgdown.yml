@@ -9,3 +9,6 @@ reference:
 - contents:
   - nanonext-package
   - matches("^[a-zA-Z]*")
+authors:
+  R Consortium:
+    html: "<img src='https://shikokuchuo.net/nanonext/reference/figures/RConsortium.png' alt='R Consortium' width='100' />"
