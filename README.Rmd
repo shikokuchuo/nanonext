@@ -13,7 +13,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-# nanonext <a href="https://shikokuchuo.net/nanonext/" alt="nanonext"><img src="man/figures/logo.png" alt="nanonext logo" align="right" width="120"/></a>
+# nanonext <a href="https://shikokuchuo.net/nanonext/" alt="nanonext"><img src="man/figures/logo.png" alt="nanonext logo" align="right" width="120" /></a>
 
 <!-- badges: start -->
 [![CRAN status](https://www.r-pkg.org/badges/version/nanonext?color=112d4e)](https://CRAN.R-project.org/package=nanonext)
@@ -44,7 +44,8 @@ Supported transports:
 - WebSocket
 - TLS (over TCP and WebSocket)
 
-Development of the TLS implementation was generously supported by an [R Consortium ISC grant (2023)](https://www.r-consortium.org/all-projects/awarded-projects/2023-group-1).
+Development of the TLS implementation was generously supported by the
+<a href="https://www.r-consortium.org/all-projects/awarded-projects/2023-group-1" alt="R Consortium ISC Grant 2023"><img src="man/figures/RConsortium.png" alt="R Consortium logo" width="100" /></a>.
 
 Web utilities:
 
@@ -694,7 +695,7 @@ stat(s, "pipes")
 
 #### Linux / Mac / Solaris
 
-Installation from source requires 'libnng' >= v1.5.0 and 'libmbedtls' >= 2 (suitable installations are automatically detected), or else 'cmake' to compile 'libnng' v1.6.0 pre-release (8e1836f) and 'libmbedtls' v3.4.0 included within the package sources.
+Installation from source requires 'libnng' >= v1.5.0 and 'libmbedtls' >= 2 (suitable installations are automatically detected), or else 'cmake' to compile 'libnng' v1.6.0 alpha (c5e9d8a) and 'libmbedtls' v3.4.0 included within the package sources.
 
 **It is recommended for optimal performance and stability to let the package automatically compile bundled versions of 'libmbedtls' and 'libnng' during installation.** To always compile the libraries from source even if system installations exist, set the `NANONEXT_LIBS` environment variable prior to installation e.g. by `Sys.setenv(NANONEXT_LIBS = 1)`.
 
@@ -704,9 +705,9 @@ It is neither necessary nor recommended to install system libraries, but 'libnng
 
 #### Windows
 
-For R >= 4.2 using the 'Rtools42' or 'Rtools43' toolchains, 'libnng' v1.6.0 pre-release (8e1836f) and 'libmbedtls' v3.4.0 will be automatically compiled from the package sources during installation.
+For R >= 4.2 using the 'Rtools42' or 'Rtools43' toolchains, 'libnng' v1.6.0 alpha (c5e9d8a) and 'libmbedtls' v3.4.0 will be automatically compiled from the package sources during installation.
 
-For previous R versions, pre-compiled 'libnng' v1.6.0 pre-release (8e1836f) and 'libmbedtls' v3.4.0 libraries are downloaded and used for installation instead.
+For previous R versions, pre-compiled 'libnng' v1.6.0 alpha (c5e9d8a) and 'libmbedtls' v3.4.0 libraries are downloaded and used for installation instead.
 
 [&laquo; Back to ToC](#table-of-contents)
 
