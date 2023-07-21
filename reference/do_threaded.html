@@ -65,7 +65,7 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">do_threaded</span><span class="op">(</span><span class="va">symptr</span>, <span class="va">args</span>, <span class="va">assign</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">do_threaded</span><span class="op">(</span><span class="va">symptr</span>, <span class="va">args</span>, <span class="va">object</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">do_sym</span><span class="op">(</span><span class="va">symbol</span>, <span class="va">package</span><span class="op">)</span></span>
 <span></span>
@@ -83,9 +83,9 @@ by a call to <code>do_sym()</code>.</p></dd>
 <dd><p>an object to be passed to the function.</p></dd>
 
 
-<dt>assign</dt>
-<dd><p>a character string giving the symbol name the return value
-should be assigned to.</p></dd>
+<dt>object</dt>
+<dd><p>an object to which the return value will be attached as a
+special attribute "".</p></dd>
 
 
 <dt>symbol</dt>
@@ -107,7 +107,7 @@ searched for 'symbol'.</p></dd>
 
 
 <p>For do_threaded: Invisible NULL. The return value of the function will be
-    assigned to 'assign'.</p>
+    attached to 'object' as the special attribute "".</p>
 
 
 <p>For do_nonthreaded: the return value of the function.</p>
