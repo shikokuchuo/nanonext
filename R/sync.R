@@ -296,6 +296,7 @@ timed_signal <- function(cv, time, flag = TRUE)
 #'
 #' w <- weakref(k, v)
 #' w
+#' typeof(w)
 #'
 #' @export
 #'

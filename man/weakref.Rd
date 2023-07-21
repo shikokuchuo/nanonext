@@ -41,6 +41,7 @@ v <- "value"
 
 w <- weakref(k, v)
 w
+typeof(w)
 
 key <- weakref_key(w)
 identical(key, k)
