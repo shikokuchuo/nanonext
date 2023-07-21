@@ -65,9 +65,9 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">do_threaded</span><span class="op">(</span><span class="va">symptr</span>, <span class="va">args</span>, <span class="va">object</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">do_threaded</span><span class="op">(</span><span class="va">symptr</span>, <span class="va">args</span>, <span class="va">object</span>, cv <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">do_sym</span><span class="op">(</span><span class="va">symbol</span>, <span class="va">package</span><span class="op">)</span></span>
+<span><span class="fu">do_sym</span><span class="op">(</span><span class="va">symbol</span>, package <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">do_nonthreaded</span><span class="op">(</span><span class="va">symptr</span>, <span class="va">args</span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -88,14 +88,19 @@ by a call to <code>do_sym()</code>.</p></dd>
 special attribute "".</p></dd>
 
 
+<dt>cv</dt>
+<dd><p>(optional) if supplied, a 'conditionVariable' to signal once the
+threaded function has completed.</p></dd>
+
+
 <dt>symbol</dt>
 <dd><p>a character string giving the symbol name of a loaded function
 i.e. through a loaded package or by <code><a href="https://rdrr.io/r/base/dynload.html" class="external-link">dyn.load</a></code>.</p></dd>
 
 
 <dt>package</dt>
-<dd><p>if supplied, the package name as a character value, where
-native C routines exported via <code>R_RegisterCCallable()</code> will be
+<dd><p>(optional) if supplied, the package name as a character value,
+where native C routines exported via <code>R_RegisterCCallable()</code> will be
 searched for 'symbol'.</p></dd>
 
 </dl></div>
