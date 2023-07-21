@@ -109,6 +109,8 @@ weakref_value retrieves the value associated with a weak reference."><meta prope
 <span class="r-in"><span><span class="va">w</span> <span class="op">&lt;-</span> <span class="fu">weakref</span><span class="op">(</span><span class="va">k</span>, <span class="va">v</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">w</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;weak reference&gt;</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/typeof.html" class="external-link">typeof</a></span><span class="op">(</span><span class="va">w</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "weakref"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">key</span> <span class="op">&lt;-</span> <span class="fu">weakref_key</span><span class="op">(</span><span class="va">w</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/identical.html" class="external-link">identical</a></span><span class="op">(</span><span class="va">key</span>, <span class="va">k</span><span class="op">)</span></span></span>
