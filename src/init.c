@@ -34,7 +34,6 @@ SEXP nano_ProtocolSymbol;
 SEXP nano_RawSymbol;
 SEXP nano_ResponseSymbol;
 SEXP nano_ResultSymbol;
-SEXP nano_RtcSymbol;
 SEXP nano_SerialSymbol;
 SEXP nano_SessionSymbol;
 SEXP nano_SocketSymbol;
@@ -78,7 +77,6 @@ static void RegisterSymbols(void) {
   nano_RawSymbol = Rf_install("raw");
   nano_ResponseSymbol = Rf_install("response");
   nano_ResultSymbol = Rf_install("result");
-  nano_RtcSymbol = Rf_install("rawToChar");
   nano_SerialSymbol = Rf_install("serialize");
   nano_SessionSymbol = Rf_install("session");
   nano_SocketSymbol = Rf_install("socket");

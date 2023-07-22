@@ -1,5 +1,11 @@
 # nanonext 0.9.1.9000 (development)
 
+#### Updates
+
+* `ncurl()` etc. gain higher performance raw to character conversion, resulting in the following changes:
+  + Attempting to convert non-text data with embedded nuls will now error instead of silently returning NULL.
+  + When 'convert' = TRUE, the raw vector is no longer stored at `$raw` for efficiency.
+
 # nanonext 0.9.1
 
 #### New Features

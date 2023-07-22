@@ -24,8 +24,8 @@ ncurl(
 in which case an 'ncurlAio' is returned instead of a list.}
 
 \item{convert}{[default TRUE] logical value whether to attempt conversion of
-the received raw bytes to a character vector. Supplying a non-logical
-value will error.}
+the received raw bytes to a character vector. Set to FALSE if downloading
+non-text data. Supplying a non-logical value will error.}
 
 \item{follow}{[default FALSE] logical value whether to automatically follow
 redirects (not applicable for async requests). If FALSE (or async), the
@@ -61,21 +61,25 @@ Named list of 4 elements:
     'response', or NULL otherwise. If the status code is within the 300
     range, i.e. a redirect, the response header 'Location' is automatically
     appended to return the redirect address.}
-    \item{\code{$raw}} {- raw vector of the received resource (use
-    \code{\link{writeBin}} to save to a file).}
-    \item{\code{$data}} {- converted character string (if \code{'convert' = TRUE}
-    and content is a recognised text format), or NULL otherwise. This may be
-    further parsed as html, json, xml etc. if required.}
+    \item{\code{$raw}} {- if 'convert' = FALSE, the raw vector of the
+    received resource, or NULL otherwise (use \code{\link{writeBin}} to save
+    to a file).}
+    \item{\code{$data}} {- if 'convert' = TRUE, the converted character
+    string, or NULL otherwise. This may be further parsed as html, json, xml
+    etc. if required.}
     }
 
-    Or else, if \code{async = TRUE}, an 'ncurlAio' (object of class 'ncurlAio'
+    Or else, if 'async' = TRUE, an 'ncurlAio' (object of class 'ncurlAio'
     and 'recvAio') (invisibly).
 }
 \description{
 nano cURL - a minimalist http(s) client.
 }
 \examples{
-ncurl("https://www.r-project.org/", response = c("date", "server"), timeout = 1000L)
+ncurl("https://www.r-project.org/",
+       convert = FALSE,
+       response = c("date", "server"),
+       timeout = 1000L)
 ncurl("https://postman-echo.com/put",
       method = "PUT",
       headers = list(Authorization = "Bearer APIKEY"),

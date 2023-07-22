@@ -1420,19 +1420,17 @@ SEXP rnng_aio_http(SEXP env, SEXP response, SEXP type) {
   if (relo) UNPROTECT(1);
 
   nng_http_res_get_data(handle->res, &dat, &sz);
-  vec = Rf_allocVector(RAWSXP, sz);
-  if (dat != NULL)
-    memcpy(RAW(vec), dat, sz);
-  Rf_defineVar(nano_RawSymbol, vec, ENCLOS(env));
 
   if (haio->mode) {
-    int xc;
-    PROTECT(cvec = Rf_lang2(nano_RtcSymbol, vec));
-    cvec = R_tryEvalSilent(cvec, R_BaseEnv, &xc);
-    UNPROTECT(1);
+    vec = R_NilValue;
   } else {
-    cvec = R_NilValue;
+    vec = Rf_allocVector(RAWSXP, sz);
+    if (dat != NULL)
+      memcpy(RAW(vec), dat, sz);
   }
+  Rf_defineVar(nano_RawSymbol, vec, ENCLOS(env));
+
+  cvec = haio->mode ? rawToChar(dat, sz) : R_NilValue;
   Rf_defineVar(nano_ResultSymbol, cvec, ENCLOS(env));
   Rf_defineVar(nano_AioSymbol, R_NilValue, env);
 
@@ -1641,19 +1639,17 @@ SEXP rnng_ncurl_transact(SEXP session) {
   SET_VECTOR_ELT(out, 1, rvec);
 
   nng_http_res_get_data(handle->res, &dat, &sz);
-  vec = Rf_allocVector(RAWSXP, sz);
-  if (dat != NULL)
-    memcpy(RAW(vec), dat, sz);
-  SET_VECTOR_ELT(out, 2, vec);
 
   if (haio->mode) {
-    int xc;
-    PROTECT(cvec = Rf_lcons(nano_RtcSymbol, Rf_cons(vec, R_NilValue)));
-    cvec = R_tryEvalSilent(cvec, R_BaseEnv, &xc);
-    UNPROTECT(1);
+    vec = R_NilValue;
   } else {
-    cvec = R_NilValue;
+    vec = Rf_allocVector(RAWSXP, sz);
+    if (dat != NULL)
+      memcpy(RAW(vec), dat, sz);
   }
+  SET_VECTOR_ELT(out, 2, vec);
+
+  cvec = haio->mode ? rawToChar(dat, sz) : R_NilValue;
   SET_VECTOR_ELT(out, 3, cvec);
 
   UNPROTECT(1);

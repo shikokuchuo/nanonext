@@ -376,7 +376,7 @@ aio
 #> < recvAio >
 #>  - $data for message data
 aio$data |> str()
-#>  num [1:100000000] -1.222 -0.484 -0.756 0.209 -0.999 ...
+#>  num [1:100000000] 0.6763 1.4953 0.0711 -1.2394 -0.3663 ...
 ```
 
 As `call_aio()` is blocking and will wait for completion, an alternative
@@ -543,7 +543,7 @@ throughout, or alternatively ‘localhost’, but not a mixture of the two.
 cert <- write_cert(cn = "127.0.0.1")
 str(cert)
 #> List of 2
-#>  $ server: chr [1:2] "-----BEGIN CERTIFICATE-----\nMIIFFTCCAv2gAwIBAgIBATANBgkqhkiG9w0BAQsFADAiMRIwEAYDVQQDDAkxMjcu\nMC4wLjExDDAKBgNV"| __truncated__ "-----BEGIN RSA PRIVATE KEY-----\nMIIJJwIBAAKCAgEAtoRWRXIkixjaRzHTbTW57VDzJJfh5GeSrCCUiBILdTkU4FjB\nr9pNi1aaY4Xc"| __truncated__
+#>  $ server: chr [1:2] "-----BEGIN CERTIFICATE-----\nMIIFFTCCAv2gAwIBAgIBATANBgkqhkiG9w0BAQsFADAiMRIwEAYDVQQDDAkxMjcu\nMC4wLjExDDAKBgNV"| __truncated__ "-----BEGIN RSA PRIVATE KEY-----\nMIIJKQIBAAKCAgEA8w/1k5legeaExb0EPcPhDwb1fut1uAV/wETrVEQK7s7enCjB\nWwZa+KBZ38Jy"| __truncated__
 #>  $ client: chr [1:2] "-----BEGIN CERTIFICATE-----\nMIIFFTCCAv2gAwIBAgIBATANBgkqhkiG9w0BAQsFADAiMRIwEAYDVQQDDAkxMjcu\nMC4wLjExDDAKBgNV"| __truncated__ ""
 
 ser <- tls_config(server = cert$server)
@@ -712,17 +712,10 @@ ncurl("https://httpbin.org/get")
 #> NULL
 #> 
 #> $raw
-#>   [1] 7b 0a 20 20 22 61 72 67 73 22 3a 20 7b 7d 2c 20 0a 20 20 22 68 65 61 64 65
-#>  [26] 72 73 22 3a 20 7b 0a 20 20 20 20 22 48 6f 73 74 22 3a 20 22 68 74 74 70 62
-#>  [51] 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22 58 2d 41 6d 7a 6e 2d 54 72 61
-#>  [76] 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31 2d 36 34 62 30 37 64 36 37 2d
-#> [101] 31 31 62 32 64 31 30 32 31 64 62 32 61 38 62 37 34 30 35 39 36 38 36 31 22
-#> [126] 0a 20 20 7d 2c 20 0a 20 20 22 6f 72 69 67 69 6e 22 3a 20 22 31 38 35 2e 32
-#> [151] 32 35 2e 34 35 2e 34 39 22 2c 20 0a 20 20 22 75 72 6c 22 3a 20 22 68 74 74
-#> [176] 70 73 3a 2f 2f 68 74 74 70 62 69 6e 2e 6f 72 67 2f 67 65 74 22 0a 7d 0a
+#> NULL
 #> 
 #> $data
-#> [1] "{\n  \"args\": {}, \n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-64b07d67-11b2d1021db2a8b740596861\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"https://httpbin.org/get\"\n}\n"
+#> [1] "{\n  \"args\": {}, \n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-64bbb2bc-5f937c3e5bd13438169bd0af\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"https://httpbin.org/get\"\n}\n"
 ```
 
 For advanced use, supports additional HTTP methods such as POST or PUT.
@@ -743,13 +736,13 @@ res
 
 call_aio(res)$headers
 #> $Date
-#> [1] "Thu, 13 Jul 2023 22:40:40 GMT"
+#> [1] "Sat, 22 Jul 2023 10:43:57 GMT"
 #> 
 #> $Server
 #> [1] "gunicorn/19.9.0"
 
 res$data
-#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-64b07d67-5d4bb6b73ce466f75bc763b7\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
+#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-64bbb2ea-160062da77f583da25b06041\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
 ```
 
 In this respect, it may be used as a performant and lightweight method
@@ -761,8 +754,13 @@ endpoint. `transact()` is then used to request data multiple times as
 required. This method allows a polling frequency that exceeds a server’s
 new connection limits, where this is permitted.
 
+By specifying `convert = FALSE`, the received data is not converted to
+text and may be fed into ‘json’ parsers which can operate directly on
+binary data, for example.
+
 ``` r
 sess <- ncurl_session("https://httpbin.org/get",
+                      convert = FALSE,
                       headers = c(`Content-Type` = "application/json", Authorization = "Bearer APIKEY"),
                       response = "date")
 sess
@@ -775,7 +773,7 @@ transact(sess)
 #> 
 #> $headers
 #> $headers$date
-#> [1] "Thu, 13 Jul 2023 22:40:41 GMT"
+#> [1] "Sat, 22 Jul 2023 10:44:02 GMT"
 #> 
 #> 
 #> $raw
@@ -785,15 +783,15 @@ transact(sess)
 #>  [76] 22 43 6f 6e 74 65 6e 74 2d 54 79 70 65 22 3a 20 22 61 70 70 6c 69 63 61 74
 #> [101] 69 6f 6e 2f 6a 73 6f 6e 22 2c 20 0a 20 20 20 20 22 48 6f 73 74 22 3a 20 22
 #> [126] 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22 58 2d 41 6d 7a
-#> [151] 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31 2d 36 34 62 30
-#> [176] 37 64 36 39 2d 34 61 37 33 66 34 32 33 37 30 65 30 31 36 30 61 33 34 36 64
-#> [201] 36 63 61 30 22 0a 20 20 7d 2c 20 0a 20 20 22 6f 72 69 67 69 6e 22 3a 20 22
+#> [151] 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31 2d 36 34 62 62
+#> [176] 62 32 65 64 2d 33 38 32 37 63 38 32 64 31 31 64 36 39 39 30 34 32 66 39 65
+#> [201] 38 65 66 36 22 0a 20 20 7d 2c 20 0a 20 20 22 6f 72 69 67 69 6e 22 3a 20 22
 #> [226] 31 38 35 2e 32 32 35 2e 34 35 2e 34 39 22 2c 20 0a 20 20 22 75 72 6c 22 3a
 #> [251] 20 22 68 74 74 70 73 3a 2f 2f 68 74 74 70 62 69 6e 2e 6f 72 67 2f 67 65 74
 #> [276] 22 0a 7d 0a
 #> 
 #> $data
-#> [1] "{\n  \"args\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-64b07d69-4a73f42370e0160a346d6ca0\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"https://httpbin.org/get\"\n}\n"
+#> NULL
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -935,7 +933,7 @@ s <- socket(listen = "inproc://stat")
 
 # no active connections (pipes)
 stat(s, "pipes")
-#> [1] 0
+#> [1] 1
 
 s1 <- socket(dial = "inproc://stat")
 

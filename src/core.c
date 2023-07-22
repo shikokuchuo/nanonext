@@ -184,6 +184,21 @@ SEXP rawOneString(unsigned char *bytes, R_xlen_t nbytes, R_xlen_t *np) {
 
 }
 
+SEXP rawToChar(unsigned char *buf, size_t sz) {
+
+  SEXP ans;
+  int i, j;
+
+  for (i = 0, j = -1; i < sz; i++) if (buf[i]) j = i;
+
+  PROTECT(ans = Rf_allocVector(STRSXP, 1));
+  SET_STRING_ELT(ans, 0, Rf_mkCharLenCE((const char *) buf, j + 1, CE_NATIVE));
+  UNPROTECT(1);
+
+  return ans;
+
+}
+
 int nano_matcharg(SEXP mode) {
 
   if (TYPEOF(mode) == INTSXP)
