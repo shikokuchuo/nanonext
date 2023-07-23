@@ -138,7 +138,7 @@
 <li><a href="#cryptographic-hashing">Cryptographic Hashing</a></li>
 <li><a href="#options-and-statistics">Options and Statistics</a></li>
 <li><a href="#building-from-source">Building from Source</a></li>
-<li><a href="#links">Links</a></li>
+<li><a href="#acknowledgements-and-links">Acknowledgements and Links</a></li>
 </ol>
 </div>
 <div class="section level3">
@@ -263,15 +263,15 @@
 <span><span class="co">#&gt;   a b</span></span>
 <span><span class="co">#&gt; 1 1 2</span></span>
 <span><span class="va">msg</span><span class="op">$</span><span class="va">raw</span></span>
-<span><span class="co">#&gt;   [1] 58 0a 00 00 00 03 00 04 03 01 00 03 05 00 00 00 00 05 55 54 46 2d 38 00 00</span></span>
-<span><span class="co">#&gt;  [26] 03 13 00 00 00 02 00 00 00 0e 00 00 00 01 3f f0 00 00 00 00 00 00 00 00 00</span></span>
-<span><span class="co">#&gt;  [51] 0e 00 00 00 01 40 00 00 00 00 00 00 00 00 00 04 02 00 00 00 01 00 04 00 09</span></span>
-<span><span class="co">#&gt;  [76] 00 00 00 05 6e 61 6d 65 73 00 00 00 10 00 00 00 02 00 04 00 09 00 00 00 01</span></span>
-<span><span class="co">#&gt; [101] 61 00 04 00 09 00 00 00 01 62 00 00 04 02 00 00 00 01 00 04 00 09 00 00 00</span></span>
-<span><span class="co">#&gt; [126] 05 63 6c 61 73 73 00 00 00 10 00 00 00 01 00 04 00 09 00 00 00 0a 64 61 74</span></span>
-<span><span class="co">#&gt; [151] 61 2e 66 72 61 6d 65 00 00 04 02 00 00 00 01 00 04 00 09 00 00 00 09 72 6f</span></span>
-<span><span class="co">#&gt; [176] 77 2e 6e 61 6d 65 73 00 00 00 0d 00 00 00 02 80 00 00 00 ff ff ff ff 00 00</span></span>
-<span><span class="co">#&gt; [201] 00 fe</span></span></code></pre></div>
+<span><span class="co">#&gt;   [1] 42 0a 03 00 00 00 01 03 04 00 00 05 03 00 05 00 00 00 55 54 46 2d 38 13 03</span></span>
+<span><span class="co">#&gt;  [26] 00 00 02 00 00 00 0e 00 00 00 01 00 00 00 00 00 00 00 00 00 f0 3f 0e 00 00</span></span>
+<span><span class="co">#&gt;  [51] 00 01 00 00 00 00 00 00 00 00 00 00 40 02 04 00 00 01 00 00 00 09 00 04 00</span></span>
+<span><span class="co">#&gt;  [76] 05 00 00 00 6e 61 6d 65 73 10 00 00 00 02 00 00 00 09 00 04 00 01 00 00 00</span></span>
+<span><span class="co">#&gt; [101] 61 09 00 04 00 01 00 00 00 62 02 04 00 00 01 00 00 00 09 00 04 00 05 00 00</span></span>
+<span><span class="co">#&gt; [126] 00 63 6c 61 73 73 10 00 00 00 01 00 00 00 09 00 04 00 0a 00 00 00 64 61 74</span></span>
+<span><span class="co">#&gt; [151] 61 2e 66 72 61 6d 65 02 04 00 00 01 00 00 00 09 00 04 00 09 00 00 00 72 6f</span></span>
+<span><span class="co">#&gt; [176] 77 2e 6e 61 6d 65 73 0d 00 00 00 02 00 00 00 00 00 00 80 ff ff ff ff fe 00</span></span>
+<span><span class="co">#&gt; [201] 00 00</span></span></code></pre></div>
 <p>Auxiliary function <code><a href="reference/unresolved.html">unresolved()</a></code> may be used in control flow statements to perform actions which depend on resolution of the Aio, both before and after. This means there is no need to actually wait (block) for an Aio to resolve, as the example below demonstrates.</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">msg</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/recv_aio.html">recv_aio</a></span><span class="op">(</span><span class="va">s2</span><span class="op">)</span></span>
@@ -329,7 +329,7 @@
 <span><span class="co">#&gt; &lt; recvAio &gt;</span></span>
 <span><span class="co">#&gt;  - $data for message data</span></span>
 <span><span class="va">aio</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] 0.6763 1.4953 0.0711 -1.2394 -0.3663 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] -0.722 0.686 0.5 -0.158 -2.111 ...</span></span></code></pre></div>
 <p>As <code><a href="reference/call_aio.html">call_aio()</a></code> is blocking and will wait for completion, an alternative is to query <code>aio$data</code> directly. This will return an ‘unresolved’ logical NA value if the calculation is yet to complete.</p>
 <p>In this example the calculation is returned, but other operations may reside entirely on the server side, for example writing data to disk.</p>
 <p>In such a case, calling or querying the value confirms that the operation has completed, and provides the return value of the function, which may typically be NULL or an exit code.</p>
@@ -421,7 +421,7 @@
 <code class="sourceCode R"><span><span class="va">cert</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/write_cert.html">write_cert</a></span><span class="op">(</span>cn <span class="op">=</span> <span class="st">"127.0.0.1"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">cert</span><span class="op">)</span></span>
 <span><span class="co">#&gt; List of 2</span></span>
-<span><span class="co">#&gt;  $ server: chr [1:2] "-----BEGIN CERTIFICATE-----\nMIIFFTCCAv2gAwIBAgIBATANBgkqhkiG9w0BAQsFADAiMRIwEAYDVQQDDAkxMjcu\nMC4wLjExDDAKBgNV"| __truncated__ "-----BEGIN RSA PRIVATE KEY-----\nMIIJKQIBAAKCAgEA8w/1k5legeaExb0EPcPhDwb1fut1uAV/wETrVEQK7s7enCjB\nWwZa+KBZ38Jy"| __truncated__</span></span>
+<span><span class="co">#&gt;  $ server: chr [1:2] "-----BEGIN CERTIFICATE-----\nMIIFFTCCAv2gAwIBAgIBATANBgkqhkiG9w0BAQsFADAiMRIwEAYDVQQDDAkxMjcu\nMC4wLjExDDAKBgNV"| __truncated__ "-----BEGIN RSA PRIVATE KEY-----\nMIIJKQIBAAKCAgEA5hFTX6vAGI/wswRI4XFxvqgp24KIzjO6ZtFKwAQ79XUpujRJ\njFFYzMpIq15a"| __truncated__</span></span>
 <span><span class="co">#&gt;  $ client: chr [1:2] "-----BEGIN CERTIFICATE-----\nMIIFFTCCAv2gAwIBAgIBATANBgkqhkiG9w0BAQsFADAiMRIwEAYDVQQDDAkxMjcu\nMC4wLjExDDAKBgNV"| __truncated__ ""</span></span>
 <span></span>
 <span><span class="va">ser</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/tls_config.html">tls_config</a></span><span class="op">(</span>server <span class="op">=</span> <span class="va">cert</span><span class="op">$</span><span class="va">server</span><span class="op">)</span></span>
@@ -566,7 +566,7 @@
 <span><span class="co">#&gt; NULL</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $data</span></span>
-<span><span class="co">#&gt; [1] "{\n  \"args\": {}, \n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-64bbb2bc-5f937c3e5bd13438169bd0af\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"https://httpbin.org/get\"\n}\n"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "{\n  \"args\": {}, \n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-64bd983f-142b791802a2adbe3b9f8a3c\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"https://httpbin.org/get\"\n}\n"</span></span></code></pre></div>
 <p>For advanced use, supports additional HTTP methods such as POST or PUT.</p>
 <div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ncurl.html">ncurl</a></span><span class="op">(</span><span class="st">"http://httpbin.org/post"</span>,</span>
@@ -584,13 +584,13 @@
 <span></span>
 <span><span class="fu"><a href="reference/call_aio.html">call_aio</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span><span class="op">$</span><span class="va">headers</span></span>
 <span><span class="co">#&gt; $Date</span></span>
-<span><span class="co">#&gt; [1] "Sat, 22 Jul 2023 10:43:57 GMT"</span></span>
+<span><span class="co">#&gt; [1] "Sun, 23 Jul 2023 21:14:39 GMT"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $Server</span></span>
 <span><span class="co">#&gt; [1] "gunicorn/19.9.0"</span></span>
 <span></span>
 <span><span class="va">res</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt; [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-64bbb2ea-160062da77f583da25b06041\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-64bd983f-21509b5b0c199a2b008a91c3\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"</span></span></code></pre></div>
 <p>In this respect, it may be used as a performant and lightweight method for making REST API requests.</p>
 <p><code><a href="reference/ncurl_session.html">ncurl_session()</a></code> creates a re-usable open connection and presents a much faster and more efficient solution for repeated polling of an API endpoint. <code><a href="reference/ncurl_session.html">transact()</a></code> is then used to request data multiple times as required. This method allows a polling frequency that exceeds a server’s new connection limits, where this is permitted.</p>
 <p>By specifying <code>convert = FALSE</code>, the received data is not converted to text and may be fed into ‘json’ parsers which can operate directly on binary data, for example.</p>
@@ -609,7 +609,7 @@
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $headers</span></span>
 <span><span class="co">#&gt; $headers$date</span></span>
-<span><span class="co">#&gt; [1] "Sat, 22 Jul 2023 10:44:02 GMT"</span></span>
+<span><span class="co">#&gt; [1] "Sun, 23 Jul 2023 21:14:40 GMT"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $raw</span></span>
@@ -619,9 +619,9 @@
 <span><span class="co">#&gt;  [76] 22 43 6f 6e 74 65 6e 74 2d 54 79 70 65 22 3a 20 22 61 70 70 6c 69 63 61 74</span></span>
 <span><span class="co">#&gt; [101] 69 6f 6e 2f 6a 73 6f 6e 22 2c 20 0a 20 20 20 20 22 48 6f 73 74 22 3a 20 22</span></span>
 <span><span class="co">#&gt; [126] 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22 58 2d 41 6d 7a</span></span>
-<span><span class="co">#&gt; [151] 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31 2d 36 34 62 62</span></span>
-<span><span class="co">#&gt; [176] 62 32 65 64 2d 33 38 32 37 63 38 32 64 31 31 64 36 39 39 30 34 32 66 39 65</span></span>
-<span><span class="co">#&gt; [201] 38 65 66 36 22 0a 20 20 7d 2c 20 0a 20 20 22 6f 72 69 67 69 6e 22 3a 20 22</span></span>
+<span><span class="co">#&gt; [151] 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31 2d 36 34 62 64</span></span>
+<span><span class="co">#&gt; [176] 39 38 34 30 2d 33 37 33 37 32 65 37 33 37 34 61 64 38 35 38 62 32 31 34 32</span></span>
+<span><span class="co">#&gt; [201] 31 38 65 62 22 0a 20 20 7d 2c 20 0a 20 20 22 6f 72 69 67 69 6e 22 3a 20 22</span></span>
 <span><span class="co">#&gt; [226] 31 38 35 2e 32 32 35 2e 34 35 2e 34 39 22 2c 20 0a 20 20 22 75 72 6c 22 3a</span></span>
 <span><span class="co">#&gt; [251] 20 22 68 74 74 70 73 3a 2f 2f 68 74 74 70 62 69 6e 2e 6f 72 67 2f 67 65 74</span></span>
 <span><span class="co">#&gt; [276] 22 0a 7d 0a</span></span>
@@ -725,7 +725,7 @@
 <span></span>
 <span><span class="co"># no active connections (pipes)</span></span>
 <span><span class="fu"><a href="reference/stat.html">stat</a></span><span class="op">(</span><span class="va">s</span>, <span class="st">"pipes"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 1</span></span>
+<span><span class="co">#&gt; [1] 0</span></span>
 <span></span>
 <span><span class="va">s1</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/socket.html">socket</a></span><span class="op">(</span>dial <span class="op">=</span> <span class="st">"inproc://stat"</span><span class="op">)</span></span>
 <span></span>
@@ -754,8 +754,21 @@
 </div>
 </div>
 <div class="section level3">
-<h3 id="links">Links<a class="anchor" aria-label="anchor" href="#links"></a>
+<h3 id="acknowledgements-and-links">Acknowledgements and Links<a class="anchor" aria-label="anchor" href="#acknowledgements-and-links"></a>
 </h3>
+<p>We would like to acknowledge in particular:</p>
+<ul>
+<li>
+<a href="https://github.com/gdamore" class="external-link">Garrett D’Amore</a>, author of the NNG library, who has been generous with advice and also implemented a feature request specifically for a more efficient ‘aio’ implementation in the package.</li>
+<li>
+<a href="https://github.com/coolbutuseless" class="external-link">mikefc</a> for meticulous documentation and comments in his {serializer} package that allowed us to implement our own interface to R’s serialisation code.</li>
+<li>
+<a href="https://github.com/jeroen" class="external-link">Jeroen Ooms</a> - for his anticonf TM ‘configure’ file, on which our original ‘configure’ was based, although much modified since.</li>
+<li>The <a href="https://www.r-consortium.org/" class="external-link">R Consortium</a> for funding the development of the secure TLS capabilities in the package, and <a href="https://github.com/HenrikBengtsson" class="external-link">Henrik Bengtsson</a> and <a href="https://github.com/wlandau/" class="external-link">William Landau</a>’s roles in making this possible.</li>
+<li>
+<a href="https://www.r-project.org/contributors.html" class="external-link">R Core</a> for some small auxiliary functions for serialisation and conversions between raw and character, which we have adopted.</li>
+</ul>
+<p>Links:</p>
 <p><code>nanonext</code> website: <a href="https://shikokuchuo.net/nanonext/" class="uri">https://shikokuchuo.net/nanonext/</a><br><code>nanonext</code> on CRAN: <a href="https://cran.r-project.org/package=nanonext" class="external-link uri">https://cran.r-project.org/package=nanonext</a><br></p>
 <p><code>nanonext</code> is listed in CRAN Task Views:<br> - High Performance Computing: <a href="https://cran.r-project.org/view=HighPerformanceComputing" class="external-link uri">https://cran.r-project.org/view=HighPerformanceComputing</a><br> - Web Technologies: <a href="https://cran.r-project.org/view=WebTechnologies" class="external-link uri">https://cran.r-project.org/view=WebTechnologies</a><br></p>
 <p>NNG website: <a href="https://nng.nanomsg.org/" class="external-link uri">https://nng.nanomsg.org/</a><br> Mbed TLS website: <a href="https://www.trustedfirmware.org/projects/mbed-tls/" class="external-link uri">https://www.trustedfirmware.org/projects/mbed-tls/</a><br></p>
