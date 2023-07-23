@@ -184,7 +184,7 @@ SEXP rnng_device(SEXP s1, SEXP s2) {
 
 SEXP rnng_is_nul_byte(SEXP x) {
 
-  if (TYPEOF(x) == RAWSXP && Rf_xlength(x) == 1 && RAW(x)[0] == 0)
+  if (TYPEOF(x) == RAWSXP && XLENGTH(x) == 1 && RAW(x)[0] == 0)
     return Rf_ScalarLogical(1);
   return Rf_ScalarLogical(0);
 
@@ -240,7 +240,7 @@ SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP follow, SEXP method, SEXP headers,
   if (data != R_NilValue) {
     SEXP enc = nano_encode(data);
     unsigned char *dp = RAW(enc);
-    const size_t dlen = Rf_xlength(enc) - 1;
+    const size_t dlen = XLENGTH(enc) - 1;
     if ((xc = nng_http_req_set_data(req, dp, dlen)))
       goto exitlevel4;
   }

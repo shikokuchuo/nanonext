@@ -103,6 +103,22 @@ typedef struct nano_cv_s {
 
 #define ERROR_OUT(xc) Rf_error("%d | %s", xc, nng_strerror(xc))
 #define ERROR_RET(xc) { Rf_warning("%d | %s", xc, nng_strerror(xc)); return mk_error(xc); }
+
+#define NANONEXT_INIT_BUFSIZE 16384
+#define NANONEXT_SERIAL_VER 3
+
+#define NANO_ALLOC(x, sz) {                                    \
+  x.buf = R_Calloc(sz, unsigned char);                         \
+  x.len = (R_xlen_t) sz;                                       \
+  x.cur = 0;                                                   \
+  }
+#define NANO_FREE(x) R_Free(x.buf);
+typedef struct nano_buf_s {
+  unsigned char *buf;
+  R_xlen_t len;
+  R_xlen_t cur;
+} nano_buf;
+
 extern SEXP mk_error(const int);
 extern SEXP mk_error_recv(const int);
 extern SEXP mk_error_ncurl(const int);
@@ -111,6 +127,8 @@ extern SEXP nano_encode(SEXP);
 extern SEXP nano_encodes(SEXP, SEXP);
 extern int nano_matcharg(SEXP);
 extern int nano_matchargs(SEXP);
+extern SEXP nano_serial(SEXP);
+extern SEXP nano_unserial(unsigned char *, size_t);
 extern SEXP rawOneString(unsigned char *, R_xlen_t, R_xlen_t *);
 extern SEXP rawToChar(unsigned char *, size_t);
 extern void socket_finalizer(SEXP);
@@ -132,7 +150,6 @@ extern SEXP nano_ProtocolSymbol;
 extern SEXP nano_RawSymbol;
 extern SEXP nano_ResponseSymbol;
 extern SEXP nano_ResultSymbol;
-extern SEXP nano_SerialSymbol;
 extern SEXP nano_SessionSymbol;
 extern SEXP nano_SocketSymbol;
 extern SEXP nano_StateSymbol;
@@ -140,7 +157,6 @@ extern SEXP nano_StatusSymbol;
 extern SEXP nano_StreamSymbol;
 extern SEXP nano_TextframesSymbol;
 extern SEXP nano_TlsSymbol;
-extern SEXP nano_UnserSymbol;
 extern SEXP nano_UrlSymbol;
 
 extern SEXP nano_addRedirect;

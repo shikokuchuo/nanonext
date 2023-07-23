@@ -75,7 +75,7 @@ Web utilities:
 12. [Cryptographic Hashing](#cryptographic-hashing)
 13. [Options and Statistics](#options-and-statistics)
 14. [Building from Source](#building-from-source)
-15. [Links](#links)
+15. [Acknowledgements and Links](#acknowledgements-and-links)
 
 ### Installation
 
@@ -278,15 +278,15 @@ msg$data
 #>   a b
 #> 1 1 2
 msg$raw
-#>   [1] 58 0a 00 00 00 03 00 04 03 01 00 03 05 00 00 00 00 05 55 54 46 2d 38 00 00
-#>  [26] 03 13 00 00 00 02 00 00 00 0e 00 00 00 01 3f f0 00 00 00 00 00 00 00 00 00
-#>  [51] 0e 00 00 00 01 40 00 00 00 00 00 00 00 00 00 04 02 00 00 00 01 00 04 00 09
-#>  [76] 00 00 00 05 6e 61 6d 65 73 00 00 00 10 00 00 00 02 00 04 00 09 00 00 00 01
-#> [101] 61 00 04 00 09 00 00 00 01 62 00 00 04 02 00 00 00 01 00 04 00 09 00 00 00
-#> [126] 05 63 6c 61 73 73 00 00 00 10 00 00 00 01 00 04 00 09 00 00 00 0a 64 61 74
-#> [151] 61 2e 66 72 61 6d 65 00 00 04 02 00 00 00 01 00 04 00 09 00 00 00 09 72 6f
-#> [176] 77 2e 6e 61 6d 65 73 00 00 00 0d 00 00 00 02 80 00 00 00 ff ff ff ff 00 00
-#> [201] 00 fe
+#>   [1] 42 0a 03 00 00 00 01 03 04 00 00 05 03 00 05 00 00 00 55 54 46 2d 38 13 03
+#>  [26] 00 00 02 00 00 00 0e 00 00 00 01 00 00 00 00 00 00 00 00 00 f0 3f 0e 00 00
+#>  [51] 00 01 00 00 00 00 00 00 00 00 00 00 40 02 04 00 00 01 00 00 00 09 00 04 00
+#>  [76] 05 00 00 00 6e 61 6d 65 73 10 00 00 00 02 00 00 00 09 00 04 00 01 00 00 00
+#> [101] 61 09 00 04 00 01 00 00 00 62 02 04 00 00 01 00 00 00 09 00 04 00 05 00 00
+#> [126] 00 63 6c 61 73 73 10 00 00 00 01 00 00 00 09 00 04 00 0a 00 00 00 64 61 74
+#> [151] 61 2e 66 72 61 6d 65 02 04 00 00 01 00 00 00 09 00 04 00 09 00 00 00 72 6f
+#> [176] 77 2e 6e 61 6d 65 73 0d 00 00 00 02 00 00 00 00 00 00 80 ff ff ff ff fe 00
+#> [201] 00 00
 ```
 
 Auxiliary function `unresolved()` may be used in control flow statements
@@ -376,7 +376,7 @@ aio
 #> < recvAio >
 #>  - $data for message data
 aio$data |> str()
-#>  num [1:100000000] 0.6763 1.4953 0.0711 -1.2394 -0.3663 ...
+#>  num [1:100000000] -0.722 0.686 0.5 -0.158 -2.111 ...
 ```
 
 As `call_aio()` is blocking and will wait for completion, an alternative
@@ -543,7 +543,7 @@ throughout, or alternatively ‘localhost’, but not a mixture of the two.
 cert <- write_cert(cn = "127.0.0.1")
 str(cert)
 #> List of 2
-#>  $ server: chr [1:2] "-----BEGIN CERTIFICATE-----\nMIIFFTCCAv2gAwIBAgIBATANBgkqhkiG9w0BAQsFADAiMRIwEAYDVQQDDAkxMjcu\nMC4wLjExDDAKBgNV"| __truncated__ "-----BEGIN RSA PRIVATE KEY-----\nMIIJKQIBAAKCAgEA8w/1k5legeaExb0EPcPhDwb1fut1uAV/wETrVEQK7s7enCjB\nWwZa+KBZ38Jy"| __truncated__
+#>  $ server: chr [1:2] "-----BEGIN CERTIFICATE-----\nMIIFFTCCAv2gAwIBAgIBATANBgkqhkiG9w0BAQsFADAiMRIwEAYDVQQDDAkxMjcu\nMC4wLjExDDAKBgNV"| __truncated__ "-----BEGIN RSA PRIVATE KEY-----\nMIIJKQIBAAKCAgEA5hFTX6vAGI/wswRI4XFxvqgp24KIzjO6ZtFKwAQ79XUpujRJ\njFFYzMpIq15a"| __truncated__
 #>  $ client: chr [1:2] "-----BEGIN CERTIFICATE-----\nMIIFFTCCAv2gAwIBAgIBATANBgkqhkiG9w0BAQsFADAiMRIwEAYDVQQDDAkxMjcu\nMC4wLjExDDAKBgNV"| __truncated__ ""
 
 ser <- tls_config(server = cert$server)
@@ -715,7 +715,7 @@ ncurl("https://httpbin.org/get")
 #> NULL
 #> 
 #> $data
-#> [1] "{\n  \"args\": {}, \n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-64bbb2bc-5f937c3e5bd13438169bd0af\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"https://httpbin.org/get\"\n}\n"
+#> [1] "{\n  \"args\": {}, \n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-64bd983f-142b791802a2adbe3b9f8a3c\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"https://httpbin.org/get\"\n}\n"
 ```
 
 For advanced use, supports additional HTTP methods such as POST or PUT.
@@ -736,13 +736,13 @@ res
 
 call_aio(res)$headers
 #> $Date
-#> [1] "Sat, 22 Jul 2023 10:43:57 GMT"
+#> [1] "Sun, 23 Jul 2023 21:14:39 GMT"
 #> 
 #> $Server
 #> [1] "gunicorn/19.9.0"
 
 res$data
-#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-64bbb2ea-160062da77f583da25b06041\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
+#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-64bd983f-21509b5b0c199a2b008a91c3\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
 ```
 
 In this respect, it may be used as a performant and lightweight method
@@ -773,7 +773,7 @@ transact(sess)
 #> 
 #> $headers
 #> $headers$date
-#> [1] "Sat, 22 Jul 2023 10:44:02 GMT"
+#> [1] "Sun, 23 Jul 2023 21:14:40 GMT"
 #> 
 #> 
 #> $raw
@@ -783,9 +783,9 @@ transact(sess)
 #>  [76] 22 43 6f 6e 74 65 6e 74 2d 54 79 70 65 22 3a 20 22 61 70 70 6c 69 63 61 74
 #> [101] 69 6f 6e 2f 6a 73 6f 6e 22 2c 20 0a 20 20 20 20 22 48 6f 73 74 22 3a 20 22
 #> [126] 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22 58 2d 41 6d 7a
-#> [151] 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31 2d 36 34 62 62
-#> [176] 62 32 65 64 2d 33 38 32 37 63 38 32 64 31 31 64 36 39 39 30 34 32 66 39 65
-#> [201] 38 65 66 36 22 0a 20 20 7d 2c 20 0a 20 20 22 6f 72 69 67 69 6e 22 3a 20 22
+#> [151] 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31 2d 36 34 62 64
+#> [176] 39 38 34 30 2d 33 37 33 37 32 65 37 33 37 34 61 64 38 35 38 62 32 31 34 32
+#> [201] 31 38 65 62 22 0a 20 20 7d 2c 20 0a 20 20 22 6f 72 69 67 69 6e 22 3a 20 22
 #> [226] 31 38 35 2e 32 32 35 2e 34 35 2e 34 39 22 2c 20 0a 20 20 22 75 72 6c 22 3a
 #> [251] 20 22 68 74 74 70 73 3a 2f 2f 68 74 74 70 62 69 6e 2e 6f 72 67 2f 67 65 74
 #> [276] 22 0a 7d 0a
@@ -933,7 +933,7 @@ s <- socket(listen = "inproc://stat")
 
 # no active connections (pipes)
 stat(s, "pipes")
-#> [1] 1
+#> [1] 0
 
 s1 <- socket(dial = "inproc://stat")
 
@@ -983,7 +983,29 @@ installation instead.
 
 [« Back to ToC](#table-of-contents)
 
-### Links
+### Acknowledgements and Links
+
+We would like to acknowledge in particular:
+
+- [Garrett D’Amore](https://github.com/gdamore), author of the NNG
+  library, who has been generous with advice and also implemented a
+  feature request specifically for a more efficient ‘aio’ implementation
+  in the package.
+- [mikefc](https://github.com/coolbutuseless) for meticulous
+  documentation and comments in his {serializer} package that allowed us
+  to implement our own interface to R’s serialisation code.
+- [Jeroen Ooms](https://github.com/jeroen) - for his anticonf TM
+  ‘configure’ file, on which our original ‘configure’ was based,
+  although much modified since.
+- The [R Consortium](https://www.r-consortium.org/) for funding the
+  development of the secure TLS capabilities in the package, and [Henrik
+  Bengtsson](https://github.com/HenrikBengtsson) and [William
+  Landau](https://github.com/wlandau/)’s roles in making this possible.
+- [R Core](https://www.r-project.org/contributors.html) for some small
+  auxiliary functions for serialisation and conversions between raw and
+  character, which we have adopted.
+
+Links:
 
 `nanonext` website: <https://shikokuchuo.net/nanonext/><br /> `nanonext`
 on CRAN: <https://cran.r-project.org/package=nanonext><br />

@@ -59,6 +59,116 @@ SEXP mk_error_ncurl(const int xc) {
 
 }
 
+void nano_buf_resize(nano_buf *buf, int len) {
+
+  do {
+    buf->len = (R_xlen_t) (2 * buf->len);
+  } while (buf->len < buf->cur + len);
+
+  if (buf->len < 1) {
+    R_Free(buf->buf);
+    Rf_error("serialization error - out of memory");
+  }
+
+  buf->buf = R_Realloc(buf->buf, buf->len, unsigned char);
+
+}
+
+void nano_write_char(R_outpstream_t stream, int c) {
+
+  nano_buf *buf = (nano_buf *) stream->data;
+  if (buf->cur >= buf->len)
+    nano_buf_resize(buf, 1);
+
+  buf->buf[buf->cur++] = (unsigned char) c;
+
+}
+
+void nano_write_bytes(R_outpstream_t stream, void *src, int len) {
+
+  nano_buf *buf = (nano_buf *) stream->data;
+  if (buf->cur + len > buf->len)
+    nano_buf_resize(buf, len);
+
+  memcpy(buf->buf + buf->cur, src, len);
+  buf->cur += len;
+
+}
+
+int nano_read_char(R_inpstream_t stream) {
+
+  nano_buf *buf = (nano_buf *) stream->data;
+  if (buf->cur >= buf->len)
+    Rf_error("unserialization error");
+
+  return buf->buf[buf->cur++];
+
+}
+
+void nano_read_bytes(R_inpstream_t stream, void *dst, int len) {
+
+  nano_buf *buf = (nano_buf *) stream->data;
+  if (buf->cur + len > buf->len)
+    Rf_error("unserialization error");
+
+  memcpy(dst, buf->buf + buf->cur, len);
+  buf->cur += len;
+
+}
+
+SEXP nano_serial(SEXP object) {
+
+  nano_buf buf;
+  struct R_outpstream_st output_stream;
+  SEXP out;
+
+  NANO_ALLOC(buf, NANONEXT_INIT_BUFSIZE);
+
+  R_InitOutPStream(
+    &output_stream,
+    (R_pstream_data_t) &buf,
+    R_pstream_binary_format,
+    NANONEXT_SERIAL_VER,
+    nano_write_char,
+    nano_write_bytes,
+    NULL,
+    R_NilValue
+  );
+
+  R_Serialize(object, &output_stream);
+
+  PROTECT(out = Rf_allocVector(RAWSXP, buf.cur));
+  memcpy(RAW(out), buf.buf, buf.cur);
+  NANO_FREE(buf);
+
+  UNPROTECT(1);
+  return out;
+
+}
+
+SEXP nano_unserial(unsigned char *buf, size_t sz) {
+
+  nano_buf nbuf;
+  struct R_inpstream_st input_stream;
+
+  nbuf.buf = buf;
+  nbuf.len = sz;
+  nbuf.cur = 0;
+
+  R_InitInPStream(
+    &input_stream,
+    (R_pstream_data_t) &nbuf,
+    R_pstream_any_format,
+    nano_read_char,
+    nano_read_bytes,
+    NULL,
+    NULL
+  );
+
+  return R_Unserialize(&input_stream);
+
+}
+
 SEXP nano_encode(SEXP object) {
 
   R_xlen_t xlen = Rf_xlength(object);
@@ -139,22 +249,7 @@ SEXP nano_encodes(SEXP data, SEXP mode) {
     }
   }
 
-  if (xc != 1)
-    return nano_encode(data);
-
-  SEXP out;
-  switch (TYPEOF(data)) {
-  case SYMSXP:
-  case LANGSXP:
-    PROTECT(out = Rf_lang3(nano_SerialSymbol, Rf_lang2(R_QuoteSymbol, data), R_NilValue));
-    break;
-  default:
-    PROTECT(out = Rf_lang3(nano_SerialSymbol, data, R_NilValue));
-  }
-  out = Rf_eval(out, R_BaseEnv);
-  UNPROTECT(1);
-
-  return out;
+  return xc == 1 ? nano_serial(data) : nano_encode(data);
 
 }
 
@@ -280,18 +375,10 @@ int nano_matchargs(SEXP mode) {
 
 SEXP nano_decode(unsigned char *buf, size_t sz, const int mod, const int kpr) {
 
-  SEXP raw, data;
+  SEXP data;
 
   if (mod == 1) {
-    int tryErr = 0;
-    PROTECT(raw = Rf_allocVector(RAWSXP, sz));
-    memcpy(RAW(raw), buf, sz);
-    PROTECT(data = Rf_lang2(nano_UnserSymbol, raw));
-    data = R_tryEval(data, R_BaseEnv, &tryErr);
-    if (tryErr) {
-      data = raw;
-    }
-    UNPROTECT(2);
+    data = nano_unserial(buf, sz);
   } else if (mod == 2) {
     PROTECT(data = Rf_allocVector(STRSXP, sz));
     R_xlen_t i, m, nbytes = sz, np = 0;
@@ -299,7 +386,7 @@ SEXP nano_decode(unsigned char *buf, size_t sz, const int mod, const int kpr) {
       SEXP onechar = rawOneString(buf, nbytes, &np);
       if (onechar == R_NilValue) break;
       SET_STRING_ELT(data, i, onechar);
-      if (Rf_xlength(onechar) > 0) m++;
+      if (XLENGTH(onechar) > 0) m++;
     }
     data = Rf_xlengthgets(data, m);
     UNPROTECT(1);
@@ -371,22 +458,20 @@ SEXP nano_decode(unsigned char *buf, size_t sz, const int mod, const int kpr) {
   }
 
   if (kpr) {
-    SEXP out;
+    SEXP raw, out;
     const char *names[] = {"raw", "data", ""};
     PROTECT(data);
-    if (mod == 1) {
-      PROTECT(raw);
-    } else if (mod == 8) {
-      PROTECT(raw = data);
+    PROTECT(out = Rf_mkNamed(VECSXP, names));
+    if (mod == 8) {
+      SET_VECTOR_ELT(out, 0, data);
     } else {
-      PROTECT(raw = Rf_allocVector(RAWSXP, sz));
+      raw = Rf_allocVector(RAWSXP, sz);
+      SET_VECTOR_ELT(out, 0, raw);
       memcpy(RAW(raw), buf, sz);
     }
-    PROTECT(out = Rf_mkNamed(VECSXP, names));
-    SET_VECTOR_ELT(out, 0, raw);
     SET_VECTOR_ELT(out, 1, data);
 
-    UNPROTECT(3);
+    UNPROTECT(2);
     return out;
   }
 
@@ -496,7 +581,7 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
     if (block == R_NilValue) {
 
       enc = nano_encodes(data, mode);
-      xlen = Rf_xlength(enc);
+      xlen = XLENGTH(enc);
       dp = RAW(enc);
       xc = nng_send(*sock, dp, xlen, NNG_FLAG_NONBLOCK);
 
@@ -504,7 +589,7 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
 
       const int blk = LOGICAL(block)[0];
       enc = nano_encodes(data, mode);
-      xlen = Rf_xlength(enc);
+      xlen = XLENGTH(enc);
       dp = RAW(enc);
       xc = blk ? nng_send(*sock, dp, xlen, 0) : nng_send(*sock, dp, xlen, NNG_FLAG_NONBLOCK);
 
@@ -514,7 +599,7 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
       nng_aio *aiop;
       nng_duration dur = (nng_duration) Rf_asInteger(block);
       enc = nano_encodes(data, mode);
-      xlen = Rf_xlength(enc);
+      xlen = XLENGTH(enc);
       dp = RAW(enc);
 
       if ((xc = nng_msg_alloc(&msgp, 0)))
@@ -550,7 +635,7 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
       dur = (nng_duration) Rf_asInteger(block);
     }
     enc = nano_encodes(data, mode);
-    xlen = Rf_xlength(enc);
+    xlen = XLENGTH(enc);
     dp = RAW(enc);
 
     if ((xc = nng_msg_alloc(&msgp, 0)))
@@ -584,7 +669,7 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
       dur = (nng_duration) Rf_asInteger(block);
     }
     enc = nano_encode(data);
-    xlen = Rf_xlength(enc);
+    xlen = XLENGTH(enc);
     dp = RAW(enc);
 
     const int frames = LOGICAL(Rf_getAttrib(con, nano_TextframesSymbol))[0];
@@ -935,7 +1020,7 @@ SEXP rnng_subscribe(SEXP object, SEXP value, SEXP sub) {
         xc = nng_socket_set(*sock, op, NULL, 0);
       } else {
         SEXP enc = nano_encode(value);
-        size_t sz = TYPEOF(value) == STRSXP ? Rf_xlength(enc) - 1 : Rf_xlength(enc);
+        size_t sz = TYPEOF(value) == STRSXP ? XLENGTH(enc) - 1 : XLENGTH(enc);
         xc = nng_socket_set(*sock, op, RAW(enc), sz);
       }
 
@@ -946,7 +1031,7 @@ SEXP rnng_subscribe(SEXP object, SEXP value, SEXP sub) {
       xc = nng_ctx_set(*ctx, op, NULL, 0);
     } else {
       SEXP enc = nano_encode(value);
-      xc = nng_ctx_set(*ctx, op, RAW(enc), Rf_xlength(enc));
+      xc = nng_ctx_set(*ctx, op, RAW(enc), XLENGTH(enc));
     }
 
   } else {
@@ -1182,8 +1267,8 @@ SEXP rnng_strcat(SEXP a, SEXP b) {
 
   const char *ap = CHAR(STRING_ELT(a, 0));
   const char *bp = CHAR(STRING_ELT(b, 0));
-  R_xlen_t alen = Rf_xlength(STRING_ELT(a, 0));
-  R_xlen_t blen = Rf_xlength(STRING_ELT(b, 0));
+  R_xlen_t alen = XLENGTH(STRING_ELT(a, 0));
+  R_xlen_t blen = XLENGTH(STRING_ELT(b, 0));
 
   char *out = R_alloc(sizeof(char), alen + blen + 1);
   memcpy(out, ap, alen);

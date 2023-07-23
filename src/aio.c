@@ -978,7 +978,7 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
     nng_msg *msg;
 
     enc = nano_encodes(data, mode);
-    xlen = Rf_xlength(enc);
+    xlen = XLENGTH(enc);
     dp = RAW(enc);
 
     saio->type = SENDAIO;
@@ -1007,7 +1007,7 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
     nng_msg *msg;
 
     enc = nano_encodes(data, mode);
-    xlen = Rf_xlength(enc);
+    xlen = XLENGTH(enc);
     dp = RAW(enc);
 
     saio->type = SENDAIO;
@@ -1037,7 +1037,7 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
     const int frames = LOGICAL(Rf_getAttrib(con, nano_TextframesSymbol))[0];
     nng_iov iov;
     enc = nano_encode(data);
-    xlen = Rf_xlength(enc);
+    xlen = XLENGTH(enc);
 
     saio->type = IOV_SENDAIO;
     saio->data = R_Calloc(xlen, unsigned char);
@@ -1244,7 +1244,7 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP dat
   if (data != R_NilValue) {
     SEXP enc = nano_encode(data);
     unsigned char *dp = RAW(enc);
-    const size_t dlen = Rf_xlength(enc) - 1;
+    const size_t dlen = XLENGTH(enc) - 1;
     if ((xc = nng_http_req_set_data(handle->req, dp, dlen)))
       goto exitlevel4;
   }
@@ -1500,7 +1500,7 @@ SEXP rnng_ncurl_session(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP
   if (data != R_NilValue) {
     SEXP enc = nano_encode(data);
     unsigned char *dp = RAW(enc);
-    const size_t dlen = Rf_xlength(enc) - 1;
+    const size_t dlen = XLENGTH(enc) - 1;
     if ((xc = nng_http_req_set_data(handle->req, dp, dlen)))
       goto exitlevel4;
   }
@@ -1692,7 +1692,7 @@ SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeou
   nng_msg *msg;
 
   enc = nano_encodes(data, sendmode);
-  xlen = Rf_xlength(enc);
+  xlen = XLENGTH(enc);
   dp = RAW(enc);
 
   nano_aio *saio = R_Calloc(1, nano_aio);
@@ -2030,7 +2030,7 @@ SEXP rnng_cv_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP tim
   nng_msg *msg;
 
   enc = nano_encodes(data, sendmode);
-  xlen = Rf_xlength(enc);
+  xlen = XLENGTH(enc);
   dp = RAW(enc);
 
   nano_aio *saio = R_Calloc(1, nano_aio);

@@ -34,7 +34,6 @@ SEXP nano_ProtocolSymbol;
 SEXP nano_RawSymbol;
 SEXP nano_ResponseSymbol;
 SEXP nano_ResultSymbol;
-SEXP nano_SerialSymbol;
 SEXP nano_SessionSymbol;
 SEXP nano_SocketSymbol;
 SEXP nano_StateSymbol;
@@ -42,7 +41,6 @@ SEXP nano_StatusSymbol;
 SEXP nano_StreamSymbol;
 SEXP nano_TextframesSymbol;
 SEXP nano_TlsSymbol;
-SEXP nano_UnserSymbol;
 SEXP nano_UrlSymbol;
 
 SEXP nano_addRedirect;
@@ -77,7 +75,6 @@ static void RegisterSymbols(void) {
   nano_RawSymbol = Rf_install("raw");
   nano_ResponseSymbol = Rf_install("response");
   nano_ResultSymbol = Rf_install("result");
-  nano_SerialSymbol = Rf_install("serialize");
   nano_SessionSymbol = Rf_install("session");
   nano_SocketSymbol = Rf_install("socket");
   nano_StateSymbol = Rf_install("state");
@@ -85,7 +82,6 @@ static void RegisterSymbols(void) {
   nano_StreamSymbol = Rf_install("stream");
   nano_TextframesSymbol = Rf_install("textframes");
   nano_TlsSymbol = Rf_install("tls");
-  nano_UnserSymbol = Rf_install("unserialize");
   nano_UrlSymbol = Rf_install("url");
 }
 

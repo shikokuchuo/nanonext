@@ -56,45 +56,34 @@ static nano_hash nano_anytoraw(SEXP x) {
   switch (TYPEOF(x)) {
   case RAWSXP:
     hash.buf = RAW(x);
-    hash.sz = Rf_xlength(x);
+    hash.sz = XLENGTH(x);
     hash.vec = R_NilValue;
     break;
   case STRSXP:
-    if (Rf_xlength(x) == 1) {
-      hash.sz = Rf_xlength(STRING_ELT(x, 0));
+    if (XLENGTH(x) == 1) {
+      hash.sz = XLENGTH(STRING_ELT(x, 0));
       hash.vec = Rf_allocVector(RAWSXP, hash.sz);
       hash.buf = RAW(hash.vec);
       memcpy(hash.buf, CHAR(STRING_ELT(x, 0)), hash.sz);
     } else {
-      PROTECT(hash.vec = Rf_lang3(nano_SerialSymbol, x, R_NilValue));
-      hash.vec = Rf_eval(hash.vec, R_BaseEnv);
-      UNPROTECT(1);
+      hash.vec = nano_serial(x);
       hash.buf = RAW(hash.vec);
-      hash.sz = Rf_xlength(hash.vec);
+      hash.sz = XLENGTH(hash.vec);
     }
     break;
-  case SYMSXP:
-  case LANGSXP:
-    PROTECT(hash.vec = Rf_lang3(nano_SerialSymbol, Rf_lang2(R_QuoteSymbol, x), R_NilValue));
-    hash.vec = Rf_eval(hash.vec, R_BaseEnv);
-    UNPROTECT(1);
-    hash.buf = RAW(hash.vec);
-    hash.sz = Rf_xlength(hash.vec);
-    break;
   default:
-    PROTECT(hash.vec = Rf_lang3(nano_SerialSymbol, x, R_NilValue));
-    hash.vec = Rf_eval(hash.vec, R_BaseEnv);
-    UNPROTECT(1);
+    hash.vec = nano_serial(x);
     hash.buf = RAW(hash.vec);
-    hash.sz = Rf_xlength(hash.vec);
+    hash.sz = XLENGTH(hash.vec);
   }
 
   return hash;
+
 }
 
 static SEXP nano_rawToChar(SEXP x) {
 
-  R_xlen_t i, j, nc = Rf_xlength(x);
+  R_xlen_t i, j, nc = XLENGTH(x);
   for (i = 0, j = -1; i < nc; i++) if (RAW(x)[i]) j = i;
   SEXP out = Rf_mkCharLenCE((const char *) RAW(x), j + 1, CE_NATIVE);
 

@@ -63,7 +63,7 @@ static void rnng_messenger_thread(void *args) {
                  tms->tm_hour, tms->tm_min, tms->tm_sec);
         nng_free(buf, sz);
         const SEXP enc = nano_encode(key);
-        const R_xlen_t xlen = Rf_xlength(enc);
+        const R_xlen_t xlen = XLENGTH(enc);
         unsigned char *dp = RAW(enc);
         xc = nng_send(*sock, dp, xlen, NNG_FLAG_NONBLOCK);
         if (xc) {

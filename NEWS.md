@@ -2,9 +2,11 @@
 
 #### Updates
 
+* Higher performance send and receive of serialized R objects.
 * `ncurl()` etc. gain higher performance raw to character conversion, resulting in the following changes:
   + Attempting to convert non-text data with embedded nuls will now error instead of silently returning NULL.
   + When 'convert' = TRUE, the raw vector is no longer stored at `$raw` for efficiency.
+* Requires R >= 3.5 to enforce use of R serialization version 3.
 
 # nanonext 0.9.1
 
