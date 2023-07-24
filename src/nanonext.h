@@ -111,8 +111,13 @@ typedef struct nano_cv_s {
   x.buf = R_Calloc(sz, unsigned char);                         \
   x.len = (R_xlen_t) sz;                                       \
   x.cur = 0;                                                   \
-  }
-#define NANO_FREE(x) R_Free(x.buf);
+}
+#define NANO_INIT(x, ptr, sz) {                                \
+  x.buf = ptr;                                                 \
+  x.len = 0;                                                   \
+  x.cur = (R_xlen_t) sz;                                       \
+}
+#define NANO_FREE(x) if (x.len) R_Free(x.buf);
 typedef struct nano_buf_s {
   unsigned char *buf;
   R_xlen_t len;
@@ -124,10 +129,11 @@ extern SEXP mk_error_recv(const int);
 extern SEXP mk_error_ncurl(const int);
 extern SEXP nano_decode(unsigned char *, size_t, const int, const int);
 extern SEXP nano_encode(SEXP);
-extern SEXP nano_encodes(SEXP, SEXP);
+extern int nano_encodes(SEXP);
 extern int nano_matcharg(SEXP);
 extern int nano_matchargs(SEXP);
 extern SEXP nano_serial(SEXP);
+extern nano_buf nano_serialize(SEXP);
 extern SEXP nano_unserial(unsigned char *, size_t);
 extern SEXP rawOneString(unsigned char *, R_xlen_t, R_xlen_t *);
 extern SEXP rawToChar(unsigned char *, size_t);
