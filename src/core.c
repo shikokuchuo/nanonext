@@ -1287,10 +1287,12 @@ SEXP rnng_strcat(SEXP a, SEXP b) {
   R_xlen_t alen = XLENGTH(STRING_ELT(a, 0));
   R_xlen_t blen = XLENGTH(STRING_ELT(b, 0));
 
-  char *out = R_alloc(sizeof(char), alen + blen + 1);
-  memcpy(out, ap, alen);
-  memcpy(out + alen, bp, blen + 1);
+  char *buf = R_alloc(sizeof(char), alen + blen + 1);
+  memcpy(buf, ap, alen);
+  memcpy(buf + alen, bp, blen + 1);
 
-  return Rf_mkString(out);
+  SEXP out = Rf_mkCharLenCE(buf, alen + blen, CE_NATIVE);
+
+  return Rf_ScalarString(out);
 
 }
