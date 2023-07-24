@@ -116,20 +116,6 @@ void nano_read_bytes(R_inpstream_t stream, void *dst, int len) {
 
 }
 
-SEXP nano_serial(SEXP object) {
-
-  nano_buf buf = nano_serialize(object);
-  SEXP out;
-
-  PROTECT(out = Rf_allocVector(RAWSXP, buf.cur));
-  memcpy(RAW(out), buf.buf, buf.cur);
-  NANO_FREE(buf);
-
-  UNPROTECT(1);
-  return out;
-
-}
-
 nano_buf nano_serialize(SEXP object) {
 
   nano_buf buf;

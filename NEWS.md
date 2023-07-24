@@ -1,6 +1,6 @@
 # nanonext 0.9.1.9000 (development)
 
-*This version contains various performance enhancements which have resulted in potentially breaking changes; please review carefully and only update when ready.*
+*This version contains performance enhancements which have resulted in potentially breaking changes; please review carefully and only update when ready.*
 
 #### Updates
 
@@ -9,6 +9,7 @@
 * `ncurl()` etc. gain higher performance raw to character conversion, resulting in the following changes:
   + Attempting to convert non-text data with embedded nuls will now error instead of silently returning NULL.
   + When 'convert' = TRUE, the raw vector is no longer stored at `$raw` for efficiency.
+* Higher performance cryptographic hash and base64 conversion functions.
 * Requires R >= 3.5 to enforce use of R serialization version 3.
 
 # nanonext 0.9.1
