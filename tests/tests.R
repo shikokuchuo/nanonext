@@ -388,7 +388,7 @@ if (length(s)) {
   nanotestn(stop_aio(ss))
   nanotest(is.integer(send(s, 12.56, mode = "raw", block = 500L)))
   nanotest(is_aio(sr <- recv_aio_signal(s, mode = "double", timeout = 500L, cv = cv)))
-  nanotestnn(call_aio(sr)[["data"]])
+  nanotestw(length(call_aio(sr)[["data"]]))
   nanotest(cv_value(cv) > 0L)
   nanotest(!wait(cv))
   nanotest(is.character(opt(s, "ws:request-headers")))

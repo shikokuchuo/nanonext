@@ -150,7 +150,6 @@ nano_buf nano_serialize(SEXP object) {
 
   nano_buf buf;
   struct R_outpstream_st output_stream;
-  SEXP out;
 
   NANO_ALLOC(buf, NANONEXT_INIT_BUFSIZE);
 
@@ -207,11 +206,11 @@ SEXP nano_encode(SEXP object) {
     R_xlen_t i;
     for (i = 0; i < xlen; i++)
       outlen += strlen(Rf_translateCharUTF8(STRING_ELT(object, i))) + 1;
-    out = Rf_allocVector(RAWSXP, outlen);
+    PROTECT(out = Rf_allocVector(RAWSXP, outlen));
     buf = RAW(out);
     for (i = 0, np = 0; i < xlen; i++) {
       s = Rf_translateCharUTF8(STRING_ELT(object, i));
-      memcpy(RAW(out) + np, s, strlen(s) + 1);
+      memcpy(buf + np, s, strlen(s) + 1);
       np += strlen(s) + 1;
     }
     UNPROTECT(1);
@@ -715,26 +714,18 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
     } else {
       dur = (nng_duration) Rf_asInteger(block);
     }
-    mod = nano_encodes(mode);
-    if (mod == 1) {
-      buf = nano_serialize(data);
-    } else {
-      data = nano_encode(data);
-      NANO_INIT(buf, RAW(data), XLENGTH(data));
-    }
+    data = nano_encode(data);
+    NANO_INIT(buf, RAW(data), XLENGTH(data));
 
     const int frames = LOGICAL(Rf_getAttrib(con, nano_TextframesSymbol))[0];
     iov.iov_len = frames == 1 ? buf.cur - 1 : buf.cur;
     iov.iov_buf = buf.buf;
 
-    if ((xc = nng_aio_alloc(&aiop, NULL, NULL))) {
-      NANO_FREE(buf);
+    if ((xc = nng_aio_alloc(&aiop, NULL, NULL)))
       return mk_error(xc);
-    }
 
     if ((xc = nng_aio_set_iov(aiop, 1u, &iov))) {
       nng_aio_free(aiop);
-      NANO_FREE(buf);
       return mk_error(xc);
     }
 
