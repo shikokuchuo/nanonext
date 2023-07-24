@@ -542,19 +542,19 @@ By setting `async = TRUE`, it performs requests asynchronously, returning immedi
 For normal use, it takes just the URL. It can follow redirects.
 
 ```{r ncurl}
-ncurl("https://httpbin.org/get")
+ncurl("https://postman-echo.com/get")
 
 ```
 
 For advanced use, supports additional HTTP methods such as POST or PUT.
 
 ```{r ncurladv}
-res <- ncurl("http://httpbin.org/post",
+res <- ncurl("https://postman-echo.com/post",
              async = TRUE,
              method = "POST",
              headers = c(`Content-Type` = "application/json", Authorization = "Bearer APIKEY"),
              data = '{"key": "value"}',
-             response = c("Date", "Server"))
+             response = "date")
 res
 
 call_aio(res)$headers
@@ -570,10 +570,10 @@ In this respect, it may be used as a performant and lightweight method for makin
 By specifying `convert = FALSE`, the received data is not converted to text and may be fed into 'json' parsers which can operate directly on binary data, for example.
 
 ```{r ncurlsession}
-sess <- ncurl_session("https://httpbin.org/get",
+sess <- ncurl_session("https://postman-echo.com/get",
                       convert = FALSE,
                       headers = c(`Content-Type` = "application/json", Authorization = "Bearer APIKEY"),
-                      response = "date")
+                      response = c("Date", "Content-Type"))
 sess
 
 transact(sess)
@@ -718,11 +718,11 @@ For previous R versions, pre-compiled 'libnng' v1.6.0 alpha (c5e9d8a) and 'libmb
 
 We would like to acknowledge in particular:
 
-- [Garrett D'Amore](https://github.com/gdamore), author of the NNG library, who has been generous with advice and also implemented a feature request specifically for a more efficient 'aio' implementation in the package.
-- [mikefc](https://github.com/coolbutuseless) for meticulous documentation and comments in his {serializer} package that allowed us to implement our own interface to R's serialisation code.
-- [Jeroen Ooms](https://github.com/jeroen) - for his anticonf TM 'configure' file, on which our original 'configure' was based, although much modified since.
+- [Garrett D'Amore](https://github.com/gdamore), author of the NNG library, who has been generous with advice and also implemented a feature request specifically for a more efficient 'aio' implementation in {nanonext}.
 - The [R Consortium](https://www.r-consortium.org/) for funding the development of the secure TLS capabilities in the package, and [Henrik Bengtsson](https://github.com/HenrikBengtsson) and [William Landau](https://github.com/wlandau/)'s roles in making this possible.
-- [R Core](https://www.r-project.org/contributors.html) for some small auxiliary functions for serialisation and conversions between raw and character, which we have adopted.
+- [R Core](https://www.r-project.org/contributors.html) for various auxiliary functions for serialisation and raw / character conversion, which have been adopted by the package.
+- [mikefc](https://github.com/coolbutuseless) for meticulous documentation and comments in his {serializer} package that allowed us to implement our own internal interface to R's serialisation code.
+- [Jeroen Ooms](https://github.com/jeroen) - for his anticonf TM 'configure' file, on which our original 'configure' was based, although much modified since.
 
 Links:
 

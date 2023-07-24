@@ -104,9 +104,11 @@ send <- function(con, data, mode = c("serial", "raw"), block = NULL)
 #'     distiguishable from an integer message value). This can be verified using
 #'     \code{\link{is_error_value}}.
 #'
-#'     If the raw message was successfully received but an error occurred in
-#'     unserialisation or data conversion (for example if the incorrect mode was
-#'     specified), the received raw vector will always be returned to allow for
+#'     For \code{mode = "serial"}, attempting to unserialise a non-serialised
+#'     message will result in the error 'unknown input format'.
+#'
+#'     For all other modes, if an error occurred in conversion of the data to
+#'     the specified mode, a raw vector will be returned instead to allow for
 #'     the data to be recovered.
 #'
 #' @section Blocking:

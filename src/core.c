@@ -63,7 +63,7 @@ void nano_write_char(R_outpstream_t stream, int c) {
 
   nano_buf *buf = (nano_buf *) stream->data;
   if (buf->cur >= buf->len) {
-      buf->len = (R_xlen_t) (2 * buf->len);
+    buf->len = (R_xlen_t) (2 * buf->len);
     if (buf->len < 1) {
       R_Free(buf->buf);
       Rf_error("serialization error - out of memory");
@@ -118,24 +118,8 @@ void nano_read_bytes(R_inpstream_t stream, void *dst, int len) {
 
 SEXP nano_serial(SEXP object) {
 
-  nano_buf buf;
-  struct R_outpstream_st output_stream;
+  nano_buf buf = nano_serialize(object);
   SEXP out;
-
-  NANO_ALLOC(buf, NANONEXT_INIT_BUFSIZE);
-
-  R_InitOutPStream(
-    &output_stream,
-    (R_pstream_data_t) &buf,
-    R_pstream_binary_format,
-    NANONEXT_SERIAL_VER,
-    nano_write_char,
-    nano_write_bytes,
-    NULL,
-    R_NilValue
-  );
-
-  R_Serialize(object, &output_stream);
 
   PROTECT(out = Rf_allocVector(RAWSXP, buf.cur));
   memcpy(RAW(out), buf.buf, buf.cur);
@@ -606,8 +590,8 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
       if (mod == 1) {
         buf = nano_serialize(data);
       } else {
-        data = nano_encode(data);
-        NANO_INIT(buf, RAW(data), XLENGTH(data));
+        SEXP enc = nano_encode(data);
+        NANO_INIT(buf, RAW(enc), XLENGTH(enc));
       }
       xc = nng_send(*sock, buf.buf, buf.cur, NNG_FLAG_NONBLOCK);
 
@@ -618,8 +602,8 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
       if (mod == 1) {
         buf = nano_serialize(data);
       } else {
-        data = nano_encode(data);
-        NANO_INIT(buf, RAW(data), XLENGTH(data));
+        SEXP enc = nano_encode(data);
+        NANO_INIT(buf, RAW(enc), XLENGTH(enc));
       }
       xc = blk ? nng_send(*sock, buf.buf, buf.cur, 0) : nng_send(*sock, buf.buf, buf.cur, NNG_FLAG_NONBLOCK);
 
@@ -632,8 +616,8 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
       if (mod == 1) {
         buf = nano_serialize(data);
       } else {
-        data = nano_encode(data);
-        NANO_INIT(buf, RAW(data), XLENGTH(data));
+        SEXP enc = nano_encode(data);
+        NANO_INIT(buf, RAW(enc), XLENGTH(enc));
       }
 
       if ((xc = nng_msg_alloc(&msgp, 0))) {
@@ -676,8 +660,8 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
     if (mod == 1) {
       buf = nano_serialize(data);
     } else {
-      data = nano_encode(data);
-      NANO_INIT(buf, RAW(data), XLENGTH(data));
+      SEXP enc = nano_encode(data);
+      NANO_INIT(buf, RAW(enc), XLENGTH(enc));
     }
 
     if ((xc = nng_msg_alloc(&msgp, 0))) {
@@ -714,8 +698,8 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
     } else {
       dur = (nng_duration) Rf_asInteger(block);
     }
-    data = nano_encode(data);
-    NANO_INIT(buf, RAW(data), XLENGTH(data));
+    SEXP enc = nano_encode(data);
+    NANO_INIT(buf, RAW(enc), XLENGTH(enc));
 
     const int frames = LOGICAL(Rf_getAttrib(con, nano_TextframesSymbol))[0];
     iov.iov_len = frames == 1 ? buf.cur - 1 : buf.cur;
@@ -1066,9 +1050,9 @@ SEXP rnng_subscribe(SEXP object, SEXP value, SEXP sub) {
     if (value == R_NilValue) {
         xc = nng_socket_set(*sock, op, NULL, 0);
       } else {
-        value = nano_encode(value);
-        size_t sz = TYPEOF(value) == STRSXP ? (size_t) XLENGTH(value) - 1 : (size_t) XLENGTH(value);
-        xc = nng_socket_set(*sock, op, RAW(value), sz);
+        SEXP enc = nano_encode(value);
+        size_t sz = TYPEOF(value) == STRSXP ? (size_t) XLENGTH(enc) - 1 : (size_t) XLENGTH(enc);
+        xc = nng_socket_set(*sock, op, RAW(enc), sz);
       }
 
   } else if (ptrtag == nano_ContextSymbol) {
@@ -1077,8 +1061,8 @@ SEXP rnng_subscribe(SEXP object, SEXP value, SEXP sub) {
     if (value == R_NilValue) {
       xc = nng_ctx_set(*ctx, op, NULL, 0);
     } else {
-      value = nano_encode(value);
-      xc = nng_ctx_set(*ctx, op, RAW(value), XLENGTH(value));
+      SEXP enc = nano_encode(value);
+      xc = nng_ctx_set(*ctx, op, RAW(enc), XLENGTH(enc));
     }
 
   } else {

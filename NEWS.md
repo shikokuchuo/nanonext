@@ -1,8 +1,11 @@
 # nanonext 0.9.1.9000 (development)
 
+*This version contains various performance enhancements which have resulted in potentially breaking changes; please review carefully and only update when ready.*
+
 #### Updates
 
 * Higher performance send and receive of serialized R objects.
+  + For receive functions, attempting to unserialise a non-serialised message will now error with 'unknown input format' rather than return a raw message vector.
 * `ncurl()` etc. gain higher performance raw to character conversion, resulting in the following changes:
   + Attempting to convert non-text data with embedded nuls will now error instead of silently returning NULL.
   + When 'convert' = TRUE, the raw vector is no longer stored at `$raw` for efficiency.

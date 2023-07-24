@@ -376,7 +376,7 @@ aio
 #> < recvAio >
 #>  - $data for message data
 aio$data |> str()
-#>  num [1:100000000] -0.722 0.686 0.5 -0.158 -2.111 ...
+#>  num [1:100000000] 1.479 -0.634 0.489 -0.89 -1.404 ...
 ```
 
 As `call_aio()` is blocking and will wait for completion, an alternative
@@ -543,7 +543,7 @@ throughout, or alternatively ‘localhost’, but not a mixture of the two.
 cert <- write_cert(cn = "127.0.0.1")
 str(cert)
 #> List of 2
-#>  $ server: chr [1:2] "-----BEGIN CERTIFICATE-----\nMIIFFTCCAv2gAwIBAgIBATANBgkqhkiG9w0BAQsFADAiMRIwEAYDVQQDDAkxMjcu\nMC4wLjExDDAKBgNV"| __truncated__ "-----BEGIN RSA PRIVATE KEY-----\nMIIJKQIBAAKCAgEA5hFTX6vAGI/wswRI4XFxvqgp24KIzjO6ZtFKwAQ79XUpujRJ\njFFYzMpIq15a"| __truncated__
+#>  $ server: chr [1:2] "-----BEGIN CERTIFICATE-----\nMIIFFTCCAv2gAwIBAgIBATANBgkqhkiG9w0BAQsFADAiMRIwEAYDVQQDDAkxMjcu\nMC4wLjExDDAKBgNV"| __truncated__ "-----BEGIN RSA PRIVATE KEY-----\nMIIJKgIBAAKCAgEAzkpxLhG9CcMfRrVWxpaAjZ80s50F2yal7iXn9wyH5Q7zhtGz\nIIOrpxxZrf2S"| __truncated__
 #>  $ client: chr [1:2] "-----BEGIN CERTIFICATE-----\nMIIFFTCCAv2gAwIBAgIBATANBgkqhkiG9w0BAQsFADAiMRIwEAYDVQQDDAkxMjcu\nMC4wLjExDDAKBgNV"| __truncated__ ""
 
 ser <- tls_config(server = cert$server)
@@ -704,7 +704,7 @@ returning immediately with an ‘ncurlAio’.
 For normal use, it takes just the URL. It can follow redirects.
 
 ``` r
-ncurl("https://httpbin.org/get")
+ncurl("https://postman-echo.com/get")
 #> $status
 #> [1] 200
 #> 
@@ -715,18 +715,18 @@ ncurl("https://httpbin.org/get")
 #> NULL
 #> 
 #> $data
-#> [1] "{\n  \"args\": {}, \n  \"headers\": {\n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-64bd983f-142b791802a2adbe3b9f8a3c\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"https://httpbin.org/get\"\n}\n"
+#> [1] "{\n  \"args\": {},\n  \"headers\": {\n    \"x-forwarded-proto\": \"https\",\n    \"x-forwarded-port\": \"443\",\n    \"host\": \"postman-echo.com\",\n    \"x-amzn-trace-id\": \"Root=1-64be8c00-7779ab7244ab94147fb4d0bf\"\n  },\n  \"url\": \"https://postman-echo.com/get\"\n}"
 ```
 
 For advanced use, supports additional HTTP methods such as POST or PUT.
 
 ``` r
-res <- ncurl("http://httpbin.org/post",
+res <- ncurl("https://postman-echo.com/post",
              async = TRUE,
              method = "POST",
              headers = c(`Content-Type` = "application/json", Authorization = "Bearer APIKEY"),
              data = '{"key": "value"}',
-             response = c("Date", "Server"))
+             response = "date")
 res
 #> < ncurlAio >
 #>  - $status for response status code
@@ -735,14 +735,11 @@ res
 #>  - $data for message data
 
 call_aio(res)$headers
-#> $Date
-#> [1] "Sun, 23 Jul 2023 21:14:39 GMT"
-#> 
-#> $Server
-#> [1] "gunicorn/19.9.0"
+#> $date
+#> [1] "Mon, 24 Jul 2023 14:34:40 GMT"
 
 res$data
-#> [1] "{\n  \"args\": {}, \n  \"data\": \"{\\\"key\\\": \\\"value\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Authorization\": \"Bearer APIKEY\", \n    \"Content-Length\": \"16\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-64bd983f-21509b5b0c199a2b008a91c3\"\n  }, \n  \"json\": {\n    \"key\": \"value\"\n  }, \n  \"origin\": \"131.111.5.14\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
+#> [1] "{\n  \"args\": {},\n  \"data\": {\n    \"key\": \"value\"\n  },\n  \"files\": {},\n  \"form\": {},\n  \"headers\": {\n    \"x-forwarded-proto\": \"https\",\n    \"x-forwarded-port\": \"443\",\n    \"host\": \"postman-echo.com\",\n    \"x-amzn-trace-id\": \"Root=1-64be8c00-0a185cda30780d931414e0c4\",\n    \"content-length\": \"16\",\n    \"content-type\": \"application/json\",\n    \"authorization\": \"Bearer APIKEY\"\n  },\n  \"json\": {\n    \"key\": \"value\"\n  },\n  \"url\": \"https://postman-echo.com/post\"\n}"
 ```
 
 In this respect, it may be used as a performant and lightweight method
@@ -759,10 +756,10 @@ text and may be fed into ‘json’ parsers which can operate directly on
 binary data, for example.
 
 ``` r
-sess <- ncurl_session("https://httpbin.org/get",
+sess <- ncurl_session("https://postman-echo.com/get",
                       convert = FALSE,
                       headers = c(`Content-Type` = "application/json", Authorization = "Bearer APIKEY"),
-                      response = "date")
+                      response = c("Date", "Content-Type"))
 sess
 #> < ncurlSession >
 #>  - use transact() to return data
@@ -772,23 +769,27 @@ transact(sess)
 #> [1] 200
 #> 
 #> $headers
-#> $headers$date
-#> [1] "Sun, 23 Jul 2023 21:14:40 GMT"
+#> $headers$Date
+#> [1] "Mon, 24 Jul 2023 14:34:41 GMT"
+#> 
+#> $headers$`Content-Type`
+#> [1] "application/json; charset=utf-8"
 #> 
 #> 
 #> $raw
-#>   [1] 7b 0a 20 20 22 61 72 67 73 22 3a 20 7b 7d 2c 20 0a 20 20 22 68 65 61 64 65
-#>  [26] 72 73 22 3a 20 7b 0a 20 20 20 20 22 41 75 74 68 6f 72 69 7a 61 74 69 6f 6e
-#>  [51] 22 3a 20 22 42 65 61 72 65 72 20 41 50 49 4b 45 59 22 2c 20 0a 20 20 20 20
-#>  [76] 22 43 6f 6e 74 65 6e 74 2d 54 79 70 65 22 3a 20 22 61 70 70 6c 69 63 61 74
-#> [101] 69 6f 6e 2f 6a 73 6f 6e 22 2c 20 0a 20 20 20 20 22 48 6f 73 74 22 3a 20 22
-#> [126] 68 74 74 70 62 69 6e 2e 6f 72 67 22 2c 20 0a 20 20 20 20 22 58 2d 41 6d 7a
-#> [151] 6e 2d 54 72 61 63 65 2d 49 64 22 3a 20 22 52 6f 6f 74 3d 31 2d 36 34 62 64
-#> [176] 39 38 34 30 2d 33 37 33 37 32 65 37 33 37 34 61 64 38 35 38 62 32 31 34 32
-#> [201] 31 38 65 62 22 0a 20 20 7d 2c 20 0a 20 20 22 6f 72 69 67 69 6e 22 3a 20 22
-#> [226] 31 38 35 2e 32 32 35 2e 34 35 2e 34 39 22 2c 20 0a 20 20 22 75 72 6c 22 3a
-#> [251] 20 22 68 74 74 70 73 3a 2f 2f 68 74 74 70 62 69 6e 2e 6f 72 67 2f 67 65 74
-#> [276] 22 0a 7d 0a
+#>   [1] 7b 0a 20 20 22 61 72 67 73 22 3a 20 7b 7d 2c 0a 20 20 22 68 65 61 64 65 72
+#>  [26] 73 22 3a 20 7b 0a 20 20 20 20 22 78 2d 66 6f 72 77 61 72 64 65 64 2d 70 72
+#>  [51] 6f 74 6f 22 3a 20 22 68 74 74 70 73 22 2c 0a 20 20 20 20 22 78 2d 66 6f 72
+#>  [76] 77 61 72 64 65 64 2d 70 6f 72 74 22 3a 20 22 34 34 33 22 2c 0a 20 20 20 20
+#> [101] 22 68 6f 73 74 22 3a 20 22 70 6f 73 74 6d 61 6e 2d 65 63 68 6f 2e 63 6f 6d
+#> [126] 22 2c 0a 20 20 20 20 22 78 2d 61 6d 7a 6e 2d 74 72 61 63 65 2d 69 64 22 3a
+#> [151] 20 22 52 6f 6f 74 3d 31 2d 36 34 62 65 38 63 30 31 2d 37 64 39 33 62 37 34
+#> [176] 64 30 66 30 34 39 36 36 34 36 65 63 62 39 36 64 34 22 2c 0a 20 20 20 20 22
+#> [201] 63 6f 6e 74 65 6e 74 2d 74 79 70 65 22 3a 20 22 61 70 70 6c 69 63 61 74 69
+#> [226] 6f 6e 2f 6a 73 6f 6e 22 2c 0a 20 20 20 20 22 61 75 74 68 6f 72 69 7a 61 74
+#> [251] 69 6f 6e 22 3a 20 22 42 65 61 72 65 72 20 41 50 49 4b 45 59 22 0a 20 20 7d
+#> [276] 2c 0a 20 20 22 75 72 6c 22 3a 20 22 68 74 74 70 73 3a 2f 2f 70 6f 73 74 6d
+#> [301] 61 6e 2d 65 63 68 6f 2e 63 6f 6d 2f 67 65 74 22 0a 7d
 #> 
 #> $data
 #> NULL
@@ -990,20 +991,20 @@ We would like to acknowledge in particular:
 - [Garrett D’Amore](https://github.com/gdamore), author of the NNG
   library, who has been generous with advice and also implemented a
   feature request specifically for a more efficient ‘aio’ implementation
-  in the package.
-- [mikefc](https://github.com/coolbutuseless) for meticulous
-  documentation and comments in his {serializer} package that allowed us
-  to implement our own interface to R’s serialisation code.
-- [Jeroen Ooms](https://github.com/jeroen) - for his anticonf TM
-  ‘configure’ file, on which our original ‘configure’ was based,
-  although much modified since.
+  in {nanonext}.
 - The [R Consortium](https://www.r-consortium.org/) for funding the
   development of the secure TLS capabilities in the package, and [Henrik
   Bengtsson](https://github.com/HenrikBengtsson) and [William
   Landau](https://github.com/wlandau/)’s roles in making this possible.
-- [R Core](https://www.r-project.org/contributors.html) for some small
-  auxiliary functions for serialisation and conversions between raw and
-  character, which we have adopted.
+- [R Core](https://www.r-project.org/contributors.html) for various
+  auxiliary functions for serialisation and raw / character conversion,
+  which have been adopted by the package.
+- [mikefc](https://github.com/coolbutuseless) for meticulous
+  documentation and comments in his {serializer} package that allowed us
+  to implement our own internal interface to R’s serialisation code.
+- [Jeroen Ooms](https://github.com/jeroen) - for his anticonf TM
+  ‘configure’ file, on which our original ‘configure’ was based,
+  although much modified since.
 
 Links:
 

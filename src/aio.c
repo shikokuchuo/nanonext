@@ -980,8 +980,8 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
     if (mod == 1) {
       buf = nano_serialize(data);
     } else {
-      data = nano_encode(data);
-      NANO_INIT(buf, RAW(data), XLENGTH(data));
+      SEXP enc = nano_encode(data);
+      NANO_INIT(buf, RAW(enc), XLENGTH(enc));
     }
 
     saio->type = SENDAIO;
@@ -1015,8 +1015,8 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
     if (mod == 1) {
       buf = nano_serialize(data);
     } else {
-      data = nano_encode(data);
-      NANO_INIT(buf, RAW(data), XLENGTH(data));
+      SEXP enc = nano_encode(data);
+      NANO_INIT(buf, RAW(enc), XLENGTH(enc));
     }
 
     saio->type = SENDAIO;
@@ -1047,8 +1047,8 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
     nng_stream *sp = (nng_stream *) R_ExternalPtrAddr(con);
     const int frames = LOGICAL(Rf_getAttrib(con, nano_TextframesSymbol))[0];
     nng_iov iov;
-    data = nano_encode(data);
-    NANO_INIT(buf, RAW(data), XLENGTH(data));
+    SEXP enc = nano_encode(data);
+    NANO_INIT(buf, RAW(enc), XLENGTH(enc));
 
     saio->type = IOV_SENDAIO;
     saio->data = R_Calloc(buf.cur, unsigned char);
@@ -1702,8 +1702,8 @@ SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeou
   if (mod == 1) {
     buf = nano_serialize(data);
   } else {
-    data = nano_encode(data);
-    NANO_INIT(buf, RAW(data), XLENGTH(data));
+    SEXP enc = nano_encode(data);
+    NANO_INIT(buf, RAW(enc), XLENGTH(enc));
   }
 
   nano_aio *saio = R_Calloc(1, nano_aio);
@@ -2047,8 +2047,8 @@ SEXP rnng_cv_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP tim
   if (mod == 1) {
     buf = nano_serialize(data);
   } else {
-    data = nano_encode(data);
-    NANO_INIT(buf, RAW(data), XLENGTH(data));
+    SEXP enc = nano_encode(data);
+    NANO_INIT(buf, RAW(enc), XLENGTH(enc));
   }
 
   nano_aio *saio = R_Calloc(1, nano_aio);
