@@ -120,9 +120,10 @@ size is reserved.</p></dd>
     <p>In case of an error, an integer 'errorValue' is returned (to be
     distiguishable from an integer message value). This can be verified using
     <code><a href="is_error_value.html">is_error_value</a></code>.</p>
-<p>If the raw message was successfully received but an error occurred in
-    unserialisation or data conversion (for example if the incorrect mode was
-    specified), the received raw vector will always be returned to allow for
+<p>For <code>mode = "serial"</code>, attempting to unserialise a non-serialised
+    message will result in the error 'unknown input format'.</p>
+<p>For all other modes, if an error occurred in conversion of the data to
+    the specified mode, a raw vector will be returned instead to allow for
     the data to be recovered.</p>
     </div>
     <div id="blocking">
