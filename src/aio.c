@@ -1544,7 +1544,7 @@ SEXP rnng_ncurl_session(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP
   nng_http_conn *conn;
   conn = nng_aio_get_output(haio->aio, 0);
 
-  PROTECT(sess = R_MakeExternalPtr(conn, nano_SessionSymbol, R_NilValue));
+  PROTECT(sess = R_MakeExternalPtr(conn, nano_StatusSymbol, R_NilValue));
   R_RegisterCFinalizerEx(sess, session_finalizer, TRUE);
   SET_ATTRIB(sess, nano_ncurlSession);
   SET_OBJECT(sess, 1);
@@ -1581,7 +1581,7 @@ SEXP rnng_ncurl_session(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP
 
 SEXP rnng_ncurl_transact(SEXP session) {
 
-  if (R_ExternalPtrTag(session) != nano_SessionSymbol)
+  if (R_ExternalPtrTag(session) != nano_StatusSymbol)
     Rf_error("'session' is not a valid or active ncurlSession");
 
   nng_http_conn *conn = (nng_http_conn *) R_ExternalPtrAddr(session);
@@ -1657,7 +1657,7 @@ SEXP rnng_ncurl_transact(SEXP session) {
 
 SEXP rnng_ncurl_session_close(SEXP session) {
 
-  if (R_ExternalPtrTag(session) != nano_SessionSymbol)
+  if (R_ExternalPtrTag(session) != nano_StatusSymbol)
     Rf_error("'session' is not a valid or active ncurlSession");
 
   nng_http_conn *sp = (nng_http_conn *) R_ExternalPtrAddr(session);

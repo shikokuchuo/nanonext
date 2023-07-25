@@ -83,8 +83,10 @@ static SEXP nano_rawToChar(SEXP x) {
 static SEXP nano_hashToChar(unsigned char *buf, size_t sz) {
 
   char cbuf[sz + sz + 1];
-  for (size_t i = 0, j = 0; i < sz; i++, j+= 2)
-    snprintf(&cbuf[j], 3, "%.2x", buf[i]);
+  char *cptr = &cbuf[0];
+
+  for (size_t i = 0; i < sz; i++)
+    cptr += snprintf(cptr, 3, "%.2x", buf[i]);
 
   SEXP out = Rf_mkCharLenCE(cbuf, sz + sz, CE_NATIVE);
 
