@@ -208,7 +208,6 @@ SEXP rnng_timed_signal(SEXP args) {
 
   PROTECT(xptr = R_MakeExternalPtr(thr, R_NilValue, R_NilValue));
   R_RegisterCFinalizerEx(xptr, thread_finalizer, TRUE);
-  Rf_classgets(xptr, Rf_mkString("thread"));
 
   UNPROTECT(1);
   return xptr;

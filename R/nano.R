@@ -411,15 +411,6 @@ print.conditionVariable <- function(x, ...) {
 
 #' @export
 #'
-print.thread <- function(x, ...) {
-
-  cat("< thread >\n", file = stdout())
-  invisible(x)
-
-}
-
-#' @export
-#'
 print.tlsConfig <- function(x, ...) {
 
   cat(sprintf("< TLS %s configuration >\n - auth mode: %s\n", attr(x, "spec"), attr(x, "mode")), file = stdout())

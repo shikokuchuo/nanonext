@@ -247,9 +247,9 @@ unlock <- function(socket) invisible(.Call(rnng_socket_unlock, socket))
 #'     condition variable.
 #' @inheritParams pipe_notify
 #'
-#' @return A 'thread', which is an external pointer to the created thread. The
-#'     return value must be assigned to an object, otherwise the thread may be
-#'     garbage collected before it has performed its purpose.
+#' @return An external pointer to the created thread. This must be assigned as
+#'     an object, otherwise the thread may be garbage collected before it has
+#'     performed its purpose.
 #'
 #' @details Non-integer values for 'time' are coerced to integer, and the
 #'     absolute value is taken (the sign is ignored). Non-numeric values are

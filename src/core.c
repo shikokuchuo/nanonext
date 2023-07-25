@@ -1266,7 +1266,6 @@ SEXP rnng_strcat(SEXP a, SEXP b) {
   char *buf = R_alloc(sizeof(char), alen + blen + 1);
   memcpy(buf, ap, alen);
   memcpy(buf + alen, bp, blen + 1);
-
   SEXP out = Rf_mkCharLenCE(buf, alen + blen, CE_NATIVE);
 
   return Rf_ScalarString(out);

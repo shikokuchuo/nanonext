@@ -274,7 +274,6 @@ nanotestxp(sig <- timed_signal(cv, time = 50L))
 nanotest(!wait(cv))
 nanotestxp(sig <- timed_signal(cv2, time = 50, flag = FALSE))
 nanotest(wait(cv2))
-nanotestp(sig)
 nanotestn(cv_signal(cv))
 nanotest(cv_value(cv) == 1L)
 

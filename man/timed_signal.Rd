@@ -18,9 +18,9 @@ signal, and causes any subsequent \code{\link{wait}} or \code{\link{until}}
 to return FALSE instead of TRUE.}
 }
 \value{
-A 'thread', which is an external pointer to the created thread. The
-    return value must be assigned to an object, otherwise the thread may be
-    garbage collected before it has performed its purpose.
+An external pointer to the created thread. This must be assigned as
+    an object, otherwise the thread may be garbage collected before it has
+    performed its purpose.
 }
 \description{
 Creates a new thread which signals a condition variable after a specified
