@@ -569,28 +569,16 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
   if (ptrtag == nano_SocketSymbol) {
 
     nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(con);
+    mod = nano_encodes(mode);
+    if (mod == 1) buf = nano_serialize(data); else NANO_ENCODE(buf, data);
 
     if (block == R_NilValue) {
 
-      mod = nano_encodes(mode);
-      if (mod == 1) {
-        buf = nano_serialize(data);
-      } else {
-        SEXP enc = nano_encode(data);
-        NANO_INIT(buf, RAW(enc), XLENGTH(enc));
-      }
       xc = nng_send(*sock, buf.buf, buf.cur, NNG_FLAG_NONBLOCK);
 
     } else if (TYPEOF(block) == LGLSXP) {
 
       const int blk = LOGICAL(block)[0];
-      mod = nano_encodes(mode);
-      if (mod == 1) {
-        buf = nano_serialize(data);
-      } else {
-        SEXP enc = nano_encode(data);
-        NANO_INIT(buf, RAW(enc), XLENGTH(enc));
-      }
       xc = blk ? nng_send(*sock, buf.buf, buf.cur, 0) : nng_send(*sock, buf.buf, buf.cur, NNG_FLAG_NONBLOCK);
 
     } else {
@@ -598,13 +586,6 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
       nng_msg *msgp;
       nng_aio *aiop;
       nng_duration dur = (nng_duration) Rf_asInteger(block);
-      mod = nano_encodes(mode);
-      if (mod == 1) {
-        buf = nano_serialize(data);
-      } else {
-        SEXP enc = nano_encode(data);
-        NANO_INIT(buf, RAW(enc), XLENGTH(enc));
-      }
 
       if ((xc = nng_msg_alloc(&msgp, 0))) {
         NANO_FREE(buf);
@@ -628,6 +609,8 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
 
     }
 
+    NANO_FREE(buf);
+
   } else if (ptrtag == nano_ContextSymbol) {
 
     nng_ctx *ctxp = (nng_ctx *) R_ExternalPtrAddr(con);
@@ -643,12 +626,7 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
       dur = (nng_duration) Rf_asInteger(block);
     }
     mod = nano_encodes(mode);
-    if (mod == 1) {
-      buf = nano_serialize(data);
-    } else {
-      SEXP enc = nano_encode(data);
-      NANO_INIT(buf, RAW(enc), XLENGTH(enc));
-    }
+    if (mod == 1) buf = nano_serialize(data); else NANO_ENCODE(buf, data);
 
     if ((xc = nng_msg_alloc(&msgp, 0))) {
       NANO_FREE(buf);
@@ -669,6 +647,7 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
     if ((xc = nng_aio_result(aiop)))
       nng_msg_free(nng_aio_get_msg(aiop));
     nng_aio_free(aiop);
+    NANO_FREE(buf);
 
   } else if (ptrtag == nano_StreamSymbol) {
 
@@ -685,11 +664,10 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
       dur = (nng_duration) Rf_asInteger(block);
     }
     SEXP enc = nano_encode(data);
-    NANO_INIT(buf, RAW(enc), XLENGTH(enc));
 
     const int frames = LOGICAL(Rf_getAttrib(con, nano_TextframesSymbol))[0];
-    iov.iov_len = frames == 1 ? buf.cur - 1 : buf.cur;
-    iov.iov_buf = buf.buf;
+    iov.iov_len = frames == 1 ? XLENGTH(enc) - 1 : XLENGTH(enc);
+    iov.iov_buf = RAW(enc);
 
     if ((xc = nng_aio_alloc(&aiop, NULL, NULL)))
       return mk_error(xc);
@@ -708,8 +686,6 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
   } else {
     Rf_error("'con' is not a valid Socket, Context or Stream");
   }
-
-  NANO_FREE(buf);
 
   if (xc)
     return mk_error(xc);

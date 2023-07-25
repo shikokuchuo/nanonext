@@ -103,10 +103,10 @@ typedef struct nano_cv_s {
 
 #define ERROR_OUT(xc) Rf_error("%d | %s", xc, nng_strerror(xc))
 #define ERROR_RET(xc) { Rf_warning("%d | %s", xc, nng_strerror(xc)); return mk_error(xc); }
+#define NANO_ENCODE(buf, data) { SEXP enc = nano_encode(data); NANO_INIT(buf, RAW(enc), XLENGTH(enc)); }
 
 #define NANONEXT_INIT_BUFSIZE 16384
 #define NANONEXT_SERIAL_VER 3
-
 #define NANO_ALLOC(x, sz) {                                    \
   x.buf = R_Calloc(sz, unsigned char);                         \
   x.len = (R_xlen_t) sz;                                       \

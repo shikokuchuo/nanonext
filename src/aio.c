@@ -977,13 +977,7 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
     nng_msg *msg;
 
     mod = nano_encodes(mode);
-    if (mod == 1) {
-      buf = nano_serialize(data);
-    } else {
-      SEXP enc = nano_encode(data);
-      NANO_INIT(buf, RAW(enc), XLENGTH(enc));
-    }
-
+    if (mod == 1) buf = nano_serialize(data); else NANO_ENCODE(buf, data);
     saio->type = SENDAIO;
 
     if ((xc = nng_msg_alloc(&msg, 0))) {
@@ -1012,13 +1006,7 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
     nng_msg *msg;
 
     mod = nano_encodes(mode);
-    if (mod == 1) {
-      buf = nano_serialize(data);
-    } else {
-      SEXP enc = nano_encode(data);
-      NANO_INIT(buf, RAW(enc), XLENGTH(enc));
-    }
-
+    if (mod == 1) buf = nano_serialize(data); else NANO_ENCODE(buf, data);
     saio->type = SENDAIO;
 
     if ((xc = nng_msg_alloc(&msg, 0))) {
@@ -1047,6 +1035,7 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
     nng_stream *sp = (nng_stream *) R_ExternalPtrAddr(con);
     const int frames = LOGICAL(Rf_getAttrib(con, nano_TextframesSymbol))[0];
     nng_iov iov;
+
     SEXP enc = nano_encode(data);
     NANO_INIT(buf, RAW(enc), XLENGTH(enc));
 
@@ -1699,12 +1688,7 @@ SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeou
   nng_msg *msg;
 
   mod = nano_encodes(sendmode);
-  if (mod == 1) {
-    buf = nano_serialize(data);
-  } else {
-    SEXP enc = nano_encode(data);
-    NANO_INIT(buf, RAW(enc), XLENGTH(enc));
-  }
+  if (mod == 1) buf = nano_serialize(data); else NANO_ENCODE(buf, data);
 
   nano_aio *saio = R_Calloc(1, nano_aio);
 
@@ -2044,12 +2028,7 @@ SEXP rnng_cv_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP tim
   nng_msg *msg;
 
   mod = nano_encodes(sendmode);
-  if (mod == 1) {
-    buf = nano_serialize(data);
-  } else {
-    SEXP enc = nano_encode(data);
-    NANO_INIT(buf, RAW(enc), XLENGTH(enc));
-  }
+  if (mod == 1) buf = nano_serialize(data); else NANO_ENCODE(buf, data);
 
   nano_aio *saio = R_Calloc(1, nano_aio);
 
