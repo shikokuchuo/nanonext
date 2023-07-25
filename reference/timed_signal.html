@@ -88,9 +88,9 @@ to return FALSE instead of TRUE.</p></dd>
     <h2>Value</h2>
     
 
-<p>A 'thread', which is an external pointer to the created thread. The
-    return value must be assigned to an object, otherwise the thread may be
-    garbage collected before it has performed its purpose.</p>
+<p>An external pointer to the created thread. This must be assigned as
+    an object, otherwise the thread may be garbage collected before it has
+    performed its purpose.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -110,13 +110,13 @@ to return FALSE instead of TRUE.</p></dd>
 <span class="r-in"><span><span class="fu"><a href="cv.html">wait</a></span><span class="op">(</span><span class="va">cv</span><span class="op">)</span> <span class="op">==</span> <span class="cn">TRUE</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span><span class="fu"><a href="mclock.html">mclock</a></span><span class="op">(</span><span class="op">)</span> <span class="op">-</span> <span class="va">start</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 104</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 102</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu">timed_signal</span><span class="op">(</span><span class="va">cv</span>, time <span class="op">=</span> <span class="fl">100L</span>, flag <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="cv.html">wait</a></span><span class="op">(</span><span class="va">cv</span><span class="op">)</span> <span class="op">==</span> <span class="cn">FALSE</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span><span class="fu"><a href="mclock.html">mclock</a></span><span class="op">(</span><span class="op">)</span> <span class="op">-</span> <span class="va">start</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 208</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 205</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
