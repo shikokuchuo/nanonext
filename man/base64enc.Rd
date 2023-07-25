@@ -23,9 +23,8 @@ A raw vector or character string depending on 'convert'.
 Encodes / decodes a character string or arbitrary R object to base64 encoding.
 }
 \details{
-For encoding: a raw vector is encoded directly, a scalar character
-    string is translated to raw before encoding, whilst all other objects are
-    serialised first.
+For encoding: a scalar string or raw vector (with no attributes) is
+    hashed directly, whilst all other objects are serialised first.
 
     The result of encoding or decoding is always a raw vector, which is
     translated to a character string if 'convert' is TRUE, or returned

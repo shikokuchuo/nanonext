@@ -92,9 +92,9 @@ tls_config <- function(client = NULL, server = NULL, pass = NULL, auth = is.null
 #' @return A raw vector or character string depending on 'convert', of byte
 #'     length 32 for SHA-256, 28 for SHA-224, 48 for SHA-384, and 64 for SHA-512.
 #'
-#' @details For arguments 'x' and 'key', a raw vector is hashed directly, a
-#'     scalar character string is translated to raw before hashing, whilst all
-#'     other objects are serialised first.
+#' @details For arguments 'x' and 'key', a scalar string or raw vector (with no
+#'     attributes) is hashed directly, whilst all other objects are serialised
+#'     first.
 #'
 #'     The result of hashing is always a raw vector, which is translated to a
 #'     character string if 'convert' is TRUE, or returned directly if 'convert'
@@ -165,9 +165,9 @@ sha512 <- function(x, key = NULL, convert = TRUE) .Call(rnng_sha512, x, key, con
 #' @return A raw vector or character string depending on 'convert', of byte
 #'     length 20.
 #'
-#' @details For arguments 'x' and 'key', a raw vector is hashed directly, a
-#'     scalar character string is translated to raw before hashing, whilst all
-#'     other objects are serialised first.
+#' @details For arguments 'x' and 'key', a scalar string or raw vector (with no
+#'     attributes) is hashed directly, whilst all other objects are serialised
+#'     first.
 #'
 #'     The result of hashing is always a raw vector, which is translated to a
 #'     character string if 'convert' is TRUE, or returned directly if 'convert'
@@ -197,9 +197,8 @@ sha1 <- function(x, key = NULL, convert = TRUE) .Call(rnng_sha1, x, key, convert
 #'
 #' @return A raw vector or character string depending on 'convert'.
 #'
-#' @details For encoding: a raw vector is encoded directly, a scalar character
-#'     string is translated to raw before encoding, whilst all other objects are
-#'     serialised first.
+#' @details For encoding: a scalar string or raw vector (with no attributes) is
+#'     hashed directly, whilst all other objects are serialised first.
 #'
 #'     The result of encoding or decoding is always a raw vector, which is
 #'     translated to a character string if 'convert' is TRUE, or returned

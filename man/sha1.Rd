@@ -27,9 +27,9 @@ Returns a SHA-1 hash or HMAC of the supplied R object. Uses the optimised
     instead.
 }
 \details{
-For arguments 'x' and 'key', a raw vector is hashed directly, a
-    scalar character string is translated to raw before hashing, whilst all
-    other objects are serialised first.
+For arguments 'x' and 'key', a scalar string or raw vector (with no
+    attributes) is hashed directly, whilst all other objects are serialised
+    first.
 
     The result of hashing is always a raw vector, which is translated to a
     character string if 'convert' is TRUE, or returned directly if 'convert'

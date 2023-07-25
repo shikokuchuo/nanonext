@@ -47,18 +47,22 @@ static nano_buf nano_anytoraw(SEXP x) {
 
   nano_buf hash;
 
-  switch (TYPEOF(x)) {
-  case RAWSXP:
-    NANO_INIT(hash, RAW(x), XLENGTH(x));
-    break;
-  case STRSXP:
-    if (XLENGTH(x) == 1) {
-      NANO_INIT(hash, (unsigned char *) CHAR(STRING_ELT(x, 0)), XLENGTH(STRING_ELT(x, 0)));
-    } else {
+  if (ATTRIB(x) == R_NilValue) {
+    switch (TYPEOF(x)) {
+    case STRSXP:
+      if (XLENGTH(x) == 1) {
+        NANO_INIT(hash, (unsigned char *) CHAR(STRING_ELT(x, 0)), XLENGTH(STRING_ELT(x, 0)));
+      } else {
+        hash = nano_serialize(x);
+      }
+      break;
+    case RAWSXP:
+      NANO_INIT(hash, RAW(x), XLENGTH(x));
+      break;
+    default:
       hash = nano_serialize(x);
     }
-    break;
-  default:
+  } else {
     hash = nano_serialize(x);
   }
 
@@ -382,4 +386,3 @@ SEXP rnng_base64dec(SEXP x, SEXP convert) {
   return out;
 
 }
-
