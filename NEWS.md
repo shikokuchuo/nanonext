@@ -4,6 +4,7 @@
 
 #### Updates
 
+* The argument 'keep.raw' for all receive functions is deprecated. This is as unserialisation or data conversion now happens directly from buffer rather than a raw vector.
 * Higher performance send and receive of serialized R objects.
   + For receive functions, attempting to unserialise a non-serialised message will now error with 'unknown input format' rather than return a raw message vector.
 * `ncurl()` etc. gain higher performance raw to character conversion, resulting in the following changes:

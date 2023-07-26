@@ -38,9 +38,10 @@ of choices e.g. 1L for 'serial', 2L for 'character' etc.}
 \item{timeout}{[default NULL] integer value in milliseconds or NULL, which
 applies a socket-specific default, usually the same as no timeout.}
 
-\item{keep.raw}{[default FALSE] logical flag whether to keep and return the
-received raw vector along with the converted data. Supplying a non-logical
-value will error.}
+\item{keep.raw}{[default FALSE] [DEPRECATED - this argument will be removed
+in a future package version] logical flag whether to keep and return the
+received raw vector along with the converted data. Supplying a
+non-logical value will error.}
 
 \item{n}{[default 65536L] applicable to Streams only, the maximum number of
 bytes to receive. Can be an over-estimate, but note that a buffer of this
@@ -97,13 +98,13 @@ msg
 msg$data
 
 res <- send_aio(s1, c(1.1, 2.2, 3.3), mode = "raw", timeout = 100)
-msg <- recv_aio(s2, mode = "double", timeout = 100, keep.raw = TRUE)
+msg <- recv_aio(s2, mode = "double", timeout = 100)
 msg
 msg$raw
 msg$data
 
 res <- send_aio(s1, "example message", mode = "raw", timeout = 100)
-msg <- recv_aio(s2, mode = "character", timeout = 100, keep.raw = TRUE)
+msg <- recv_aio(s2, mode = "character", timeout = 100)
 call_aio(msg)
 msg$raw
 msg$data

@@ -30,9 +30,10 @@ to return immediately even if unsuccessful (e.g. if no connection is
 available), or else an integer value specifying the maximum time to block
 in milliseconds, after which the operation will time out.}
 
-\item{keep.raw}{[default FALSE] logical flag whether to keep and return the
-received raw vector along with the converted data. Supplying a non-logical
-value will error.}
+\item{keep.raw}{[default FALSE] [DEPRECATED - this argument will be removed
+in a future package version] logical flag whether to keep and return the
+received raw vector along with the converted data. Supplying a
+non-logical value will error.}
 
 \item{n}{[default 65536L] applicable to Streams only, the maximum number of
 bytes to receive. Can be an over-estimate, but note that a buffer of this
@@ -79,10 +80,10 @@ send(s1, data.frame(a = 1, b = 2))
 res <- recv(s2)
 res
 send(s1, data.frame(a = 1, b = 2))
-recv(s2, keep.raw = TRUE)
+recv(s2)
 
 send(s1, c(1.1, 2.2, 3.3), mode = "raw")
-res <- recv(s2, mode = "double", block = 100, keep.raw = TRUE)
+res <- recv(s2, mode = "double", block = 100)
 res
 send(s1, "example message", mode = "raw")
 recv(s2, mode = "character")
