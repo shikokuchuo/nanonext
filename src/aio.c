@@ -475,15 +475,12 @@ SEXP rnng_dial(SEXP socket, SEXP url, SEXP tls, SEXP autostart, SEXP error) {
   R_RegisterCFinalizerEx(dialer, dialer_finalizer, TRUE);
 
   PROTECT(klass = Rf_allocVector(STRSXP, 2));
-  SET_STRING_ELT(klass, 0, Rf_mkChar("nanoDialer"));
-  SET_STRING_ELT(klass, 1, Rf_mkChar("nano"));
+  SET_STRING_ELT(klass, 0, NANO_CHAR("nanoDialer", 10));
+  SET_STRING_ELT(klass, 1, NANO_CHAR("nano", 4));
   Rf_classgets(dialer, klass);
   Rf_setAttrib(dialer, nano_IdSymbol, Rf_ScalarInteger((int) dp->dial.id));
   Rf_setAttrib(dialer, nano_UrlSymbol, url);
-  if (start)
-    Rf_setAttrib(dialer, nano_StateSymbol, Rf_mkString("started"));
-  else
-    Rf_setAttrib(dialer, nano_StateSymbol, Rf_mkString("not started"));
+  Rf_setAttrib(dialer, nano_StateSymbol, start ? NANO_STRING("started", 7) : NANO_STRING("not started", 11));
   Rf_setAttrib(dialer, nano_SocketSymbol, Rf_ScalarInteger((int) sock->id));
 
   attr = Rf_getAttrib(socket, nano_DialerSymbol);
@@ -548,15 +545,12 @@ SEXP rnng_listen(SEXP socket, SEXP url, SEXP tls, SEXP autostart, SEXP error) {
   R_RegisterCFinalizerEx(listener, listener_finalizer, TRUE);
 
   PROTECT(klass = Rf_allocVector(STRSXP, 2));
-  SET_STRING_ELT(klass, 0, Rf_mkChar("nanoListener"));
-  SET_STRING_ELT(klass, 1, Rf_mkChar("nano"));
+  SET_STRING_ELT(klass, 0, NANO_CHAR("nanoListener", 12));
+  SET_STRING_ELT(klass, 1, NANO_CHAR("nano", 4));
   Rf_classgets(listener, klass);
   Rf_setAttrib(listener, nano_IdSymbol, Rf_ScalarInteger((int) lp->list.id));
   Rf_setAttrib(listener, nano_UrlSymbol, url);
-  if (start)
-    Rf_setAttrib(listener, nano_StateSymbol, Rf_mkString("started"));
-  else
-    Rf_setAttrib(listener, nano_StateSymbol, Rf_mkString("not started"));
+  Rf_setAttrib(listener, nano_StateSymbol, start ? NANO_STRING("started", 7) : NANO_STRING("not started", 11));
   Rf_setAttrib(listener, nano_SocketSymbol, Rf_ScalarInteger((int) sock->id));
 
   attr = Rf_getAttrib(socket, nano_ListenerSymbol);
@@ -594,7 +588,7 @@ SEXP rnng_dialer_start(SEXP dialer, SEXP async) {
   if (xc)
     ERROR_RET(xc);
 
-  Rf_setAttrib(dialer, nano_StateSymbol, Rf_mkString("started"));
+  Rf_setAttrib(dialer, nano_StateSymbol, NANO_STRING("started", 7));
   return nano_success;
 
 }
@@ -608,7 +602,7 @@ SEXP rnng_listener_start(SEXP listener) {
   if (xc)
     ERROR_RET(xc);
 
-  Rf_setAttrib(listener, nano_StateSymbol, Rf_mkString("started"));
+  Rf_setAttrib(listener, nano_StateSymbol, NANO_STRING("started", 7));
   return nano_success;
 
 }
@@ -621,7 +615,7 @@ SEXP rnng_dialer_close(SEXP dialer) {
   const int xc = nng_dialer_close(*dial);
   if (xc)
     ERROR_RET(xc);
-  Rf_setAttrib(dialer, nano_StateSymbol, Rf_mkString("closed"));
+  Rf_setAttrib(dialer, nano_StateSymbol, NANO_STRING("closed", 6));
   return nano_success;
 
 }
@@ -634,7 +628,7 @@ SEXP rnng_listener_close(SEXP listener) {
   const int xc = nng_listener_close(*list);
   if (xc)
     ERROR_RET(xc);
-  Rf_setAttrib(listener, nano_StateSymbol, Rf_mkString("closed"));
+  Rf_setAttrib(listener, nano_StateSymbol, NANO_STRING("closed", 6));
   return nano_success;
 
 }
@@ -1376,14 +1370,14 @@ SEXP rnng_aio_http(SEXP env, SEXP response, SEXP type) {
     switch (TYPEOF(response)) {
     case STRSXP:
       PROTECT(response = Rf_lengthgets(response, rlen + 1));
-      SET_STRING_ELT(response, rlen, Rf_mkChar("Location"));
+      SET_STRING_ELT(response, rlen, NANO_CHAR("Location", 8));
       break;
     case VECSXP:
       PROTECT(response = Rf_lengthgets(response, rlen + 1));
-      SET_VECTOR_ELT(response, rlen, Rf_mkString("Location"));
+      SET_VECTOR_ELT(response, rlen, NANO_STRING("Location", 8));
       break;
     default:
-      PROTECT(response = Rf_mkString("Location"));
+      PROTECT(response = NANO_STRING("Location", 8));
     }
   }
 
@@ -1776,7 +1770,7 @@ SEXP rnng_cv_alloc(void) {
 
   PROTECT(xp = R_MakeExternalPtr(cvp, nano_CvSymbol, R_NilValue));
   R_RegisterCFinalizerEx(xp, cv_finalizer, TRUE);
-  Rf_classgets(xp, Rf_mkString("conditionVariable"));
+  Rf_classgets(xp, NANO_STRING("conditionVariable", 17));
 
   UNPROTECT(1);
   return xp;

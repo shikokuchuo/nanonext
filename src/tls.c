@@ -70,16 +70,6 @@ static nano_buf nano_anytoraw(SEXP x) {
 
 }
 
-static SEXP nano_rawToChar(SEXP x) {
-
-  R_xlen_t i, j, nc = XLENGTH(x);
-  for (i = 0, j = -1; i < nc; i++) if (RAW(x)[i]) j = i;
-  SEXP out = Rf_mkCharLenCE((const char *) RAW(x), j + 1, CE_NATIVE);
-
-  return Rf_ScalarString(out);
-
-}
-
 static SEXP nano_hashToChar(unsigned char *buf, size_t sz) {
 
   char cbuf[sz + sz + 1];
@@ -88,9 +78,7 @@ static SEXP nano_hashToChar(unsigned char *buf, size_t sz) {
   for (size_t i = 0; i < sz; i++)
     cptr += snprintf(cptr, 3, "%.2x", buf[i]);
 
-  SEXP out = Rf_mkCharLenCE(cbuf, sz + sz, CE_NATIVE);
-
-  return Rf_ScalarString(out);
+  return NANO_STRING(cbuf, sz + sz);
 
 }
 
@@ -343,19 +331,20 @@ SEXP rnng_base64enc(SEXP x, SEXP convert) {
 
   nano_buf hash = nano_anytoraw(x);
   xc = mbedtls_base64_encode(NULL, 0, &olen, hash.buf, hash.cur);
-  PROTECT(out = Rf_allocVector(RAWSXP, olen));
-  xc = mbedtls_base64_encode(RAW(out), olen, &olen, hash.buf, hash.cur);
+  unsigned char buf[olen];
+  xc = mbedtls_base64_encode(buf, olen, &olen, hash.buf, hash.cur);
   NANO_FREE(hash);
   if (xc)
     Rf_error("write buffer insufficient");
 
   if (LOGICAL(convert)[0]) {
-    out = nano_rawToChar(out);
+    out = rawToChar(buf, olen);
   } else {
-    out = Rf_xlengthgets(out, olen);
+    PROTECT(out = Rf_allocVector(RAWSXP, olen));
+    memcpy(RAW(out), buf, olen);
+    UNPROTECT(1);
   }
 
-  UNPROTECT(1);
   return out;
 
 }
@@ -371,18 +360,18 @@ SEXP rnng_base64dec(SEXP x, SEXP convert) {
   xc = mbedtls_base64_decode(NULL, 0, &olen, hash.buf, hash.cur);
   if (xc == MBEDTLS_ERR_BASE64_INVALID_CHARACTER)
     Rf_error("input is not valid base64");
-  out = Rf_allocVector(RAWSXP, olen);
-  xc = mbedtls_base64_decode(RAW(out), olen, &olen, hash.buf, hash.cur);
+  unsigned char buf[olen];
+  xc = mbedtls_base64_decode(buf, olen, &olen, hash.buf, hash.cur);
   NANO_FREE(hash);
   if (xc)
     Rf_error("write buffer insufficient");
 
   if (LOGICAL(convert)[0]) {
-
-    PROTECT(out);
-    out = nano_rawToChar(out);
+    out = rawToChar(buf, olen);
+  } else {
+    PROTECT(out = Rf_allocVector(RAWSXP, olen));
+    memcpy(RAW(out), buf, olen);
     UNPROTECT(1);
-
   }
 
   return out;
