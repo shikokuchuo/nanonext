@@ -94,9 +94,10 @@ in milliseconds, after which the operation will time out.</p></dd>
 
 
 <dt>keep.raw</dt>
-<dd><p>[default FALSE] logical flag whether to keep and return the
-received raw vector along with the converted data. Supplying a non-logical
-value will error.</p></dd>
+<dd><p>[default FALSE] [DEPRECATED - this argument will be removed
+in a future package version] logical flag whether to keep and return the
+received raw vector along with the converted data. Supplying a
+non-logical value will error.</p></dd>
 
 
 <dt>n</dt>
@@ -153,33 +154,15 @@ size is reserved.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1 1 2</span>
 <span class="r-in"><span><span class="fu"><a href="send.html">send</a></span><span class="op">(</span><span class="va">s1</span>, <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>a <span class="op">=</span> <span class="fl">1</span>, b <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
-<span class="r-in"><span><span class="fu">recv</span><span class="op">(</span><span class="va">s2</span>, keep.raw <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $raw</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   [1] 42 0a 03 00 00 00 01 03 04 00 00 05 03 00 05 00 00 00 55 54 46 2d 38 13 03</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [26] 00 00 02 00 00 00 0e 00 00 00 01 00 00 00 00 00 00 00 00 00 f0 3f 0e 00 00</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [51] 00 01 00 00 00 00 00 00 00 00 00 00 40 02 04 00 00 01 00 00 00 09 00 04 00</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [76] 05 00 00 00 6e 61 6d 65 73 10 00 00 00 02 00 00 00 09 00 04 00 01 00 00 00</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [101] 61 09 00 04 00 01 00 00 00 62 02 04 00 00 01 00 00 00 09 00 04 00 05 00 00</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [126] 00 63 6c 61 73 73 10 00 00 00 01 00 00 00 09 00 04 00 0a 00 00 00 64 61 74</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [151] 61 2e 66 72 61 6d 65 02 04 00 00 01 00 00 00 09 00 04 00 09 00 00 00 72 6f</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [176] 77 2e 6e 61 6d 65 73 0d 00 00 00 02 00 00 00 00 00 00 80 ff ff ff ff fe 00</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [201] 00 00</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $data</span>
+<span class="r-in"><span><span class="fu">recv</span><span class="op">(</span><span class="va">s2</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   a b</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1 1 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="send.html">send</a></span><span class="op">(</span><span class="va">s1</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.1</span>, <span class="fl">2.2</span>, <span class="fl">3.3</span><span class="op">)</span>, mode <span class="op">=</span> <span class="st">"raw"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
-<span class="r-in"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">recv</span><span class="op">(</span><span class="va">s2</span>, mode <span class="op">=</span> <span class="st">"double"</span>, block <span class="op">=</span> <span class="fl">100</span>, keep.raw <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">recv</span><span class="op">(</span><span class="va">s2</span>, mode <span class="op">=</span> <span class="st">"double"</span>, block <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">res</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $raw</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 9a 99 99 99 99 99 f1 3f 9a 99 99 99 99 99 01 40 66 66 66 66 66 66 0a 40</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $data</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1.1 2.2 3.3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span><span class="fu"><a href="send.html">send</a></span><span class="op">(</span><span class="va">s1</span>, <span class="st">"example message"</span>, mode <span class="op">=</span> <span class="st">"raw"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
 <span class="r-in"><span><span class="fu">recv</span><span class="op">(</span><span class="va">s2</span>, mode <span class="op">=</span> <span class="st">"character"</span><span class="op">)</span></span></span>
