@@ -245,10 +245,9 @@ complete.
 
 ``` r
 # an async receive is requested, but no messages are waiting (yet to be sent)
-msg <- recv_aio(s2, keep.raw = TRUE)
+msg <- recv_aio(s2)
 msg
 #> < recvAio >
-#>  - $raw for raw message
 #>  - $data for message data
 msg$data
 #> 'unresolved' logi NA
@@ -269,24 +268,13 @@ res$result
 message has been accepted by the socket for sending; the message itself
 may still be buffered within the system.*
 
-For a ‘recvAio’ object, the message is stored at `$data`, and the raw
-message at `$raw` (if kept).
+For a ‘recvAio’ object, the message is stored at `$data`.
 
 ``` r
 # now that a message has been sent, the 'recvAio' resolves automatically
 msg$data
 #>   a b
 #> 1 1 2
-msg$raw
-#>   [1] 42 0a 03 00 00 00 01 03 04 00 00 05 03 00 05 00 00 00 55 54 46 2d 38 13 03
-#>  [26] 00 00 02 00 00 00 0e 00 00 00 01 00 00 00 00 00 00 00 00 00 f0 3f 0e 00 00
-#>  [51] 00 01 00 00 00 00 00 00 00 00 00 00 40 02 04 00 00 01 00 00 00 09 00 04 00
-#>  [76] 05 00 00 00 6e 61 6d 65 73 10 00 00 00 02 00 00 00 09 00 04 00 01 00 00 00
-#> [101] 61 09 00 04 00 01 00 00 00 62 02 04 00 00 01 00 00 00 09 00 04 00 05 00 00
-#> [126] 00 63 6c 61 73 73 10 00 00 00 01 00 00 00 09 00 04 00 0a 00 00 00 64 61 74
-#> [151] 61 2e 66 72 61 6d 65 02 04 00 00 01 00 00 00 09 00 04 00 09 00 00 00 72 6f
-#> [176] 77 2e 6e 61 6d 65 73 0d 00 00 00 02 00 00 00 00 00 00 80 ff ff ff ff fe 00
-#> [201] 00 00
 ```
 
 Auxiliary function `unresolved()` may be used in control flow statements
@@ -376,7 +364,7 @@ aio
 #> < recvAio >
 #>  - $data for message data
 aio$data |> str()
-#>  num [1:100000000] 1.479 -0.634 0.489 -0.89 -1.404 ...
+#>  num [1:100000000] 1.6543 0.3024 0.5806 0.0182 -0.5082 ...
 ```
 
 As `call_aio()` is blocking and will wait for completion, an alternative
@@ -543,7 +531,7 @@ throughout, or alternatively ‘localhost’, but not a mixture of the two.
 cert <- write_cert(cn = "127.0.0.1")
 str(cert)
 #> List of 2
-#>  $ server: chr [1:2] "-----BEGIN CERTIFICATE-----\nMIIFFTCCAv2gAwIBAgIBATANBgkqhkiG9w0BAQsFADAiMRIwEAYDVQQDDAkxMjcu\nMC4wLjExDDAKBgNV"| __truncated__ "-----BEGIN RSA PRIVATE KEY-----\nMIIJKgIBAAKCAgEAzkpxLhG9CcMfRrVWxpaAjZ80s50F2yal7iXn9wyH5Q7zhtGz\nIIOrpxxZrf2S"| __truncated__
+#>  $ server: chr [1:2] "-----BEGIN CERTIFICATE-----\nMIIFFTCCAv2gAwIBAgIBATANBgkqhkiG9w0BAQsFADAiMRIwEAYDVQQDDAkxMjcu\nMC4wLjExDDAKBgNV"| __truncated__ "-----BEGIN RSA PRIVATE KEY-----\nMIIJKQIBAAKCAgEA72BYgjvH7yRoydYCaKbYwwWFrkV6f26e3satNQ0wXzs8Tw42\nC7L9xQIUn7jK"| __truncated__
 #>  $ client: chr [1:2] "-----BEGIN CERTIFICATE-----\nMIIFFTCCAv2gAwIBAgIBATANBgkqhkiG9w0BAQsFADAiMRIwEAYDVQQDDAkxMjcu\nMC4wLjExDDAKBgNV"| __truncated__ ""
 
 ser <- tls_config(server = cert$server)
@@ -715,7 +703,7 @@ ncurl("https://postman-echo.com/get")
 #> NULL
 #> 
 #> $data
-#> [1] "{\n  \"args\": {},\n  \"headers\": {\n    \"x-forwarded-proto\": \"https\",\n    \"x-forwarded-port\": \"443\",\n    \"host\": \"postman-echo.com\",\n    \"x-amzn-trace-id\": \"Root=1-64be8c00-7779ab7244ab94147fb4d0bf\"\n  },\n  \"url\": \"https://postman-echo.com/get\"\n}"
+#> [1] "{\n  \"args\": {},\n  \"headers\": {\n    \"x-forwarded-proto\": \"https\",\n    \"x-forwarded-port\": \"443\",\n    \"host\": \"postman-echo.com\",\n    \"x-amzn-trace-id\": \"Root=1-64c0f02f-7c95b55404642a2775f01b2b\"\n  },\n  \"url\": \"https://postman-echo.com/get\"\n}"
 ```
 
 For advanced use, supports additional HTTP methods such as POST or PUT.
@@ -736,10 +724,10 @@ res
 
 call_aio(res)$headers
 #> $date
-#> [1] "Mon, 24 Jul 2023 14:34:40 GMT"
+#> [1] "Wed, 26 Jul 2023 10:06:39 GMT"
 
 res$data
-#> [1] "{\n  \"args\": {},\n  \"data\": {\n    \"key\": \"value\"\n  },\n  \"files\": {},\n  \"form\": {},\n  \"headers\": {\n    \"x-forwarded-proto\": \"https\",\n    \"x-forwarded-port\": \"443\",\n    \"host\": \"postman-echo.com\",\n    \"x-amzn-trace-id\": \"Root=1-64be8c00-0a185cda30780d931414e0c4\",\n    \"content-length\": \"16\",\n    \"content-type\": \"application/json\",\n    \"authorization\": \"Bearer APIKEY\"\n  },\n  \"json\": {\n    \"key\": \"value\"\n  },\n  \"url\": \"https://postman-echo.com/post\"\n}"
+#> [1] "{\n  \"args\": {},\n  \"data\": {\n    \"key\": \"value\"\n  },\n  \"files\": {},\n  \"form\": {},\n  \"headers\": {\n    \"x-forwarded-proto\": \"https\",\n    \"x-forwarded-port\": \"443\",\n    \"host\": \"postman-echo.com\",\n    \"x-amzn-trace-id\": \"Root=1-64c0f02f-5680eb614686507f5bf29cc3\",\n    \"content-length\": \"16\",\n    \"content-type\": \"application/json\",\n    \"authorization\": \"Bearer APIKEY\"\n  },\n  \"json\": {\n    \"key\": \"value\"\n  },\n  \"url\": \"https://postman-echo.com/post\"\n}"
 ```
 
 In this respect, it may be used as a performant and lightweight method
@@ -751,9 +739,9 @@ endpoint. `transact()` is then used to request data multiple times as
 required. This method allows a polling frequency that exceeds a server’s
 new connection limits, where this is permitted.
 
-By specifying `convert = FALSE`, the received data is not converted to
-text and may be fed into ‘json’ parsers which can operate directly on
-binary data, for example.
+By specifying `convert = FALSE`, the received binary data is made
+available as a raw vector at `$raw`. This may be fed into ‘json’ parsers
+which can operate directly on such data etc.
 
 ``` r
 sess <- ncurl_session("https://postman-echo.com/get",
@@ -770,7 +758,7 @@ transact(sess)
 #> 
 #> $headers
 #> $headers$Date
-#> [1] "Mon, 24 Jul 2023 14:34:41 GMT"
+#> [1] "Wed, 26 Jul 2023 10:06:40 GMT"
 #> 
 #> $headers$`Content-Type`
 #> [1] "application/json; charset=utf-8"
@@ -783,8 +771,8 @@ transact(sess)
 #>  [76] 77 61 72 64 65 64 2d 70 6f 72 74 22 3a 20 22 34 34 33 22 2c 0a 20 20 20 20
 #> [101] 22 68 6f 73 74 22 3a 20 22 70 6f 73 74 6d 61 6e 2d 65 63 68 6f 2e 63 6f 6d
 #> [126] 22 2c 0a 20 20 20 20 22 78 2d 61 6d 7a 6e 2d 74 72 61 63 65 2d 69 64 22 3a
-#> [151] 20 22 52 6f 6f 74 3d 31 2d 36 34 62 65 38 63 30 31 2d 37 64 39 33 62 37 34
-#> [176] 64 30 66 30 34 39 36 36 34 36 65 63 62 39 36 64 34 22 2c 0a 20 20 20 20 22
+#> [151] 20 22 52 6f 6f 74 3d 31 2d 36 34 63 30 66 30 33 30 2d 35 63 36 63 39 39 37
+#> [176] 31 30 65 30 35 36 34 66 63 34 62 64 31 32 62 62 32 22 2c 0a 20 20 20 20 22
 #> [201] 63 6f 6e 74 65 6e 74 2d 74 79 70 65 22 3a 20 22 61 70 70 6c 69 63 61 74 69
 #> [226] 6f 6e 2f 6a 73 6f 6e 22 2c 0a 20 20 20 20 22 61 75 74 68 6f 72 69 7a 61 74
 #> [251] 69 6f 6e 22 3a 20 22 42 65 61 72 65 72 20 41 50 49 4b 45 59 22 0a 20 20 7d
@@ -1001,7 +989,7 @@ We would like to acknowledge in particular:
   which have been adopted by the package.
 - [mikefc](https://github.com/coolbutuseless) for meticulous
   documentation and comments in his {serializer} package that allowed us
-  to implement our own internal interface to R’s serialisation code.
+  to implement our own interface to R’s serialisation code.
 - [Jeroen Ooms](https://github.com/jeroen) - for his anticonf TM
   ‘configure’ file, on which our original ‘configure’ was based,
   although much modified since.

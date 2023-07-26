@@ -211,7 +211,7 @@ An 'Aio' object returns an unresolved value whilst its asynchronous operation is
 
 ```{r async4}
 # an async receive is requested, but no messages are waiting (yet to be sent)
-msg <- recv_aio(s2, keep.raw = TRUE)
+msg <- recv_aio(s2)
 msg
 msg$data
 
@@ -227,12 +227,11 @@ res$result
 ```
 *Note: a return value of 0 denotes a successful send, meaning that the message has been accepted by the socket for sending; the message itself may still be buffered within the system.*
 
-For a 'recvAio' object, the message is stored at `$data`, and the raw message at `$raw` (if kept).
+For a 'recvAio' object, the message is stored at `$data`.
 
 ```{r async3}
 # now that a message has been sent, the 'recvAio' resolves automatically
 msg$data
-msg$raw
 
 ```
 
@@ -567,7 +566,7 @@ In this respect, it may be used as a performant and lightweight method for makin
 
 `ncurl_session()` creates a re-usable open connection and presents a much faster and more efficient solution for repeated polling of an API endpoint. `transact()` is then used to request data multiple times as required. This method allows a polling frequency that exceeds a server's new connection limits, where this is permitted.
 
-By specifying `convert = FALSE`, the received data is not converted to text and may be fed into 'json' parsers which can operate directly on binary data, for example.
+By specifying `convert = FALSE`, the received binary data is made available as a raw vector at `$raw`. This may be fed into 'json' parsers which can operate directly on such data etc.
 
 ```{r ncurlsession}
 sess <- ncurl_session("https://postman-echo.com/get",
@@ -721,7 +720,7 @@ We would like to acknowledge in particular:
 - [Garrett D'Amore](https://github.com/gdamore), author of the NNG library, who has been generous with advice and also implemented a feature request specifically for a more efficient 'aio' implementation in {nanonext}.
 - The [R Consortium](https://www.r-consortium.org/) for funding the development of the secure TLS capabilities in the package, and [Henrik Bengtsson](https://github.com/HenrikBengtsson) and [William Landau](https://github.com/wlandau/)'s roles in making this possible.
 - [R Core](https://www.r-project.org/contributors.html) for various auxiliary functions for serialisation and raw / character conversion, which have been adopted by the package.
-- [mikefc](https://github.com/coolbutuseless) for meticulous documentation and comments in his {serializer} package that allowed us to implement our own internal interface to R's serialisation code.
+- [mikefc](https://github.com/coolbutuseless) for meticulous documentation and comments in his {serializer} package that allowed us to implement our own interface to R's serialisation code.
 - [Jeroen Ooms](https://github.com/jeroen) - for his anticonf TM 'configure' file, on which our original 'configure' was based, although much modified since.
 
 Links:
