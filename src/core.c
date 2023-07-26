@@ -64,10 +64,6 @@ void nano_write_char(R_outpstream_t stream, int c) {
   nano_buf *buf = (nano_buf *) stream->data;
   if (buf->cur >= buf->len) {
     buf->len = (R_xlen_t) (2 * buf->len);
-    if (buf->len < 1) {
-      R_Free(buf->buf);
-      Rf_error("serialization error - out of memory");
-    }
     buf->buf = R_Realloc(buf->buf, buf->len, unsigned char);
   }
 
@@ -83,10 +79,6 @@ void nano_write_bytes(R_outpstream_t stream, void *src, int len) {
     do {
       buf->len = (R_xlen_t) (2 * buf->len);
     } while (buf->len < buf->cur + len);
-    if (buf->len < 1) {
-      R_Free(buf->buf);
-      Rf_error("serialization error - out of memory");
-    }
     buf->buf = R_Realloc(buf->buf, buf->len, unsigned char);
   }
 
