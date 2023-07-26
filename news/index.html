@@ -58,7 +58,7 @@
 <p><em>This version contains performance enhancements which have resulted in potentially breaking changes; please review carefully and only update when ready.</em></p>
 <div class="section level5">
 <h5 id="updates-0-9-1-9000">Updates<a class="anchor" aria-label="anchor" href="#updates-0-9-1-9000"></a></h5>
-<ul><li>The argument ‘keep.raw’ for all receive functions is deprecated. This is as unserialisation or data conversion now happens directly from buffer rather than a raw vector.</li>
+<ul><li>The argument ‘keep.raw’ for all receive functions is deprecated. This is as a raw vector is no longer created as part of unserialisation or data conversion.</li>
 <li>Higher performance send and receive of serialized R objects.
 <ul><li>For receive functions, attempting to unserialise a non-serialised message will now error with ‘unknown input format’ rather than return a raw message vector.</li>
 </ul></li>
