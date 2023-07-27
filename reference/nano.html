@@ -67,7 +67,8 @@
 <span>  dial <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  listen <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  tls <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  autostart <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>  autostart <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  refhook <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -103,6 +104,16 @@ not generally possible to change these once started. For dialers only:
 set to NA to start synchronously - this is less resilient if a
 connection is not immediately possible, but avoids subtle errors from
 attempting to use the socket before an asynchronous dial has completed.</p></dd>
+
+
+<dt>refhook</dt>
+<dd><p>[default NULL] (for sending/receiving serialised objects only)
+register a function to handle reference objects, such as those accessed
+via an external pointer. This function must have the signature
+<code>function(x) if ( &lt;validation&gt; ) { &lt;encode function - must return a
+character value&gt; } else if (is.character(x)) { &lt;decode function&gt; }</code>. All
+connected sockets should register the same function (if used) to ensure
+seamless serialisation / unserialisation.</p></dd>
 
 </dl></div>
     <div id="value">
