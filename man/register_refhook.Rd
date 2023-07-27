@@ -42,4 +42,7 @@ recv(s1)
 register_refhook()
 register_refhook(NULL)
 
+close(s1)
+close(s)
+
 }

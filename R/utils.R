@@ -331,6 +331,9 @@ strcat <- function(a, b) .Call(rnng_strcat, a, b)
 #' register_refhook()
 #' register_refhook(NULL)
 #'
+#' close(s1)
+#' close(s)
+#'
 #' @export
 #'
 register_refhook <- function(fun)
