@@ -11,7 +11,8 @@ socket(
   listen = NULL,
   tls = NULL,
   autostart = TRUE,
-  raw = FALSE
+  raw = FALSE,
+  refhook = NULL
 )
 }
 \arguments{
@@ -40,6 +41,14 @@ attempting to use the socket before an asynchronous dial has completed.}
 \item{raw}{[default FALSE] whether to open raw mode sockets. Note: not for
 general use - do not enable unless you have a specific need, such as for
 use with \code{\link{device}} (refer to NNG documentation).}
+
+\item{refhook}{[default NULL] (for sending/receiving serialised objects only)
+register a function to handle reference objects, such as those accessed
+via an external pointer. This function must have the signature
+\code{function(x) if ( <validation> ) { <encode function - must return a
+character value> } else if (is.character(x)) { <decode function> }}. All
+connected sockets should register the same function (if used) to ensure
+seamless serialisation / unserialisation.}
 }
 \value{
 A Socket (object of class 'nanoSocket' and 'nano').
@@ -62,8 +71,11 @@ NNG presents a socket view of networking. The sockets are constructed
     This function (optionally) binds a single Dialer and/or Listener to a Socket.
     More complex network topologies may be created by binding further
     Dialers/Listeners to the Socket as required using \code{\link{dial}} and
-    \code{\link{listen}}. New contexts can also be created using
-    \code{\link{context}} if the protocol supports it.
+    \code{\link{listen}}.
+
+    New contexts may also be created using \code{\link{context}} if the
+    protocol supports it. Any created contexts will inherit the 'refhook'
+    function registered at the socket.
 }
 \section{Protocols}{
 
@@ -82,8 +94,20 @@ NNG presents a socket view of networking. The sockets are constructed
 }
 
 \examples{
-socket <- socket("pair")
-socket
-close(socket)
+refhook <- function(x) if (typeof(x) == "weakref") base64enc(weakref_value(x)) else
+    if (is.character(x)) unserialize(base64dec(x, convert = FALSE))
+
+s <- socket(protocol = "req", listen = "inproc://nanosocket", refhook = refhook)
+s1 <- socket(protocol = "rep", dial = "inproc://nanosocket", refhook = refhook)
+
+wr <- weakref(s, random(7))
+wr
+weakref_value(wr)
+
+send(s, wr)
+recv(s1)
+
+close(s1)
+close(s)
 
 }

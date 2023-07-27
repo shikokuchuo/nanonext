@@ -33,7 +33,7 @@ void socket_finalizer(SEXP xptr) {
 
 // sockets ---------------------------------------------------------------------
 
-SEXP rnng_protocol_open(SEXP protocol, SEXP raw) {
+SEXP rnng_protocol_open(SEXP protocol, SEXP raw, SEXP refhook) {
 
   const char *pro = CHAR(STRING_ELT(protocol, 0));
   const int rw = LOGICAL(raw)[0];
@@ -138,6 +138,7 @@ SEXP rnng_protocol_open(SEXP protocol, SEXP raw) {
   Rf_setAttrib(socket, nano_IdSymbol, Rf_ScalarInteger((int) sock->id));
   Rf_setAttrib(socket, nano_StateSymbol, NANO_STRING("opened", 6));
   Rf_setAttrib(socket, nano_ProtocolSymbol, Rf_mkString(pname));
+  Rf_setAttrib(socket, R_MissingArg, refhook);
 
   UNPROTECT(2);
   return socket;

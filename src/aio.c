@@ -707,7 +707,7 @@ SEXP rnng_aio_get_msgraw(SEXP env) {
     sz = nng_msg_len(msg);
   }
 
-  PROTECT(out = nano_decode(buf, sz, mod, kpr));
+  PROTECT(out = mod == 1 ? nano_unserialize(buf, sz, kpr, REFHOOK(aio)) : nano_decode(buf, sz, mod, kpr));
   Rf_defineVar(nano_RawSymbol, VECTOR_ELT(out, 0), ENCLOS(env));
   Rf_defineVar(nano_ResultSymbol, VECTOR_ELT(out, 1), ENCLOS(env));
   Rf_defineVar(nano_AioSymbol, R_NilValue, env);
@@ -756,7 +756,7 @@ SEXP rnng_aio_get_msgraw2(SEXP env) {
     sz = nng_msg_len(msg);
   }
 
-  PROTECT(out = nano_decode(buf, sz, mod, kpr));
+  PROTECT(out = mod == 1 ? nano_unserialize(buf, sz, kpr, REFHOOK(aio)) : nano_decode(buf, sz, mod, kpr));
   Rf_defineVar(nano_RawSymbol, VECTOR_ELT(out, 0), ENCLOS(env));
   Rf_defineVar(nano_ResultSymbol, VECTOR_ELT(out, 1), ENCLOS(env));
   Rf_defineVar(nano_AioSymbol, R_NilValue, env);
@@ -807,7 +807,7 @@ SEXP rnng_aio_get_msgdata(SEXP env) {
     sz = nng_msg_len(msg);
   }
 
-  PROTECT(out = nano_decode(buf, sz, mod, kpr));
+  PROTECT(out = mod == 1 ? nano_unserialize(buf, sz, kpr, REFHOOK(aio)) : nano_decode(buf, sz, mod, kpr));
   if (kpr) {
     Rf_defineVar(nano_RawSymbol, VECTOR_ELT(out, 0), ENCLOS(env));
     Rf_defineVar(nano_ResultSymbol, VECTOR_ELT(out, 1), ENCLOS(env));
@@ -861,7 +861,7 @@ SEXP rnng_aio_get_msgdata2(SEXP env) {
     sz = nng_msg_len(msg);
   }
 
-  PROTECT(out = nano_decode(buf, sz, mod, kpr));
+  PROTECT(out = mod == 1 ? nano_unserialize(buf, sz, kpr, REFHOOK(aio)) : nano_decode(buf, sz, mod, kpr));
   if (kpr) {
     Rf_defineVar(nano_RawSymbol, VECTOR_ELT(out, 0), ENCLOS(env));
     Rf_defineVar(nano_ResultSymbol, VECTOR_ELT(out, 1), ENCLOS(env));
@@ -971,7 +971,7 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
     nng_msg *msg;
 
     mod = nano_encodes(mode);
-    if (mod == 1) buf = nano_serialize(data); else NANO_ENCODE(buf, data);
+    if (mod == 1) buf = nano_serialize(data, REFHOOK(con)); else NANO_ENCODE(buf, data);
     saio->type = SENDAIO;
 
     if ((xc = nng_msg_alloc(&msg, 0))) {
@@ -1001,7 +1001,7 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
     nng_msg *msg;
 
     mod = nano_encodes(mode);
-    if (mod == 1) buf = nano_serialize(data); else NANO_ENCODE(buf, data);
+    if (mod == 1) buf = nano_serialize(data, REFHOOK(con)); else NANO_ENCODE(buf, data);
     saio->type = SENDAIO;
 
     if ((xc = nng_msg_alloc(&msg, 0))) {
@@ -1106,6 +1106,7 @@ SEXP rnng_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP keep, SEXP bytes, SEX
 
     PROTECT(aio = R_MakeExternalPtr(raio, nano_AioSymbol, R_NilValue));
     R_RegisterCFinalizerEx(aio, raio_finalizer, TRUE);
+    Rf_setAttrib(aio, R_MissingArg, REFHOOK(con));
 
   } else if (ptrtag == nano_ContextSymbol) {
 
@@ -1123,6 +1124,7 @@ SEXP rnng_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP keep, SEXP bytes, SEX
 
     PROTECT(aio = R_MakeExternalPtr(raio, nano_AioSymbol, R_NilValue));
     R_RegisterCFinalizerEx(aio, raio_finalizer, TRUE);
+    Rf_setAttrib(aio, R_MissingArg, REFHOOK(con));
 
   } else if (ptrtag == nano_StreamSymbol) {
 
@@ -1683,7 +1685,7 @@ SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeou
   nng_msg *msg;
 
   mod = nano_encodes(sendmode);
-  if (mod == 1) buf = nano_serialize(data); else NANO_ENCODE(buf, data);
+  if (mod == 1) buf = nano_serialize(data, REFHOOK(con)); else NANO_ENCODE(buf, data);
 
   nano_aio *saio = R_Calloc(1, nano_aio);
 
@@ -1720,6 +1722,7 @@ SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeou
 
   PROTECT(aio = R_MakeExternalPtr(raio, nano_AioSymbol, R_NilValue));
   R_RegisterCFinalizerEx(aio, raio_finalizer, TRUE);
+  Rf_setAttrib(aio, R_MissingArg, REFHOOK(con));
 
   PROTECT(env = Rf_allocSExp(ENVSXP));
   SET_ENCLOS(env, clo);
@@ -1915,6 +1918,7 @@ SEXP rnng_cv_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP keep, SEXP bytes, 
 
     PROTECT(aio = R_MakeExternalPtr(raio, nano_AioSymbol, R_NilValue));
     R_RegisterCFinalizerEx(aio, raio_finalizer, TRUE);
+    Rf_setAttrib(aio, R_MissingArg, REFHOOK(con));
     UNPROTECT(1);
 
   } else if (ptrtag == nano_ContextSymbol) {
@@ -1934,6 +1938,7 @@ SEXP rnng_cv_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP keep, SEXP bytes, 
 
     PROTECT(aio = R_MakeExternalPtr(raio, nano_AioSymbol, R_NilValue));
     R_RegisterCFinalizerEx(aio, raio_finalizer, TRUE);
+    Rf_setAttrib(aio, R_MissingArg, REFHOOK(con));
     UNPROTECT(1);
 
   } else if (ptrtag == nano_StreamSymbol) {
@@ -2023,7 +2028,7 @@ SEXP rnng_cv_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP tim
   nng_msg *msg;
 
   mod = nano_encodes(sendmode);
-  if (mod == 1) buf = nano_serialize(data); else NANO_ENCODE(buf, data);
+  if (mod == 1) buf = nano_serialize(data, REFHOOK(con)); else NANO_ENCODE(buf, data);
 
   nano_aio *saio = R_Calloc(1, nano_aio);
 
@@ -2064,6 +2069,7 @@ SEXP rnng_cv_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP tim
 
   PROTECT(aio = R_MakeExternalPtr(raio, nano_AioSymbol, R_NilValue));
   R_RegisterCFinalizerEx(aio, raio_finalizer, TRUE);
+  Rf_setAttrib(aio, R_MissingArg, REFHOOK(con));
 
   PROTECT(env = Rf_allocSExp(ENVSXP));
   SET_ENCLOS(env, clo);

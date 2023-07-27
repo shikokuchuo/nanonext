@@ -93,10 +93,11 @@ nano <- function(protocol = c("bus", "pair", "push", "pull", "pub", "sub",
                  dial = NULL,
                  listen = NULL,
                  tls = NULL,
-                 autostart = TRUE) {
+                 autostart = TRUE,
+                 refhook = NULL) {
 
   nano <- `class<-`(new.env(hash = FALSE), "nanoObject")
-  socket <- socket(protocol)
+  socket <- socket(protocol, refhook = refhook)
   sock2 <- NULL
   makeActiveBinding(sym = "socket",
                     fun = function(x) if (length(sock2)) sock2 else socket,

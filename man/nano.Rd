@@ -10,7 +10,8 @@ nano(
   dial = NULL,
   listen = NULL,
   tls = NULL,
-  autostart = TRUE
+  autostart = TRUE,
+  refhook = NULL
 )
 }
 \arguments{
@@ -35,6 +36,14 @@ not generally possible to change these once started. For dialers only:
 set to NA to start synchronously - this is less resilient if a
 connection is not immediately possible, but avoids subtle errors from
 attempting to use the socket before an asynchronous dial has completed.}
+
+\item{refhook}{[default NULL] (for sending/receiving serialised objects only)
+register a function to handle reference objects, such as those accessed
+via an external pointer. This function must have the signature
+\code{function(x) if ( <validation> ) { <encode function - must return a
+character value> } else if (is.character(x)) { <decode function> }}. All
+connected sockets should register the same function (if used) to ensure
+seamless serialisation / unserialisation.}
 }
 \value{
 A nano object of class 'nanoObject'.

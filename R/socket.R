@@ -40,6 +40,13 @@
 #' @param raw [default FALSE] whether to open raw mode sockets. Note: not for
 #'     general use - do not enable unless you have a specific need, such as for
 #'     use with \code{\link{device}} (refer to NNG documentation).
+#' @param refhook [default NULL] (for sending/receiving serialised objects only)
+#'     register a function to handle reference objects, such as those accessed
+#'     via an external pointer. This function must have the signature
+#'     \code{function(x) if ( <validation> ) { <encode function - must return a
+#'     character value> } else if (is.character(x)) { <decode function> }}. All
+#'     connected sockets should register the same function (if used) to ensure
+#'     seamless serialisation / unserialisation.
 #' @inheritParams dial
 #'
 #' @return A Socket (object of class 'nanoSocket' and 'nano').
@@ -56,8 +63,11 @@
 #'     This function (optionally) binds a single Dialer and/or Listener to a Socket.
 #'     More complex network topologies may be created by binding further
 #'     Dialers/Listeners to the Socket as required using \code{\link{dial}} and
-#'     \code{\link{listen}}. New contexts can also be created using
-#'     \code{\link{context}} if the protocol supports it.
+#'     \code{\link{listen}}.
+#'
+#'     New contexts may also be created using \code{\link{context}} if the
+#'     protocol supports it. Any created contexts will inherit the 'refhook'
+#'     function registered at the socket.
 #'
 #' @section Protocols:
 #'
@@ -74,9 +84,21 @@
 #'     Please see \link{protocols} for further documentation.
 #'
 #' @examples
-#' socket <- socket("pair")
-#' socket
-#' close(socket)
+#' refhook <- function(x) if (typeof(x) == "weakref") base64enc(weakref_value(x)) else
+#'     if (is.character(x)) unserialize(base64dec(x, convert = FALSE))
+#'
+#' s <- socket(protocol = "req", listen = "inproc://nanosocket", refhook = refhook)
+#' s1 <- socket(protocol = "rep", dial = "inproc://nanosocket", refhook = refhook)
+#'
+#' wr <- weakref(s, random(7))
+#' wr
+#' weakref_value(wr)
+#'
+#' send(s, wr)
+#' recv(s1)
+#'
+#' close(s1)
+#' close(s)
 #'
 #' @export
 #'
@@ -86,9 +108,10 @@ socket <- function(protocol = c("bus", "pair", "push", "pull", "pub", "sub",
                    listen = NULL,
                    tls = NULL,
                    autostart = TRUE,
-                   raw = FALSE) {
+                   raw = FALSE,
+                   refhook = NULL) {
 
-  sock <- .Call(rnng_protocol_open, protocol, raw)
+  sock <- .Call(rnng_protocol_open, protocol, raw, refhook)
   if (length(dial)) .Call(rnng_dial, sock, dial, tls, autostart, TRUE)
   if (length(listen)) .Call(rnng_listen, sock, listen, tls, autostart, TRUE)
   sock

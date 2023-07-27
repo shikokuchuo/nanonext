@@ -4,7 +4,7 @@
 
 #### New Features
 
-* `register_refhook()` allows use of a function to handle serialisation of reference objects such as those accessed via an external pointer e.g. tensors from the 'torch' package etc. Automatically applies to all package functions.
+* `socket()` gains the argument 'refhook' to register a function to handle serialisation and unserialisation of reference objects such as those accessed via an external pointer e.g. tensors from the 'torch' package etc.
 
 #### Updates
 

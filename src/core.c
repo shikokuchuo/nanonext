@@ -119,7 +119,7 @@ void nano_read_bytes(R_inpstream_t stream, void *dst, int len) {
 
 }
 
-nano_buf nano_serialize(SEXP object) {
+nano_buf nano_serialize(SEXP object, SEXP refhook) {
 
   nano_buf buf;
   struct R_outpstream_st output_stream;
@@ -133,8 +133,8 @@ nano_buf nano_serialize(SEXP object) {
     NANONEXT_SERIAL_VER,
     nano_write_char,
     nano_write_bytes,
-    nano_refhook != R_NilValue ? nano_CallHook : NULL,
-    nano_refhook
+    refhook != R_NilValue ? nano_CallHook : NULL,
+    refhook
   );
 
   R_Serialize(object, &output_stream);
@@ -143,8 +143,9 @@ nano_buf nano_serialize(SEXP object) {
 
 }
 
-SEXP nano_unserialize(unsigned char *buf, size_t sz) {
+SEXP nano_unserialize(unsigned char *buf, size_t sz, const int kpr, SEXP refhook) {
 
+  SEXP data;
   nano_buf nbuf;
   struct R_inpstream_st input_stream;
 
@@ -158,11 +159,27 @@ SEXP nano_unserialize(unsigned char *buf, size_t sz) {
     R_pstream_any_format,
     nano_read_char,
     nano_read_bytes,
-    nano_refhook != R_NilValue ? nano_CallHook : NULL,
-    nano_refhook
+    refhook != R_NilValue ? nano_CallHook : NULL,
+    refhook
   );
 
-  return R_Unserialize(&input_stream);
+  data = R_Unserialize(&input_stream);
+
+  if (kpr) {
+    SEXP raw, out;
+    const char *names[] = {"raw", "data", ""};
+    PROTECT(data);
+    PROTECT(out = Rf_mkNamed(VECSXP, names));
+    raw = Rf_allocVector(RAWSXP, sz);
+    SET_VECTOR_ELT(out, 0, raw);
+    memcpy(RAW(raw), buf, sz);
+    SET_VECTOR_ELT(out, 1, data);
+
+    UNPROTECT(2);
+    return out;
+  }
+
+  return data;
 
 }
 
@@ -367,10 +384,10 @@ int nano_matchargs(SEXP mode) {
 SEXP nano_decode(unsigned char *buf, size_t sz, const int mod, const int kpr) {
 
   SEXP data;
+  size_t size;
 
-  if (mod == 1) {
-    data = nano_unserialize(buf, sz);
-  } else if (mod == 2) {
+  switch (mod) {
+  case 2:
     PROTECT(data = Rf_allocVector(STRSXP, sz));
     R_xlen_t i, m, nbytes = sz, np = 0;
     for (i = 0, m = 0; i < sz; i++) {
@@ -381,71 +398,68 @@ SEXP nano_decode(unsigned char *buf, size_t sz, const int mod, const int kpr) {
     }
     data = Rf_xlengthgets(data, m);
     UNPROTECT(1);
-  } else {
-    size_t size;
-    switch (mod) {
-    case 3:
-      size = 2 * sizeof(double);
-      if (sz % size == 0) {
-        data = Rf_allocVector(CPLXSXP, sz / size);
-        memcpy(COMPLEX(data), buf, sz);
-      } else {
-        Rf_warning("received data could not be converted to complex");
-        data = Rf_allocVector(RAWSXP, sz);
-        memcpy(RAW(data), buf, sz);
-      }
-      break;
-    case 4:
-      size = sizeof(double);
-      if (sz % size == 0) {
-        data = Rf_allocVector(REALSXP, sz / size);
-        memcpy(REAL(data), buf, sz);
-      } else {
-        Rf_warning("received data could not be converted to double");
-        data = Rf_allocVector(RAWSXP, sz);
-        memcpy(RAW(data), buf, sz);
-      }
-      break;
-    case 5:
-      size = sizeof(int);
-      if (sz % size == 0) {
-        data = Rf_allocVector(INTSXP, sz / size);
-        memcpy(INTEGER(data), buf, sz);
-      } else {
-        Rf_warning("received data could not be converted to integer");
-        data = Rf_allocVector(RAWSXP, sz);
-        memcpy(RAW(data), buf, sz);
-      }
-      break;
-    case 6:
-      size = sizeof(int);
-      if (sz % size == 0) {
-        data = Rf_allocVector(LGLSXP, sz / size);
-        memcpy(LOGICAL(data), buf, sz);
-      } else {
-        Rf_warning("received data could not be converted to logical");
-        data = Rf_allocVector(RAWSXP, sz);
-        memcpy(RAW(data), buf, sz);
-      }
-      break;
-    case 7:
-      size = sizeof(double);
-      if (sz % size == 0) {
-        data = Rf_allocVector(REALSXP, sz / size);
-        memcpy(REAL(data), buf, sz);
-      } else {
-        Rf_warning("received data could not be converted to numeric");
-        data = Rf_allocVector(RAWSXP, sz);
-        memcpy(RAW(data), buf, sz);
-      }
-      break;
-    case 8:
+    break;
+  case 3:
+    size = 2 * sizeof(double);
+    if (sz % size == 0) {
+      data = Rf_allocVector(CPLXSXP, sz / size);
+      memcpy(COMPLEX(data), buf, sz);
+    } else {
+      Rf_warning("received data could not be converted to complex");
       data = Rf_allocVector(RAWSXP, sz);
       memcpy(RAW(data), buf, sz);
-      break;
-    default:
-      data = R_NilValue;
     }
+    break;
+  case 4:
+    size = sizeof(double);
+    if (sz % size == 0) {
+      data = Rf_allocVector(REALSXP, sz / size);
+      memcpy(REAL(data), buf, sz);
+    } else {
+      Rf_warning("received data could not be converted to double");
+      data = Rf_allocVector(RAWSXP, sz);
+      memcpy(RAW(data), buf, sz);
+    }
+    break;
+  case 5:
+    size = sizeof(int);
+    if (sz % size == 0) {
+      data = Rf_allocVector(INTSXP, sz / size);
+      memcpy(INTEGER(data), buf, sz);
+    } else {
+      Rf_warning("received data could not be converted to integer");
+      data = Rf_allocVector(RAWSXP, sz);
+      memcpy(RAW(data), buf, sz);
+    }
+    break;
+  case 6:
+    size = sizeof(int);
+    if (sz % size == 0) {
+      data = Rf_allocVector(LGLSXP, sz / size);
+      memcpy(LOGICAL(data), buf, sz);
+    } else {
+      Rf_warning("received data could not be converted to logical");
+      data = Rf_allocVector(RAWSXP, sz);
+      memcpy(RAW(data), buf, sz);
+    }
+    break;
+  case 7:
+    size = sizeof(double);
+    if (sz % size == 0) {
+      data = Rf_allocVector(REALSXP, sz / size);
+      memcpy(REAL(data), buf, sz);
+    } else {
+      Rf_warning("received data could not be converted to numeric");
+      data = Rf_allocVector(RAWSXP, sz);
+      memcpy(RAW(data), buf, sz);
+    }
+    break;
+  case 8:
+    data = Rf_allocVector(RAWSXP, sz);
+    memcpy(RAW(data), buf, sz);
+    break;
+  default:
+    data = R_NilValue;
   }
 
   if (kpr) {
@@ -502,6 +516,7 @@ SEXP rnng_ctx_open(SEXP socket) {
 
   PROTECT(context = R_MakeExternalPtr(ctx, nano_ContextSymbol, R_NilValue));
   R_RegisterCFinalizerEx(context, context_finalizer, TRUE);
+  Rf_setAttrib(context, R_MissingArg, REFHOOK(socket));
 
   PROTECT(klass = Rf_allocVector(STRSXP, 2));
   SET_STRING_ELT(klass, 0, NANO_CHAR("nanoContext", 11));
@@ -535,6 +550,7 @@ SEXP rnng_ctx_create(SEXP socket) {
 
   PROTECT(context = R_MakeExternalPtr(ctx, nano_ContextSymbol, R_NilValue));
   R_RegisterCFinalizerEx(context, context_finalizer, TRUE);
+  Rf_setAttrib(context, R_MissingArg, REFHOOK(socket));
   UNPROTECT(1);
   return context;
 
@@ -567,7 +583,7 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
 
     nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(con);
     mod = nano_encodes(mode);
-    if (mod == 1) buf = nano_serialize(data); else NANO_ENCODE(buf, data);
+    if (mod == 1) buf = nano_serialize(data, REFHOOK(con)); else NANO_ENCODE(buf, data);
 
     if (block == R_NilValue) {
 
@@ -623,7 +639,7 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
       dur = (nng_duration) Rf_asInteger(block);
     }
     mod = nano_encodes(mode);
-    if (mod == 1) buf = nano_serialize(data); else NANO_ENCODE(buf, data);
+    if (mod == 1) buf = nano_serialize(data, REFHOOK(con)); else NANO_ENCODE(buf, data);
 
     if ((xc = nng_msg_alloc(&msgp, 0))) {
       NANO_FREE(buf);
@@ -710,7 +726,7 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP keep, SEXP bytes) {
       xc = nng_recv(*sock, &buf, &sz, NNG_FLAG_ALLOC + NNG_FLAG_NONBLOCK);
       if (xc)
         return kpr ? mk_error_recv(xc) : mk_error(xc);
-      res = nano_decode(buf, sz, mod, kpr);
+      res = mod == 1 ? nano_unserialize(buf, sz, kpr, REFHOOK(con)) : nano_decode(buf, sz, mod, kpr);
       nng_free(buf, sz);
 
     } else if (TYPEOF(block) == LGLSXP) {
@@ -719,7 +735,7 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP keep, SEXP bytes) {
       xc = blk ? nng_recv(*sock, &buf, &sz, NNG_FLAG_ALLOC): nng_recv(*sock, &buf, &sz, NNG_FLAG_ALLOC + NNG_FLAG_NONBLOCK);
       if (xc)
         return kpr ? mk_error_recv(xc) : mk_error(xc);
-      res = nano_decode(buf, sz, mod, kpr);
+      res = mod == 1 ? nano_unserialize(buf, sz, kpr, REFHOOK(con)) : nano_decode(buf, sz, mod, kpr);
       nng_free(buf, sz);
 
     } else {
@@ -739,7 +755,7 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP keep, SEXP bytes) {
       nng_aio_free(aiop);
       buf = nng_msg_body(msgp);
       sz = nng_msg_len(msgp);
-      res = nano_decode(buf, sz, mod, kpr);
+      res = mod == 1 ? nano_unserialize(buf, sz, kpr, REFHOOK(con)) : nano_decode(buf, sz, mod, kpr);
       nng_msg_free(msgp);
     }
 
@@ -773,7 +789,7 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP keep, SEXP bytes) {
     nng_aio_free(aiop);
     buf = nng_msg_body(msgp);
     sz = nng_msg_len(msgp);
-    res = nano_decode(buf, sz, mod, kpr);
+    res = mod == 1 ? nano_unserialize(buf, sz, kpr, REFHOOK(con)) : nano_decode(buf, sz, mod, kpr);
     nng_msg_free(msgp);
 
   } else if (ptrtag == nano_StreamSymbol) {
@@ -1265,22 +1281,5 @@ SEXP rnng_strcat(SEXP a, SEXP b) {
   memcpy(buf + alen, bp, blen + 1);
 
   return NANO_STRING(buf, alen + blen);
-
-}
-
-SEXP rnng_register_refhook(SEXP fun) {
-
-  switch(TYPEOF(fun)) {
-  case NILSXP:
-  case CLOSXP:
-    nano_refhook = fun;
-    break;
-  case SYMSXP:
-    if (fun == R_MissingArg) break;
-  default:
-    Rf_error("'fun' must be a function or NULL");
-  }
-
-  return nano_refhook;
 
 }
