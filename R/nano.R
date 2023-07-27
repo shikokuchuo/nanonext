@@ -96,7 +96,7 @@ nano <- function(protocol = c("bus", "pair", "push", "pull", "pub", "sub",
                  autostart = TRUE) {
 
   nano <- `class<-`(new.env(hash = FALSE), "nanoObject")
-  socket <- .Call(rnng_protocol_open, protocol, FALSE)
+  socket <- socket(protocol)
   sock2 <- NULL
   makeActiveBinding(sym = "socket",
                     fun = function(x) if (length(sock2)) sock2 else socket,

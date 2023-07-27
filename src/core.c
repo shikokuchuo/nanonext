@@ -59,6 +59,17 @@ SEXP mk_error_ncurl(const int xc) {
 
 }
 
+static SEXP nano_CallHook(SEXP x, SEXP fun) {
+
+  SEXP out, call;
+  PROTECT(call = Rf_lcons(fun, Rf_cons(x, R_NilValue)));
+  out = Rf_eval(call, R_GlobalEnv);
+  UNPROTECT(1);
+
+  return out;
+
+}
+
 void nano_write_char(R_outpstream_t stream, int c) {
 
   nano_buf *buf = (nano_buf *) stream->data;
@@ -122,8 +133,8 @@ nano_buf nano_serialize(SEXP object) {
     NANONEXT_SERIAL_VER,
     nano_write_char,
     nano_write_bytes,
-    NULL,
-    R_NilValue
+    nano_refhook != R_NilValue ? nano_CallHook : NULL,
+    nano_refhook
   );
 
   R_Serialize(object, &output_stream);
@@ -147,8 +158,8 @@ SEXP nano_unserialize(unsigned char *buf, size_t sz) {
     R_pstream_any_format,
     nano_read_char,
     nano_read_bytes,
-    NULL,
-    NULL
+    nano_refhook != R_NilValue ? nano_CallHook : NULL,
+    nano_refhook
   );
 
   return R_Unserialize(&input_stream);
@@ -1254,5 +1265,22 @@ SEXP rnng_strcat(SEXP a, SEXP b) {
   memcpy(buf + alen, bp, blen + 1);
 
   return NANO_STRING(buf, alen + blen);
+
+}
+
+SEXP rnng_register_refhook(SEXP fun) {
+
+  switch(TYPEOF(fun)) {
+  case NILSXP:
+  case CLOSXP:
+    nano_refhook = fun;
+    break;
+  case SYMSXP:
+    if (fun == R_MissingArg) break;
+  default:
+    Rf_error("'fun' must be a function or NULL");
+  }
+
+  return nano_refhook;
 
 }

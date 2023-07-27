@@ -295,3 +295,43 @@ nng_fini <- function() invisible(.Call(rnng_fini))
 #' @export
 #'
 strcat <- function(a, b) .Call(rnng_strcat, a, b)
+
+#' Register Refhook Function for Serialization and Unserialization
+#'
+#' The function is registered (replacing any previously registered function) and
+#'     applies to all subsequent serialisation and unserialisation calls within
+#'     the package.
+#'
+#' @param fun register a function to handle reference objects, such as those
+#'     accessed via an external pointer. This function must have
+#'     the signature \code{function(x) if (<validation>) {<encode function -
+#'     must return a character value>} else if (is.character(x))
+#'     {<decode function>}}. Specify NULL to reset, or without arguments to
+#'     retrieve the current setting.
+#'
+#' @return The currently registered refhook function.
+#'
+#' @examples
+#'
+#' s <- socket(protocol = "req", listen = "inproc://nanorefhook")
+#' s1 <- socket(protocol = "rep", dial = "inproc://nanorefhook")
+#'
+#' wr <- weakref(s, random(7))
+#' wr
+#' weakref_value(wr)
+#'
+#' register_refhook(
+#'   function(x) if (typeof(x) == "weakref") base64enc(weakref_value(x)) else
+#'     if (is.character(x)) unserialize(base64dec(x, convert = FALSE))
+#' )
+#'
+#' send(s, wr)
+#' recv(s1)
+#'
+#' register_refhook()
+#' register_refhook(NULL)
+#'
+#' @export
+#'
+register_refhook <- function(fun)
+  .Call(rnng_register_refhook, if (missing(fun)) substitute() else fun)

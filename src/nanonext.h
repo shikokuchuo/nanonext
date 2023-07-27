@@ -109,16 +109,14 @@ typedef struct nano_cv_s {
 
 #define NANONEXT_INIT_BUFSIZE 16384
 #define NANONEXT_SERIAL_VER 3
-#define NANO_ALLOC(x, sz) {                                    \
+#define NANO_ALLOC(x, sz)                                      \
   x.buf = R_Calloc(sz, unsigned char);                         \
   x.len = (R_xlen_t) sz;                                       \
-  x.cur = 0;                                                   \
-}
-#define NANO_INIT(x, ptr, sz) {                                \
+  x.cur = 0;
+#define NANO_INIT(x, ptr, sz)                                  \
   x.buf = ptr;                                                 \
   x.len = 0;                                                   \
-  x.cur = (R_xlen_t) sz;                                       \
-}
+  x.cur = (R_xlen_t) sz;
 #define NANO_FREE(x) if (x.len) R_Free(x.buf);
 typedef struct nano_buf_s {
   unsigned char *buf;
@@ -134,7 +132,6 @@ extern SEXP nano_encode(SEXP);
 extern int nano_encodes(SEXP);
 extern int nano_matcharg(SEXP);
 extern int nano_matchargs(SEXP);
-extern SEXP nano_serial(SEXP);
 extern nano_buf nano_serialize(SEXP);
 extern SEXP nano_unserialize(unsigned char *, size_t);
 extern SEXP rawOneString(unsigned char *, R_xlen_t, R_xlen_t *);
@@ -172,6 +169,7 @@ extern SEXP nano_error;
 extern SEXP nano_ncurlAio;
 extern SEXP nano_ncurlSession;
 extern SEXP nano_recvAio;
+extern SEXP nano_refhook;
 extern SEXP nano_sendAio;
 extern SEXP nano_success;
 extern SEXP nano_unresolved;
@@ -219,6 +217,7 @@ extern SEXP rnng_ncurl_transact(SEXP);
 extern SEXP rnng_pipe_notify(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 extern SEXP rnng_protocol_open(SEXP, SEXP);
 extern SEXP rnng_random(SEXP);
+extern SEXP rnng_register_refhook(SEXP);
 extern SEXP rnng_recv(SEXP, SEXP, SEXP, SEXP, SEXP);
 extern SEXP rnng_recv_aio(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 extern SEXP rnng_request(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);

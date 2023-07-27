@@ -2,6 +2,10 @@
 
 *This version contains performance enhancements which have resulted in potentially breaking changes; please review carefully and only update when ready.*
 
+#### New Features
+
+* `register_refhook()` allows use of a function to handle serialisation of reference objects such as those accessed via an external pointer e.g. tensors from the 'torch' package etc. Automatically applies to all package functions.
+
 #### Updates
 
 * The argument 'keep.raw' for all receive functions is deprecated. This is as a raw vector is no longer created as part of unserialisation or data conversion.
