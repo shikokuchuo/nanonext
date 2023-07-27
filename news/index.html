@@ -57,6 +57,11 @@
 <h2 class="page-header" data-toc-text="0.9.1.9000" id="nanonext-0919000-development">nanonext 0.9.1.9000 (development)<a class="anchor" aria-label="anchor" href="#nanonext-0919000-development"></a></h2>
 <p><em>This version contains performance enhancements which have resulted in potentially breaking changes; please review carefully and only update when ready.</em></p>
 <div class="section level5">
+<h5 id="new-features-0-9-1-9000">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-9-1-9000"></a></h5>
+<ul><li>
+<code><a href="../reference/register_refhook.html">register_refhook()</a></code> allows use of a function to handle serialisation of reference objects such as those accessed via an external pointer e.g. tensors from the ‘torch’ package etc. Automatically applies to all package functions.</li>
+</ul></div>
+<div class="section level5">
 <h5 id="updates-0-9-1-9000">Updates<a class="anchor" aria-label="anchor" href="#updates-0-9-1-9000"></a></h5>
 <ul><li>The argument ‘keep.raw’ for all receive functions is deprecated. This is as a raw vector is no longer created as part of unserialisation or data conversion.</li>
 <li>Higher performance send and receive of serialized R objects.
