@@ -94,7 +94,7 @@ retrieve the current setting.</p></dd>
 <span class="r-in"><span><span class="va">wr</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;weak reference&gt;</span>
 <span class="r-in"><span><span class="fu"><a href="weakref.html">weakref_value</a></span><span class="op">(</span><span class="va">wr</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  236199801 3647071988 1921552332 4066764305 2272760533  912869991 1454918949</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2335524709 1190000411 1056781872 1844748363 2583606150 1191300311 2953490899</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">register_refhook</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/typeof.html" class="external-link">typeof</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">==</span> <span class="st">"weakref"</span><span class="op">)</span> <span class="fu"><a href="base64enc.html">base64enc</a></span><span class="op">(</span><span class="fu"><a href="weakref.html">weakref_value</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span> <span class="kw">else</span></span></span>
@@ -102,19 +102,22 @@ retrieve the current setting.</p></dd>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> function(x) if (typeof(x) == "weakref") base64enc(weakref_value(x)) else</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     if (is.character(x)) unserialize(base64dec(x, convert = FALSE))</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x557b06057070&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x55a5a9bac6a0&gt;</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="send.html">send</a></span><span class="op">(</span><span class="va">s</span>, <span class="va">wr</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
 <span class="r-in"><span><span class="fu"><a href="recv.html">recv</a></span><span class="op">(</span><span class="va">s1</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  236199801 3647071988 1921552332 4066764305 2272760533  912869991 1454918949</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2335524709 1190000411 1056781872 1844748363 2583606150 1191300311 2953490899</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">register_refhook</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> function(x) if (typeof(x) == "weakref") base64enc(weakref_value(x)) else</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     if (is.character(x)) unserialize(base64dec(x, convert = FALSE))</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x557b06057070&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x55a5a9bac6a0&gt;</span>
 <span class="r-in"><span><span class="fu">register_refhook</span><span class="op">(</span><span class="cn">NULL</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="close.html">close</a></span><span class="op">(</span><span class="va">s1</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="close.html">close</a></span><span class="op">(</span><span class="va">s</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
