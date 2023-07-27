@@ -132,7 +132,7 @@ nano_buf nano_serialize(SEXP object) {
 
 }
 
-SEXP nano_unserial(unsigned char *buf, size_t sz) {
+SEXP nano_unserialize(unsigned char *buf, size_t sz) {
 
   nano_buf nbuf;
   struct R_inpstream_st input_stream;
@@ -358,7 +358,7 @@ SEXP nano_decode(unsigned char *buf, size_t sz, const int mod, const int kpr) {
   SEXP data;
 
   if (mod == 1) {
-    data = nano_unserial(buf, sz);
+    data = nano_unserialize(buf, sz);
   } else if (mod == 2) {
     PROTECT(data = Rf_allocVector(STRSXP, sz));
     R_xlen_t i, m, nbytes = sz, np = 0;

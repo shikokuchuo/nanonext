@@ -136,7 +136,7 @@ extern int nano_matcharg(SEXP);
 extern int nano_matchargs(SEXP);
 extern SEXP nano_serial(SEXP);
 extern nano_buf nano_serialize(SEXP);
-extern SEXP nano_unserial(unsigned char *, size_t);
+extern SEXP nano_unserialize(unsigned char *, size_t);
 extern SEXP rawOneString(unsigned char *, R_xlen_t, R_xlen_t *);
 extern SEXP rawToChar(unsigned char *, size_t);
 extern void socket_finalizer(SEXP);
