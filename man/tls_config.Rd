@@ -8,23 +8,21 @@ tls_config(client = NULL, server = NULL, pass = NULL, auth = is.null(server))
 }
 \arguments{
 \item{client}{\strong{either} the character path to a file containing X.509
-    certificate(s) in PEM format, comprising the certificate authority
-    certificate chain (and revocation list if present), used to validate
-    certificates presented by peers,
-
-    \strong{or} a length 2 character vector comprising [i] the certificate
-    authority certificate chain and [ii] the certificate revocation list or
-    the empty character \code{""} if not applicable.}
+certificate(s) in PEM format, comprising the certificate authority
+certificate chain (and revocation list if present), used to validate
+certificates presented by peers,\cr
+\strong{or} a length 2 character vector comprising [i] the certificate
+authority certificate chain and [ii] the certificate revocation list or
+the empty character \code{""} if not applicable.}
 
 \item{server}{\strong{either} the character path to a file containing
-    the PEM encoded certificate and associated private key (may contain
-    additional certificates leading to a validation chain, with the leaf
-    certificate first, although the self-signed root is not required as the
-    client should already have this),
-
-    \strong{or} a length 2 character vector comprising [i] the certificate
-    (optionally certificate chain) and [ii] the associated private or secret
-    key.}
+the PEM encoded certificate and associated private key (may contain
+additional certificates leading to a validation chain, with the leaf
+certificate first, although the self-signed root is not required as the
+client should already have this),\cr
+\strong{or} a length 2 character vector comprising [i] the certificate
+(optionally certificate chain) and [ii] the associated private or secret
+key.}
 
 \item{pass}{(optional) required only if the secret key supplied to 'server'
 is encrypted with a password. For security, consider providing through a

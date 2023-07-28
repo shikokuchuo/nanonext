@@ -11,7 +11,7 @@ nano(
   listen = NULL,
   tls = NULL,
   autostart = TRUE,
-  refhook = NULL
+  fun = NULL
 )
 }
 \arguments{
@@ -37,13 +37,18 @@ set to NA to start synchronously - this is less resilient if a
 connection is not immediately possible, but avoids subtle errors from
 attempting to use the socket before an asynchronous dial has completed.}
 
-\item{refhook}{[default NULL] (for sending/receiving serialised objects only)
-register a function to handle reference objects, such as those accessed
-via an external pointer. This function must have the signature
-\code{function(x) if ( <validate class of reference object> )
-{ <encode function> } else if ( <validate type of encoded object> )
-{ <decode function> }}. All connected sockets should register the same
-function (if used) to ensure seamless serialisation / unserialisation.}
+\item{fun}{[default NULL] (for sending/receiving serialised objects only)
+    register a function to handle non-system reference objects (all external
+    pointers, weak references, and environments other than namespace and
+    package environments and \code{.GlobalEnv}). This function must have the
+    signature:
+
+    \code{function(x) if ( <validate class of reference object> )
+    { <encode function> } else} \cr
+    \code{    if ( <validate type of encoded object> ) { <decode function> }}
+
+    All connected sockets should register the same function (if used) to
+    ensure seamless serialisation / unserialisation.}
 }
 \value{
 A nano object of class 'nanoObject'.

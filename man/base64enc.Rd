@@ -12,11 +12,12 @@ base64dec(x, convert = TRUE)
 \arguments{
 \item{x}{an object.}
 
-\item{convert}{[default TRUE] For \strong{base64enc}: logical TRUE to encode
-to a character string or FALSE to a raw vector. For \strong{base64dec}:
-logical TRUE to convert back to a character string, FALSE to convert back
-to a raw vector or NA to decode and then unserialize to obtain the
-original object. Supplying a non-logical value will error.}
+\item{convert}{For \strong{base64enc}: [default TRUE] logical TRUE to encode
+to a character string or FALSE to a raw vector.\cr
+For \strong{base64dec}: [default TRUE] logical TRUE to convert back to a
+character string, FALSE to convert back to a raw vector or NA to decode
+and then unserialize to obtain the original object. Supplying a non-logical
+value will error.}
 }
 \value{
 For \strong{base64enc}: A character string or raw vector depending on

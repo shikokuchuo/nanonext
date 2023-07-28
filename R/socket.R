@@ -40,13 +40,18 @@
 #' @param raw [default FALSE] whether to open raw mode sockets. Note: not for
 #'     general use - do not enable unless you have a specific need, such as for
 #'     use with \code{\link{device}} (refer to NNG documentation).
-#' @param refhook [default NULL] (for sending/receiving serialised objects only)
-#'     register a function to handle reference objects, such as those accessed
-#'     via an external pointer. This function must have the signature
+#' @param fun [default NULL] (for sending/receiving serialised objects only)
+#'     register a function to handle non-system reference objects (all external
+#'     pointers, weak references, and environments other than namespace and
+#'     package environments and \code{.GlobalEnv}). This function must have the
+#'     signature:
+#'
 #'     \code{function(x) if ( <validate class of reference object> )
-#'     { <encode function> } else if ( <validate type of encoded object> )
-#'     { <decode function> }}. All connected sockets should register the same
-#'     function (if used) to ensure seamless serialisation / unserialisation.
+#'     { <encode function> } else} \cr
+#'     \code{    if ( <validate type of encoded object> ) { <decode function> }}
+#'
+#'     All connected sockets should register the same function (if used) to
+#'     ensure seamless serialisation / unserialisation.
 #' @inheritParams dial
 #'
 #' @return A Socket (object of class 'nanoSocket' and 'nano').
@@ -69,6 +74,10 @@
 #'     protocol supports it. Any created contexts will inherit the 'refhook'
 #'     function registered at the socket.
 #'
+#'     The function registered with 'fun' maps to the 'refhook' function of
+#'     \link{serialize} and \link{unserialize}, but extends the R mechanism to
+#'     allow any type of encoded object.
+#'
 #' @section Protocols:
 #'
 #'     The following Scalability Protocols (communication patterns) are implemented:
@@ -84,10 +93,10 @@
 #'     Please see \link{protocols} for further documentation.
 #'
 #' @examples
-#' refhook <- function(x) if (typeof(x) == "weakref") weakref_value(x) else if (is.vector(x)) x
+#' fun <- function(x) if (typeof(x) == "weakref") weakref_value(x) else if (is.vector(x)) x
 #'
-#' s <- socket(protocol = "req", listen = "inproc://nanosocket", refhook = refhook)
-#' s1 <- socket(protocol = "rep", dial = "inproc://nanosocket", refhook = refhook)
+#' s <- socket(protocol = "req", listen = "inproc://nanosocket", fun = fun)
+#' s1 <- socket(protocol = "rep", dial = "inproc://nanosocket", fun = fun)
 #'
 #' wr <- weakref(s, random(7))
 #' wr
@@ -108,9 +117,9 @@ socket <- function(protocol = c("bus", "pair", "push", "pull", "pub", "sub",
                    tls = NULL,
                    autostart = TRUE,
                    raw = FALSE,
-                   refhook = NULL) {
+                   fun = NULL) {
 
-  sock <- .Call(rnng_protocol_open, protocol, raw, refhook)
+  sock <- .Call(rnng_protocol_open, protocol, raw, fun)
   if (length(dial)) .Call(rnng_dial, sock, dial, tls, autostart, TRUE)
   if (length(listen)) .Call(rnng_listen, sock, listen, tls, autostart, TRUE)
   sock

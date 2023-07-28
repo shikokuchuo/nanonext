@@ -25,8 +25,7 @@
 #' @param client \strong{either} the character path to a file containing X.509
 #'     certificate(s) in PEM format, comprising the certificate authority
 #'     certificate chain (and revocation list if present), used to validate
-#'     certificates presented by peers,
-#'
+#'     certificates presented by peers,\cr
 #'     \strong{or} a length 2 character vector comprising [i] the certificate
 #'     authority certificate chain and [ii] the certificate revocation list or
 #'     the empty character \code{""} if not applicable.
@@ -34,8 +33,7 @@
 #'     the PEM encoded certificate and associated private key (may contain
 #'     additional certificates leading to a validation chain, with the leaf
 #'     certificate first, although the self-signed root is not required as the
-#'     client should already have this),
-#'
+#'     client should already have this),\cr
 #'     \strong{or} a length 2 character vector comprising [i] the certificate
 #'     (optionally certificate chain) and [ii] the associated private or secret
 #'     key.
@@ -194,11 +192,12 @@ sha1 <- function(x, key = NULL, convert = TRUE) .Call(rnng_sha1, x, key, convert
 #' Encodes / decodes a character string or arbitrary R object to base64 encoding.
 #'
 #' @inheritParams sha256
-#' @param convert [default TRUE] For \strong{base64enc}: logical TRUE to encode
-#'     to a character string or FALSE to a raw vector. For \strong{base64dec}:
-#'     logical TRUE to convert back to a character string, FALSE to convert back
-#'     to a raw vector or NA to decode and then unserialize to obtain the
-#'     original object. Supplying a non-logical value will error.
+#' @param convert For \strong{base64enc}: [default TRUE] logical TRUE to encode
+#'     to a character string or FALSE to a raw vector.\cr
+#'     For \strong{base64dec}: [default TRUE] logical TRUE to convert back to a
+#'     character string, FALSE to convert back to a raw vector or NA to decode
+#'     and then unserialize to obtain the original object. Supplying a non-logical
+#'     value will error.
 #'
 #' @return For \strong{base64enc}: A character string or raw vector depending on
 #'     the value of 'convert'.

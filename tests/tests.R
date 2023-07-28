@@ -516,9 +516,9 @@ nanotestxp(tls <- tls_config())
 nanotestxp(s <- socket(listen = "wss://127.0.0.1:5557", tls = tls))
 nanotestz(close(s))
 
-refhook <- refhook <- function(x) if (typeof(x) == "weakref") weakref_value(x) else if (is.vector(x)) x
-nanotestnano(s <- socket(protocol = "req", listen = "inproc://nanorefhook", refhook = refhook))
-nanotestnano(s1 <- socket(protocol = "rep", dial = "inproc://nanorefhook", refhook = refhook))
+fun <- function(x) if (typeof(x) == "weakref") weakref_value(x) else if (is.vector(x)) x
+nanotestnano(s <- socket(protocol = "req", listen = "inproc://nanorefhook", fun = fun))
+nanotestnano(s1 <- socket(protocol = "rep", dial = "inproc://nanorefhook", fun = fun))
 k <- new.env()
 nanotest(is.double(v <- random(7)))
 nanotest(typeof(w <- weakref(k, v)) == "weakref")
