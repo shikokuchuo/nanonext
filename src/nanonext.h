@@ -214,6 +214,7 @@ extern SEXP rnng_ncurl_aio(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 extern SEXP rnng_ncurl_session(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 extern SEXP rnng_ncurl_session_close(SEXP);
 extern SEXP rnng_ncurl_transact(SEXP);
+extern SEXP rnng_non_ref(SEXP);
 extern SEXP rnng_pipe_notify(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 extern SEXP rnng_protocol_open(SEXP, SEXP, SEXP);
 extern SEXP rnng_random(SEXP);

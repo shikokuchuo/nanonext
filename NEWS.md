@@ -4,7 +4,8 @@
 
 #### New Features
 
-* `socket()` gains the argument 'fun' to register a function to handle serialisation and unserialisation of reference objects such as those accessed via an external pointer e.g. tensors from the 'torch' package etc.
+* `socket()` gains the argument 'refhook' to register a function to handle serialisation and unserialisation of reference objects such as those accessed via an external pointer e.g. tensors from the 'torch' package etc.
+* `refhook()` convenience helper to construct functions with the required signature for the 'refhook' argument at `socket()`.
 * `base64dec()` argument 'convert' now accepts NA as an input, which automatically unserializes the decoded object.
 
 #### Updates

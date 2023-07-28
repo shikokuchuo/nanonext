@@ -34,7 +34,7 @@ Contexts allow the independent and concurrent use of stateful
     attach a new context at \code{$context}. See \code{\link{nano}}.
 
     The context will automatically inherit any custom serialisation function
-    registered via the argument 'fun' at the socket.
+    registered via the 'refhook' argument at the socket.
 }
 \examples{
 s <- socket("req", listen = "inproc://nanonext")

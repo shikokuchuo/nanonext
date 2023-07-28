@@ -11,7 +11,7 @@ nano(
   listen = NULL,
   tls = NULL,
   autostart = TRUE,
-  fun = NULL
+  refhook = NULL
 )
 }
 \arguments{
@@ -37,7 +37,7 @@ set to NA to start synchronously - this is less resilient if a
 connection is not immediately possible, but avoids subtle errors from
 attempting to use the socket before an asynchronous dial has completed.}
 
-\item{fun}{[default NULL] (for sending/receiving serialised objects only)
+\item{refhook}{[default NULL] (for sending/receiving serialised objects only)
     register a function to handle non-system reference objects (all external
     pointers, weak references, and environments other than namespace and
     package environments and \code{.GlobalEnv}). This function must have the
@@ -47,6 +47,7 @@ attempting to use the socket before an asynchronous dial has completed.}
     { <encode function> } else} \cr
     \code{    if ( <validate type of encoded object> ) { <decode function> }}
 
+    The utility \code{\link{refhook}} may be used to construct such a function.
     All connected sockets should register the same function (if used) to
     ensure seamless serialisation / unserialisation.}
 }

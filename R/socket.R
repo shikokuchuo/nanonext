@@ -40,7 +40,7 @@
 #' @param raw [default FALSE] whether to open raw mode sockets. Note: not for
 #'     general use - do not enable unless you have a specific need, such as for
 #'     use with \code{\link{device}} (refer to NNG documentation).
-#' @param fun [default NULL] (for sending/receiving serialised objects only)
+#' @param refhook [default NULL] (for sending/receiving serialised objects only)
 #'     register a function to handle non-system reference objects (all external
 #'     pointers, weak references, and environments other than namespace and
 #'     package environments and \code{.GlobalEnv}). This function must have the
@@ -50,6 +50,7 @@
 #'     { <encode function> } else} \cr
 #'     \code{    if ( <validate type of encoded object> ) { <decode function> }}
 #'
+#'     The utility \code{\link{refhook}} may be used to construct such a function.
 #'     All connected sockets should register the same function (if used) to
 #'     ensure seamless serialisation / unserialisation.
 #' @inheritParams dial
@@ -71,12 +72,13 @@
 #'     \code{\link{listen}}.
 #'
 #'     New contexts may also be created using \code{\link{context}} if the
-#'     protocol supports it. Any created contexts will inherit the function 'fun'
-#'     registered at the socket.
+#'     protocol supports it. Any created contexts will inherit the 'refhook'
+#'     function registered at the socket.
 #'
-#'     The custom function registered with 'fun' maps to the 'refhook' function
-#'     of \link{serialize} and \link{unserialize}, but extends the R mechanism
-#'     to allow any type of encoded object.
+#'     Note that the argument 'refhook' is an improved version of the 'refhook'
+#'     argument of \link{serialize} and \link{unserialize} and not identical.
+#'     Here it allows the serialisation within the same object of any custom
+#'     encoded object type.
 #'
 #' @section Protocols:
 #'
@@ -93,10 +95,10 @@
 #'     Please see \link{protocols} for further documentation.
 #'
 #' @examples
-#' fun <- function(x) if (typeof(x) == "weakref") weakref_value(x) else if (is.vector(x)) x
+#' hook <- refhook(typeof(x) == "weakref", weakref_value(x), x)
 #'
-#' s <- socket(protocol = "req", listen = "inproc://nanosocket", fun = fun)
-#' s1 <- socket(protocol = "rep", dial = "inproc://nanosocket", fun = fun)
+#' s <- socket(protocol = "req", listen = "inproc://nanosocket", refhook = hook)
+#' s1 <- socket(protocol = "rep", dial = "inproc://nanosocket", refhook = hook)
 #'
 #' wr <- weakref(s, random(7))
 #' wr
@@ -117,9 +119,9 @@ socket <- function(protocol = c("bus", "pair", "push", "pull", "pub", "sub",
                    tls = NULL,
                    autostart = TRUE,
                    raw = FALSE,
-                   fun = NULL) {
+                   refhook = NULL) {
 
-  sock <- .Call(rnng_protocol_open, protocol, raw, fun)
+  sock <- .Call(rnng_protocol_open, protocol, raw, refhook)
   if (length(dial)) .Call(rnng_dial, sock, dial, tls, autostart, TRUE)
   if (length(listen)) .Call(rnng_listen, sock, listen, tls, autostart, TRUE)
   sock
@@ -165,3 +167,34 @@ NULL
 #' @export
 #'
 close.nanoSocket <- function(con, ...) invisible(.Call(rnng_close, con))
+
+#' Refhook Constructor
+#'
+#' Create a function with the required signature for the 'refhook' argument of
+#'     \code{\link{socket}}.
+#'
+#' @param valid an expression of the validation e.g. \code{inherits(x, "torch_tensor")}
+#'     or \code{typeof(x) == "externalptr"}.
+#' @param encode an expression of the encode function e.g. \code{weakref_value(x)}.
+#' @param decode an expression of the decode function e.g. \code{unserialize(x)}.
+#'
+#' @return a function.
+#'
+#' @details The expressions supplied should all reference the single argument
+#'     '\code{x}'.
+#'
+#'     'valid' will be evaluated within an \code{if()} block and 'encode' and
+#'     'decode' should be wrapped in \code{{}} if a compound statement.
+#'
+#' @examples
+#' refhook(typeof(x) == "weakref", weakref_value(x), x)
+#'
+#' @export
+#'
+refhook <- function(valid, encode, decode) {
+
+  fun <- function(x) {}
+  body(fun) <- bquote(if (.(substitute(valid))) .(substitute(encode)) else if (.Call(rnng_non_ref, x)) .(substitute(decode)))
+  fun
+
+}

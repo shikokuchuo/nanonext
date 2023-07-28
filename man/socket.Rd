@@ -12,7 +12,7 @@ socket(
   tls = NULL,
   autostart = TRUE,
   raw = FALSE,
-  fun = NULL
+  refhook = NULL
 )
 }
 \arguments{
@@ -42,7 +42,7 @@ attempting to use the socket before an asynchronous dial has completed.}
 general use - do not enable unless you have a specific need, such as for
 use with \code{\link{device}} (refer to NNG documentation).}
 
-\item{fun}{[default NULL] (for sending/receiving serialised objects only)
+\item{refhook}{[default NULL] (for sending/receiving serialised objects only)
     register a function to handle non-system reference objects (all external
     pointers, weak references, and environments other than namespace and
     package environments and \code{.GlobalEnv}). This function must have the
@@ -52,6 +52,7 @@ use with \code{\link{device}} (refer to NNG documentation).}
     { <encode function> } else} \cr
     \code{    if ( <validate type of encoded object> ) { <decode function> }}
 
+    The utility \code{\link{refhook}} may be used to construct such a function.
     All connected sockets should register the same function (if used) to
     ensure seamless serialisation / unserialisation.}
 }
@@ -79,12 +80,13 @@ NNG presents a socket view of networking. The sockets are constructed
     \code{\link{listen}}.
 
     New contexts may also be created using \code{\link{context}} if the
-    protocol supports it. Any created contexts will inherit the function 'fun'
-    registered at the socket.
+    protocol supports it. Any created contexts will inherit the 'refhook'
+    function registered at the socket.
 
-    The custom function registered with 'fun' maps to the 'refhook' function
-    of \link{serialize} and \link{unserialize}, but extends the R mechanism
-    to allow any type of encoded object.
+    Note that the argument 'refhook' is an improved version of the 'refhook'
+    argument of \link{serialize} and \link{unserialize} and not identical.
+    Here it allows the serialisation within the same object of any custom
+    encoded object type.
 }
 \section{Protocols}{
 
@@ -103,10 +105,10 @@ NNG presents a socket view of networking. The sockets are constructed
 }
 
 \examples{
-fun <- function(x) if (typeof(x) == "weakref") weakref_value(x) else if (is.vector(x)) x
+hook <- refhook(typeof(x) == "weakref", weakref_value(x), x)
 
-s <- socket(protocol = "req", listen = "inproc://nanosocket", fun = fun)
-s1 <- socket(protocol = "rep", dial = "inproc://nanosocket", fun = fun)
+s <- socket(protocol = "req", listen = "inproc://nanosocket", refhook = hook)
+s1 <- socket(protocol = "rep", dial = "inproc://nanosocket", refhook = hook)
 
 wr <- weakref(s, random(7))
 wr
