@@ -486,7 +486,8 @@ nanotest(is.character(sha256(quote(a))))
 nanotest(base64enc("test") == "dGVzdA==")
 nanotest(base64dec(base64enc("test")) == "test")
 nanotest(is.raw(base64enc(data.frame(), convert = FALSE)))
-nanotest(is.integer(unserialize(base64dec(base64enc(c(1L, 2L)), convert = FALSE))))
+nanotest(is.raw(base64dec(base64enc(as.raw(c(1L, 2L)), convert = FALSE), convert = FALSE)))
+nanotest(is.integer(base64dec(base64enc(c(1L, 2L)), convert = NA)))
 nanotesterr(base64dec("__"), "not valid base64")
 
 file <- tempfile()
@@ -515,7 +516,7 @@ nanotestxp(tls <- tls_config())
 nanotestxp(s <- socket(listen = "wss://127.0.0.1:5557", tls = tls))
 nanotestz(close(s))
 
-refhook <- function(x) if (typeof(x) == "weakref") base64enc(weakref_value(x)) else if (is.character(x)) unserialize(base64dec(x, convert = FALSE))
+refhook <- refhook <- function(x) if (typeof(x) == "weakref") weakref_value(x) else if (is.vector(x)) x
 nanotestnano(s <- socket(protocol = "req", listen = "inproc://nanorefhook", refhook = refhook))
 nanotestnano(s1 <- socket(protocol = "rep", dial = "inproc://nanorefhook", refhook = refhook))
 k <- new.env()

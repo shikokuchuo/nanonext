@@ -43,10 +43,10 @@
 #' @param refhook [default NULL] (for sending/receiving serialised objects only)
 #'     register a function to handle reference objects, such as those accessed
 #'     via an external pointer. This function must have the signature
-#'     \code{function(x) if ( <validation> ) { <encode function - must return a
-#'     character value> } else if (is.character(x)) { <decode function> }}. All
-#'     connected sockets should register the same function (if used) to ensure
-#'     seamless serialisation / unserialisation.
+#'     \code{function(x) if ( <validate class of reference object> )
+#'     { <encode function> } else if ( <validate type of encoded object> )
+#'     { <decode function> }}. All connected sockets should register the same
+#'     function (if used) to ensure seamless serialisation / unserialisation.
 #' @inheritParams dial
 #'
 #' @return A Socket (object of class 'nanoSocket' and 'nano').
@@ -84,8 +84,7 @@
 #'     Please see \link{protocols} for further documentation.
 #'
 #' @examples
-#' refhook <- function(x) if (typeof(x) == "weakref") base64enc(weakref_value(x)) else
-#'     if (is.character(x)) unserialize(base64dec(x, convert = FALSE))
+#' refhook <- function(x) if (typeof(x) == "weakref") weakref_value(x) else if (is.vector(x)) x
 #'
 #' s <- socket(protocol = "req", listen = "inproc://nanosocket", refhook = refhook)
 #' s1 <- socket(protocol = "rep", dial = "inproc://nanosocket", refhook = refhook)

@@ -12,35 +12,38 @@ base64dec(x, convert = TRUE)
 \arguments{
 \item{x}{an object.}
 
-\item{convert}{[default TRUE] logical value whether to convert the output to
-a character string or keep as a raw vector. Supplying a non-logical value
-will error.}
+\item{convert}{[default TRUE] For \strong{base64enc}: logical TRUE to encode
+to a character string or FALSE to a raw vector. For \strong{base64dec}:
+logical TRUE to convert back to a character string, FALSE to convert back
+to a raw vector or NA to decode and then unserialize to obtain the
+original object. Supplying a non-logical value will error.}
 }
 \value{
-A raw vector or character string depending on 'convert'.
+For \strong{base64enc}: A character string or raw vector depending on
+    the value of 'convert'.
+
+    For \strong{base64dec}: A character string, raw vector, or other object
+    depending on the value of 'convert'.
 }
 \description{
 Encodes / decodes a character string or arbitrary R object to base64 encoding.
 }
 \details{
 For encoding: a scalar string or raw vector (with no attributes) is
-    hashed directly, whilst all other objects are serialised first.
+    encoded directly, whilst all other objects are first serialised.
 
-    The result of encoding or decoding is always a raw vector, which is
-    translated to a character string if 'convert' is TRUE, or returned
-    directly if 'convert' is FALSE.
-
-    Set 'convert' to FALSE when decoding a raw vector or serialised object,
-    which may be further passed to \code{\link{unserialize}}.
+    For decoding: the value of 'convert' should be set to TRUE, FALSE or NA
+    to be the analogue of the above 3 cases in order to return the original
+    object.
 }
 \examples{
 base64enc("hello world!")
 base64dec(base64enc("hello world!"))
 
-base64enc("hello world!", convert = FALSE)
-base64dec(base64enc("hello world!", convert = FALSE))
+base64enc(as.raw(c(1L, 2L, 4L)), convert = FALSE)
+base64dec(base64enc(as.raw(c(1L, 2L, 4L)), convert = FALSE))
 
 base64enc(data.frame())
-unserialize(base64dec(base64enc(data.frame()), convert = FALSE))
+base64dec(base64enc(data.frame()), convert = NA)
 
 }

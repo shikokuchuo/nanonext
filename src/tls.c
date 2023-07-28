@@ -378,13 +378,19 @@ SEXP rnng_base64dec(SEXP x, SEXP convert) {
   if (xc)
     Rf_error("write buffer insufficient");
 
-  if (LOGICAL(convert)[0]) {
-    out = rawToChar(buf, olen);
-  } else {
+  switch (LOGICAL(convert)[0]) {
+  case 0:
     PROTECT(out = Rf_allocVector(RAWSXP, olen));
     memcpy(RAW(out), buf, olen);
     UNPROTECT(1);
+    break;
+  case 1:
+    out = rawToChar(buf, olen);
+    break;
+  default:
+    out = nano_unserialize(buf, olen, 0, R_NilValue);
   }
+
   R_Free(buf);
 
   return out;

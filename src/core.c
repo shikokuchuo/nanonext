@@ -59,17 +59,6 @@ SEXP mk_error_ncurl(const int xc) {
 
 }
 
-static SEXP nano_CallHook(SEXP x, SEXP fun) {
-
-  SEXP out, call;
-  PROTECT(call = Rf_lcons(fun, Rf_cons(x, R_NilValue)));
-  out = Rf_eval(call, R_GlobalEnv);
-  UNPROTECT(1);
-
-  return out;
-
-}
-
 void nano_write_char(R_outpstream_t stream, int c) {
 
   nano_buf *buf = (nano_buf *) stream->data;
@@ -116,6 +105,26 @@ void nano_read_bytes(R_inpstream_t stream, void *dst, int len) {
 
   memcpy(dst, buf->buf + buf->cur, len);
   buf->cur += len;
+
+}
+
+static SEXP nano_CallHook(SEXP x, SEXP fun) {
+
+  SEXP call, irp, out;
+  switch (TYPEOF(x)) {
+  case STRSXP:
+    PROTECT(irp = rnng_base64dec(x, Rf_ScalarLogical(NA_LOGICAL)));
+    PROTECT(call = Rf_lcons(fun, Rf_cons(irp, R_NilValue)));
+    out = Rf_eval(call, R_GlobalEnv);
+    break;
+  default:
+    PROTECT(call = Rf_lcons(fun, Rf_cons(x, R_NilValue)));
+    PROTECT(irp = Rf_eval(call, R_GlobalEnv));
+    out = rnng_base64enc(irp, Rf_ScalarLogical(1));
+  }
+
+  UNPROTECT(2);
+  return out;
 
 }
 
@@ -726,7 +735,14 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP keep, SEXP bytes) {
       xc = nng_recv(*sock, &buf, &sz, NNG_FLAG_ALLOC + NNG_FLAG_NONBLOCK);
       if (xc)
         return kpr ? mk_error_recv(xc) : mk_error(xc);
-      res = mod == 1 ? nano_unserialize(buf, sz, kpr, REFHOOK(con)) : nano_decode(buf, sz, mod, kpr);
+
+      if (mod == 1) {
+        PROTECT(res = REFHOOK(con));
+        res = nano_unserialize(buf, sz, kpr, res);
+        UNPROTECT(1);
+      } else {
+        res = nano_decode(buf, sz, mod, kpr);
+      }
       nng_free(buf, sz);
 
     } else if (TYPEOF(block) == LGLSXP) {
@@ -735,7 +751,14 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP keep, SEXP bytes) {
       xc = blk ? nng_recv(*sock, &buf, &sz, NNG_FLAG_ALLOC): nng_recv(*sock, &buf, &sz, NNG_FLAG_ALLOC + NNG_FLAG_NONBLOCK);
       if (xc)
         return kpr ? mk_error_recv(xc) : mk_error(xc);
-      res = mod == 1 ? nano_unserialize(buf, sz, kpr, REFHOOK(con)) : nano_decode(buf, sz, mod, kpr);
+
+      if (mod == 1) {
+        PROTECT(res = REFHOOK(con));
+        res = nano_unserialize(buf, sz, kpr, res);
+        UNPROTECT(1);
+      } else {
+        res = nano_decode(buf, sz, mod, kpr);
+      }
       nng_free(buf, sz);
 
     } else {
@@ -755,7 +778,13 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP keep, SEXP bytes) {
       nng_aio_free(aiop);
       buf = nng_msg_body(msgp);
       sz = nng_msg_len(msgp);
-      res = mod == 1 ? nano_unserialize(buf, sz, kpr, REFHOOK(con)) : nano_decode(buf, sz, mod, kpr);
+      if (mod == 1) {
+        PROTECT(res = REFHOOK(con));
+        res = nano_unserialize(buf, sz, kpr, res);
+        UNPROTECT(1);
+      } else {
+        res = nano_decode(buf, sz, mod, kpr);
+      }
       nng_msg_free(msgp);
     }
 
@@ -789,7 +818,13 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP keep, SEXP bytes) {
     nng_aio_free(aiop);
     buf = nng_msg_body(msgp);
     sz = nng_msg_len(msgp);
-    res = mod == 1 ? nano_unserialize(buf, sz, kpr, REFHOOK(con)) : nano_decode(buf, sz, mod, kpr);
+    if (mod == 1) {
+      PROTECT(res = REFHOOK(con));
+      res = nano_unserialize(buf, sz, kpr, res);
+      UNPROTECT(1);
+    } else {
+      res = nano_decode(buf, sz, mod, kpr);
+    }
     nng_msg_free(msgp);
 
   } else if (ptrtag == nano_StreamSymbol) {

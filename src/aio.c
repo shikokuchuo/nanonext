@@ -707,7 +707,15 @@ SEXP rnng_aio_get_msgraw(SEXP env) {
     sz = nng_msg_len(msg);
   }
 
-  PROTECT(out = mod == 1 ? nano_unserialize(buf, sz, kpr, REFHOOK(aio)) : nano_decode(buf, sz, mod, kpr));
+  if (mod == 1) {
+    PROTECT(aio);
+    PROTECT(out = REFHOOK(aio));
+    out = nano_unserialize(buf, sz, kpr, out);
+    UNPROTECT(2);
+  } else {
+    out = nano_decode(buf, sz, mod, kpr);
+  }
+  PROTECT(out);
   Rf_defineVar(nano_RawSymbol, VECTOR_ELT(out, 0), ENCLOS(env));
   Rf_defineVar(nano_ResultSymbol, VECTOR_ELT(out, 1), ENCLOS(env));
   Rf_defineVar(nano_AioSymbol, R_NilValue, env);
@@ -756,7 +764,15 @@ SEXP rnng_aio_get_msgraw2(SEXP env) {
     sz = nng_msg_len(msg);
   }
 
-  PROTECT(out = mod == 1 ? nano_unserialize(buf, sz, kpr, REFHOOK(aio)) : nano_decode(buf, sz, mod, kpr));
+  if (mod == 1) {
+    PROTECT(aio);
+    PROTECT(out = REFHOOK(aio));
+    out = nano_unserialize(buf, sz, kpr, out);
+    UNPROTECT(2);
+  } else {
+    out = nano_decode(buf, sz, mod, kpr);
+  }
+  PROTECT(out);
   Rf_defineVar(nano_RawSymbol, VECTOR_ELT(out, 0), ENCLOS(env));
   Rf_defineVar(nano_ResultSymbol, VECTOR_ELT(out, 1), ENCLOS(env));
   Rf_defineVar(nano_AioSymbol, R_NilValue, env);
@@ -807,7 +823,15 @@ SEXP rnng_aio_get_msgdata(SEXP env) {
     sz = nng_msg_len(msg);
   }
 
-  PROTECT(out = mod == 1 ? nano_unserialize(buf, sz, kpr, REFHOOK(aio)) : nano_decode(buf, sz, mod, kpr));
+  if (mod == 1) {
+    PROTECT(aio);
+    PROTECT(out = REFHOOK(aio));
+    out = nano_unserialize(buf, sz, kpr, out);
+    UNPROTECT(2);
+  } else {
+    out = nano_decode(buf, sz, mod, kpr);
+  }
+  PROTECT(out);
   if (kpr) {
     Rf_defineVar(nano_RawSymbol, VECTOR_ELT(out, 0), ENCLOS(env));
     Rf_defineVar(nano_ResultSymbol, VECTOR_ELT(out, 1), ENCLOS(env));
@@ -861,7 +885,15 @@ SEXP rnng_aio_get_msgdata2(SEXP env) {
     sz = nng_msg_len(msg);
   }
 
-  PROTECT(out = mod == 1 ? nano_unserialize(buf, sz, kpr, REFHOOK(aio)) : nano_decode(buf, sz, mod, kpr));
+  if (mod == 1) {
+    PROTECT(aio);
+    PROTECT(out = REFHOOK(aio));
+    out = nano_unserialize(buf, sz, kpr, out);
+    UNPROTECT(2);
+  } else {
+    out = nano_decode(buf, sz, mod, kpr);
+  }
+  PROTECT(out);
   if (kpr) {
     Rf_defineVar(nano_RawSymbol, VECTOR_ELT(out, 0), ENCLOS(env));
     Rf_defineVar(nano_ResultSymbol, VECTOR_ELT(out, 1), ENCLOS(env));
