@@ -79,12 +79,12 @@ NNG presents a socket view of networking. The sockets are constructed
     \code{\link{listen}}.
 
     New contexts may also be created using \code{\link{context}} if the
-    protocol supports it. Any created contexts will inherit the 'refhook'
-    function registered at the socket.
+    protocol supports it. Any created contexts will inherit the function 'fun'
+    registered at the socket.
 
-    The function registered with 'fun' maps to the 'refhook' function of
-    \link{serialize} and \link{unserialize}, but extends the R mechanism to
-    allow any type of encoded object.
+    The custom function registered with 'fun' maps to the 'refhook' function
+    of \link{serialize} and \link{unserialize}, but extends the R mechanism
+    to allow any type of encoded object.
 }
 \section{Protocols}{
 
