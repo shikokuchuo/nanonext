@@ -71,7 +71,7 @@
 <span>  tls <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  autostart <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  raw <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  refhook <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  fun <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -115,14 +115,16 @@ general use - do not enable unless you have a specific need, such as for
 use with <code><a href="device.html">device</a></code> (refer to NNG documentation).</p></dd>
 
 
-<dt>refhook</dt>
+<dt>fun</dt>
 <dd><p>[default NULL] (for sending/receiving serialised objects only)
-register a function to handle reference objects, such as those accessed
-via an external pointer. This function must have the signature
-<code>function(x) if ( &lt;validate class of reference object&gt; )
-{ &lt;encode function&gt; } else if ( &lt;validate type of encoded object&gt; )
-{ &lt;decode function&gt; }</code>. All connected sockets should register the same
-function (if used) to ensure seamless serialisation / unserialisation.</p></dd>
+    register a function to handle non-system reference objects (all external
+    pointers, weak references, and environments other than namespace and
+    package environments and <code>.GlobalEnv</code>). This function must have the
+    signature:</p>
+<p><code>function(x) if ( &lt;validate class of reference object&gt; )
+    { &lt;encode function&gt; } else</code> <br><code>    if ( &lt;validate type of encoded object&gt; ) { &lt;decode function&gt; }</code></p>
+<p>All connected sockets should register the same function (if used) to
+    ensure seamless serialisation / unserialisation.</p></dd>
 
 </dl></div>
     <div id="value">
@@ -147,6 +149,9 @@ function (if used) to ensure seamless serialisation / unserialisation.</p></dd>
 <p>New contexts may also be created using <code><a href="context.html">context</a></code> if the
     protocol supports it. Any created contexts will inherit the 'refhook'
     function registered at the socket.</p>
+<p>The function registered with 'fun' maps to the 'refhook' function of
+    <a href="https://rdrr.io/r/base/serialize.html" class="external-link">serialize</a> and <a href="https://rdrr.io/r/base/serialize.html" class="external-link">unserialize</a>, but extends the R mechanism to
+    allow any type of encoded object.</p>
     </div>
     <div id="protocols">
     <h2>Protocols</h2>
@@ -164,21 +169,21 @@ function (if used) to ensure seamless serialisation / unserialisation.</p></dd>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">refhook</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/typeof.html" class="external-link">typeof</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">==</span> <span class="st">"weakref"</span><span class="op">)</span> <span class="fu"><a href="weakref.html">weakref_value</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="kw">else</span> <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/vector.html" class="external-link">is.vector</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span> <span class="va">x</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">fun</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/typeof.html" class="external-link">typeof</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">==</span> <span class="st">"weakref"</span><span class="op">)</span> <span class="fu"><a href="weakref.html">weakref_value</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="kw">else</span> <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/vector.html" class="external-link">is.vector</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span> <span class="va">x</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu">socket</span><span class="op">(</span>protocol <span class="op">=</span> <span class="st">"req"</span>, listen <span class="op">=</span> <span class="st">"inproc://nanosocket"</span>, refhook <span class="op">=</span> <span class="va">refhook</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">s1</span> <span class="op">&lt;-</span> <span class="fu">socket</span><span class="op">(</span>protocol <span class="op">=</span> <span class="st">"rep"</span>, dial <span class="op">=</span> <span class="st">"inproc://nanosocket"</span>, refhook <span class="op">=</span> <span class="va">refhook</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu">socket</span><span class="op">(</span>protocol <span class="op">=</span> <span class="st">"req"</span>, listen <span class="op">=</span> <span class="st">"inproc://nanosocket"</span>, fun <span class="op">=</span> <span class="va">fun</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">s1</span> <span class="op">&lt;-</span> <span class="fu">socket</span><span class="op">(</span>protocol <span class="op">=</span> <span class="st">"rep"</span>, dial <span class="op">=</span> <span class="st">"inproc://nanosocket"</span>, fun <span class="op">=</span> <span class="va">fun</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">wr</span> <span class="op">&lt;-</span> <span class="fu"><a href="weakref.html">weakref</a></span><span class="op">(</span><span class="va">s</span>, <span class="fu"><a href="random.html">random</a></span><span class="op">(</span><span class="fl">7</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">wr</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;weak reference&gt;</span>
 <span class="r-in"><span><span class="fu"><a href="weakref.html">weakref_value</a></span><span class="op">(</span><span class="va">wr</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 3352492374 2453888796 3006616717 4188989316  214453543  638167116  622194697</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  778386798 3449436642 1393383871 3257991093 1369702388 2195848458  410101518</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="send.html">send</a></span><span class="op">(</span><span class="va">s</span>, <span class="va">wr</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
 <span class="r-in"><span><span class="fu"><a href="recv.html">recv</a></span><span class="op">(</span><span class="va">s1</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 3352492374 2453888796 3006616717 4188989316  214453543  638167116  622194697</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  778386798 3449436642 1393383871 3257991093 1369702388 2195848458  410101518</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="close.html">close</a></span><span class="op">(</span><span class="va">s1</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="close.html">close</a></span><span class="op">(</span><span class="va">s</span><span class="op">)</span></span></span>

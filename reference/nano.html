@@ -68,7 +68,7 @@
 <span>  listen <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  tls <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  autostart <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  refhook <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  fun <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -106,14 +106,16 @@ connection is not immediately possible, but avoids subtle errors from
 attempting to use the socket before an asynchronous dial has completed.</p></dd>
 
 
-<dt>refhook</dt>
+<dt>fun</dt>
 <dd><p>[default NULL] (for sending/receiving serialised objects only)
-register a function to handle reference objects, such as those accessed
-via an external pointer. This function must have the signature
-<code>function(x) if ( &lt;validate class of reference object&gt; )
-{ &lt;encode function&gt; } else if ( &lt;validate type of encoded object&gt; )
-{ &lt;decode function&gt; }</code>. All connected sockets should register the same
-function (if used) to ensure seamless serialisation / unserialisation.</p></dd>
+    register a function to handle non-system reference objects (all external
+    pointers, weak references, and environments other than namespace and
+    package environments and <code>.GlobalEnv</code>). This function must have the
+    signature:</p>
+<p><code>function(x) if ( &lt;validate class of reference object&gt; )
+    { &lt;encode function&gt; } else</code> <br><code>    if ( &lt;validate type of encoded object&gt; ) { &lt;decode function&gt; }</code></p>
+<p>All connected sockets should register the same function (if used) to
+    ensure seamless serialisation / unserialisation.</p></dd>
 
 </dl></div>
     <div id="value">
