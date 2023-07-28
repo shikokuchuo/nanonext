@@ -147,11 +147,11 @@ use with <code><a href="device.html">device</a></code> (refer to NNG documentati
     Dialers/Listeners to the Socket as required using <code><a href="dial.html">dial</a></code> and
     <code><a href="listen.html">listen</a></code>.</p>
 <p>New contexts may also be created using <code><a href="context.html">context</a></code> if the
-    protocol supports it. Any created contexts will inherit the 'refhook'
-    function registered at the socket.</p>
-<p>The function registered with 'fun' maps to the 'refhook' function of
-    <a href="https://rdrr.io/r/base/serialize.html" class="external-link">serialize</a> and <a href="https://rdrr.io/r/base/serialize.html" class="external-link">unserialize</a>, but extends the R mechanism to
-    allow any type of encoded object.</p>
+    protocol supports it. Any created contexts will inherit the function 'fun'
+    registered at the socket.</p>
+<p>The custom function registered with 'fun' maps to the 'refhook' function
+    of <a href="https://rdrr.io/r/base/serialize.html" class="external-link">serialize</a> and <a href="https://rdrr.io/r/base/serialize.html" class="external-link">unserialize</a>, but extends the R mechanism
+    to allow any type of encoded object.</p>
     </div>
     <div id="protocols">
     <h2>Protocols</h2>
@@ -178,12 +178,12 @@ use with <code><a href="device.html">device</a></code> (refer to NNG documentati
 <span class="r-in"><span><span class="va">wr</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;weak reference&gt;</span>
 <span class="r-in"><span><span class="fu"><a href="weakref.html">weakref_value</a></span><span class="op">(</span><span class="va">wr</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  778386798 3449436642 1393383871 3257991093 1369702388 2195848458  410101518</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]   55291662 3847283716  778896606 2659521906 1413992827 1758829830 3366685333</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="send.html">send</a></span><span class="op">(</span><span class="va">s</span>, <span class="va">wr</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
 <span class="r-in"><span><span class="fu"><a href="recv.html">recv</a></span><span class="op">(</span><span class="va">s1</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  778386798 3449436642 1393383871 3257991093 1369702388 2195848458  410101518</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]   55291662 3847283716  778896606 2659521906 1413992827 1758829830 3366685333</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="close.html">close</a></span><span class="op">(</span><span class="va">s1</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="close.html">close</a></span><span class="op">(</span><span class="va">s</span><span class="op">)</span></span></span>
