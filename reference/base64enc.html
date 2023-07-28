@@ -71,26 +71,31 @@
 
 
 <dt>convert</dt>
-<dd><p>[default TRUE] logical value whether to convert the output to
-a character string or keep as a raw vector. Supplying a non-logical value
-will error.</p></dd>
+<dd><p>[default TRUE] For <strong>base64enc</strong>: logical TRUE to encode
+to a character string or FALSE to a raw vector. For <strong>base64dec</strong>:
+logical TRUE to convert back to a character string, FALSE to convert back
+to a raw vector or NA to decode and then unserialize to obtain the
+original object. Supplying a non-logical value will error.</p></dd>
 
 </dl></div>
     <div id="value">
     <h2>Value</h2>
     
 
-<p>A raw vector or character string depending on 'convert'.</p>
+<p>For <strong>base64enc</strong>: A character string or raw vector depending on
+    the value of 'convert'.</p>
+
+
+<p>For <strong>base64dec</strong>: A character string, raw vector, or other object
+    depending on the value of 'convert'.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
     <p>For encoding: a scalar string or raw vector (with no attributes) is
-    hashed directly, whilst all other objects are serialised first.</p>
-<p>The result of encoding or decoding is always a raw vector, which is
-    translated to a character string if 'convert' is TRUE, or returned
-    directly if 'convert' is FALSE.</p>
-<p>Set 'convert' to FALSE when decoding a raw vector or serialised object,
-    which may be further passed to <code><a href="https://rdrr.io/r/base/serialize.html" class="external-link">unserialize</a></code>.</p>
+    encoded directly, whilst all other objects are first serialised.</p>
+<p>For decoding: the value of 'convert' should be set to TRUE, FALSE or NA
+    to be the analogue of the above 3 cases in order to return the original
+    object.</p>
     </div>
 
     <div id="ref-examples">
@@ -100,14 +105,14 @@ will error.</p></dd>
 <span class="r-in"><span><span class="fu">base64dec</span><span class="op">(</span><span class="fu">base64enc</span><span class="op">(</span><span class="st">"hello world!"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "hello world!"</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu">base64enc</span><span class="op">(</span><span class="st">"hello world!"</span>, convert <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 61 47 56 73 62 47 38 67 64 32 39 79 62 47 51 68</span>
-<span class="r-in"><span><span class="fu">base64dec</span><span class="op">(</span><span class="fu">base64enc</span><span class="op">(</span><span class="st">"hello world!"</span>, convert <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "hello world!"</span>
+<span class="r-in"><span><span class="fu">base64enc</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/raw.html" class="external-link">as.raw</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1L</span>, <span class="fl">2L</span>, <span class="fl">4L</span><span class="op">)</span><span class="op">)</span>, convert <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 41 51 49 45</span>
+<span class="r-in"><span><span class="fu">base64dec</span><span class="op">(</span><span class="fu">base64enc</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/raw.html" class="external-link">as.raw</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1L</span>, <span class="fl">2L</span>, <span class="fl">4L</span><span class="op">)</span><span class="op">)</span>, convert <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "\001\002\004"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">base64enc</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "QgoDAAAAAQMEAAAFAwAFAAAAVVRGLTgTAwAAAAAAAAIEAAABAAAACQAEAAUAAABuYW1lcxAAAAAAAAAAAgQAAAEAAAAJAAQACQAAAHJvdy5uYW1lcw0AAAAAAAAAAgQAAAEAAAAJAAQABQAAAGNsYXNzEAAAAAEAAAAJAAQACgAAAGRhdGEuZnJhbWX+AAAA"</span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/serialize.html" class="external-link">unserialize</a></span><span class="op">(</span><span class="fu">base64dec</span><span class="op">(</span><span class="fu">base64enc</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>, convert <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">base64dec</span><span class="op">(</span><span class="fu">base64enc</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>, convert <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> data frame with 0 columns and 0 rows</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
