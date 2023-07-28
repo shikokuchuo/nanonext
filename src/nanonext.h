@@ -121,8 +121,8 @@ typedef struct nano_cv_s {
 #define NANO_FREE(x) if (x.len) R_Free(x.buf);
 typedef struct nano_buf_s {
   unsigned char *buf;
-  R_xlen_t len;
-  R_xlen_t cur;
+  size_t len;
+  size_t cur;
 } nano_buf;
 
 extern SEXP mk_error(const int);

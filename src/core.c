@@ -63,7 +63,7 @@ void nano_write_char(R_outpstream_t stream, int c) {
 
   nano_buf *buf = (nano_buf *) stream->data;
   if (buf->cur >= buf->len) {
-    buf->len = (R_xlen_t) (2 * buf->len);
+    buf->len = (size_t) (2 * buf->len);
     buf->buf = R_Realloc(buf->buf, buf->len, unsigned char);
   }
 
@@ -75,10 +75,13 @@ void nano_write_bytes(R_outpstream_t stream, void *src, int len) {
 
   nano_buf *buf = (nano_buf *) stream->data;
 
-  if (buf->cur + len > buf->len) {
+  size_t req = buf->cur + (size_t) len;
+  if (req > buf->len) {
+    if (req > R_XLEN_T_MAX)
+      Rf_error("serialization exceeds max length of raw vector");
     do {
-      buf->len = (R_xlen_t) (2 * buf->len);
-    } while (buf->len < buf->cur + len);
+      buf->len = (size_t) (2 * buf->len);
+    } while (buf->len < req);
     buf->buf = R_Realloc(buf->buf, buf->len, unsigned char);
   }
 
