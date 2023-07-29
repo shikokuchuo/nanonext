@@ -104,7 +104,6 @@ typedef struct nano_cv_s {
 #define ERROR_OUT(xc) Rf_error("%d | %s", xc, nng_strerror(xc))
 #define ERROR_RET(xc) { Rf_warning("%d | %s", xc, nng_strerror(xc)); return mk_error(xc); }
 #define NANO_ENCODE(buf, data) { SEXP enc = nano_encode(data); NANO_INIT(buf, RAW(enc), XLENGTH(enc)); }
-#define REFHOOK(con) Rf_getAttrib(con, R_MissingArg)
 #define NANO_CHAR(val, len) Rf_mkCharLenCE(val, len, CE_NATIVE)
 #define NANO_STRING(val, len) Rf_ScalarString(NANO_CHAR(val, len))
 
@@ -133,8 +132,8 @@ extern SEXP nano_encode(SEXP);
 extern int nano_encodes(SEXP);
 extern int nano_matcharg(SEXP);
 extern int nano_matchargs(SEXP);
-extern nano_buf nano_serialize(SEXP, SEXP);
-extern SEXP nano_unserialize(unsigned char *, size_t, const int, SEXP);
+extern nano_buf nano_serialize(SEXP);
+extern SEXP nano_unserialize(unsigned char *, size_t);
 extern SEXP rawOneString(unsigned char *, R_xlen_t, R_xlen_t *);
 extern SEXP rawToChar(unsigned char *, size_t);
 extern void socket_finalizer(SEXP);
@@ -215,7 +214,7 @@ extern SEXP rnng_ncurl_session(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 extern SEXP rnng_ncurl_session_close(SEXP);
 extern SEXP rnng_ncurl_transact(SEXP);
 extern SEXP rnng_pipe_notify(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
-extern SEXP rnng_protocol_open(SEXP, SEXP, SEXP);
+extern SEXP rnng_protocol_open(SEXP, SEXP);
 extern SEXP rnng_random(SEXP);
 extern SEXP rnng_recv(SEXP, SEXP, SEXP, SEXP, SEXP);
 extern SEXP rnng_recv_aio(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);

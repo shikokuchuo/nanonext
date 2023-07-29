@@ -53,17 +53,17 @@ static nano_buf nano_anytoraw(SEXP x) {
       if (XLENGTH(x) == 1) {
         NANO_INIT(hash, (unsigned char *) CHAR(STRING_ELT(x, 0)), XLENGTH(STRING_ELT(x, 0)));
       } else {
-        hash = nano_serialize(x, R_NilValue);
+        hash = nano_serialize(x);
       }
       break;
     case RAWSXP:
       NANO_INIT(hash, RAW(x), XLENGTH(x));
       break;
     default:
-      hash = nano_serialize(x, R_NilValue);
+      hash = nano_serialize(x);
     }
   } else {
-    hash = nano_serialize(x, R_NilValue);
+    hash = nano_serialize(x);
   }
 
   return hash;
@@ -388,7 +388,7 @@ SEXP rnng_base64dec(SEXP x, SEXP convert) {
     out = rawToChar(buf, olen);
     break;
   default:
-    out = nano_unserialize(buf, olen, 0, R_NilValue);
+    out = nano_unserialize(buf, olen);
   }
 
   R_Free(buf);

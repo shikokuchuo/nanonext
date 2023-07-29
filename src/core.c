@@ -111,27 +111,7 @@ void nano_read_bytes(R_inpstream_t stream, void *dst, int len) {
 
 }
 
-static SEXP nano_CallHook(SEXP x, SEXP fun) {
-
-  SEXP call, irp, out;
-  switch (TYPEOF(x)) {
-  case STRSXP:
-    PROTECT(irp = rnng_base64dec(x, Rf_ScalarLogical(0)));
-    PROTECT(call = Rf_lcons(fun, Rf_cons(irp, R_NilValue)));
-    out = Rf_eval(call, R_GlobalEnv);
-    break;
-  default:
-    PROTECT(call = Rf_lcons(fun, Rf_cons(x, R_NilValue)));
-    PROTECT(irp = Rf_eval(call, R_GlobalEnv));
-    out = rnng_base64enc(irp, Rf_ScalarLogical(1));
-  }
-
-  UNPROTECT(2);
-  return out;
-
-}
-
-nano_buf nano_serialize(SEXP object, SEXP refhook) {
+nano_buf nano_serialize(SEXP object) {
 
   nano_buf buf;
   struct R_outpstream_st output_stream;
@@ -145,8 +125,8 @@ nano_buf nano_serialize(SEXP object, SEXP refhook) {
     NANONEXT_SERIAL_VER,
     nano_write_char,
     nano_write_bytes,
-    refhook != R_NilValue ? nano_CallHook : NULL,
-    refhook
+    NULL,
+    R_NilValue
   );
 
   R_Serialize(object, &output_stream);
@@ -155,9 +135,8 @@ nano_buf nano_serialize(SEXP object, SEXP refhook) {
 
 }
 
-SEXP nano_unserialize(unsigned char *buf, size_t sz, const int kpr, SEXP refhook) {
+SEXP nano_unserialize(unsigned char *buf, size_t sz) {
 
-  SEXP data;
   nano_buf nbuf;
   struct R_inpstream_st input_stream;
 
@@ -171,27 +150,11 @@ SEXP nano_unserialize(unsigned char *buf, size_t sz, const int kpr, SEXP refhook
     R_pstream_any_format,
     nano_read_char,
     nano_read_bytes,
-    refhook != R_NilValue ? nano_CallHook : NULL,
-    refhook
+    NULL,
+    R_NilValue
   );
 
-  data = R_Unserialize(&input_stream);
-
-  if (kpr) {
-    SEXP raw, out;
-    const char *names[] = {"raw", "data", ""};
-    PROTECT(data);
-    PROTECT(out = Rf_mkNamed(VECSXP, names));
-    raw = Rf_allocVector(RAWSXP, sz);
-    SET_VECTOR_ELT(out, 0, raw);
-    memcpy(RAW(raw), buf, sz);
-    SET_VECTOR_ELT(out, 1, data);
-
-    UNPROTECT(2);
-    return out;
-  }
-
-  return data;
+  return R_Unserialize(&input_stream);
 
 }
 
@@ -201,7 +164,8 @@ SEXP nano_encode(SEXP object) {
   size_t sz;
   SEXP out;
 
-  if (TYPEOF(object) == STRSXP) {
+  switch (TYPEOF(object)) {
+  case STRSXP: ;
     const char *s;
     unsigned char *buf;
     size_t np, outlen = 0;
@@ -216,34 +180,32 @@ SEXP nano_encode(SEXP object) {
       np += strlen(s) + 1;
     }
     UNPROTECT(1);
-  } else {
-    switch (TYPEOF(object)) {
-    case REALSXP:
-      sz = xlen * sizeof(double);
-      out = Rf_allocVector(RAWSXP, sz);
-      memcpy(RAW(out), REAL(object), sz);
-      break;
-    case INTSXP:
-      sz = xlen * sizeof(int);
-      out = Rf_allocVector(RAWSXP, sz);
-      memcpy(RAW(out), INTEGER(object), sz);
-      break;
-    case LGLSXP:
-      sz = xlen * sizeof(int);
-      out = Rf_allocVector(RAWSXP, sz);
-      memcpy(RAW(out), LOGICAL(object), sz);
-      break;
-    case CPLXSXP:
-      sz = xlen * 2 * sizeof(double);
-      out = Rf_allocVector(RAWSXP, sz);
-      memcpy(RAW(out), COMPLEX(object), sz);
-      break;
-    case RAWSXP:
-      out = object;
-      break;
-    default:
-      Rf_error("'data' must be an atomic vector type to send in mode 'raw'");
-    }
+    break;
+  case REALSXP:
+    sz = xlen * sizeof(double);
+    out = Rf_allocVector(RAWSXP, sz);
+    memcpy(RAW(out), REAL(object), sz);
+    break;
+  case INTSXP:
+    sz = xlen * sizeof(int);
+    out = Rf_allocVector(RAWSXP, sz);
+    memcpy(RAW(out), INTEGER(object), sz);
+    break;
+  case LGLSXP:
+    sz = xlen * sizeof(int);
+    out = Rf_allocVector(RAWSXP, sz);
+    memcpy(RAW(out), LOGICAL(object), sz);
+    break;
+  case CPLXSXP:
+    sz = xlen * 2 * sizeof(double);
+    out = Rf_allocVector(RAWSXP, sz);
+    memcpy(RAW(out), COMPLEX(object), sz);
+    break;
+  case RAWSXP:
+    out = object;
+    break;
+  default:
+    Rf_error("'data' must be an atomic vector type to send in mode 'raw'");
   }
 
   return out;
@@ -399,6 +361,9 @@ SEXP nano_decode(unsigned char *buf, size_t sz, const int mod, const int kpr) {
   size_t size;
 
   switch (mod) {
+  case 1:
+    data = nano_unserialize(buf, sz);
+    break;
   case 2:
     PROTECT(data = Rf_allocVector(STRSXP, sz));
     R_xlen_t i, m, nbytes = sz, np = 0;
@@ -475,9 +440,9 @@ SEXP nano_decode(unsigned char *buf, size_t sz, const int mod, const int kpr) {
   }
 
   if (kpr) {
+    PROTECT(data);
     SEXP raw, out;
     const char *names[] = {"raw", "data", ""};
-    PROTECT(data);
     PROTECT(out = Rf_mkNamed(VECSXP, names));
     if (mod == 8) {
       SET_VECTOR_ELT(out, 0, data);
@@ -528,7 +493,6 @@ SEXP rnng_ctx_open(SEXP socket) {
 
   PROTECT(context = R_MakeExternalPtr(ctx, nano_ContextSymbol, R_NilValue));
   R_RegisterCFinalizerEx(context, context_finalizer, TRUE);
-  Rf_setAttrib(context, R_MissingArg, REFHOOK(socket));
 
   PROTECT(klass = Rf_allocVector(STRSXP, 2));
   SET_STRING_ELT(klass, 0, NANO_CHAR("nanoContext", 11));
@@ -562,7 +526,6 @@ SEXP rnng_ctx_create(SEXP socket) {
 
   PROTECT(context = R_MakeExternalPtr(ctx, nano_ContextSymbol, R_NilValue));
   R_RegisterCFinalizerEx(context, context_finalizer, TRUE);
-  Rf_setAttrib(context, R_MissingArg, REFHOOK(socket));
   UNPROTECT(1);
   return context;
 
@@ -595,7 +558,7 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
 
     nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(con);
     mod = nano_encodes(mode);
-    if (mod == 1) buf = nano_serialize(data, REFHOOK(con)); else NANO_ENCODE(buf, data);
+    if (mod == 1) buf = nano_serialize(data); else NANO_ENCODE(buf, data);
 
     if (block == R_NilValue) {
 
@@ -651,7 +614,7 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
       dur = (nng_duration) Rf_asInteger(block);
     }
     mod = nano_encodes(mode);
-    if (mod == 1) buf = nano_serialize(data, REFHOOK(con)); else NANO_ENCODE(buf, data);
+    if (mod == 1) buf = nano_serialize(data); else NANO_ENCODE(buf, data);
 
     if ((xc = nng_msg_alloc(&msgp, 0))) {
       NANO_FREE(buf);
@@ -739,13 +702,7 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP keep, SEXP bytes) {
       if (xc)
         return kpr ? mk_error_recv(xc) : mk_error(xc);
 
-      if (mod == 1) {
-        PROTECT(res = REFHOOK(con));
-        res = nano_unserialize(buf, sz, kpr, res);
-        UNPROTECT(1);
-      } else {
-        res = nano_decode(buf, sz, mod, kpr);
-      }
+      res = nano_decode(buf, sz, mod, kpr);
       nng_free(buf, sz);
 
     } else if (TYPEOF(block) == LGLSXP) {
@@ -755,13 +712,7 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP keep, SEXP bytes) {
       if (xc)
         return kpr ? mk_error_recv(xc) : mk_error(xc);
 
-      if (mod == 1) {
-        PROTECT(res = REFHOOK(con));
-        res = nano_unserialize(buf, sz, kpr, res);
-        UNPROTECT(1);
-      } else {
-        res = nano_decode(buf, sz, mod, kpr);
-      }
+      res = nano_decode(buf, sz, mod, kpr);
       nng_free(buf, sz);
 
     } else {
@@ -781,13 +732,7 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP keep, SEXP bytes) {
       nng_aio_free(aiop);
       buf = nng_msg_body(msgp);
       sz = nng_msg_len(msgp);
-      if (mod == 1) {
-        PROTECT(res = REFHOOK(con));
-        res = nano_unserialize(buf, sz, kpr, res);
-        UNPROTECT(1);
-      } else {
-        res = nano_decode(buf, sz, mod, kpr);
-      }
+      res = nano_decode(buf, sz, mod, kpr);
       nng_msg_free(msgp);
     }
 
@@ -821,13 +766,7 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP keep, SEXP bytes) {
     nng_aio_free(aiop);
     buf = nng_msg_body(msgp);
     sz = nng_msg_len(msgp);
-    if (mod == 1) {
-      PROTECT(res = REFHOOK(con));
-      res = nano_unserialize(buf, sz, kpr, res);
-      UNPROTECT(1);
-    } else {
-      res = nano_decode(buf, sz, mod, kpr);
-    }
+    res = nano_decode(buf, sz, mod, kpr);
     nng_msg_free(msgp);
 
   } else if (ptrtag == nano_StreamSymbol) {

@@ -40,19 +40,6 @@
 #' @param raw [default FALSE] whether to open raw mode sockets. Note: not for
 #'     general use - do not enable unless you have a specific need, such as for
 #'     use with \code{\link{device}} (refer to NNG documentation).
-#' @param refhook [default NULL] (for sending/receiving serialised objects only)
-#'     register a function to handle non-system reference objects (all external
-#'     pointers, weak references, and environments other than namespace and
-#'     package environments and \code{.GlobalEnv}). This function must have the
-#'     signature:
-#'
-#'     \code{function(x) if ( <validate class of reference object> )
-#'     { <encode function - must return a raw vector> } else} \cr
-#'     \code{    if (is.raw(x)) { <decode function> }}
-#'
-#'     The utility \code{\link{refhook}} may be used to construct such a function.
-#'     All connected sockets should register the same function (if used) to
-#'     ensure seamless serialisation / unserialisation.
 #' @inheritParams dial
 #'
 #' @return A Socket (object of class 'nanoSocket' and 'nano').
@@ -72,13 +59,7 @@
 #'     \code{\link{listen}}.
 #'
 #'     New contexts may also be created using \code{\link{context}} if the
-#'     protocol supports it. Any created contexts will inherit the 'refhook'
-#'     function registered at the socket.
-#'
-#'     Note that the argument 'refhook' is an modified version of the 'refhook'
-#'     argument of \link{serialize} and \link{unserialize} and not identical.
-#'     This implementation supports custom serialisation formats which output to
-#'     a raw vector.
+#'     protocol supports it.
 #'
 #' @section Protocols:
 #'
@@ -95,16 +76,10 @@
 #'     Please see \link{protocols} for further documentation.
 #'
 #' @examples
-#' hook <- refhook(typeof(x) == "weakref", base64enc(weakref_value(x), convert = FALSE), base64dec(x))
+#' s <- socket(protocol = "req", listen = "inproc://nanosocket")
+#' s1 <- socket(protocol = "rep", dial = "inproc://nanosocket")
 #'
-#' s <- socket(protocol = "req", listen = "inproc://nanosocket", refhook = hook)
-#' s1 <- socket(protocol = "rep", dial = "inproc://nanosocket", refhook = hook)
-#'
-#' wr <- weakref(s, "weakref value")
-#' wr
-#' weakref_value(wr)
-#'
-#' send(s, wr)
+#' send(s, "hello world!")
 #' recv(s1)
 #'
 #' close(s1)
@@ -118,10 +93,9 @@ socket <- function(protocol = c("bus", "pair", "push", "pull", "pub", "sub",
                    listen = NULL,
                    tls = NULL,
                    autostart = TRUE,
-                   raw = FALSE,
-                   refhook = NULL) {
+                   raw = FALSE) {
 
-  sock <- .Call(rnng_protocol_open, protocol, raw, refhook)
+  sock <- .Call(rnng_protocol_open, protocol, raw)
   if (length(dial)) .Call(rnng_dial, sock, dial, tls, autostart, TRUE)
   if (length(listen)) .Call(rnng_listen, sock, listen, tls, autostart, TRUE)
   sock
@@ -167,35 +141,3 @@ NULL
 #' @export
 #'
 close.nanoSocket <- function(con, ...) invisible(.Call(rnng_close, con))
-
-#' Refhook Constructor
-#'
-#' Create a function with the required signature for the 'refhook' argument of
-#'     \code{\link{socket}}.
-#'
-#' @param valid validation code e.g. \code{inherits(x, "torch_tensor")} or
-#'     \code{typeof(x) == "externalptr"}.
-#' @param encode the encode function returning a raw vector e.g. \code{torch:::torch_serialize(x)}.
-#' @param decode the decode function from a raw vector back to the original
-#'     object e.g. \code{torch::torch_load(x)}.
-#'
-#' @return A function.
-#'
-#' @details The expressions supplied should all reference the single argument
-#'     '\code{x}'.
-#'
-#'     'valid' will be evaluated within an \code{if()} block and 'encode' and
-#'     'decode' should be wrapped in \code{{}} if a compound statement.
-#'
-#' @examples
-#' refhook(typeof(x) == "weakref", base64enc(weakref_value(x), convert = FALSE), base64dec(x))
-#'
-#' @export
-#'
-refhook <- function(valid, encode, decode) {
-
-  fun <- function(x) {}
-  body(fun) <- bquote(if (.(substitute(valid))) .(substitute(encode)) else if (is.raw(x)) .(substitute(decode)))
-  `environment<-`(fun, .GlobalEnv)
-
-}
