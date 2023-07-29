@@ -88,8 +88,6 @@ typedef struct nano_cv_s {
 #include <mbedtls/ctr_drbg.h>
 #include <mbedtls/md.h>
 #include <mbedtls/error.h>
-#include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 #include <errno.h>
 #endif

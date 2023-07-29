@@ -121,7 +121,11 @@ nano_buf nano_serialize(SEXP object) {
   R_InitOutPStream(
     &output_stream,
     (R_pstream_data_t) &buf,
+#ifdef WORDS_BIGENDIAN
+    R_pstream_xdr_format,
+#else
     R_pstream_binary_format,
+#endif
     NANONEXT_SERIAL_VER,
     nano_write_char,
     nano_write_bytes,
