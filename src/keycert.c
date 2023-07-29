@@ -210,7 +210,7 @@ SEXP rnng_write_cert(SEXP cn, SEXP valid, SEXP inter) {
   cstr = Rf_allocVector(STRSXP, 2);
   SET_VECTOR_ELT(vec, 1, cstr);
   SET_STRING_ELT(cstr, 0, Rf_mkChar((char *) &output_buf));
-  SET_STRING_ELT(cstr, 1, Rf_mkChar(""));
+  SET_STRING_ELT(cstr, 1, R_BlankString);
 
   failed = 0;
   if (interactive) REprintf("\b\b\b\b\bdone]\n");
