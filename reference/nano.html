@@ -113,7 +113,7 @@ attempting to use the socket before an asynchronous dial has completed.</p></dd>
     package environments and <code>.GlobalEnv</code>). This function must have the
     signature:</p>
 <p><code>function(x) if ( &lt;validate class of reference object&gt; )
-    { &lt;encode function&gt; } else</code> <br><code>    if ( &lt;validate type of encoded object&gt; ) { &lt;decode function&gt; }</code></p>
+    { &lt;encode function - must return a raw vector&gt; } else</code> <br><code>    if (is.raw(x)) { &lt;decode function&gt; }</code></p>
 <p>The utility <code><a href="refhook.html">refhook</a></code> may be used to construct such a function.
     All connected sockets should register the same function (if used) to
     ensure seamless serialisation / unserialisation.</p></dd>

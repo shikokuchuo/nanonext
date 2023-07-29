@@ -67,23 +67,24 @@
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>valid</dt>
-<dd><p>an expression of the validation e.g. <code>inherits(x, "torch_tensor")</code>
-or <code>typeof(x) == "externalptr"</code>.</p></dd>
+<dd><p>validation code e.g. <code>inherits(x, "torch_tensor")</code> or
+<code>typeof(x) == "externalptr"</code>.</p></dd>
 
 
 <dt>encode</dt>
-<dd><p>an expression of the encode function e.g. <code>weakref_value(x)</code>.</p></dd>
+<dd><p>the encode function returning a raw vector e.g. <code>torch:::torch_serialize(x)</code>.</p></dd>
 
 
 <dt>decode</dt>
-<dd><p>an expression of the decode function e.g. <code>unserialize(x)</code>.</p></dd>
+<dd><p>the decode function from a raw vector back to the original
+object e.g. <code>torch::torch_load(x)</code>.</p></dd>
 
 </dl></div>
     <div id="value">
     <h2>Value</h2>
     
 
-<p>a function.</p>
+<p>A function.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -95,11 +96,10 @@ or <code>typeof(x) == "externalptr"</code>.</p></dd>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">refhook</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/typeof.html" class="external-link">typeof</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">==</span> <span class="st">"weakref"</span>, <span class="fu"><a href="weakref.html">weakref_value</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, <span class="va">x</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">refhook</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/typeof.html" class="external-link">typeof</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">==</span> <span class="st">"weakref"</span>, <span class="fu"><a href="base64enc.html">base64enc</a></span><span class="op">(</span><span class="fu"><a href="weakref.html">weakref_value</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, convert <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>, <span class="fu"><a href="base64enc.html">base64dec</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> function (x) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> if (typeof(x) == "weakref") weakref_value(x) else if (.Call(rnng_non_ref, </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     x)) x</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x5568df9b7838&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> if (typeof(x) == "weakref") base64enc(weakref_value(x), convert = FALSE) else if (is.raw(x)) base64dec(x)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x5588bf88fb80&gt;</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
