@@ -196,7 +196,7 @@ sha1 <- function(x, key = NULL, convert = TRUE) .Call(rnng_sha1, x, key, convert
 #'     to a character string or FALSE to a raw vector.\cr
 #'     For \strong{base64dec}: [default TRUE] logical TRUE to convert back to a
 #'     character string, FALSE to convert back to a raw vector or NA to decode
-#'     and then unserialize to obtain the original object. Supplying a non-logical
+#'     and then unserialize back to the original object. Supplying a non-logical
 #'     value will error.
 #'
 #' @return For \strong{base64enc}: A character string or raw vector depending on

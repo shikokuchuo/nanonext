@@ -16,7 +16,7 @@ base64dec(x, convert = TRUE)
 to a character string or FALSE to a raw vector.\cr
 For \strong{base64dec}: [default TRUE] logical TRUE to convert back to a
 character string, FALSE to convert back to a raw vector or NA to decode
-and then unserialize to obtain the original object. Supplying a non-logical
+and then unserialize back to the original object. Supplying a non-logical
 value will error.}
 }
 \value{

@@ -4,7 +4,7 @@
 
 #### New Features
 
-* `base64dec()` argument 'convert' now accepts NA as an input, which automatically unserializes the decoded object.
+* `base64dec()` argument 'convert' now accepts NA as an input, which unserializes back to the original object.
 
 #### Updates
 
