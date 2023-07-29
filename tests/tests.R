@@ -516,11 +516,11 @@ nanotestxp(tls <- tls_config())
 nanotestxp(s <- socket(listen = "wss://127.0.0.1:5557", tls = tls))
 nanotestz(close(s))
 
-hook <- refhook(typeof(x) == "weakref", weakref_value(x), as.character(x))
+hook <- refhook(typeof(x) == "weakref", base64enc(weakref_value(x), convert = FALSE), base64dec(x))
 nanotestnano(s <- socket(protocol = "req", listen = "inproc://nanorefhook", refhook = hook))
 nanotestnano(s1 <- socket(protocol = "rep", dial = "inproc://nanorefhook", refhook = hook))
 k <- new.env()
-nanotest(is.double(v <- random(7)))
+v <- "test string"
 nanotest(typeof(w <- weakref(k, v)) == "weakref")
 nanotest(identical(weakref_key(w), k))
 nanotest(identical(weakref_value(w), v))

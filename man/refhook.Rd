@@ -7,15 +7,16 @@
 refhook(valid, encode, decode)
 }
 \arguments{
-\item{valid}{an expression of the validation e.g. \code{inherits(x, "torch_tensor")}
-or \code{typeof(x) == "externalptr"}.}
+\item{valid}{validation code e.g. \code{inherits(x, "torch_tensor")} or
+\code{typeof(x) == "externalptr"}.}
 
-\item{encode}{an expression of the encode function e.g. \code{weakref_value(x)}.}
+\item{encode}{the encode function returning a raw vector e.g. \code{torch:::torch_serialize(x)}.}
 
-\item{decode}{an expression of the decode function e.g. \code{unserialize(x)}.}
+\item{decode}{the decode function from a raw vector back to the original
+object e.g. \code{torch::torch_load(x)}.}
 }
 \value{
-a function.
+A function.
 }
 \description{
 Create a function with the required signature for the 'refhook' argument of
@@ -29,6 +30,6 @@ The expressions supplied should all reference the single argument
     'decode' should be wrapped in \code{{}} if a compound statement.
 }
 \examples{
-refhook(typeof(x) == "weakref", weakref_value(x), x)
+refhook(typeof(x) == "weakref", base64enc(weakref_value(x), convert = FALSE), base64dec(x))
 
 }

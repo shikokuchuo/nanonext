@@ -44,8 +44,8 @@ attempting to use the socket before an asynchronous dial has completed.}
     signature:
 
     \code{function(x) if ( <validate class of reference object> )
-    { <encode function> } else} \cr
-    \code{    if ( <validate type of encoded object> ) { <decode function> }}
+    { <encode function - must return a raw vector> } else} \cr
+    \code{    if (is.raw(x)) { <decode function> }}
 
     The utility \code{\link{refhook}} may be used to construct such a function.
     All connected sockets should register the same function (if used) to

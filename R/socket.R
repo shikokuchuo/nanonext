@@ -47,8 +47,8 @@
 #'     signature:
 #'
 #'     \code{function(x) if ( <validate class of reference object> )
-#'     { <encode function> } else} \cr
-#'     \code{    if ( <validate type of encoded object> ) { <decode function> }}
+#'     { <encode function - must return a raw vector> } else} \cr
+#'     \code{    if (is.raw(x)) { <decode function> }}
 #'
 #'     The utility \code{\link{refhook}} may be used to construct such a function.
 #'     All connected sockets should register the same function (if used) to
@@ -75,10 +75,10 @@
 #'     protocol supports it. Any created contexts will inherit the 'refhook'
 #'     function registered at the socket.
 #'
-#'     Note that the argument 'refhook' is an improved version of the 'refhook'
+#'     Note that the argument 'refhook' is an modified version of the 'refhook'
 #'     argument of \link{serialize} and \link{unserialize} and not identical.
-#'     Here it allows the serialisation within the same object of any custom
-#'     encoded object type.
+#'     This implementation supports custom serialisation formats which output to
+#'     a raw vector.
 #'
 #' @section Protocols:
 #'
@@ -95,12 +95,12 @@
 #'     Please see \link{protocols} for further documentation.
 #'
 #' @examples
-#' hook <- refhook(typeof(x) == "weakref", weakref_value(x), x)
+#' hook <- refhook(typeof(x) == "weakref", base64enc(weakref_value(x), convert = FALSE), base64dec(x))
 #'
 #' s <- socket(protocol = "req", listen = "inproc://nanosocket", refhook = hook)
 #' s1 <- socket(protocol = "rep", dial = "inproc://nanosocket", refhook = hook)
 #'
-#' wr <- weakref(s, random(7))
+#' wr <- weakref(s, "weakref value")
 #' wr
 #' weakref_value(wr)
 #'
@@ -173,12 +173,13 @@ close.nanoSocket <- function(con, ...) invisible(.Call(rnng_close, con))
 #' Create a function with the required signature for the 'refhook' argument of
 #'     \code{\link{socket}}.
 #'
-#' @param valid an expression of the validation e.g. \code{inherits(x, "torch_tensor")}
-#'     or \code{typeof(x) == "externalptr"}.
-#' @param encode an expression of the encode function e.g. \code{weakref_value(x)}.
-#' @param decode an expression of the decode function e.g. \code{unserialize(x)}.
+#' @param valid validation code e.g. \code{inherits(x, "torch_tensor")} or
+#'     \code{typeof(x) == "externalptr"}.
+#' @param encode the encode function returning a raw vector e.g. \code{torch:::torch_serialize(x)}.
+#' @param decode the decode function from a raw vector back to the original
+#'     object e.g. \code{torch::torch_load(x)}.
 #'
-#' @return a function.
+#' @return A function.
 #'
 #' @details The expressions supplied should all reference the single argument
 #'     '\code{x}'.
@@ -187,14 +188,14 @@ close.nanoSocket <- function(con, ...) invisible(.Call(rnng_close, con))
 #'     'decode' should be wrapped in \code{{}} if a compound statement.
 #'
 #' @examples
-#' refhook(typeof(x) == "weakref", weakref_value(x), x)
+#' refhook(typeof(x) == "weakref", base64enc(weakref_value(x), convert = FALSE), base64dec(x))
 #'
 #' @export
 #'
 refhook <- function(valid, encode, decode) {
 
   fun <- function(x) {}
-  body(fun) <- bquote(if (.(substitute(valid))) .(substitute(encode)) else if (.Call(rnng_non_ref, x)) .(substitute(decode)))
+  body(fun) <- bquote(if (.(substitute(valid))) .(substitute(encode)) else if (is.raw(x)) .(substitute(decode)))
   fun
 
 }

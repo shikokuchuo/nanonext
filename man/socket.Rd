@@ -49,8 +49,8 @@ use with \code{\link{device}} (refer to NNG documentation).}
     signature:
 
     \code{function(x) if ( <validate class of reference object> )
-    { <encode function> } else} \cr
-    \code{    if ( <validate type of encoded object> ) { <decode function> }}
+    { <encode function - must return a raw vector> } else} \cr
+    \code{    if (is.raw(x)) { <decode function> }}
 
     The utility \code{\link{refhook}} may be used to construct such a function.
     All connected sockets should register the same function (if used) to
@@ -83,10 +83,10 @@ NNG presents a socket view of networking. The sockets are constructed
     protocol supports it. Any created contexts will inherit the 'refhook'
     function registered at the socket.
 
-    Note that the argument 'refhook' is an improved version of the 'refhook'
+    Note that the argument 'refhook' is an modified version of the 'refhook'
     argument of \link{serialize} and \link{unserialize} and not identical.
-    Here it allows the serialisation within the same object of any custom
-    encoded object type.
+    This implementation supports custom serialisation formats which output to
+    a raw vector.
 }
 \section{Protocols}{
 
@@ -105,12 +105,12 @@ NNG presents a socket view of networking. The sockets are constructed
 }
 
 \examples{
-hook <- refhook(typeof(x) == "weakref", weakref_value(x), x)
+hook <- refhook(typeof(x) == "weakref", base64enc(weakref_value(x), convert = FALSE), base64dec(x))
 
 s <- socket(protocol = "req", listen = "inproc://nanosocket", refhook = hook)
 s1 <- socket(protocol = "rep", dial = "inproc://nanosocket", refhook = hook)
 
-wr <- weakref(s, random(7))
+wr <- weakref(s, "weakref value")
 wr
 weakref_value(wr)
 

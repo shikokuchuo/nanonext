@@ -116,7 +116,7 @@ static SEXP nano_CallHook(SEXP x, SEXP fun) {
   SEXP call, irp, out;
   switch (TYPEOF(x)) {
   case STRSXP:
-    PROTECT(irp = rnng_base64dec(x, Rf_ScalarLogical(NA_LOGICAL)));
+    PROTECT(irp = rnng_base64dec(x, Rf_ScalarLogical(0)));
     PROTECT(call = Rf_lcons(fun, Rf_cons(irp, R_NilValue)));
     out = Rf_eval(call, R_GlobalEnv);
     break;
