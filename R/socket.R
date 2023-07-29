@@ -196,6 +196,6 @@ refhook <- function(valid, encode, decode) {
 
   fun <- function(x) {}
   body(fun) <- bquote(if (.(substitute(valid))) .(substitute(encode)) else if (is.raw(x)) .(substitute(decode)))
-  fun
+  `environment<-`(fun, .GlobalEnv)
 
 }
