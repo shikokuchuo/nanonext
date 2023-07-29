@@ -18,7 +18,7 @@
   + When 'convert' = TRUE, the raw vector is no longer stored at `$raw` for efficiency.
 * Higher performance cryptographic hash and base64 conversion functions.
   + Attributes are now taken into account for scalar strings and raw vectors to ensure unique hashes.
-* `timed_signal()` now returns an external pointer rather than a classed 'thread' object.
+* Experimental threaded function `timed_signal()` removed.
 * Requires R >= 3.5 to enforce use of R serialization version 3.
 
 # nanonext 0.9.1

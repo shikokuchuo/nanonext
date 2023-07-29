@@ -1321,22 +1321,3 @@ SEXP rnng_strcat(SEXP a, SEXP b) {
   return NANO_STRING(buf, alen + blen);
 
 }
-
-SEXP rnng_non_ref(SEXP x) {
-
-  switch (TYPEOF(x)) {
-  case ENVSXP:
-    if (x == R_GlobalEnv ||
-        x == R_BaseEnv ||
-        x == R_EmptyEnv ||
-        R_IsNamespaceEnv(x) ||
-        R_IsPackageEnv(x))
-      break;
-  case EXTPTRSXP:
-  case WEAKREFSXP:
-    return Rf_ScalarLogical(0);
-  }
-
-  return Rf_ScalarLogical(1);
-
-}

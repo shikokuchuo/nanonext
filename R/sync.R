@@ -236,43 +236,6 @@ lock <- function(socket, cv = NULL) invisible(.Call(rnng_socket_lock, socket, cv
 #'
 unlock <- function(socket) invisible(.Call(rnng_socket_unlock, socket))
 
-#' Signal a Condition Variable After a Specified Time
-#'
-#' Creates a new thread which signals a condition variable after a specified
-#'     time, causing its internal condition to increment by one (and threads
-#'     waiting on the condition to wake).
-#'
-#' @param cv a 'conditionVariable',
-#' @param time integer number of milliseconds after which to signal the
-#'     condition variable.
-#' @inheritParams pipe_notify
-#'
-#' @return An external pointer to the created thread. This must be assigned as
-#'     an object, otherwise the thread may be garbage collected before it has
-#'     performed its purpose.
-#'
-#' @details Non-integer values for 'time' are coerced to integer, and the
-#'     absolute value is taken (the sign is ignored). Non-numeric values are
-#'     ignored, in which case the condition variable is signalled immediately.
-#'
-#' @examples
-#' cv <- cv()
-#' cv_value(cv)
-#' start <- mclock()
-#'
-#' s <- timed_signal(cv, time = 100L, flag = FALSE)
-#' wait(cv) == TRUE
-#' mclock() - start
-#'
-#' s <- timed_signal(cv, time = 100L, flag = TRUE)
-#' wait(cv) == FALSE
-#' mclock() - start
-#'
-#' @export
-#'
-timed_signal <- function(cv, time, flag = TRUE)
-  .External(rnng_timed_signal, cv, time, flag)
-
 # nanonext - Weak References ---------------------------------------------------
 
 #' Weak References

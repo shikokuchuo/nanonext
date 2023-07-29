@@ -167,7 +167,6 @@ static const R_CallMethodDef callMethods[] = {
   {"rnng_ncurl_session", (DL_FUNC) &rnng_ncurl_session, 8},
   {"rnng_ncurl_session_close", (DL_FUNC) &rnng_ncurl_session_close, 1},
   {"rnng_ncurl_transact", (DL_FUNC) &rnng_ncurl_transact, 1},
-  {"rnng_non_ref", (DL_FUNC) &rnng_non_ref, 1},
   {"rnng_pipe_notify", (DL_FUNC) &rnng_pipe_notify, 6},
   {"rnng_protocol_open", (DL_FUNC) &rnng_protocol_open, 3},
   {"rnng_random", (DL_FUNC) &rnng_random, 1},
@@ -205,18 +204,13 @@ static const R_CallMethodDef callMethods[] = {
   {NULL, NULL, 0}
 };
 
-static const R_ExternalMethodDef externalMethods[] = {
-  {"rnng_timed_signal", (DL_FUNC) &rnng_timed_signal, -1},
-  {NULL, NULL, 0}
-};
-
 void attribute_visible R_init_nanonext(DllInfo* dll) {
   RegisterSymbols();
   PreserveObjects();
 #if NNG_MAJOR_VERSION == 1 && NNG_MINOR_VERSION < 6
   nng_mtx_alloc(&shr_mtx);
 #endif
-  R_registerRoutines(dll, NULL, callMethods, NULL, externalMethods);
+  R_registerRoutines(dll, NULL, callMethods, NULL, NULL);
   R_useDynamicSymbols(dll, FALSE);
   R_forceSymbols(dll, TRUE);
 }
