@@ -164,7 +164,6 @@ SEXP nano_unserialize(unsigned char *buf, size_t sz) {
 
 SEXP nano_encode(SEXP object) {
 
-  R_xlen_t xlen = Rf_xlength(object);
   size_t sz;
   SEXP out;
 
@@ -173,7 +172,7 @@ SEXP nano_encode(SEXP object) {
     const char *s;
     unsigned char *buf;
     size_t np, outlen = 0;
-    R_xlen_t i;
+    R_xlen_t i, xlen = XLENGTH(object);
     for (i = 0; i < xlen; i++)
       outlen += strlen(Rf_translateCharUTF8(STRING_ELT(object, i))) + 1;
     PROTECT(out = Rf_allocVector(RAWSXP, outlen));
@@ -186,28 +185,39 @@ SEXP nano_encode(SEXP object) {
     UNPROTECT(1);
     break;
   case REALSXP:
-    sz = xlen * sizeof(double);
+    sz = XLENGTH(object) * sizeof(double);
     out = Rf_allocVector(RAWSXP, sz);
     memcpy(RAW(out), REAL(object), sz);
     break;
   case INTSXP:
-    sz = xlen * sizeof(int);
+    sz = XLENGTH(object) * sizeof(int);
     out = Rf_allocVector(RAWSXP, sz);
     memcpy(RAW(out), INTEGER(object), sz);
     break;
   case LGLSXP:
-    sz = xlen * sizeof(int);
+    sz = XLENGTH(object) * sizeof(int);
     out = Rf_allocVector(RAWSXP, sz);
     memcpy(RAW(out), LOGICAL(object), sz);
     break;
   case CPLXSXP:
-    sz = xlen * 2 * sizeof(double);
+    sz = XLENGTH(object) * 2 * sizeof(double);
     out = Rf_allocVector(RAWSXP, sz);
     memcpy(RAW(out), COMPLEX(object), sz);
     break;
   case RAWSXP:
     out = object;
     break;
+  case ENVSXP:
+    out = Rf_findVarInFrame(ENCLOS(object), nano_ResultSymbol);
+    if (TYPEOF(out) == RAWSXP) {
+      break;
+    } else if (TYPEOF(out) == INTSXP) {
+      nano_buf buf = nano_serialize(out);
+      out = Rf_allocVector(RAWSXP, buf.cur);
+      memcpy(RAW(out), buf.buf, buf.cur);
+      NANO_FREE(buf);
+      break;
+    }
   default:
     Rf_error("'data' must be an atomic vector type to send in mode 'raw'");
   }
