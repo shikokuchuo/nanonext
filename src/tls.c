@@ -43,25 +43,30 @@ SEXP rnng_version(void) {
 #define SHA384_KEY_SIZE 48
 #define SHA512_KEY_SIZE 64
 
-static nano_buf nano_anytoraw(SEXP x) {
+static nano_buf nano_anytobuf(SEXP x) {
 
   nano_buf hash;
 
   switch (TYPEOF(x)) {
-  case RAWSXP:
-    if (ATTRIB(x) == R_NilValue) {
-      NANO_INIT(hash, RAW(x), XLENGTH(x));
-      break;
-    }
   case STRSXP:
     if (XLENGTH(x) == 1 && ATTRIB(x) == R_NilValue) {
       NANO_INIT(hash, (unsigned char *) CHAR(STRING_ELT(x, 0)), XLENGTH(STRING_ELT(x, 0)));
+      break;
+    }
+    goto serial;
+  case RAWSXP:
+    if (ATTRIB(x) == R_NilValue) {
+      NANO_INIT(hash, RAW(x), XLENGTH(x));
       break;
     }
   default:
     hash = nano_serialize(x);
   }
 
+  return hash;
+
+  serial:
+  hash = nano_serialize(x);
   return hash;
 
 }
@@ -90,7 +95,7 @@ SEXP rnng_sha224(SEXP x, SEXP key, SEXP convert) {
   unsigned char output[SHA256_KEY_SIZE];
 #endif
 
-  nano_buf xhash = nano_anytoraw(x);
+  nano_buf xhash = nano_anytobuf(x);
 
   if (key == R_NilValue) {
 
@@ -103,7 +108,7 @@ SEXP rnng_sha224(SEXP x, SEXP key, SEXP convert) {
 #endif
   } else {
 
-    nano_buf khash = nano_anytoraw(key);
+    nano_buf khash = nano_anytobuf(key);
     xc = mbedtls_md_hmac(mbedtls_md_info_from_type(MBEDTLS_MD_SHA224),
                          khash.buf, khash.cur, xhash.buf, xhash.cur, output);
     NANO_FREE(khash);
@@ -135,7 +140,7 @@ SEXP rnng_sha256(SEXP x, SEXP key, SEXP convert) {
   int xc = 0;
   unsigned char output[SHA256_KEY_SIZE];
 
-  nano_buf xhash = nano_anytoraw(x);
+  nano_buf xhash = nano_anytobuf(x);
 
   if (key == R_NilValue) {
 
@@ -149,7 +154,7 @@ SEXP rnng_sha256(SEXP x, SEXP key, SEXP convert) {
 
   } else {
 
-    nano_buf khash = nano_anytoraw(key);
+    nano_buf khash = nano_anytobuf(key);
     xc = mbedtls_md_hmac(mbedtls_md_info_from_type(MBEDTLS_MD_SHA256),
                          khash.buf, khash.cur, xhash.buf, xhash.cur, output);
     NANO_FREE(khash);
@@ -185,7 +190,7 @@ SEXP rnng_sha384(SEXP x, SEXP key, SEXP convert) {
   unsigned char output[SHA512_KEY_SIZE];
 #endif
 
-  nano_buf xhash = nano_anytoraw(x);
+  nano_buf xhash = nano_anytobuf(x);
 
   if (key == R_NilValue) {
 
@@ -199,7 +204,7 @@ SEXP rnng_sha384(SEXP x, SEXP key, SEXP convert) {
 
   } else {
 
-    nano_buf khash = nano_anytoraw(key);
+    nano_buf khash = nano_anytobuf(key);
     xc = mbedtls_md_hmac(mbedtls_md_info_from_type(MBEDTLS_MD_SHA384),
                          khash.buf, khash.cur, xhash.buf, xhash.cur, output);
     NANO_FREE(khash);
@@ -231,7 +236,7 @@ SEXP rnng_sha512(SEXP x, SEXP key, SEXP convert) {
   int xc = 0;
   unsigned char output[SHA512_KEY_SIZE];
 
-  nano_buf xhash = nano_anytoraw(x);
+  nano_buf xhash = nano_anytobuf(x);
 
   if (key == R_NilValue) {
 
@@ -245,7 +250,7 @@ SEXP rnng_sha512(SEXP x, SEXP key, SEXP convert) {
 
   } else {
 
-    nano_buf khash = nano_anytoraw(key);
+    nano_buf khash = nano_anytobuf(key);
     xc = mbedtls_md_hmac(mbedtls_md_info_from_type(MBEDTLS_MD_SHA512),
                          khash.buf, khash.cur, xhash.buf, xhash.cur, output);
     NANO_FREE(khash);
@@ -277,7 +282,7 @@ SEXP rnng_sha1(SEXP x, SEXP key, SEXP convert) {
   int xc = 0;
   unsigned char output[SHA1_KEY_SIZE];
 
-  nano_buf xhash = nano_anytoraw(x);
+  nano_buf xhash = nano_anytobuf(x);
 
   if (key == R_NilValue) {
 
@@ -291,7 +296,7 @@ SEXP rnng_sha1(SEXP x, SEXP key, SEXP convert) {
 
   } else {
 
-    nano_buf khash = nano_anytoraw(key);
+    nano_buf khash = nano_anytobuf(key);
     xc = mbedtls_md_hmac(mbedtls_md_info_from_type(MBEDTLS_MD_SHA1),
                          khash.buf, khash.cur, xhash.buf, xhash.cur, output);
     NANO_FREE(khash);
@@ -325,7 +330,7 @@ SEXP rnng_base64enc(SEXP x, SEXP convert) {
   int xc;
   size_t olen;
 
-  nano_buf hash = nano_anytoraw(x);
+  nano_buf hash = nano_anytobuf(x);
   xc = mbedtls_base64_encode(NULL, 0, &olen, hash.buf, hash.cur);
   unsigned char *buf = R_Calloc(olen, unsigned char);
   xc = mbedtls_base64_encode(buf, olen, &olen, hash.buf, hash.cur);
