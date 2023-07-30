@@ -217,7 +217,7 @@ sha1 <- function(x, key = NULL, convert = TRUE) .Call(rnng_sha1, x, key, convert
 #' base64dec(base64enc("hello world!"))
 #'
 #' base64enc(as.raw(c(1L, 2L, 4L)), convert = FALSE)
-#' base64dec(base64enc(as.raw(c(1L, 2L, 4L)), convert = FALSE))
+#' base64dec(base64enc(as.raw(c(1L, 2L, 4L))), convert = FALSE)
 #'
 #' base64enc(data.frame())
 #' base64dec(base64enc(data.frame()), convert = NA)
