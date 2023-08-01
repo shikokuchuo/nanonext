@@ -466,6 +466,7 @@ SEXP nano_decode(unsigned char *buf, size_t sz, const int mod, const int kpr) {
       memcpy(RAW(raw), buf, sz);
     }
     SET_VECTOR_ELT(out, 1, data);
+    REprintf("'keep.raw' is deprecated and will be removed in a future package version\n");
 
     UNPROTECT(2);
     return out;
