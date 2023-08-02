@@ -486,6 +486,14 @@ nanotest(is.raw(base64dec(base64enc(as.raw(c(1L, 2L)), convert = FALSE), convert
 nanotest(is.integer(base64dec(base64enc(c(1L, 2L)), convert = NA)))
 nanotesterr(base64dec("__"), "not valid base64")
 
+k <- new.env()
+v <- "value"
+nanotest(typeof(w <- weakref(k, v)) == "weakref")
+nanotest(identical(weakref_key(w), k))
+nanotest(identical(weakref_value(w), v))
+rm(v)
+nanotest(weakref_value(w) == "value")
+
 file <- tempfile()
 pem <- "-----BEGIN CERTIFICATE----- -----END CERTIFICATE-----"
 cat(pem, file = file)
