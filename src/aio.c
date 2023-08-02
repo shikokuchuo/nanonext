@@ -912,7 +912,7 @@ SEXP rnng_aio_stop(SEXP aio) {
   if (TYPEOF(aio) != ENVSXP)
     return R_NilValue;
 
-  SEXP coreaio = Rf_findVarInFrame(aio, nano_AioSymbol);
+  const SEXP coreaio = Rf_findVarInFrame(aio, nano_AioSymbol);
   if (R_ExternalPtrTag(coreaio) != nano_AioSymbol)
     return R_NilValue;
 
@@ -927,20 +927,12 @@ SEXP rnng_aio_stop(SEXP aio) {
 SEXP rnng_unresolved(SEXP x) {
 
   switch (TYPEOF(x)) {
-  case ENVSXP: ;
-    SEXP data = Rf_findVarInFrame(x, nano_DataSymbol);
-    if (data != R_UnboundValue) {
-      if (Rf_inherits(data, "unresolvedValue"))
-        return Rf_ScalarLogical(1);
-    } else {
-      data = Rf_findVarInFrame(x, nano_ResultSymbol);
-      if (Rf_inherits(data, "unresolvedValue"))
-        return Rf_ScalarLogical(1);
-    }
-    break;
+  case ENVSXP:
+    if (Rf_findVarInFrame(x, nano_DataSymbol) == R_UnboundValue)
+      Rf_findVarInFrame(x, nano_ResultSymbol);
+    return Rf_ScalarLogical(Rf_findVarInFrame(x, nano_AioSymbol) != R_NilValue);
   case LGLSXP:
-    if (Rf_inherits(x, "unresolvedValue"))
-      return Rf_ScalarLogical(1);
+    return Rf_ScalarLogical(Rf_inherits(x, "unresolvedValue"));
   }
 
   return Rf_ScalarLogical(0);
@@ -952,7 +944,7 @@ SEXP rnng_unresolved2(SEXP aio) {
   if (TYPEOF(aio) != ENVSXP)
     return Rf_ScalarLogical(0);
 
-  SEXP coreaio = Rf_findVarInFrame(aio, nano_AioSymbol);
+  const SEXP coreaio = Rf_findVarInFrame(aio, nano_AioSymbol);
   if (R_ExternalPtrTag(coreaio) != nano_AioSymbol || R_ExternalPtrAddr(coreaio) == NULL)
     return Rf_ScalarLogical(0);
 
