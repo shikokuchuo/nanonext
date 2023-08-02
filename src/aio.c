@@ -886,7 +886,7 @@ SEXP rnng_aio_call(SEXP aio) {
     return aio;
 
   const SEXP coreaio = Rf_findVarInFrame(aio, nano_AioSymbol);
-  if (R_ExternalPtrTag(coreaio) != nano_AioSymbol || R_ExternalPtrAddr(coreaio) == NULL)
+  if (R_ExternalPtrTag(coreaio) != nano_AioSymbol)
     return aio;
 
   nano_aio *aiop = (nano_aio *) R_ExternalPtrAddr(coreaio);
@@ -946,7 +946,7 @@ SEXP rnng_unresolved2(SEXP aio) {
     return Rf_ScalarLogical(0);
 
   const SEXP coreaio = Rf_findVarInFrame(aio, nano_AioSymbol);
-  if (R_ExternalPtrTag(coreaio) != nano_AioSymbol || R_ExternalPtrAddr(coreaio) == NULL)
+  if (R_ExternalPtrTag(coreaio) != nano_AioSymbol)
     return Rf_ScalarLogical(0);
 
   nano_aio *aiop = (nano_aio *) R_ExternalPtrAddr(coreaio);
