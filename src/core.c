@@ -209,13 +209,13 @@ SEXP nano_encode(SEXP object) {
     break;
   case ENVSXP:
     out = Rf_findVarInFrame(ENCLOS(object), nano_ResultSymbol);
-    if (TYPEOF(out) == RAWSXP) {
-      break;
-    } else if (TYPEOF(out) == INTSXP) {
-      nano_buf buf = nano_serialize(out);
-      out = Rf_allocVector(RAWSXP, buf.cur);
-      memcpy(RAW(out), buf.buf, buf.cur);
-      NANO_FREE(buf);
+    if (out != R_UnboundValue) {
+      if (TYPEOF(out) != RAWSXP) {
+        nano_buf buf = nano_serialize(out);
+        out = Rf_allocVector(RAWSXP, buf.cur);
+        memcpy(RAW(out), buf.buf, buf.cur);
+        NANO_FREE(buf);
+      }
       break;
     }
   default:
