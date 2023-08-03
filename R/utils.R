@@ -230,7 +230,7 @@ is_nano <- function(x) inherits(x, c("nano", "nanoObject"))
 #'
 #' @export
 #'
-is_error_value <- function(x) inherits(x, "errorValue")
+is_error_value <- function(x) .Call(rnng_is_error_value, x)
 
 #' @examples
 #' is_nul_byte(as.raw(0L))

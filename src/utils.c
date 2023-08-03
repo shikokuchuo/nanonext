@@ -184,9 +184,13 @@ SEXP rnng_device(SEXP s1, SEXP s2) {
 
 SEXP rnng_is_nul_byte(SEXP x) {
 
-  if (TYPEOF(x) == RAWSXP && XLENGTH(x) == 1 && RAW(x)[0] == 0)
-    return Rf_ScalarLogical(1);
-  return Rf_ScalarLogical(0);
+  return Rf_ScalarLogical(TYPEOF(x) == RAWSXP && XLENGTH(x) == 1 && RAW(x)[0] == 0);
+
+}
+
+SEXP rnng_is_error_value(SEXP x) {
+
+  return Rf_ScalarLogical(Rf_inherits(x, "errorValue"));
 
 }
 

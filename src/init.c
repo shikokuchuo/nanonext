@@ -156,6 +156,7 @@ static const R_CallMethodDef callMethods[] = {
   {"rnng_base64enc", (DL_FUNC) &rnng_base64enc, 2},
   {"rnng_fini", (DL_FUNC) &rnng_fini, 0},
   {"rnng_get_opt", (DL_FUNC) &rnng_get_opt, 2},
+  {"rnng_is_error_value", (DL_FUNC) &rnng_is_error_value, 1},
   {"rnng_is_nul_byte", (DL_FUNC) &rnng_is_nul_byte, 1},
   {"rnng_listen", (DL_FUNC) &rnng_listen, 5},
   {"rnng_listener_close", (DL_FUNC) &rnng_listener_close, 1},
