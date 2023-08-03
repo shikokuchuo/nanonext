@@ -933,7 +933,7 @@ SEXP rnng_unresolved(SEXP x) {
       value = Rf_findVarInFrame(x, nano_ResultSymbol);
     return Rf_ScalarLogical(Rf_inherits(value, "unresolvedValue"));
   case LGLSXP:
-    return Rf_ScalarLogical(Rf_inherits(x, "unresolvedValue"));
+    return Rf_ScalarLogical(x == nano_unresolved);
   }
 
   return Rf_ScalarLogical(0);
