@@ -52,12 +52,56 @@ typedef struct nano_dialer_s {
   nng_tls_config *tls;
 } nano_dialer;
 
+typedef struct nano_stream_listener_s {
+  nng_stream_listener *list;
+  nng_tls_config *tls;
+} nano_stream_listener;
+
+typedef struct nano_stream_dialer_s {
+  nng_stream_dialer *dial;
+  nng_tls_config *tls;
+} nano_stream_dialer;
+
+typedef enum nano_aio_typ {
+  SENDAIO,
+  RECVAIO,
+  IOV_SENDAIO,
+  IOV_RECVAIO,
+  HTTP_AIO
+} nano_aio_typ;
+
+typedef struct nano_aio_s {
+  nng_aio *aio;
+  nano_aio_typ type;
+  int mode;
+  int result;
+  void *data;
+} nano_aio;
+
+typedef struct nano_handle_s {
+  nng_url *url;
+  nng_http_client *cli;
+  nng_http_req *req;
+  nng_http_res *res;
+  nng_tls_config *cfg;
+} nano_handle;
+
 typedef struct nano_cv_s {
   int condition;
   uint8_t flag;
   nng_mtx *mtx;
   nng_cv *cv;
 } nano_cv;
+
+typedef struct nano_cv_aio_s {
+  nano_cv *cv;
+  nano_aio *aio;
+} nano_cv_aio;
+
+typedef struct nano_cv_duo_s {
+  nano_cv *cv;
+  nano_cv *cv2;
+} nano_cv_duo;
 
 #endif
 
@@ -72,6 +116,13 @@ typedef struct nano_cv_s {
 #include <mbedtls/sha256.h>
 #include <mbedtls/sha512.h>
 #include <mbedtls/version.h>
+
+#define SHA1_KEY_SIZE 20
+#define SHA224_KEY_SIZE 28
+#define SHA256_KEY_SIZE 32
+#define SHA384_KEY_SIZE 48
+#define SHA512_KEY_SIZE 64
+
 #endif
 
 #ifdef NANONEXT_KEYCERT
@@ -101,10 +152,9 @@ typedef struct nano_cv_s {
 
 #define ERROR_OUT(xc) Rf_error("%d | %s", xc, nng_strerror(xc))
 #define ERROR_RET(xc) { Rf_warning("%d | %s", xc, nng_strerror(xc)); return mk_error(xc); }
-#define NANO_ENCODE(buf, data) { SEXP enc = nano_encode(data); NANO_INIT(buf, RAW(enc), XLENGTH(enc)); }
 #define NANO_CHAR(val, len) Rf_mkCharLenCE(val, len, CE_NATIVE)
 #define NANO_STRING(val, len) Rf_ScalarString(NANO_CHAR(val, len))
-
+#define NANO_ENCODE(buf, data) { SEXP enc = nano_encode(data); NANO_INIT(buf, RAW(enc), XLENGTH(enc)); }
 #define NANONEXT_INIT_BUFSIZE 16384
 #define NANONEXT_SERIAL_VER 3
 #define NANO_ALLOC(x, sz)                                      \
@@ -116,6 +166,7 @@ typedef struct nano_cv_s {
   x.len = 0;                                                   \
   x.cur = (R_xlen_t) sz;
 #define NANO_FREE(x) if (x.len) R_Free(x.buf);
+
 typedef struct nano_buf_s {
   unsigned char *buf;
   size_t len;
@@ -132,7 +183,6 @@ extern int nano_matcharg(SEXP);
 extern int nano_matchargs(SEXP);
 extern nano_buf nano_serialize(SEXP);
 extern SEXP nano_unserialize(unsigned char *, size_t);
-extern SEXP rawOneString(unsigned char *, R_xlen_t, R_xlen_t *);
 extern SEXP rawToChar(unsigned char *, size_t);
 extern void socket_finalizer(SEXP);
 extern void dialer_finalizer(SEXP);

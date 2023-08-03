@@ -59,7 +59,7 @@ SEXP mk_error_ncurl(const int xc) {
 
 }
 
-void nano_write_char(R_outpstream_t stream, int c) {
+static void nano_write_char(R_outpstream_t stream, int c) {
 
   nano_buf *buf = (nano_buf *) stream->data;
   if (buf->cur >= buf->len) {
@@ -71,7 +71,7 @@ void nano_write_char(R_outpstream_t stream, int c) {
 
 }
 
-void nano_write_bytes(R_outpstream_t stream, void *src, int len) {
+static void nano_write_bytes(R_outpstream_t stream, void *src, int len) {
 
   nano_buf *buf = (nano_buf *) stream->data;
 
@@ -90,7 +90,7 @@ void nano_write_bytes(R_outpstream_t stream, void *src, int len) {
 
 }
 
-int nano_read_char(R_inpstream_t stream) {
+static int nano_read_char(R_inpstream_t stream) {
 
   nano_buf *buf = (nano_buf *) stream->data;
   if (buf->cur >= buf->len)
@@ -100,7 +100,7 @@ int nano_read_char(R_inpstream_t stream) {
 
 }
 
-void nano_read_bytes(R_inpstream_t stream, void *dst, int len) {
+static void nano_read_bytes(R_inpstream_t stream, void *dst, int len) {
 
   nano_buf *buf = (nano_buf *) stream->data;
   if (buf->cur + len > buf->len)
@@ -108,6 +108,41 @@ void nano_read_bytes(R_inpstream_t stream, void *dst, int len) {
 
   memcpy(dst, buf->buf + buf->cur, len);
   buf->cur += len;
+
+}
+
+static SEXP rawOneString(unsigned char *bytes, R_xlen_t nbytes, R_xlen_t *np) {
+
+  unsigned char *p;
+  R_xlen_t i;
+  char *cbuf;
+  SEXP res;
+
+  for (i = *np, p = bytes + (*np); i < nbytes; p++, i++)
+    if (*p == '\0') break;
+
+  if (i < nbytes) {
+    p = bytes + (*np);
+    *np = i + 1;
+    res = Rf_mkChar((char *) p);
+  } else {
+    cbuf = R_chk_calloc(nbytes - (*np) + 1, 1);
+    memcpy(cbuf, bytes + (*np), nbytes - (*np));
+    *np = nbytes;
+    res = Rf_mkChar(cbuf);
+    R_Free(cbuf);
+  }
+
+  return res;
+
+}
+
+SEXP rawToChar(unsigned char *buf, size_t sz) {
+
+  int i, j;
+  for (i = 0, j = -1; i < sz; i++) if (buf[i]) j = i;
+
+  return NANO_STRING((const char *) buf, j + 1);
 
 }
 
@@ -211,10 +246,12 @@ SEXP nano_encode(SEXP object) {
     out = Rf_findVarInFrame(ENCLOS(object), nano_ResultSymbol);
     if (out != R_UnboundValue) {
       if (TYPEOF(out) != RAWSXP) {
+        PROTECT(out);
         nano_buf buf = nano_serialize(out);
         out = Rf_allocVector(RAWSXP, buf.cur);
         memcpy(RAW(out), buf.buf, buf.cur);
         NANO_FREE(buf);
+        UNPROTECT(1);
       }
       break;
     }
@@ -252,41 +289,6 @@ int nano_encodes(SEXP mode) {
   }
 
   return xc;
-
-}
-
-SEXP rawOneString(unsigned char *bytes, R_xlen_t nbytes, R_xlen_t *np) {
-
-  unsigned char *p;
-  R_xlen_t i;
-  char *cbuf;
-  SEXP res;
-
-  for (i = *np, p = bytes + (*np); i < nbytes; p++, i++)
-    if (*p == '\0') break;
-
-  if (i < nbytes) {
-    p = bytes + (*np);
-    *np = i + 1;
-    res = Rf_mkChar((char *) p);
-  } else {
-    cbuf = R_chk_calloc(nbytes - (*np) + 1, 1);
-    memcpy(cbuf, bytes + (*np), nbytes - (*np));
-    *np = nbytes;
-    res = Rf_mkChar(cbuf);
-    R_Free(cbuf);
-  }
-
-  return res;
-
-}
-
-SEXP rawToChar(unsigned char *buf, size_t sz) {
-
-  int i, j;
-  for (i = 0, j = -1; i < sz; i++) if (buf[i]) j = i;
-
-  return NANO_STRING((const char *) buf, j + 1);
 
 }
 

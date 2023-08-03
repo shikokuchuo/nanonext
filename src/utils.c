@@ -20,17 +20,7 @@
 #define NANONEXT_SUPPLEMENTALS
 #include "nanonext.h"
 
-// definitions and finalizers --------------------------------------------------
-
-typedef struct nano_stream_listener_s {
-  nng_stream_listener *list;
-  nng_tls_config *tls;
-} nano_stream_listener;
-
-typedef struct nano_stream_dialer_s {
-  nng_stream_dialer *dial;
-  nng_tls_config *tls;
-} nano_stream_dialer;
+// finalizers ------------------------------------------------------------------
 
 static void stream_finalizer(SEXP xptr) {
 
@@ -125,12 +115,11 @@ SEXP rnng_random(SEXP n) {
     Rf_error("'n' must be integer or coercible to integer");
   }
 
-  PROTECT(vec = Rf_allocVector(REALSXP, vlen));
+  vec = Rf_allocVector(REALSXP, vlen);
   double *pvec = REAL(vec);
   for (R_xlen_t i = 0; i < vlen; i++)
     pvec[i] = (double) nng_random();
 
-  UNPROTECT(1);
   return vec;
 
 }

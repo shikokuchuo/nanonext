@@ -19,42 +19,6 @@
 #define NANONEXT_SUPPLEMENTALS
 #include "nanonext.h"
 
-// definitions and statics -----------------------------------------------------
-
-typedef enum nano_aio_typ {
-  SENDAIO,
-  RECVAIO,
-  IOV_SENDAIO,
-  IOV_RECVAIO,
-  HTTP_AIO
-} nano_aio_typ;
-
-typedef struct nano_aio_s {
-  nng_aio *aio;
-  nano_aio_typ type;
-  int mode;
-  int result;
-  void *data;
-} nano_aio;
-
-typedef struct nano_handle_s {
-  nng_url *url;
-  nng_http_client *cli;
-  nng_http_req *req;
-  nng_http_res *res;
-  nng_tls_config *cfg;
-} nano_handle;
-
-typedef struct nano_cv_aio_s {
-  nano_cv *cv;
-  nano_aio *aio;
-} nano_cv_aio;
-
-typedef struct nano_cv_duo_s {
-  nano_cv *cv;
-  nano_cv *cv2;
-} nano_cv_duo;
-
 // aio completion callbacks ----------------------------------------------------
 
 static void pipe_cb_signal_cv(nng_pipe p, nng_pipe_ev ev, void *arg) {

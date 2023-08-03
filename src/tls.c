@@ -35,13 +35,7 @@ SEXP rnng_version(void) {
 
 }
 
-// Definitions and Statics -----------------------------------------------------
-
-#define SHA1_KEY_SIZE 20
-#define SHA224_KEY_SIZE 28
-#define SHA256_KEY_SIZE 32
-#define SHA384_KEY_SIZE 48
-#define SHA512_KEY_SIZE 64
+// Statics ---------------------------------------------------------------------
 
 static nano_buf nano_anytobuf(SEXP x) {
 
