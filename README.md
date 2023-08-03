@@ -364,7 +364,7 @@ aio
 #> < recvAio >
 #>  - $data for message data
 aio$data |> str()
-#>  num [1:100000000] 1.011 0.874 0.222 -0.973 0.466 ...
+#>  num [1:100000000] 0.165 -1.03 -0.484 0.15 1.194 ...
 ```
 
 As `call_aio()` is blocking and will wait for completion, an alternative
@@ -531,7 +531,7 @@ throughout, or alternatively ‘localhost’, but not a mixture of the two.
 cert <- write_cert(cn = "127.0.0.1")
 str(cert)
 #> List of 2
-#>  $ server: chr [1:2] "-----BEGIN CERTIFICATE-----\nMIIFFTCCAv2gAwIBAgIBATANBgkqhkiG9w0BAQsFADAiMRIwEAYDVQQDDAkxMjcu\nMC4wLjExDDAKBgNV"| __truncated__ "-----BEGIN RSA PRIVATE KEY-----\nMIIJKQIBAAKCAgEA7Jty5yBnr7AnzMrd34WFukuR7hBEtUqmXZsduEA27+VimP06\nUZxMr82MGsn2"| __truncated__
+#>  $ server: chr [1:2] "-----BEGIN CERTIFICATE-----\nMIIFFTCCAv2gAwIBAgIBATANBgkqhkiG9w0BAQsFADAiMRIwEAYDVQQDDAkxMjcu\nMC4wLjExDDAKBgNV"| __truncated__ "-----BEGIN RSA PRIVATE KEY-----\nMIIJKAIBAAKCAgEAoyoAZWVYtYAUAfYYG0Vd3ZTGh+FcgMfD9gStfEnlTywtBJHn\ngtA9zq6OZJ23"| __truncated__
 #>  $ client: chr [1:2] "-----BEGIN CERTIFICATE-----\nMIIFFTCCAv2gAwIBAgIBATANBgkqhkiG9w0BAQsFADAiMRIwEAYDVQQDDAkxMjcu\nMC4wLjExDDAKBgNV"| __truncated__ ""
 
 ser <- tls_config(server = cert$server)
@@ -703,7 +703,7 @@ ncurl("https://postman-echo.com/get")
 #> NULL
 #> 
 #> $data
-#> [1] "{\n  \"args\": {},\n  \"headers\": {\n    \"x-forwarded-proto\": \"https\",\n    \"x-forwarded-port\": \"443\",\n    \"host\": \"postman-echo.com\",\n    \"x-amzn-trace-id\": \"Root=1-64c26fdd-03372da168b8ee05372200fd\"\n  },\n  \"url\": \"https://postman-echo.com/get\"\n}"
+#> [1] "{\n  \"args\": {},\n  \"headers\": {\n    \"x-forwarded-proto\": \"https\",\n    \"x-forwarded-port\": \"443\",\n    \"host\": \"postman-echo.com\",\n    \"x-amzn-trace-id\": \"Root=1-64cbb085-342dac4b52f4818a5987b9a9\"\n  },\n  \"url\": \"https://postman-echo.com/get\"\n}"
 ```
 
 For advanced use, supports additional HTTP methods such as POST or PUT.
@@ -724,10 +724,10 @@ res
 
 call_aio(res)$headers
 #> $date
-#> [1] "Thu, 27 Jul 2023 13:23:41 GMT"
+#> [1] "Thu, 03 Aug 2023 13:49:58 GMT"
 
 res$data
-#> [1] "{\n  \"args\": {},\n  \"data\": {\n    \"key\": \"value\"\n  },\n  \"files\": {},\n  \"form\": {},\n  \"headers\": {\n    \"x-forwarded-proto\": \"https\",\n    \"x-forwarded-port\": \"443\",\n    \"host\": \"postman-echo.com\",\n    \"x-amzn-trace-id\": \"Root=1-64c26fdd-2b7fe5a961969b674d418138\",\n    \"content-length\": \"16\",\n    \"content-type\": \"application/json\",\n    \"authorization\": \"Bearer APIKEY\"\n  },\n  \"json\": {\n    \"key\": \"value\"\n  },\n  \"url\": \"https://postman-echo.com/post\"\n}"
+#> [1] "{\n  \"args\": {},\n  \"data\": {\n    \"key\": \"value\"\n  },\n  \"files\": {},\n  \"form\": {},\n  \"headers\": {\n    \"x-forwarded-proto\": \"https\",\n    \"x-forwarded-port\": \"443\",\n    \"host\": \"postman-echo.com\",\n    \"x-amzn-trace-id\": \"Root=1-64cbb086-59b4a1145957f60535aebdb1\",\n    \"content-length\": \"16\",\n    \"content-type\": \"application/json\",\n    \"authorization\": \"Bearer APIKEY\"\n  },\n  \"json\": {\n    \"key\": \"value\"\n  },\n  \"url\": \"https://postman-echo.com/post\"\n}"
 ```
 
 In this respect, it may be used as a performant and lightweight method
@@ -758,7 +758,7 @@ transact(sess)
 #> 
 #> $headers
 #> $headers$Date
-#> [1] "Thu, 27 Jul 2023 13:23:42 GMT"
+#> [1] "Thu, 03 Aug 2023 13:49:59 GMT"
 #> 
 #> $headers$`Content-Type`
 #> [1] "application/json; charset=utf-8"
@@ -771,8 +771,8 @@ transact(sess)
 #>  [76] 77 61 72 64 65 64 2d 70 6f 72 74 22 3a 20 22 34 34 33 22 2c 0a 20 20 20 20
 #> [101] 22 68 6f 73 74 22 3a 20 22 70 6f 73 74 6d 61 6e 2d 65 63 68 6f 2e 63 6f 6d
 #> [126] 22 2c 0a 20 20 20 20 22 78 2d 61 6d 7a 6e 2d 74 72 61 63 65 2d 69 64 22 3a
-#> [151] 20 22 52 6f 6f 74 3d 31 2d 36 34 63 32 36 66 64 65 2d 30 35 34 35 38 37 36
-#> [176] 63 35 35 66 64 65 37 31 38 30 62 37 35 64 32 33 36 22 2c 0a 20 20 20 20 22
+#> [151] 20 22 52 6f 6f 74 3d 31 2d 36 34 63 62 62 30 38 36 2d 35 37 38 33 37 31 62
+#> [176] 38 30 39 34 33 32 62 39 64 37 35 36 32 37 33 35 37 22 2c 0a 20 20 20 20 22
 #> [201] 63 6f 6e 74 65 6e 74 2d 74 79 70 65 22 3a 20 22 61 70 70 6c 69 63 61 74 69
 #> [226] 6f 6e 2f 6a 73 6f 6e 22 2c 0a 20 20 20 20 22 61 75 74 68 6f 72 69 7a 61 74
 #> [251] 69 6f 6e 22 3a 20 22 42 65 61 72 65 72 20 41 50 49 4b 45 59 22 0a 20 20 7d
@@ -987,13 +987,13 @@ We would like to acknowledge in particular:
 - [R Core](https://www.r-project.org/contributors.html) for various
   auxiliary functions for serialisation and raw / character conversion,
   which have been adopted by the package.
-- [Luke Tierney](https://homepage.stat.uiowa.edu/~luke/) for his
-  documentation of R’s serialization mechanism and
+- [Luke Tierney](https://homepage.stat.uiowa.edu/~luke/) for documenting
+  R’s serialization mechanism and
   [mikefc](https://github.com/coolbutuseless) for meticulous annotations
-  in his {serializer} package that led us to implement our own low-level
-  interface to R serialisation.
-- [Jeroen Ooms](https://github.com/jeroen) - for his anticonf TM
-  ‘configure’ file, on which our original ‘configure’ was based,
+  in {serializer}, which led to the package’s own implementation of a
+  low-level interface to R serialisation.
+- [Jeroen Ooms](https://github.com/jeroen) - for his ‘Anticonf (tm)’
+  configure script, on which our original ‘configure’ was based,
   although much modified since.
 
 Links:
