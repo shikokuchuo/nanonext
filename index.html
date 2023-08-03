@@ -318,7 +318,7 @@
 <span><span class="co">#&gt; &lt; recvAio &gt;</span></span>
 <span><span class="co">#&gt;  - $data for message data</span></span>
 <span><span class="va">aio</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] 1.011 0.874 0.222 -0.973 0.466 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] 0.165 -1.03 -0.484 0.15 1.194 ...</span></span></code></pre></div>
 <p>As <code><a href="reference/call_aio.html">call_aio()</a></code> is blocking and will wait for completion, an alternative is to query <code>aio$data</code> directly. This will return an ‘unresolved’ logical NA value if the calculation is yet to complete.</p>
 <p>In this example the calculation is returned, but other operations may reside entirely on the server side, for example writing data to disk.</p>
 <p>In such a case, calling or querying the value confirms that the operation has completed, and provides the return value of the function, which may typically be NULL or an exit code.</p>
@@ -410,7 +410,7 @@
 <code class="sourceCode R"><span><span class="va">cert</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/write_cert.html">write_cert</a></span><span class="op">(</span>cn <span class="op">=</span> <span class="st">"127.0.0.1"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">cert</span><span class="op">)</span></span>
 <span><span class="co">#&gt; List of 2</span></span>
-<span><span class="co">#&gt;  $ server: chr [1:2] "-----BEGIN CERTIFICATE-----\nMIIFFTCCAv2gAwIBAgIBATANBgkqhkiG9w0BAQsFADAiMRIwEAYDVQQDDAkxMjcu\nMC4wLjExDDAKBgNV"| __truncated__ "-----BEGIN RSA PRIVATE KEY-----\nMIIJKQIBAAKCAgEA7Jty5yBnr7AnzMrd34WFukuR7hBEtUqmXZsduEA27+VimP06\nUZxMr82MGsn2"| __truncated__</span></span>
+<span><span class="co">#&gt;  $ server: chr [1:2] "-----BEGIN CERTIFICATE-----\nMIIFFTCCAv2gAwIBAgIBATANBgkqhkiG9w0BAQsFADAiMRIwEAYDVQQDDAkxMjcu\nMC4wLjExDDAKBgNV"| __truncated__ "-----BEGIN RSA PRIVATE KEY-----\nMIIJKAIBAAKCAgEAoyoAZWVYtYAUAfYYG0Vd3ZTGh+FcgMfD9gStfEnlTywtBJHn\ngtA9zq6OZJ23"| __truncated__</span></span>
 <span><span class="co">#&gt;  $ client: chr [1:2] "-----BEGIN CERTIFICATE-----\nMIIFFTCCAv2gAwIBAgIBATANBgkqhkiG9w0BAQsFADAiMRIwEAYDVQQDDAkxMjcu\nMC4wLjExDDAKBgNV"| __truncated__ ""</span></span>
 <span></span>
 <span><span class="va">ser</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/tls_config.html">tls_config</a></span><span class="op">(</span>server <span class="op">=</span> <span class="va">cert</span><span class="op">$</span><span class="va">server</span><span class="op">)</span></span>
@@ -555,7 +555,7 @@
 <span><span class="co">#&gt; NULL</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $data</span></span>
-<span><span class="co">#&gt; [1] "{\n  \"args\": {},\n  \"headers\": {\n    \"x-forwarded-proto\": \"https\",\n    \"x-forwarded-port\": \"443\",\n    \"host\": \"postman-echo.com\",\n    \"x-amzn-trace-id\": \"Root=1-64c26fdd-03372da168b8ee05372200fd\"\n  },\n  \"url\": \"https://postman-echo.com/get\"\n}"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "{\n  \"args\": {},\n  \"headers\": {\n    \"x-forwarded-proto\": \"https\",\n    \"x-forwarded-port\": \"443\",\n    \"host\": \"postman-echo.com\",\n    \"x-amzn-trace-id\": \"Root=1-64cbb085-342dac4b52f4818a5987b9a9\"\n  },\n  \"url\": \"https://postman-echo.com/get\"\n}"</span></span></code></pre></div>
 <p>For advanced use, supports additional HTTP methods such as POST or PUT.</p>
 <div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ncurl.html">ncurl</a></span><span class="op">(</span><span class="st">"https://postman-echo.com/post"</span>,</span>
@@ -573,10 +573,10 @@
 <span></span>
 <span><span class="fu"><a href="reference/call_aio.html">call_aio</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span><span class="op">$</span><span class="va">headers</span></span>
 <span><span class="co">#&gt; $date</span></span>
-<span><span class="co">#&gt; [1] "Thu, 27 Jul 2023 13:23:41 GMT"</span></span>
+<span><span class="co">#&gt; [1] "Thu, 03 Aug 2023 13:49:58 GMT"</span></span>
 <span></span>
 <span><span class="va">res</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt; [1] "{\n  \"args\": {},\n  \"data\": {\n    \"key\": \"value\"\n  },\n  \"files\": {},\n  \"form\": {},\n  \"headers\": {\n    \"x-forwarded-proto\": \"https\",\n    \"x-forwarded-port\": \"443\",\n    \"host\": \"postman-echo.com\",\n    \"x-amzn-trace-id\": \"Root=1-64c26fdd-2b7fe5a961969b674d418138\",\n    \"content-length\": \"16\",\n    \"content-type\": \"application/json\",\n    \"authorization\": \"Bearer APIKEY\"\n  },\n  \"json\": {\n    \"key\": \"value\"\n  },\n  \"url\": \"https://postman-echo.com/post\"\n}"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "{\n  \"args\": {},\n  \"data\": {\n    \"key\": \"value\"\n  },\n  \"files\": {},\n  \"form\": {},\n  \"headers\": {\n    \"x-forwarded-proto\": \"https\",\n    \"x-forwarded-port\": \"443\",\n    \"host\": \"postman-echo.com\",\n    \"x-amzn-trace-id\": \"Root=1-64cbb086-59b4a1145957f60535aebdb1\",\n    \"content-length\": \"16\",\n    \"content-type\": \"application/json\",\n    \"authorization\": \"Bearer APIKEY\"\n  },\n  \"json\": {\n    \"key\": \"value\"\n  },\n  \"url\": \"https://postman-echo.com/post\"\n}"</span></span></code></pre></div>
 <p>In this respect, it may be used as a performant and lightweight method for making REST API requests.</p>
 <p><code><a href="reference/ncurl_session.html">ncurl_session()</a></code> creates a re-usable open connection and presents a much faster and more efficient solution for repeated polling of an API endpoint. <code><a href="reference/ncurl_session.html">transact()</a></code> is then used to request data multiple times as required. This method allows a polling frequency that exceeds a server’s new connection limits, where this is permitted.</p>
 <p>By specifying <code>convert = FALSE</code>, the received binary data is made available as a raw vector at <code>$raw</code>. This may be fed into ‘json’ parsers which can operate directly on such data etc.</p>
@@ -595,7 +595,7 @@
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $headers</span></span>
 <span><span class="co">#&gt; $headers$Date</span></span>
-<span><span class="co">#&gt; [1] "Thu, 27 Jul 2023 13:23:42 GMT"</span></span>
+<span><span class="co">#&gt; [1] "Thu, 03 Aug 2023 13:49:59 GMT"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $headers$`Content-Type`</span></span>
 <span><span class="co">#&gt; [1] "application/json; charset=utf-8"</span></span>
@@ -608,8 +608,8 @@
 <span><span class="co">#&gt;  [76] 77 61 72 64 65 64 2d 70 6f 72 74 22 3a 20 22 34 34 33 22 2c 0a 20 20 20 20</span></span>
 <span><span class="co">#&gt; [101] 22 68 6f 73 74 22 3a 20 22 70 6f 73 74 6d 61 6e 2d 65 63 68 6f 2e 63 6f 6d</span></span>
 <span><span class="co">#&gt; [126] 22 2c 0a 20 20 20 20 22 78 2d 61 6d 7a 6e 2d 74 72 61 63 65 2d 69 64 22 3a</span></span>
-<span><span class="co">#&gt; [151] 20 22 52 6f 6f 74 3d 31 2d 36 34 63 32 36 66 64 65 2d 30 35 34 35 38 37 36</span></span>
-<span><span class="co">#&gt; [176] 63 35 35 66 64 65 37 31 38 30 62 37 35 64 32 33 36 22 2c 0a 20 20 20 20 22</span></span>
+<span><span class="co">#&gt; [151] 20 22 52 6f 6f 74 3d 31 2d 36 34 63 62 62 30 38 36 2d 35 37 38 33 37 31 62</span></span>
+<span><span class="co">#&gt; [176] 38 30 39 34 33 32 62 39 64 37 35 36 32 37 33 35 37 22 2c 0a 20 20 20 20 22</span></span>
 <span><span class="co">#&gt; [201] 63 6f 6e 74 65 6e 74 2d 74 79 70 65 22 3a 20 22 61 70 70 6c 69 63 61 74 69</span></span>
 <span><span class="co">#&gt; [226] 6f 6e 2f 6a 73 6f 6e 22 2c 0a 20 20 20 20 22 61 75 74 68 6f 72 69 7a 61 74</span></span>
 <span><span class="co">#&gt; [251] 69 6f 6e 22 3a 20 22 42 65 61 72 65 72 20 41 50 49 4b 45 59 22 0a 20 20 7d</span></span>
@@ -754,9 +754,9 @@
 <li>
 <a href="https://www.r-project.org/contributors.html" class="external-link">R Core</a> for various auxiliary functions for serialisation and raw / character conversion, which have been adopted by the package.</li>
 <li>
-<a href="https://homepage.stat.uiowa.edu/~luke/" class="external-link">Luke Tierney</a> for his documentation of R’s serialization mechanism and <a href="https://github.com/coolbutuseless" class="external-link">mikefc</a> for meticulous annotations in his {serializer} package that led us to implement our own low-level interface to R serialisation.</li>
+<a href="https://homepage.stat.uiowa.edu/~luke/" class="external-link">Luke Tierney</a> for documenting R’s serialization mechanism and <a href="https://github.com/coolbutuseless" class="external-link">mikefc</a> for meticulous annotations in {serializer}, which led to the package’s own implementation of a low-level interface to R serialisation.</li>
 <li>
-<a href="https://github.com/jeroen" class="external-link">Jeroen Ooms</a> - for his anticonf TM ‘configure’ file, on which our original ‘configure’ was based, although much modified since.</li>
+<a href="https://github.com/jeroen" class="external-link">Jeroen Ooms</a> - for his ‘Anticonf (tm)’ configure script, on which our original ‘configure’ was based, although much modified since.</li>
 </ul>
 <p>Links:</p>
 <p><code>nanonext</code> website: <a href="https://shikokuchuo.net/nanonext/" class="uri">https://shikokuchuo.net/nanonext/</a><br><code>nanonext</code> on CRAN: <a href="https://cran.r-project.org/package=nanonext" class="external-link uri">https://cran.r-project.org/package=nanonext</a><br></p>

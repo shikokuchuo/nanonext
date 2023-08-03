@@ -63,20 +63,20 @@
 </ul></div>
 <div class="section level5">
 <h5 id="updates-0-9-1-9000">Updates<a class="anchor" aria-label="anchor" href="#updates-0-9-1-9000"></a></h5>
-<ul><li>The argument ‘keep.raw’ for all receive functions is deprecated. This is as a raw vector is no longer created as part of unserialisation or data conversion.</li>
+<ul><li>The argument ‘keep.raw’ for all receive functions is deprecated. This is as raw vectors are no longer created as part of unserialisation or data conversion.</li>
 <li>Higher performance send and receive of serialized R objects.
-<ul><li>For receive functions, attempting to unserialise a non-serialised message will now error with ‘unknown input format’ rather than return a raw message vector.</li>
+<ul><li>For receive functions, attempting to unserialise a non-serialised message will now error with ‘unknown input format’ rather than fall back to a raw message vector.</li>
 </ul></li>
 <li>
 <code><a href="../reference/ncurl.html">ncurl()</a></code> etc. gain higher performance raw to character conversion, resulting in the following changes:
 <ul><li>Attempting to convert non-text data with embedded nuls will now error instead of silently returning NULL.</li>
-<li>When ‘convert’ = TRUE, the raw vector is no longer stored at <code>$raw</code> for efficiency.</li>
+<li>For efficiency, when ‘convert’ = TRUE, a raw vector is no longer stored at <code>$raw</code>.</li>
 </ul></li>
 <li>Higher performance cryptographic hash and base64 conversion functions.
 <ul><li>Attributes are now taken into account for scalar strings and raw vectors to ensure unique hashes.</li>
 </ul></li>
 <li>Experimental threaded function <code>timed_signal()</code> removed.</li>
-<li>Requires R &gt;= 3.5 to enforce use of R serialization version 3.</li>
+<li>Requires R &gt;= 3.5 to ensure R serialization version 3.</li>
 </ul></div>
 </div>
     <div class="section level2">
