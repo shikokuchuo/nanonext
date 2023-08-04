@@ -139,7 +139,6 @@ typedef struct nano_cv_duo_s {
 #include <mbedtls/ctr_drbg.h>
 #include <mbedtls/md.h>
 #include <mbedtls/error.h>
-#include <string.h>
 #include <errno.h>
 #endif
 
