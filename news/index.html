@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.1.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.2</span>
       </span>
     </div>
 
@@ -54,15 +54,15 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.9.1.9000" id="nanonext-0919000-development">nanonext 0.9.1.9000 (development)<a class="anchor" aria-label="anchor" href="#nanonext-0919000-development"></a></h2>
+<h2 class="page-header" data-toc-text="0.9.2" id="nanonext-092">nanonext 0.9.2<a class="anchor" aria-label="anchor" href="#nanonext-092"></a></h2>
 <p><em>This version contains performance enhancements which have resulted in potentially breaking changes; please review carefully and only update when ready.</em></p>
 <div class="section level5">
-<h5 id="new-features-0-9-1-9000">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-9-1-9000"></a></h5>
+<h5 id="new-features-0-9-2">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-9-2"></a></h5>
 <ul><li>
 <code><a href="../reference/base64enc.html">base64dec()</a></code> argument ‘convert’ now accepts NA as an input, which unserializes back to the original object.</li>
 </ul></div>
 <div class="section level5">
-<h5 id="updates-0-9-1-9000">Updates<a class="anchor" aria-label="anchor" href="#updates-0-9-1-9000"></a></h5>
+<h5 id="updates-0-9-2">Updates<a class="anchor" aria-label="anchor" href="#updates-0-9-2"></a></h5>
 <ul><li>The argument ‘keep.raw’ for all receive functions is deprecated. This is as raw vectors are no longer created as part of unserialisation or data conversion.</li>
 <li>Higher performance send and receive of serialized R objects.
 <ul><li>For receive functions, attempting to unserialise a non-serialised message will now error with ‘unknown input format’ rather than fall back to a raw message vector.</li>
