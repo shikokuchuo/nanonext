@@ -9,7 +9,6 @@ recv(
   mode = c("serial", "character", "complex", "double", "integer", "logical", "numeric",
     "raw"),
   block = NULL,
-  keep.raw = FALSE,
   n = 65536L
 )
 }
@@ -30,19 +29,12 @@ to return immediately even if unsuccessful (e.g. if no connection is
 available), or else an integer value specifying the maximum time to block
 in milliseconds, after which the operation will time out.}
 
-\item{keep.raw}{[default FALSE] [DEPRECATED - this argument will be removed
-in a future package version] logical flag whether to keep and return the
-received raw vector along with the converted data. Supplying a
-non-logical value will error.}
-
 \item{n}{[default 65536L] applicable to Streams only, the maximum number of
 bytes to receive. Can be an over-estimate, but note that a buffer of this
 size is reserved.}
 }
 \value{
-Depending on the value of 'keep.raw': if TRUE, a named list of 2
-    elements - \code{$raw} containing the received raw vector and \code{$data}
-    containing the converted data, or if FALSE, the converted data.
+The received data in the 'mode' specified.
 }
 \description{
 Receive data over a connection (Socket, Context or Stream).

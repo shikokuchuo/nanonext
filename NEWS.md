@@ -1,3 +1,11 @@
+# nanonext 0.9.2.9000 (development)
+
+*This version contains breaking changes; please review carefully and only update when ready.*
+
+#### Updates
+
+* The argument 'keep.raw' for all receive functions (previously-deprecated) is removed.
+
 # nanonext 0.9.2
 
 *This version contains performance enhancements which have resulted in potentially breaking changes; please review carefully and only update when ready.*

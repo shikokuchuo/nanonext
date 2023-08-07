@@ -50,10 +50,10 @@ recv(sub, "character")
 
 subscribe(sub, 2)
 send(pub, c(2, 10, 10, 20), mode = "raw")
-recv(sub, "double", keep.raw = FALSE)
+recv(sub, "double")
 unsubscribe(sub, 2)
 send(pub, c(2, 10, 10, 20), mode = "raw")
-recv(sub, "double", keep.raw = FALSE)
+recv(sub, "double")
 
 close(pub)
 close(sub)

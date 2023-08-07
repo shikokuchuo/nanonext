@@ -10,7 +10,6 @@ recv_aio(
   mode = c("serial", "character", "complex", "double", "integer", "logical", "numeric",
     "raw"),
   timeout = NULL,
-  keep.raw = FALSE,
   n = 65536L
 )
 
@@ -19,7 +18,6 @@ recv_aio_signal(
   mode = c("serial", "character", "complex", "double", "integer", "logical", "numeric",
     "raw"),
   timeout = NULL,
-  keep.raw = FALSE,
   n = 65536L,
   cv
 )
@@ -37,11 +35,6 @@ of choices e.g. 1L for 'serial', 2L for 'character' etc.}
 
 \item{timeout}{[default NULL] integer value in milliseconds or NULL, which
 applies a socket-specific default, usually the same as no timeout.}
-
-\item{keep.raw}{[default FALSE] [DEPRECATED - this argument will be removed
-in a future package version] logical flag whether to keep and return the
-received raw vector along with the converted data. Supplying a
-non-logical value will error.}
 
 \item{n}{[default 65536L] applicable to Streams only, the maximum number of
 bytes to receive. Can be an over-estimate, but note that a buffer of this
@@ -63,9 +56,9 @@ A signalling version of the function takes a 'conditionVariable' as an
 Async receive is always non-blocking and returns a 'recvAio'
     immediately.
 
-    For a 'recvAio', the received message is available at \code{$data}, and
-    the raw message at \code{$raw} (if kept). An 'unresolved' logical NA is
-    returned if the async operation is yet to complete.
+    For a 'recvAio', the received message is available at \code{$data}.
+    An 'unresolved' logical NA is returned if the async operation is yet to
+    complete.
 
     To wait for the async operation to complete and retrieve the received
     message, use \code{\link{call_aio}} on the returned 'recvAio' object.

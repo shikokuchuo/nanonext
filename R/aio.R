@@ -70,9 +70,9 @@ send_aio <- function(con, data, mode = c("serial", "raw"), timeout = NULL)
 #' @details Async receive is always non-blocking and returns a 'recvAio'
 #'     immediately.
 #'
-#'     For a 'recvAio', the received message is available at \code{$data}, and
-#'     the raw message at \code{$raw} (if kept). An 'unresolved' logical NA is
-#'     returned if the async operation is yet to complete.
+#'     For a 'recvAio', the received message is available at \code{$data}.
+#'     An 'unresolved' logical NA is returned if the async operation is yet to
+#'     complete.
 #'
 #'     To wait for the async operation to complete and retrieve the received
 #'     message, use \code{\link{call_aio}} on the returned 'recvAio' object.
@@ -120,9 +120,8 @@ recv_aio <- function(con,
                      mode = c("serial", "character", "complex", "double",
                               "integer", "logical", "numeric", "raw"),
                      timeout = NULL,
-                     keep.raw = FALSE,
                      n = 65536L)
-  data <- .Call(rnng_recv_aio, con, mode, timeout, keep.raw, n, environment())
+  data <- .Call(rnng_recv_aio, con, mode, timeout, n, environment())
 
 #' Receive Async and Signal a Condition
 #'
@@ -159,10 +158,9 @@ recv_aio_signal <- function(con,
                             mode = c("serial", "character", "complex", "double",
                                      "integer", "logical", "numeric", "raw"),
                             timeout = NULL,
-                            keep.raw = FALSE,
                             n = 65536L,
                             cv)
-  data <- .Call(rnng_cv_recv_aio, con, mode, timeout, keep.raw, n, cv, environment())
+  data <- .Call(rnng_cv_recv_aio, con, mode, timeout, n, cv, environment())
 
 # Core aio functions -----------------------------------------------------------
 

@@ -11,8 +11,7 @@ request(
   send_mode = c("serial", "raw"),
   recv_mode = c("serial", "character", "complex", "double", "integer", "logical",
     "numeric", "raw"),
-  timeout = NULL,
-  keep.raw = FALSE
+  timeout = NULL
 )
 
 request_signal(
@@ -22,7 +21,6 @@ request_signal(
   recv_mode = c("serial", "character", "complex", "double", "integer", "logical",
     "numeric", "raw"),
   timeout = NULL,
-  keep.raw = FALSE,
   cv
 )
 }
@@ -49,11 +47,6 @@ etc.}
 
 \item{timeout}{[default NULL] integer value in milliseconds or NULL, which
 applies a socket-specific default, usually the same as no timeout.}
-
-\item{keep.raw}{[default FALSE] [DEPRECATED - this argument will be removed
-in a future package version] logical flag whether to keep and return the
-received raw vector along with the converted data. Supplying a
-non-logical value will error.}
 
 \item{cv}{\strong{For the signalling version}: a 'conditionVariable' that
 should be signalled when the async receive is complete.}

@@ -172,15 +172,13 @@ nano <- function(protocol = c("bus", "pair", "push", "pull", "pub", "sub",
 
   nano[["recv"]] <- function(mode = c("serial", "character", "complex", "double",
                                       "integer", "logical", "numeric", "raw"),
-                             block = NULL,
-                             keep.raw = FALSE)
-    recv(socket, mode = mode, block = block, keep.raw = keep.raw)
+                             block = NULL)
+    recv(socket, mode = mode, block = block)
 
   nano[["recv_aio"]] <- function(mode = c("serial", "character", "complex", "double",
                                           "integer", "logical", "numeric", "raw"),
-                                 timeout = NULL,
-                                 keep.raw = FALSE)
-    recv_aio(socket, mode = mode, timeout = timeout, keep.raw = keep.raw)
+                                 timeout = NULL)
+    recv_aio(socket, mode = mode, timeout = timeout)
 
   nano[["send"]] <- function(data, mode = c("serial", "raw"), block = NULL)
     send(socket, data = data, mode = mode, block = block)
@@ -346,10 +344,7 @@ print.nanoStream <- function(x, ...) {
 #'
 print.recvAio <- function(x, ...) {
 
-  if (length(x) > 2L)
-    cat("< recvAio >\n - $raw for raw message\n - $data for message data\n", file = stdout())
-  else
-    cat("< recvAio >\n - $data for message data\n", file = stdout())
+  cat("< recvAio >\n - $data for message data\n", file = stdout())
   invisible(x)
 
 }
@@ -465,7 +460,7 @@ print.tlsConfig <- function(x, ...) {
 #' @export
 #'
 .DollarNames.recvAio <- function(x, pattern = "")
-  grep(pattern, c(if (length(x) > 2L) "raw", "data"), value = TRUE, fixed = TRUE)
+  grep(pattern, "data", value = TRUE, fixed = TRUE)
 
 #' @export
 #'
