@@ -78,7 +78,7 @@ static int parse_serial_decimal_format(unsigned char *obuf, size_t obufmax,
 SEXP rnng_write_cert(SEXP cn, SEXP valid, SEXP inter) {
 
   uint8_t failed = 1;
-  int interactive = LOGICAL(inter)[0];
+  const int interactive = LOGICAL(inter)[0];
   mbedtls_pk_context key;
   mbedtls_entropy_context entropyk;
   mbedtls_ctr_drbg_context ctr_drbgk;

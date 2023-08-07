@@ -266,11 +266,9 @@ print.nanoObject <- function(x, ...) {
       attr(.subset2(x, "socket"), "id"), attr(.subset2(x, "socket"), "state"),
       attr(.subset2(x, "socket"), "protocol")), file = stdout())
   if (length(.subset2(x, "listener")))
-    cat(" - listener:", unlist(lapply(.subset2(x, "listener"), attr, "url")),
-        sep = "\n    ", file = stdout())
+    cat(" - listener:", as.character(lapply(.subset2(x, "listener"), attr, "url")), sep = "\n    ", file = stdout())
   if (length(.subset2(x, "dialer")))
-    cat(" - dialer:", unlist(lapply(.subset2(x, "dialer"), attr, "url")),
-        sep = "\n    ", file = stdout())
+    cat(" - dialer:", as.character(lapply(.subset2(x, "dialer"), attr, "url")), sep = "\n    ", file = stdout())
   invisible(x)
 
 }
@@ -282,11 +280,9 @@ print.nanoSocket <- function(x, ...) {
   cat(sprintf("< nanoSocket >\n - id: %d\n - state: %s\n - protocol: %s\n",
               attr(x, "id"), attr(x, "state"), attr(x, "protocol")), file = stdout())
   if (length(attr(x, "listener")))
-    cat(" - listener:", unlist(lapply(attr(x, "listener"), attr, "url")),
-        sep = "\n    ", file = stdout())
+    cat(" - listener:", as.character(lapply(attr(x, "listener"), attr, "url")), sep = "\n    ", file = stdout())
   if (length(attr(x, "dialer")))
-    cat(" - dialer:", unlist(lapply(attr(x, "dialer"), attr, "url")),
-        sep = "\n    ", file = stdout())
+    cat(" - dialer:", as.character(lapply(attr(x, "dialer"), attr, "url")), sep = "\n    ", file = stdout())
   invisible(x)
 
 }
@@ -296,8 +292,7 @@ print.nanoSocket <- function(x, ...) {
 print.nanoContext <- function(x, ...) {
 
   cat(sprintf("< nanoContext >\n - id: %d\n - socket: %d\n - state: %s\n - protocol: %s\n",
-              attr(x, "id"), attr(x, "socket"), attr(x, "state"), attr(x, "protocol")),
-      file = stdout())
+              attr(x, "id"), attr(x, "socket"), attr(x, "state"), attr(x, "protocol")), file = stdout())
   invisible(x)
 
 }
@@ -307,8 +302,7 @@ print.nanoContext <- function(x, ...) {
 print.nanoDialer <- function(x, ...) {
 
   cat(sprintf("< nanoDialer >\n - id: %d\n - socket: %d\n - state: %s\n - url: %s\n",
-              attr(x, "id"), attr(x, "socket"), attr(x, "state"), attr(x, "url")),
-      file = stdout())
+              attr(x, "id"), attr(x, "socket"), attr(x, "state"), attr(x, "url")), file = stdout())
   invisible(x)
 
 }
@@ -318,8 +312,7 @@ print.nanoDialer <- function(x, ...) {
 print.nanoListener <- function(x, ...) {
 
   cat(sprintf("< nanoListener >\n - id: %d\n - socket: %d\n - state: %s\n - url: %s\n",
-              attr(x, "id"), attr(x, "socket"), attr(x, "state"), attr(x, "url")),
-      file = stdout())
+              attr(x, "id"), attr(x, "socket"), attr(x, "state"), attr(x, "url")), file = stdout())
   invisible(x)
 
 }
@@ -329,13 +322,10 @@ print.nanoListener <- function(x, ...) {
 print.nanoStream <- function(x, ...) {
 
   if (length(attr(x, "dialer")))
-    cat(sprintf("< nanoStream >\n - type: dialer\n - url: %s\n - textframes: %s\n",
-                attr(x, "url"), attr(x, "textframes")), file = stdout())
-  else if (length(attr(x, "listener")))
-    cat(sprintf("< nanoStream >\n - type: listener\n - url: %s\n - textframes: %s\n",
-                attr(x, "url"), attr(x, "textframes")), file = stdout())
-  else
-    cat("< nanoStream >\n - not active\n", file = stdout())
+    cat(sprintf("< nanoStream >\n - type: dialer\n - url: %s\n - textframes: %s\n", attr(x, "url"), attr(x, "textframes")), file = stdout()) else
+      if (length(attr(x, "listener")))
+        cat(sprintf("< nanoStream >\n - type: listener\n - url: %s\n - textframes: %s\n", attr(x, "url"), attr(x, "textframes")), file = stdout()) else
+          cat("< nanoStream >\n - not active\n", file = stdout())
   invisible(x)
 
 }
@@ -371,8 +361,7 @@ print.ncurlAio <- function(x, ...) {
 #'
 print.ncurlSession <- function(x, ...) {
 
-  cat(sprintf("< ncurlSession >\n - %s\n",
-              if (length(attr(x, "aio"))) "use transact() to return data" else "not active"), file = stdout())
+  cat(sprintf("< ncurlSession >\n - %s\n", if (length(attr(x, "aio"))) "use transact() to return data" else "not active"), file = stdout())
   invisible(x)
 
 }
