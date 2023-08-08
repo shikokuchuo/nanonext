@@ -84,7 +84,7 @@ static void RegisterSymbols(void) {
 static void PreserveObjects(void) {
   R_PreserveObject(nano_addRedirect = Rf_allocVector(STRSXP, 1));
   R_PreserveObject(nano_aioFormals = Rf_cons(nano_AioSymbol, R_NilValue));
-  R_PreserveObject(nano_aioFuncs = Rf_allocVector(LISTSXP, 5));
+  R_PreserveObject(nano_aioFuncs = Rf_allocVector(LISTSXP, 3));
   SETCAR(nano_aioFuncs, Rf_lang3(nano_DotcallSymbol, Rf_install("rnng_aio_result"), nano_DataSymbol));
   SETCADR(nano_aioFuncs, Rf_lang3(nano_DotcallSymbol, Rf_install("rnng_aio_get_msgdata"), nano_DataSymbol));
   SETCADDR(nano_aioFuncs, Rf_lang3(nano_DotcallSymbol, Rf_install("rnng_aio_get_msgdata2"), nano_DataSymbol));

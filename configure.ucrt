@@ -6,8 +6,7 @@ tar -xf inst/mbedtls-$TLS_VER.tar.xz
 cd mbedtls-$TLS_VER
 echo "Compiling 'libmbedtls' from source ..."
 cmake -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX=../install .
-cmake --build .
-cmake --install .
+cmake --build . --target install
 cd ..
 rm -rf mbedtls-$TLS_VER
 
@@ -15,8 +14,7 @@ tar -xf inst/nng-$LIB_VER.tar.xz
 cd nng-$LIB_VER
 echo "Compiling 'libnng' from source ..."
 cmake -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX=../install .
-cmake --build .
-cmake --install .
+cmake --build . --target install
 cd ..
 rm -rf nng-$LIB_VER
 
