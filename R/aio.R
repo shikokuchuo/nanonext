@@ -102,13 +102,11 @@ send_aio <- function(con, data, mode = c("serial", "raw"), timeout = NULL)
 #' res <- send_aio(s1, c(1.1, 2.2, 3.3), mode = "raw", timeout = 100)
 #' msg <- recv_aio(s2, mode = "double", timeout = 100)
 #' msg
-#' msg$raw
 #' msg$data
 #'
 #' res <- send_aio(s1, "example message", mode = "raw", timeout = 100)
 #' msg <- recv_aio(s2, mode = "character", timeout = 100)
 #' call_aio(msg)
-#' msg$raw
 #' msg$data
 #'
 #' close(s1)
@@ -250,7 +248,7 @@ stop_aio <- function(aio) invisible(.Call(rnng_aio_stop, aio))
 #'     \code{\link{call_aio}}, this function does not wait for completion.
 #'
 #' @param aio an Aio (object of class 'sendAio' or 'recvAio'), or Aio value
-#'     stored in \code{$result}, \code{$raw} or \code{$data} as the case may be.
+#'     stored in \code{$result} or \code{$data} as the case may be.
 #'
 #' @return Logical TRUE if 'aio' is an unresolved Aio or Aio value, or FALSE
 #'     otherwise.

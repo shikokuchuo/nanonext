@@ -5,6 +5,7 @@
 #### Updates
 
 * The argument 'keep.raw' for all receive functions (previously-deprecated) is removed.
+* The unresolved value for an Aio is now the symbol ` unresolvedValue ` rather than a classed NA value. Continue to use `unresolved()` to check resolution.
 * Package installation now succeeds in certain environments where 'cmake' failed to 'install' mbedtls to the correct location (thanks @kendonB #13).
 * Configures bundled 'libmbedtls' v3.4.0 for higher performance.
 

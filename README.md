@@ -250,7 +250,7 @@ msg
 #> < recvAio >
 #>  - $data for message data
 msg$data
-#> 'unresolved' logi NA
+#> ` unresolvedValue `
 ```
 
 For a ‘sendAio’ object, the result is stored at `$result`.
@@ -364,12 +364,12 @@ aio
 #> < recvAio >
 #>  - $data for message data
 aio$data |> str()
-#>  num [1:100000000] 0.165 -1.03 -0.484 0.15 1.194 ...
+#>  num [1:100000000] 0.0314 0.0555 -0.4071 -1.732 -0.9097 ...
 ```
 
 As `call_aio()` is blocking and will wait for completion, an alternative
-is to query `aio$data` directly. This will return an ‘unresolved’
-logical NA value if the calculation is yet to complete.
+is to query `aio$data` directly. This will return the symbol
+`unresolvedValue` if the calculation is yet to complete.
 
 In this example the calculation is returned, but other operations may
 reside entirely on the server side, for example writing data to disk.
@@ -531,7 +531,7 @@ throughout, or alternatively ‘localhost’, but not a mixture of the two.
 cert <- write_cert(cn = "127.0.0.1")
 str(cert)
 #> List of 2
-#>  $ server: chr [1:2] "-----BEGIN CERTIFICATE-----\nMIIFFTCCAv2gAwIBAgIBATANBgkqhkiG9w0BAQsFADAiMRIwEAYDVQQDDAkxMjcu\nMC4wLjExDDAKBgNV"| __truncated__ "-----BEGIN RSA PRIVATE KEY-----\nMIIJKAIBAAKCAgEAoyoAZWVYtYAUAfYYG0Vd3ZTGh+FcgMfD9gStfEnlTywtBJHn\ngtA9zq6OZJ23"| __truncated__
+#>  $ server: chr [1:2] "-----BEGIN CERTIFICATE-----\nMIIFFTCCAv2gAwIBAgIBATANBgkqhkiG9w0BAQsFADAiMRIwEAYDVQQDDAkxMjcu\nMC4wLjExDDAKBgNV"| __truncated__ "-----BEGIN RSA PRIVATE KEY-----\nMIIJKQIBAAKCAgEAtKlfCN2mNSknIh2qkuKiAZHHGYK5pRnujCOgCQgpHCgK74ii\npwipifig76/s"| __truncated__
 #>  $ client: chr [1:2] "-----BEGIN CERTIFICATE-----\nMIIFFTCCAv2gAwIBAgIBATANBgkqhkiG9w0BAQsFADAiMRIwEAYDVQQDDAkxMjcu\nMC4wLjExDDAKBgNV"| __truncated__ ""
 
 ser <- tls_config(server = cert$server)
@@ -660,7 +660,7 @@ res2 |> recv()
 aio1$data
 #> [1] "res1"
 aio2$data
-#> 'unresolved' logi NA
+#> ` unresolvedValue `
 
 # after the survey expires, the second resolves into a timeout error
 msleep(500)
@@ -703,7 +703,7 @@ ncurl("https://postman-echo.com/get")
 #> NULL
 #> 
 #> $data
-#> [1] "{\n  \"args\": {},\n  \"headers\": {\n    \"x-forwarded-proto\": \"https\",\n    \"x-forwarded-port\": \"443\",\n    \"host\": \"postman-echo.com\",\n    \"x-amzn-trace-id\": \"Root=1-64cbb085-342dac4b52f4818a5987b9a9\"\n  },\n  \"url\": \"https://postman-echo.com/get\"\n}"
+#> [1] "{\n  \"args\": {},\n  \"headers\": {\n    \"x-forwarded-proto\": \"https\",\n    \"x-forwarded-port\": \"443\",\n    \"host\": \"postman-echo.com\",\n    \"x-amzn-trace-id\": \"Root=1-64d3ecb4-2fe7faa3719005b7220e3435\"\n  },\n  \"url\": \"https://postman-echo.com/get\"\n}"
 ```
 
 For advanced use, supports additional HTTP methods such as POST or PUT.
@@ -724,10 +724,10 @@ res
 
 call_aio(res)$headers
 #> $date
-#> [1] "Thu, 03 Aug 2023 13:49:58 GMT"
+#> [1] "Wed, 09 Aug 2023 19:44:52 GMT"
 
 res$data
-#> [1] "{\n  \"args\": {},\n  \"data\": {\n    \"key\": \"value\"\n  },\n  \"files\": {},\n  \"form\": {},\n  \"headers\": {\n    \"x-forwarded-proto\": \"https\",\n    \"x-forwarded-port\": \"443\",\n    \"host\": \"postman-echo.com\",\n    \"x-amzn-trace-id\": \"Root=1-64cbb086-59b4a1145957f60535aebdb1\",\n    \"content-length\": \"16\",\n    \"content-type\": \"application/json\",\n    \"authorization\": \"Bearer APIKEY\"\n  },\n  \"json\": {\n    \"key\": \"value\"\n  },\n  \"url\": \"https://postman-echo.com/post\"\n}"
+#> [1] "{\n  \"args\": {},\n  \"data\": {\n    \"key\": \"value\"\n  },\n  \"files\": {},\n  \"form\": {},\n  \"headers\": {\n    \"x-forwarded-proto\": \"https\",\n    \"x-forwarded-port\": \"443\",\n    \"host\": \"postman-echo.com\",\n    \"x-amzn-trace-id\": \"Root=1-64d3ecb4-6a679f8e2e979e1e016322b5\",\n    \"content-length\": \"16\",\n    \"content-type\": \"application/json\",\n    \"authorization\": \"Bearer APIKEY\"\n  },\n  \"json\": {\n    \"key\": \"value\"\n  },\n  \"url\": \"https://postman-echo.com/post\"\n}"
 ```
 
 In this respect, it may be used as a performant and lightweight method
@@ -758,7 +758,7 @@ transact(sess)
 #> 
 #> $headers
 #> $headers$Date
-#> [1] "Thu, 03 Aug 2023 13:49:59 GMT"
+#> [1] "Wed, 09 Aug 2023 19:44:53 GMT"
 #> 
 #> $headers$`Content-Type`
 #> [1] "application/json; charset=utf-8"
@@ -771,8 +771,8 @@ transact(sess)
 #>  [76] 77 61 72 64 65 64 2d 70 6f 72 74 22 3a 20 22 34 34 33 22 2c 0a 20 20 20 20
 #> [101] 22 68 6f 73 74 22 3a 20 22 70 6f 73 74 6d 61 6e 2d 65 63 68 6f 2e 63 6f 6d
 #> [126] 22 2c 0a 20 20 20 20 22 78 2d 61 6d 7a 6e 2d 74 72 61 63 65 2d 69 64 22 3a
-#> [151] 20 22 52 6f 6f 74 3d 31 2d 36 34 63 62 62 30 38 36 2d 35 37 38 33 37 31 62
-#> [176] 38 30 39 34 33 32 62 39 64 37 35 36 32 37 33 35 37 22 2c 0a 20 20 20 20 22
+#> [151] 20 22 52 6f 6f 74 3d 31 2d 36 34 64 33 65 63 62 35 2d 35 63 39 65 65 33 34
+#> [176] 35 36 30 39 39 66 30 37 63 30 62 62 63 64 66 38 35 22 2c 0a 20 20 20 20 22
 #> [201] 63 6f 6e 74 65 6e 74 2d 74 79 70 65 22 3a 20 22 61 70 70 6c 69 63 61 74 69
 #> [226] 6f 6e 2f 6a 73 6f 6e 22 2c 0a 20 20 20 20 22 61 75 74 68 6f 72 69 7a 61 74
 #> [251] 69 6f 6e 22 3a 20 22 42 65 61 72 65 72 20 41 50 49 4b 45 59 22 0a 20 20 7d

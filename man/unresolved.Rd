@@ -8,7 +8,7 @@ unresolved(aio)
 }
 \arguments{
 \item{aio}{an Aio (object of class 'sendAio' or 'recvAio'), or Aio value
-stored in \code{$result}, \code{$raw} or \code{$data} as the case may be.}
+stored in \code{$result} or \code{$data} as the case may be.}
 }
 \value{
 Logical TRUE if 'aio' is an unresolved Aio or Aio value, or FALSE

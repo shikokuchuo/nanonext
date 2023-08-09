@@ -204,6 +204,7 @@ extern SEXP nano_StreamSymbol;
 extern SEXP nano_TextframesSymbol;
 extern SEXP nano_TlsSymbol;
 extern SEXP nano_UrlSymbol;
+extern SEXP nano_unresolved;
 
 extern SEXP nano_addRedirect;
 extern SEXP nano_aioFormals;
@@ -215,7 +216,6 @@ extern SEXP nano_ncurlSession;
 extern SEXP nano_recvAio;
 extern SEXP nano_sendAio;
 extern SEXP nano_success;
-extern SEXP nano_unresolved;
 
 extern SEXP rnng_aio_call(SEXP);
 extern SEXP rnng_aio_get_msgdata(SEXP);
