@@ -238,11 +238,10 @@ SEXP nano_encode(SEXP object) {
 
 }
 
-int nano_encodes(SEXP mode) {
+Rboolean nano_encodes(SEXP mode) {
 
-  int xc;
   if (TYPEOF(mode) == INTSXP) {
-    xc = INTEGER(mode)[0];
+    return INTEGER(mode)[0] == 1;
   } else {
     const char *mod = CHAR(STRING_ELT(mode, 0));
     size_t slen = strlen(mod);
@@ -252,18 +251,17 @@ int nano_encodes(SEXP mode) {
     case 1:
     case 2:
     case 3:
-      if (!strncmp(r, mod, slen)) { xc = 2; break; }
+      if (!strncmp(r, mod, slen)) return FALSE;
     case 4:
     case 5:
     case 6:
-      if (!strncmp(s, mod, slen)) { xc = 1; break; }
+      if (!strncmp(s, mod, slen)) return TRUE;
     default:
       Rf_error("'mode' should be one of serial, raw");
-      xc = 0;
     }
   }
 
-  return xc;
+  return FALSE;
 
 }
 
@@ -521,14 +519,13 @@ SEXP rnng_ctx_close(SEXP context) {
 SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
 
   nano_buf buf;
-  int xc, mod;
+  int xc;
 
   const SEXP ptrtag = R_ExternalPtrTag(con);
   if (ptrtag == nano_SocketSymbol) {
 
     nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(con);
-    mod = nano_encodes(mode);
-    if (mod == 1) buf = nano_serialize(data); else NANO_ENCODE(buf, data);
+    if (nano_encodes(mode)) buf = nano_serialize(data); else NANO_ENCODE(buf, data);
 
     if (block == R_NilValue) {
 
@@ -583,8 +580,7 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
     } else {
       dur = (nng_duration) Rf_asInteger(block);
     }
-    mod = nano_encodes(mode);
-    if (mod == 1) buf = nano_serialize(data); else NANO_ENCODE(buf, data);
+    if (nano_encodes(mode)) buf = nano_serialize(data); else NANO_ENCODE(buf, data);
 
     if ((xc = nng_msg_alloc(&msgp, 0))) {
       NANO_FREE(buf);

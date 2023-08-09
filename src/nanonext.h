@@ -174,7 +174,7 @@ extern SEXP mk_error(const int);
 extern SEXP mk_error_ncurl(const int);
 extern SEXP nano_decode(unsigned char *, size_t, const int);
 extern SEXP nano_encode(SEXP);
-extern int nano_encodes(SEXP);
+extern Rboolean nano_encodes(SEXP);
 extern int nano_matcharg(SEXP);
 extern int nano_matchargs(SEXP);
 extern nano_buf nano_serialize(SEXP);

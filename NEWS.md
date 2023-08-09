@@ -5,7 +5,7 @@
 #### Updates
 
 * The argument 'keep.raw' for all receive functions (previously-deprecated) is removed.
-* Package installation now succeeds in certain environments where 'cmake' failed to 'install' mbedtls to the correct location previously (thanks @kendonB #13).
+* Package installation now succeeds in certain environments where 'cmake' failed to 'install' mbedtls to the correct location (thanks @kendonB #13).
 * Configures bundled 'libmbedtls' v3.4.0 for higher performance.
 
 # nanonext 0.9.2

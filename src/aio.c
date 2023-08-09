@@ -808,7 +808,7 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
   nano_aio *saio = R_Calloc(1, nano_aio);
   SEXP aio;
   nano_buf buf;
-  int xc, mod;
+  int xc;
 
   const SEXP ptrtag = R_ExternalPtrTag(con);
   if (ptrtag == nano_SocketSymbol) {
@@ -816,8 +816,7 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
     nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(con);
     nng_msg *msg;
 
-    mod = nano_encodes(mode);
-    if (mod == 1) buf = nano_serialize(data); else NANO_ENCODE(buf, data);
+    if (nano_encodes(mode)) buf = nano_serialize(data); else NANO_ENCODE(buf, data);
     saio->type = SENDAIO;
 
     if ((xc = nng_msg_alloc(&msg, 0))) {
@@ -846,8 +845,7 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
     nng_ctx *ctxp = (nng_ctx *) R_ExternalPtrAddr(con);
     nng_msg *msg;
 
-    mod = nano_encodes(mode);
-    if (mod == 1) buf = nano_serialize(data); else NANO_ENCODE(buf, data);
+    if (nano_encodes(mode)) buf = nano_serialize(data); else NANO_ENCODE(buf, data);
     saio->type = SENDAIO;
 
     if ((xc = nng_msg_alloc(&msg, 0))) {
@@ -1511,15 +1509,14 @@ SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeou
 
   nng_ctx *ctx = (nng_ctx *) R_ExternalPtrAddr(con);
 
-  int xc, mod;
+  int xc;
   const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) Rf_asInteger(timeout);
 
   SEXP sendaio, aio, env, fun;
   nano_buf buf;
   nng_msg *msg;
 
-  mod = nano_encodes(sendmode);
-  if (mod == 1) buf = nano_serialize(data); else NANO_ENCODE(buf, data);
+  if (nano_encodes(sendmode)) buf = nano_serialize(data); else NANO_ENCODE(buf, data);
 
   nano_aio *saio = R_Calloc(1, nano_aio);
 
@@ -1833,15 +1830,14 @@ SEXP rnng_cv_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP tim
   nng_ctx *ctx = (nng_ctx *) R_ExternalPtrAddr(con);
   nano_cv *cvp = (nano_cv *) R_ExternalPtrAddr(cvar);
 
-  int xc, mod;
+  int xc;
   const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) Rf_asInteger(timeout);
 
   SEXP sendaio, aio, env, fun, signal;
   nano_buf buf;
   nng_msg *msg;
 
-  mod = nano_encodes(sendmode);
-  if (mod == 1) buf = nano_serialize(data); else NANO_ENCODE(buf, data);
+  if (nano_encodes(sendmode)) buf = nano_serialize(data); else NANO_ENCODE(buf, data);
 
   nano_aio *saio = R_Calloc(1, nano_aio);
 
