@@ -34,24 +34,11 @@ static SEXP mk_error_data(const int xc) {
 
 }
 
-static SEXP mk_error_saio(const int xc, SEXP env) {
+static SEXP mk_error_aio(const int xc, SEXP env) {
 
   SEXP err = PROTECT(Rf_ScalarInteger(xc));
   SET_ATTRIB(err, nano_error);
   SET_OBJECT(err, 1);
-  Rf_defineVar(nano_ResultSymbol, err, ENCLOS(env));
-  Rf_defineVar(nano_AioSymbol, R_NilValue, env);
-  UNPROTECT(1);
-  return err;
-
-}
-
-static SEXP mk_error_raio(const int xc, SEXP env) {
-
-  SEXP err = PROTECT(Rf_ScalarInteger(xc));
-  SET_ATTRIB(err, nano_error);
-  SET_OBJECT(err, 1);
-  Rf_defineVar(nano_RawSymbol, err, ENCLOS(env));
   Rf_defineVar(nano_ResultSymbol, err, ENCLOS(env));
   Rf_defineVar(nano_AioSymbol, R_NilValue, env);
   UNPROTECT(1);
@@ -625,7 +612,7 @@ SEXP rnng_aio_result(SEXP env) {
     return nano_unresolved;
 
   if (saio->result > 0)
-    return mk_error_saio(saio->result, env);
+    return mk_error_aio(saio->result, env);
 
   Rf_defineVar(nano_ResultSymbol, nano_success, ENCLOS(env));
   Rf_defineVar(nano_AioSymbol, R_NilValue, env);
@@ -657,7 +644,7 @@ SEXP rnng_aio_get_msgdata(SEXP env) {
     return nano_unresolved;
 
   if (raio->result > 0)
-    return mk_error_raio(raio->result, env);
+    return mk_error_aio(raio->result, env);
 
   SEXP out;
   const int mod = raio->mode;
@@ -705,7 +692,7 @@ SEXP rnng_aio_get_msgdata2(SEXP env) {
     return nano_unresolved;
 
   if (res > 0)
-    return mk_error_raio(res, env);
+    return mk_error_aio(res, env);
 
   SEXP out;
   const int mod = raio->mode;
