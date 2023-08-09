@@ -29,22 +29,6 @@ SEXP mk_error(const int xc) {
 
 }
 
-SEXP mk_error_ncurl(const int xc) {
-
-  const char *names[] = {"status", "headers", "raw", "data", ""};
-  SEXP out = PROTECT(Rf_mkNamed(VECSXP, names));
-  SEXP err = Rf_ScalarInteger(xc);
-  SET_ATTRIB(err, nano_error);
-  SET_OBJECT(err, 1);
-  SET_VECTOR_ELT(out, 0, err);
-  SET_VECTOR_ELT(out, 1, err);
-  SET_VECTOR_ELT(out, 2, err);
-  SET_VECTOR_ELT(out, 3, err);
-  UNPROTECT(1);
-  return out;
-
-}
-
 static void nano_write_char(R_outpstream_t stream, int c) {
 
   nano_buf *buf = (nano_buf *) stream->data;
@@ -363,9 +347,6 @@ SEXP nano_decode(unsigned char *buf, size_t sz, const int mod) {
   size_t size;
 
   switch (mod) {
-  case 1:
-    data = nano_unserialize(buf, sz);
-    break;
   case 2:
     PROTECT(data = Rf_allocVector(STRSXP, sz));
     R_xlen_t i, m, nbytes = sz, np = 0;
@@ -438,7 +419,7 @@ SEXP nano_decode(unsigned char *buf, size_t sz, const int mod) {
     memcpy(RAW(data), buf, sz);
     break;
   default:
-    data = R_NilValue;
+    data = nano_unserialize(buf, sz);
   }
 
   return data;

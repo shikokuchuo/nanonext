@@ -19,6 +19,61 @@
 #define NANONEXT_SUPPLEMENTALS
 #include "nanonext.h"
 
+// statics ---------------------------------------------------------------------
+
+static SEXP mk_error_data(const int xc) {
+
+  const char *names[] = {xc < 0 ? "result" : "data", ""};
+  SEXP out = PROTECT(Rf_mkNamed(VECSXP, names));
+  SEXP err = Rf_ScalarInteger(abs(xc));
+  SET_ATTRIB(err, nano_error);
+  SET_OBJECT(err, 1);
+  SET_VECTOR_ELT(out, 0, err);
+  UNPROTECT(1);
+  return out;
+
+}
+
+static SEXP mk_error_saio(const int xc, SEXP env) {
+
+  SEXP err = PROTECT(Rf_ScalarInteger(xc));
+  SET_ATTRIB(err, nano_error);
+  SET_OBJECT(err, 1);
+  Rf_defineVar(nano_ResultSymbol, err, ENCLOS(env));
+  Rf_defineVar(nano_AioSymbol, R_NilValue, env);
+  UNPROTECT(1);
+  return err;
+
+}
+
+static SEXP mk_error_raio(const int xc, SEXP env) {
+
+  SEXP err = PROTECT(Rf_ScalarInteger(xc));
+  SET_ATTRIB(err, nano_error);
+  SET_OBJECT(err, 1);
+  Rf_defineVar(nano_RawSymbol, err, ENCLOS(env));
+  Rf_defineVar(nano_ResultSymbol, err, ENCLOS(env));
+  Rf_defineVar(nano_AioSymbol, R_NilValue, env);
+  UNPROTECT(1);
+  return err;
+
+}
+
+static SEXP mk_error_haio(const int xc, SEXP env) {
+
+  SEXP err = PROTECT(Rf_ScalarInteger(xc));
+  SET_ATTRIB(err, nano_error);
+  SET_OBJECT(err, 1);
+  Rf_defineVar(nano_StatusSymbol, err, ENCLOS(env));
+  Rf_defineVar(nano_StateSymbol, err, ENCLOS(env));
+  Rf_defineVar(nano_RawSymbol, err, ENCLOS(env));
+  Rf_defineVar(nano_ResultSymbol, err, ENCLOS(env));
+  Rf_defineVar(nano_AioSymbol, R_NilValue, env);
+  UNPROTECT(1);
+  return err;
+
+}
+
 // aio completion callbacks ----------------------------------------------------
 
 static void pipe_cb_signal_cv(nng_pipe p, nng_pipe_ev ev, void *arg) {
@@ -335,59 +390,6 @@ static void session_finalizer(SEXP xptr) {
     return;
   nng_http_conn *xp = (nng_http_conn *) R_ExternalPtrAddr(xptr);
   nng_http_conn_close(xp);
-
-}
-
-static SEXP mk_error_saio(const int xc, SEXP env) {
-
-  SEXP err = PROTECT(Rf_ScalarInteger(xc));
-  SET_ATTRIB(err, nano_error);
-  SET_OBJECT(err, 1);
-  Rf_defineVar(nano_ResultSymbol, err, ENCLOS(env));
-  Rf_defineVar(nano_AioSymbol, R_NilValue, env);
-  UNPROTECT(1);
-  return err;
-
-}
-
-static SEXP mk_error_raio(const int xc, SEXP env) {
-
-  SEXP err = PROTECT(Rf_ScalarInteger(xc));
-  SET_ATTRIB(err, nano_error);
-  SET_OBJECT(err, 1);
-  Rf_defineVar(nano_RawSymbol, err, ENCLOS(env));
-  Rf_defineVar(nano_ResultSymbol, err, ENCLOS(env));
-  Rf_defineVar(nano_AioSymbol, R_NilValue, env);
-  UNPROTECT(1);
-  return err;
-
-}
-
-static SEXP mk_error_haio(const int xc, SEXP env) {
-
-  SEXP err = PROTECT(Rf_ScalarInteger(xc));
-  SET_ATTRIB(err, nano_error);
-  SET_OBJECT(err, 1);
-  Rf_defineVar(nano_StatusSymbol, err, ENCLOS(env));
-  Rf_defineVar(nano_StateSymbol, err, ENCLOS(env));
-  Rf_defineVar(nano_RawSymbol, err, ENCLOS(env));
-  Rf_defineVar(nano_ResultSymbol, err, ENCLOS(env));
-  Rf_defineVar(nano_AioSymbol, R_NilValue, env);
-  UNPROTECT(1);
-  return err;
-
-}
-
-static SEXP mk_error_data(const int xc) {
-
-  const char *names[] = {xc < 0 ? "result" : "data", ""};
-  SEXP out = PROTECT(Rf_mkNamed(VECSXP, names));
-  SEXP err = Rf_ScalarInteger(abs(xc));
-  SET_ATTRIB(err, nano_error);
-  SET_OBJECT(err, 1);
-  SET_VECTOR_ELT(out, 0, err);
-  UNPROTECT(1);
-  return out;
 
 }
 

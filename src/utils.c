@@ -20,6 +20,24 @@
 #define NANONEXT_SUPPLEMENTALS
 #include "nanonext.h"
 
+// internals -------------------------------------------------------------------
+
+SEXP mk_error_ncurl(const int xc) {
+
+  const char *names[] = {"status", "headers", "raw", "data", ""};
+  SEXP out = PROTECT(Rf_mkNamed(VECSXP, names));
+  SEXP err = Rf_ScalarInteger(xc);
+  SET_ATTRIB(err, nano_error);
+  SET_OBJECT(err, 1);
+  SET_VECTOR_ELT(out, 0, err);
+  SET_VECTOR_ELT(out, 1, err);
+  SET_VECTOR_ELT(out, 2, err);
+  SET_VECTOR_ELT(out, 3, err);
+  UNPROTECT(1);
+  return out;
+
+}
+
 // finalizers ------------------------------------------------------------------
 
 static void stream_finalizer(SEXP xptr) {
