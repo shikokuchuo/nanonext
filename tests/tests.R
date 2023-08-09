@@ -463,6 +463,7 @@ nanotesterr(close(fakelist), "valid Listener")
 unres <- `class<-`(NA, "unresolvedValue")
 nanotestp(unres)
 nanotest(!unresolved(unres))
+nanotest(!unresolved("unresolvedValue"))
 nanotest(identical(call_aio("a"), "a"))
 nanotestn(stop_aio("a"))
 

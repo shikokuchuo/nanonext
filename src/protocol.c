@@ -132,11 +132,11 @@ SEXP rnng_protocol_open(SEXP protocol, SEXP raw) {
   R_RegisterCFinalizerEx(socket, socket_finalizer, TRUE);
 
   PROTECT(klass = Rf_allocVector(STRSXP, 2));
-  SET_STRING_ELT(klass, 0, NANO_CHAR("nanoSocket", 10));
-  SET_STRING_ELT(klass, 1, NANO_CHAR("nano", 4));
+  SET_STRING_ELT(klass, 0, Rf_mkChar("nanoSocket"));
+  SET_STRING_ELT(klass, 1, Rf_mkChar("nano"));
   Rf_classgets(socket, klass);
   Rf_setAttrib(socket, nano_IdSymbol, Rf_ScalarInteger((int) sock->id));
-  Rf_setAttrib(socket, nano_StateSymbol, NANO_STRING("opened", 6));
+  Rf_setAttrib(socket, nano_StateSymbol, Rf_mkString("opened"));
   Rf_setAttrib(socket, nano_ProtocolSymbol, Rf_mkString(pname));
 
   UNPROTECT(2);
@@ -153,7 +153,7 @@ SEXP rnng_close(SEXP socket) {
   if (xc)
     ERROR_RET(xc);
 
-  Rf_setAttrib(socket, nano_StateSymbol, NANO_STRING("closed", 6));
+  Rf_setAttrib(socket, nano_StateSymbol, Rf_mkString("closed"));
   return nano_success;
 
 }

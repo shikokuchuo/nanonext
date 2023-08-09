@@ -109,10 +109,15 @@ static SEXP rawOneString(unsigned char *bytes, R_xlen_t nbytes, R_xlen_t *np) {
 
 SEXP rawToChar(unsigned char *buf, size_t sz) {
 
+  SEXP out;
   int i, j;
   for (i = 0, j = -1; i < sz; i++) if (buf[i]) j = i;
 
-  return NANO_STRING((const char *) buf, j + 1);
+  PROTECT(out = Rf_allocVector(STRSXP, 1));
+  SET_STRING_ELT(out, 0, Rf_mkCharLenCE((const char *) buf, j + 1, CE_NATIVE));
+
+  UNPROTECT(1);
+  return out;
 
 }
 
@@ -460,11 +465,11 @@ SEXP rnng_ctx_open(SEXP socket) {
   R_RegisterCFinalizerEx(context, context_finalizer, TRUE);
 
   PROTECT(klass = Rf_allocVector(STRSXP, 2));
-  SET_STRING_ELT(klass, 0, NANO_CHAR("nanoContext", 11));
-  SET_STRING_ELT(klass, 1, NANO_CHAR("nano", 4));
+  SET_STRING_ELT(klass, 0, Rf_mkChar("nanoContext"));
+  SET_STRING_ELT(klass, 1, Rf_mkChar("nano"));
   Rf_classgets(context, klass);
   Rf_setAttrib(context, nano_IdSymbol, Rf_ScalarInteger((int) ctx->id));
-  Rf_setAttrib(context, nano_StateSymbol, NANO_STRING("opened", 6));
+  Rf_setAttrib(context, nano_StateSymbol, Rf_mkString("opened"));
   Rf_setAttrib(context, nano_ProtocolSymbol, Rf_getAttrib(socket, nano_ProtocolSymbol));
   Rf_setAttrib(context, nano_SocketSymbol, Rf_ScalarInteger((int) sock->id));
 
@@ -506,7 +511,7 @@ SEXP rnng_ctx_close(SEXP context) {
   if (xc)
     ERROR_RET(xc);
 
-  Rf_setAttrib(context, nano_StateSymbol, NANO_STRING("closed", 6));
+  Rf_setAttrib(context, nano_StateSymbol, Rf_mkString("closed"));
   return nano_success;
 
 }
@@ -1203,15 +1208,20 @@ SEXP rnng_weakref_value(SEXP w) {
 
 SEXP rnng_strcat(SEXP a, SEXP b) {
 
+  SEXP out;
   const char *ap = CHAR(STRING_ELT(a, 0));
   const char *bp = CHAR(STRING_ELT(b, 0));
-  R_xlen_t alen = XLENGTH(STRING_ELT(a, 0));
-  R_xlen_t blen = XLENGTH(STRING_ELT(b, 0));
+  const R_xlen_t alen = XLENGTH(STRING_ELT(a, 0));
+  const R_xlen_t blen = XLENGTH(STRING_ELT(b, 0));
 
   char *buf = R_alloc(sizeof(char), alen + blen + 1);
   memcpy(buf, ap, alen);
   memcpy(buf + alen, bp, blen + 1);
 
-  return NANO_STRING(buf, alen + blen);
+  PROTECT(out = Rf_allocVector(STRSXP, 1));
+  SET_STRING_ELT(out, 0, Rf_mkCharLenCE(buf, alen + blen, CE_NATIVE));
+
+  UNPROTECT(1);
+  return out;
 
 }

@@ -316,14 +316,14 @@ SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP follow, SEXP method, SEXP headers,
     switch (TYPEOF(response)) {
     case STRSXP:
       PROTECT(response = Rf_lengthgets(response, rlen + 1));
-      SET_STRING_ELT(response, rlen, NANO_CHAR("Location", 8));
+      SET_STRING_ELT(response, rlen, Rf_mkChar("Location"));
       break;
     case VECSXP:
       PROTECT(response = Rf_lengthgets(response, rlen + 1));
-      SET_VECTOR_ELT(response, rlen, NANO_STRING("Location", 8));
+      SET_VECTOR_ELT(response, rlen, Rf_mkString("Location"));
       break;
     default:
-      PROTECT(response = NANO_STRING("Location", 8));
+      PROTECT(response = Rf_mkString("Location"));
     }
   }
 
@@ -472,8 +472,8 @@ SEXP rnng_stream_dial(SEXP url, SEXP textframes, SEXP tls) {
   Rf_setAttrib(st, nano_TextframesSymbol, Rf_ScalarLogical(frames));
 
   PROTECT(klass = Rf_allocVector(STRSXP, 2));
-  SET_STRING_ELT(klass, 0, NANO_CHAR("nanoStream", 10));
-  SET_STRING_ELT(klass, 1, NANO_CHAR("nano", 4));
+  SET_STRING_ELT(klass, 0, Rf_mkChar("nanoStream"));
+  SET_STRING_ELT(klass, 1, Rf_mkChar("nano"));
   Rf_classgets(st, klass);
 
   UNPROTECT(3);
@@ -567,8 +567,8 @@ SEXP rnng_stream_listen(SEXP url, SEXP textframes, SEXP tls) {
   Rf_setAttrib(st, nano_TextframesSymbol, Rf_ScalarLogical(frames));
 
   PROTECT(klass = Rf_allocVector(STRSXP, 2));
-  SET_STRING_ELT(klass, 0, NANO_CHAR("nanoStream", 10));
-  SET_STRING_ELT(klass, 1, NANO_CHAR("nano", 4));
+  SET_STRING_ELT(klass, 0, Rf_mkChar("nanoStream"));
+  SET_STRING_ELT(klass, 1, Rf_mkChar("nano"));
   Rf_classgets(st, klass);
 
   UNPROTECT(3);
@@ -736,16 +736,16 @@ SEXP rnng_tls_config(SEXP client, SEXP server, SEXP pass, SEXP auth) {
 
   PROTECT(xp = R_MakeExternalPtr(cfg, nano_TlsSymbol, R_NilValue));
   R_RegisterCFinalizerEx(xp, tls_finalizer, TRUE);
-  Rf_classgets(xp, NANO_STRING("tlsConfig", 9));
+  Rf_classgets(xp, Rf_mkString("tlsConfig"));
   if (client != R_NilValue) {
-    Rf_setAttrib(xp, R_SpecSymbol, NANO_STRING("client", 6));
-    Rf_setAttrib(xp, R_ModeSymbol, NANO_STRING(mod == NNG_TLS_AUTH_MODE_REQUIRED ? "required" : "optional", 8));
+    Rf_setAttrib(xp, R_SpecSymbol, Rf_mkString("client"));
+    Rf_setAttrib(xp, R_ModeSymbol, Rf_mkString(mod == NNG_TLS_AUTH_MODE_REQUIRED ? "required" : "optional"));
   } else if (server != R_NilValue) {
-    Rf_setAttrib(xp, R_SpecSymbol, NANO_STRING("server", 6));
-    Rf_setAttrib(xp, R_ModeSymbol, NANO_STRING(mod == NNG_TLS_AUTH_MODE_REQUIRED ? "required" : "optional", 8));
+    Rf_setAttrib(xp, R_SpecSymbol, Rf_mkString("server"));
+    Rf_setAttrib(xp, R_ModeSymbol, Rf_mkString(mod == NNG_TLS_AUTH_MODE_REQUIRED ? "required" : "optional"));
   } else {
-    Rf_setAttrib(xp, R_SpecSymbol, NANO_STRING("client", 6));
-    Rf_setAttrib(xp, R_ModeSymbol, NANO_STRING("none", 4));
+    Rf_setAttrib(xp, R_SpecSymbol, Rf_mkString("client"));
+    Rf_setAttrib(xp, R_ModeSymbol, Rf_mkString("none"));
   }
 
   UNPROTECT(1);
