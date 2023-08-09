@@ -157,7 +157,6 @@ static const R_CallMethodDef callMethods[] = {
   {"rnng_listener_close", (DL_FUNC) &rnng_listener_close, 1},
   {"rnng_listener_start", (DL_FUNC) &rnng_listener_start, 1},
   {"rnng_messenger", (DL_FUNC) &rnng_messenger, 1},
-  {"rnng_messenger_thread_create", (DL_FUNC) &rnng_messenger_thread_create, 1},
   {"rnng_ncurl", (DL_FUNC) &rnng_ncurl, 9},
   {"rnng_ncurl_aio", (DL_FUNC) &rnng_ncurl_aio, 8},
   {"rnng_ncurl_session", (DL_FUNC) &rnng_ncurl_session, 8},
@@ -200,13 +199,18 @@ static const R_CallMethodDef callMethods[] = {
   {NULL, NULL, 0}
 };
 
+static const R_ExternalMethodDef externalMethods[] = {
+  {"rnng_messenger_thread_create", (DL_FUNC) &rnng_messenger_thread_create, -1},
+  {NULL, NULL, 0}
+};
+
 void attribute_visible R_init_nanonext(DllInfo* dll) {
   RegisterSymbols();
   PreserveObjects();
 #if NNG_MAJOR_VERSION == 1 && NNG_MINOR_VERSION < 6
   nng_mtx_alloc(&shr_mtx);
 #endif
-  R_registerRoutines(dll, NULL, callMethods, NULL, NULL);
+  R_registerRoutines(dll, NULL, callMethods, NULL, externalMethods);
   R_useDynamicSymbols(dll, FALSE);
   R_forceSymbols(dll, TRUE);
 }

@@ -34,9 +34,9 @@ static void thread_finalizer(SEXP xptr) {
 
 static void rnng_messenger_thread(void *args) {
 
-  SEXP list = (SEXP) args;
-  SEXP socket = VECTOR_ELT(list, 0);
-  SEXP key = VECTOR_ELT(list, 1);
+  SEXP plist = (SEXP) args;
+  SEXP socket = CADR(plist);
+  SEXP key = CADDR(plist);
   nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(socket);
   unsigned char *buf;
   size_t sz;
@@ -143,13 +143,13 @@ SEXP rnng_messenger(SEXP url) {
 
 }
 
-SEXP rnng_messenger_thread_create(SEXP list) {
+SEXP rnng_messenger_thread_create(SEXP args) {
 
-  SEXP socket = VECTOR_ELT(list, 0);
+  SEXP socket = CADR(args);
   nng_thread *thr;
   SEXP xptr;
 
-  nng_thread_create(&thr, rnng_messenger_thread, list);
+  nng_thread_create(&thr, rnng_messenger_thread, args);
 
   PROTECT(xptr = R_MakeExternalPtr(thr, R_NilValue, R_NilValue));
   R_RegisterCFinalizerEx(xptr, thread_finalizer, TRUE);

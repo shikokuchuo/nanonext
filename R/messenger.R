@@ -84,7 +84,7 @@ messenger <- function(url, auth = NULL) {
     cat("\n| authenticated", file = stderr())
   }
 
-  sock <- .Call(rnng_messenger_thread_create, list(sock, key))
+  sock <- .External(rnng_messenger_thread_create, sock, key)
   cat("\ntype your message:\n", file = stdout())
 
   repeat {
