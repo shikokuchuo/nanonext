@@ -1181,15 +1181,6 @@ SEXP rnng_stats_get(SEXP object, SEXP stat) {
 
 }
 
-// terminate the library -------------------------------------------------------
-
-SEXP rnng_fini(void) {
-
-  nng_fini();
-  return R_NilValue;
-
-}
-
 // weakref ---------------------------------------------------------------------
 
 SEXP rnng_weakref_make(SEXP key, SEXP value) {
