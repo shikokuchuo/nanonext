@@ -242,6 +242,7 @@ nanotestn(req$context)
 rep$dialer <- NULL
 nanotestxp(rep$dialer[[1L]])
 nanotestz(close(ctx))
+nanotestw(close(ctx) == 7L)
 nanotestz(close(rep))
 
 nanotestnano(pub <- nano("pub", listen = "inproc://ps"))
