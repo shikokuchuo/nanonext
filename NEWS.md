@@ -1,12 +1,16 @@
-# nanonext 0.9.2.9000 (development)
+# nanonext 0.9.2.9001 (development)
 
 *This version contains breaking changes; please review carefully and only update when ready.*
+
+#### New Features
+
+* `recover_aio()` allows recovery of 'recvAio' and 'ncurlAio' where unserialization or character conversion fails.
 
 #### Updates
 
 * The argument 'keep.raw' for all receive functions (previously-deprecated) is removed.
-* The unresolved value for an Aio is now the symbol ` unresolvedValue ` rather than a classed NA value. Continue to use `unresolved()` to check resolution.
-* Package installation now succeeds in certain environments where 'cmake' failed to 'install' mbedtls to the correct location (thanks @kendonB #13).
+* The unresolved value for an Aio is now the symbol ` unresolvedValue ` rather than a classed logical NA. Continue to use `unresolved()` to check for resolution.
+* Package installation now succeeds in certain environments where 'cmake' failed to make 'libmbedtls' detectable after building (thanks @kendonB #13).
 * Configures bundled 'libmbedtls' v3.4.0 for higher performance.
 
 # nanonext 0.9.2

@@ -295,3 +295,29 @@ unresolved <- function(aio) .Call(rnng_unresolved, aio)
 #' @export
 #'
 .unresolved <- function(aio) .Call(rnng_unresolved2, aio)
+
+#' Recover an Aio Value
+#'
+#' For use on 'recvAio' or 'ncurlAio' when encountering unserialization error
+#'     'unknown input format' (received data is not a serialized R object) or
+#'     character conversion error 'embedded nul in string' (received data is not
+#'     text data). This function allows recovery by retrieving the value as a
+#'     raw vector.
+#'
+#' @param aio a recvAio or ncurlAio (object of class 'recvAio' or 'ncurlAio').
+#'
+#' @return The passed object (invisibly).
+#'
+#' @details For a recvAio, a raw vector will be available at \code{$data}, as if
+#'     \code{mode = 'raw'} had been specified for the receive function.
+#'
+#'     For an ncurlAio, a raw vector will be available at \code{$raw} and
+#'     \code{$data} will be NULL, as if \code{convert = FALSE} had been
+#'     specified.
+#'
+#'     Note: calling this function on an unresolved Aio is an error and any
+#'     resulting operation is not guaranteed.
+#'
+#' @export
+#'
+recover_aio <- function(aio) invisible(.Call(rnng_aio_recover, aio))
