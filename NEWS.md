@@ -1,4 +1,4 @@
-# nanonext 0.9.2.9001 (development)
+# nanonext 0.9.2.9002 (development)
 
 *This version contains breaking changes; please review carefully and only update when ready.*
 

@@ -33,7 +33,7 @@ static void nano_write_char(R_outpstream_t stream, int c) {
 
   nano_buf *buf = (nano_buf *) stream->data;
   if (buf->cur >= buf->len) {
-    buf->len = (size_t) (2 * buf->len);
+    buf->len <<= 1;
     buf->buf = R_Realloc(buf->buf, buf->len, unsigned char);
   }
 
@@ -50,7 +50,7 @@ static void nano_write_bytes(R_outpstream_t stream, void *src, int len) {
     if (req > R_XLEN_T_MAX)
       Rf_error("serialization exceeds max length of raw vector");
     do {
-      buf->len = (size_t) (2 * buf->len);
+      buf->len <<= 1;
     } while (buf->len < req);
     buf->buf = R_Realloc(buf->buf, buf->len, unsigned char);
   }
@@ -225,7 +225,7 @@ SEXP nano_encode(SEXP object) {
         nano_buf buf = nano_serialize(out);
         out = Rf_allocVector(RAWSXP, buf.cur);
         memcpy(RAW(out), buf.buf, buf.cur);
-        NANO_FREE(buf);
+        R_Free(buf.buf);
         UNPROTECT(1);
       }
       break;
@@ -520,12 +520,18 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
 
   nano_buf buf;
   int xc;
+  const Rboolean mod = nano_encodes(mode);
 
   const SEXP ptrtag = R_ExternalPtrTag(con);
   if (ptrtag == nano_SocketSymbol) {
 
     nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(con);
-    if (nano_encodes(mode)) buf = nano_serialize(data); else NANO_ENCODE(buf, data);
+    if (mod) {
+      buf = nano_serialize(data);
+    } else {
+      SEXP enc = nano_encode(data);
+      NANO_INIT(buf, RAW(enc), XLENGTH(enc));
+    }
 
     if (block == R_NilValue) {
 
@@ -543,14 +549,14 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
       nng_duration dur = (nng_duration) Rf_asInteger(block);
 
       if ((xc = nng_msg_alloc(&msgp, 0))) {
-        NANO_FREE(buf);
+        if (mod) R_Free(buf.buf);
         return mk_error(xc);
       }
 
       if ((xc = nng_msg_append(msgp, buf.buf, buf.cur)) ||
           (xc = nng_aio_alloc(&aiop, NULL, NULL))) {
         nng_msg_free(msgp);
-        NANO_FREE(buf);
+        if (mod) R_Free(buf.buf);
         return mk_error(xc);
       }
 
@@ -564,7 +570,7 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
 
     }
 
-    NANO_FREE(buf);
+    if (mod) R_Free(buf.buf);
 
   } else if (ptrtag == nano_ContextSymbol) {
 
@@ -580,28 +586,34 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
     } else {
       dur = (nng_duration) Rf_asInteger(block);
     }
-    if (nano_encodes(mode)) buf = nano_serialize(data); else NANO_ENCODE(buf, data);
+
+    if (mod) {
+      buf = nano_serialize(data);
+    } else {
+      SEXP enc = nano_encode(data);
+      NANO_INIT(buf, RAW(enc), XLENGTH(enc));
+    }
 
     if ((xc = nng_msg_alloc(&msgp, 0))) {
-      NANO_FREE(buf);
+      if (mod) R_Free(buf.buf);
       return mk_error(xc);
     }
 
     if ((xc = nng_msg_append(msgp, buf.buf, buf.cur)) ||
         (xc = nng_aio_alloc(&aiop, NULL, NULL))) {
       nng_msg_free(msgp);
-      NANO_FREE(buf);
+      if (mod) R_Free(buf.buf);
       return mk_error(xc);
     }
 
     nng_aio_set_msg(aiop, msgp);
     nng_aio_set_timeout(aiop, dur);
     nng_ctx_send(*ctxp, aiop);
+    if (mod) R_Free(buf.buf);
     nng_aio_wait(aiop);
     if ((xc = nng_aio_result(aiop)))
       nng_msg_free(nng_aio_get_msg(aiop));
     nng_aio_free(aiop);
-    NANO_FREE(buf);
 
   } else if (ptrtag == nano_StreamSymbol) {
 
@@ -979,7 +991,8 @@ SEXP rnng_subscribe(SEXP object, SEXP value, SEXP sub) {
       xc = nng_ctx_set(*ctx, op, NULL, 0);
     } else {
       SEXP enc = nano_encode(value);
-      xc = nng_ctx_set(*ctx, op, RAW(enc), XLENGTH(enc));
+      size_t sz = TYPEOF(value) == STRSXP ? (size_t) XLENGTH(enc) - 1 : (size_t) XLENGTH(enc);
+      xc = nng_ctx_set(*ctx, op, RAW(enc), sz);
     }
 
   } else {
