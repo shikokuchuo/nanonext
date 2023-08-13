@@ -869,7 +869,7 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
     saio->type = SENDAIO;
 
     if (mod) {
-      buf = nano_serialize(data);
+      nano_serialize(&buf, data);
     } else {
       SEXP enc = nano_encode(data);
       NANO_INIT(buf, RAW(enc), XLENGTH(enc));
@@ -903,7 +903,7 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
     saio->type = SENDAIO;
 
     if (mod) {
-      buf = nano_serialize(data);
+      nano_serialize(&buf, data);
     } else {
       SEXP enc = nano_encode(data);
       NANO_INIT(buf, RAW(enc), XLENGTH(enc));
@@ -1579,7 +1579,7 @@ SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeou
   nng_msg *msg;
 
   if (mod) {
-    buf = nano_serialize(data);
+    nano_serialize(&buf, data);
   } else {
     SEXP enc = nano_encode(data);
     NANO_INIT(buf, RAW(enc), XLENGTH(enc));
@@ -1906,7 +1906,7 @@ SEXP rnng_cv_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP tim
   nng_msg *msg;
 
   if (mod) {
-    buf = nano_serialize(data);
+    nano_serialize(&buf, data);
   } else {
     SEXP enc = nano_encode(data);
     NANO_INIT(buf, RAW(enc), XLENGTH(enc));

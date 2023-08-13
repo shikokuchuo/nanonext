@@ -154,9 +154,9 @@ typedef struct nano_cv_duo_s {
 #define NANONEXT_INIT_BUFSIZE 16384
 #define NANONEXT_SERIAL_VER 3
 #define NANO_ALLOC(x, sz)                                      \
-  x.buf = R_Calloc(sz, unsigned char);                         \
-  x.len = (R_xlen_t) sz;                                       \
-  x.cur = 0;
+  x->buf = R_Calloc(sz, unsigned char);                         \
+  x->len = (R_xlen_t) sz;                                       \
+  x->cur = 0;
 #define NANO_INIT(x, ptr, sz)                                  \
   x.buf = ptr;                                                 \
   x.len = 0;                                                   \
@@ -175,7 +175,7 @@ extern SEXP nano_encode(SEXP);
 extern Rboolean nano_encodes(SEXP);
 extern int nano_matcharg(SEXP);
 extern int nano_matchargs(SEXP);
-extern nano_buf nano_serialize(SEXP);
+extern void nano_serialize(nano_buf *, SEXP);
 extern SEXP nano_unserialize(unsigned char *, size_t);
 extern SEXP rawToChar(unsigned char *, size_t);
 extern void socket_finalizer(SEXP);
