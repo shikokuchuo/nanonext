@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.2.9002</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.2.9003</span>
       </span>
     </div>
 
@@ -54,15 +54,15 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.9.2.9002" id="nanonext-0929002-development">nanonext 0.9.2.9002 (development)<a class="anchor" aria-label="anchor" href="#nanonext-0929002-development"></a></h2>
+<h2 class="page-header" data-toc-text="0.9.2.9003" id="nanonext-0929003-development">nanonext 0.9.2.9003 (development)<a class="anchor" aria-label="anchor" href="#nanonext-0929003-development"></a></h2>
 <p><em>This version contains breaking changes; please review carefully and only update when ready.</em></p>
 <div class="section level5">
-<h5 id="new-features-0-9-2-9002">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-9-2-9002"></a></h5>
+<h5 id="new-features-0-9-2-9003">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-9-2-9003"></a></h5>
 <ul><li>
 <code><a href="../reference/recover_aio.html">recover_aio()</a></code> allows recovery of ‘recvAio’ and ‘ncurlAio’ where unserialization or character conversion fails.</li>
 </ul></div>
 <div class="section level5">
-<h5 id="updates-0-9-2-9002">Updates<a class="anchor" aria-label="anchor" href="#updates-0-9-2-9002"></a></h5>
+<h5 id="updates-0-9-2-9003">Updates<a class="anchor" aria-label="anchor" href="#updates-0-9-2-9003"></a></h5>
 <ul><li>The argument ‘keep.raw’ for all receive functions (previously-deprecated) is removed.</li>
 <li>The unresolved value for an Aio is now the symbol <code>unresolvedValue</code> rather than a classed logical NA. Continue to use <code><a href="../reference/unresolved.html">unresolved()</a></code> to check for resolution.</li>
 <li>Package installation now succeeds in certain environments where ‘cmake’ failed to make ‘libmbedtls’ detectable after building (thanks <a href="https://github.com/kendonB" class="external-link">@kendonB</a> <a href="https://github.com/shikokuchuo/nanonext/issues/13" class="external-link">#13</a>).</li>
