@@ -55,7 +55,6 @@ static nano_buf nano_anytobuf(SEXP x) {
     }
   }
 
-  NANO_ALLOC(&hash, NANONEXT_INIT_BUFSIZE);
   nano_serialize(&hash, x);
 
   return hash;
@@ -107,11 +106,11 @@ SEXP rnng_sha224(SEXP x, SEXP key, SEXP convert) {
     nano_buf khash = nano_anytobuf(key);
     xc = mbedtls_md_hmac(mbedtls_md_info_from_type(MBEDTLS_MD_SHA224),
                          khash.buf, khash.cur, xhash.buf, xhash.cur, output);
-    if (khash.len) R_Free(khash.buf);
+    NANO_FREE(khash);
 
   }
 
-  if (xhash.len) R_Free(xhash.buf);
+  NANO_FREE(xhash);
   if (xc)
     Rf_error("error generating hash");
 
@@ -153,11 +152,11 @@ SEXP rnng_sha256(SEXP x, SEXP key, SEXP convert) {
     nano_buf khash = nano_anytobuf(key);
     xc = mbedtls_md_hmac(mbedtls_md_info_from_type(MBEDTLS_MD_SHA256),
                          khash.buf, khash.cur, xhash.buf, xhash.cur, output);
-    if (khash.len) R_Free(khash.buf);
+    NANO_FREE(khash);
 
   }
 
-  if (xhash.len) R_Free(xhash.buf);
+  NANO_FREE(xhash);
   if (xc)
     Rf_error("error generating hash");
 
@@ -203,11 +202,11 @@ SEXP rnng_sha384(SEXP x, SEXP key, SEXP convert) {
     nano_buf khash = nano_anytobuf(key);
     xc = mbedtls_md_hmac(mbedtls_md_info_from_type(MBEDTLS_MD_SHA384),
                          khash.buf, khash.cur, xhash.buf, xhash.cur, output);
-    if (khash.len) R_Free(khash.buf);
+    NANO_FREE(khash);
 
   }
 
-  if (xhash.len) R_Free(xhash.buf);
+  NANO_FREE(xhash);
   if (xc)
     Rf_error("error generating hash");
 
@@ -249,11 +248,11 @@ SEXP rnng_sha512(SEXP x, SEXP key, SEXP convert) {
     nano_buf khash = nano_anytobuf(key);
     xc = mbedtls_md_hmac(mbedtls_md_info_from_type(MBEDTLS_MD_SHA512),
                          khash.buf, khash.cur, xhash.buf, xhash.cur, output);
-    if (khash.len) R_Free(khash.buf);
+    NANO_FREE(khash);
 
   }
 
-  if (xhash.len) R_Free(xhash.buf);
+  NANO_FREE(xhash);
   if (xc)
     Rf_error("error generating hash");
 
@@ -295,11 +294,11 @@ SEXP rnng_sha1(SEXP x, SEXP key, SEXP convert) {
     nano_buf khash = nano_anytobuf(key);
     xc = mbedtls_md_hmac(mbedtls_md_info_from_type(MBEDTLS_MD_SHA1),
                          khash.buf, khash.cur, xhash.buf, xhash.cur, output);
-    if (khash.len) R_Free(khash.buf);
+    NANO_FREE(khash);
 
   }
 
-  if (xhash.len) R_Free(xhash.buf);
+  NANO_FREE(xhash);
   if (xc)
     Rf_error("error generating hash");
 
@@ -330,7 +329,7 @@ SEXP rnng_base64enc(SEXP x, SEXP convert) {
   xc = mbedtls_base64_encode(NULL, 0, &olen, hash.buf, hash.cur);
   unsigned char *buf = R_Calloc(olen, unsigned char);
   xc = mbedtls_base64_encode(buf, olen, &olen, hash.buf, hash.cur);
-  if (hash.len) R_Free(hash.buf);
+  NANO_FREE(hash);
   if (xc)
     Rf_error("write buffer insufficient");
 

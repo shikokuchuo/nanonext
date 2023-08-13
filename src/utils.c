@@ -249,8 +249,9 @@ SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP follow, SEXP method, SEXP headers,
     }
   }
   if (data != R_NilValue) {
-    SEXP enc = nano_encode(data);
-    if ((xc = nng_http_req_set_data(req, RAW(enc), (size_t) XLENGTH(enc) - 1)))
+    nano_buf enc;
+    nano_encode(&enc, data);
+    if ((xc = nng_http_req_set_data(req, enc.buf, enc.cur - 1)))
       goto exitlevel4;
   }
 

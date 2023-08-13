@@ -62,8 +62,9 @@ static void rnng_messenger_thread(void *args) {
                  tms->tm_year + 1900, tms->tm_mon + 1, tms->tm_mday,
                  tms->tm_hour, tms->tm_min, tms->tm_sec);
         nng_free(buf, sz);
-        SEXP enc = nano_encode(key);
-        xc = nng_send(*sock, RAW(enc), XLENGTH(enc), NNG_FLAG_NONBLOCK);
+        nano_buf enc;
+        nano_encode(&enc, key);
+        xc = nng_send(*sock, enc.buf, enc.cur, NNG_FLAG_NONBLOCK);
         if (xc) {
           REprintf("| messenger session ended: %d-%02d-%02d %02d:%02d:%02d\n",
                    tms->tm_year + 1900, tms->tm_mon + 1, tms->tm_mday,

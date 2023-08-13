@@ -161,6 +161,7 @@ typedef struct nano_cv_duo_s {
   (x)->buf = ptr;                                              \
   (x)->len = 0;                                                \
   (x)->cur = (R_xlen_t) sz;
+#define NANO_FREE(x) if (x.len) R_Free(x.buf);
 
 typedef struct nano_buf_s {
   unsigned char *buf;
@@ -171,7 +172,9 @@ typedef struct nano_buf_s {
 extern SEXP mk_error(const int);
 extern SEXP mk_error_ncurl(const int);
 extern SEXP nano_decode(unsigned char *, size_t, const int);
-extern SEXP nano_encode(SEXP);
+extern void dialer_finalizer(SEXP);
+extern void nano_encode(nano_buf *, SEXP);
+extern void listener_finalizer(SEXP);
 extern Rboolean nano_encodes(SEXP);
 extern int nano_matcharg(SEXP);
 extern int nano_matchargs(SEXP);
@@ -179,8 +182,6 @@ extern void nano_serialize(nano_buf *, SEXP);
 extern SEXP nano_unserialize(unsigned char *, size_t);
 extern SEXP rawToChar(unsigned char *, size_t);
 extern void socket_finalizer(SEXP);
-extern void dialer_finalizer(SEXP);
-extern void listener_finalizer(SEXP);
 
 extern SEXP nano_AioSymbol;
 extern SEXP nano_ContextSymbol;
