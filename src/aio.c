@@ -869,10 +869,11 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
     saio->type = SENDAIO;
 
     if (mod) {
+      NANO_ALLOC(&buf, NANONEXT_INIT_BUFSIZE);
       nano_serialize(&buf, data);
     } else {
       SEXP enc = nano_encode(data);
-      NANO_INIT(buf, RAW(enc), XLENGTH(enc));
+      NANO_INIT(&buf, RAW(enc), XLENGTH(enc));
     }
 
     if ((xc = nng_msg_alloc(&msg, 0))) {
@@ -903,10 +904,11 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
     saio->type = SENDAIO;
 
     if (mod) {
+      NANO_ALLOC(&buf, NANONEXT_INIT_BUFSIZE);
       nano_serialize(&buf, data);
     } else {
       SEXP enc = nano_encode(data);
-      NANO_INIT(buf, RAW(enc), XLENGTH(enc));
+      NANO_INIT(&buf, RAW(enc), XLENGTH(enc));
     }
 
     if ((xc = nng_msg_alloc(&msg, 0))) {
@@ -938,7 +940,7 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
     nng_iov iov;
 
     SEXP enc = nano_encode(data);
-    NANO_INIT(buf, RAW(enc), XLENGTH(enc));
+    NANO_INIT(&buf, RAW(enc), XLENGTH(enc));
 
     saio->type = IOV_SENDAIO;
     saio->data = R_Calloc(buf.cur, unsigned char);
@@ -1579,10 +1581,11 @@ SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeou
   nng_msg *msg;
 
   if (mod) {
+    NANO_ALLOC(&buf, NANONEXT_INIT_BUFSIZE);
     nano_serialize(&buf, data);
   } else {
     SEXP enc = nano_encode(data);
-    NANO_INIT(buf, RAW(enc), XLENGTH(enc));
+    NANO_INIT(&buf, RAW(enc), XLENGTH(enc));
   }
 
   nano_aio *saio = R_Calloc(1, nano_aio);
@@ -1906,10 +1909,11 @@ SEXP rnng_cv_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP tim
   nng_msg *msg;
 
   if (mod) {
+    NANO_ALLOC(&buf, NANONEXT_INIT_BUFSIZE);
     nano_serialize(&buf, data);
   } else {
     SEXP enc = nano_encode(data);
-    NANO_INIT(buf, RAW(enc), XLENGTH(enc));
+    NANO_INIT(&buf, RAW(enc), XLENGTH(enc));
   }
 
   nano_aio *saio = R_Calloc(1, nano_aio);

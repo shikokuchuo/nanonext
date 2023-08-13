@@ -125,8 +125,6 @@ void nano_serialize(nano_buf *buf, SEXP object) {
 
   struct R_outpstream_st output_stream;
 
-  NANO_ALLOC(buf, NANONEXT_INIT_BUFSIZE);
-
   R_InitOutPStream(
     &output_stream,
     (R_pstream_data_t) buf,
@@ -220,6 +218,7 @@ SEXP nano_encode(SEXP object) {
       if (TYPEOF(out) != RAWSXP) {
         PROTECT(out);
         nano_buf buf;
+        NANO_ALLOC(&buf, NANONEXT_INIT_BUFSIZE);
         nano_serialize(&buf, out);
         out = Rf_allocVector(RAWSXP, buf.cur);
         memcpy(RAW(out), buf.buf, buf.cur);
@@ -525,10 +524,11 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
 
     nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(con);
     if (mod) {
+      NANO_ALLOC(&buf, NANONEXT_INIT_BUFSIZE);
       nano_serialize(&buf, data);
     } else {
       SEXP enc = nano_encode(data);
-      NANO_INIT(buf, RAW(enc), XLENGTH(enc));
+      NANO_INIT(&buf, RAW(enc), XLENGTH(enc));
     }
 
     if (block == R_NilValue) {
@@ -586,10 +586,11 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
     }
 
     if (mod) {
+      NANO_ALLOC(&buf, NANONEXT_INIT_BUFSIZE);
       nano_serialize(&buf, data);
     } else {
       SEXP enc = nano_encode(data);
-      NANO_INIT(buf, RAW(enc), XLENGTH(enc));
+      NANO_INIT(&buf, RAW(enc), XLENGTH(enc));
     }
 
     if ((xc = nng_msg_alloc(&msgp, 0))) {

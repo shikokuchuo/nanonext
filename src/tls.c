@@ -44,18 +44,20 @@ static nano_buf nano_anytobuf(SEXP x) {
   switch (TYPEOF(x)) {
   case STRSXP:
     if (XLENGTH(x) == 1 && ATTRIB(x) == R_NilValue) {
-      NANO_INIT(hash, (unsigned char *) CHAR(STRING_ELT(x, 0)), XLENGTH(STRING_ELT(x, 0)));
+      NANO_INIT(&hash, (unsigned char *) CHAR(STRING_ELT(x, 0)), XLENGTH(STRING_ELT(x, 0)));
       return hash;
     }
     break;
   case RAWSXP:
     if (ATTRIB(x) == R_NilValue) {
-      NANO_INIT(hash, RAW(x), XLENGTH(x));
+      NANO_INIT(&hash, RAW(x), XLENGTH(x));
       return hash;
     }
   }
 
+  NANO_ALLOC(&hash, NANONEXT_INIT_BUFSIZE);
   nano_serialize(&hash, x);
+
   return hash;
 
 }
