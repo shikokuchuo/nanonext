@@ -199,6 +199,9 @@ void nano_encode(nano_buf *enc, SEXP object) {
   case RAWSXP:
     NANO_INIT(enc, RAW(object), XLENGTH(object));
     break;
+  case NILSXP:
+    NANO_INIT(enc, NULL, 0);
+    break;
   case ENVSXP:
     object = Rf_findVarInFrame(ENCLOS(object), nano_ResultSymbol);
     if (object != R_UnboundValue) {
@@ -939,32 +942,21 @@ SEXP rnng_subscribe(SEXP object, SEXP value, SEXP sub) {
     Rf_error("'object' is not a valid Socket, Context, Stream, Listener or Dialer");
 
   const char *op = LOGICAL(sub)[0] ? "sub:subscribe" : "sub:unsubscribe";
+  nano_buf buf;
   int xc;
 
   const SEXP ptrtag = R_ExternalPtrTag(object);
   if (ptrtag == nano_SocketSymbol) {
 
     nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(object);
-    if (value == R_NilValue) {
-        xc = nng_socket_set(*sock, op, NULL, 0);
-      } else {
-        nano_buf buf;
-        nano_encode(&buf, value);
-        size_t sz = TYPEOF(value) == STRSXP ? buf.cur - 1 : buf.cur;
-        xc = nng_socket_set(*sock, op, buf.buf, sz);
-      }
+    nano_encode(&buf, value);
+    xc = nng_socket_set(*sock, op, buf.buf, TYPEOF(value) == STRSXP ? buf.cur - 1 : buf.cur);
 
   } else if (ptrtag == nano_ContextSymbol) {
 
     nng_ctx *ctx = (nng_ctx *) R_ExternalPtrAddr(object);
-    if (value == R_NilValue) {
-      xc = nng_ctx_set(*ctx, op, NULL, 0);
-    } else {
-      nano_buf buf;
-      nano_encode(&buf, value);
-      size_t sz = TYPEOF(value) == STRSXP ? buf.cur - 1 : buf.cur;
-      xc = nng_ctx_set(*ctx, op, buf.buf, sz);
-    }
+    nano_encode(&buf, value);
+    xc = nng_ctx_set(*ctx, op, buf.buf, TYPEOF(value) == STRSXP ? buf.cur - 1 : buf.cur);
 
   } else {
     Rf_error("'object' is not a valid Socket or Context");

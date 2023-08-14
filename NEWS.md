@@ -11,6 +11,7 @@
 * The argument 'keep.raw' for all receive functions (previously-deprecated) is removed.
 * The unresolved value for an Aio is now the symbol ` unresolvedValue ` rather than a classed logical NA. Continue to use `unresolved()` to check for resolution.
 * Higher performance sending of vector data using mode = 'raw'.
+* Permits sending of NULL using mode = 'raw', in which case an empty vector will be received.
 * Fixes receiving of character vectors containing empty characters.
 * Package installation now succeeds in certain environments where 'cmake' failed to make 'libmbedtls' detectable after building (thanks @kendonB #13).
 * Configures bundled 'libmbedtls' v3.4.0 for higher performance.
