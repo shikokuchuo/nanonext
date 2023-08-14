@@ -222,7 +222,7 @@ void nano_encode(nano_buf *enc, SEXP object) {
 
 Rboolean nano_encodes(SEXP mode) {
 
-  if (TYPEOF(mode) == STRSXP) {
+  if (TYPEOF(mode) != INTSXP) {
     const char *mod = CHAR(STRING_ELT(mode, 0));
     size_t slen = strlen(mod);
     switch (slen) {
@@ -245,7 +245,7 @@ Rboolean nano_encodes(SEXP mode) {
 
 int nano_matcharg(SEXP mode) {
 
-  if (TYPEOF(mode) == STRSXP) {
+  if (TYPEOF(mode) != INTSXP) {
     const char *mod = CHAR(STRING_ELT(mode, 0));
     size_t slen = strlen(mod);
     switch (slen) {
@@ -279,7 +279,7 @@ int nano_matcharg(SEXP mode) {
 
 int nano_matchargs(SEXP mode) {
 
-  if (TYPEOF(mode) == STRSXP) {
+  if (TYPEOF(mode) != INTSXP) {
     const char *mod = Rf_xlength(mode) == 8 ? CHAR(STRING_ELT(mode, 1)) : CHAR(STRING_ELT(mode, 0));
     size_t slen = strlen(mod);
     switch (slen) {
