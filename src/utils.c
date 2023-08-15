@@ -334,23 +334,21 @@ SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP follow, SEXP method, SEXP headers,
     SET_VECTOR_ELT(out, 1, rvec);
     switch (TYPEOF(response)) {
     case STRSXP:
+      Rf_namesgets(rvec, response);
       for (R_xlen_t i = 0; i < rlen; i++) {
         const char *r = nng_http_res_get_header(res, CHAR(STRING_ELT(response, i)));
         SET_VECTOR_ELT(rvec, i, r == NULL ? R_NilValue : Rf_mkString(r));
       }
-      Rf_namesgets(rvec, response);
       break;
     case VECSXP: ;
-      SEXP rnames;
-      PROTECT(rnames = Rf_allocVector(STRSXP, rlen));
+      SEXP rnames = Rf_allocVector(STRSXP, rlen);
+      Rf_namesgets(rvec, rnames);
       for (R_xlen_t i = 0; i < rlen; i++) {
         SEXP rname = STRING_ELT(VECTOR_ELT(response, i), 0);
         SET_STRING_ELT(rnames, i, rname);
         const char *r = nng_http_res_get_header(res, CHAR(rname));
         SET_VECTOR_ELT(rvec, i, r == NULL ? R_NilValue : Rf_mkString(r));
       }
-      Rf_namesgets(rvec, rnames);
-      UNPROTECT(1);
       break;
     }
   } else {

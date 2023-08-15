@@ -76,7 +76,7 @@ Named list of 4 elements:
 nano cURL - a minimalist http(s) client.
 }
 \examples{
-ncurl("https://www.r-project.org/",
+ncurl("https://postman-echo.com/get",
        convert = FALSE,
        response = c("date", "server"),
        timeout = 1000L)

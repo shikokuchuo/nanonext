@@ -67,7 +67,7 @@
 #' @seealso \code{\link{ncurl_aio}} for asynchronous http requests;
 #'     \code{\link{ncurl_session}} for persistent connections.
 #' @examples
-#' ncurl("https://www.r-project.org/",
+#' ncurl("https://postman-echo.com/get",
 #'        convert = FALSE,
 #'        response = c("date", "server"),
 #'        timeout = 1000L)
