@@ -16,6 +16,7 @@
 * Fixes receiving of character vectors containing empty characters.
 * Package installation now succeeds in certain environments where 'cmake' failed to make 'libmbedtls' detectable after building (thanks @kendonB #13).
 * Configures bundled 'libmbedtls' v3.4.0 for higher performance, and slims down source bundle.
+* Supported 'libmbedtls' version increased to >= 2.5.
 
 # nanonext 0.9.2
 

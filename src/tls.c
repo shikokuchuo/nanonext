@@ -96,10 +96,8 @@ SEXP rnng_sha224(SEXP x, SEXP key, SEXP convert) {
 
 #if MBEDTLS_VERSION_MAJOR >= 3
     xc = mbedtls_sha256(xhash.buf, xhash.cur, output, 1);
-#elif MBEDTLS_VERSION_MAJOR == 2 && MBEDTLS_VERSION_MINOR >=5
-    xc = mbedtls_sha256_ret(xhash.buf, xhash.cur, output, 1);
 #else
-    mbedtls_sha256(xhash.buf, xhash.cur, output, 1);
+    xc = mbedtls_sha256_ret(xhash.buf, xhash.cur, output, 1);
 #endif
   } else {
 
@@ -141,10 +139,8 @@ SEXP rnng_sha256(SEXP x, SEXP key, SEXP convert) {
 
 #if MBEDTLS_VERSION_MAJOR >= 3
     xc = mbedtls_sha256(xhash.buf, xhash.cur, output, 0);
-#elif MBEDTLS_VERSION_MAJOR == 2 && MBEDTLS_VERSION_MINOR >=5
-    xc = mbedtls_sha256_ret(xhash.buf, xhash.cur, output, 0);
 #else
-    mbedtls_sha256(xhash.buf, xhash.cur, output, 0);
+    xc = mbedtls_sha256_ret(xhash.buf, xhash.cur, output, 0);
 #endif
 
   } else {
@@ -191,10 +187,8 @@ SEXP rnng_sha384(SEXP x, SEXP key, SEXP convert) {
 
 #if MBEDTLS_VERSION_MAJOR >= 3
     xc = mbedtls_sha512(xhash.buf, xhash.cur, output, 1);
-#elif MBEDTLS_VERSION_MAJOR == 2 && MBEDTLS_VERSION_MINOR >=5
-    xc = mbedtls_sha512_ret(xhash.buf, xhash.cur, output, 1);
 #else
-    mbedtls_sha512(xhash.buf, xhash.cur, output, 1);
+    xc = mbedtls_sha512_ret(xhash.buf, xhash.cur, output, 1);
 #endif
 
   } else {
@@ -237,10 +231,8 @@ SEXP rnng_sha512(SEXP x, SEXP key, SEXP convert) {
 
 #if MBEDTLS_VERSION_MAJOR >= 3
     xc = mbedtls_sha512(xhash.buf, xhash.cur, output, 0);
-#elif MBEDTLS_VERSION_MAJOR == 2 && MBEDTLS_VERSION_MINOR >=5
-    xc = mbedtls_sha512_ret(xhash.buf, xhash.cur, output, 0);
 #else
-    mbedtls_sha512(xhash.buf, xhash.cur, output, 0);
+    xc = mbedtls_sha512_ret(xhash.buf, xhash.cur, output, 0);
 #endif
 
   } else {
@@ -283,10 +275,8 @@ SEXP rnng_sha1(SEXP x, SEXP key, SEXP convert) {
 
 #if MBEDTLS_VERSION_MAJOR >= 3
     xc = mbedtls_sha1(xhash.buf, xhash.cur, output);
-#elif MBEDTLS_VERSION_MAJOR == 2 && MBEDTLS_VERSION_MINOR >=5
-    xc = mbedtls_sha1_ret(xhash.buf, xhash.cur, output);
 #else
-    mbedtls_sha1(xhash.buf, xhash.cur, output);
+    xc = mbedtls_sha1_ret(xhash.buf, xhash.cur, output);
 #endif
 
   } else {

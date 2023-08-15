@@ -127,7 +127,7 @@ ncurl <- function(url,
 #' @examples
 #' nc <- ncurl_aio("https://www.r-project.org/",
 #'                 response = c("date", "server"),
-#'                 timeout = 3000L)
+#'                 timeout = 2000L)
 #' call_aio(nc)
 #' nc$status
 #' nc$headers

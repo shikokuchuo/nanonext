@@ -215,7 +215,7 @@ SEXP rnng_write_cert(SEXP cn, SEXP valid, SEXP inter) {
   mbedtls_x509_crt_free(&issuer_crt);
   mbedtls_x509write_crt_free(&crt);
   mbedtls_pk_free(&loaded_issuer_key);
-#if MBEDTLS_VERSION_MAJOR == 3 && MBEDTLS_VERSION_MINOR < 4 || MBEDTLS_VERSION_MAJOR <= 2
+#if MBEDTLS_VERSION_MAJOR == 3 && MBEDTLS_VERSION_MINOR < 4 || MBEDTLS_VERSION_MAJOR < 3
   mbedtls_mpi_free(&serial);
 #endif
   mbedtls_ctr_drbg_free(&ctr_drbg);
