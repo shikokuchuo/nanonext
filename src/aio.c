@@ -427,10 +427,10 @@ SEXP rnng_dial(SEXP socket, SEXP url, SEXP tls, SEXP autostart, SEXP error) {
   PROTECT(dialer = R_MakeExternalPtr(dp, nano_DialerSymbol, R_NilValue));
   R_RegisterCFinalizerEx(dialer, dialer_finalizer, TRUE);
 
-  PROTECT(klass = Rf_allocVector(STRSXP, 2));
+  klass = Rf_allocVector(STRSXP, 2);
+  Rf_classgets(dialer, klass);
   SET_STRING_ELT(klass, 0, Rf_mkChar("nanoDialer"));
   SET_STRING_ELT(klass, 1, Rf_mkChar("nano"));
-  Rf_classgets(dialer, klass);
   Rf_setAttrib(dialer, nano_IdSymbol, Rf_ScalarInteger((int) dp->dial.id));
   Rf_setAttrib(dialer, nano_UrlSymbol, url);
   Rf_setAttrib(dialer, nano_StateSymbol, Rf_mkString(start ? "started" : "not started"));
@@ -449,7 +449,7 @@ SEXP rnng_dial(SEXP socket, SEXP url, SEXP tls, SEXP autostart, SEXP error) {
   }
   Rf_setAttrib(socket, nano_DialerSymbol, newattr);
 
-  UNPROTECT(3);
+  UNPROTECT(2);
   return nano_success;
 
   exitlevel2:
@@ -497,10 +497,10 @@ SEXP rnng_listen(SEXP socket, SEXP url, SEXP tls, SEXP autostart, SEXP error) {
   PROTECT(listener = R_MakeExternalPtr(lp, nano_ListenerSymbol, R_NilValue));
   R_RegisterCFinalizerEx(listener, listener_finalizer, TRUE);
 
-  PROTECT(klass = Rf_allocVector(STRSXP, 2));
+  klass = Rf_allocVector(STRSXP, 2);
+  Rf_classgets(listener, klass);
   SET_STRING_ELT(klass, 0, Rf_mkChar("nanoListener"));
   SET_STRING_ELT(klass, 1, Rf_mkChar("nano"));
-  Rf_classgets(listener, klass);
   Rf_setAttrib(listener, nano_IdSymbol, Rf_ScalarInteger((int) lp->list.id));
   Rf_setAttrib(listener, nano_UrlSymbol, url);
   Rf_setAttrib(listener, nano_StateSymbol, Rf_mkString(start ? "started" : "not started"));
@@ -519,7 +519,7 @@ SEXP rnng_listen(SEXP socket, SEXP url, SEXP tls, SEXP autostart, SEXP error) {
   }
   Rf_setAttrib(socket, nano_ListenerSymbol, newattr);
 
-  UNPROTECT(3);
+  UNPROTECT(2);
   return nano_success;
 
   exitlevel2:

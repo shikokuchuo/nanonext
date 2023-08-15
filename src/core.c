@@ -428,16 +428,16 @@ SEXP rnng_ctx_open(SEXP socket) {
   PROTECT(context = R_MakeExternalPtr(ctx, nano_ContextSymbol, R_NilValue));
   R_RegisterCFinalizerEx(context, context_finalizer, TRUE);
 
-  PROTECT(klass = Rf_allocVector(STRSXP, 2));
+  klass = Rf_allocVector(STRSXP, 2);
+  Rf_classgets(context, klass);
   SET_STRING_ELT(klass, 0, Rf_mkChar("nanoContext"));
   SET_STRING_ELT(klass, 1, Rf_mkChar("nano"));
-  Rf_classgets(context, klass);
   Rf_setAttrib(context, nano_IdSymbol, Rf_ScalarInteger((int) ctx->id));
   Rf_setAttrib(context, nano_StateSymbol, Rf_mkString("opened"));
   Rf_setAttrib(context, nano_ProtocolSymbol, Rf_getAttrib(socket, nano_ProtocolSymbol));
   Rf_setAttrib(context, nano_SocketSymbol, Rf_ScalarInteger((int) sock->id));
 
-  UNPROTECT(2);
+  UNPROTECT(1);
   return context;
 
 }

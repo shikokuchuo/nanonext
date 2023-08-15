@@ -35,67 +35,69 @@ void socket_finalizer(SEXP xptr) {
 
 SEXP rnng_protocol_open(SEXP protocol, SEXP raw) {
 
-  const char *pro = CHAR(STRING_ELT(protocol, 0));
   const int rw = LOGICAL(raw)[0];
-
+  const char *pro = CHAR(STRING_ELT(protocol, 0));
   size_t slen = strlen(pro);
-  const char bus[] = "bus", pair[] = "pair", push[] = "push", pull[] = "pull",
-    pub[] = "pub", sub[] = "sub", req[] = "req", rep[] = "rep", sur[] = "surveyor",
-    res[] = "respondent";
 
-  nng_socket *sock;
   const char *pname;
   int xc;
+  nng_socket *sock;
   SEXP socket, klass;
-
-  sock = R_Calloc(1, nng_socket);
 
   switch (slen) {
   case 1:
   case 2:
   case 3:
-    if (!strncmp(bus, pro, slen)) {
-      pname = bus;
+    if (!strncmp(pro, "bus", slen)) {
+      pname = "bus";
+      sock = R_Calloc(1, nng_socket);
       xc = rw ? nng_bus0_open_raw(sock) : nng_bus0_open(sock);
       break;
     }
     if (slen > 2) {
-      if (!strncmp(pub, pro, slen)) {
-        pname = pub;
+      if (!strncmp(pro, "pub", slen)) {
+        pname = "pub";
+        sock = R_Calloc(1, nng_socket);
         xc = rw ? nng_pub0_open_raw(sock) : nng_pub0_open(sock);
         break;
       }
-      if (!strncmp(sub, pro, slen)) {
-        pname = sub;
+      if (!strncmp(pro, "sub", slen)) {
+        pname = "sub";
+        sock = R_Calloc(1, nng_socket);
         xc = rw ? nng_sub0_open_raw(sock) : nng_sub0_open(sock);
         break;
       }
-      if (!strncmp(req, pro, slen)) {
-        pname = req;
+      if (!strncmp(pro, "req", slen)) {
+        pname = "req";
+        sock = R_Calloc(1, nng_socket);
         xc = rw ? nng_req0_open_raw(sock) : nng_req0_open(sock);
         break;
       }
-      if (!strncmp(rep, pro, slen)) {
-        pname = rep;
+      if (!strncmp(pro, "rep", slen)) {
+        pname = "rep";
+        sock = R_Calloc(1, nng_socket);
         xc = rw ? nng_rep0_open_raw(sock) : nng_rep0_open(sock);
         break;
       }
     }
   case 4:
     if (slen > 1) {
-      if (!strncmp(pair, pro, slen)) {
-        pname = pair;
+      if (!strncmp(pro, "pair", slen)) {
+        pname = "pair";
+        sock = R_Calloc(1, nng_socket);
         xc = rw ? nng_pair0_open_raw(sock) : nng_pair0_open(sock);
         break;
       }
       if (slen > 2) {
-        if (!strncmp(push, pro, slen)) {
-          pname = push;
+        if (!strncmp(pro, "push", slen)) {
+          pname = "push";
+          sock = R_Calloc(1, nng_socket);
           xc = rw ? nng_push0_open_raw(sock) : nng_push0_open(sock);
           break;
         }
-        if (!strncmp(pull, pro, slen)) {
-          pname = pull;
+        if (!strncmp(pro, "pull", slen)) {
+          pname = "pull";
+          sock = R_Calloc(1, nng_socket);
           xc = rw ? nng_pull0_open_raw(sock) : nng_pull0_open(sock);
           break;
         }
@@ -105,22 +107,23 @@ SEXP rnng_protocol_open(SEXP protocol, SEXP raw) {
   case 6:
   case 7:
   case 8:
-    if (slen > 2 && !strncmp(sur, pro, slen)) {
-      pname = sur;
+    if (slen > 2 && !strncmp(pro, "surveyor", slen)) {
+      pname = "surveyor";
+      sock = R_Calloc(1, nng_socket);
       xc = rw ? nng_surveyor0_open_raw(sock) : nng_surveyor0_open(sock);
       break;
     }
   case 9:
   case 10:
-    if (slen > 2 && !strncmp(res, pro, slen)) {
-      pname = res;
+    if (slen > 2 && !strncmp(pro, "respondent", slen)) {
+      pname = "respondent";
+      sock = R_Calloc(1, nng_socket);
       xc = rw ? nng_respondent0_open_raw(sock) : nng_respondent0_open(sock);
       break;
     }
   default:
-    R_Free(sock);
     Rf_error("'protocol' should be one of bus, pair, push, pull, pub, sub, req, rep, surveyor, respondent");
-    xc = 0;
+    return R_NilValue;
   }
 
   if (xc) {
@@ -131,15 +134,15 @@ SEXP rnng_protocol_open(SEXP protocol, SEXP raw) {
   PROTECT(socket = R_MakeExternalPtr(sock, nano_SocketSymbol, R_NilValue));
   R_RegisterCFinalizerEx(socket, socket_finalizer, TRUE);
 
-  PROTECT(klass = Rf_allocVector(STRSXP, 2));
+  klass = Rf_allocVector(STRSXP, 2);
+  Rf_classgets(socket, klass);
   SET_STRING_ELT(klass, 0, Rf_mkChar("nanoSocket"));
   SET_STRING_ELT(klass, 1, Rf_mkChar("nano"));
-  Rf_classgets(socket, klass);
   Rf_setAttrib(socket, nano_IdSymbol, Rf_ScalarInteger((int) sock->id));
   Rf_setAttrib(socket, nano_StateSymbol, Rf_mkString("opened"));
   Rf_setAttrib(socket, nano_ProtocolSymbol, Rf_mkString(pname));
 
-  UNPROTECT(2);
+  UNPROTECT(1);
   return socket;
 
 }

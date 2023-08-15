@@ -330,7 +330,8 @@ SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP follow, SEXP method, SEXP headers,
 
   if (response != R_NilValue) {
     const R_xlen_t rlen = Rf_xlength(response);
-    PROTECT(rvec = Rf_allocVector(VECSXP, rlen));
+    rvec = Rf_allocVector(VECSXP, rlen);
+    SET_VECTOR_ELT(out, 1, rvec);
     switch (TYPEOF(response)) {
     case STRSXP:
       for (R_xlen_t i = 0; i < rlen; i++) {
@@ -352,11 +353,10 @@ SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP follow, SEXP method, SEXP headers,
       UNPROTECT(1);
       break;
     }
-    UNPROTECT(1);
   } else {
     rvec = R_NilValue;
+    SET_VECTOR_ELT(out, 1, rvec);
   }
-  SET_VECTOR_ELT(out, 1, rvec);
   if (relo) UNPROTECT(1);
 
   nng_http_res_get_data(res, &dat, &sz);
@@ -472,12 +472,12 @@ SEXP rnng_stream_dial(SEXP url, SEXP textframes, SEXP tls) {
   Rf_setAttrib(st, nano_UrlSymbol, url);
   Rf_setAttrib(st, nano_TextframesSymbol, Rf_ScalarLogical(frames));
 
-  PROTECT(klass = Rf_allocVector(STRSXP, 2));
+  klass = Rf_allocVector(STRSXP, 2);
+  Rf_classgets(st, klass);
   SET_STRING_ELT(klass, 0, Rf_mkChar("nanoStream"));
   SET_STRING_ELT(klass, 1, Rf_mkChar("nano"));
-  Rf_classgets(st, klass);
 
-  UNPROTECT(3);
+  UNPROTECT(2);
   return st;
 
   exitlevel5:
@@ -567,12 +567,12 @@ SEXP rnng_stream_listen(SEXP url, SEXP textframes, SEXP tls) {
   Rf_setAttrib(st, nano_UrlSymbol, url);
   Rf_setAttrib(st, nano_TextframesSymbol, Rf_ScalarLogical(frames));
 
-  PROTECT(klass = Rf_allocVector(STRSXP, 2));
+  klass = Rf_allocVector(STRSXP, 2);
+  Rf_classgets(st, klass);
   SET_STRING_ELT(klass, 0, Rf_mkChar("nanoStream"));
   SET_STRING_ELT(klass, 1, Rf_mkChar("nano"));
-  Rf_classgets(st, klass);
 
-  UNPROTECT(3);
+  UNPROTECT(2);
   return st;
 
   exitlevel5:
