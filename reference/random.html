@@ -80,7 +80,8 @@
     <h2>Value</h2>
     
 
-<p>A length 'n' vector of random positive doubles.</p>
+<p>A length 'n' vector of random positive doubles. Each random number
+    has a range between 0 and 2 * <code>.Machine$integer.max</code> inclusive.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -91,9 +92,9 @@
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">random</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 76455095</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2020727690</span>
 <span class="r-in"><span><span class="fu">random</span><span class="op">(</span>n <span class="op">=</span> <span class="fl">3L</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  684492925 2834093249 2655451474</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  385358422  991130056 3085440318</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
