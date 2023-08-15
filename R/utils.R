@@ -100,7 +100,8 @@ msleep <- function(time) invisible(.Call(rnng_sleep, time))
 #'
 #' @param n [default 1L] length of vector to return.
 #'
-#' @return A length 'n' vector of random positive doubles.
+#' @return A length 'n' vector of random positive doubles. Each random number
+#'     has a range between 0 and 2 * \code{.Machine$integer.max} inclusive.
 #'
 #' @details If 'n' is non-integer, it will be coerced to integer; if a vector,
 #'     only the first element will be used.

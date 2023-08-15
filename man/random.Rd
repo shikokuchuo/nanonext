@@ -10,7 +10,8 @@ random(n = 1L)
 \item{n}{[default 1L] length of vector to return.}
 }
 \value{
-A length 'n' vector of random positive doubles.
+A length 'n' vector of random positive doubles. Each random number
+    has a range between 0 and 2 * \code{.Machine$integer.max} inclusive.
 }
 \description{
 Strictly not for statistical analysis. Not reproducible. No ability to set

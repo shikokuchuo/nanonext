@@ -77,7 +77,9 @@
 #'
 #' @examples
 #' s <- socket(protocol = "req", listen = "inproc://nanosocket")
+#' s
 #' s1 <- socket(protocol = "rep", dial = "inproc://nanosocket")
+#' s1
 #'
 #' send(s, "hello world!")
 #' recv(s1)
