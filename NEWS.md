@@ -1,4 +1,4 @@
-# nanonext 0.9.2.9009 (development)
+# nanonext 0.9.2.9010 (development)
 
 *This version contains breaking changes; please review carefully and only update when ready.*
 
@@ -15,7 +15,7 @@
 * Permits sending of NULL using mode = 'raw', in which case an empty vector will be received.
 * Fixes receiving of character vectors containing empty characters.
 * Package installation now succeeds in certain environments where 'cmake' failed to make 'libmbedtls' detectable after building (thanks @kendonB #13).
-* Configures bundled 'libmbedtls' v3.4.0 for higher performance.
+* Configures bundled 'libmbedtls' v3.4.0 for higher performance, and slims down source bundle.
 
 # nanonext 0.9.2
 
