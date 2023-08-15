@@ -51,6 +51,7 @@
 #'     it is recommended to set a positive integer value for \code{block} rather
 #'     than FALSE.
 #'
+#' @seealso \code{\link{send_aio}} for asynchronous sends.
 #' @examples
 #' pub <- socket("pub", dial = "inproc://nanonext")
 #'
@@ -117,6 +118,7 @@ send <- function(con, data, mode = c("serial", "raw"), block = NULL)
 #'     implementation uses an asynchronous send with a wait, it is recommended
 #'     to set a positive integer value for \code{block} rather than FALSE.
 #'
+#' @seealso \code{\link{recv_aio}} for asynchronous receives.
 #' @examples
 #' s1 <- socket("pair", listen = "inproc://nanonext")
 #' s2 <- socket("pair", dial = "inproc://nanonext")

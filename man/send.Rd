@@ -68,3 +68,6 @@ close(req)
 close(rep)
 
 }
+\seealso{
+\code{\link{send_aio}} for asynchronous sends.
+}

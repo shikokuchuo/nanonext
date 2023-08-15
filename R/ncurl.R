@@ -64,6 +64,7 @@
 #'     Or else, if 'async' = TRUE, an 'ncurlAio' (object of class 'ncurlAio'
 #'     and 'recvAio') (invisibly).
 #'
+#' @seealso \code{\link{ncurl_session}} for persistent connections.
 #' @examples
 #' ncurl("https://www.r-project.org/",
 #'        convert = FALSE,

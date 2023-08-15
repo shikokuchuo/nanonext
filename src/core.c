@@ -107,7 +107,7 @@ static SEXP rawOneString(unsigned char *bytes, R_xlen_t nbytes, R_xlen_t *np) {
 
 }
 
-SEXP rawToChar(unsigned char *buf, size_t sz) {
+SEXP rawToChar(unsigned char *buf, const size_t sz) {
 
   SEXP out;
   int i, j;
@@ -145,7 +145,7 @@ void nano_serialize(nano_buf *buf, SEXP object) {
 
 }
 
-SEXP nano_unserialize(unsigned char *buf, size_t sz) {
+SEXP nano_unserialize(unsigned char *buf, const size_t sz) {
 
   nano_buf nbuf;
   struct R_inpstream_st input_stream;

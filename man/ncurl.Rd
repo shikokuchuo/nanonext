@@ -92,3 +92,6 @@ ncurl("https://postman-echo.com/post",
       timeout = 1500L)
 
 }
+\seealso{
+\code{\link{ncurl_session}} for persistent connections.
+}
