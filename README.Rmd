@@ -536,7 +536,7 @@ It can be seen that the final value resolves into a timeout, which is an integer
 
 `ncurl()` is a minimalist http(s) client.
 
-By setting `async = TRUE`, it performs requests asynchronously, returning immediately with an 'ncurlAio'.
+`ncurl_aio()` is the async edition, performing requests asynchronously, returning immediately with an 'ncurlAio'.
 
 For normal use, it takes just the URL. It can follow redirects.
 
@@ -548,12 +548,11 @@ ncurl("https://postman-echo.com/get")
 For advanced use, supports additional HTTP methods such as POST or PUT.
 
 ```{r ncurladv}
-res <- ncurl("https://postman-echo.com/post",
-             async = TRUE,
-             method = "POST",
-             headers = c(`Content-Type` = "application/json", Authorization = "Bearer APIKEY"),
-             data = '{"key": "value"}',
-             response = "date")
+res <- ncurl_aio("https://postman-echo.com/post",
+                 method = "POST",
+                 headers = c(`Content-Type` = "application/json", Authorization = "Bearer APIKEY"),
+                 data = '{"key": "value"}',
+                 response = "date")
 res
 
 call_aio(res)$headers

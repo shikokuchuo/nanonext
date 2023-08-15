@@ -21,15 +21,15 @@
 #' nano cURL - a minimalist http(s) client.
 #'
 #' @param url the URL address.
-#' @param async [default FALSE] logical value whether to perform an async request,
-#'     in which case an 'ncurlAio' is returned instead of a list.
+#' @param async [default FALSE] logical value whether to perform an async request.
+#'     This option is deprecated, use \code{\link{ncurl_aio}} instead.
 #' @param convert [default TRUE] logical value whether to attempt conversion of
 #'     the received raw bytes to a character vector. Set to FALSE if downloading
 #'     non-text data. Supplying a non-logical value will error.
 #' @param follow [default FALSE] logical value whether to automatically follow
-#'     redirects (not applicable for async requests). If FALSE (or async), the
-#'     redirect address is returned as response header 'Location'. Supplying
-#'     a non-logical value will error.
+#'     redirects (not applicable for async requests). If FALSE, the redirect
+#'     address is returned as response header 'Location'. Supplying a non-logical
+#'     value will error.
 #' @param method (optional) the HTTP method (defaults to 'GET' if not specified).
 #' @param headers (optional) a named list or character vector specifying the
 #'     HTTP request headers e.g. \code{list(`Content-Type` = "text/plain")} or
@@ -64,7 +64,8 @@
 #'     Or else, if 'async' = TRUE, an 'ncurlAio' (object of class 'ncurlAio'
 #'     and 'recvAio') (invisibly).
 #'
-#' @seealso \code{\link{ncurl_session}} for persistent connections.
+#' @seealso \code{\link{ncurl_aio}} for asynchronous http requests;
+#'     \code{\link{ncurl_session}} for persistent connections.
 #' @examples
 #' ncurl("https://www.r-project.org/",
 #'        convert = FALSE,
@@ -78,7 +79,7 @@
 #' ncurl("https://postman-echo.com/post",
 #'       method = "POST",
 #'       headers = c(`Content-Type` = "application/json"),
-#'       data = '{"k":"v"}',
+#'       data = '{"key":"value"}',
 #'       timeout = 1500L)
 #'
 #' @export
@@ -92,10 +93,57 @@ ncurl <- function(url,
                   data = NULL,
                   response = NULL,
                   timeout = NULL,
-                  tls = NULL)
-  if (async)
-    data <- .Call(rnng_ncurl_aio, url, convert, method, headers, data, timeout, tls, environment()) else
-      .Call(rnng_ncurl, url, convert, follow, method, headers, data, response, timeout, tls)
+                  tls = NULL) {
+
+  async && return(ncurl_aio(url, convert, method, headers, data, response, timeout, tls))
+  .Call(rnng_ncurl, url, convert, follow, method, headers, data, response, timeout, tls)
+
+}
+
+#' ncurl Async
+#'
+#' nano cURL - a minimalist http(s) client - async edition.
+#'
+#' @inheritParams ncurl
+#'
+#' @return An 'ncurlAio' (object of class 'ncurlAio' and 'recvAio') (invisibly).
+#'     The following elements may be accessed:
+#'     \itemize{
+#'     \item{\code{$status}} {- integer HTTP repsonse status code (200 - OK).
+#'     Use \code{\link{status_code}} for a translation of the meaning.}
+#'     \item{\code{$headers}} {- named list of response headers supplied in
+#'     'response', or NULL otherwise. If the status code is within the 300
+#'     range, i.e. a redirect, the response header 'Location' is automatically
+#'     appended to return the redirect address.}
+#'     \item{\code{$raw}} {- if 'convert' = FALSE, the raw vector of the
+#'     received resource, or NULL otherwise (use \code{\link{writeBin}} to save
+#'     to a file).}
+#'     \item{\code{$data}} {- if 'convert' = TRUE, the converted character
+#'     string, or NULL otherwise. This may be further parsed as html, json, xml
+#'     etc. if required.}
+#'     }
+#'
+#' @seealso \code{\link{ncurl_session}} for persistent connections.
+#' @examples
+#' nc <- ncurl_aio("https://www.r-project.org/",
+#'                 response = c("date", "server"),
+#'                 timeout = 3000L)
+#' call_aio(nc)
+#' nc$status
+#' nc$headers
+#' nc$data
+#'
+#' @export
+#'
+ncurl_aio <- function(url,
+                      convert = TRUE,
+                      method = NULL,
+                      headers = NULL,
+                      data = NULL,
+                      response = NULL,
+                      timeout = NULL,
+                      tls = NULL)
+    data <- .Call(rnng_ncurl_aio, url, convert, method, headers, data, timeout, tls, environment())
 
 #' ncurl Session
 #'
@@ -111,6 +159,7 @@ ncurl <- function(url,
 #' @return For \code{ncurl_session}: an 'ncurlSession' object if successful, or
 #'     else an 'errorValue'.
 #'
+#' @seealso \code{\link{ncurl_aio}} for asynchronous http requests.
 #' @examples
 #' s <- ncurl_session("https://www.r-project.org/", response = "date", timeout = 2000L)
 #' s

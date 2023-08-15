@@ -20,17 +20,17 @@ ncurl(
 \arguments{
 \item{url}{the URL address.}
 
-\item{async}{[default FALSE] logical value whether to perform an async request,
-in which case an 'ncurlAio' is returned instead of a list.}
+\item{async}{[default FALSE] logical value whether to perform an async request.
+This option is deprecated, use \code{\link{ncurl_aio}} instead.}
 
 \item{convert}{[default TRUE] logical value whether to attempt conversion of
 the received raw bytes to a character vector. Set to FALSE if downloading
 non-text data. Supplying a non-logical value will error.}
 
 \item{follow}{[default FALSE] logical value whether to automatically follow
-redirects (not applicable for async requests). If FALSE (or async), the
-redirect address is returned as response header 'Location'. Supplying
-a non-logical value will error.}
+redirects (not applicable for async requests). If FALSE, the redirect
+address is returned as response header 'Location'. Supplying a non-logical
+value will error.}
 
 \item{method}{(optional) the HTTP method (defaults to 'GET' if not specified).}
 
@@ -88,10 +88,11 @@ ncurl("https://postman-echo.com/put",
 ncurl("https://postman-echo.com/post",
       method = "POST",
       headers = c(`Content-Type` = "application/json"),
-      data = '{"k":"v"}',
+      data = '{"key":"value"}',
       timeout = 1500L)
 
 }
 \seealso{
-\code{\link{ncurl_session}} for persistent connections.
+\code{\link{ncurl_aio}} for asynchronous http requests;
+    \code{\link{ncurl_session}} for persistent connections.
 }
