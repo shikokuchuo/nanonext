@@ -55,7 +55,7 @@ then
 fi
 echo "#include <mbedtls/version.h>
 int main() {
-#if MBEDTLS_VERSION_MAJOR >= 2
+#if MBEDTLS_VERSION_MAJOR >= 2 && MBEDTLS_VERSION_MINOR >=5 || MBEDTLS_VERSION_MAJOR >= 3
     return 0;
 #else
     void *err;
@@ -70,7 +70,7 @@ fi
 
 if [ $? -ne 0 ]
 then
-  echo "No existing 'libmbedtls' >= 2 found"
+  echo "No existing 'libmbedtls' >= 2.5 found"
   echo "Detecting 'cmake'..."
   which cmake
   if [ $? -ne 0 ]
