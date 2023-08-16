@@ -87,14 +87,14 @@ then
   which xz
   if [ $? -ne 0 ]
   then
-    tar -xf inst/mbedtls-$TLS_VER.tar.xz
+    tar -xf src/mbedtls-$TLS_VER.tar.xz
     if [ $? -ne 0 ]
     then
       echo "No 'xz' command found"
       exit 1
     fi
   else
-    xz -dc inst/mbedtls-$TLS_VER.tar.xz | tar -xf -
+    xz -dc src/mbedtls-$TLS_VER.tar.xz | tar -xf -
   fi
   cd mbedtls-$TLS_VER
   echo "Compiling 'libmbedtls' from source ..."
@@ -160,14 +160,14 @@ then
   which xz
   if [ $? -ne 0 ]
   then
-    tar -xf inst/nng-$LIB_VER.tar.xz
+    tar -xf src/nng-$LIB_VER.tar.xz
     if [ $? -ne 0 ]
     then
       echo "No 'xz' command found"
       exit 1
     fi
   else
-    xz -dc inst/nng-$LIB_VER.tar.xz | tar -xf -
+    xz -dc src/nng-$LIB_VER.tar.xz | tar -xf -
   fi
   cd nng-$LIB_VER
   echo "Compiling 'libnng' from source ..."
