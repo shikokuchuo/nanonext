@@ -1,4 +1,4 @@
-# nanonext 0.9.2.9012 (development)
+# nanonext 0.9.2.9013 (development)
 
 *This version contains breaking changes; please review carefully and only update when ready.*
 
@@ -17,6 +17,7 @@
 * All base64 and SHA hash functions now use big endian format for serialization (where this is performed) to ensure consistency across systems (fixes #14, a regression in nanonext 0.9.2).
 * The unresolved value for an Aio is now the symbol ` unresolvedValue ` rather than a classed logical NA. Continue to use `unresolved()` to check for resolution.
 * Package installation now succeeds in certain environments where 'cmake' failed to make 'libmbedtls' detectable after building (thanks @kendonB #13).
+* Source bundles for 'libmbedtls' and 'libnng' slimmed down for smaller package and installed size.
 * Configures bundled 'libmbedtls' v3.4.0 for higher performance, and slims down source bundle.
 * Supported 'libmbedtls' version increased to >= 2.5.
 
