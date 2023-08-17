@@ -201,12 +201,13 @@ is_nano <- function(x) inherits(x, c("nano", "nanoObject"))
 #'     Is the object a nul byte.
 #'
 #' @examples
-#' is_error_value(1L)
 #' s <- socket()
 #' r <- recv_aio(s, timeout = 10)
 #' call_aio(r)$data
-#' is_error_value(r$data)
 #' close(s)
+#' r$data == 5L
+#' is_error_value(r$data)
+#' is_error_value(5L)
 #'
 #' @export
 #'
