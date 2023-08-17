@@ -179,6 +179,7 @@ extern Rboolean nano_encodes(SEXP);
 extern int nano_matcharg(SEXP);
 extern int nano_matchargs(SEXP);
 extern void nano_serialize(nano_buf *, SEXP);
+extern void nano_serialize_xdr(nano_buf *, SEXP);
 extern SEXP nano_unserialize(unsigned char *, const size_t);
 extern SEXP rawToChar(unsigned char *, const size_t);
 extern void socket_finalizer(SEXP);

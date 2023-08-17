@@ -145,6 +145,26 @@ void nano_serialize(nano_buf *buf, SEXP object) {
 
 }
 
+void nano_serialize_xdr(nano_buf *buf, SEXP object) {
+
+  NANO_ALLOC(buf, NANONEXT_INIT_BUFSIZE);
+  struct R_outpstream_st output_stream;
+
+  R_InitOutPStream(
+    &output_stream,
+    (R_pstream_data_t) buf,
+    R_pstream_xdr_format,
+    NANONEXT_SERIAL_VER,
+    nano_write_char,
+    nano_write_bytes,
+    NULL,
+    R_NilValue
+  );
+
+  R_Serialize(object, &output_stream);
+
+}
+
 SEXP nano_unserialize(unsigned char *buf, const size_t sz) {
 
   nano_buf nbuf;

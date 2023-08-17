@@ -1,4 +1,4 @@
-# nanonext 0.9.2.9011 (development)
+# nanonext 0.9.2.9012 (development)
 
 *This version contains breaking changes; please review carefully and only update when ready.*
 
@@ -10,10 +10,12 @@
 #### Updates
 
 * The argument 'keep.raw' for all receive functions (previously-deprecated) is removed.
+* Improvements to vector send/recv (mode = 'raw'):
+  + Higher performance sending of vector data.
+  + Permits sending of NULL, in which case an empty vector of the corresponding mode is received.
+  + Character vectors containing empty characters in the middle are now received correctly.
+* All base64 and SHA hash functions now use big endian format for serialization (where this is performed) to ensure consistency across systems (fixes #14, a regression in nanonext 0.9.2).
 * The unresolved value for an Aio is now the symbol ` unresolvedValue ` rather than a classed logical NA. Continue to use `unresolved()` to check for resolution.
-* Higher performance sending of vector data using mode = 'raw'.
-* Permits sending of NULL using mode = 'raw', in which case an empty vector will be received.
-* Fixes receiving of character vectors containing empty characters.
 * Package installation now succeeds in certain environments where 'cmake' failed to make 'libmbedtls' detectable after building (thanks @kendonB #13).
 * Configures bundled 'libmbedtls' v3.4.0 for higher performance, and slims down source bundle.
 * Supported 'libmbedtls' version increased to >= 2.5.

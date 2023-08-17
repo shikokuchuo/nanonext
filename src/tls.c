@@ -55,7 +55,7 @@ static nano_buf nano_anytobuf(SEXP x) {
     }
   }
 
-  nano_serialize(&hash, x);
+  nano_serialize_xdr(&hash, x);
 
   return hash;
 
