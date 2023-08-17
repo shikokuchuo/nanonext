@@ -31,7 +31,8 @@ Encodes / decodes a character string or arbitrary R object to base64 encoding.
 }
 \details{
 For encoding: a scalar string or raw vector (with no attributes) is
-    encoded directly, whilst all other objects are first serialised.
+    encoded directly, whilst all other objects are first serialised (using R
+    serialisation version 3, big-endian representation).
 
     For decoding: the value of 'convert' should be set to TRUE, FALSE or NA
     to be the analogue of the above 3 cases in order to return the original

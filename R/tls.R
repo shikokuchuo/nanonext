@@ -91,8 +91,8 @@ tls_config <- function(client = NULL, server = NULL, pass = NULL, auth = is.null
 #'     length 32 for SHA-256, 28 for SHA-224, 48 for SHA-384, and 64 for SHA-512.
 #'
 #' @details For arguments 'x' and 'key', a scalar string or raw vector (with no
-#'     attributes) is hashed directly, whilst all other objects are serialised
-#'     first.
+#'     attributes) is hashed directly, whilst all other objects are first
+#'     serialised (using R serialisation version 3, big-endian representation).
 #'
 #'     The result of hashing is always a raw vector, which is translated to a
 #'     character string if 'convert' is TRUE, or returned directly if 'convert'
@@ -164,8 +164,8 @@ sha512 <- function(x, key = NULL, convert = TRUE) .Call(rnng_sha512, x, key, con
 #'     length 20.
 #'
 #' @details For arguments 'x' and 'key', a scalar string or raw vector (with no
-#'     attributes) is hashed directly, whilst all other objects are serialised
-#'     first.
+#'     attributes) is hashed directly, whilst all other objects are first
+#'     serialised (using R serialisation version 3, big-endian representation).
 #'
 #'     The result of hashing is always a raw vector, which is translated to a
 #'     character string if 'convert' is TRUE, or returned directly if 'convert'
@@ -206,7 +206,8 @@ sha1 <- function(x, key = NULL, convert = TRUE) .Call(rnng_sha1, x, key, convert
 #'     depending on the value of 'convert'.
 #'
 #' @details For encoding: a scalar string or raw vector (with no attributes) is
-#'     encoded directly, whilst all other objects are first serialised.
+#'     encoded directly, whilst all other objects are first serialised (using R
+#'     serialisation version 3, big-endian representation).
 #'
 #'     For decoding: the value of 'convert' should be set to TRUE, FALSE or NA
 #'     to be the analogue of the above 3 cases in order to return the original
