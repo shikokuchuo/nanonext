@@ -1,7 +1,7 @@
 Package: nanonext
 Type: Package
 Title: NNG (Nanomsg Next Gen) Lightweight Messaging Library
-Version: 0.9.2.9014
+Version: 0.9.2.9015
 Description: R binding for NNG (Nanomsg Next Gen), a successor to ZeroMQ. NNG is 
     a socket library providing high-performance scalability protocols, a
     cross-platform standard for messaging and communications. Serves as a

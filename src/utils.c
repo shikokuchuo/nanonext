@@ -173,22 +173,6 @@ SEXP rnng_url_parse(SEXP url) {
 
 }
 
-SEXP rnng_device(SEXP s1, SEXP s2) {
-
-  if (R_ExternalPtrTag(s1) != nano_SocketSymbol)
-    Rf_error("'s1' is not a valid Socket");
-  if (R_ExternalPtrTag(s2) != nano_SocketSymbol)
-    Rf_error("'s2' is not a valid Socket");
-
-  const int xc = nng_device(*(nng_socket *) R_ExternalPtrAddr(s1),
-                            *(nng_socket *) R_ExternalPtrAddr(s2));
-  if (xc)
-    ERROR_OUT(xc);
-
-  return R_NilValue;
-
-}
-
 SEXP rnng_is_nul_byte(SEXP x) {
 
   return Rf_ScalarLogical(TYPEOF(x) == RAWSXP && XLENGTH(x) == 1 && RAW(x)[0] == 0);

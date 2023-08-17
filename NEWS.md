@@ -1,4 +1,4 @@
-# nanonext 0.9.2.9014 (development)
+# nanonext 0.9.2.9015 (development)
 
 *This version contains breaking changes; please review carefully and only update when ready.*
 
@@ -10,6 +10,7 @@
 #### Updates
 
 * The argument 'keep.raw' for all receive functions (previously-deprecated) is removed.
+* Function `device()` is removed as its non-interruptible blocking behaviour is deemed undesirable for practical use.
 * Improvements to vector send/recv (mode = 'raw'):
   + Higher performance sending of vector data.
   + Permits sending of NULL, in which case an empty vector of the corresponding mode is received.
