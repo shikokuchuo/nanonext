@@ -20,7 +20,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.2.9013</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.2.9014</span>
       </span>
     </div>
 
@@ -95,8 +95,8 @@ will error.</p></dd>
     <div id="details">
     <h2>Details</h2>
     <p>For arguments 'x' and 'key', a scalar string or raw vector (with no
-    attributes) is hashed directly, whilst all other objects are serialised
-    first.</p>
+    attributes) is hashed directly, whilst all other objects are first
+    serialised (using R serialisation version 3, big-endian representation).</p>
 <p>The result of hashing is always a raw vector, which is translated to a
     character string if 'convert' is TRUE, or returned directly if 'convert'
     is FALSE.</p>

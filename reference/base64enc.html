@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.2.9013</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.2.9014</span>
       </span>
     </div>
 
@@ -93,7 +93,8 @@ value will error.</p></dd>
     <div id="details">
     <h2>Details</h2>
     <p>For encoding: a scalar string or raw vector (with no attributes) is
-    encoded directly, whilst all other objects are first serialised.</p>
+    encoded directly, whilst all other objects are first serialised (using R
+    serialisation version 3, big-endian representation).</p>
 <p>For decoding: the value of 'convert' should be set to TRUE, FALSE or NA
     to be the analogue of the above 3 cases in order to return the original
     object.</p>

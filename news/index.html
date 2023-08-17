@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.2.9013</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.2.9014</span>
       </span>
     </div>
 
@@ -54,24 +54,24 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.9.2.9013" id="nanonext-0929013-development">nanonext 0.9.2.9013 (development)<a class="anchor" aria-label="anchor" href="#nanonext-0929013-development"></a></h2>
+<h2 class="page-header" data-toc-text="0.9.2.9014" id="nanonext-0929014-development">nanonext 0.9.2.9014 (development)<a class="anchor" aria-label="anchor" href="#nanonext-0929014-development"></a></h2>
 <p><em>This version contains breaking changes; please review carefully and only update when ready.</em></p>
 <div class="section level5">
-<h5 id="new-features-0-9-2-9013">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-9-2-9013"></a></h5>
+<h5 id="new-features-0-9-2-9014">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-9-2-9014"></a></h5>
 <ul><li>
 <code><a href="../reference/ncurl_aio.html">ncurl_aio()</a></code> has been separated into a dedicated function for async http requests. <code><a href="../reference/ncurl.html">ncurl()</a></code> specifying <code>async = TRUE</code> is now deprecated.</li>
 <li>
 <code><a href="../reference/recover_aio.html">recover_aio()</a></code> allows recovery of ‘recvAio’ and ‘ncurlAio’ where unserialization or character conversion fail.</li>
 </ul></div>
 <div class="section level5">
-<h5 id="updates-0-9-2-9013">Updates<a class="anchor" aria-label="anchor" href="#updates-0-9-2-9013"></a></h5>
+<h5 id="updates-0-9-2-9014">Updates<a class="anchor" aria-label="anchor" href="#updates-0-9-2-9014"></a></h5>
 <ul><li>The argument ‘keep.raw’ for all receive functions (previously-deprecated) is removed.</li>
 <li>Improvements to vector send/recv (mode = ‘raw’):
 <ul><li>Higher performance sending of vector data.</li>
 <li>Permits sending of NULL, in which case an empty vector of the corresponding mode is received.</li>
 <li>Character vectors containing empty characters in the middle are now received correctly.</li>
 </ul></li>
-<li>All base64 and SHA hash functions now use big endian format for serialization (where this is performed) to ensure consistency across systems (fixes <a href="https://github.com/shikokuchuo/nanonext/issues/14" class="external-link">#14</a>, a regression in nanonext 0.9.2).</li>
+<li>Base64 and SHA hash functions now use big-endian representation for serialization (where this is performed) to ensure consistency across all systems (fixes <a href="https://github.com/shikokuchuo/nanonext/issues/14" class="external-link">#14</a>, a regression in nanonext 0.9.2).</li>
 <li>The unresolved value for an Aio is now the symbol <code>unresolvedValue</code> rather than a classed logical NA. Continue to use <code><a href="../reference/unresolved.html">unresolved()</a></code> to check for resolution.</li>
 <li>Package installation now succeeds in certain environments where ‘cmake’ failed to make ‘libmbedtls’ detectable after building (thanks <a href="https://github.com/kendonB" class="external-link">@kendonB</a> <a href="https://github.com/shikokuchuo/nanonext/issues/13" class="external-link">#13</a>).</li>
 <li>Source bundles for ‘libmbedtls’ and ‘libnng’ slimmed down for smaller package and installed size.</li>
