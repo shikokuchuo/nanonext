@@ -813,17 +813,22 @@ SEXP rnng_aio_stop(SEXP aio) {
 
 SEXP rnng_unresolved(SEXP x) {
 
+  int xc;
   switch (TYPEOF(x)) {
   case ENVSXP: ;
     SEXP value = Rf_findVarInFrame(x, nano_DataSymbol);
     if (value == R_UnboundValue)
       value = Rf_findVarInFrame(x, nano_ResultSymbol);
-    return OBJECT(value) ? Rf_ScalarLogical(Rf_inherits(value, "unresolvedValue")) : Rf_ScalarLogical(value == nano_unresolved);
+    xc = OBJECT(value) ? Rf_inherits(value, "unresolvedValue") : value == nano_unresolved;
+    break;
   case SYMSXP:
-    return Rf_ScalarLogical(x == nano_unresolved);
+    xc = x == nano_unresolved;
+    break;
+  default:
+    xc = 0;
   }
 
-  return Rf_ScalarLogical(0);
+  return Rf_ScalarLogical(xc);
 
 }
 
