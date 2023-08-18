@@ -157,10 +157,10 @@ static void saio_complete(void *arg) {
 
 #if NNG_MAJOR_VERSION == 1 && NNG_MINOR_VERSION < 6
   nng_mtx_lock(shr_mtx);
-  saio->result = res ? res : -1;
+  saio->result = res - !res;
   nng_mtx_unlock(shr_mtx);
 #else
-  saio->result = res ? res : -1;
+  saio->result = res - !res;
 #endif
 
 }
@@ -174,10 +174,10 @@ static void isaio_complete(void *arg) {
 
 #if NNG_MAJOR_VERSION == 1 && NNG_MINOR_VERSION < 6
   nng_mtx_lock(shr_mtx);
-  iaio->result = res ? res : -1;
+  iaio->result = res - !res;
   nng_mtx_unlock(shr_mtx);
 #else
-  iaio->result = res ? res : -1;
+  iaio->result = res - !res;
 #endif
 
 }
@@ -191,10 +191,10 @@ static void raio_complete(void *arg) {
 
 #if NNG_MAJOR_VERSION == 1 && NNG_MINOR_VERSION < 6
   nng_mtx_lock(shr_mtx);
-  raio->result = res ? res : -1;
+  raio->result = res - !res;
   nng_mtx_unlock(shr_mtx);
 #else
-  raio->result = res ? res : -1;
+  raio->result = res - !res;
 #endif
 
 }
@@ -212,7 +212,7 @@ static void raio_complete_signal(void *arg) {
     aio->data = nng_aio_get_msg(aio->aio);
 
   nng_mtx_lock(mtx);
-  aio->result = res ? res : -1;
+  aio->result = res - !res;
   ncv->condition++;
   nng_cv_wake(cv);
   nng_mtx_unlock(mtx);
@@ -226,10 +226,10 @@ static void iraio_complete(void *arg) {
 
 #if NNG_MAJOR_VERSION == 1 && NNG_MINOR_VERSION < 6
   nng_mtx_lock(shr_mtx);
-  iaio->result = res ? res : -1;
+  iaio->result = res - !res;
   nng_mtx_unlock(shr_mtx);
 #else
-  iaio->result = res ? res : -1;
+  iaio->result = res - !res;
 #endif
 
 }
@@ -245,7 +245,7 @@ static void iraio_complete_signal(void *arg) {
   const int res = nng_aio_result(aio->aio);
 
   nng_mtx_lock(mtx);
-  aio->result = res ? res : -1;
+  aio->result = res - !res;
   ncv->condition++;
   nng_cv_wake(cv);
   nng_mtx_unlock(mtx);
