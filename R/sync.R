@@ -21,14 +21,14 @@
 #' \code{cv} creates a new condition variable (protected by a mutex internal to
 #'     the object).
 #'
-#' @return For \code{cv}: a 'conditionVariable' object.
+#' @return For \strong{cv}: a 'conditionVariable' object.
 #'
-#'     For \code{wait} and \code{until}: logical value TRUE, or else FALSE if a
-#'     flag has been set.
+#'     For \strong{wait} and \strong{until}: (invisibly) logical TRUE, or else
+#'     FALSE if a flag has been set.
 #'
-#'     For \code{cv_value}: integer value of the condition variable.
+#'     For \strong{cv_value}: integer value of the condition variable.
 #'
-#'     For \code{cv_reset} and \code{cv_signal}: invisible NULL.
+#'     For \strong{cv_reset} and \strong{cv_signal}: zero (invisibly).
 #'
 #' @details Pass the 'conditionVariable' to the signalling forms of the
 #'     asynchronous receive functions: \code{\link{recv_aio_signal}} or

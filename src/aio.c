@@ -1673,7 +1673,7 @@ SEXP rnng_cv_wait(SEXP cvar) {
   ncv->condition--;
   nng_mtx_unlock(mtx);
 
-  return ncv->flag ? Rf_ScalarLogical(0) : Rf_ScalarLogical(1);
+  return Rf_ScalarLogical(ncv->flag == 0);
 
 }
 
@@ -1707,7 +1707,7 @@ SEXP rnng_cv_until(SEXP cvar, SEXP msec) {
   if (signalled) ncv->condition--;
   nng_mtx_unlock(mtx);
 
-  return ncv->flag ? Rf_ScalarLogical(0) : Rf_ScalarLogical(1);
+  return Rf_ScalarLogical(ncv->flag == 0);
 
 }
 
@@ -1724,7 +1724,7 @@ SEXP rnng_cv_reset(SEXP cvar) {
   ncv->condition = 0;
   nng_mtx_unlock(mtx);
 
-  return R_NilValue;
+  return nano_success;
 
 }
 
@@ -1757,7 +1757,7 @@ SEXP rnng_cv_signal(SEXP cvar) {
   nng_cv_wake(cv);
   nng_mtx_unlock(mtx);
 
-  return R_NilValue;
+  return nano_success;
 
 }
 
