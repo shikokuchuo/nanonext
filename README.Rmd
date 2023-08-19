@@ -323,7 +323,7 @@ The [`mirai`](https://doi.org/10.5281/zenodo.7912722) package (<https://cran.r-p
 
 ### Synchronisation Primitives
 
-`nanonext` implements synchronisation primitives provided by the NNG library for cross-platform use.
+`nanonext` implements cross-platform synchronisation primitives provided by the NNG library.
 
 As the R interpreter runs on a single thread, synchronisation primitives such as mutexes and condition variables are not natively implemented in the R language. However, as NNG is inherently threaded and messaging can be asynchronous, it is possible to synchronise between NNG events happening independently and the main R execution thread.
 

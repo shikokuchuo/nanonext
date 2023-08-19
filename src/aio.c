@@ -536,7 +536,7 @@ SEXP rnng_dialer_start(SEXP dialer, SEXP async) {
   if (R_ExternalPtrTag(dialer) != nano_DialerSymbol)
     Rf_error("'dialer' is not a valid Dialer");
   nng_dialer *dial = (nng_dialer *) R_ExternalPtrAddr(dialer);
-  const int flags = LOGICAL(async)[0] ? NNG_FLAG_NONBLOCK : 0;
+  const int flags = (LOGICAL(async)[0] == 1) * NNG_FLAG_NONBLOCK;
   const int xc = nng_dialer_start(*dial, flags);
   if (xc)
     ERROR_RET(xc);
@@ -936,7 +936,7 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
     saio->type = IOV_SENDAIO;
     saio->data = R_Calloc(buf.cur, unsigned char);
     memcpy(saio->data, buf.buf, buf.cur);
-    iov.iov_len = frames == 1 ? buf.cur - 1 : buf.cur;
+    iov.iov_len = buf.cur - (frames == 1);
     iov.iov_buf = saio->data;
 
     if ((xc = nng_aio_alloc(&saio->aio, isaio_complete, saio))) {

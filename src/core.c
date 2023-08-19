@@ -519,14 +519,13 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
 
     } else if (TYPEOF(block) == LGLSXP) {
 
-      const int blk = LOGICAL(block)[0];
-      xc = blk ? nng_send(*sock, buf.buf, buf.cur, 0) : nng_send(*sock, buf.buf, buf.cur, NNG_FLAG_NONBLOCK);
+      xc = nng_send(*sock, buf.buf, buf.cur, (LOGICAL(block)[0] == 0) * NNG_FLAG_NONBLOCK);
 
     } else {
 
       nng_msg *msgp;
       nng_aio *aiop;
-      nng_duration dur = (nng_duration) Rf_asInteger(block);
+      const nng_duration dur = (nng_duration) Rf_asInteger(block);
 
       if ((xc = nng_msg_alloc(&msgp, 0))) {
         NANO_FREE(buf);
@@ -557,15 +556,8 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
     nng_ctx *ctxp = (nng_ctx *) R_ExternalPtrAddr(con);
     nng_msg *msgp;
     nng_aio *aiop;
-    nng_duration dur;
-
-    if (block == R_NilValue) {
-      dur = NNG_DURATION_DEFAULT;
-    } else if (TYPEOF(block) == LGLSXP) {
-      dur = LOGICAL(block)[0] ? NNG_DURATION_DEFAULT : 0;
-    } else {
-      dur = (nng_duration) Rf_asInteger(block);
-    }
+    const nng_duration dur = block == R_NilValue ? NNG_DURATION_DEFAULT :
+      TYPEOF(block) == LGLSXP ? (LOGICAL(block)[0] == 1) * NNG_DURATION_DEFAULT : (nng_duration) Rf_asInteger(block);
 
     nano_encodes(mode) ? nano_serialize(&buf, data) : nano_encode(&buf, data);
 
@@ -595,20 +587,13 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
     nng_stream *sp = (nng_stream *) R_ExternalPtrAddr(con);
     nng_aio *aiop;
     nng_iov iov;
-    nng_duration dur;
-
-    if (block == R_NilValue) {
-      dur = NNG_DURATION_DEFAULT;
-    } else if (TYPEOF(block) == LGLSXP) {
-      dur = LOGICAL(block)[0] ? NNG_DURATION_DEFAULT : 0;
-    } else {
-      dur = (nng_duration) Rf_asInteger(block);
-    }
+    const nng_duration dur = block == R_NilValue ? NNG_DURATION_DEFAULT :
+      TYPEOF(block) == LGLSXP ? (LOGICAL(block)[0] == 1) * NNG_DURATION_DEFAULT : (nng_duration) Rf_asInteger(block);
 
     nano_encode(&buf, data);
 
     const int frames = LOGICAL(Rf_getAttrib(con, nano_TextframesSymbol))[0];
-    iov.iov_len = frames == 1 ? buf.cur - 1 : buf.cur;
+    iov.iov_len = buf.cur - (frames == 1);
     iov.iov_buf = buf.buf;
 
     if ((xc = nng_aio_alloc(&aiop, NULL, NULL)))
@@ -660,8 +645,7 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP bytes) {
 
     } else if (TYPEOF(block) == LGLSXP) {
 
-      const int blk = LOGICAL(block)[0];
-      xc = blk ? nng_recv(*sock, &buf, &sz, NNG_FLAG_ALLOC): nng_recv(*sock, &buf, &sz, NNG_FLAG_ALLOC + NNG_FLAG_NONBLOCK);
+      xc = nng_recv(*sock, &buf, &sz, NNG_FLAG_ALLOC + (LOGICAL(block)[0] == 0) * NNG_FLAG_NONBLOCK);
       if (xc)
         return mk_error(xc);
 
@@ -693,16 +677,9 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP bytes) {
 
     nng_ctx *ctxp = (nng_ctx *) R_ExternalPtrAddr(con);
     const int mod = nano_matcharg(mode);
+    const nng_duration dur = block == R_NilValue ? NNG_DURATION_DEFAULT :
+      TYPEOF(block) == LGLSXP ? (LOGICAL(block)[0] == 1) * NNG_DURATION_DEFAULT : (nng_duration) Rf_asInteger(block);
     nng_aio *aiop;
-    nng_duration dur;
-
-    if (block == R_NilValue) {
-      dur = NNG_DURATION_DEFAULT;
-    } else if (TYPEOF(block) == LGLSXP) {
-      dur = LOGICAL(block)[0] ? NNG_DURATION_DEFAULT : 0;
-    } else {
-      dur = (nng_duration) Rf_asInteger(block);
-    }
 
     if ((xc = nng_aio_alloc(&aiop, NULL, NULL)))
       return mk_error(xc);
@@ -727,17 +704,10 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP bytes) {
     nng_stream *sp = (nng_stream *) R_ExternalPtrAddr(con);
     const int mod = nano_matchargs(mode);
     const size_t xlen = (size_t) Rf_asInteger(bytes);
-    nng_duration dur;
+    const nng_duration dur = block == R_NilValue ? NNG_DURATION_DEFAULT :
+      TYPEOF(block) == LGLSXP ? (LOGICAL(block)[0] == 1) * NNG_DURATION_DEFAULT : (nng_duration) Rf_asInteger(block);
     nng_iov iov;
     nng_aio *aiop;
-
-    if (block == R_NilValue) {
-      dur = NNG_DURATION_DEFAULT;
-    } else if (TYPEOF(block) == LGLSXP) {
-      dur = LOGICAL(block)[0] ? NNG_DURATION_DEFAULT : 0;
-    } else {
-      dur = (nng_duration) Rf_asInteger(block);
-    }
 
     buf = R_Calloc(xlen, unsigned char);
     iov.iov_len = xlen;
@@ -954,13 +924,13 @@ SEXP rnng_subscribe(SEXP object, SEXP value, SEXP sub) {
 
     nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(object);
     nano_encode(&buf, value);
-    xc = nng_socket_set(*sock, op, buf.buf, TYPEOF(value) == STRSXP ? buf.cur - 1 : buf.cur);
+    xc = nng_socket_set(*sock, op, buf.buf, buf.cur - (TYPEOF(value) == STRSXP));
 
   } else if (ptrtag == nano_ContextSymbol) {
 
     nng_ctx *ctx = (nng_ctx *) R_ExternalPtrAddr(object);
     nano_encode(&buf, value);
-    xc = nng_ctx_set(*ctx, op, buf.buf, TYPEOF(value) == STRSXP ? buf.cur - 1 : buf.cur);
+    xc = nng_ctx_set(*ctx, op, buf.buf, buf.cur - (TYPEOF(value) == STRSXP));
 
   } else {
     Rf_error("'object' is not a valid Socket or Context");
@@ -1151,11 +1121,7 @@ SEXP rnng_stats_get(SEXP object, SEXP stat) {
   }
 
   typ = nng_stat_type(sst);
-  if (typ == NNG_STAT_STRING) {
-    out = Rf_mkString(nng_stat_string(sst));
-  } else {
-    out = Rf_ScalarReal((double) nng_stat_value(sst));
-  }
+  out = typ == NNG_STAT_STRING ? Rf_mkString(nng_stat_string(sst)) : Rf_ScalarReal((double) nng_stat_value(sst));
 
   nng_stats_free(nst);
   return out;

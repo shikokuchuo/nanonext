@@ -364,7 +364,7 @@ aio
 #> < recvAio >
 #>  - $data for message data
 aio$data |> str()
-#>  num [1:100000000] -0.9091 0.5369 0.0294 0.957 1.0925 ...
+#>  num [1:100000000] 1.7077 -0.0516 1.1636 1.1329 -1.0902 ...
 ```
 
 As `call_aio()` is blocking and will wait for completion, an alternative
@@ -387,8 +387,8 @@ RPC model.
 
 ### Synchronisation Primitives
 
-`nanonext` implements synchronisation primitives provided by the NNG
-library for cross-platform use.
+`nanonext` implements cross-platform synchronisation primitives provided
+by the NNG library.
 
 As the R interpreter runs on a single thread, synchronisation primitives
 such as mutexes and condition variables are not natively implemented in
@@ -531,7 +531,7 @@ throughout, or alternatively ‘localhost’, but not a mixture of the two.
 cert <- write_cert(cn = "127.0.0.1")
 str(cert)
 #> List of 2
-#>  $ server: chr [1:2] "-----BEGIN CERTIFICATE-----\nMIIFFTCCAv2gAwIBAgIBATANBgkqhkiG9w0BAQsFADAiMRIwEAYDVQQDDAkxMjcu\nMC4wLjExDDAKBgNV"| __truncated__ "-----BEGIN RSA PRIVATE KEY-----\nMIIJKQIBAAKCAgEAryJ0FW/9nRHPg3BbmSPJQxulTMJqmxbqm9dYG8CFDSrIg11+\nNPg3puzhum5S"| __truncated__
+#>  $ server: chr [1:2] "-----BEGIN CERTIFICATE-----\nMIIFFTCCAv2gAwIBAgIBATANBgkqhkiG9w0BAQsFADAiMRIwEAYDVQQDDAkxMjcu\nMC4wLjExDDAKBgNV"| __truncated__ "-----BEGIN RSA PRIVATE KEY-----\nMIIJKAIBAAKCAgEAl2eTZxKjiV4VTDtzlFAkMEHCrJF8M/nZd3bNXd8Tesqcu3R3\n58XOjkoqrRRk"| __truncated__
 #>  $ client: chr [1:2] "-----BEGIN CERTIFICATE-----\nMIIFFTCCAv2gAwIBAgIBATANBgkqhkiG9w0BAQsFADAiMRIwEAYDVQQDDAkxMjcu\nMC4wLjExDDAKBgNV"| __truncated__ ""
 
 ser <- tls_config(server = cert$server)
@@ -703,7 +703,7 @@ ncurl("https://postman-echo.com/get")
 #> NULL
 #> 
 #> $data
-#> [1] "{\n  \"args\": {},\n  \"headers\": {\n    \"x-forwarded-proto\": \"https\",\n    \"x-forwarded-port\": \"443\",\n    \"host\": \"postman-echo.com\",\n    \"x-amzn-trace-id\": \"Root=1-64dbd71d-79a0cfe467363b96093157ee\"\n  },\n  \"url\": \"https://postman-echo.com/get\"\n}"
+#> [1] "{\n  \"args\": {},\n  \"headers\": {\n    \"x-forwarded-proto\": \"https\",\n    \"x-forwarded-port\": \"443\",\n    \"host\": \"postman-echo.com\",\n    \"x-amzn-trace-id\": \"Root=1-64e0f3d2-77e9939b674741a011d107db\"\n  },\n  \"url\": \"https://postman-echo.com/get\"\n}"
 ```
 
 For advanced use, supports additional HTTP methods such as POST or PUT.
@@ -723,10 +723,10 @@ res
 
 call_aio(res)$headers
 #> $date
-#> [1] "Tue, 15 Aug 2023 19:50:54 GMT"
+#> [1] "Sat, 19 Aug 2023 16:54:42 GMT"
 
 res$data
-#> [1] "{\n  \"args\": {},\n  \"data\": {\n    \"key\": \"value\"\n  },\n  \"files\": {},\n  \"form\": {},\n  \"headers\": {\n    \"x-forwarded-proto\": \"https\",\n    \"x-forwarded-port\": \"443\",\n    \"host\": \"postman-echo.com\",\n    \"x-amzn-trace-id\": \"Root=1-64dbd71e-27b6937365edd3ed23470f78\",\n    \"content-length\": \"16\",\n    \"content-type\": \"application/json\",\n    \"authorization\": \"Bearer APIKEY\"\n  },\n  \"json\": {\n    \"key\": \"value\"\n  },\n  \"url\": \"https://postman-echo.com/post\"\n}"
+#> [1] "{\n  \"args\": {},\n  \"data\": {\n    \"key\": \"value\"\n  },\n  \"files\": {},\n  \"form\": {},\n  \"headers\": {\n    \"x-forwarded-proto\": \"https\",\n    \"x-forwarded-port\": \"443\",\n    \"host\": \"postman-echo.com\",\n    \"x-amzn-trace-id\": \"Root=1-64e0f3d2-26d6e42376da10d5214b5abd\",\n    \"content-length\": \"16\",\n    \"content-type\": \"application/json\",\n    \"authorization\": \"Bearer APIKEY\"\n  },\n  \"json\": {\n    \"key\": \"value\"\n  },\n  \"url\": \"https://postman-echo.com/post\"\n}"
 ```
 
 In this respect, it may be used as a performant and lightweight method
@@ -757,7 +757,7 @@ transact(sess)
 #> 
 #> $headers
 #> $headers$Date
-#> [1] "Tue, 15 Aug 2023 19:50:54 GMT"
+#> [1] "Sat, 19 Aug 2023 16:54:43 GMT"
 #> 
 #> $headers$`Content-Type`
 #> [1] "application/json; charset=utf-8"
@@ -770,8 +770,8 @@ transact(sess)
 #>  [76] 77 61 72 64 65 64 2d 70 6f 72 74 22 3a 20 22 34 34 33 22 2c 0a 20 20 20 20
 #> [101] 22 68 6f 73 74 22 3a 20 22 70 6f 73 74 6d 61 6e 2d 65 63 68 6f 2e 63 6f 6d
 #> [126] 22 2c 0a 20 20 20 20 22 78 2d 61 6d 7a 6e 2d 74 72 61 63 65 2d 69 64 22 3a
-#> [151] 20 22 52 6f 6f 74 3d 31 2d 36 34 64 62 64 37 31 65 2d 31 61 66 31 61 65 36
-#> [176] 64 31 62 32 30 38 35 62 31 31 30 31 33 31 63 34 31 22 2c 0a 20 20 20 20 22
+#> [151] 20 22 52 6f 6f 74 3d 31 2d 36 34 65 30 66 33 64 33 2d 32 39 32 63 35 63 38
+#> [176] 31 37 30 38 36 38 66 66 32 33 37 37 64 38 37 38 63 22 2c 0a 20 20 20 20 22
 #> [201] 63 6f 6e 74 65 6e 74 2d 74 79 70 65 22 3a 20 22 61 70 70 6c 69 63 61 74 69
 #> [226] 6f 6e 2f 6a 73 6f 6e 22 2c 0a 20 20 20 20 22 61 75 74 68 6f 72 69 7a 61 74
 #> [251] 69 6f 6e 22 3a 20 22 42 65 61 72 65 72 20 41 50 49 4b 45 59 22 0a 20 20 7d
