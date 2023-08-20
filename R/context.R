@@ -41,6 +41,7 @@
 #'     For nano objects, use the \code{$context_open()} method, which will
 #'     attach a new context at \code{$context}. See \code{\link{nano}}.
 #'
+#' @seealso \code{\link{request}} and \code{\link{reply}} for use with contexts.
 #' @examples
 #' s <- socket("req", listen = "inproc://nanonext")
 #' ctx <- context(s)
@@ -100,13 +101,12 @@ close.nanoContext <- function(con, ...) invisible(.Call(rnng_ctx_close, con))
 #' @param execute a function which takes the received (converted) data as its
 #'     first argument. Can be an anonymous function of the form \code{function(x) do(x)}.
 #'     Additional arguments can also be passed in through '...'.
-#' @param send_mode [default 'serial'] whether data will be sent serialized or
-#'     as a raw vector. Use 'serial' for sending and receiving within R to ensure
-#'     perfect reproducibility. Use 'raw' for sending vectors of any type
-#'     (converted to a raw byte vector for sending) - essential when interfacing
-#'     with external applications. Alternatively, for performance, specify an
-#'     integer position in the vector of choices i.e. 1L for 'serial' or 2L for
-#'     'raw'.
+#' @param send_mode [default 'serial'] to send serialised R objects, or 'raw' to
+#'     send atomic vectors of any type as a raw byte vector. Use 'serial' to
+#'     ensure perfect reproducibility within R, although 'raw' must be used when
+#'     interfacing with external applications which do not understand R
+#'     serialisation. Alternatively, for performance, specify an integer position
+#'     in the vector of choices i.e. 1L for 'serial' or 2L for 'raw'.
 #' @param recv_mode [default 'serial'] mode of vector to be received - one of
 #'     'serial', 'character', 'complex', 'double', 'integer', 'logical',
 #'     'numeric', or 'raw'. The default 'serial' means a serialised R object,

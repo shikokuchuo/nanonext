@@ -29,13 +29,12 @@ respective mode. Alternatively, for performance, specify an integer
 position in the vector of choices e.g. 1L for 'serial', 2L for 'character'
 etc.}
 
-\item{send_mode}{[default 'serial'] whether data will be sent serialized or
-as a raw vector. Use 'serial' for sending and receiving within R to ensure
-perfect reproducibility. Use 'raw' for sending vectors of any type
-(converted to a raw byte vector for sending) - essential when interfacing
-with external applications. Alternatively, for performance, specify an
-integer position in the vector of choices i.e. 1L for 'serial' or 2L for
-'raw'.}
+\item{send_mode}{[default 'serial'] to send serialised R objects, or 'raw' to
+send atomic vectors of any type as a raw byte vector. Use 'serial' to
+ensure perfect reproducibility within R, although 'raw' must be used when
+interfacing with external applications which do not understand R
+serialisation. Alternatively, for performance, specify an integer position
+in the vector of choices i.e. 1L for 'serial' or 2L for 'raw'.}
 
 \item{timeout}{[default NULL] integer value in milliseconds or NULL, which
 applies a socket-specific default, usually the same as no timeout. Note

@@ -99,5 +99,5 @@ close(rep)
 
 }
 \seealso{
-\code{\link{recv_aio}} for asynchronous receives.
+\code{\link{recv_aio}} for asynchronous receive.
 }

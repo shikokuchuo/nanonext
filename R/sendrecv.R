@@ -22,13 +22,13 @@
 #'
 #' @param con a Socket, Context or Stream.
 #' @param data an object (a vector, if mode = 'raw').
-#' @param mode [default 'serial'] for sending serialised R objects, or 'raw' for
-#'     sending vectors of any type (converted to a raw byte vector for sending).
-#'     For Streams, 'raw' is the only option and this argument is ignored. Use
-#'     'serial' to ensure perfect reproducibility within R, although 'raw' must
-#'     be used when interfacing with external applications that do not understand
-#'     R serialisation. Alternatively, for performance, specify an integer
-#'     position in the vector of choices i.e. 1L for 'serial' or 2L for 'raw'.
+#' @param mode [default 'serial'] to send serialised R objects, or 'raw' to send
+#'     atomic vectors of any type as a raw byte vector. For Streams, 'raw' is
+#'     the only option and this argument is ignored. Use 'serial' to ensure
+#'     perfect reproducibility within R, although 'raw' must be used when
+#'     interfacing with external applications which do not understand R
+#'     serialisation. Alternatively, for performance, specify an integer position
+#'     in the vector of choices i.e. 1L for 'serial' or 2L for 'raw'.
 #' @param block [default NULL] which applies the connection default (see section
 #'     'Blocking' below). Specify logical TRUE to block until successful or FALSE
 #'     to return immediately even if unsuccessful (e.g. if no connection is
@@ -51,7 +51,7 @@
 #'     it is recommended to set a positive integer value for \code{block} rather
 #'     than FALSE.
 #'
-#' @seealso \code{\link{send_aio}} for asynchronous sends.
+#' @seealso \code{\link{send_aio}} for asynchronous send.
 #' @examples
 #' pub <- socket("pub", dial = "inproc://nanonext")
 #'
@@ -118,7 +118,7 @@ send <- function(con, data, mode = c("serial", "raw"), block = NULL)
 #'     implementation uses an asynchronous send with a wait, it is recommended
 #'     to set a positive integer value for \code{block} rather than FALSE.
 #'
-#' @seealso \code{\link{recv_aio}} for asynchronous receives.
+#' @seealso \code{\link{recv_aio}} for asynchronous receive.
 #' @examples
 #' s1 <- socket("pair", listen = "inproc://nanonext")
 #' s2 <- socket("pair", dial = "inproc://nanonext")

@@ -49,3 +49,6 @@ n$context_close()
 n$close()
 
 }
+\seealso{
+\code{\link{request}} and \code{\link{reply}} for use with contexts.
+}

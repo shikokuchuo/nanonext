@@ -156,12 +156,12 @@ typedef struct nano_cv_duo_s {
 #define NANO_ALLOC(x, sz)                                      \
   (x)->buf = R_Calloc(sz, unsigned char);                      \
   (x)->len = (R_xlen_t) sz;                                    \
-  (x)->cur = 0;
+  (x)->cur = 0
 #define NANO_INIT(x, ptr, sz)                                  \
   (x)->buf = ptr;                                              \
   (x)->len = 0;                                                \
-  (x)->cur = (R_xlen_t) sz;
-#define NANO_FREE(x) if (x.len) R_Free(x.buf);
+  (x)->cur = (R_xlen_t) sz
+#define NANO_FREE(x) if (x.len) R_Free(x.buf)
 
 typedef struct nano_buf_s {
   unsigned char *buf;
