@@ -21,7 +21,7 @@ A signalling version of the function takes a 'conditionVariable' as an
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.2.9020</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.2.9021</span>
       </span>
     </div>
 
@@ -109,11 +109,12 @@ in the vector of choices i.e. 1L for 'serial' or 2L for 'raw'.</p></dd>
 <dt>recv_mode</dt>
 <dd><p>[default 'serial'] mode of vector to be received - one of
 'serial', 'character', 'complex', 'double', 'integer', 'logical',
-'numeric', or 'raw'. The default 'serial' means a serialised R object,
-for the other modes, the raw vector received will be converted into the
-respective mode. Alternatively, for performance, specify an integer
-position in the vector of choices e.g. 1L for 'serial', 2L for 'character'
-etc.</p></dd>
+'numeric', 'raw', or 'string'. The default 'serial' means a serialised R
+object, for the other modes, the raw vector received will be converted
+into the respective mode. Note that 'string' is defined here as a character
+scalar and is a faster alternative to 'character' for receiving a single
+string. Alternatively, for performance, specify an integer position in
+the vector of choices e.g. 1L for 'serial', 2L for 'character' etc.</p></dd>
 
 
 <dt>timeout</dt>
