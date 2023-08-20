@@ -23,11 +23,12 @@ Additional arguments can also be passed in through '...'.}
 
 \item{recv_mode}{[default 'serial'] mode of vector to be received - one of
 'serial', 'character', 'complex', 'double', 'integer', 'logical',
-'numeric', or 'raw'. The default 'serial' means a serialised R object,
-for the other modes, the raw vector received will be converted into the
-respective mode. Alternatively, for performance, specify an integer
-position in the vector of choices e.g. 1L for 'serial', 2L for 'character'
-etc.}
+'numeric', 'raw', or 'string'. The default 'serial' means a serialised R
+object, for the other modes, the raw vector received will be converted
+into the respective mode. Note that 'string' is defined here as a character
+scalar and is a faster alternative to 'character' for receiving a single
+string. Alternatively, for performance, specify an integer position in
+the vector of choices e.g. 1L for 'serial', 2L for 'character' etc.}
 
 \item{send_mode}{[default 'serial'] to send serialised R objects, or 'raw' to
 send atomic vectors of any type as a raw byte vector. Use 'serial' to

@@ -7,7 +7,7 @@
 recv(
   con,
   mode = c("serial", "character", "complex", "double", "integer", "logical", "numeric",
-    "raw"),
+    "raw", "string"),
   block = NULL,
   n = 65536L
 )
@@ -16,10 +16,12 @@ recv(
 \item{con}{a Socket, Context or Stream.}
 
 \item{mode}{[default 'serial'] mode of vector to be received - one of 'serial',
-'character', 'complex', 'double', 'integer', 'logical', 'numeric', or 'raw'.
-The default 'serial' means a serialised R object, for the other modes,
-the raw vector received will be converted into the respective mode.
-For Streams, 'serial' is not an option and the default is 'character'.
+'character', 'complex', 'double', 'integer', 'logical', 'numeric', 'raw',
+or 'string'. The default 'serial' means a serialised R object, for the
+other modes, the raw vector received will be converted into the respective
+mode. Note that 'string' is defined here as a character scalar and is a
+faster alternative to 'character' for receiving a single string. For
+Streams, 'serial' is not an option and the default is 'character'.
 Alternatively, for performance, specify an integer position in the vector
 of choices e.g. 1L for 'serial', 2L for 'character' etc.}
 

@@ -116,7 +116,7 @@ send_aio <- function(con, data, mode = c("serial", "raw"), timeout = NULL)
 #'
 recv_aio <- function(con,
                      mode = c("serial", "character", "complex", "double",
-                              "integer", "logical", "numeric", "raw"),
+                              "integer", "logical", "numeric", "raw", "string"),
                      timeout = NULL,
                      n = 65536L)
   data <- .Call(rnng_recv_aio, con, mode, timeout, n, environment())
@@ -154,7 +154,7 @@ recv_aio <- function(con,
 #'
 recv_aio_signal <- function(con,
                             mode = c("serial", "character", "complex", "double",
-                                     "integer", "logical", "numeric", "raw"),
+                                     "integer", "logical", "numeric", "raw", "string"),
                             timeout = NULL,
                             n = 65536L,
                             cv)

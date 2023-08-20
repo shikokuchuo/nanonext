@@ -270,8 +270,8 @@ int nano_matcharg(SEXP mode) {
     size_t slen = strlen(mod);
     switch (slen) {
     case 1:
-      if (!strncmp(mod, "c", slen))
-        Rf_error("'mode' should be one of serial, character, complex, double, integer, logical, numeric, raw");
+      if (!strncmp(mod, "c", slen) || !strncmp(mod, "s", slen))
+        Rf_error("'mode' should be one of serial, character, complex, double, integer, logical, numeric, raw, string");
     case 2:
     case 3:
       if (!strncmp(mod, "raw", slen)) return 8;
@@ -280,6 +280,7 @@ int nano_matcharg(SEXP mode) {
     case 6:
       if (!strncmp(mod, "double", slen)) return 4;
       if (!strncmp(mod, "serial", slen)) return 1;
+      if (!strncmp(mod, "string", slen)) return 9;
     case 7:
       if (!strncmp(mod, "integer", slen)) return 5;
       if (!strncmp(mod, "numeric", slen)) return 7;
@@ -289,7 +290,7 @@ int nano_matcharg(SEXP mode) {
     case 9:
       if (!strncmp(mod, "character", slen)) return 2;
     default:
-      Rf_error("'mode' should be one of serial, character, complex, double, integer, logical, numeric, raw");
+      Rf_error("'mode' should be one of serial, character, complex, double, integer, logical, numeric, raw, string");
     }
   }
 
@@ -300,10 +301,12 @@ int nano_matcharg(SEXP mode) {
 int nano_matchargs(SEXP mode) {
 
   if (TYPEOF(mode) != INTSXP) {
-    const char *mod = Rf_xlength(mode) == 8 ? CHAR(STRING_ELT(mode, 1)) : CHAR(STRING_ELT(mode, 0));
+    const char *mod = XLENGTH(mode) == 9 ? CHAR(STRING_ELT(mode, 1)) : CHAR(STRING_ELT(mode, 0));
     size_t slen = strlen(mod);
     switch (slen) {
     case 1:
+      if (!strncmp(mod, "c", slen))
+        Rf_error("'mode' should be one of serial, character, complex, double, integer, logical, numeric, raw, string");
     case 2:
     case 3:
       if (!strncmp(mod, "raw", slen)) return 8;
@@ -311,18 +314,17 @@ int nano_matchargs(SEXP mode) {
     case 5:
     case 6:
       if (!strncmp(mod, "double", slen)) return 4;
+      if (!strncmp(mod, "string", slen)) return 9;
     case 7:
       if (!strncmp(mod, "integer", slen)) return 5;
       if (!strncmp(mod, "numeric", slen)) return 7;
       if (!strncmp(mod, "logical", slen)) return 6;
-      if (slen == 1)
-        Rf_error("'mode' should be one of character, complex, double, integer, logical, numeric, raw");
       if (!strncmp(mod, "complex", slen)) return 3;
     case 8:
     case 9:
       if (!strncmp(mod, "character", slen)) return 2;
     default:
-      Rf_error("'mode' should be one of character, complex, double, integer, logical, numeric, raw");
+      Rf_error("'mode' should be one of character, complex, double, integer, logical, numeric, raw, string");
     }
   }
 
@@ -345,7 +347,7 @@ SEXP nano_decode(unsigned char *buf, size_t sz, const int mod) {
       SET_STRING_ELT(data, i, onechar);
       if (XLENGTH(onechar) > 0) m = i;
     }
-    data = Rf_xlengthgets(data, m + 1);
+    SETLENGTH(data, m + 1);
     UNPROTECT(1);
     break;
   case 3:
@@ -406,6 +408,11 @@ SEXP nano_decode(unsigned char *buf, size_t sz, const int mod) {
   case 8:
     data = Rf_allocVector(RAWSXP, sz);
     memcpy(RAW(data), buf, sz);
+    break;
+  case 9:
+    PROTECT(data = Rf_allocVector(STRSXP, 1));
+    SET_STRING_ELT(data, 0, Rf_mkChar((char *) buf));
+    UNPROTECT(1);
     break;
   default:
     data = nano_unserialize(buf, sz);

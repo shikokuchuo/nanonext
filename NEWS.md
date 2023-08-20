@@ -1,4 +1,4 @@
-# nanonext 0.9.2.9020 (development)
+# nanonext 0.9.2.9021 (development)
 
 *This version contains breaking changes; please review carefully and only update when ready.*
 
@@ -6,6 +6,7 @@
 
 * `ncurl_aio()` has been separated into a dedicated function for async http requests. `ncurl()` specifying `async = TRUE` is now deprecated.
 * `recover_aio()` allows recovery of 'recvAio' and 'ncurlAio' where unserialization or character conversion fail.
+* Receive functions add `mode = 'string'` as a faster alternative to specifying 'character' when receiving a scalar value.
 
 #### Updates
 
