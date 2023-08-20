@@ -69,16 +69,16 @@
 <li>Function <code>device()</code> is removed as its non-interruptible blocking behaviour is deemed unsuitable for practical use.</li>
 <li>
 <code><a href="../reference/cv.html">cv_reset()</a></code> and <code><a href="../reference/cv.html">cv_signal()</a></code> now both return invisible zero rather than NULL.</li>
+<li>The unresolved value for an Aio is now the symbol <code>unresolvedValue</code> rather than a classed logical NA. Continue to use <code><a href="../reference/unresolved.html">unresolved()</a></code> to check for resolution.</li>
 <li>Improvements to vector send/recv (mode = ‘raw’):
 <ul><li>Higher performance sending of vector data.</li>
 <li>Permits sending of NULL, in which case an empty vector of the corresponding mode is received.</li>
 <li>Character vectors containing empty characters in the middle are now received correctly.</li>
 </ul></li>
 <li>Base64 and SHA hash functions now use big-endian representation for serialization (where this is performed) to ensure consistency across all systems (fixes <a href="https://github.com/shikokuchuo/nanonext/issues/14" class="external-link">#14</a>, a regression in nanonext 0.9.2).</li>
-<li>The unresolved value for an Aio is now the symbol <code>unresolvedValue</code> rather than a classed logical NA. Continue to use <code><a href="../reference/unresolved.html">unresolved()</a></code> to check for resolution.</li>
 <li>Package installation now succeeds in certain environments where ‘cmake’ failed to make ‘libmbedtls’ detectable after building (thanks <a href="https://github.com/kendonB" class="external-link">@kendonB</a> <a href="https://github.com/shikokuchuo/nanonext/issues/13" class="external-link">#13</a>).</li>
-<li>Source bundles for ‘libmbedtls’ and ‘libnng’ slimmed down for smaller package and installed size.</li>
-<li>Configures bundled ‘libmbedtls’ v3.4.0 for higher performance, and slims down source bundle.</li>
+<li>Source bundles for ‘libmbedtls’ and ‘libnng’ slimmed down for smaller package and installed sizes.</li>
+<li>Configures bundled ‘libmbedtls’ v3.4.0 for higher performance.</li>
 <li>Supported ‘libmbedtls’ version increased to &gt;= 2.5.</li>
 </ul></div>
 </div>
