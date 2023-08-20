@@ -42,8 +42,8 @@ applies a socket-specific default, usually the same as no timeout.}
 bytes to receive. Can be an over-estimate, but note that a buffer of this
 size is reserved.}
 
-\item{cv}{\strong{For the signalling version}: a 'conditionVariable' that
-should be signalled when the async receive is complete.}
+\item{cv}{\strong{For the signalling version}: a 'conditionVariable' to
+signal when the async receive is complete.}
 }
 \value{
 A 'recvAio' (object of class 'recvAio') (invisibly).

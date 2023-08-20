@@ -126,8 +126,8 @@ recv_aio <- function(con,
 #' A signalling version of the function takes a 'conditionVariable' as an
 #'     additional argument and signals it when the async receive is complete.
 #'
-#' @param cv \strong{For the signalling version}: a 'conditionVariable' that
-#'     should be signalled when the async receive is complete.
+#' @param cv \strong{For the signalling version}: a 'conditionVariable' to
+#'     signal when the async receive is complete.
 #'
 #' @details \strong{For the signalling version}: when the receive is complete,
 #'     the supplied 'conditionVariable' is signalled by incrementing its value

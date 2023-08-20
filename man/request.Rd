@@ -10,7 +10,7 @@ request(
   data,
   send_mode = c("serial", "raw"),
   recv_mode = c("serial", "character", "complex", "double", "integer", "logical",
-    "numeric", "raw"),
+    "numeric", "raw", "string"),
   timeout = NULL
 )
 
@@ -19,7 +19,7 @@ request_signal(
   data,
   send_mode = c("serial", "raw"),
   recv_mode = c("serial", "character", "complex", "double", "integer", "logical",
-    "numeric", "raw"),
+    "numeric", "raw", "string"),
   timeout = NULL,
   cv
 )
@@ -48,8 +48,8 @@ the vector of choices e.g. 1L for 'serial', 2L for 'character' etc.}
 \item{timeout}{[default NULL] integer value in milliseconds or NULL, which
 applies a socket-specific default, usually the same as no timeout.}
 
-\item{cv}{\strong{For the signalling version}: a 'conditionVariable' that
-should be signalled when the async receive is complete.}
+\item{cv}{\strong{For the signalling version}: a 'conditionVariable' to
+signal when the async receive is complete.}
 }
 \value{
 A 'recvAio' (object of class 'recvAio') (invisibly).

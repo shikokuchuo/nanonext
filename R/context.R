@@ -223,7 +223,7 @@ request <- function(context,
                     data,
                     send_mode = c("serial", "raw"),
                     recv_mode = c("serial", "character", "complex", "double",
-                                  "integer", "logical", "numeric", "raw"),
+                                  "integer", "logical", "numeric", "raw", "string"),
                     timeout = NULL)
   data <- .Call(rnng_request, context, data, send_mode, recv_mode, timeout,
                 environment())
@@ -263,8 +263,8 @@ request_signal <- function(context,
                            data,
                            send_mode = c("serial", "raw"),
                            recv_mode = c("serial", "character", "complex", "double",
-                                         "integer", "logical", "numeric", "raw"),
+                                         "integer", "logical", "numeric", "raw", "string"),
                            timeout = NULL,
                            cv)
-  data <- .Call(rnng_cv_request, context, data, send_mode, recv_mode, timeout,
-                cv, environment())
+  data <- .Call(rnng_cv_request, context, data, send_mode, recv_mode, timeout, cv,
+                environment())
