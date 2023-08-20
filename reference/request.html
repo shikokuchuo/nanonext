@@ -21,7 +21,7 @@ A signalling version of the function takes a 'conditionVariable' as an
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.2.9021</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.2.9022</span>
       </span>
     </div>
 
@@ -72,7 +72,7 @@ A signalling version of the function takes a 'conditionVariable' as an
 <span>  <span class="va">data</span>,</span>
 <span>  send_mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"serial"</span>, <span class="st">"raw"</span><span class="op">)</span>,</span>
 <span>  recv_mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"serial"</span>, <span class="st">"character"</span>, <span class="st">"complex"</span>, <span class="st">"double"</span>, <span class="st">"integer"</span>, <span class="st">"logical"</span>,</span>
-<span>    <span class="st">"numeric"</span>, <span class="st">"raw"</span><span class="op">)</span>,</span>
+<span>    <span class="st">"numeric"</span>, <span class="st">"raw"</span>, <span class="st">"string"</span><span class="op">)</span>,</span>
 <span>  timeout <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -81,7 +81,7 @@ A signalling version of the function takes a 'conditionVariable' as an
 <span>  <span class="va">data</span>,</span>
 <span>  send_mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"serial"</span>, <span class="st">"raw"</span><span class="op">)</span>,</span>
 <span>  recv_mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"serial"</span>, <span class="st">"character"</span>, <span class="st">"complex"</span>, <span class="st">"double"</span>, <span class="st">"integer"</span>, <span class="st">"logical"</span>,</span>
-<span>    <span class="st">"numeric"</span>, <span class="st">"raw"</span><span class="op">)</span>,</span>
+<span>    <span class="st">"numeric"</span>, <span class="st">"raw"</span>, <span class="st">"string"</span><span class="op">)</span>,</span>
 <span>  timeout <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">cv</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -123,8 +123,8 @@ applies a socket-specific default, usually the same as no timeout.</p></dd>
 
 
 <dt>cv</dt>
-<dd><p><strong>For the signalling version</strong>: a 'conditionVariable' that
-should be signalled when the async receive is complete.</p></dd>
+<dd><p><strong>For the signalling version</strong>: a 'conditionVariable' to
+signal when the async receive is complete.</p></dd>
 
 </dl></div>
     <div id="value">
