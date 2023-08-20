@@ -73,13 +73,13 @@
 
 
 <dt>mode</dt>
-<dd><p>[default 'serial'] for sending serialised R objects, or 'raw' for
-sending vectors of any type (converted to a raw byte vector for sending).
-For Streams, 'raw' is the only option and this argument is ignored. Use
-'serial' to ensure perfect reproducibility within R, although 'raw' must
-be used when interfacing with external applications that do not understand
-R serialisation. Alternatively, for performance, specify an integer
-position in the vector of choices i.e. 1L for 'serial' or 2L for 'raw'.</p></dd>
+<dd><p>[default 'serial'] to send serialised R objects, or 'raw' to send
+atomic vectors of any type as a raw byte vector. For Streams, 'raw' is
+the only option and this argument is ignored. Use 'serial' to ensure
+perfect reproducibility within R, although 'raw' must be used when
+interfacing with external applications which do not understand R
+serialisation. Alternatively, for performance, specify an integer position
+in the vector of choices i.e. 1L for 'serial' or 2L for 'raw'.</p></dd>
 
 
 <dt>block</dt>
@@ -114,7 +114,7 @@ in milliseconds, after which the operation will time out.</p></dd>
     </div>
     <div id="see-also">
     <h2>See also</h2>
-    <div class="dont-index"><p><code><a href="send_aio.html">send_aio</a></code> for asynchronous sends.</p></div>
+    <div class="dont-index"><p><code><a href="send_aio.html">send_aio</a></code> for asynchronous send.</p></div>
     </div>
 
     <div id="ref-examples">
