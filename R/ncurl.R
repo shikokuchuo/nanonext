@@ -61,9 +61,6 @@
 #'     etc. if required.}
 #'     }
 #'
-#'     Or else, if 'async' = TRUE, an 'ncurlAio' (object of class 'ncurlAio'
-#'     and 'recvAio') (invisibly).
-#'
 #' @seealso \code{\link{ncurl_aio}} for asynchronous http requests;
 #'     \code{\link{ncurl_session}} for persistent connections.
 #' @examples

@@ -68,9 +68,6 @@ Named list of 4 elements:
     string, or NULL otherwise. This may be further parsed as html, json, xml
     etc. if required.}
     }
-
-    Or else, if 'async' = TRUE, an 'ncurlAio' (object of class 'ncurlAio'
-    and 'recvAio') (invisibly).
 }
 \description{
 nano cURL - a minimalist http(s) client.
