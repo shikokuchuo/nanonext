@@ -410,9 +410,7 @@ SEXP nano_decode(unsigned char *buf, size_t sz, const int mod) {
     memcpy(RAW(data), buf, sz);
     break;
   case 9:
-    PROTECT(data = Rf_allocVector(STRSXP, 1));
-    SET_STRING_ELT(data, 0, Rf_mkChar((char *) buf));
-    UNPROTECT(1);
+    data = rawToChar(buf, sz);
     break;
   default:
     data = nano_unserialize(buf, sz);
