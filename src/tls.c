@@ -44,7 +44,8 @@ static nano_buf nano_anytobuf(SEXP x) {
   switch (TYPEOF(x)) {
   case STRSXP:
     if (XLENGTH(x) == 1 && ATTRIB(x) == R_NilValue) {
-      NANO_INIT(&hash, (unsigned char *) CHAR(STRING_ELT(x, 0)), XLENGTH(STRING_ELT(x, 0)));
+      const char *s = CHAR(STRING_ELT(x, 0));
+      NANO_INIT(&hash, (unsigned char *) s, strlen(s));
       return hash;
     }
     break;
