@@ -194,7 +194,7 @@ void nano_encode(nano_buf *enc, SEXP object) {
   case STRSXP: ;
     const char *s;
     R_xlen_t xlen = XLENGTH(object);
-    if (xlen <= 1) {
+    if (xlen == 1) {
       s = CHAR(STRING_ELT(object, 0));
       NANO_INIT(enc, (unsigned char *) s, strlen(s) + 1);
       break;
