@@ -194,11 +194,12 @@ void nano_encode(nano_buf *enc, SEXP object) {
   case STRSXP: ;
     const char *s;
     size_t outlen = 0;
-    R_xlen_t i, xlen = XLENGTH(object);
+    R_xlen_t xlen = XLENGTH(object);
     if (xlen <= 1) {
       NANO_INIT(enc, (unsigned char *) CHAR(STRING_ELT(object, 0)), XLENGTH(STRING_ELT(object, 0)) + 1);
       break;
     }
+    R_xlen_t i;
     for (i = 0; i < xlen; i++)
       outlen += strlen(Rf_translateCharUTF8(STRING_ELT(object, i))) + 1;
     NANO_ALLOC(enc, outlen);
@@ -351,7 +352,7 @@ SEXP nano_decode(unsigned char *buf, size_t sz, const int mod) {
       SET_STRING_ELT(data, i, onechar);
       if (XLENGTH(onechar) > 0) m = i;
     }
-    if (m) SETLENGTH(data, m + 1);
+    if (i) SETLENGTH(data, m + 1);
     UNPROTECT(1);
     break;
   case 3:
