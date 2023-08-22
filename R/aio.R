@@ -31,8 +31,8 @@
 #' @details Async send is always non-blocking and returns a 'sendAio'
 #'     immediately.
 #'
-#'     For a 'sendAio', the send result is available at \code{$result}. An
-#'     'unresolved' logical NA is returned if the async operation is yet to
+#'     For a 'sendAio', the send result is available at \code{$result}. The
+#'     symbol ' unresolvedValue ' is returned if the async operation is yet to
 #'     complete, The resolved value will be zero on success, or else an integer
 #'     error code.
 #'
@@ -70,8 +70,8 @@ send_aio <- function(con, data, mode = c("serial", "raw"), timeout = NULL)
 #' @details Async receive is always non-blocking and returns a 'recvAio'
 #'     immediately.
 #'
-#'     For a 'recvAio', the received message is available at \code{$data}.
-#'     An 'unresolved' logical NA is returned if the async operation is yet to
+#'     For a 'recvAio', the received message is available at \code{$data}. The
+#'     symbol ' unresolvedValue ' is returned if the async operation is yet to
 #'     complete.
 #'
 #'     To wait for the async operation to complete and retrieve the received
@@ -80,15 +80,15 @@ send_aio <- function(con, data, mode = c("serial", "raw"), timeout = NULL)
 #'     Alternatively, to stop the async operation, use \code{\link{stop_aio}}.
 #'
 #'     In case of an error, an integer 'errorValue' is returned (to be
-#'     distiguishable from an integer message value). This can be verified using
+#'     distiguishable from an integer message value). This can be checked using
 #'     \code{\link{is_error_value}}.
 #'
 #'     For \code{mode = "serial"}, attempting to unserialise a non-serialised
-#'     message will result in the error 'unknown input format'.
+#'     message will result in the error 'unknown input format'. In such cases
+#'     \code{\link{recover_aio}} may be used to recover the value as a raw vector.
 #'
 #'     For all other modes, if an error occurred in conversion of the data to
-#'     the specified mode, a raw vector will be returned at \code{$data} instead
-#'     to allow for the data to be recovered.
+#'     the specified mode, a raw vector will be returned instead (with a warning).
 #'
 #' @examples
 #' s1 <- socket("pair", listen = "inproc://nanonext")
@@ -171,9 +171,7 @@ recv_aio_signal <- function(con,
 #'
 #' @return The passed object (invisibly).
 #'
-#' @details For a 'recvAio', the received raw vector may be retrieved at \code{$raw}
-#'     (unless 'keep.raw' was set to FALSE when receiving), and the converted R
-#'     object at \code{$data}.
+#' @details For a 'recvAio', the received value may be retrieved at \code{$data}.
 #'
 #'     For a 'sendAio', the send result may be retrieved at \code{$result}. This
 #'     will be zero on success, or else an integer error code.
@@ -181,9 +179,11 @@ recv_aio_signal <- function(con,
 #'     To access the values directly, use for example on a 'recvAio' \code{x}:
 #'     \code{call_aio(x)$data}.
 #'
-#'     For a 'recvAio', in case of an error in unserialisation or data conversion
-#'     (for example if the incorrect mode was specified), the received raw vector
-#'     will be stored at \code{$data} to allow for the data to be recovered.
+#'     For a 'recvAio', attempting to unserialise a non-serialised message will
+#'     result in the error 'unknown input format'. In such cases
+#'     \code{\link{recover_aio}} may be used to recover the value as a raw
+#'     vector. In case of an error in data conversion to the specified mode, a
+#'     raw vector will be returned instead (with a warning).
 #'
 #'     Once the value has been successfully retrieved, the Aio is deallocated
 #'     and only the value is stored in the Aio object.
@@ -194,9 +194,9 @@ recv_aio_signal <- function(con,
 #' @section Alternatively:
 #'
 #'     Aio values may be accessed directly at \code{$result} for a 'sendAio',
-#'     and \code{$raw} or \code{$data} for a 'recvAio'. If the Aio operation is
-#'     yet to complete, an 'unresolved' logical NA will be returned. Once
-#'     complete, the resolved value will be returned instead.
+#'     and \code{$data} for a 'recvAio'. If the Aio operation is yet to complete,
+#'     the symbol ' unresolvedValue ' will be returned. Once complete, the
+#'     resolved value will be returned instead.
 #'
 #'     \code{\link{unresolved}} may also be used, which returns TRUE only if an
 #'     Aio or Aio value has yet to resolve and FALSE otherwise. This is suitable

@@ -103,11 +103,11 @@ send <- function(con, data, mode = c("serial", "raw"), block = NULL)
 #'     \code{\link{is_error_value}}.
 #'
 #'     For \code{mode = "serial"}, attempting to unserialise a non-serialised
-#'     message will result in the error 'unknown input format'.
+#'     message will result in the error 'unknown input format'. In such cases
+#'     \code{\link{recover_aio}} may be used to recover the value as a raw vector.
 #'
 #'     For all other modes, if an error occurred in conversion of the data to
-#'     the specified mode, a raw vector will be returned instead to allow for
-#'     the data to be recovered.
+#'     the specified mode, a raw vector will be returned instead (with a warning).
 #'
 #' @section Blocking:
 #'

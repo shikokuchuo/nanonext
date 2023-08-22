@@ -32,8 +32,8 @@ Send data asynchronously over a connection (Socket, Context or Stream).
 Async send is always non-blocking and returns a 'sendAio'
     immediately.
 
-    For a 'sendAio', the send result is available at \code{$result}. An
-    'unresolved' logical NA is returned if the async operation is yet to
+    For a 'sendAio', the send result is available at \code{$result}. The
+    symbol ' unresolvedValue ' is returned if the async operation is yet to
     complete, The resolved value will be zero on success, or else an integer
     error code.
 
