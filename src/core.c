@@ -1154,8 +1154,8 @@ SEXP rnng_strcat(SEXP a, SEXP b) {
   SEXP out;
   const char *ap = CHAR(STRING_ELT(a, 0));
   const char *bp = CHAR(STRING_ELT(b, 0));
-  const R_xlen_t alen = XLENGTH(STRING_ELT(a, 0));
-  const R_xlen_t blen = XLENGTH(STRING_ELT(b, 0));
+  const size_t alen = strlen(ap);
+  const size_t blen = strlen(bp);
 
   char *buf = R_alloc(sizeof(char), alen + blen + 1);
   memcpy(buf, ap, alen);
