@@ -20,7 +20,7 @@ the connection attempt, including any name resolution, is to be made
 asynchronously. This behaviour is more resilient, but also generally
 makes diagnosing failures somewhat more difficult. If FALSE, failure,
 such as if the connection is refused, will be returned immediately, and
-no further action will be taken. Supplying a non-logical value will error.}
+no further action will be taken.}
 }
 \value{
 Invisibly, an integer exit code (zero on success).

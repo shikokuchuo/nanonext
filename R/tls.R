@@ -47,7 +47,7 @@
 #'     certificate is validated if presented by the peer, but the session
 #'     allowed to proceed otherwise. If neither 'client' nor 'server' are
 #'     supplied, then no authentication is performed and this argument has no
-#'     effect. Supplying a non-logical value will error.
+#'     effect.
 #'
 #' @return A 'tlsConfig' object.
 #'
@@ -84,8 +84,7 @@ tls_config <- function(client = NULL, server = NULL, pass = NULL, auth = is.null
 #' @param key (optional) supply a secret key to generate an HMAC. If missing or
 #'     NULL, the SHA-256/224/384/512 hash of 'x' is returned.
 #' @param convert [default TRUE] logical value whether to convert the output to
-#'     a character string or keep as a raw vector. Supplying a non-logical value
-#'     will error.
+#'     a character string or keep as a raw vector.
 #'
 #' @return A raw vector or character string depending on 'convert', of byte
 #'     length 32 for SHA-256, 28 for SHA-224, 48 for SHA-384, and 64 for SHA-512.
@@ -196,8 +195,7 @@ sha1 <- function(x, key = NULL, convert = TRUE) .Call(rnng_sha1, x, key, convert
 #'     to a character string or FALSE to a raw vector.\cr
 #'     For \strong{base64dec}: [default TRUE] logical TRUE to convert back to a
 #'     character string, FALSE to convert back to a raw vector or NA to decode
-#'     and then unserialize back to the original object. Supplying a non-logical
-#'     value will error.
+#'     and then unserialize back to the original object.
 #'
 #' @return For \strong{base64enc}: A character string or raw vector depending on
 #'     the value of 'convert'.

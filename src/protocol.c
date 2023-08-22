@@ -35,7 +35,7 @@ void socket_finalizer(SEXP xptr) {
 
 SEXP rnng_protocol_open(SEXP protocol, SEXP raw) {
 
-  const int rw = LOGICAL(raw)[0];
+  const int rw = *(const int *) DATAPTR(raw);
   const char *pro = CHAR(STRING_ELT(protocol, 0));
   size_t slen = strlen(pro);
 

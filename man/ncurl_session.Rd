@@ -23,7 +23,7 @@ transact(session)
 
 \item{convert}{[default TRUE] logical value whether to attempt conversion of
 the received raw bytes to a character vector. Set to FALSE if downloading
-non-text data. Supplying a non-logical value will error.}
+non-text data.}
 
 \item{method}{(optional) the HTTP method (defaults to 'GET' if not specified).}
 

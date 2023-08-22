@@ -27,8 +27,7 @@ asynchronously). Set to NA to start synchronously - this is less resilient
 if a connection is not immediately possible, but avoids subtle errors
 from attempting to use the socket before an asynchronous dial has completed.
 Set to FALSE if setting configuration options on the dialer as it is not
-generally possible to change these once started. Supplying a non-logical
-value will error.}
+generally possible to change these once started.}
 
 \item{error}{[default FALSE] behaviour on error: if FALSE, returns an integer
 exit code accompanied by a warning, or, if TRUE, generates an error and

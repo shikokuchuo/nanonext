@@ -35,7 +35,7 @@ has been validated. If FALSE, authentication is optional, whereby a
 certificate is validated if presented by the peer, but the session
 allowed to proceed otherwise. If neither 'client' nor 'server' are
 supplied, then no authentication is performed and this argument has no
-effect. Supplying a non-logical value will error.}
+effect.}
 }
 \value{
 A 'tlsConfig' object.

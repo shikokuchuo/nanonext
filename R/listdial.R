@@ -31,8 +31,7 @@
 #'     if a connection is not immediately possible, but avoids subtle errors
 #'     from attempting to use the socket before an asynchronous dial has completed.
 #'     Set to FALSE if setting configuration options on the dialer as it is not
-#'     generally possible to change these once started. Supplying a non-logical
-#'     value will error.
+#'     generally possible to change these once started.
 #' @param error [default FALSE] behaviour on error: if FALSE, returns an integer
 #'     exit code accompanied by a warning, or, if TRUE, generates an error and
 #'     halts execution.
@@ -98,8 +97,7 @@ dial <- function(socket, url = "inproc://nanonext", tls = NULL, autostart = TRUE
 #' @inheritParams dial
 #' @param autostart [default TRUE] whether to start the listener. Set to FALSE
 #'     if setting configuration options on the listener as it is not generally
-#'     possible to change these once started. Supplying a non-logical value will
-#'     error.
+#'     possible to change these once started.
 #'
 #' @return Invisibly, an integer exit code (zero on success). A new Listener
 #'     (object of class 'nanoListener' and 'nano') is created and bound to the
@@ -165,7 +163,7 @@ listen <- function(socket, url = "inproc://nanonext", tls = NULL, autostart = TR
 #'     asynchronously. This behaviour is more resilient, but also generally
 #'     makes diagnosing failures somewhat more difficult. If FALSE, failure,
 #'     such as if the connection is refused, will be returned immediately, and
-#'     no further action will be taken. Supplying a non-logical value will error.
+#'     no further action will be taken.
 #' @param ... not used.
 #'
 #' @return Invisibly, an integer exit code (zero on success).

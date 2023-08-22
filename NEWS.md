@@ -1,4 +1,4 @@
-# nanonext 0.9.2.9026 (development)
+# nanonext 0.9.2.9027 (development)
 
 *This version contains breaking changes; please review carefully and only update when ready.*
 
@@ -12,6 +12,7 @@
 
 * The argument 'keep.raw' for all receive functions (previously-deprecated) is removed.
 * Function `device()` is removed as its non-interruptible blocking behaviour is deemed unsuitable for practical use.
+* Functions documented as taking only logical arguments previously now accept integer equivalents.
 * `cv_reset()` and `cv_signal()` now both return invisible zero rather than NULL.
 * The unresolved value for an Aio is now the symbol ` unresolvedValue ` rather than a classed logical NA. Continue to use `unresolved()` to check for resolution.
 * Improvements to vector send/recv (mode = 'raw'):

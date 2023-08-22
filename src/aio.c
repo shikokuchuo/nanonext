@@ -387,7 +387,7 @@ SEXP rnng_dial(SEXP socket, SEXP url, SEXP tls, SEXP autostart, SEXP error) {
   if (R_ExternalPtrTag(socket) != nano_SocketSymbol)
     Rf_error("'socket' is not a valid Socket");
   nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(socket);
-  const int start = LOGICAL(autostart)[0];
+  const int start = *(const int *) DATAPTR(autostart);
   const char *ur = CHAR(STRING_ELT(url, 0));
   nano_dialer *dp = R_Calloc(1, nano_dialer);
   SEXP dialer, klass, attr, newattr;
@@ -466,7 +466,7 @@ SEXP rnng_listen(SEXP socket, SEXP url, SEXP tls, SEXP autostart, SEXP error) {
   if (R_ExternalPtrTag(socket) != nano_SocketSymbol)
     Rf_error("'socket' is not a valid Socket");
   nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(socket);
-  const int start = LOGICAL(autostart)[0];
+  const int start = *(const int *) DATAPTR(autostart);
   const char *ur = CHAR(STRING_ELT(url, 0));
   nano_listener *lp = R_Calloc(1, nano_listener);
   SEXP listener, klass, attr, newattr;
@@ -536,7 +536,8 @@ SEXP rnng_dialer_start(SEXP dialer, SEXP async) {
   if (R_ExternalPtrTag(dialer) != nano_DialerSymbol)
     Rf_error("'dialer' is not a valid Dialer");
   nng_dialer *dial = (nng_dialer *) R_ExternalPtrAddr(dialer);
-  const int flags = (LOGICAL(async)[0] == 1) * NNG_FLAG_NONBLOCK;
+  const int asy = *(const int *) DATAPTR(async);
+  const int flags = (asy == 1) * NNG_FLAG_NONBLOCK;
   const int xc = nng_dialer_start(*dial, flags);
   if (xc)
     ERROR_RET(xc);
@@ -1087,7 +1088,7 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP dat
 
   haio->type = HTTP_AIO;
   haio->data = handle;
-  haio->mode = LOGICAL(convert)[0];
+  haio->mode = *(int *) DATAPTR(convert);
   handle->cfg = NULL;
 
   if ((xc = nng_url_parse(&handle->url, httr)))
@@ -1342,7 +1343,7 @@ SEXP rnng_ncurl_session(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP
 
   haio->type = HTTP_AIO;
   haio->data = handle;
-  haio->mode = LOGICAL(convert)[0];
+  haio->mode = *(int *) DATAPTR(convert);
   handle->cfg = NULL;
 
   if ((xc = nng_url_parse(&handle->url, httr)))

@@ -24,8 +24,7 @@ provide a TLS configuration object created by \code{\link{tls_config}}.}
 
 \item{autostart}{[default TRUE] whether to start the listener. Set to FALSE
 if setting configuration options on the listener as it is not generally
-possible to change these once started. Supplying a non-logical value will
-error.}
+possible to change these once started.}
 
 \item{error}{[default FALSE] behaviour on error: if FALSE, returns an integer
 exit code accompanied by a warning, or, if TRUE, generates an error and

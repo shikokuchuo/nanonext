@@ -25,12 +25,11 @@ This option is deprecated, use \code{\link{ncurl_aio}} instead.}
 
 \item{convert}{[default TRUE] logical value whether to attempt conversion of
 the received raw bytes to a character vector. Set to FALSE if downloading
-non-text data. Supplying a non-logical value will error.}
+non-text data.}
 
 \item{follow}{[default FALSE] logical value whether to automatically follow
 redirects (not applicable for async requests). If FALSE, the redirect
-address is returned as response header 'Location'. Supplying a non-logical
-value will error.}
+address is returned as response header 'Location'.}
 
 \item{method}{(optional) the HTTP method (defaults to 'GET' if not specified).}
 

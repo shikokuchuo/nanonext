@@ -31,7 +31,6 @@
 #'     (not all transports are supported).
 #' @param textframes [default FALSE] applicable to the websocket transport only,
 #'     enables sending and receiving of TEXT frames (ignored otherwise).
-#'     Supplying a non-logical value will error.
 #' @param tls (optional) applicable to secure websockets only, a client or
 #'     server TLS configuration object created by \code{\link{tls_config}}. If
 #'     missing or NULL, certificates are not validated.
