@@ -212,19 +212,17 @@ void nano_encode(nano_buf *enc, SEXP object) {
     }
     break;
   case REALSXP:
-    NANO_INIT(enc, (unsigned char *) REAL(object), XLENGTH(object) * sizeof(double));
+    NANO_INIT(enc, (unsigned char *) DATAPTR(object), XLENGTH(object) * sizeof(double));
     break;
   case INTSXP:
-    NANO_INIT(enc, (unsigned char *) INTEGER(object), XLENGTH(object) * sizeof(int));
-    break;
   case LGLSXP:
-    NANO_INIT(enc, (unsigned char *) LOGICAL(object), XLENGTH(object) * sizeof(int));
+    NANO_INIT(enc, (unsigned char *) DATAPTR(object), XLENGTH(object) * sizeof(int));
     break;
   case CPLXSXP:
-    NANO_INIT(enc, (unsigned char *) COMPLEX(object), XLENGTH(object) * 2 * sizeof(double));
+    NANO_INIT(enc, (unsigned char *) DATAPTR(object), XLENGTH(object) * 2 * sizeof(double));
     break;
   case RAWSXP:
-    NANO_INIT(enc, RAW(object), XLENGTH(object));
+    NANO_INIT(enc, (unsigned char *) STDVEC_DATAPTR(object), XLENGTH(object));
     break;
   case NILSXP:
     NANO_INIT(enc, NULL, 0);
@@ -233,7 +231,7 @@ void nano_encode(nano_buf *enc, SEXP object) {
     object = Rf_findVarInFrame(ENCLOS(object), nano_ResultSymbol);
     if (object != R_UnboundValue) {
       if (TYPEOF(object) == RAWSXP) {
-        NANO_INIT(enc, RAW(object), XLENGTH(object));
+        NANO_INIT(enc, (unsigned char *) STDVEC_DATAPTR(object), XLENGTH(object));
       } else {
         PROTECT(object);
         nano_serialize(enc, object);
@@ -356,73 +354,64 @@ SEXP nano_decode(unsigned char *buf, size_t sz, const int mod) {
     }
     if (i) SETLENGTH(data, m + 1);
     UNPROTECT(1);
-    break;
+    return data;
   case 3:
     size = 2 * sizeof(double);
-    if (sz % size == 0) {
-      data = Rf_allocVector(CPLXSXP, sz / size);
-      memcpy(COMPLEX(data), buf, sz);
-    } else {
+    if (sz % size) {
       Rf_warning("received data could not be converted to complex");
       data = Rf_allocVector(RAWSXP, sz);
-      memcpy(RAW(data), buf, sz);
+    } else {
+      data = Rf_allocVector(CPLXSXP, sz / size);
     }
     break;
   case 4:
     size = sizeof(double);
-    if (sz % size == 0) {
-      data = Rf_allocVector(REALSXP, sz / size);
-      memcpy(REAL(data), buf, sz);
-    } else {
+    if (sz % size) {
       Rf_warning("received data could not be converted to double");
       data = Rf_allocVector(RAWSXP, sz);
-      memcpy(RAW(data), buf, sz);
+    } else {
+      data = Rf_allocVector(REALSXP, sz / size);
     }
     break;
   case 5:
     size = sizeof(int);
-    if (sz % size == 0) {
-      data = Rf_allocVector(INTSXP, sz / size);
-      memcpy(INTEGER(data), buf, sz);
-    } else {
+    if (sz % size) {
       Rf_warning("received data could not be converted to integer");
       data = Rf_allocVector(RAWSXP, sz);
-      memcpy(RAW(data), buf, sz);
+    } else {
+      data = Rf_allocVector(INTSXP, sz / size);
     }
     break;
   case 6:
     size = sizeof(int);
-    if (sz % size == 0) {
-      data = Rf_allocVector(LGLSXP, sz / size);
-      memcpy(LOGICAL(data), buf, sz);
-    } else {
+    if (sz % size) {
       Rf_warning("received data could not be converted to logical");
       data = Rf_allocVector(RAWSXP, sz);
-      memcpy(RAW(data), buf, sz);
+    } else {
+      data = Rf_allocVector(LGLSXP, sz / size);
     }
     break;
   case 7:
     size = sizeof(double);
-    if (sz % size == 0) {
-      data = Rf_allocVector(REALSXP, sz / size);
-      memcpy(REAL(data), buf, sz);
-    } else {
+    if (sz % size) {
       Rf_warning("received data could not be converted to numeric");
       data = Rf_allocVector(RAWSXP, sz);
-      memcpy(RAW(data), buf, sz);
+    } else {
+      data = Rf_allocVector(REALSXP, sz / size);
     }
     break;
   case 8:
     data = Rf_allocVector(RAWSXP, sz);
-    memcpy(RAW(data), buf, sz);
     break;
   case 9:
     data = rawToChar(buf, sz);
-    break;
+    return data;
   default:
     data = nano_unserialize(buf, sz);
+    return data;
   }
 
+  memcpy(STDVEC_DATAPTR(data), buf, sz);
   return data;
 
 }

@@ -51,7 +51,7 @@ static nano_buf nano_anytobuf(SEXP x) {
     break;
   case RAWSXP:
     if (ATTRIB(x) == R_NilValue) {
-      NANO_INIT(&hash, RAW(x), XLENGTH(x));
+      NANO_INIT(&hash, (unsigned char *) STDVEC_DATAPTR(x), XLENGTH(x));
       return hash;
     }
   }

@@ -776,7 +776,7 @@ SEXP rnng_aio_recover(SEXP aio) {
     nng_http_res_get_data(handle->res, (void **) &buf, &sz);
     out = Rf_allocVector(RAWSXP, sz);
     if (buf != NULL)
-      memcpy(RAW(out), buf, sz);
+      memcpy(STDVEC_DATAPTR(out), buf, sz);
     Rf_defineVar(nano_RawSymbol, out, ENCLOS(aio));
     Rf_defineVar(nano_ResultSymbol, R_NilValue, ENCLOS(aio));
     Rf_defineVar(nano_AioSymbol, R_NilValue, aio);
@@ -1310,7 +1310,7 @@ SEXP rnng_aio_http(SEXP env, SEXP response, SEXP type) {
   } else {
     vec = Rf_allocVector(RAWSXP, sz);
     if (dat != NULL)
-      memcpy(RAW(vec), dat, sz);
+      memcpy(STDVEC_DATAPTR(vec), dat, sz);
   }
   Rf_defineVar(nano_RawSymbol, vec, ENCLOS(env));
 
@@ -1528,7 +1528,7 @@ SEXP rnng_ncurl_transact(SEXP session) {
   } else {
     vec = Rf_allocVector(RAWSXP, sz);
     if (dat != NULL)
-      memcpy(RAW(vec), dat, sz);
+      memcpy(STDVEC_DATAPTR(vec), dat, sz);
   }
   SET_VECTOR_ELT(out, 2, vec);
 
