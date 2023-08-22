@@ -113,8 +113,7 @@ SEXP rnng_sha224(SEXP x, SEXP key, SEXP convert) {
   if (xc)
     Rf_error("error generating hash");
 
-  const int conv = *(const int *) DATAPTR(convert);
-  if (conv) {
+  if (LOGICAL(convert)[0]) {
     out = nano_hashToChar(output, SHA224_KEY_SIZE);
   } else {
     out = Rf_allocVector(RAWSXP, SHA224_KEY_SIZE);
@@ -154,8 +153,7 @@ SEXP rnng_sha256(SEXP x, SEXP key, SEXP convert) {
   if (xc)
     Rf_error("error generating hash");
 
-  const int conv = *(const int *) DATAPTR(convert);
-  if (conv) {
+  if (LOGICAL(convert)[0]) {
     out = nano_hashToChar(output, SHA256_KEY_SIZE);
   } else {
     out = Rf_allocVector(RAWSXP, SHA256_KEY_SIZE);
@@ -199,8 +197,7 @@ SEXP rnng_sha384(SEXP x, SEXP key, SEXP convert) {
   if (xc)
     Rf_error("error generating hash");
 
-  const int conv = *(const int *) DATAPTR(convert);
-  if (conv) {
+  if (LOGICAL(convert)[0]) {
     out = nano_hashToChar(output, SHA384_KEY_SIZE);
   } else {
     out = Rf_allocVector(RAWSXP, SHA384_KEY_SIZE);
@@ -240,8 +237,7 @@ SEXP rnng_sha512(SEXP x, SEXP key, SEXP convert) {
   if (xc)
     Rf_error("error generating hash");
 
-  const int conv = *(const int *) DATAPTR(convert);
-  if (conv) {
+  if (LOGICAL(convert)[0]) {
     out = nano_hashToChar(output, SHA512_KEY_SIZE);
   } else {
     out = Rf_allocVector(RAWSXP, SHA512_KEY_SIZE);
@@ -281,8 +277,7 @@ SEXP rnng_sha1(SEXP x, SEXP key, SEXP convert) {
   if (xc)
     Rf_error("error generating hash");
 
-  const int conv = *(const int *) DATAPTR(convert);
-  if (conv) {
+  if (LOGICAL(convert)[0]) {
     out = nano_hashToChar(output, SHA1_KEY_SIZE);
   } else {
     out = Rf_allocVector(RAWSXP, SHA1_KEY_SIZE);
@@ -309,8 +304,7 @@ SEXP rnng_base64enc(SEXP x, SEXP convert) {
   if (xc)
     Rf_error("write buffer insufficient");
 
-  const int conv = *(const int *) DATAPTR(convert);
-  if (conv) {
+  if (LOGICAL(convert)[0]) {
     out = rawToChar(buf, olen);
   } else {
     out = Rf_allocVector(RAWSXP, olen);
@@ -350,8 +344,7 @@ SEXP rnng_base64dec(SEXP x, SEXP convert) {
   if (xc)
     Rf_error("write buffer insufficient");
 
-  const int conv = *(const int *) DATAPTR(convert);
-  switch (conv) {
+  switch (LOGICAL(convert)[0]) {
   case 0:
     out = Rf_allocVector(RAWSXP, olen);
     memcpy(STDVEC_DATAPTR(out), buf, olen);

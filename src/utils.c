@@ -202,7 +202,7 @@ SEXP rnng_is_error_value(SEXP x) {
 SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP follow, SEXP method, SEXP headers,
                 SEXP data, SEXP response, SEXP timeout, SEXP tls) {
 
-  const int conv = *(const int *) DATAPTR(convert);
+  const int conv = LOGICAL(convert)[0];
   nng_url *url;
   nng_http_client *client;
   nng_http_req *req;
@@ -294,7 +294,7 @@ SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP follow, SEXP method, SEXP headers,
 
   code = nng_http_res_get_status(res), relo = code >= 300 && code < 400;
 
-  if (relo && *(const int *) DATAPTR(follow)) {
+  if (relo && LOGICAL(follow)[0]) {
     SET_STRING_ELT(nano_addRedirect, 0, Rf_mkChar(nng_http_res_get_header(res, "Location")));
     return rnng_ncurl(nano_addRedirect, convert, follow, method, headers, data, response, timeout, tls);
   }
@@ -413,7 +413,7 @@ SEXP rnng_stream_dial(SEXP url, SEXP textframes, SEXP tls) {
     goto exitlevel2;
 
   if (!strcmp(up->u_scheme, "ws") || !strcmp(up->u_scheme, "wss")) {
-    frames = *(int *) DATAPTR(textframes) != 0;
+    frames = LOGICAL(textframes)[0];
     if (frames &&
         ((xc = nng_stream_dialer_set_bool(nsd->dial, "ws:recv-text", 1)) ||
         (xc = nng_stream_dialer_set_bool(nsd->dial, "ws:send-text", 1))))
@@ -506,7 +506,7 @@ SEXP rnng_stream_listen(SEXP url, SEXP textframes, SEXP tls) {
     goto exitlevel2;
 
   if (!strcmp(up->u_scheme, "ws") || !strcmp(up->u_scheme, "wss")) {
-    frames = *(int *) DATAPTR(textframes) != 0;
+    frames = LOGICAL(textframes)[0];
     if (frames &&
         ((xc = nng_stream_listener_set_bool(nsl->list, "ws:recv-text", 1)) ||
         (xc = nng_stream_listener_set_bool(nsl->list, "ws:send-text", 1))))
@@ -681,8 +681,7 @@ SEXP rnng_status_code(SEXP x) {
 
 SEXP rnng_tls_config(SEXP client, SEXP server, SEXP pass, SEXP auth) {
 
-  const int req = *(const int *) DATAPTR(auth);
-  const nng_tls_auth_mode mod = req ? NNG_TLS_AUTH_MODE_REQUIRED : NNG_TLS_AUTH_MODE_OPTIONAL;
+  const nng_tls_auth_mode mod = LOGICAL(auth)[0] ? NNG_TLS_AUTH_MODE_REQUIRED : NNG_TLS_AUTH_MODE_OPTIONAL;
   R_xlen_t usefile;
   nng_tls_config *cfg;
   int xc;
