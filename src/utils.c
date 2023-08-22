@@ -292,7 +292,7 @@ SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP follow, SEXP method, SEXP headers,
     nng_tls_config_free(cfg);
   nng_aio_free(aio);
 
-  code = nng_http_res_get_status(res), relo = code >= 300 && code < 400 ? 1 : 0;
+  code = nng_http_res_get_status(res), relo = code >= 300 && code < 400;
 
   if (relo && *(const int *) DATAPTR(follow)) {
     SET_STRING_ELT(nano_addRedirect, 0, Rf_mkChar(nng_http_res_get_header(res, "Location")));

@@ -453,10 +453,10 @@ SEXP rnng_dial(SEXP socket, SEXP url, SEXP tls, SEXP autostart, SEXP error) {
   return nano_success;
 
   exitlevel2:
-    nng_tls_config_free(dp->tls);
+  nng_tls_config_free(dp->tls);
   exitlevel1:
-    R_Free(dp);
-  if (LOGICAL(error)[0]) ERROR_OUT(xc);
+  R_Free(dp);
+  if (*(const int *) DATAPTR(error)) ERROR_OUT(xc);
   ERROR_RET(xc);
 
 }
@@ -523,10 +523,10 @@ SEXP rnng_listen(SEXP socket, SEXP url, SEXP tls, SEXP autostart, SEXP error) {
   return nano_success;
 
   exitlevel2:
-    nng_tls_config_free(lp->tls);
+  nng_tls_config_free(lp->tls);
   exitlevel1:
-    R_Free(lp);
-  if (LOGICAL(error)[0]) ERROR_OUT(xc);
+  R_Free(lp);
+  if (*(const int *) DATAPTR(error)) ERROR_OUT(xc);
   ERROR_RET(xc);
 
 }
@@ -1253,7 +1253,7 @@ SEXP rnng_aio_http(SEXP env, SEXP response, SEXP type) {
   SEXP out, vec, cvec, rvec;
   nano_handle *handle = (nano_handle *) haio->data;
 
-  uint16_t code = nng_http_res_get_status(handle->res), relo = code >= 300 && code < 400 ? 1 : 0;
+  uint16_t code = nng_http_res_get_status(handle->res), relo = code >= 300 && code < 400;
   Rf_defineVar(nano_StatusSymbol, Rf_ScalarInteger(code), ENCLOS(env));
 
   if (relo) {
