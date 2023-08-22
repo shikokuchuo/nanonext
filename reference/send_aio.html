@@ -97,8 +97,8 @@ applies a socket-specific default, usually the same as no timeout.</p></dd>
     <h2>Details</h2>
     <p>Async send is always non-blocking and returns a 'sendAio'
     immediately.</p>
-<p>For a 'sendAio', the send result is available at <code>$result</code>. An
-    'unresolved' logical NA is returned if the async operation is yet to
+<p>For a 'sendAio', the send result is available at <code>$result</code>. The
+    symbol ' unresolvedValue ' is returned if the async operation is yet to
     complete, The resolved value will be zero on success, or else an integer
     error code.</p>
 <p>To wait for and check the result of the send operation, use

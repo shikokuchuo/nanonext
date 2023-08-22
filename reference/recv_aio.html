@@ -125,20 +125,20 @@ signal when the async receive is complete.</p></dd>
     <h2>Details</h2>
     <p>Async receive is always non-blocking and returns a 'recvAio'
     immediately.</p>
-<p>For a 'recvAio', the received message is available at <code>$data</code>.
-    An 'unresolved' logical NA is returned if the async operation is yet to
+<p>For a 'recvAio', the received message is available at <code>$data</code>. The
+    symbol ' unresolvedValue ' is returned if the async operation is yet to
     complete.</p>
 <p>To wait for the async operation to complete and retrieve the received
     message, use <code><a href="call_aio.html">call_aio</a></code> on the returned 'recvAio' object.</p>
 <p>Alternatively, to stop the async operation, use <code><a href="stop_aio.html">stop_aio</a></code>.</p>
 <p>In case of an error, an integer 'errorValue' is returned (to be
-    distiguishable from an integer message value). This can be verified using
+    distiguishable from an integer message value). This can be checked using
     <code><a href="is_error_value.html">is_error_value</a></code>.</p>
 <p>For <code>mode = "serial"</code>, attempting to unserialise a non-serialised
-    message will result in the error 'unknown input format'.</p>
+    message will result in the error 'unknown input format'. In such cases
+    <code><a href="recover_aio.html">recover_aio</a></code> may be used to recover the value as a raw vector.</p>
 <p>For all other modes, if an error occurred in conversion of the data to
-    the specified mode, a raw vector will be returned at <code>$data</code> instead
-    to allow for the data to be recovered.</p>
+    the specified mode, a raw vector will be returned instead (with a warning).</p>
 <p><strong>For the signalling version</strong>: when the receive is complete,
     the supplied 'conditionVariable' is signalled by incrementing its value
     by 1. This happens asynchronously and independently of the R execution
