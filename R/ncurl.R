@@ -44,7 +44,7 @@
 #'     Configuration object created by \code{\link{tls_config}}. If missing or
 #'     NULL, certificates are not validated.
 #'
-#' @return Named list of 4 elements:
+#' @return Named list of 3 elements:
 #'     \itemize{
 #'     \item{\code{$status}} {- integer HTTP repsonse status code (200 - OK).
 #'     Use \code{\link{status_code}} for a translation of the meaning.}
@@ -52,12 +52,10 @@
 #'     'response', or NULL otherwise. If the status code is within the 300
 #'     range, i.e. a redirect, the response header 'Location' is automatically
 #'     appended to return the redirect address.}
-#'     \item{\code{$raw}} {- if 'convert' = FALSE, the raw vector of the
-#'     received resource, or NULL otherwise (use \code{\link{writeBin}} to save
-#'     to a file).}
-#'     \item{\code{$data}} {- if 'convert' = TRUE, the converted character
-#'     string, or NULL otherwise. This may be further parsed as html, json, xml
-#'     etc. if required.}
+#'     \item{\code{$data}} {- the response body, as a character string if
+#'     'convert' = TRUE (may be further parsed as html, json, xml etc. as
+#'     required), or a raw byte vector if FALSE (use \code{\link{writeBin}} to
+#'     save as a file).}
 #'     }
 #'
 #' @seealso \code{\link{ncurl_aio}} for asynchronous http requests;
@@ -65,8 +63,8 @@
 #' @examples
 #' ncurl("https://postman-echo.com/get",
 #'        convert = FALSE,
-#'        response = c("date", "server"),
-#'        timeout = 1000L)
+#'        response = c("date", "content-type"),
+#'        timeout = 1200L)
 #' ncurl("https://postman-echo.com/put",
 #'       method = "PUT",
 #'       headers = list(Authorization = "Bearer APIKEY"),
@@ -111,12 +109,10 @@ ncurl <- function(url,
 #'     'response', or NULL otherwise. If the status code is within the 300
 #'     range, i.e. a redirect, the response header 'Location' is automatically
 #'     appended to return the redirect address.}
-#'     \item{\code{$raw}} {- if 'convert' = FALSE, the raw vector of the
-#'     received resource, or NULL otherwise (use \code{\link{writeBin}} to save
-#'     to a file).}
-#'     \item{\code{$data}} {- if 'convert' = TRUE, the converted character
-#'     string, or NULL otherwise. This may be further parsed as html, json, xml
-#'     etc. if required.}
+#'     \item{\code{$data}} {- the response body, as a character string if
+#'     'convert' = TRUE (may be further parsed as html, json, xml etc. as
+#'     required), or a raw byte vector if FALSE (use \code{\link{writeBin}} to
+#'     save as a file).}
 #'     }
 #'
 #' @seealso \code{\link{ncurl_session}} for persistent connections.
@@ -176,7 +172,7 @@ ncurl_session <- function(url,
 
 #' @param session an 'ncurlSession' object.
 #'
-#' @return For \code{transact}: a named list of 4 elements:
+#' @return For \code{transact}: a named list of 3 elements:
 #'     \itemize{
 #'     \item{\code{$status}} {- integer HTTP repsonse status code (200 - OK).
 #'     Use \code{\link{status_code}} for a translation of the meaning.}
@@ -184,11 +180,10 @@ ncurl_session <- function(url,
 #'     the session), or NULL otherwise. If the status code is within the 300
 #'     range, i.e. a redirect, the response header 'Location' is automatically
 #'     appended to return the redirect address.}
-#'     \item{\code{$raw}} {- raw vector of the received resource (use
-#'     \code{\link{writeBin}} to save to a file).}
-#'     \item{\code{$data}} {- converted character string (if specified in the
-#'     session), or NULL otherwise. This may be further parsed this as html,
-#'     json, xml etc. if required.}
+#'     \item{\code{$data}} {- the response body as a character string (if
+#'     'convert = TRUE' was specified for the session), which may be further
+#'     parsed as html, json, xml etc. as required, or else a raw byte vector,
+#'     which may be saved as a file using \code{\link{writeBin}}.}
 #'     }
 #'
 #' @rdname ncurl_session

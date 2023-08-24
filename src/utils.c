@@ -24,7 +24,7 @@
 
 SEXP mk_error_ncurl(const int xc) {
 
-  const char *names[] = {"status", "headers", "raw", "data", ""};
+  const char *names[] = {"status", "headers", "data", ""};
   SEXP out = PROTECT(Rf_mkNamed(VECSXP, names));
   SEXP err = Rf_ScalarInteger(xc);
   SET_ATTRIB(err, nano_error);
@@ -32,7 +32,6 @@ SEXP mk_error_ncurl(const int xc) {
   SET_VECTOR_ELT(out, 0, err);
   SET_VECTOR_ELT(out, 1, err);
   SET_VECTOR_ELT(out, 2, err);
-  SET_VECTOR_ELT(out, 3, err);
   UNPROTECT(1);
   return out;
 
@@ -299,10 +298,10 @@ SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP follow, SEXP method, SEXP headers,
     return rnng_ncurl(nano_addRedirect, convert, follow, method, headers, data, response, timeout, tls);
   }
 
-  SEXP out, vec, cvec, rvec;
+  SEXP out, vec, rvec;
   void *dat;
   size_t sz;
-  const char *names[] = {"status", "headers", "raw", "data", ""};
+  const char *names[] = {"status", "headers", "data", ""};
 
   PROTECT(out = Rf_mkNamed(VECSXP, names));
 
@@ -356,16 +355,13 @@ SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP follow, SEXP method, SEXP headers,
   nng_http_res_get_data(res, &dat, &sz);
 
   if (conv) {
-    vec = R_NilValue;
+    vec = rawToChar(dat, sz);
   } else {
     vec = Rf_allocVector(RAWSXP, sz);
     if (dat != NULL)
       memcpy(STDVEC_DATAPTR(vec), dat, sz);
   }
   SET_VECTOR_ELT(out, 2, vec);
-
-  cvec = conv ? rawToChar(dat, sz) : R_NilValue;
-  SET_VECTOR_ELT(out, 3, cvec);
 
   nng_http_res_free(res);
   nng_http_req_free(req);

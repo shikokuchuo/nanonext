@@ -52,12 +52,10 @@ An 'ncurlAio' (object of class 'ncurlAio' and 'recvAio') (invisibly).
     'response', or NULL otherwise. If the status code is within the 300
     range, i.e. a redirect, the response header 'Location' is automatically
     appended to return the redirect address.}
-    \item{\code{$raw}} {- if 'convert' = FALSE, the raw vector of the
-    received resource, or NULL otherwise (use \code{\link{writeBin}} to save
-    to a file).}
-    \item{\code{$data}} {- if 'convert' = TRUE, the converted character
-    string, or NULL otherwise. This may be further parsed as html, json, xml
-    etc. if required.}
+    \item{\code{$data}} {- the response body, as a character string if
+    'convert' = TRUE (may be further parsed as html, json, xml etc. as
+    required), or a raw byte vector if FALSE (use \code{\link{writeBin}} to
+    save as a file).}
     }
 }
 \description{

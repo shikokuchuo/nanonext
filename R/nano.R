@@ -352,7 +352,7 @@ print.sendAio <- function(x, ...) {
 #'
 print.ncurlAio <- function(x, ...) {
 
-  cat("< ncurlAio >\n - $status for response status code\n - $headers for response headers\n - $raw for raw message\n - $data for message data\n", file = stdout())
+  cat("< ncurlAio >\n - $status for response status code\n - $headers for response headers\n - $data for message data\n", file = stdout())
   invisible(x)
 
 }
@@ -450,4 +450,4 @@ print.tlsConfig <- function(x, ...) {
 #' @export
 #'
 .DollarNames.ncurlAio <- function(x, pattern = "")
-  grep(pattern, c("status", "headers", "raw", "data"), value = TRUE, fixed = TRUE)
+  grep(pattern, c("status", "headers", "data"), value = TRUE, fixed = TRUE)

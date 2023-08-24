@@ -1,4 +1,4 @@
-# nanonext 0.9.2.9030 (development)
+# nanonext 0.9.2.9031 (development)
 
 *This version contains breaking changes; please review carefully and only update when ready.*
 
@@ -11,6 +11,7 @@
 #### Updates
 
 * The argument 'keep.raw' for all receive functions (previously-deprecated) is removed.
+* `ncurl()` now always returns the response message body at `$data` whether convert is TRUE or FALSE.
 * Function `device()` is removed as its non-interruptible blocking behaviour is deemed unsuitable for practical use.
 * `cv_reset()` and `cv_signal()` now both return invisible zero rather than NULL.
 * The unresolved value for an Aio is now the symbol ` unresolvedValue ` rather than a classed logical NA. Continue to use `unresolved()` to check for resolution.

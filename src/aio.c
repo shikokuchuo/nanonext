@@ -53,7 +53,6 @@ static SEXP mk_error_haio(const int xc, SEXP env) {
   SET_OBJECT(err, 1);
   Rf_defineVar(nano_StatusSymbol, err, ENCLOS(env));
   Rf_defineVar(nano_StateSymbol, err, ENCLOS(env));
-  Rf_defineVar(nano_RawSymbol, err, ENCLOS(env));
   Rf_defineVar(nano_ResultSymbol, err, ENCLOS(env));
   Rf_defineVar(nano_AioSymbol, R_NilValue, env);
   UNPROTECT(1);
@@ -777,8 +776,7 @@ SEXP rnng_aio_recover(SEXP aio) {
     out = Rf_allocVector(RAWSXP, sz);
     if (buf != NULL)
       memcpy(STDVEC_DATAPTR(out), buf, sz);
-    Rf_defineVar(nano_RawSymbol, out, ENCLOS(aio));
-    Rf_defineVar(nano_ResultSymbol, R_NilValue, ENCLOS(aio));
+    Rf_defineVar(nano_ResultSymbol, out, ENCLOS(aio));
     Rf_defineVar(nano_AioSymbol, R_NilValue, aio);
     return aio;
   default:
@@ -1186,8 +1184,7 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP dat
     switch (++i) {
     case 1: R_MakeActiveBinding(nano_StatusSymbol, fun, env);
     case 2: R_MakeActiveBinding(nano_HeadersSymbol, fun, env);
-    case 3: R_MakeActiveBinding(nano_RawSymbol, fun, env);
-    case 4: R_MakeActiveBinding(nano_DataSymbol, fun, env);
+    case 3: R_MakeActiveBinding(nano_DataSymbol, fun, env);
     }
     UNPROTECT(1);
   }
@@ -1221,7 +1218,6 @@ SEXP rnng_aio_http(SEXP env, SEXP response, SEXP type) {
   switch (typ) {
   case 1: exist = Rf_findVarInFrame(ENCLOS(env), nano_StatusSymbol); break;
   case 2: exist = Rf_findVarInFrame(ENCLOS(env), nano_StateSymbol); break;
-  case 3: exist = Rf_findVarInFrame(ENCLOS(env), nano_RawSymbol); break;
   default: exist = Rf_findVarInFrame(ENCLOS(env), nano_ResultSymbol); break;
   }
   if (exist != R_UnboundValue)
@@ -1249,7 +1245,7 @@ SEXP rnng_aio_http(SEXP env, SEXP response, SEXP type) {
 
   void *dat;
   size_t sz;
-  SEXP out, vec, cvec, rvec;
+  SEXP out, vec, rvec;
   nano_handle *handle = (nano_handle *) haio->data;
 
   uint16_t code = nng_http_res_get_status(handle->res), relo = code >= 300 && code < 400;
@@ -1306,22 +1302,19 @@ SEXP rnng_aio_http(SEXP env, SEXP response, SEXP type) {
   nng_http_res_get_data(handle->res, &dat, &sz);
 
   if (haio->mode) {
-    vec = R_NilValue;
+    vec = rawToChar(dat, sz);
   } else {
     vec = Rf_allocVector(RAWSXP, sz);
     if (dat != NULL)
       memcpy(STDVEC_DATAPTR(vec), dat, sz);
   }
-  Rf_defineVar(nano_RawSymbol, vec, ENCLOS(env));
+  Rf_defineVar(nano_ResultSymbol, vec, ENCLOS(env));
 
-  cvec = haio->mode ? rawToChar(dat, sz) : R_NilValue;
-  Rf_defineVar(nano_ResultSymbol, cvec, ENCLOS(env));
   Rf_defineVar(nano_AioSymbol, R_NilValue, env);
 
   switch (typ) {
   case 1: out = Rf_findVarInFrame(ENCLOS(env), nano_StatusSymbol); break;
   case 2: out = Rf_findVarInFrame(ENCLOS(env), nano_StateSymbol); break;
-  case 3: out = Rf_findVarInFrame(ENCLOS(env), nano_RawSymbol); break;
   default: out = Rf_findVarInFrame(ENCLOS(env), nano_ResultSymbol); break;
   }
   return out;
@@ -1479,10 +1472,10 @@ SEXP rnng_ncurl_transact(SEXP session) {
   if (haio->result > 0)
     return mk_error_ncurl(haio->result);
 
-  SEXP out, vec, rvec, cvec, response;
+  SEXP out, vec, rvec, response;
   void *dat;
   size_t sz;
-  const char *names[] = {"status", "headers", "raw", "data", ""};
+  const char *names[] = {"status", "headers", "data", ""};
 
   PROTECT(out = Rf_mkNamed(VECSXP, names));
 
@@ -1524,16 +1517,13 @@ SEXP rnng_ncurl_transact(SEXP session) {
   nng_http_res_get_data(handle->res, &dat, &sz);
 
   if (haio->mode) {
-    vec = R_NilValue;
+    vec = rawToChar(dat, sz);
   } else {
     vec = Rf_allocVector(RAWSXP, sz);
     if (dat != NULL)
       memcpy(STDVEC_DATAPTR(vec), dat, sz);
   }
   SET_VECTOR_ELT(out, 2, vec);
-
-  cvec = haio->mode ? rawToChar(dat, sz) : R_NilValue;
-  SET_VECTOR_ELT(out, 3, cvec);
 
   UNPROTECT(1);
   return out;
