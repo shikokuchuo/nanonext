@@ -318,6 +318,19 @@ unresolved <- function(aio) .Call(rnng_unresolved, aio)
 #'     Note: calling this function on an unresolved Aio is an error and any
 #'     resulting operation is not guaranteed.
 #'
+#' @examples
+#' s1 <- socket("pair", listen = "inproc://nanorec")
+#' s2 <- socket("pair", dial = "inproc://nanorec")
+#'
+#' aio <- send_aio(s1, "test", mode = "raw", timeout = 100)
+#' r <- recv_aio(s2, mode = "serial")
+#' tryCatch(call_aio(r), error = identity)
+#' recover_aio(r)$data
+#' rawToChar(r$data)
+#'
+#' close(s1)
+#' close(s2)
+#'
 #' @export
 #'
 recover_aio <- function(aio) invisible(.Call(rnng_aio_recover, aio))
