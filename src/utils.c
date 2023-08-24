@@ -180,19 +180,7 @@ SEXP rnng_is_nul_byte(SEXP x) {
 
 SEXP rnng_is_error_value(SEXP x) {
 
-  int xc;
-  switch (TYPEOF(x)) {
-  case INTSXP:
-    xc = ATTRIB(x) == nano_error;
-    break;
-  case STRSXP:
-    xc = Rf_inherits(x, "errorValue");
-    break;
-  default:
-    xc = 0;
-  }
-
-  return Rf_ScalarLogical(xc);
+  return Rf_ScalarLogical(Rf_inherits(x, "errorValue"));
 
 }
 
