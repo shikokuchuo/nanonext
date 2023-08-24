@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.2.9030</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.2.9031</span>
       </span>
     </div>
 
@@ -128,12 +128,10 @@ NULL, certificates are not validated.</p></dd>
     'response', or NULL otherwise. If the status code is within the 300
     range, i.e. a redirect, the response header 'Location' is automatically
     appended to return the redirect address.</p></li>
-<li><p><code>$raw</code> - if 'convert' = FALSE, the raw vector of the
-    received resource, or NULL otherwise (use <code><a href="https://rdrr.io/r/base/readBin.html" class="external-link">writeBin</a></code> to save
-    to a file).</p></li>
-<li><p><code>$data</code> - if 'convert' = TRUE, the converted character
-    string, or NULL otherwise. This may be further parsed as html, json, xml
-    etc. if required.</p></li>
+<li><p><code>$data</code> - the response body, as a character string if
+    'convert' = TRUE (may be further parsed as html, json, xml etc. as
+    required), or a raw byte vector if FALSE (use <code><a href="https://rdrr.io/r/base/readBin.html" class="external-link">writeBin</a></code> to
+    save as a file).</p></li>
 </ul></div>
     <div id="see-also">
     <h2>See also</h2>
@@ -150,7 +148,7 @@ NULL, certificates are not validated.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 200</span>
 <span class="r-in"><span><span class="va">nc</span><span class="op">$</span><span class="va">headers</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $date</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Thu, 24 Aug 2023 11:34:45 GMT"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Thu, 24 Aug 2023 18:55:37 GMT"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $server</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Apache"</span>
