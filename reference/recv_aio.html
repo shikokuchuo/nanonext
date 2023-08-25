@@ -134,11 +134,9 @@ signal when the async receive is complete.</p></dd>
 <p>In case of an error, an integer 'errorValue' is returned (to be
     distiguishable from an integer message value). This can be checked using
     <code><a href="is_error_value.html">is_error_value</a></code>.</p>
-<p>For <code>mode = "serial"</code>, attempting to unserialise a non-serialised
-    message will result in the error 'unknown input format'. In such cases
-    <code><a href="recover_aio.html">recover_aio</a></code> may be used to recover the value as a raw vector.</p>
-<p>For all other modes, if an error occurred in conversion of the data to
-    the specified mode, a raw vector will be returned instead (with a warning).</p>
+<p>If an error occurred in unserialization or conversion of the message data
+    to the specified mode, a raw vector will be returned instead to allow
+    recovery (accompanied by a warning).</p>
 <p><strong>For the signalling version</strong>: when the receive is complete,
     the supplied 'conditionVariable' is signalled by incrementing its value
     by 1. This happens asynchronously and independently of the R execution

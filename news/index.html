@@ -60,7 +60,7 @@
 <ul><li>
 <code><a href="../reference/ncurl_aio.html">ncurl_aio()</a></code> has been separated into a dedicated function for async http requests.</li>
 <li>
-<code><a href="../reference/recover_aio.html">recover_aio()</a></code> allows recovery of ‘recvAio’ and ‘ncurlAio’ where unserialization or character conversion fail.</li>
+<code><a href="../reference/recover_aio.html">recover_aio()</a></code> allows recovery of ‘ncurlAio’ where character conversion fails.</li>
 <li>Receive functions add <code>mode = 'string'</code> as a faster alternative to ‘character’ when receiving a scalar value.</li>
 </ul></div>
 <div class="section level5">
@@ -75,7 +75,10 @@
 <li>
 <code><a href="../reference/cv.html">cv_reset()</a></code> and <code><a href="../reference/cv.html">cv_signal()</a></code> now both return invisible zero rather than NULL.</li>
 </ul><p><em>Other changes:</em></p>
-<ul><li>Improvements to vector send/recv (mode = ‘raw’):
+<ul><li>Improvements to recv (mode = ‘serial’):
+<ul><li>Failure to unserialize a message will automatically save the data as a raw vector for recovery, and generate a warning (as was the case prior to v0.9.2).</li>
+</ul></li>
+<li>Improvements to vector send/recv (mode = ‘raw’):
 <ul><li>Higher performance sending of vector data.</li>
 <li>Permits sending of NULL, in which case an empty vector of the corresponding mode is received.</li>
 <li>Character vectors containing empty characters in the middle are now received correctly.</li>
