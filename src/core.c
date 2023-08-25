@@ -236,12 +236,6 @@ void nano_encode(nano_buf *enc, SEXP object) {
   case RAWSXP:
     NANO_INIT(enc, (unsigned char *) STDVEC_DATAPTR(object), XLENGTH(object));
     break;
-  case EXTPTRSXP: ;
-    const char *buf = R_ExternalPtrAddr(object);
-    if (buf != NULL) {
-      NANO_INIT(enc, (unsigned char *) buf, strlen(buf));
-      break;
-    }
   case NILSXP:
     NANO_INIT(enc, NULL, 0);
     break;
