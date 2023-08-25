@@ -25,11 +25,9 @@ For a 'recvAio', the received value may be retrieved at \code{$data}.
     To access the values directly, use for example on a 'recvAio' \code{x}:
     \code{call_aio(x)$data}.
 
-    For a 'recvAio', attempting to unserialise a non-serialised message will
-    result in the error 'unknown input format'. In such cases
-    \code{\link{recover_aio}} may be used to recover the value as a raw
-    vector. In case of an error in data conversion to the specified mode, a
-    raw vector will be returned instead (with a warning).
+    For a 'recvAio', if an error occurred in unserialization or conversion of
+    the message data to the specified mode, a raw vector will be returned
+    instead to allow recovery (accompanied by a warning).
 
     Once the value has been successfully retrieved, the Aio is deallocated
     and only the value is stored in the Aio object.

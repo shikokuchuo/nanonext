@@ -353,7 +353,7 @@ SEXP rnng_base64dec(SEXP x, SEXP convert) {
     out = rawToChar(buf, olen);
     break;
   default:
-    out = nano_unserialize(buf, olen);
+    out = nano_unserialize_xdr(buf, olen);
   }
 
   R_Free(buf);

@@ -46,12 +46,9 @@ In case of an error, an integer 'errorValue' is returned (to be
     distiguishable from an integer message value). This can be verified using
     \code{\link{is_error_value}}.
 
-    For \code{mode = "serial"}, attempting to unserialise a non-serialised
-    message will result in the error 'unknown input format'. In such cases
-    \code{\link{recover_aio}} may be used to recover the value as a raw vector.
-
-    For all other modes, if an error occurred in conversion of the data to
-    the specified mode, a raw vector will be returned instead (with a warning).
+    If an error occurred in unserialization or conversion of the message data
+    to the specified mode, a raw vector will be returned instead to allow
+    recovery (accompanied by a warning).
 }
 \section{Blocking}{
 

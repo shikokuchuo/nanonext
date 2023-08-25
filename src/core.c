@@ -124,6 +124,7 @@ SEXP rawToChar(unsigned char *buf, const size_t sz) {
 void nano_serialize(nano_buf *buf, SEXP object) {
 
   NANO_ALLOC(buf, NANONEXT_INIT_BUFSIZE);
+  buf->buf[buf->cur++] = 7u;
   struct R_outpstream_st output_stream;
 
   R_InitOutPStream(
@@ -170,6 +171,34 @@ SEXP nano_unserialize(unsigned char *buf, const size_t sz) {
   nano_buf nbuf;
   struct R_inpstream_st input_stream;
 
+  if (buf[0] != 7u) {
+    Rf_warning("received data could not be unserialized");
+    return nano_decode(buf, sz, 8);
+  }
+
+  nbuf.buf = buf + 1;
+  nbuf.len = sz - 1;
+  nbuf.cur = 0;
+
+  R_InitInPStream(
+    &input_stream,
+    (R_pstream_data_t) &nbuf,
+    R_pstream_any_format,
+    nano_read_char,
+    nano_read_bytes,
+    NULL,
+    R_NilValue
+  );
+
+  return R_Unserialize(&input_stream);
+
+}
+
+SEXP nano_unserialize_xdr(unsigned char *buf, const size_t sz) {
+
+  nano_buf nbuf;
+  struct R_inpstream_st input_stream;
+
   nbuf.buf = buf;
   nbuf.len = sz;
   nbuf.cur = 0;
@@ -177,7 +206,7 @@ SEXP nano_unserialize(unsigned char *buf, const size_t sz) {
   R_InitInPStream(
     &input_stream,
     (R_pstream_data_t) &nbuf,
-    R_pstream_any_format,
+    R_pstream_xdr_format,
     nano_read_char,
     nano_read_bytes,
     NULL,

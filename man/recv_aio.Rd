@@ -71,12 +71,9 @@ Async receive is always non-blocking and returns a 'recvAio'
     distiguishable from an integer message value). This can be checked using
     \code{\link{is_error_value}}.
 
-    For \code{mode = "serial"}, attempting to unserialise a non-serialised
-    message will result in the error 'unknown input format'. In such cases
-    \code{\link{recover_aio}} may be used to recover the value as a raw vector.
-
-    For all other modes, if an error occurred in conversion of the data to
-    the specified mode, a raw vector will be returned instead (with a warning).
+    If an error occurred in unserialization or conversion of the message data
+    to the specified mode, a raw vector will be returned instead to allow
+    recovery (accompanied by a warning).
 
 \strong{For the signalling version}: when the receive is complete,
     the supplied 'conditionVariable' is signalled by incrementing its value

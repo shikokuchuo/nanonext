@@ -7,40 +7,26 @@
 recover_aio(aio)
 }
 \arguments{
-\item{aio}{a recvAio or ncurlAio (object of class 'recvAio' or 'ncurlAio').}
+\item{aio}{an ncurlAio (object of class 'ncurlAio').}
 }
 \value{
 The passed object (invisibly).
 }
 \description{
-For use on 'recvAio' or 'ncurlAio' when encountering unserialization error
-    'unknown input format' (received data is not a serialized R object) or
-    character conversion error 'embedded nul in string' (received data is not
-    text data). This function allows recovery by retrieving the value as a
-    raw vector.
+For use on 'ncurlAio' when encountering a character conversion error
+    'embedded nul in string' (received data is not text data). This function
+    allows recovery by retrieving the value as a raw vector.
 }
 \details{
-For a recvAio, a raw vector will be available at \code{$data}, as if
-    \code{mode = 'raw'} had been specified for the receive function.
-
-    For an ncurlAio, a raw vector will be available at \code{$raw} and
-    \code{$data} will be NULL, as if \code{convert = FALSE} had been
-    specified.
+A raw vector will be available at \code{$data}, as if
+    \code{convert = FALSE} had been specified.
 
     Note: calling this function on an unresolved Aio is an error and any
     resulting operation is not guaranteed.
 }
 \examples{
-s1 <- socket("pair", listen = "inproc://nanorec")
-s2 <- socket("pair", dial = "inproc://nanorec")
-
-aio <- send_aio(s1, "test", mode = "raw", timeout = 100)
-r <- recv_aio(s2, mode = "serial")
-tryCatch(call_aio(r), error = identity)
-recover_aio(r)$data
-rawToChar(r$data)
-
-close(s1)
-close(s2)
+res <- ncurl_aio("https://shikokuchuo.net/nanonext/reference/figures/logo.png")
+tryCatch(call_aio(res), error = identity)
+recover_aio(res)$data
 
 }

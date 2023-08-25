@@ -83,12 +83,9 @@ send_aio <- function(con, data, mode = c("serial", "raw"), timeout = NULL)
 #'     distiguishable from an integer message value). This can be checked using
 #'     \code{\link{is_error_value}}.
 #'
-#'     For \code{mode = "serial"}, attempting to unserialise a non-serialised
-#'     message will result in the error 'unknown input format'. In such cases
-#'     \code{\link{recover_aio}} may be used to recover the value as a raw vector.
-#'
-#'     For all other modes, if an error occurred in conversion of the data to
-#'     the specified mode, a raw vector will be returned instead (with a warning).
+#'     If an error occurred in unserialization or conversion of the message data
+#'     to the specified mode, a raw vector will be returned instead to allow
+#'     recovery (accompanied by a warning).
 #'
 #' @examples
 #' s1 <- socket("pair", listen = "inproc://nanonext")
@@ -179,11 +176,9 @@ recv_aio_signal <- function(con,
 #'     To access the values directly, use for example on a 'recvAio' \code{x}:
 #'     \code{call_aio(x)$data}.
 #'
-#'     For a 'recvAio', attempting to unserialise a non-serialised message will
-#'     result in the error 'unknown input format'. In such cases
-#'     \code{\link{recover_aio}} may be used to recover the value as a raw
-#'     vector. In case of an error in data conversion to the specified mode, a
-#'     raw vector will be returned instead (with a warning).
+#'     For a 'recvAio', if an error occurred in unserialization or conversion of
+#'     the message data to the specified mode, a raw vector will be returned
+#'     instead to allow recovery (accompanied by a warning).
 #'
 #'     Once the value has been successfully retrieved, the Aio is deallocated
 #'     and only the value is stored in the Aio object.
@@ -298,38 +293,24 @@ unresolved <- function(aio) .Call(rnng_unresolved, aio)
 
 #' Recover an Aio Value
 #'
-#' For use on 'recvAio' or 'ncurlAio' when encountering unserialization error
-#'     'unknown input format' (received data is not a serialized R object) or
-#'     character conversion error 'embedded nul in string' (received data is not
-#'     text data). This function allows recovery by retrieving the value as a
-#'     raw vector.
+#' For use on 'ncurlAio' when encountering a character conversion error
+#'     'embedded nul in string' (received data is not text data). This function
+#'     allows recovery by retrieving the value as a raw vector.
 #'
-#' @param aio a recvAio or ncurlAio (object of class 'recvAio' or 'ncurlAio').
+#' @param aio an ncurlAio (object of class 'ncurlAio').
 #'
 #' @return The passed object (invisibly).
 #'
-#' @details For a recvAio, a raw vector will be available at \code{$data}, as if
-#'     \code{mode = 'raw'} had been specified for the receive function.
-#'
-#'     For an ncurlAio, a raw vector will be available at \code{$raw} and
-#'     \code{$data} will be NULL, as if \code{convert = FALSE} had been
-#'     specified.
+#' @details A raw vector will be available at \code{$data}, as if
+#'     \code{convert = FALSE} had been specified.
 #'
 #'     Note: calling this function on an unresolved Aio is an error and any
 #'     resulting operation is not guaranteed.
 #'
 #' @examples
-#' s1 <- socket("pair", listen = "inproc://nanorec")
-#' s2 <- socket("pair", dial = "inproc://nanorec")
-#'
-#' aio <- send_aio(s1, "test", mode = "raw", timeout = 100)
-#' r <- recv_aio(s2, mode = "serial")
-#' tryCatch(call_aio(r), error = identity)
-#' recover_aio(r)$data
-#' rawToChar(r$data)
-#'
-#' close(s1)
-#' close(s2)
+#' res <- ncurl_aio("https://shikokuchuo.net/nanonext/reference/figures/logo.png")
+#' tryCatch(call_aio(res), error = identity)
+#' recover_aio(res)$data
 #'
 #' @export
 #'
