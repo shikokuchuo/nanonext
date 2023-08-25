@@ -1,26 +1,30 @@
-# nanonext 0.9.2.9032 (development)
-
-*This version contains breaking changes; please review carefully and only update when ready.*
+# nanonext 0.9.2.9033 (development)
 
 #### New Features
 
-* `ncurl_aio()` has been separated into a dedicated function for async http requests. `ncurl()` specifying `async = TRUE` is now deprecated.
+* `ncurl_aio()` has been separated into a dedicated function for async http requests.
 * `recover_aio()` allows recovery of 'recvAio' and 'ncurlAio' where unserialization or character conversion fail.
 * Receive functions add `mode = 'string'` as a faster alternative to 'character' when receiving a scalar value.
 
 #### Updates
 
-* The argument 'keep.raw' for all receive functions (previously-deprecated) is removed.
+*Please review the following potentially breaking changes, and only update when ready:*
+
+* `ncurl()` argument 'async' is retired. Please use `ncurl_aio()` for asynchronous requests.
 * `ncurl()` now always returns the response message body at `$data` whether convert is TRUE or FALSE.
+* The argument 'keep.raw' for all receive functions (previously-deprecated) is removed.
 * Function `device()` is removed as its non-interruptible blocking behaviour is deemed unsuitable for practical use.
 * `cv_reset()` and `cv_signal()` now both return invisible zero rather than NULL.
-* The unresolved value for an Aio is now the symbol ` unresolvedValue ` rather than a classed logical NA. Continue to use `unresolved()` to check for resolution.
+
+*Other changes:*
+
 * Improvements to vector send/recv (mode = 'raw'):
   + Higher performance sending of vector data.
   + Permits sending of NULL, in which case an empty vector of the corresponding mode is received.
   + Character vectors containing empty characters in the middle are now received correctly.
   + For character vectors, respects original encoding and no longer performs automatic conversion to UTF8.
   + Experimental: sending of external pointer data (as char).
+* The unresolved value for an Aio is now the symbol ` unresolvedValue ` rather than a classed logical NA. Continue to use `unresolved()` to check for resolution.
 * Base64 and SHA hash functions now use big-endian representation for serialization (where this is performed) to ensure consistency across all systems (fixes #14, a regression in nanonext 0.9.2).
 * Package installation now succeeds in certain environments where 'cmake' failed to make 'libmbedtls' detectable after building (thanks @kendonB #13).
 * Source bundles for 'libmbedtls' and 'libnng' slimmed down for smaller package and installed sizes.

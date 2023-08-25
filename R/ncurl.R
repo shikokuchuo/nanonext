@@ -21,8 +21,6 @@
 #' nano cURL - a minimalist http(s) client.
 #'
 #' @param url the URL address.
-#' @param async [default FALSE] logical value whether to perform an async request.
-#'     This option is deprecated, use \code{\link{ncurl_aio}} instead.
 #' @param convert [default TRUE] logical value whether to attempt conversion of
 #'     the received raw bytes to a character vector. Set to FALSE if downloading
 #'     non-text data.
@@ -79,7 +77,6 @@
 #' @export
 #'
 ncurl <- function(url,
-                  async = FALSE,
                   convert = TRUE,
                   follow = FALSE,
                   method = NULL,
@@ -87,12 +84,8 @@ ncurl <- function(url,
                   data = NULL,
                   response = NULL,
                   timeout = NULL,
-                  tls = NULL) {
-
-  async && return(ncurl_aio(url, convert, method, headers, data, response, timeout, tls))
+                  tls = NULL)
   .Call(rnng_ncurl, url, convert, follow, method, headers, data, response, timeout, tls)
-
-}
 
 #' ncurl Async
 #'

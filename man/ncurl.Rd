@@ -6,7 +6,6 @@
 \usage{
 ncurl(
   url,
-  async = FALSE,
   convert = TRUE,
   follow = FALSE,
   method = NULL,
@@ -19,9 +18,6 @@ ncurl(
 }
 \arguments{
 \item{url}{the URL address.}
-
-\item{async}{[default FALSE] logical value whether to perform an async request.
-This option is deprecated, use \code{\link{ncurl_aio}} instead.}
 
 \item{convert}{[default TRUE] logical value whether to attempt conversion of
 the received raw bytes to a character vector. Set to FALSE if downloading
