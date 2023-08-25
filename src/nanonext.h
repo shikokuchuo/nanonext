@@ -221,7 +221,6 @@ extern SEXP rnng_aio_call(SEXP);
 extern SEXP rnng_aio_get_msg(SEXP);
 extern SEXP rnng_aio_get_msg2(SEXP);
 extern SEXP rnng_aio_http(SEXP, SEXP, SEXP);
-extern SEXP rnng_aio_recover(SEXP);
 extern SEXP rnng_aio_result(SEXP);
 extern SEXP rnng_aio_stop(SEXP);
 extern SEXP rnng_base64dec(SEXP, SEXP);

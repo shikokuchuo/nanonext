@@ -290,28 +290,3 @@ unresolved <- function(aio) .Call(rnng_unresolved, aio)
 #' @export
 #'
 .unresolved <- function(aio) .Call(rnng_unresolved2, aio)
-
-#' Recover an Aio Value
-#'
-#' For use on 'ncurlAio' when encountering a character conversion error
-#'     'embedded nul in string' (received data is not text data). This function
-#'     allows recovery by retrieving the value as a raw vector.
-#'
-#' @param aio an ncurlAio (object of class 'ncurlAio').
-#'
-#' @return The passed object (invisibly).
-#'
-#' @details A raw vector will be available at \code{$data}, as if
-#'     \code{convert = FALSE} had been specified.
-#'
-#'     Note: calling this function on an unresolved Aio is an error and any
-#'     resulting operation is not guaranteed.
-#'
-#' @examples
-#' res <- ncurl_aio("https://shikokuchuo.net/nanonext/reference/figures/logo.png")
-#' tryCatch(call_aio(res), error = identity)
-#' recover_aio(res)$data
-#'
-#' @export
-#'
-recover_aio <- function(aio) invisible(.Call(rnng_aio_recover, aio))

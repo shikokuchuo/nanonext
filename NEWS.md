@@ -1,9 +1,8 @@
-# nanonext 0.9.2.9033 (development)
+# nanonext 0.9.2.9034 (development)
 
 #### New Features
 
 * `ncurl_aio()` has been separated into a dedicated function for async http requests.
-* `recover_aio()` allows recovery of 'ncurlAio' where character conversion fails.
 * Receive functions add `mode = 'string'` as a faster alternative to 'character' when receiving a scalar value.
 
 #### Updates
@@ -18,8 +17,8 @@
 
 *Other changes:*
 
-* Improvements to recv (mode = 'serial'):
-  + Failure to unserialize a message will automatically save the data as a raw vector for recovery, and generate a warning (as was the case prior to v0.9.2).
+* Improvements to recv (mode = 'serial') and `ncurl()`:
+  + Failure to unserialize, or convert to character, automatically saves the data as a raw vector for recovery, generating a warning instead of an error (as was the case prior to v0.9.2).
 * Improvements to vector send/recv (mode = 'raw'):
   + Higher performance sending of vector data.
   + Permits sending of NULL, in which case an empty vector of the corresponding mode is received.

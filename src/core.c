@@ -110,11 +110,17 @@ static SEXP rawOneString(unsigned char *bytes, R_xlen_t nbytes, R_xlen_t *np) {
 SEXP rawToChar(unsigned char *buf, const size_t sz) {
 
   SEXP out;
-  int i, j;
-  for (i = 0, j = -1; i < sz; i++) if (buf[i]) j = i;
+  const char *cbuf = (const char *) buf;
+  size_t slen = strnlen(cbuf, sz);
+  if (sz - slen > 1) {
+    Rf_warning("data could not be converted to a character string");
+    out = Rf_allocVector(RAWSXP, sz);
+    memcpy(STDVEC_DATAPTR(out), buf, sz);
+    return out;
+  }
 
   PROTECT(out = Rf_allocVector(STRSXP, 1));
-  SET_STRING_ELT(out, 0, Rf_mkCharLenCE((const char *) buf, j + 1, CE_NATIVE));
+  SET_STRING_ELT(out, 0, Rf_mkCharLenCE(cbuf, slen, CE_NATIVE));
 
   UNPROTECT(1);
   return out;

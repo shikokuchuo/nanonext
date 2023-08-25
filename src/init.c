@@ -126,7 +126,6 @@ static const R_CallMethodDef callMethods[] = {
   {"rnng_aio_get_msg", (DL_FUNC) &rnng_aio_get_msg, 1},
   {"rnng_aio_get_msg2", (DL_FUNC) &rnng_aio_get_msg2, 1},
   {"rnng_aio_http", (DL_FUNC) &rnng_aio_http, 3},
-  {"rnng_aio_recover", (DL_FUNC) &rnng_aio_recover, 1},
   {"rnng_aio_result", (DL_FUNC) &rnng_aio_result, 1},
   {"rnng_aio_stop", (DL_FUNC) &rnng_aio_stop, 1},
   {"rnng_clock", (DL_FUNC) &rnng_clock, 0},

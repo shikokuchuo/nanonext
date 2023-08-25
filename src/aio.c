@@ -743,55 +743,6 @@ SEXP rnng_aio_call(SEXP aio) {
 
 }
 
-SEXP rnng_aio_recover(SEXP aio) {
-
-  if (TYPEOF(aio) != ENVSXP)
-    return aio;
-
-  const SEXP coreaio = Rf_findVarInFrame(aio, nano_AioSymbol);
-  if (R_ExternalPtrTag(coreaio) != nano_AioSymbol)
-    return aio;
-
-  nano_aio *raio = (nano_aio *) R_ExternalPtrAddr(coreaio);
-  if (raio->data == NULL) return aio;
-
-  SEXP out;
-  const int mod = 8;
-  unsigned char *buf;
-  size_t sz;
-
-  switch (raio->type) {
-  case IOV_RECVAIO:
-    buf = raio->data;
-    sz = nng_aio_count(raio->aio);
-    break;
-  case RECVAIO: ;
-    nng_msg *msg = (nng_msg *) raio->data;
-    buf = nng_msg_body(msg);
-    sz = nng_msg_len(msg);
-    break;
-  case HTTP_AIO: ;
-    nano_handle *handle = (nano_handle *) raio->data;
-    nng_http_res_get_data(handle->res, (void **) &buf, &sz);
-    out = Rf_allocVector(RAWSXP, sz);
-    if (buf != NULL)
-      memcpy(STDVEC_DATAPTR(out), buf, sz);
-    Rf_defineVar(nano_ResultSymbol, out, ENCLOS(aio));
-    Rf_defineVar(nano_AioSymbol, R_NilValue, aio);
-    return aio;
-  default:
-    return aio;
-  }
-
-  PROTECT(out = nano_decode(buf, sz, mod));
-  Rf_defineVar(nano_ResultSymbol, out, ENCLOS(aio));
-  Rf_defineVar(nano_AioSymbol, R_NilValue, aio);
-
-  UNPROTECT(1);
-  return aio;
-
-}
-
 SEXP rnng_aio_stop(SEXP aio) {
 
   if (TYPEOF(aio) != ENVSXP)
