@@ -356,9 +356,10 @@ SEXP nano_decode(unsigned char *buf, size_t sz, const int mod) {
 
   switch (mod) {
   case 2:
-    PROTECT(data = Rf_allocVector(STRSXP, sz));
+    size = sz / 2 + 1;
+    PROTECT(data = Rf_allocVector(STRSXP, size));
     R_xlen_t i, m, nbytes = sz, np = 0;
-    for (i = 0, m = 0; i < sz; i++) {
+    for (i = 0, m = 0; i < size; i++) {
       SEXP onechar = rawOneString(buf, nbytes, &np);
       if (onechar == R_NilValue) break;
       SET_STRING_ELT(data, i, onechar);
