@@ -965,29 +965,31 @@ SEXP rnng_get_opt(SEXP object, SEXP opt) {
   const char *op = CHAR(STRING_ELT(opt, 0));
   SEXP out;
   int xc, typ;
-  bool bval;
-  int ival;
-  nng_duration dval;
-  size_t sval;
-  char *strval;
-  uint64_t uval;
+  union optval_u {
+    char *str;
+    bool b;
+    nng_duration d;
+    int i;
+    size_t s;
+    uint64_t u;
+  } optval;
 
   const SEXP ptrtag = R_ExternalPtrTag(object);
   if (ptrtag == nano_SocketSymbol) {
 
     nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(object);
     for (;;) {
-      xc = nng_socket_get_string(*sock, op, &strval);
+      xc = nng_socket_get_string(*sock, op, &optval.str);
       if (xc == 0) { typ = 1; break; }
-      xc = nng_socket_get_ms(*sock, op, &dval);
+      xc = nng_socket_get_ms(*sock, op, &optval.d);
       if (xc == 0) { typ = 2; break; }
-      xc = nng_socket_get_size(*sock, op, &sval);
+      xc = nng_socket_get_size(*sock, op, &optval.s);
       if (xc == 0) { typ = 3; break; }
-      xc = nng_socket_get_int(*sock, op, &ival);
+      xc = nng_socket_get_int(*sock, op, &optval.i);
       if (xc == 0) { typ = 4; break; }
-      xc = nng_socket_get_bool(*sock, op, &bval);
+      xc = nng_socket_get_bool(*sock, op, &optval.b);
       if (xc == 0) { typ = 5; break; }
-      xc = nng_socket_get_uint64(*sock, op, &uval);
+      xc = nng_socket_get_uint64(*sock, op, &optval.u);
       typ = 6; break;
     }
 
@@ -995,17 +997,17 @@ SEXP rnng_get_opt(SEXP object, SEXP opt) {
 
     nng_ctx *ctx = (nng_ctx *) R_ExternalPtrAddr(object);
     for (;;) {
-      xc = nng_ctx_get_string(*ctx, op, &strval);
+      xc = nng_ctx_get_string(*ctx, op, &optval.str);
       if (xc == 0) { typ = 1; break; }
-      xc = nng_ctx_get_ms(*ctx, op, &dval);
+      xc = nng_ctx_get_ms(*ctx, op, &optval.d);
       if (xc == 0) { typ = 2; break; }
-      xc = nng_ctx_get_size(*ctx, op, &sval);
+      xc = nng_ctx_get_size(*ctx, op, &optval.s);
       if (xc == 0) { typ = 3; break; }
-      xc = nng_ctx_get_int(*ctx, op, &ival);
+      xc = nng_ctx_get_int(*ctx, op, &optval.i);
       if (xc == 0) { typ = 4; break; }
-      xc = nng_ctx_get_bool(*ctx, op, &bval);
+      xc = nng_ctx_get_bool(*ctx, op, &optval.b);
       if (xc == 0) { typ = 5; break; }
-      xc = nng_ctx_get_uint64(*ctx, op, &uval);
+      xc = nng_ctx_get_uint64(*ctx, op, &optval.u);
       typ = 6; break;
     }
 
@@ -1013,17 +1015,17 @@ SEXP rnng_get_opt(SEXP object, SEXP opt) {
 
     nng_stream *st = (nng_stream *) R_ExternalPtrAddr(object);
     for (;;) {
-      xc = nng_stream_get_string(st, op, &strval);
+      xc = nng_stream_get_string(st, op, &optval.str);
       if (xc == 0) { typ = 1; break; }
-      xc = nng_stream_get_ms(st, op, &dval);
+      xc = nng_stream_get_ms(st, op, &optval.d);
       if (xc == 0) { typ = 2; break; }
-      xc = nng_stream_get_size(st, op, &sval);
+      xc = nng_stream_get_size(st, op, &optval.s);
       if (xc == 0) { typ = 3; break; }
-      xc = nng_stream_get_int(st, op, &ival);
+      xc = nng_stream_get_int(st, op, &optval.i);
       if (xc == 0) { typ = 4; break; }
-      xc = nng_stream_get_bool(st, op, &bval);
+      xc = nng_stream_get_bool(st, op, &optval.b);
       if (xc == 0) { typ = 5; break; }
-      xc = nng_stream_get_uint64(st, op, &uval);
+      xc = nng_stream_get_uint64(st, op, &optval.u);
       typ = 6; break;
     }
 
@@ -1031,17 +1033,17 @@ SEXP rnng_get_opt(SEXP object, SEXP opt) {
 
     nng_listener *list = (nng_listener *) R_ExternalPtrAddr(object);
     for (;;) {
-      xc = nng_listener_get_string(*list, op, &strval);
+      xc = nng_listener_get_string(*list, op, &optval.str);
       if (xc == 0) { typ = 1; break; }
-      xc = nng_listener_get_ms(*list, op, &dval);
+      xc = nng_listener_get_ms(*list, op, &optval.i);
       if (xc == 0) { typ = 2; break; }
-      xc = nng_listener_get_size(*list, op, &sval);
+      xc = nng_listener_get_size(*list, op, &optval.s);
       if (xc == 0) { typ = 3; break; }
-      xc = nng_listener_get_int(*list, op, &ival);
+      xc = nng_listener_get_int(*list, op, &optval.i);
       if (xc == 0) { typ = 4; break; }
-      xc = nng_listener_get_bool(*list, op, &bval);
+      xc = nng_listener_get_bool(*list, op, &optval.b);
       if (xc == 0) { typ = 5; break; }
-      xc = nng_listener_get_uint64(*list, op, &uval);
+      xc = nng_listener_get_uint64(*list, op, &optval.u);
       typ = 6; break;
     }
 
@@ -1049,17 +1051,17 @@ SEXP rnng_get_opt(SEXP object, SEXP opt) {
 
     nng_dialer *dial = (nng_dialer *) R_ExternalPtrAddr(object);
     for (;;) {
-      xc = nng_dialer_get_string(*dial, op, &strval);
+      xc = nng_dialer_get_string(*dial, op, &optval.str);
       if (xc == 0) { typ = 1; break; }
-      xc = nng_dialer_get_ms(*dial, op, &dval);
+      xc = nng_dialer_get_ms(*dial, op, &optval.i);
       if (xc == 0) { typ = 2; break; }
-      xc = nng_dialer_get_size(*dial, op, &sval);
+      xc = nng_dialer_get_size(*dial, op, &optval.s);
       if (xc == 0) { typ = 3; break; }
-      xc = nng_dialer_get_int(*dial, op, &ival);
+      xc = nng_dialer_get_int(*dial, op, &optval.i);
       if (xc == 0) { typ = 4; break; }
-      xc = nng_dialer_get_bool(*dial, op, &bval);
+      xc = nng_dialer_get_bool(*dial, op, &optval.b);
       if (xc == 0) { typ = 5; break; }
-      xc = nng_dialer_get_uint64(*dial, op, &uval);
+      xc = nng_dialer_get_uint64(*dial, op, &optval.u);
       typ = 6; break;
     }
 
@@ -1072,22 +1074,13 @@ SEXP rnng_get_opt(SEXP object, SEXP opt) {
 
   switch (typ) {
   case 1:
-    out = Rf_mkString(strval);
+    out = Rf_mkString(*(char **) &optval);
     break;
-  case 2:
-    out = Rf_ScalarInteger((int) dval);
-    break;
-  case 3:
-    out = Rf_ScalarInteger((int) sval);
-    break;
-  case 4:
-    out = Rf_ScalarInteger(ival);
-    break;
-  case 5:
-    out = Rf_ScalarLogical((int) bval);
+  case 6:
+    out = Rf_ScalarReal(*(double *) &optval);
     break;
   default:
-    out = Rf_ScalarReal((double) uval);
+    out = Rf_ScalarInteger(*(int *) &optval);
   }
 
   return out;
