@@ -88,19 +88,19 @@ static SEXP rawOneString(unsigned char *bytes, R_xlen_t nbytes, R_xlen_t *np) {
   char *cbuf;
   SEXP res;
 
-  for (i = *np, p = bytes + (*np); i < nbytes; p++, i++)
+  for (i = *np, p = bytes + *np; i < nbytes; p++, i++)
     if (*p == '\0') break;
 
   if (i < nbytes) {
-    p = bytes + (*np);
+    p = bytes + *np;
+    res = Rf_mkCharLenCE((char *) p, (int) (i - *np), CE_NATIVE);
     *np = i + 1;
-    res = Rf_mkChar((char *) p);
   } else {
-    cbuf = R_chk_calloc(nbytes - (*np) + 1, 1);
-    memcpy(cbuf, bytes + (*np), nbytes - (*np));
-    *np = nbytes;
-    res = Rf_mkChar(cbuf);
+    cbuf = R_chk_calloc(nbytes - *np + 1, sizeof(char));
+    memcpy(cbuf, bytes + *np, nbytes - *np);
+    res = Rf_mkCharLenCE(cbuf, (int) (nbytes - *np), CE_NATIVE);
     R_Free(cbuf);
+    *np = nbytes;
   }
 
   return res;

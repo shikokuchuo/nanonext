@@ -66,13 +66,13 @@ static SEXP nano_hashToChar(unsigned char *buf, size_t sz) {
 
   SEXP out;
   char cbuf[sz + sz + 1];
-  char *cptr = &cbuf[0];
+  char *cptr = cbuf;
 
   for (size_t i = 0; i < sz; i++)
     cptr += snprintf(cptr, 3, "%.2x", buf[i]);
 
   PROTECT(out = Rf_allocVector(STRSXP, 1));
-  SET_STRING_ELT(out, 0, Rf_mkCharLenCE(cbuf, sz + sz, CE_NATIVE));
+  SET_STRING_ELT(out, 0, Rf_mkCharLenCE(cbuf, (int) (sz + sz), CE_NATIVE));
 
   UNPROTECT(1);
   return out;
