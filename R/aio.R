@@ -31,9 +31,9 @@
 #' @details Async send is always non-blocking and returns a 'sendAio'
 #'     immediately.
 #'
-#'     For a 'sendAio', the send result is available at \code{$result}. The
-#'     symbol ' unresolvedValue ' is returned if the async operation is yet to
-#'     complete, The resolved value will be zero on success, or else an integer
+#'     For a 'sendAio', the send result is available at \code{$result}. An
+#'     'unresolved' logical NA is returned if the async operation is yet to
+#'     complete. The resolved value will be zero on success, or else an integer
 #'     error code.
 #'
 #'     To wait for and check the result of the send operation, use
@@ -70,8 +70,8 @@ send_aio <- function(con, data, mode = c("serial", "raw"), timeout = NULL)
 #' @details Async receive is always non-blocking and returns a 'recvAio'
 #'     immediately.
 #'
-#'     For a 'recvAio', the received message is available at \code{$data}. The
-#'     symbol ' unresolvedValue ' is returned if the async operation is yet to
+#'     For a 'recvAio', the received message is available at \code{$data}. An
+#'     'unresolved' logical NA is returned if the async operation is yet to
 #'     complete.
 #'
 #'     To wait for the async operation to complete and retrieve the received
@@ -190,8 +190,8 @@ recv_aio_signal <- function(con,
 #'
 #'     Aio values may be accessed directly at \code{$result} for a 'sendAio',
 #'     and \code{$data} for a 'recvAio'. If the Aio operation is yet to complete,
-#'     the symbol ' unresolvedValue ' will be returned. Once complete, the
-#'     resolved value will be returned instead.
+#'     an 'unresolved' logical NA will be returned. Once complete, the resolved
+#'     value will be returned instead.
 #'
 #'     \code{\link{unresolved}} may also be used, which returns TRUE only if an
 #'     Aio or Aio value has yet to resolve and FALSE otherwise. This is suitable

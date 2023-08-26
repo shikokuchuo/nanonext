@@ -311,7 +311,7 @@ aio$data |> str()
 
 ```
 
-As `call_aio()` is blocking and will wait for completion, an alternative is to query `aio$data` directly. This will return the symbol ` unresolvedValue ` if the calculation is yet to complete.
+As `call_aio()` is blocking and will wait for completion, an alternative is to query `aio$data` directly. This will return an 'unresolved' logical NA value if the calculation is yet to complete.
 
 In this example the calculation is returned, but other operations may reside entirely on the server side, for example writing data to disk.
 

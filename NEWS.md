@@ -1,4 +1,4 @@
-# nanonext 0.9.2.9037 (development)
+# nanonext 0.9.2.9038 (development)
 
 #### New Features
 
@@ -24,7 +24,6 @@
   + Permits sending of NULL, in which case an empty vector of the corresponding mode is received.
   + Character vectors containing empty characters in the middle are now received correctly.
   + For character vectors, respects original encoding and no longer performs automatic conversion to UTF8.
-* The unresolved value for an Aio is now the symbol ` unresolvedValue ` rather than a classed logical NA. Continue to use `unresolved()` to check for resolution.
 * Base64 and SHA hash functions now use big-endian representation for serialization (where this is performed) to ensure consistency across all systems (fixes #14, a regression in nanonext 0.9.2).
 * Package installation now succeeds in certain environments where 'cmake' failed to make 'libmbedtls' detectable after building (thanks @kendonB #13).
 * Source bundles for 'libmbedtls' and 'libnng' slimmed down for smaller package and installed sizes.

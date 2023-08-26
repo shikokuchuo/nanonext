@@ -40,7 +40,6 @@ SEXP nano_StreamSymbol;
 SEXP nano_TextframesSymbol;
 SEXP nano_TlsSymbol;
 SEXP nano_UrlSymbol;
-SEXP nano_unresolved;
 
 SEXP nano_addRedirect;
 SEXP nano_aioFormals;
@@ -52,6 +51,7 @@ SEXP nano_ncurlSession;
 SEXP nano_recvAio;
 SEXP nano_sendAio;
 SEXP nano_success;
+SEXP nano_unresolved;
 
 #if NNG_MAJOR_VERSION == 1 && NNG_MINOR_VERSION < 6
 nng_mtx *shr_mtx;
@@ -79,7 +79,6 @@ static void RegisterSymbols(void) {
   nano_TextframesSymbol = Rf_install("textframes");
   nano_TlsSymbol = Rf_install("tls");
   nano_UrlSymbol = Rf_install("url");
-  nano_unresolved = Rf_install(" unresolvedValue ");
 }
 
 static void PreserveObjects(void) {
@@ -106,9 +105,12 @@ static void PreserveObjects(void) {
   R_PreserveObject(nano_sendAio = Rf_cons(Rf_mkString("sendAio"), R_NilValue));
   SET_TAG(nano_sendAio, R_ClassSymbol);
   R_PreserveObject(nano_success = Rf_ScalarInteger(0));
+  R_PreserveObject(nano_unresolved = Rf_shallow_duplicate(Rf_ScalarLogical(NA_LOGICAL)));
+  Rf_classgets(nano_unresolved, Rf_mkString("unresolvedValue"));
 }
 
 static void ReleaseObjects(void) {
+  R_ReleaseObject(nano_unresolved);
   R_ReleaseObject(nano_success);
   R_ReleaseObject(nano_sendAio);
   R_ReleaseObject(nano_recvAio);

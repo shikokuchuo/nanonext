@@ -768,10 +768,10 @@ SEXP rnng_unresolved(SEXP x) {
     SEXP value = Rf_findVarInFrame(x, nano_DataSymbol);
     if (value == R_UnboundValue)
       value = Rf_findVarInFrame(x, nano_ResultSymbol);
-    xc = OBJECT(value) ? Rf_inherits(value, "unresolvedValue") : value == nano_unresolved;
+    xc = Rf_inherits(value, "unresolvedValue");
     break;
-  case SYMSXP:
-    xc = x == nano_unresolved;
+  case LGLSXP:
+    xc = Rf_inherits(x, "unresolvedValue");
     break;
   default:
     xc = 0;

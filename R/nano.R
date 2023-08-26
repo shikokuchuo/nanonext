@@ -368,6 +368,15 @@ print.ncurlSession <- function(x, ...) {
 
 #' @export
 #'
+print.unresolvedValue <- function(x, ...) {
+
+  cat("'unresolved' logi NA\n", file = stdout())
+  invisible(x)
+
+}
+
+#' @export
+#'
 print.errorValue <- function(x, ...) {
 
   cat(sprintf("'errorValue' int %d | %s\n", x, nng_error(x)), file = stdout())

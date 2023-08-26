@@ -40,8 +40,8 @@ For a 'recvAio', the received value may be retrieved at \code{$data}.
 
     Aio values may be accessed directly at \code{$result} for a 'sendAio',
     and \code{$data} for a 'recvAio'. If the Aio operation is yet to complete,
-    the symbol ' unresolvedValue ' will be returned. Once complete, the
-    resolved value will be returned instead.
+    an 'unresolved' logical NA will be returned. Once complete, the resolved
+    value will be returned instead.
 
     \code{\link{unresolved}} may also be used, which returns TRUE only if an
     Aio or Aio value has yet to resolve and FALSE otherwise. This is suitable

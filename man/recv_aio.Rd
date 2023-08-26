@@ -58,8 +58,8 @@ A signalling version of the function takes a 'conditionVariable' as an
 Async receive is always non-blocking and returns a 'recvAio'
     immediately.
 
-    For a 'recvAio', the received message is available at \code{$data}. The
-    symbol ' unresolvedValue ' is returned if the async operation is yet to
+    For a 'recvAio', the received message is available at \code{$data}. An
+    'unresolved' logical NA is returned if the async operation is yet to
     complete.
 
     To wait for the async operation to complete and retrieve the received
