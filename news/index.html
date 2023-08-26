@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.2.9037</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.2.9038</span>
       </span>
     </div>
 
@@ -54,15 +54,15 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.9.2.9037" id="nanonext-0929037-development">nanonext 0.9.2.9037 (development)<a class="anchor" aria-label="anchor" href="#nanonext-0929037-development"></a></h2>
+<h2 class="page-header" data-toc-text="0.9.2.9038" id="nanonext-0929038-development">nanonext 0.9.2.9038 (development)<a class="anchor" aria-label="anchor" href="#nanonext-0929038-development"></a></h2>
 <div class="section level5">
-<h5 id="new-features-0-9-2-9037">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-9-2-9037"></a></h5>
+<h5 id="new-features-0-9-2-9038">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-9-2-9038"></a></h5>
 <ul><li>
 <code><a href="../reference/ncurl_aio.html">ncurl_aio()</a></code> has been separated into a dedicated function for async http requests.</li>
 <li>Receive functions add <code>mode = 'string'</code> as a faster alternative to ‘character’ when receiving a scalar value.</li>
 </ul></div>
 <div class="section level5">
-<h5 id="updates-0-9-2-9037">Updates<a class="anchor" aria-label="anchor" href="#updates-0-9-2-9037"></a></h5>
+<h5 id="updates-0-9-2-9038">Updates<a class="anchor" aria-label="anchor" href="#updates-0-9-2-9038"></a></h5>
 <p><em>Please review the following potentially breaking changes, and only update when ready:</em></p>
 <ul><li>
 <code><a href="../reference/ncurl.html">ncurl()</a></code> argument ‘async’ is retired. Please use <code><a href="../reference/ncurl_aio.html">ncurl_aio()</a></code> for asynchronous requests.</li>
@@ -82,7 +82,6 @@
 <li>Character vectors containing empty characters in the middle are now received correctly.</li>
 <li>For character vectors, respects original encoding and no longer performs automatic conversion to UTF8.</li>
 </ul></li>
-<li>The unresolved value for an Aio is now the symbol <code>unresolvedValue</code> rather than a classed logical NA. Continue to use <code><a href="../reference/unresolved.html">unresolved()</a></code> to check for resolution.</li>
 <li>Base64 and SHA hash functions now use big-endian representation for serialization (where this is performed) to ensure consistency across all systems (fixes <a href="https://github.com/shikokuchuo/nanonext/issues/14" class="external-link">#14</a>, a regression in nanonext 0.9.2).</li>
 <li>Package installation now succeeds in certain environments where ‘cmake’ failed to make ‘libmbedtls’ detectable after building (thanks <a href="https://github.com/kendonB" class="external-link">@kendonB</a> <a href="https://github.com/shikokuchuo/nanonext/issues/13" class="external-link">#13</a>).</li>
 <li>Source bundles for ‘libmbedtls’ and ‘libnng’ slimmed down for smaller package and installed sizes.</li>

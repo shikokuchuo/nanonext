@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.2.9037</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.2.9038</span>
       </span>
     </div>
 
@@ -97,9 +97,9 @@ applies a socket-specific default, usually the same as no timeout.</p></dd>
     <h2>Details</h2>
     <p>Async send is always non-blocking and returns a 'sendAio'
     immediately.</p>
-<p>For a 'sendAio', the send result is available at <code>$result</code>. The
-    symbol ' unresolvedValue ' is returned if the async operation is yet to
-    complete, The resolved value will be zero on success, or else an integer
+<p>For a 'sendAio', the send result is available at <code>$result</code>. An
+    'unresolved' logical NA is returned if the async operation is yet to
+    complete. The resolved value will be zero on success, or else an integer
     error code.</p>
 <p>To wait for and check the result of the send operation, use
     <code><a href="call_aio.html">call_aio</a></code> on the returned 'sendAio' object.</p>
