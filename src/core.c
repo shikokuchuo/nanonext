@@ -1035,7 +1035,7 @@ SEXP rnng_get_opt(SEXP object, SEXP opt) {
     for (;;) {
       xc = nng_listener_get_string(*list, op, &optval.str);
       if (xc == 0) { typ = 1; break; }
-      xc = nng_listener_get_ms(*list, op, &optval.i);
+      xc = nng_listener_get_ms(*list, op, &optval.d);
       if (xc == 0) { typ = 2; break; }
       xc = nng_listener_get_size(*list, op, &optval.s);
       if (xc == 0) { typ = 3; break; }
@@ -1053,7 +1053,7 @@ SEXP rnng_get_opt(SEXP object, SEXP opt) {
     for (;;) {
       xc = nng_dialer_get_string(*dial, op, &optval.str);
       if (xc == 0) { typ = 1; break; }
-      xc = nng_dialer_get_ms(*dial, op, &optval.i);
+      xc = nng_dialer_get_ms(*dial, op, &optval.d);
       if (xc == 0) { typ = 2; break; }
       xc = nng_dialer_get_size(*dial, op, &optval.s);
       if (xc == 0) { typ = 3; break; }
@@ -1074,13 +1074,22 @@ SEXP rnng_get_opt(SEXP object, SEXP opt) {
 
   switch (typ) {
   case 1:
-    out = Rf_mkString(*(char **) &optval);
+    out = Rf_mkString(optval.str);
     break;
-  case 6:
-    out = Rf_ScalarReal(*(double *) &optval);
+  case 2:
+    out = Rf_ScalarInteger((int) optval.d);
+    break;
+  case 3:
+    out = Rf_ScalarInteger((int) optval.s);
+    break;
+  case 4:
+    out = Rf_ScalarInteger(optval.i);
+    break;
+  case 5:
+    out = Rf_ScalarInteger((int) optval.b);
     break;
   default:
-    out = Rf_ScalarInteger(*(int *) &optval);
+    out = Rf_ScalarReal((double) optval.u);
   }
 
   return out;
