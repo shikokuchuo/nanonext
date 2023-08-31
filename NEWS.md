@@ -1,4 +1,4 @@
-# nanonext 0.9.2.9041 (development)
+# nanonext 0.10.0
 
 #### New Features
 
@@ -12,8 +12,8 @@
 * `ncurl()` argument 'async' is retired. Please use `ncurl_aio()` for asynchronous requests.
 * `ncurl()` now always returns the response message body at `$data` whether convert is TRUE or FALSE.
 * The argument 'keep.raw' for all receive functions (previously-deprecated) is removed.
-* Function `device()` is removed as its non-interruptible blocking behaviour is deemed unsuitable for practical use.
 * `cv_reset()` and `cv_signal()` now both return invisible zero rather than NULL.
+* Function `device()` is removed partially due to its non-interruptible blocking behaviour.
 
 *Other changes:*
 
@@ -24,7 +24,7 @@
   + Permits sending of NULL, in which case an empty vector of the corresponding mode is received.
   + Character vectors containing empty characters in the middle are now received correctly.
   + For character vectors, respects original encoding and no longer performs automatic conversion to UTF8.
-* Base64 and SHA hash functions now use big-endian representation for serialization (where this is performed) to ensure consistency across all systems (fixes #14, a regression in nanonext 0.9.2).
+* Base64 and SHA hash functions now always use big-endian representation for serialization (where this is performed) to ensure consistency across all systems (fixes #14, a regression in nanonext 0.9.2).
 * Package installation now succeeds in certain environments where 'cmake' failed to make 'libmbedtls' detectable after building (thanks @kendonB #13).
 * Source bundles for 'libmbedtls' and 'libnng' slimmed down for smaller package and installed sizes.
 * Configures bundled 'libmbedtls' v3.4.0 for higher performance.
