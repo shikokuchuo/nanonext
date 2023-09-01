@@ -57,7 +57,7 @@ static void rnng_messenger_thread(void *args) {
     }
 
     if (!strncmp((char *) buf, ":", 1)) {
-      if (!strcmp((char *) buf, ":c ")) {
+      if (!strncmp((char *) buf, ":c ", 3)) {
         REprintf("| <- peer connected: %d-%02d-%02d %02d:%02d:%02d\n",
                  tms->tm_year + 1900, tms->tm_mon + 1, tms->tm_mday,
                  tms->tm_hour, tms->tm_min, tms->tm_sec);
@@ -73,7 +73,7 @@ static void rnng_messenger_thread(void *args) {
         }
         continue;
       }
-      if (!strcmp((char *) buf, ":d ")) {
+      if (!strncmp((char *) buf, ":d ", 3)) {
         REprintf("| -> peer disconnected: %d-%02d-%02d %02d:%02d:%02d\n",
                  tms->tm_year + 1900, tms->tm_mon + 1, tms->tm_mday,
                  tms->tm_hour, tms->tm_min, tms->tm_sec);
