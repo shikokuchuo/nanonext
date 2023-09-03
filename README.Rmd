@@ -565,7 +565,7 @@ In this respect, it may be used as a performant and lightweight method for makin
 
 `ncurl_session()` creates a re-usable open connection and presents a much faster and more efficient solution for repeated polling of an API endpoint. `transact()` is then used to request data multiple times as required. This method allows a polling frequency that exceeds a server's new connection limits, where this is permitted.
 
-By specifying `convert = FALSE`, the received binary data is made available as a raw vector at `$raw`. This may be fed into 'json' parsers which can operate directly on such data etc.
+By specifying `convert = FALSE`, the received binary data is made available as a raw vector. This may be fed into 'json' parsers which can operate directly on such data etc.
 
 ```{r ncurlsession}
 sess <- ncurl_session("https://postman-echo.com/get",
