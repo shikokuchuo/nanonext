@@ -91,7 +91,7 @@
 #' @author Charlie Gao \email{charlie.gao@@shikokuchuo.net}
 #'     (\href{https://orcid.org/0000-0002-0750-061X}{ORCID})
 #'
-#' @importFrom stats rexp start
+#' @importFrom stats start
 #' @importFrom utils .DollarNames
 #' @useDynLib nanonext, .registration = TRUE
 #'

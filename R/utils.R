@@ -90,17 +90,27 @@ mclock <- function() .Call(rnng_clock)
 #'
 msleep <- function(time) invisible(.Call(rnng_sleep, time))
 
-#' Random Number Generator
+#' NNG Random
 #'
-#' Returns a vector of random numbers of the length specified.
+#' Strictly not for use in statistical analysis. Non-reproducible and with
+#'     unknown statistical properties. Provides an alternative source of
+#'     randomness from the NNG library for purposes such as cryptographic key
+#'     generation (using platform-specific strong cryptographic random number
+#'     facilities where available).
 #'
-#' @param n [default 1L] length of vector to return.
+#' @param n [default 1L] integer length of 4 byte sequence to return.
 #'
-#' @return A length 'n' vector of random doubles.
+#' @return A byte sequence (raw vector) of length '4n'.
+#'
+#' @details If 'n' is non-integer, it will be coerced to integer; if a vector,
+#'     only the first element will be used.
+#'
+#' @note Results obtained are independent of and do not alter the state of R's
+#'     own pseudo-random number generators.
 #'
 #' @export
 #'
-random <- function(n = 1L) rexp(n = n)
+random <- function(n = 1L) .Call(rnng_random, n)
 
 #' Parse URL
 #'

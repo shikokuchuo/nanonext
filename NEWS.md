@@ -2,7 +2,7 @@
 
 #### Updates
 
-* `random()` now simply returns the result of `stats::rexp()`.
+* `random()` updated to return a byte sequence (raw vector) rather than doubles.
 
 # nanonext 0.10.0
 

@@ -2,16 +2,28 @@
 % Please edit documentation in R/utils.R
 \name{random}
 \alias{random}
-\title{Random Number Generator}
+\title{NNG Random}
 \usage{
 random(n = 1L)
 }
 \arguments{
-\item{n}{[default 1L] length of vector to return.}
+\item{n}{[default 1L] integer length of 4 byte sequence to return.}
 }
 \value{
-A length 'n' vector of random doubles.
+A byte sequence (raw vector) of length '4n'.
 }
 \description{
-Returns a vector of random numbers of the length specified.
+Strictly not for use in statistical analysis. Non-reproducible and with
+    unknown statistical properties. Provides an alternative source of
+    randomness from the NNG library for purposes such as cryptographic key
+    generation (using platform-specific strong cryptographic random number
+    facilities where available).
+}
+\details{
+If 'n' is non-integer, it will be coerced to integer; if a vector,
+    only the first element will be used.
+}
+\note{
+Results obtained are independent of and do not alter the state of R's
+    own pseudo-random number generators.
 }

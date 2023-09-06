@@ -50,7 +50,7 @@
 messenger <- function(url, auth = NULL) {
 
   lock <- sha512(auth, convert = FALSE)
-  comb <- order(random(32L))
+  comb <- order(as.integer(random(8L)))
   key <- c(comb, as.integer(lock)[comb])
 
   sock <- .Call(rnng_messenger, url)
