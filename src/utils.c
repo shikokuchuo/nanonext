@@ -132,10 +132,10 @@ SEXP rnng_random(SEXP n) {
     Rf_error("'n' must be integer or coercible to integer");
   }
 
-  vec = Rf_allocVector(REALSXP, vlen);
-  double *pvec = REAL(vec);
+  vec = Rf_allocVector(INTSXP, vlen);
+  int *pvec = INTEGER(vec);
   for (R_xlen_t i = 0; i < vlen; i++)
-    pvec[i] = (double) nng_random();
+    pvec[i] = (int) nng_random();
 
   return vec;
 

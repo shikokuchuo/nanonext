@@ -92,19 +92,23 @@ msleep <- function(time) invisible(.Call(rnng_sleep, time))
 
 #' NNG Random Number Generator
 #'
-#' Strictly not for statistical analysis. Not reproducible. No ability to set
-#'     a seed value. Provides random numbers suitable for system functions such
-#'     as cryptographic key generation. Random values are obtained using
-#'     platform-specific strong cryptographic random number facilities where
-#'     available.
+#' Strictly not for statistical analysis. Not reproducible and with no guarantee
+#'     on desirable statistical properties. Provides random numbers suitable for
+#'     system functions such as cryptographic key generation. Random values are
+#'     obtained using platform-specific strong cryptographic random number
+#'     facilities where available.
 #'
 #' @param n [default 1L] length of vector to return.
 #'
-#' @return A length 'n' vector of random positive doubles. Each random number
-#'     has a range between 0 and 2 * \code{.Machine$integer.max} inclusive.
+#' @return A length 'n' vector of random integers.
 #'
 #' @details If 'n' is non-integer, it will be coerced to integer; if a vector,
 #'     only the first element will be used.
+#'
+#' @note This is an independent source of random numbers and does not affect the
+#'     RNG state of the pseudo-random number generators present in R. The
+#'     statistical properties of the outputs may not be desirable and hence
+#'     should not be used in statistical analyses.
 #'
 #' @examples
 #' random()
