@@ -1,5 +1,7 @@
 # nanonext 0.10.0.9000 (development)
 
+#### Updates
+
 * `random()` now returns an integer instead of a double vector, mapping the underlying uint32_t C type to a signed integer.
 
 # nanonext 0.10.0

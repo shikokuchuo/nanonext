@@ -93,10 +93,10 @@ msleep <- function(time) invisible(.Call(rnng_sleep, time))
 #' NNG Random Number Generator
 #'
 #' Strictly not for statistical analysis. Not reproducible and with no guarantee
-#'     on desirable statistical properties. Provides random numbers suitable for
-#'     system functions such as cryptographic key generation. Random values are
-#'     obtained using platform-specific strong cryptographic random number
-#'     facilities where available.
+#'     on desirable statistical properties. Random numbers provided by the NNG
+#'     library for uses such as cryptographic key generation and obtained using
+#'     platform-specific strong cryptographic random number facilities where
+#'     available.
 #'
 #' @param n [default 1L] length of vector to return.
 #'
@@ -106,9 +106,7 @@ msleep <- function(time) invisible(.Call(rnng_sleep, time))
 #'     only the first element will be used.
 #'
 #' @note This is an independent source of random numbers and does not affect the
-#'     RNG state of the pseudo-random number generators present in R. The
-#'     statistical properties of the outputs may not be desirable and hence
-#'     should not be used in statistical analyses.
+#'     RNG state of the pseudo-random number generators in R.
 #'
 #' @examples
 #' random()

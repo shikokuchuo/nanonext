@@ -14,10 +14,10 @@ A length 'n' vector of random integers.
 }
 \description{
 Strictly not for statistical analysis. Not reproducible and with no guarantee
-    on desirable statistical properties. Provides random numbers suitable for
-    system functions such as cryptographic key generation. Random values are
-    obtained using platform-specific strong cryptographic random number
-    facilities where available.
+    on desirable statistical properties. Random numbers provided by the NNG
+    library for uses such as cryptographic key generation and obtained using
+    platform-specific strong cryptographic random number facilities where
+    available.
 }
 \details{
 If 'n' is non-integer, it will be coerced to integer; if a vector,
@@ -25,9 +25,7 @@ If 'n' is non-integer, it will be coerced to integer; if a vector,
 }
 \note{
 This is an independent source of random numbers and does not affect the
-    RNG state of the pseudo-random number generators present in R. The
-    statistical properties of the outputs may not be desirable and hence
-    should not be used in statistical analyses.
+    RNG state of the pseudo-random number generators in R.
 }
 \examples{
 random()
