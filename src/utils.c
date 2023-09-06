@@ -132,11 +132,9 @@ SEXP rnng_random(SEXP n) {
   }
 
   vec = Rf_allocVector(RAWSXP, vlen * 4);
-  void *pvec = STDVEC_DATAPTR(vec);
-  for (R_xlen_t i = 0; i < vlen; i++, pvec += 4) {
-    u_int32_t rand = nng_random();
-    memcpy(pvec, &rand, 4);
-  }
+  uint32_t *ivec = (uint32_t *) STDVEC_DATAPTR(vec);
+  for (R_xlen_t i = 0; i < vlen; i++)
+    ivec[i] = nng_random();
   return vec;
 
 }
