@@ -2,7 +2,7 @@
 
 #### Updates
 
-* `random()` now returns an integer instead of a double vector, mapping the underlying uint32_t C type to a signed integer.
+* `random()` now simply returns the result of `stats::rexp()`.
 
 # nanonext 0.10.0
 

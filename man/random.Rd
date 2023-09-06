@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{random}
 \alias{random}
-\title{NNG Random Number Generator}
+\title{Random Number Generator}
 \usage{
 random(n = 1L)
 }
@@ -10,25 +10,8 @@ random(n = 1L)
 \item{n}{[default 1L] length of vector to return.}
 }
 \value{
-A length 'n' vector of random integers.
+A length 'n' vector of random doubles.
 }
 \description{
-Strictly not for statistical analysis. Not reproducible and with no guarantee
-    on desirable statistical properties. Random numbers provided by the NNG
-    library for uses such as cryptographic key generation and obtained using
-    platform-specific strong cryptographic random number facilities where
-    available.
-}
-\details{
-If 'n' is non-integer, it will be coerced to integer; if a vector,
-    only the first element will be used.
-}
-\note{
-This is an independent source of random numbers and does not affect the
-    RNG state of the pseudo-random number generators in R.
-}
-\examples{
-random()
-random(n = 3L)
-
+Returns a vector of random numbers of the length specified.
 }
