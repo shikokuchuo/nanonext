@@ -90,7 +90,7 @@ mclock <- function() .Call(rnng_clock)
 #'
 msleep <- function(time) invisible(.Call(rnng_sleep, time))
 
-#' NNG Random
+#' Random Character Sequence
 #'
 #' Strictly not for use in statistical analysis. Non-reproducible and with
 #'     unknown statistical properties. Provides an alternative source of
@@ -98,15 +98,22 @@ msleep <- function(time) invisible(.Call(rnng_sleep, time))
 #'     generation (using platform-specific strong cryptographic random number
 #'     facilities where available).
 #'
-#' @param n [default 1L] integer length of 4 byte sequence to return.
+#' @param n [default 1L] integer length of 8 character sequence to return.
 #'
-#' @return A byte sequence (raw vector) of length '4n'.
+#' @return A length one vector of '8n' random characters.
 #'
 #' @details If 'n' is non-integer, it will be coerced to integer; if a vector,
 #'     only the first element will be used.
 #'
+#'     The underlying random numbers are 32-bit unsigned integer type i.e. 4
+#'     bytes of data, which represented as hex values produces 8 characters each.
+#'
 #' @note Results obtained are independent of and do not alter the state of R's
 #'     own pseudo-random number generators.
+#'
+#' @examples
+#' random()
+#' random(4L)
 #'
 #' @export
 #'

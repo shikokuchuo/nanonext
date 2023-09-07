@@ -62,7 +62,7 @@ static nano_buf nano_anytobuf(SEXP x) {
 
 }
 
-static SEXP nano_hashToChar(unsigned char *buf, size_t sz) {
+SEXP nano_hashToChar(unsigned char *buf, const size_t sz) {
 
   SEXP out;
   char cbuf[sz + sz + 1];

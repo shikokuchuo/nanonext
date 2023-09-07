@@ -2,15 +2,15 @@
 % Please edit documentation in R/utils.R
 \name{random}
 \alias{random}
-\title{NNG Random}
+\title{Random Character Sequence}
 \usage{
 random(n = 1L)
 }
 \arguments{
-\item{n}{[default 1L] integer length of 4 byte sequence to return.}
+\item{n}{[default 1L] integer length of 8 character sequence to return.}
 }
 \value{
-A byte sequence (raw vector) of length '4n'.
+A length one vector of '8n' random characters.
 }
 \description{
 Strictly not for use in statistical analysis. Non-reproducible and with
@@ -22,8 +22,16 @@ Strictly not for use in statistical analysis. Non-reproducible and with
 \details{
 If 'n' is non-integer, it will be coerced to integer; if a vector,
     only the first element will be used.
+
+    The underlying random numbers are 32-bit unsigned integer type i.e. 4
+    bytes of data, which represented as hex values produces 8 characters each.
 }
 \note{
 Results obtained are independent of and do not alter the state of R's
     own pseudo-random number generators.
+}
+\examples{
+random()
+random(4L)
+
 }

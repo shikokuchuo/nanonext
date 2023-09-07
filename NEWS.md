@@ -2,7 +2,7 @@
 
 #### Updates
 
-* `random()` updated to return a byte sequence (raw vector) rather than doubles.
+* `random()` updated to return a random character sequence rather than a vector of doubles.
 
 # nanonext 0.10.0
 

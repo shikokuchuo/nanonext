@@ -117,7 +117,6 @@ SEXP rnng_sleep(SEXP msec) {
 
 SEXP rnng_random(SEXP n) {
 
-  SEXP vec;
   R_xlen_t vlen;
   switch (TYPEOF(n)) {
   case INTSXP:
@@ -131,11 +130,10 @@ SEXP rnng_random(SEXP n) {
       Rf_error("'n' must be integer or coercible to integer");
   }
 
-  vec = Rf_allocVector(RAWSXP, vlen * 4);
-  uint32_t *ivec = (uint32_t *) STDVEC_DATAPTR(vec);
+  uint32_t *buf = (uint32_t *) R_alloc(sizeof(int), vlen);
   for (R_xlen_t i = 0; i < vlen; i++)
-    ivec[i] = nng_random();
-  return vec;
+    buf[i] = nng_random();
+  return nano_hashToChar((unsigned char *) buf, sizeof(int) * vlen);
 
 }
 
