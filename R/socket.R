@@ -75,6 +75,19 @@
 #'
 #'     Please see \link{protocols} for further documentation.
 #'
+#' @section Transports:
+#'
+#'     The following communications transports may be used:
+#'     \itemize{
+#'     \item{Inproc (in-process) - url: 'inproc://'}
+#'     \item{IPC (inter-process communications) - url: 'ipc://' (or 'abstract://'
+#'     on Linux)}
+#'     \item{TCP and TLS over TCP - url: 'tcp://' and 'tls+tcp://'}
+#'     \item{WebSocket and TLS over WebSocket - url: 'ws://' and 'wss://'}
+#'     }
+#'
+#'     Please see \link{transports} for further documentation.
+#'
 #' @examples
 #' s <- socket(protocol = "req", listen = "inproc://nanosocket")
 #' s
