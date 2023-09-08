@@ -283,7 +283,7 @@ SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP follow, SEXP method, SEXP headers,
 
   if (relo && LOGICAL(follow)[0]) {
     if ((xc = nng_url_parse(&url, nng_http_res_get_header(res, "Location"))))
-      goto exitlevel7;
+      goto exitlevel5;
     goto relocall;
   }
 
