@@ -82,7 +82,6 @@ static void RegisterSymbols(void) {
 }
 
 static void PreserveObjects(void) {
-  R_PreserveObject(nano_addRedirect = Rf_allocVector(STRSXP, 1));
   R_PreserveObject(nano_aioFormals = Rf_cons(nano_AioSymbol, R_NilValue));
   R_PreserveObject(nano_aioFuncs = Rf_allocVector(LISTSXP, 3));
   SETCAR(nano_aioFuncs, Rf_lang3(nano_DotcallSymbol, Rf_install("rnng_aio_result"), nano_DataSymbol));
@@ -120,7 +119,6 @@ static void ReleaseObjects(void) {
   R_ReleaseObject(nano_aioNFuncs);
   R_ReleaseObject(nano_aioFuncs);
   R_ReleaseObject(nano_aioFormals);
-  R_ReleaseObject(nano_addRedirect);
 }
 
 static const R_CallMethodDef callMethods[] = {

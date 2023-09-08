@@ -186,6 +186,7 @@ SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP follow, SEXP method, SEXP headers,
                 SEXP data, SEXP response, SEXP timeout, SEXP tls) {
 
   const int conv = LOGICAL(convert)[0];
+  const char *addr = CHAR(STRING_ELT(http, 0));
   nng_url *url;
   nng_http_client *client;
   nng_http_req *req;
@@ -195,8 +196,11 @@ SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP follow, SEXP method, SEXP headers,
   int xc;
   uint16_t code, relo;
 
-  if ((xc = nng_url_parse(&url, CHAR(STRING_ELT(http, 0)))))
+  if ((xc = nng_url_parse(&url, addr)))
     goto exitlevel1;
+
+  relocall:
+
   if ((xc = nng_http_client_alloc(&client, url)))
     goto exitlevel2;
   if ((xc = nng_http_req_alloc(&req, url)))
@@ -278,8 +282,9 @@ SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP follow, SEXP method, SEXP headers,
   code = nng_http_res_get_status(res), relo = code >= 300 && code < 400;
 
   if (relo && LOGICAL(follow)[0]) {
-    SET_STRING_ELT(nano_addRedirect, 0, Rf_mkChar(nng_http_res_get_header(res, "Location")));
-    return rnng_ncurl(nano_addRedirect, convert, follow, method, headers, data, response, timeout, tls);
+    if ((xc = nng_url_parse(&url, nng_http_res_get_header(res, "Location"))))
+      goto exitlevel7;
+    goto relocall;
   }
 
   SEXP out, vec, rvec;
