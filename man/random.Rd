@@ -2,29 +2,28 @@
 % Please edit documentation in R/utils.R
 \name{random}
 \alias{random}
-\title{Random Character Sequence}
+\title{Random Data Generation}
 \usage{
 random(n = 1L)
 }
 \arguments{
-\item{n}{[default 1L] integer length of 8 character sequence to return.}
+\item{n}{[default 1L] integer number of random byte of data to generate.}
 }
 \value{
-A length one vector of '8n' random characters.
+A length one vector of '2n' random characters.
 }
 \description{
 Strictly not for use in statistical analysis. Non-reproducible and with
     unknown statistical properties. Provides an alternative source of
-    randomness from the NNG library for purposes such as cryptographic key
-    generation (using platform-specific strong cryptographic random number
-    facilities where available).
+    randomness from the Mbed TLS library using its own entropy collection,
+    for purposes such as cryptographic key generation.
 }
 \details{
 If 'n' is non-integer, it will be coerced to integer; if a vector,
     only the first element will be used.
 
-    The underlying random numbers are 32-bit unsigned integer type i.e. 4
-    bytes of data, which represented as hex values produces 8 characters each.
+    The random bytes of data generated are represented as hex values,
+    producing 2 characters for each byte.
 }
 \note{
 Results obtained are independent of and do not alter the state of R's
@@ -32,6 +31,6 @@ Results obtained are independent of and do not alter the state of R's
 }
 \examples{
 random()
-random(4L)
+random(8L)
 
 }

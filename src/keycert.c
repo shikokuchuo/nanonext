@@ -82,7 +82,7 @@ SEXP rnng_write_cert(SEXP cn, SEXP valid, SEXP inter) {
   mbedtls_pk_context key;
   mbedtls_entropy_context entropyk;
   mbedtls_ctr_drbg_context ctr_drbgk;
-  const char *persk = "gen_key";
+  const char *persk = "r-nanonext-key";
 
   unsigned char key_buf[16000];
   memset(key_buf, 0, 16000);
@@ -101,10 +101,10 @@ SEXP rnng_write_cert(SEXP cn, SEXP valid, SEXP inter) {
 
   R_xlen_t clen = Rf_xlength(cn);
   char issuer_name[clen + 18];          /* issuer name for certificate        */
-  snprintf(issuer_name, clen + 18, "CN=%s,O=Hibiki,C=JP", CHAR(STRING_ELT(cn, 0)));
+  snprintf(issuer_name, clen + 18, "CN=%s,O=Nanonext,C=JP", CHAR(STRING_ELT(cn, 0)));
 
   int ret = 1;
-  if (interactive) REprintf("Generating key and certificate [    ]");
+  if (interactive) REprintf("Generating key + certificate [    ]");
   mbedtls_x509_crt issuer_crt;
   mbedtls_pk_context loaded_issuer_key;
   mbedtls_pk_context *issuer_key = &loaded_issuer_key;
@@ -113,7 +113,7 @@ SEXP rnng_write_cert(SEXP cn, SEXP valid, SEXP inter) {
   mbedtls_x509write_cert crt;
   mbedtls_entropy_context entropy;
   mbedtls_ctr_drbg_context ctr_drbg;
-  const char *pers = "crt example app";
+  const char *pers = "r-nanonext-cert";
 
   if (interactive) REprintf("\b\b\b\b\b.   ]");
 

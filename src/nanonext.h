@@ -107,6 +107,9 @@ typedef struct nano_cv_duo_s {
 
 #ifdef NANONEXT_TIME
 #include <time.h>
+#include <mbedtls/entropy.h>
+#include <mbedtls/ctr_drbg.h>
+#include <mbedtls/error.h>
 #endif
 
 #ifdef NANONEXT_TLS

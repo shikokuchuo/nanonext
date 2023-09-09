@@ -115,28 +115,6 @@ SEXP rnng_sleep(SEXP msec) {
 
 }
 
-SEXP rnng_random(SEXP n) {
-
-  R_xlen_t vlen;
-  switch (TYPEOF(n)) {
-  case INTSXP:
-  case LGLSXP:
-    vlen = (R_xlen_t) INTEGER(n)[0];
-    break;
-  case REALSXP:
-    vlen = (R_xlen_t) Rf_asInteger(n);
-    break;
-  default:
-      Rf_error("'n' must be integer or coercible to integer");
-  }
-
-  uint32_t *buf = (uint32_t *) R_alloc(sizeof(int), vlen);
-  for (R_xlen_t i = 0; i < vlen; i++)
-    buf[i] = nng_random();
-  return nano_hashToChar((unsigned char *) buf, sizeof(int) * vlen);
-
-}
-
 SEXP rnng_url_parse(SEXP url) {
 
   const char *up = CHAR(STRING_ELT(url, 0));

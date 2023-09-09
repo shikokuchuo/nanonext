@@ -90,30 +90,29 @@ mclock <- function() .Call(rnng_clock)
 #'
 msleep <- function(time) invisible(.Call(rnng_sleep, time))
 
-#' Random Character Sequence
+#' Random Data Generation
 #'
 #' Strictly not for use in statistical analysis. Non-reproducible and with
 #'     unknown statistical properties. Provides an alternative source of
-#'     randomness from the NNG library for purposes such as cryptographic key
-#'     generation (using platform-specific strong cryptographic random number
-#'     facilities where available).
+#'     randomness from the Mbed TLS library using its own entropy collection,
+#'     for purposes such as cryptographic key generation.
 #'
-#' @param n [default 1L] integer length of 8 character sequence to return.
+#' @param n [default 1L] integer number of random byte of data to generate.
 #'
-#' @return A length one vector of '8n' random characters.
+#' @return A length one vector of '2n' random characters.
 #'
 #' @details If 'n' is non-integer, it will be coerced to integer; if a vector,
 #'     only the first element will be used.
 #'
-#'     The underlying random numbers are 32-bit unsigned integer type i.e. 4
-#'     bytes of data, which represented as hex values produces 8 characters each.
+#'     The random bytes of data generated are represented as hex values,
+#'     producing 2 characters for each byte.
 #'
 #' @note Results obtained are independent of and do not alter the state of R's
 #'     own pseudo-random number generators.
 #'
 #' @examples
 #' random()
-#' random(4L)
+#' random(8L)
 #'
 #' @export
 #'
