@@ -7,7 +7,7 @@
 random(n = 1L)
 }
 \arguments{
-\item{n}{[default 1L] integer number of random byte of data to generate.}
+\item{n}{[default 1L] integer random bytes to generate.}
 }
 \value{
 A length one vector of '2n' random characters.

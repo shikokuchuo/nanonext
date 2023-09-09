@@ -97,7 +97,7 @@ msleep <- function(time) invisible(.Call(rnng_sleep, time))
 #'     randomness from the Mbed TLS library using its own entropy collection,
 #'     for purposes such as cryptographic key generation.
 #'
-#' @param n [default 1L] integer number of random byte of data to generate.
+#' @param n [default 1L] integer random bytes to generate.
 #'
 #' @return A length one vector of '2n' random characters.
 #'
