@@ -735,11 +735,11 @@ SEXP rnng_random(SEXP n, SEXP convert) {
   }
 
   SEXP out;
+  unsigned char buf[sz];
+  char errbuf[1024];
   mbedtls_entropy_context entropy;
   mbedtls_ctr_drbg_context ctr_drbg;
   const char *pers = "r-nanonext-rng";
-  char errbuf[1024];
-  unsigned char buf[sz];
 
   mbedtls_entropy_init(&entropy);
   mbedtls_ctr_drbg_init(&ctr_drbg);
@@ -761,7 +761,7 @@ SEXP rnng_random(SEXP n, SEXP convert) {
   return out;
 
   exitlevel1:
-    mbedtls_ctr_drbg_free(&ctr_drbg);
+  mbedtls_ctr_drbg_free(&ctr_drbg);
   mbedtls_entropy_free(&entropy);
   mbedtls_strerror(xc, errbuf, sizeof(errbuf));
   Rf_error("%d | %s", xc, errbuf);

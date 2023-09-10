@@ -77,7 +77,8 @@ static int parse_serial_decimal_format(unsigned char *obuf, size_t obufmax,
 
 SEXP rnng_write_cert(SEXP cn, SEXP valid, SEXP inter) {
 
-  uint8_t failed = 1;
+  uint8_t exit = 1;
+  const char *common = CHAR(STRING_ELT(cn, 0));
   const int interactive = LOGICAL(inter)[0];
   mbedtls_pk_context key;
   mbedtls_entropy_context entropyk;
@@ -99,9 +100,9 @@ SEXP rnng_write_cert(SEXP cn, SEXP valid, SEXP inter) {
   const int version = 2;                /* CRT version                        */
   const mbedtls_md_type_t md = MBEDTLS_MD_SHA256;   /* Hash used for signing  */
 
-  R_xlen_t clen = Rf_xlength(cn);
-  char issuer_name[clen + 18];          /* issuer name for certificate        */
-  snprintf(issuer_name, clen + 18, "CN=%s,O=Nanonext,C=JP", CHAR(STRING_ELT(cn, 0)));
+  size_t clen = strlen(common) + 20;
+  char issuer_name[clen];          /* issuer name for certificate        */
+  snprintf(issuer_name, clen, "CN=%s,O=Nanonext,C=JP", common);
 
   int ret = 1;
   if (interactive) REprintf("Generating key + certificate [    ]");
@@ -206,7 +207,7 @@ SEXP rnng_write_cert(SEXP cn, SEXP valid, SEXP inter) {
   SET_STRING_ELT(cstr, 0, Rf_mkChar((char *) &output_buf));
   SET_STRING_ELT(cstr, 1, R_BlankString);
 
-  failed = 0;
+  exit = 0;
   if (interactive) REprintf("\b\b\b\b\bdone]\n");
 
   exitlevel1:
@@ -225,7 +226,7 @@ SEXP rnng_write_cert(SEXP cn, SEXP valid, SEXP inter) {
   mbedtls_ctr_drbg_free(&ctr_drbgk);
   mbedtls_entropy_free(&entropyk);
 
-  if (failed) {
+  if (exit) {
     mbedtls_strerror(ret, buf, sizeof(buf));
     Rf_error("%d | %s", ret, buf);
   }
