@@ -717,6 +717,7 @@ SEXP rnng_tls_config(SEXP client, SEXP server, SEXP pass, SEXP auth) {
 
 }
 
+// Mbed TLS Random Data Generator ----------------------------------------------
 
 SEXP rnng_random(SEXP n, SEXP convert) {
 

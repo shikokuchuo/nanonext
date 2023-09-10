@@ -2,7 +2,7 @@
 
 #### Updates
 
-* `random()` updated to return a random character sequence rather than a vector of doubles.
+* `random()` updated to use the Mbed TLS library to generate random bytes. Adds a 'convert' argument for specifying whether to return a raw vector or character string.
 
 # nanonext 0.10.0
 
