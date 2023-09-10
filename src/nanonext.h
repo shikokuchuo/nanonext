@@ -107,9 +107,6 @@ typedef struct nano_cv_duo_s {
 
 #ifdef NANONEXT_TIME
 #include <time.h>
-#include <mbedtls/entropy.h>
-#include <mbedtls/ctr_drbg.h>
-#include <mbedtls/error.h>
 #endif
 
 #ifdef NANONEXT_TLS
@@ -126,6 +123,12 @@ typedef struct nano_cv_duo_s {
 #define SHA384_KEY_SIZE 48
 #define SHA512_KEY_SIZE 64
 
+#endif
+
+#ifdef NANONEXT_MBED
+#include <mbedtls/entropy.h>
+#include <mbedtls/ctr_drbg.h>
+#include <mbedtls/error.h>
 #endif
 
 #ifdef NANONEXT_KEYCERT
@@ -259,7 +262,7 @@ extern SEXP rnng_ncurl_session_close(SEXP);
 extern SEXP rnng_ncurl_transact(SEXP);
 extern SEXP rnng_pipe_notify(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 extern SEXP rnng_protocol_open(SEXP, SEXP);
-extern SEXP rnng_random(SEXP);
+extern SEXP rnng_random(SEXP, SEXP);
 extern SEXP rnng_recv(SEXP, SEXP, SEXP, SEXP);
 extern SEXP rnng_recv_aio(SEXP, SEXP, SEXP, SEXP, SEXP);
 extern SEXP rnng_request(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);

@@ -4,26 +4,30 @@
 \alias{random}
 \title{Random Data Generation}
 \usage{
-random(n = 1L)
+random(n = 1L, convert = TRUE)
 }
 \arguments{
 \item{n}{[default 1L] integer random bytes to generate.}
+
+\item{convert}{[default TRUE] logical FALSE to return a raw vector, or TRUE
+to return the hex representation of the bytes as a character string.}
 }
 \value{
-A length one vector of '2n' random characters.
+A length 'n' raw vector, or length one vector of '2n' random
+    characters, depending on the value of 'convert' supplied.
 }
 \description{
 Strictly not for use in statistical analysis. Non-reproducible and with
     unknown statistical properties. Provides an alternative source of
-    randomness from the Mbed TLS library using its own entropy collection,
-    for purposes such as cryptographic key generation.
+    randomness from the Mbed TLS library for purposes such as cryptographic
+    key generation. Mbed TLS uses a block-cipher counter-mode based
+    deterministic random bit generator as specified in NIST SP800-90. It
+    requires an external source of entropy, for which an entropy accumulator
+    design has been implemented.
 }
 \details{
 If 'n' is non-integer, it will be coerced to integer; if a vector,
     only the first element will be used.
-
-    The random bytes of data generated are represented as hex values,
-    producing 2 characters for each byte.
 }
 \note{
 Results obtained are independent of and do not alter the state of R's
@@ -32,5 +36,6 @@ Results obtained are independent of and do not alter the state of R's
 \examples{
 random()
 random(8L)
+random(n = 8L, convert = FALSE)
 
 }

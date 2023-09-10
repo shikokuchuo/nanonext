@@ -18,6 +18,7 @@
 
 #define NANONEXT_PROTOCOLS
 #define NANONEXT_SUPPLEMENTALS
+#define NANONEXT_MBED
 #include "nanonext.h"
 
 // internals -------------------------------------------------------------------
@@ -713,5 +714,55 @@ SEXP rnng_tls_config(SEXP client, SEXP server, SEXP pass, SEXP auth) {
     nng_tls_config_free(cfg);
   exitlevel1:
     ERROR_OUT(xc);
+
+}
+
+
+SEXP rnng_random(SEXP n, SEXP convert) {
+
+  int sz, xc;
+  switch (TYPEOF(n)) {
+  case INTSXP:
+  case LGLSXP:
+    sz = INTEGER(n)[0];
+    break;
+  case REALSXP:
+    sz = Rf_asInteger(n);
+    break;
+  default:
+    Rf_error("'n' must be integer or coercible to integer");
+  }
+
+  SEXP out;
+  mbedtls_entropy_context entropy;
+  mbedtls_ctr_drbg_context ctr_drbg;
+  const char *pers = "r-nanonext-rng";
+  char errbuf[1024];
+  unsigned char buf[sz];
+
+  mbedtls_entropy_init(&entropy);
+  mbedtls_ctr_drbg_init(&ctr_drbg);
+
+  if ((xc = mbedtls_ctr_drbg_seed(&ctr_drbg, mbedtls_entropy_func, &entropy, (const unsigned char *) pers, strlen(pers))) ||
+      (xc = mbedtls_ctr_drbg_random(&ctr_drbg, buf, sz)))
+    goto exitlevel1;
+
+  mbedtls_ctr_drbg_free(&ctr_drbg);
+  mbedtls_entropy_free(&entropy);
+
+  if (LOGICAL(convert)[0]) {
+    out = nano_hashToChar(buf, sz);
+  } else {
+    out = Rf_allocVector(RAWSXP, sz);
+    memcpy(STDVEC_DATAPTR(out), buf, sz);
+  }
+
+  return out;
+
+  exitlevel1:
+    mbedtls_ctr_drbg_free(&ctr_drbg);
+  mbedtls_entropy_free(&entropy);
+  mbedtls_strerror(xc, errbuf, sizeof(errbuf));
+  Rf_error("%d | %s", xc, errbuf);
 
 }
