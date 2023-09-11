@@ -113,8 +113,6 @@ SEXP rnng_write_cert(SEXP cn, SEXP valid, SEXP inter) {
   mbedtls_x509write_cert crt;
   const char *persn = "certificate";
 
-  if (interactive) REprintf("\b\b\b\b\b.   ]");
-
   mbedtls_x509write_crt_init(&crt);
   mbedtls_pk_init(&loaded_issuer_key);
   mbedtls_x509_csr_init(&csr); // #if defined(MBEDTLS_X509_CSR_PARSE_C)
@@ -131,6 +129,8 @@ SEXP rnng_write_cert(SEXP cn, SEXP valid, SEXP inter) {
   mbedtls_mpi serial;
   mbedtls_mpi_init(&serial);
 #endif
+
+  if (interactive) REprintf("\b\b\b\b\b.   ]");
 
   if ((ret = mbedtls_ctr_drbg_seed(&ctr_drbg, mbedtls_entropy_func, &entropy, (const unsigned char *) pers, strlen(pers))) ||
       (ret = mbedtls_pk_setup(&key, mbedtls_pk_info_from_type((mbedtls_pk_type_t) MBEDTLS_PK_RSA))))
@@ -177,17 +177,11 @@ SEXP rnng_write_cert(SEXP cn, SEXP valid, SEXP inter) {
   if ((ret = mbedtls_x509write_crt_set_serial(&crt, &serial)) ||
 #endif
       (ret = mbedtls_x509write_crt_set_validity(&crt, not_before, not_after)) ||
-      (ret = mbedtls_x509write_crt_set_basic_constraints(&crt, is_ca, max_pathlen)))
+      (ret = mbedtls_x509write_crt_set_basic_constraints(&crt, is_ca, max_pathlen)) ||
+      (ret = mbedtls_x509write_crt_set_subject_key_identifier(&crt)) ||
+      (ret = mbedtls_x509write_crt_set_authority_key_identifier(&crt)) ||
+      (ret = mbedtls_x509write_crt_pem(&crt, output_buf, 4096, mbedtls_ctr_drbg_random, &ctr_drbg)))
     goto exitlevel1;
-
-  if ((ret = mbedtls_x509write_crt_set_subject_key_identifier(&crt)) ||
-      (ret = mbedtls_x509write_crt_set_authority_key_identifier(&crt)))
-    goto exitlevel1;
-
-  if ((ret = mbedtls_x509write_crt_pem(&crt, output_buf, 4096, mbedtls_ctr_drbg_random, &ctr_drbg)))
-    goto exitlevel1;
-
-  if (interactive) REprintf("\b\b\b\b\b....]");
 
   SEXP vec, kcstr, cstr;
   const char *names[] = {"server", "client", ""};
