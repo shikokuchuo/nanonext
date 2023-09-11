@@ -12,17 +12,15 @@ certificate(s) in PEM format, comprising the certificate authority
 certificate chain (and revocation list if present), used to validate
 certificates presented by peers,\cr
 \strong{or} a length 2 character vector comprising [i] the certificate
-authority certificate chain and [ii] the certificate revocation list or
-the empty character \code{""} if not applicable.}
+authority certificate chain and [ii] the certificate revocation list, or
+empty character \code{''} if not applicable.}
 
 \item{server}{\strong{either} the character path to a file containing
-the PEM encoded certificate and associated private key (may contain
+the PEM-encoded TLS certificate and associated private key (may contain
 additional certificates leading to a validation chain, with the leaf
-certificate first, although the self-signed root is not required as the
-client should already have this),\cr
-\strong{or} a length 2 character vector comprising [i] the certificate
-(optionally certificate chain) and [ii] the associated private or secret
-key.}
+certificate first),\cr
+\strong{or} a length 2 character vector comprising [i] the TLS certificate
+(optionally certificate chain) and [ii] the associated private key.}
 
 \item{pass}{(optional) required only if the secret key supplied to 'server'
 is encrypted with a password. For security, consider providing through a
@@ -51,7 +49,7 @@ Specify one of 'client' or 'server' only, or neither (in which case
     of one type.
 
     For creating client configurations for public internet usage, root CA
-    ceritficates can usually be found at
+    ceritficates may usually be found at
     \file{/etc/ssl/certs/ca-certificates.crt} on Linux systems. Otherwise,
     root CA certificates in PEM format are available at the Common CA
     Database site run by Mozilla: \url{https://www.ccadb.org/resources}
