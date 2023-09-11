@@ -77,20 +77,19 @@ static int parse_serial_decimal_format(unsigned char *obuf, size_t obufmax,
 
 SEXP rnng_write_cert(SEXP cn, SEXP valid, SEXP inter) {
 
-  uint8_t exit = 1;
   const char *common = CHAR(STRING_ELT(cn, 0));
   const int interactive = LOGICAL(inter)[0];
+  mbedtls_entropy_context entropy;
+  mbedtls_ctr_drbg_context ctr_drbg;
   mbedtls_pk_context key;
-  mbedtls_entropy_context entropyk;
-  mbedtls_ctr_drbg_context ctr_drbgk;
-  const char *persk = "r-nanonext-key";
+  const char *pers = "r-nanonext-key";
 
   unsigned char key_buf[16000];
   memset(key_buf, 0, 16000);
 
+  mbedtls_entropy_init(&entropy);
+  mbedtls_ctr_drbg_init(&ctr_drbg);
   mbedtls_pk_init(&key);
-  mbedtls_ctr_drbg_init(&ctr_drbgk);
-  mbedtls_entropy_init(&entropyk);
 
   const char *serialvalue = "1";          /* serial number string (decimal)     */
   const char *not_before = "20010101000000";  /* validity period not before   */
@@ -112,16 +111,12 @@ SEXP rnng_write_cert(SEXP cn, SEXP valid, SEXP inter) {
   char buf[1024];
   mbedtls_x509_csr csr; // #if defined(MBEDTLS_X509_CSR_PARSE_C)
   mbedtls_x509write_cert crt;
-  mbedtls_entropy_context entropy;
-  mbedtls_ctr_drbg_context ctr_drbg;
-  const char *pers = "r-nanonext-cert";
+  const char *persn = "certificate";
 
   if (interactive) REprintf("\b\b\b\b\b.   ]");
 
   mbedtls_x509write_crt_init(&crt);
   mbedtls_pk_init(&loaded_issuer_key);
-  mbedtls_ctr_drbg_init(&ctr_drbg);
-  mbedtls_entropy_init(&entropy);
   mbedtls_x509_csr_init(&csr); // #if defined(MBEDTLS_X509_CSR_PARSE_C)
   mbedtls_x509_crt_init(&issuer_crt);
   memset(buf, 0, sizeof(buf));
@@ -137,13 +132,13 @@ SEXP rnng_write_cert(SEXP cn, SEXP valid, SEXP inter) {
   mbedtls_mpi_init(&serial);
 #endif
 
-  if ((ret = mbedtls_ctr_drbg_seed(&ctr_drbgk, mbedtls_entropy_func, &entropyk, (const unsigned char *) persk, strlen(persk))) ||
+  if ((ret = mbedtls_ctr_drbg_seed(&ctr_drbg, mbedtls_entropy_func, &entropy, (const unsigned char *) pers, strlen(pers))) ||
       (ret = mbedtls_pk_setup(&key, mbedtls_pk_info_from_type((mbedtls_pk_type_t) MBEDTLS_PK_RSA))))
     goto exitlevel1;
 
   if (interactive) REprintf("\b\b\b\b\b..  ]");
 
-  if ((ret = mbedtls_rsa_gen_key(mbedtls_pk_rsa(key), mbedtls_ctr_drbg_random, &ctr_drbgk, 4096, 65537)))
+  if ((ret = mbedtls_rsa_gen_key(mbedtls_pk_rsa(key), mbedtls_ctr_drbg_random, &ctr_drbg, 4096, 65537)))
     goto exitlevel1;
 
   if (interactive) REprintf("\b\b\b\b\b... ]");
@@ -153,7 +148,7 @@ SEXP rnng_write_cert(SEXP cn, SEXP valid, SEXP inter) {
 
   size_t klen = strlen((char *) key_buf);
 
-  if ((ret = mbedtls_ctr_drbg_seed(&ctr_drbg, mbedtls_entropy_func, &entropy, (const unsigned char *) pers, strlen(pers))) ||
+  if ((ret = mbedtls_ctr_drbg_reseed(&ctr_drbg, (const unsigned char *) persn, strlen(persn))) ||
 #if MBEDTLS_VERSION_MAJOR == 3 && MBEDTLS_VERSION_MINOR >= 4 || MBEDTLS_VERSION_MAJOR >= 4
       (ret = parse_serial_decimal_format(serial, sizeof(serial), serialvalue, &serial_len)) ||
 #else
@@ -187,10 +182,9 @@ SEXP rnng_write_cert(SEXP cn, SEXP valid, SEXP inter) {
 
   if ((ret = mbedtls_x509write_crt_set_subject_key_identifier(&crt)) ||
       (ret = mbedtls_x509write_crt_set_authority_key_identifier(&crt)))
-    goto exitlevel1; // #if defined(MBEDTLS_SHA1_C)
+    goto exitlevel1;
 
-  ret = mbedtls_x509write_crt_pem(&crt, output_buf, 4096, mbedtls_ctr_drbg_random, &ctr_drbg);
-  if (ret < 0)
+  if ((ret = mbedtls_x509write_crt_pem(&crt, output_buf, 4096, mbedtls_ctr_drbg_random, &ctr_drbg)))
     goto exitlevel1;
 
   if (interactive) REprintf("\b\b\b\b\b....]");
@@ -207,7 +201,6 @@ SEXP rnng_write_cert(SEXP cn, SEXP valid, SEXP inter) {
   SET_STRING_ELT(cstr, 0, Rf_mkChar((char *) &output_buf));
   SET_STRING_ELT(cstr, 1, R_BlankString);
 
-  exit = 0;
   if (interactive) REprintf("\b\b\b\b\bdone]\n");
 
   exitlevel1:
@@ -219,14 +212,11 @@ SEXP rnng_write_cert(SEXP cn, SEXP valid, SEXP inter) {
 #if MBEDTLS_VERSION_MAJOR == 3 && MBEDTLS_VERSION_MINOR < 4 || MBEDTLS_VERSION_MAJOR < 3
   mbedtls_mpi_free(&serial);
 #endif
+  mbedtls_pk_free(&key);
   mbedtls_ctr_drbg_free(&ctr_drbg);
   mbedtls_entropy_free(&entropy);
 
-  mbedtls_pk_free(&key);
-  mbedtls_ctr_drbg_free(&ctr_drbgk);
-  mbedtls_entropy_free(&entropyk);
-
-  if (exit) {
+  if (ret) {
     mbedtls_strerror(ret, buf, sizeof(buf));
     Rf_error("%d | %s", ret, buf);
   }

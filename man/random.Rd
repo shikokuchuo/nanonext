@@ -21,9 +21,11 @@ Strictly not for use in statistical analysis. Non-reproducible and with
     unknown statistical properties. Provides an alternative source of
     randomness from the Mbed TLS library for purposes such as cryptographic
     key generation. Mbed TLS uses a block-cipher in counter mode operation,
-    as defined in NIST SP800-90A: Recommendation for Random Number Generation
-    Using Deterministic Random Bit Generators. The implementation uses AES-256
-    as the underlying block cipher, with a derivation function.
+    as defined in NIST SP800-90A: \emph{Recommendation for Random Number
+    Generation Using Deterministic Random Bit Generators}. The implementation
+    uses AES-256 as the underlying block cipher, with a derivation function,
+    and an entropy collector combining entropy from multiple sources
+    including at least one strong entropy source.
 }
 \details{
 If 'n' is non-integer, it will be coerced to integer; if a vector,

@@ -3,6 +3,7 @@
 #### Updates
 
 * `random()` updated to use the Mbed TLS library to generate random bytes. Adds a 'convert' argument for specifying whether to return a raw vector or character string.
+* `write_cert()` has been optimised for higher efficiency and faster operation.
 
 # nanonext 0.10.0
 
