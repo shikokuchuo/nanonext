@@ -12,8 +12,7 @@ NNG_LIBS=""
 
 # Find compiler
 CC=`${R_HOME}/bin/R CMD config CC`
-CFLAGS=`${R_HOME}/bin/R CMD config CFLAGS`
-export CC=$CC
+export CC
 
 # Detect -latomic linker flag for ARM architectures (Raspberry Pi etc.)
 echo "#include <stdint.h>

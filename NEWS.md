@@ -1,7 +1,8 @@
-# nanonext 0.10.0.9000 (development)
+# nanonext 0.10.0.9001 (development)
 
 #### Updates
 
+* Fixes package installation failures where the R default C compiler command contains additional flags (thanks @potash).
 * `random()` updated to use the Mbed TLS library to generate random bytes. Adds a 'convert' argument for specifying whether to return a raw vector or character string.
 * `write_cert()` has been optimised for higher efficiency and faster operation.
 
