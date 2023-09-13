@@ -2,7 +2,7 @@
 
 #### Updates
 
-* Fixes package installation failures where the R default C compiler command contains additional flags (thanks @potash).
+* Fixes package installation failures where the R default C compiler command contains additional flags (thanks @potash #16).
 * `random()` updated to use the Mbed TLS library to generate random bytes. Adds a 'convert' argument for specifying whether to return a raw vector or character string.
 * `write_cert()` has been optimised for higher efficiency and faster operation.
 
