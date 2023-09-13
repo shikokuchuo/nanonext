@@ -86,11 +86,11 @@ send <- function(con, data, mode = c("serial", "raw"), block = NULL)
 #'     'character', 'complex', 'double', 'integer', 'logical', 'numeric', 'raw',
 #'     or 'string'. The default 'serial' means a serialised R object, for the
 #'     other modes, the raw vector received will be converted into the respective
-#'     mode. Note that 'string' is defined here as a character scalar and is a
-#'     faster alternative to 'character' for receiving a single string. For
-#'     Streams, 'serial' is not an option and the default is 'character'.
-#'     Alternatively, for performance, specify an integer position in the vector
-#'     of choices e.g. 1L for 'serial', 2L for 'character' etc.
+#'     mode. Note that 'string' is a faster alternative to 'character' for
+#'     receiving a character vector of length 1. For Streams, 'serial' is not an
+#'     option and the default is 'character'. Alternatively, for performance,
+#'     specify an integer position in the vector of choices e.g. 1L for 'serial',
+#'     2L for 'character' etc.
 #' @param n [default 65536L] applicable to Streams only, the maximum number of
 #'     bytes to receive. Can be an over-estimate, but note that a buffer of this
 #'     size is reserved.
