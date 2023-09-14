@@ -94,8 +94,12 @@ typedef struct nano_cv_s {
 } nano_cv;
 
 typedef struct nano_cv_aio_s {
+  nng_aio *aio;
+  nano_aio_typ type;
+  int mode;
+  int result;
+  void *data;
   nano_cv *cv;
-  nano_aio *aio;
 } nano_cv_aio;
 
 typedef struct nano_cv_duo_s {
