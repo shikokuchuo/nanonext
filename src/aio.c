@@ -1148,11 +1148,11 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP dat
 
 SEXP rnng_aio_http(SEXP env, SEXP response, SEXP type) {
 
-  const int typ = INTEGER(type)[0];
+  const int typ = LOGICAL(type)[0];
   SEXP exist;
   switch (typ) {
-  case 1: exist = Rf_findVarInFrame(ENCLOS(env), nano_StatusSymbol); break;
-  case 2: exist = Rf_findVarInFrame(ENCLOS(env), nano_StateSymbol); break;
+  case 0: exist = Rf_findVarInFrame(ENCLOS(env), nano_StatusSymbol); break;
+  case 1: exist = Rf_findVarInFrame(ENCLOS(env), nano_StateSymbol); break;
   default: exist = Rf_findVarInFrame(ENCLOS(env), nano_ResultSymbol); break;
   }
   if (exist != R_UnboundValue)
@@ -1248,8 +1248,8 @@ SEXP rnng_aio_http(SEXP env, SEXP response, SEXP type) {
   Rf_defineVar(nano_AioSymbol, R_NilValue, env);
 
   switch (typ) {
-  case 1: out = Rf_findVarInFrame(ENCLOS(env), nano_StatusSymbol); break;
-  case 2: out = Rf_findVarInFrame(ENCLOS(env), nano_StateSymbol); break;
+  case 0: out = Rf_findVarInFrame(ENCLOS(env), nano_StatusSymbol); break;
+  case 1: out = Rf_findVarInFrame(ENCLOS(env), nano_StateSymbol); break;
   default: out = Rf_findVarInFrame(ENCLOS(env), nano_ResultSymbol); break;
   }
   return out;
