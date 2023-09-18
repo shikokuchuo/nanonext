@@ -1,5 +1,9 @@
 # nanonext 0.10.0.9005 (development)
 
+#### New Features
+
+* `request()` adds logical argument 'autoclose', which closes the pipe automatically upon a successful message receive, as a means to synchronise with the other party.
+
 #### Updates
 
 * Fixes package installation failures where the R default C compiler command contains additional flags (thanks @potash #16).
