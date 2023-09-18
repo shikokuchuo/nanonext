@@ -1500,6 +1500,7 @@ SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeou
   nano_encodes(sendmode) ? nano_serialize(&buf, data) : nano_encode(&buf, data);
 
   nano_aio *saio = R_Calloc(1, nano_aio);
+  saio->data = ctx;
 
   if ((xc = nng_msg_alloc(&msg, 0))) {
     NANO_FREE(buf);
@@ -1541,10 +1542,9 @@ SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeou
   SET_OBJECT(env, 1);
   Rf_defineVar(nano_AioSymbol, aio, env);
 
-  saio->data = ctx;
   PROTECT(sendaio = R_MakeExternalPtr(saio, R_NilValue, R_NilValue));
   R_RegisterCFinalizerEx(sendaio, reqsaio_finalizer, TRUE);
-  Rf_defineVar(nano_StateSymbol, sendaio, ENCLOS(env));
+  Rf_setAttrib(aio, nano_AioSymbol, sendaio);
 
   PROTECT(fun = Rf_allocSExp(CLOSXP));
   SET_FORMALS(fun, nano_aioFormals);
@@ -1809,6 +1809,7 @@ SEXP rnng_cv_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP tim
   nano_encodes(sendmode) ? nano_serialize(&buf, data) : nano_encode(&buf, data);
 
   nano_aio *saio = R_Calloc(1, nano_aio);
+  saio->data = ctx;
 
   if ((xc = nng_msg_alloc(&msg, 0))) {
     NANO_FREE(buf);
@@ -1850,10 +1851,9 @@ SEXP rnng_cv_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP tim
   SET_OBJECT(env, 1);
   Rf_defineVar(nano_AioSymbol, aio, env);
 
-  saio->data = ctx;
   PROTECT(sendaio = R_MakeExternalPtr(saio, R_NilValue, R_NilValue));
   R_RegisterCFinalizerEx(sendaio, reqsaio_finalizer, TRUE);
-  Rf_defineVar(nano_StateSymbol, sendaio, ENCLOS(env));
+  Rf_setAttrib(aio, nano_AioSymbol, sendaio);
 
   PROTECT(fun = Rf_allocSExp(CLOSXP));
   SET_FORMALS(fun, nano_aioFormals);
