@@ -2,7 +2,7 @@
 
 #### New Features
 
-* `request()` adds logical argument 'autoclose', which closes the pipe automatically upon a successful message receive, as a means to synchronise with the other party.
+* `request()` adds logical argument 'autoclose', which closes the pipe automatically upon a successful async message receive, as a means to synchronise with the sender.
 
 #### Updates
 
