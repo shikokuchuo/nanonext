@@ -21,7 +21,7 @@ A signalling version of the function takes a 'conditionVariable' as an
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.10.0.9005</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.10.0.9006</span>
       </span>
     </div>
 
@@ -84,7 +84,8 @@ A signalling version of the function takes a 'conditionVariable' as an
 <span>  send_mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"serial"</span>, <span class="st">"raw"</span><span class="op">)</span>,</span>
 <span>  recv_mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"serial"</span>, <span class="st">"character"</span>, <span class="st">"complex"</span>, <span class="st">"double"</span>, <span class="st">"integer"</span>, <span class="st">"logical"</span>,</span>
 <span>    <span class="st">"numeric"</span>, <span class="st">"raw"</span>, <span class="st">"string"</span><span class="op">)</span>,</span>
-<span>  timeout <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  timeout <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  forward <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -132,6 +133,11 @@ with the rep node).</p></dd>
 <dt>cv</dt>
 <dd><p><strong>For the signalling version</strong>: a 'conditionVariable' to
 signal when the async receive is complete.</p></dd>
+
+
+<dt>forward</dt>
+<dd><p><strong>For the signalling version</strong>: [default NULL] optionally
+supply a Context to automatically forward any received message.</p></dd>
 
 </dl></div>
     <div id="value">
