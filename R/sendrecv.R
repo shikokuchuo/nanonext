@@ -114,11 +114,15 @@ send <- function(con, data, mode = c("serial", "raw"), block = NULL)
 #'     For Sockets: the default behaviour is non-blocking with \code{block = FALSE}.
 #'     This will return immediately with an error if no messages are available.
 #'
-#'     For Contexts and Streams: the default behaviour is blocking with \code{block = TRUE}.
-#'     This will wait until a message is received. Set a timeout in this case to
-#'     ensure that the function returns under all scenarios. As the underlying
-#'     implementation uses an asynchronous send with a wait, it is recommended
-#'     to set a positive integer value for \code{block} rather than FALSE.
+#'     For Contexts: the default behaviour is blocking with \code{block = TRUE}.
+#'     This will wait until a message is received. Set to FALSE or an integer
+#'     timeout to ensure that the function returns under all scenarios.
+#'
+#'     For Streams: the default behaviour is blocking with \code{block = TRUE}.
+#'     This will wait until a message is received. Set a timeout to ensure that
+#'     the function returns under all scenarios. As the underlying implementation
+#'     uses an asynchronous send with a wait, it is recommended to set a positive
+#'     integer value for \code{block} rather than FALSE.
 #'
 #' @seealso \code{\link{recv_aio}} for asynchronous receive.
 #' @examples
