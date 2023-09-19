@@ -530,10 +530,12 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
     if (block == R_NilValue) {
 
       xc = nng_send(*sock, buf.buf, buf.cur, NNG_FLAG_NONBLOCK);
+      NANO_FREE(buf);
 
     } else if (TYPEOF(block) == LGLSXP) {
 
       xc = nng_send(*sock, buf.buf, buf.cur, (LOGICAL(block)[0] == 0) * NNG_FLAG_NONBLOCK);
+      NANO_FREE(buf);
 
     } else {
 
@@ -556,6 +558,7 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
       nng_aio_set_msg(aiop, msgp);
       nng_aio_set_timeout(aiop, dur);
       nng_send_aio(*sock, aiop);
+      NANO_FREE(buf);
       nng_aio_wait(aiop);
       if ((xc = nng_aio_result(aiop)))
         nng_msg_free(nng_aio_get_msg(aiop));
@@ -563,17 +566,18 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
 
     }
 
-    NANO_FREE(buf);
-
   } else if (ptrtag == nano_ContextSymbol) {
 
     nng_ctx *ctxp = (nng_ctx *) R_ExternalPtrAddr(con);
+    nano_encodes(mode) ? nano_serialize(&buf, data) : nano_encode(&buf, data);
     nng_msg *msgp;
-    nng_aio *aiop;
+
+#if NNG_MAJOR_VERSION == 1 && NNG_MINOR_VERSION < 6
+
     const nng_duration dur = block == R_NilValue ? NNG_DURATION_DEFAULT :
       TYPEOF(block) == LGLSXP ? (LOGICAL(block)[0] == 1) * NNG_DURATION_DEFAULT : (nng_duration) Rf_asInteger(block);
 
-    nano_encodes(mode) ? nano_serialize(&buf, data) : nano_encode(&buf, data);
+    nng_aio *aiop;
 
     if ((xc = nng_msg_alloc(&msgp, 0))) {
       NANO_FREE(buf);
@@ -595,6 +599,70 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
     if ((xc = nng_aio_result(aiop)))
       nng_msg_free(nng_aio_get_msg(aiop));
     nng_aio_free(aiop);
+
+#else
+
+    if (block == R_NilValue) {
+
+      if ((xc = nng_msg_alloc(&msgp, 0))) {
+        NANO_FREE(buf);
+        return mk_error(xc);
+      }
+
+      if ((xc = nng_msg_append(msgp, buf.buf, buf.cur)) ||
+          (xc = nng_ctx_sendmsg(*ctxp, msgp, 0))) {
+        nng_msg_free(msgp);
+        NANO_FREE(buf);
+        return mk_error(xc);
+      }
+
+      NANO_FREE(buf);
+
+    } else if (TYPEOF(block) == LGLSXP) {
+
+      if ((xc = nng_msg_alloc(&msgp, 0))) {
+        NANO_FREE(buf);
+        return mk_error(xc);
+      }
+
+      if ((xc = nng_msg_append(msgp, buf.buf, buf.cur)) ||
+          (xc = nng_ctx_sendmsg(*ctxp, msgp, (LOGICAL(block)[0] == 0) * NNG_FLAG_NONBLOCK))) {
+        nng_msg_free(msgp);
+        NANO_FREE(buf);
+        return mk_error(xc);
+      }
+
+      NANO_FREE(buf);
+
+    } else {
+
+      const nng_duration dur = (nng_duration) Rf_asInteger(block);
+      nng_aio *aiop;
+
+      if ((xc = nng_msg_alloc(&msgp, 0))) {
+        NANO_FREE(buf);
+        return mk_error(xc);
+      }
+
+      if ((xc = nng_msg_append(msgp, buf.buf, buf.cur)) ||
+          (xc = nng_aio_alloc(&aiop, NULL, NULL))) {
+        nng_msg_free(msgp);
+        NANO_FREE(buf);
+        return mk_error(xc);
+      }
+
+      nng_aio_set_msg(aiop, msgp);
+      nng_aio_set_timeout(aiop, dur);
+      nng_ctx_send(*ctxp, aiop);
+      NANO_FREE(buf);
+      nng_aio_wait(aiop);
+      if ((xc = nng_aio_result(aiop)))
+        nng_msg_free(nng_aio_get_msg(aiop));
+      nng_aio_free(aiop);
+
+    }
+
+#endif
 
   } else if (ptrtag == nano_StreamSymbol) {
 
