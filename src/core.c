@@ -152,6 +152,33 @@ void nano_serialize(nano_buf *buf, SEXP object) {
 
 }
 
+void nano_serialize_next(nano_buf *buf, SEXP object) {
+
+  NANO_ALLOC(buf, NANONEXT_INIT_BUFSIZE);
+  buf->buf[0] = 7u;
+  buf->cur += 4;
+
+  struct R_outpstream_st output_stream;
+
+  R_InitOutPStream(
+    &output_stream,
+    (R_pstream_data_t) buf,
+#ifdef WORDS_BIGENDIAN
+    R_pstream_xdr_format,
+#else
+    R_pstream_binary_format,
+#endif
+    NANONEXT_SERIAL_VER,
+    nano_write_char,
+    nano_write_bytes,
+    NULL,
+    R_NilValue
+  );
+
+  R_Serialize(object, &output_stream);
+
+}
+
 void nano_serialize_xdr(nano_buf *buf, SEXP object) {
 
   NANO_ALLOC(buf, NANONEXT_INIT_BUFSIZE);
@@ -174,7 +201,14 @@ void nano_serialize_xdr(nano_buf *buf, SEXP object) {
 
 SEXP nano_unserialize(unsigned char *buf, const size_t sz) {
 
-  if (buf[0] != 66u && buf[0] != 88u) {
+  int cur;
+  switch (buf[0]) {
+  case 7:
+    cur = 4; break;
+  case 66:
+  case 88:
+    cur = 0; break;
+  default:
     Rf_warning("received data could not be unserialized");
     return nano_decode(buf, sz, 8);
   }
@@ -184,7 +218,7 @@ SEXP nano_unserialize(unsigned char *buf, const size_t sz) {
 
   nbuf.buf = buf;
   nbuf.len = sz;
-  nbuf.cur = 0;
+  nbuf.cur = cur;
 
   R_InitInPStream(
     &input_stream,
@@ -257,7 +291,7 @@ void nano_encode(nano_buf *enc, SEXP object) {
 
 }
 
-Rboolean nano_encodes(SEXP mode) {
+int nano_encodes(SEXP mode) {
 
   if (TYPEOF(mode) != INTSXP) {
     const char *mod = CHAR(STRING_ELT(mode, 0));
@@ -266,17 +300,17 @@ Rboolean nano_encodes(SEXP mode) {
     case 1:
     case 2:
     case 3:
-      if (!strncmp(mod, "raw", slen)) return FALSE;
+      if (!strncmp(mod, "raw", slen)) return 2;
     case 4:
     case 5:
     case 6:
-      if (!strncmp(mod, "serial", slen)) return TRUE;
+      if (!strncmp(mod, "serial", slen)) return 1;
     default:
       Rf_error("'mode' should be one of serial, raw");
     }
   }
 
-  return INTEGER(mode)[0] == 1;
+  return INTEGER(mode)[0];
 
 }
 
@@ -525,7 +559,15 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
   if (ptrtag == nano_SocketSymbol) {
 
     nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(con);
-    nano_encodes(mode) ? nano_serialize(&buf, data) : nano_encode(&buf, data);
+
+    switch (nano_encodes(mode)) {
+    case 1:
+      nano_serialize(&buf, data); break;
+    case 2:
+      nano_encode(&buf, data); break;
+    default:
+      nano_serialize_next(&buf, data); break;
+    }
 
     if (block == R_NilValue) {
 
@@ -566,7 +608,16 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
   } else if (ptrtag == nano_ContextSymbol) {
 
     nng_ctx *ctxp = (nng_ctx *) R_ExternalPtrAddr(con);
-    nano_encodes(mode) ? nano_serialize(&buf, data) : nano_encode(&buf, data);
+
+    switch (nano_encodes(mode)) {
+    case 1:
+      nano_serialize(&buf, data); break;
+    case 2:
+      nano_encode(&buf, data); break;
+    default:
+      nano_serialize_next(&buf, data); break;
+    }
+
     nng_msg *msgp;
 
 #if NNG_MAJOR_VERSION == 1 && NNG_MINOR_VERSION < 6

@@ -830,7 +830,14 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
     nng_msg *msg;
     saio->type = SENDAIO;
 
-    nano_encodes(mode) ? nano_serialize(&buf, data) : nano_encode(&buf, data);
+    switch (nano_encodes(mode)) {
+    case 1:
+      nano_serialize(&buf, data); break;
+    case 2:
+      nano_encode(&buf, data); break;
+    default:
+      nano_serialize_next(&buf, data); break;
+    }
 
     if ((xc = nng_msg_alloc(&msg, 0))) {
       NANO_FREE(buf);
@@ -858,7 +865,14 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
     nng_msg *msg;
     saio->type = SENDAIO;
 
-    nano_encodes(mode) ? nano_serialize(&buf, data) : nano_encode(&buf, data);
+    switch (nano_encodes(mode)) {
+    case 1:
+      nano_serialize(&buf, data); break;
+    case 2:
+      nano_encode(&buf, data); break;
+    default:
+      nano_serialize_next(&buf, data); break;
+    }
 
     if ((xc = nng_msg_alloc(&msg, 0))) {
       NANO_FREE(buf);
@@ -1519,7 +1533,14 @@ SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeou
   nano_buf buf;
   nng_msg *msg;
 
-  nano_encodes(sendmode) ? nano_serialize(&buf, data) : nano_encode(&buf, data);
+  switch (nano_encodes(sendmode)) {
+  case 1:
+    nano_serialize(&buf, data); break;
+  case 2:
+    nano_encode(&buf, data); break;
+  default:
+    nano_serialize_next(&buf, data); break;
+  }
 
   nano_aio *saio = R_Calloc(1, nano_aio);
   saio->data = ctx;
@@ -1827,7 +1848,14 @@ SEXP rnng_cv_request(SEXP con, SEXP data, SEXP cvar, SEXP sendmode, SEXP recvmod
   nano_buf buf;
   nng_msg *msg;
 
-  nano_encodes(sendmode) ? nano_serialize(&buf, data) : nano_encode(&buf, data);
+  switch (nano_encodes(sendmode)) {
+  case 1:
+    nano_serialize(&buf, data); break;
+  case 2:
+    nano_encode(&buf, data); break;
+  default:
+    nano_serialize_next(&buf, data); break;
+  }
 
   nano_aio *saio = R_Calloc(1, nano_aio);
   saio->data = ctx;
