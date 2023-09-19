@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.10.0.9006</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.10.0.9005</span>
       </span>
     </div>
 
@@ -54,16 +54,14 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.10.0.9006" id="nanonext-01009006-development">nanonext 0.10.0.9006 (development)<a class="anchor" aria-label="anchor" href="#nanonext-01009006-development"></a></h2>
+<h2 class="page-header" data-toc-text="0.10.0.9005" id="nanonext-01009005-development">nanonext 0.10.0.9005 (development)<a class="anchor" aria-label="anchor" href="#nanonext-01009005-development"></a></h2>
 <div class="section level5">
-<h5 id="new-features-0-10-0-9006">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-10-0-9006"></a></h5>
+<h5 id="new-features-0-10-0-9005">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-10-0-9005"></a></h5>
 <ul><li>
-<code><a href="../reference/request.html">request()</a></code> gains logical argument ‘autoclose’, which closes the pipe automatically upon an async message receive, as a means to synchronise with the sender.</li>
-<li>
-<code><a href="../reference/request.html">request_signal()</a></code> gains argument ‘forward’ to automatically forward a received message to another Context asynchronously.</li>
+<code><a href="../reference/request.html">request()</a></code> adds logical argument ‘autoclose’, which closes the pipe automatically upon a successful message receive, as a means to synchronise with the other party.</li>
 </ul></div>
 <div class="section level5">
-<h5 id="updates-0-10-0-9006">Updates<a class="anchor" aria-label="anchor" href="#updates-0-10-0-9006"></a></h5>
+<h5 id="updates-0-10-0-9005">Updates<a class="anchor" aria-label="anchor" href="#updates-0-10-0-9005"></a></h5>
 <ul><li>Fixes package installation failures where the R default C compiler command contains additional flags (thanks <a href="https://github.com/potash" class="external-link">@potash</a> <a href="https://github.com/shikokuchuo/nanonext/issues/16" class="external-link">#16</a>).</li>
 <li>
 <code><a href="../reference/random.html">random()</a></code> updated to use the Mbed TLS library to generate random bytes. Adds a ‘convert’ argument for specifying whether to return a raw vector or character string.</li>
