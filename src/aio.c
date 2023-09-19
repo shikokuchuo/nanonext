@@ -1708,7 +1708,7 @@ SEXP rnng_cv_signal(SEXP cvar) {
 
 }
 
-SEXP rnng_cv_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP bytes, SEXP cvar, SEXP clo) {
+SEXP rnng_cv_recv_aio(SEXP con, SEXP cvar, SEXP mode, SEXP timeout, SEXP bytes, SEXP clo) {
 
   if (R_ExternalPtrTag(cvar) != nano_CvSymbol)
     Rf_error("'cv' is not a valid Condition Variable");
@@ -1810,7 +1810,7 @@ SEXP rnng_cv_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP bytes, SEXP cvar, 
 
 }
 
-SEXP rnng_cv_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeout, SEXP cvar, SEXP clo) {
+SEXP rnng_cv_request(SEXP con, SEXP data, SEXP cvar, SEXP sendmode, SEXP recvmode, SEXP timeout, SEXP clo) {
 
   if (R_ExternalPtrTag(con) != nano_ContextSymbol)
     Rf_error("'context' is not a valid Context");

@@ -15,11 +15,11 @@ recv_aio(
 
 recv_aio_signal(
   con,
+  cv,
   mode = c("serial", "character", "complex", "double", "integer", "logical", "numeric",
     "raw", "string"),
   timeout = NULL,
-  n = 65536L,
-  cv
+  n = 65536L
 )
 }
 \arguments{

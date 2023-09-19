@@ -184,8 +184,8 @@ reply <- function(context,
 #' @param timeout [default NULL] integer value in milliseconds or NULL, which
 #'     applies a socket-specific default, usually the same as no timeout.
 #' @param autoclose [default FALSE] logical value whether to automatically close
-#'     the pipe upon successful message receive (happens asynchronously; may be
-#'     used for synchronisation with the rep node).
+#'     the pipe when the async receive is complete (may be used to synchronise
+#'     with the rep node).
 #'
 #' @return A 'recvAio' (object of class 'recvAio') (invisibly).
 #'
@@ -265,10 +265,10 @@ request <- function(context,
 #'
 request_signal <- function(context,
                            data,
+                           cv,
                            send_mode = c("serial", "raw"),
                            recv_mode = c("serial", "character", "complex", "double",
                                          "integer", "logical", "numeric", "raw", "string"),
-                           timeout = NULL,
-                           cv)
-  data <- .Call(rnng_cv_request, context, data, send_mode, recv_mode, timeout, cv,
-                environment())
+                           timeout = NULL)
+  data <- .Call(rnng_cv_request, context, data, cv, send_mode, recv_mode,
+                timeout, environment())

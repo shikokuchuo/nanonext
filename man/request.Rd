@@ -18,11 +18,11 @@ request(
 request_signal(
   context,
   data,
+  cv,
   send_mode = c("serial", "raw"),
   recv_mode = c("serial", "character", "complex", "double", "integer", "logical",
     "numeric", "raw", "string"),
-  timeout = NULL,
-  cv
+  timeout = NULL
 )
 }
 \arguments{
@@ -50,8 +50,8 @@ the vector of choices e.g. 1L for 'serial', 2L for 'character' etc.}
 applies a socket-specific default, usually the same as no timeout.}
 
 \item{autoclose}{[default FALSE] logical value whether to automatically close
-the pipe upon successful message receive (happens asynchronously; may be
-used for synchronisation with the rep node).}
+the pipe when the async receive is complete (may be used to synchronise
+with the rep node).}
 
 \item{cv}{\strong{For the signalling version}: a 'conditionVariable' to
 signal when the async receive is complete.}
