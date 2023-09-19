@@ -137,7 +137,9 @@ signal when the async receive is complete.</p></dd>
 
 <dt>forward</dt>
 <dd><p><strong>For the signalling version</strong>: [default NULL] optionally
-supply a Context to automatically forward any received message.</p></dd>
+supply a Context to automatically forward any received message. If
+forwarded, the message will not be available and the recvAio will resolve
+into an 'errorValue' 1 (Interrupted) once forwarding is complete.</p></dd>
 
 </dl></div>
     <div id="value">
