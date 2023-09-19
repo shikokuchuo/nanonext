@@ -122,11 +122,14 @@ size is reserved.</p></dd>
 
 <p>For Sockets: the default behaviour is non-blocking with <code>block = FALSE</code>.
     This will return immediately with an error if no messages are available.</p>
-<p>For Contexts and Streams: the default behaviour is blocking with <code>block = TRUE</code>.
-    This will wait until a message is received. Set a timeout in this case to
-    ensure that the function returns under all scenarios. As the underlying
-    implementation uses an asynchronous send with a wait, it is recommended
-    to set a positive integer value for <code>block</code> rather than FALSE.</p>
+<p>For Contexts: the default behaviour is blocking with <code>block = TRUE</code>.
+    This will wait until a message is received. Set to FALSE or an integer
+    timeout to ensure that the function returns under all scenarios.</p>
+<p>For Streams: the default behaviour is blocking with <code>block = TRUE</code>.
+    This will wait until a message is received. Set a timeout to ensure that
+    the function returns under all scenarios. As the underlying implementation
+    uses an asynchronous send with a wait, it is recommended to set a positive
+    integer value for <code>block</code> rather than FALSE.</p>
     </div>
     <div id="see-also">
     <h2>See also</h2>
