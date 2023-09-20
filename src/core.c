@@ -274,7 +274,7 @@ void nano_encode(nano_buf *enc, SEXP object) {
     NANO_INIT(enc, NULL, 0);
     break;
   case ENVSXP:
-    object = Rf_findVarInFrame(ENCLOS(object), nano_ResultSymbol);
+    object = Rf_findVarInFrame(object, nano_ValueSymbol);
     if (object != R_UnboundValue) {
       if (TYPEOF(object) == RAWSXP) {
         NANO_INIT(enc, (unsigned char *) STDVEC_DATAPTR(object), XLENGTH(object));

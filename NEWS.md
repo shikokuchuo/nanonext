@@ -1,4 +1,4 @@
-# nanonext 0.10.0.9006 (development)
+# nanonext 0.10.0.9007 (development)
 
 #### New Features
 
@@ -9,6 +9,7 @@
 * Fixes package installation failures where the R default C compiler command contains additional flags (thanks @potash #16).
 * `random()` updated to use the Mbed TLS library to generate random bytes. Adds a 'convert' argument for specifying whether to return a raw vector or character string.
 * `write_cert()` has been optimised for higher efficiency and faster operation.
+* Performance improvements due to simplification of the internal structure of 'aio' objects.
 * Rolls forward bundled 'libnng' to v1.6.0 alpha (a54820f).
 
 # nanonext 0.10.0
