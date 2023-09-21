@@ -205,18 +205,33 @@ static void raio_complete_ack(void *arg) {
   const int res = nng_aio_result(raio->aio);
   if (res == 0)
     raio->data = nng_aio_get_msg(raio->aio);
+
   nng_msg *msg;
+
+#if NNG_MAJOR_VERSION == 1 && NNG_MINOR_VERSION < 6
+
+  if (nng_msg_alloc(&msg, 0) == 0) {
+    nng_aio *aio;
+    if (nng_aio_alloc(&aio, NULL, NULL) == 0) {
+      nng_aio_set_msg(aio, msg);
+      nng_ctx_send(*ctx, aio);
+      nng_aio_free(aio);
+    }
+    nng_msg_free(msg);
+  }
+
+  nng_mtx_lock(shr_mtx);
+  raio->result = res - !res;
+  nng_mtx_unlock(shr_mtx);
+
+#else
+
   if (nng_msg_alloc(&msg, 0) == 0) {
     nng_ctx_sendmsg(*ctx, msg, 0);
     nng_msg_free(msg);
   }
+  raio->result = res - !res;
 
-#if NNG_MAJOR_VERSION == 1 && NNG_MINOR_VERSION < 6
-  nng_mtx_lock(shr_mtx);
-  raio->result = res - !res;
-  nng_mtx_unlock(shr_mtx);
-#else
-  raio->result = res - !res;
 #endif
 
 }
