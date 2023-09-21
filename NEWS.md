@@ -1,8 +1,8 @@
-# nanonext 0.10.0.9007 (development)
+# nanonext 0.10.0.9008 (development)
 
 #### New Features
 
-* `request()` adds logical argument 'autoclose', which closes the pipe automatically upon a successful async message receive, as a means to synchronise with the sender.
+* `request()` adds logical argument 'ack', which sends an ack(nowledgement) back to the rep node upon a successful async message receive.
 
 #### Updates
 

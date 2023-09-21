@@ -12,7 +12,7 @@ request(
   recv_mode = c("serial", "character", "complex", "double", "integer", "logical",
     "numeric", "raw", "string"),
   timeout = NULL,
-  autoclose = FALSE
+  ack = FALSE
 )
 
 request_signal(
@@ -49,9 +49,9 @@ the vector of choices e.g. 1L for 'serial', 2L for 'character' etc.}
 \item{timeout}{[default NULL] integer value in milliseconds or NULL, which
 applies a socket-specific default, usually the same as no timeout.}
 
-\item{autoclose}{[default FALSE] logical value whether to automatically close
-the pipe when the async receive is complete (may be used to synchronise
-with the rep node).}
+\item{ack}{[default FALSE] logical value whether to send an ack(nowledgement)
+back to the rep node (consisting of an empty message) when the async
+receive is complete.}
 
 \item{cv}{\strong{For the signalling version}: a 'conditionVariable' to
 signal when the async receive is complete.}
