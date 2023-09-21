@@ -203,11 +203,11 @@ SEXP nano_unserialize(unsigned char *buf, const size_t sz) {
 
   int cur;
   switch (buf[0]) {
-  case 7:
-    cur = 4; break;
   case 66:
   case 88:
     cur = 0; break;
+  case 7:
+    cur = 4; break;
   default:
     Rf_warning("received data could not be unserialized");
     return nano_decode(buf, sz, 8);
@@ -274,6 +274,7 @@ void nano_encode(nano_buf *enc, SEXP object) {
     NANO_INIT(enc, NULL, 0);
     break;
   case ENVSXP:
+    // todo: remove after mirai 0.10.1
     object = Rf_findVarInFrame(object, nano_ValueSymbol);
     if (object != R_UnboundValue) {
       if (TYPEOF(object) == RAWSXP) {
