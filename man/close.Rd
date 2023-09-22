@@ -55,3 +55,6 @@ Closing an object explicitly frees its resources. An object can also
     will be terminated and any new operations will fail after the connection
     is closed.
 }
+\seealso{
+\code{\link{reap}}
+}

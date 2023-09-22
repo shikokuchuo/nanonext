@@ -70,9 +70,9 @@ context <- function(socket) .Call(rnng_ctx_open, socket)
 #' @param socket a Socket.
 #'
 #' @details External pointers created by this function are unclassed, hence
-#'     methods for contexts such as \code{\link{close}} will not work. However
-#'     they function as a Context would when passed to all messaging functions.
-#'     The context is automatically closed when the object is garbage collected.
+#'     methods for contexts such as \code{\link{close}} will not work (use
+#'     \code{\link{reap}} instead). Otherwise they function identically to a
+#'     Context when passed to all messaging functions.
 #'
 #' @return An external pointer.
 #'

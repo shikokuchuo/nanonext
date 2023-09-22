@@ -146,6 +146,8 @@ socket <- function(protocol = c("bus", "pair", "push", "pull", "pub", "sub",
 #'     will be terminated and any new operations will fail after the connection
 #'     is closed.
 #'
+#' @seealso \code{\link{reap}}
+#'
 #' @name close
 #' @rdname close
 #'
@@ -156,3 +158,28 @@ NULL
 #' @export
 #'
 close.nanoSocket <- function(con, ...) invisible(.Call(rnng_close, con))
+
+#' Reap
+#'
+#' A faster alternative to \code{close} for Sockets and Contexts avoiding S3
+#'     method dispatch.
+#'
+#' @param con a Socket or Context.
+#'
+#' @return Invisibly, an integer exit code (zero on success).
+#'
+#' @details May be used on unclassed external pointers e.g. those created by
+#'     \code{\link{.context}}.
+#'
+#' @seealso \code{\link{close}}
+#'
+#' @examples
+#' s <- socket("req")
+#' ctx <- .context(s)
+#'
+#' reap(ctx)
+#' reap(s)
+#'
+#' @export
+#'
+reap <- function(con) .Call(rnng_reap, con)

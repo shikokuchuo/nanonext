@@ -160,3 +160,28 @@ SEXP rnng_close(SEXP socket) {
   return nano_success;
 
 }
+
+SEXP rnng_reap(SEXP con) {
+
+  int xc;
+  const SEXP ptrtag = R_ExternalPtrTag(con);
+
+  if (ptrtag == nano_SocketSymbol) {
+    nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(con);
+    xc = nng_close(*sock);
+
+  } else if (ptrtag == nano_ContextSymbol) {
+    nng_ctx *ctx = (nng_ctx *) R_ExternalPtrAddr(con);
+    xc = nng_ctx_close(*ctx);
+
+  } else {
+    Rf_error("'con' is not a valid Socket or Context");
+  }
+
+  if (xc)
+    ERROR_RET(xc);
+
+  Rf_setAttrib(con, nano_StateSymbol, Rf_mkString("closed"));
+  return nano_success;
+
+}
