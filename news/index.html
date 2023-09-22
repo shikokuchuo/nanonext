@@ -58,7 +58,7 @@
 <div class="section level5">
 <h5 id="new-features-0-10-0-9008">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-10-0-9008"></a></h5>
 <ul><li>
-<code><a href="../reference/reap.html">reap()</a></code> implemented as a faster alternative to <code><a href="../reference/close.html">close()</a></code> for Sockets and Contexts - avoiding S3 dispatch, hence works for unclassed external pointers created by <code><a href="../reference/dot-context.html">.context()</a></code>.</li>
+<code><a href="../reference/reap.html">reap()</a></code> implemented as a faster alternative to <code><a href="../reference/close.html">close()</a></code> for Sockets, Contexts, Listeners and Dialers - avoiding S3 method dispatch, hence works for unclassed external pointers created by <code><a href="../reference/dot-context.html">.context()</a></code>.</li>
 <li>
 <code><a href="../reference/request.html">request()</a></code> adds logical argument ‘ack’, which sends an ack(nowledgement) back to the rep node upon a successful async message receive.</li>
 </ul></div>
