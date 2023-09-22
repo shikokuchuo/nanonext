@@ -167,15 +167,19 @@ SEXP rnng_reap(SEXP con) {
   const SEXP ptrtag = R_ExternalPtrTag(con);
 
   if (ptrtag == nano_SocketSymbol) {
-    nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(con);
-    xc = nng_close(*sock);
+    xc = nng_close(*(nng_socket *) R_ExternalPtrAddr(con));
 
   } else if (ptrtag == nano_ContextSymbol) {
-    nng_ctx *ctx = (nng_ctx *) R_ExternalPtrAddr(con);
-    xc = nng_ctx_close(*ctx);
+    xc = nng_ctx_close(*(nng_ctx *) R_ExternalPtrAddr(con));
+
+  } else if (ptrtag == nano_ListenerSymbol) {
+    xc = nng_listener_close(*(nng_listener *) R_ExternalPtrAddr(con));
+
+  } else if (ptrtag == nano_DialerSymbol) {
+    xc = nng_dialer_close(*(nng_dialer *) R_ExternalPtrAddr(con));
 
   } else {
-    Rf_error("'con' is not a valid Socket or Context");
+    Rf_error("'con' is not a valid Socket, Context, Listener or Dialer");
   }
 
   if (xc)

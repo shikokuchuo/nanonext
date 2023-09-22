@@ -7,14 +7,14 @@
 reap(con)
 }
 \arguments{
-\item{con}{a Socket or Context.}
+\item{con}{a Socket, Context, Listener or Dialer.}
 }
 \value{
 Invisibly, an integer exit code (zero on success).
 }
 \description{
-A faster alternative to \code{close} for Sockets and Contexts avoiding S3
-    method dispatch.
+A faster alternative to \code{close} for Sockets, Contexts, Listeners and
+    Dialers avoiding S3 method dispatch.
 }
 \details{
 May be used on unclassed external pointers e.g. those created by
@@ -22,9 +22,13 @@ May be used on unclassed external pointers e.g. those created by
 }
 \examples{
 s <- socket("req")
+listen(s)
+dial(s)
 ctx <- .context(s)
 
 reap(ctx)
+reap(s[["dialer"]][[1]])
+reap(s[["listener"]][[1]])
 reap(s)
 
 }

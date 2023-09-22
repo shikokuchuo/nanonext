@@ -2,7 +2,7 @@
 
 #### New Features
 
-* `reap()` implemented as a faster alternative to `close()` for Sockets and Contexts - avoiding S3 dispatch, hence works for unclassed external pointers created by `.context()`.
+* `reap()` implemented as a faster alternative to `close()` for Sockets, Contexts, Listeners and Dialers - avoiding S3 method dispatch, hence works for unclassed external pointers created by `.context()`.
 * `request()` adds logical argument 'ack', which sends an ack(nowledgement) back to the rep node upon a successful async message receive.
 
 #### Updates

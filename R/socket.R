@@ -161,10 +161,10 @@ close.nanoSocket <- function(con, ...) invisible(.Call(rnng_close, con))
 
 #' Reap
 #'
-#' A faster alternative to \code{close} for Sockets and Contexts avoiding S3
-#'     method dispatch.
+#' A faster alternative to \code{close} for Sockets, Contexts, Listeners and
+#'     Dialers avoiding S3 method dispatch.
 #'
-#' @param con a Socket or Context.
+#' @param con a Socket, Context, Listener or Dialer.
 #'
 #' @return Invisibly, an integer exit code (zero on success).
 #'
@@ -175,9 +175,13 @@ close.nanoSocket <- function(con, ...) invisible(.Call(rnng_close, con))
 #'
 #' @examples
 #' s <- socket("req")
+#' listen(s)
+#' dial(s)
 #' ctx <- .context(s)
 #'
 #' reap(ctx)
+#' reap(s[["dialer"]][[1]])
+#' reap(s[["listener"]][[1]])
 #' reap(s)
 #'
 #' @export
