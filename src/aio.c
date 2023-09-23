@@ -1596,7 +1596,6 @@ SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeou
   R_RegisterCFinalizerEx(aio, raio_finalizer, TRUE);
 
   PROTECT(env = Rf_allocSExp(ENVSXP));
-  SET_ENCLOS(env, clo);
   SET_ATTRIB(env, nano_recvAio);
   SET_OBJECT(env, 1);
   Rf_defineVar(nano_AioSymbol, aio, env);
@@ -1832,7 +1831,6 @@ SEXP rnng_cv_recv_aio(SEXP con, SEXP cvar, SEXP mode, SEXP timeout, SEXP bytes, 
 
   SEXP env, fun;
   PROTECT(env = Rf_allocSExp(ENVSXP));
-  SET_ENCLOS(env, clo);
   SET_ATTRIB(env, nano_recvAio);
   SET_OBJECT(env, 1);
   Rf_defineVar(nano_AioSymbol, aio, env);
@@ -1912,7 +1910,6 @@ SEXP rnng_cv_request(SEXP con, SEXP data, SEXP cvar, SEXP sendmode, SEXP recvmod
   R_RegisterCFinalizerEx(aio, raio_finalizer, TRUE);
 
   PROTECT(env = Rf_allocSExp(ENVSXP));
-  SET_ENCLOS(env, clo);
   SET_ATTRIB(env, nano_recvAio);
   SET_OBJECT(env, 1);
   Rf_defineVar(nano_AioSymbol, aio, env);
