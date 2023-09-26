@@ -4,7 +4,7 @@
 \alias{protocols}
 \title{Protocols [Documentation]}
 \description{
-Protocols implemented by \{nanonext\}.
+Protocols implemented by \pkg{nanonext}.
 
     For an authoritative guide please refer to the online documentation for
     the NNG library at \url{https://nng.nanomsg.org/man/}.

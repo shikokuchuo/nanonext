@@ -18,7 +18,7 @@
 
 #' Protocols [Documentation]
 #'
-#' @description Protocols implemented by \{nanonext\}.
+#' @description Protocols implemented by \pkg{nanonext}.
 #'
 #'     For an authoritative guide please refer to the online documentation for
 #'     the NNG library at \url{https://nng.nanomsg.org/man/}.
@@ -126,7 +126,7 @@ NULL
 
 #' Transports [Documentation]
 #'
-#' @description Transports supported by \{nanonext\}.
+#' @description Transports supported by \pkg{nanonext}.
 #'
 #'     For an authoritative guide please refer to the online documentation for
 #'     the NNG library at \url{https://nng.nanomsg.org/man/}.
@@ -154,7 +154,7 @@ NULL
 #'
 #' @section IPC:
 #'
-#'     The ipc transport provides communication support between sockets
+#'     The IPC transport provides communication support between sockets
 #'     within different processes on the same host. For POSIX platforms, this is
 #'     implemented using UNIX domain sockets. For Windows, this is implemented
 #'     using Windows Named Pipes. Other platforms may have different
@@ -200,9 +200,9 @@ NULL
 #'
 #' @section TCP/IP:
 #'
-#'     The tcp transport provides communication support between sockets
-#'     across a TCP/IP network. Both IPv4 and IPv6 are supported when the
-#'     underlying platform also supports it.
+#'     The TCP transport provides communication support between sockets
+#'     across a TCP/IP network. Both IPv4 and IPv6 are supported when supported
+#'     by the underlying platform.
 #'
 #'     [\strong{URI, tcp://}] This transport uses URIs using the scheme tcp://,
 #'     followed by an IP address or hostname, followed by a colon and finally
@@ -239,9 +239,9 @@ NULL
 #'
 #' @section TLS:
 #'
-#'     The tls transport provides communication support between peers across a
+#'     The TLS transport provides communication support between peers across a
 #'     TCP/IP network using TLS v1.2 on top of TCP. Both IPv4 and IPv6 are
-#'     supported when the underlying platform also supports it.
+#'     supported when supported by the underlying platform.
 #'
 #'     [\strong{URI, tls+tcp://}] This transport uses URIs using the scheme
 #'     tls+tcp://, followed by an IP address or hostname, followed by a colon
@@ -260,7 +260,7 @@ NULL
 #'
 #'     The ws and wss transport provides communication support between peers
 #'     across a TCP/IP network using WebSockets. Both IPv4 and IPv6 are
-#'     supported when the underlying platform also supports it.
+#'     supported when supported by the underlying platform.
 #'
 #'     [\strong{URI, ws://}] This transport uses URIs using the scheme ws://,
 #'     followed by an IP address or hostname, optionally followed by a colon and

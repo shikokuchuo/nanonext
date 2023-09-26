@@ -81,8 +81,7 @@
 #'
 #' @section Links:
 #'
-#'     nanonext website: \url{https://shikokuchuo.net/nanonext/} \cr
-#'     nanonext on CRAN: \url{https://cran.r-project.org/package=nanonext}
+#'     \CRANpkg{nanonext} website: \url{https://shikokuchuo.net/nanonext/}
 #'
 #'     NNG website: \url{https://nng.nanomsg.org/} \cr
 #'     Mbed TLS website: \url{https://www.trustedfirmware.org/projects/mbed-tls/}
