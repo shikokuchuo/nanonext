@@ -21,7 +21,7 @@ A signalling version of the function takes a 'conditionVariable' as an
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.10.0.9010</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.10.0.9011</span>
       </span>
     </div>
 
@@ -70,7 +70,7 @@ A signalling version of the function takes a 'conditionVariable' as an
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">request</span><span class="op">(</span></span>
 <span>  <span class="va">context</span>,</span>
 <span>  <span class="va">data</span>,</span>
-<span>  send_mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"serial"</span>, <span class="st">"raw"</span><span class="op">)</span>,</span>
+<span>  send_mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"serial"</span>, <span class="st">"raw"</span>, <span class="st">"next"</span><span class="op">)</span>,</span>
 <span>  recv_mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"serial"</span>, <span class="st">"character"</span>, <span class="st">"complex"</span>, <span class="st">"double"</span>, <span class="st">"integer"</span>, <span class="st">"logical"</span>,</span>
 <span>    <span class="st">"numeric"</span>, <span class="st">"raw"</span>, <span class="st">"string"</span><span class="op">)</span>,</span>
 <span>  timeout <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -81,7 +81,7 @@ A signalling version of the function takes a 'conditionVariable' as an
 <span>  <span class="va">context</span>,</span>
 <span>  <span class="va">data</span>,</span>
 <span>  <span class="va">cv</span>,</span>
-<span>  send_mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"serial"</span>, <span class="st">"raw"</span><span class="op">)</span>,</span>
+<span>  send_mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"serial"</span>, <span class="st">"raw"</span>, <span class="st">"next"</span><span class="op">)</span>,</span>
 <span>  recv_mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"serial"</span>, <span class="st">"character"</span>, <span class="st">"complex"</span>, <span class="st">"double"</span>, <span class="st">"integer"</span>, <span class="st">"logical"</span>,</span>
 <span>    <span class="st">"numeric"</span>, <span class="st">"raw"</span>, <span class="st">"string"</span><span class="op">)</span>,</span>
 <span>  timeout <span class="op">=</span> <span class="cn">NULL</span></span>
@@ -99,12 +99,13 @@ A signalling version of the function takes a 'conditionVariable' as an
 
 
 <dt>send_mode</dt>
-<dd><p>[default 'serial'] to send serialised R objects, or 'raw' to
-send atomic vectors of any type as a raw byte vector. Use 'serial' to
-ensure perfect reproducibility within R, although 'raw' must be used when
+<dd><p>[default 'serial'] one of 'serial' to send serialised R objects,
+'raw' to send atomic vectors of any type as a raw byte vector, or 'next'
+to send in a new R-compatible serialisation format. Use 'serial' to ensure
+perfect reproducibility within R, although 'raw' must be used when
 interfacing with external applications which do not understand R
 serialisation. Alternatively, for performance, specify an integer position
-in the vector of choices i.e. 1L for 'serial' or 2L for 'raw'.</p></dd>
+in the vector of choices e.g. 1L for 'serial' or 2L for 'raw' etc.</p></dd>
 
 
 <dt>recv_mode</dt>

@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.10.0.9010</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.10.0.9011</span>
       </span>
     </div>
 
@@ -59,7 +59,7 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">send</span><span class="op">(</span><span class="va">con</span>, <span class="va">data</span>, mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"serial"</span>, <span class="st">"raw"</span><span class="op">)</span>, block <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">send</span><span class="op">(</span><span class="va">con</span>, <span class="va">data</span>, mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"serial"</span>, <span class="st">"raw"</span>, <span class="st">"next"</span><span class="op">)</span>, block <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -73,13 +73,14 @@
 
 
 <dt>mode</dt>
-<dd><p>[default 'serial'] to send serialised R objects, or 'raw' to send
-atomic vectors of any type as a raw byte vector. For Streams, 'raw' is
+<dd><p>[default 'serial'] one of 'serial' to send serialised R objects,
+'raw' to send atomic vectors of any type as a raw byte vector, or 'next'
+to send in a new R-compatible serialisation format. For Streams, 'raw' is
 the only option and this argument is ignored. Use 'serial' to ensure
 perfect reproducibility within R, although 'raw' must be used when
 interfacing with external applications which do not understand R
 serialisation. Alternatively, for performance, specify an integer position
-in the vector of choices i.e. 1L for 'serial' or 2L for 'raw'.</p></dd>
+in the vector of choices e.g. 1L for 'serial' or 2L for 'raw' etc.</p></dd>
 
 
 <dt>block</dt>
