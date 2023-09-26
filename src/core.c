@@ -303,11 +303,12 @@ int nano_encodes(SEXP mode) {
     case 3:
       if (!strncmp(mod, "raw", slen)) return 2;
     case 4:
+      if (!strncmp(mod, "next", slen)) return 3;
     case 5:
     case 6:
       if (!strncmp(mod, "serial", slen)) return 1;
     default:
-      Rf_error("'mode' should be one of serial, raw");
+      Rf_error("'mode' should be one of serial, raw, next");
     }
   }
 

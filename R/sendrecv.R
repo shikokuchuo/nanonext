@@ -22,13 +22,14 @@
 #'
 #' @param con a Socket, Context or Stream.
 #' @param data an object (a vector, if mode = 'raw').
-#' @param mode [default 'serial'] to send serialised R objects, or 'raw' to send
-#'     atomic vectors of any type as a raw byte vector. For Streams, 'raw' is
+#' @param mode [default 'serial'] one of 'serial' to send serialised R objects,
+#'     'raw' to send atomic vectors of any type as a raw byte vector, or 'next'
+#'     to send in a new R-compatible serialisation format. For Streams, 'raw' is
 #'     the only option and this argument is ignored. Use 'serial' to ensure
 #'     perfect reproducibility within R, although 'raw' must be used when
 #'     interfacing with external applications which do not understand R
 #'     serialisation. Alternatively, for performance, specify an integer position
-#'     in the vector of choices i.e. 1L for 'serial' or 2L for 'raw'.
+#'     in the vector of choices e.g. 1L for 'serial' or 2L for 'raw' etc.
 #' @param block [default NULL] which applies the connection default (see section
 #'     'Blocking' below). Specify logical TRUE to block until successful or FALSE
 #'     to return immediately even if unsuccessful (e.g. if no connection is
@@ -77,7 +78,7 @@
 #'
 #' @export
 #'
-send <- function(con, data, mode = c("serial", "raw"), block = NULL)
+send <- function(con, data, mode = c("serial", "raw", "next"), block = NULL)
   .Call(rnng_send, con, data, mode, block)
 
 #' Receive
