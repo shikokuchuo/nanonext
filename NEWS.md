@@ -1,11 +1,11 @@
-# nanonext 0.10.0.9011 (development)
+# nanonext 0.10.1
 
 #### New Features
 
 * `request()` adds logical argument 'ack', which sends an ack(nowledgement) back to the rep node upon a successful async message receive.
 * `reap()` implemented as a faster alternative to `close()` for Sockets, Contexts, Listeners and Dialers - avoiding S3 method dispatch, hence works for unclassed external pointers created by `.context()`.
 * `random()` updated to use the Mbed TLS library to generate random bytes. Adds a 'convert' argument for specifying whether to return a raw vector or character string.
-* Adds 'next' as a mode for send functions, as a 100% compatible R serialisation format.
+* Adds 'next' as a mode for send functions, as a 100% compatible R serialisation format (may be received using mode 'serial').
 
 #### Updates
 

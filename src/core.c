@@ -287,7 +287,7 @@ void nano_encode(nano_buf *enc, SEXP object) {
       break;
     }
   default:
-    Rf_error("'data' must be an atomic vector type to send in mode 'raw'");
+    Rf_error("'data' must be an atomic vector type or NULL to send in mode 'raw'");
   }
 
 }
