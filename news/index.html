@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.10.0.9011</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.10.1</span>
       </span>
     </div>
 
@@ -54,19 +54,19 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.10.0.9011" id="nanonext-01009011-development">nanonext 0.10.0.9011 (development)<a class="anchor" aria-label="anchor" href="#nanonext-01009011-development"></a></h2>
+<h2 class="page-header" data-toc-text="0.10.1" id="nanonext-0101">nanonext 0.10.1<a class="anchor" aria-label="anchor" href="#nanonext-0101"></a></h2>
 <div class="section level5">
-<h5 id="new-features-0-10-0-9011">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-10-0-9011"></a></h5>
+<h5 id="new-features-0-10-1">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-10-1"></a></h5>
 <ul><li>
 <code><a href="../reference/request.html">request()</a></code> adds logical argument ‘ack’, which sends an ack(nowledgement) back to the rep node upon a successful async message receive.</li>
 <li>
 <code><a href="../reference/reap.html">reap()</a></code> implemented as a faster alternative to <code><a href="../reference/close.html">close()</a></code> for Sockets, Contexts, Listeners and Dialers - avoiding S3 method dispatch, hence works for unclassed external pointers created by <code><a href="../reference/dot-context.html">.context()</a></code>.</li>
 <li>
 <code><a href="../reference/random.html">random()</a></code> updated to use the Mbed TLS library to generate random bytes. Adds a ‘convert’ argument for specifying whether to return a raw vector or character string.</li>
-<li>Adds ‘next’ as a mode for send functions, as a 100% compatible R serialisation format.</li>
+<li>Adds ‘next’ as a mode for send functions, as a 100% compatible R serialisation format (may be received using mode ‘serial’).</li>
 </ul></div>
 <div class="section level5">
-<h5 id="updates-0-10-0-9011">Updates<a class="anchor" aria-label="anchor" href="#updates-0-10-0-9011"></a></h5>
+<h5 id="updates-0-10-1">Updates<a class="anchor" aria-label="anchor" href="#updates-0-10-1"></a></h5>
 <ul><li>
 <code><a href="../reference/write_cert.html">write_cert()</a></code> has been optimised for higher efficiency and faster operation.</li>
 <li>
