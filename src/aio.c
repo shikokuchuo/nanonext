@@ -215,9 +215,13 @@ static void raio_complete_ack(void *arg) {
     if (nng_aio_alloc(&aio, NULL, NULL) == 0) {
       nng_aio_set_msg(aio, msg);
       nng_ctx_send(*ctx, aio);
+      nng_aio_wait(aio);
+      if (nng_aio_result(aio))
+        nng_msg_free(nng_aio_get_msg(aio));
       nng_aio_free(aio);
+    } else {
+      nng_msg_free(msg);
     }
-    nng_msg_free(msg);
   }
 
   nng_mtx_lock(shr_mtx);
@@ -227,8 +231,8 @@ static void raio_complete_ack(void *arg) {
 #else
 
   if (nng_msg_alloc(&msg, 0) == 0) {
-    nng_ctx_sendmsg(*ctx, msg, 0);
-    nng_msg_free(msg);
+    if (nng_ctx_sendmsg(*ctx, msg, 0))
+      nng_msg_free(msg);
   }
   raio->result = res - !res;
 

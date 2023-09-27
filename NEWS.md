@@ -1,4 +1,8 @@
-# nanonext 0.10.1.9000 (development)
+# nanonext 0.10.2
+
+#### Updates
+
+* Addresses one case of memory access error identified by CRAN.
 
 # nanonext 0.10.1
 
