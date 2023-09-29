@@ -23,6 +23,9 @@
 
 // messenger -------------------------------------------------------------------
 
+// # nocov start
+// tested interactively
+
 static void thread_finalizer(SEXP xptr) {
 
   if (R_ExternalPtrAddr(xptr) == NULL)
@@ -160,3 +163,5 @@ SEXP rnng_messenger_thread_create(SEXP args) {
   return socket;
 
 }
+
+// # nocov end

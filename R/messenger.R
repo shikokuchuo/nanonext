@@ -16,6 +16,9 @@
 
 # nanonext - Messenger ---------------------------------------------------------
 
+# nocov start
+# tested interactively
+
 #' Messenger
 #'
 #' Multi-threaded, console-based, 2-way instant messaging system with
@@ -100,3 +103,5 @@ messenger <- function(url, auth = NULL) {
   invisible()
 
 }
+
+# nocov end
