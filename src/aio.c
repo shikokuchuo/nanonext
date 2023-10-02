@@ -198,48 +198,6 @@ static void raio_complete(void *arg) {
 
 }
 
-static void raio_complete_ack(void *arg) {
-
-  nano_aio *raio = (nano_aio *) arg;
-  nng_ctx *ctx = (nng_ctx *) raio->data;
-  const int res = nng_aio_result(raio->aio);
-  if (res == 0)
-    raio->data = nng_aio_get_msg(raio->aio);
-
-  nng_msg *msg;
-
-#if NNG_MAJOR_VERSION == 1 && NNG_MINOR_VERSION < 6
-
-  if (nng_msg_alloc(&msg, 0) == 0) {
-    nng_aio *aio;
-    if (nng_aio_alloc(&aio, NULL, NULL) == 0) {
-      nng_aio_set_msg(aio, msg);
-      nng_ctx_send(*ctx, aio);
-      nng_aio_wait(aio);
-      if (nng_aio_result(aio))
-        nng_msg_free(nng_aio_get_msg(aio));
-      nng_aio_free(aio);
-    } else {
-      nng_msg_free(msg);
-    }
-  }
-
-  nng_mtx_lock(shr_mtx);
-  raio->result = res - !res;
-  nng_mtx_unlock(shr_mtx);
-
-#else
-
-  if (nng_msg_alloc(&msg, 0) == 0) {
-    if (nng_ctx_sendmsg(*ctx, msg, 0))
-      nng_msg_free(msg);
-  }
-  raio->result = res - !res;
-
-#endif
-
-}
-
 static void raio_complete_signal(void *arg) {
 
   nano_cv_aio *cv_aio = (nano_cv_aio *) arg;
@@ -1538,7 +1496,7 @@ SEXP rnng_ncurl_session_close(SEXP session) {
 
 // request ---------------------------------------------------------------------
 
-SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeout, SEXP ack, SEXP clo) {
+SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeout, SEXP clo) {
 
   if (R_ExternalPtrTag(con) != nano_ContextSymbol)
     Rf_error("'context' is not a valid Context");
@@ -1547,7 +1505,6 @@ SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeou
 
   int xc;
   const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) Rf_asInteger(timeout);
-  const int ac = LOGICAL(ack)[0];
 
   SEXP sendaio, aio, env, fun;
   nano_buf buf;
@@ -1584,9 +1541,8 @@ SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeou
   nano_aio *raio = R_Calloc(1, nano_aio);
   raio->type = RECVAIO;
   raio->mode = nano_matcharg(recvmode);
-  raio->data = ac ? ctx : NULL;
 
-  if ((xc = nng_aio_alloc(&raio->aio, ac ? raio_complete_ack : raio_complete, raio))) {
+  if ((xc = nng_aio_alloc(&raio->aio, raio_complete, raio))) {
     R_Free(raio);
     nng_aio_free(saio->aio);
     R_Free(saio);

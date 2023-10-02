@@ -1,5 +1,9 @@
 # nanonext 0.10.2.9000 (development)
 
+#### Updates
+
+* `request()` removes logical argument 'ack' due to stability concerns.
+
 # nanonext 0.10.2
 
 #### Updates
