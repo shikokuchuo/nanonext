@@ -2,7 +2,7 @@
 
 #### Updates
 
-* `request()` removes logical argument 'ack' due to stability concerns.
+* `request()` logical argument 'autoclose' replaces 'ack', as a more stable method of synchronising with the rep node.
 
 # nanonext 0.10.2
 
