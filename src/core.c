@@ -1348,3 +1348,9 @@ SEXP rnng_strcat(SEXP a, SEXP b) {
   return out;
 
 }
+
+void rnng_fini(void) {
+
+  nng_fini();
+
+}

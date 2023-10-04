@@ -98,3 +98,10 @@
 #' @name nanonext-package
 #'
 NULL
+
+# nocov start
+# strictly for internal debugging only
+
+nng_fini <- function() invisible(.C(rnng_fini))
+
+# nocov end
