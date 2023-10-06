@@ -273,19 +273,6 @@ void nano_encode(nano_buf *enc, SEXP object) {
   case NILSXP:
     NANO_INIT(enc, NULL, 0);
     break;
-  case ENVSXP:
-    // todo: remove after mirai 0.10.1
-    object = Rf_findVarInFrame(object, nano_ValueSymbol);
-    if (object != R_UnboundValue) {
-      if (TYPEOF(object) == RAWSXP) {
-        NANO_INIT(enc, (unsigned char *) STDVEC_DATAPTR(object), XLENGTH(object));
-      } else {
-        PROTECT(object);
-        nano_serialize(enc, object);
-        UNPROTECT(1);
-      }
-      break;
-    }
   default:
     Rf_error("'data' must be an atomic vector type or NULL to send in mode 'raw'");
   }
