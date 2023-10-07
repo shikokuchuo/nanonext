@@ -273,6 +273,12 @@ void nano_encode(nano_buf *enc, SEXP object) {
   case NILSXP:
     NANO_INIT(enc, NULL, 0);
     break;
+  case ENVSXP:
+    object = Rf_findVarInFrame(object, nano_ValueSymbol);
+    if (object != R_UnboundValue) {
+      NANO_INIT(enc, (unsigned char *) STDVEC_DATAPTR(object), XLENGTH(object));
+      break;
+    }
   default:
     Rf_error("'data' must be an atomic vector type or NULL to send in mode 'raw'");
   }
@@ -1296,25 +1302,7 @@ SEXP rnng_stats_get(SEXP object, SEXP stat) {
 
 }
 
-// weakref ---------------------------------------------------------------------
-
-SEXP rnng_weakref_make(SEXP key, SEXP value) {
-
-  return R_MakeWeakRef(key, value, R_NilValue, FALSE);
-
-}
-
-SEXP rnng_weakref_key(SEXP w) {
-
-  return R_WeakRefKey(w);
-
-}
-
-SEXP rnng_weakref_value(SEXP w) {
-
-  return R_WeakRefValue(w);
-
-}
+// strcat ----------------------------------------------------------------------
 
 SEXP rnng_strcat(SEXP a, SEXP b) {
 

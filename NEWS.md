@@ -3,6 +3,7 @@
 #### Updates
 
 * `request()` logical argument 'autoclose' replaces 'ack', as a preferred method of synchronising with the rep node.
+* Removes `weakref()`, `weakref_key()` and `weakref_value()`: please use equivalent functions from the `rlang` package instead.
 
 # nanonext 0.10.2
 
