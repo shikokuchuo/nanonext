@@ -3,7 +3,9 @@
 #### Updates
 
 * `request()` logical argument 'autoclose' replaces 'ack', as a preferred method of synchronising with the rep node.
+* Improves listener / dialer logic for TLS connections, allowing *inter alia* synchronous dials.
 * Removes `weakref()`, `weakref_key()` and `weakref_value()`: please use equivalent functions from the `rlang` package instead.
+* Fixes memory leaks detected with valgrind.
 
 # nanonext 0.10.2
 

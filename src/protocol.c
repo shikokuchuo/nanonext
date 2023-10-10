@@ -122,8 +122,7 @@ SEXP rnng_protocol_open(SEXP protocol, SEXP raw) {
       break;
     }
   default:
-    Rf_error("'protocol' should be one of bus, pair, push, pull, pub, sub, req, rep, surveyor, respondent");
-    return R_NilValue;
+    error_return("'protocol' should be one of bus, pair, push, pull, pub, sub, req, rep, surveyor, respondent");
   }
 
   if (xc) {
@@ -138,7 +137,7 @@ SEXP rnng_protocol_open(SEXP protocol, SEXP raw) {
   Rf_classgets(socket, klass);
   SET_STRING_ELT(klass, 0, Rf_mkChar("nanoSocket"));
   SET_STRING_ELT(klass, 1, Rf_mkChar("nano"));
-  Rf_setAttrib(socket, nano_IdSymbol, Rf_ScalarInteger((int) sock->id));
+  Rf_setAttrib(socket, nano_IdSymbol, Rf_ScalarInteger(nng_socket_id(*sock)));
   Rf_setAttrib(socket, nano_StateSymbol, Rf_mkString("opened"));
   Rf_setAttrib(socket, nano_ProtocolSymbol, Rf_mkString(pname));
 

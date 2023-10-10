@@ -495,10 +495,10 @@ SEXP rnng_ctx_open(SEXP socket) {
   Rf_classgets(context, klass);
   SET_STRING_ELT(klass, 0, Rf_mkChar("nanoContext"));
   SET_STRING_ELT(klass, 1, Rf_mkChar("nano"));
-  Rf_setAttrib(context, nano_IdSymbol, Rf_ScalarInteger((int) ctx->id));
+  Rf_setAttrib(context, nano_IdSymbol, Rf_ScalarInteger(nng_ctx_id(*ctx)));
   Rf_setAttrib(context, nano_StateSymbol, Rf_mkString("opened"));
   Rf_setAttrib(context, nano_ProtocolSymbol, Rf_getAttrib(socket, nano_ProtocolSymbol));
-  Rf_setAttrib(context, nano_SocketSymbol, Rf_ScalarInteger((int) sock->id));
+  Rf_setAttrib(context, nano_SocketSymbol, Rf_ScalarInteger(nng_socket_id(*sock)));
 
   UNPROTECT(1);
   return context;
@@ -1233,6 +1233,7 @@ SEXP rnng_get_opt(SEXP object, SEXP opt) {
   switch (typ) {
   case 1:
     out = Rf_mkString(optval.str);
+    nng_strfree(optval.str);
     break;
   case 2:
     out = Rf_ScalarInteger((int) optval.d);
@@ -1258,29 +1259,27 @@ SEXP rnng_get_opt(SEXP object, SEXP opt) {
 
 SEXP rnng_stats_get(SEXP object, SEXP stat) {
 
-  if (TYPEOF(object) != EXTPTRSXP)
-    Rf_error("'object' is not a valid Socket, Listener or Dialer");
-
   const char *statname = CHAR(STRING_ELT(stat, 0));
   SEXP out;
-  int xc, typ;
+  int xc;
   nng_stat *nst, *sst;
-
-  xc = nng_stats_get(&nst);
-  if (xc)
-    ERROR_OUT(xc);
 
   const SEXP ptrtag = R_ExternalPtrTag(object);
   if (ptrtag == nano_SocketSymbol) {
-
+    if ((xc = nng_stats_get(&nst)))
+      ERROR_OUT(xc);
     nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(object);
     sst = nng_stat_find_socket(nst, *sock);
 
   } else if (ptrtag == nano_ListenerSymbol) {
+    if ((xc = nng_stats_get(&nst)))
+      ERROR_OUT(xc);
     nng_listener *list = (nng_listener *) R_ExternalPtrAddr(object);
     sst = nng_stat_find_listener(nst, *list);
 
   } else if (ptrtag == nano_DialerSymbol) {
+    if ((xc = nng_stats_get(&nst)))
+      ERROR_OUT(xc);
     nng_dialer *dial = (nng_dialer *) R_ExternalPtrAddr(object);
     sst = nng_stat_find_dialer(nst, *dial);
 
@@ -1294,8 +1293,7 @@ SEXP rnng_stats_get(SEXP object, SEXP stat) {
     return R_NilValue;
   }
 
-  typ = nng_stat_type(sst);
-  out = typ == NNG_STAT_STRING ? Rf_mkString(nng_stat_string(sst)) : Rf_ScalarReal((double) nng_stat_value(sst));
+  out = nng_stat_type(sst) == NNG_STAT_STRING ? Rf_mkString(nng_stat_string(sst)) : Rf_ScalarReal((double) nng_stat_value(sst));
 
   nng_stats_free(nst);
   return out;
