@@ -1,4 +1,4 @@
-# nanonext 0.10.2.9000 (development)
+# nanonext 0.10.2.9002 (development)
 
 #### Updates
 
@@ -6,6 +6,7 @@
 * Improves listener / dialer logic for TLS connections, allowing *inter alia* synchronous dials.
 * Removes `weakref()`, `weakref_key()` and `weakref_value()`: please use equivalent functions from the `rlang` package instead.
 * Fixes memory leaks detected with valgrind.
+* Upgrades bundled 'libmbedtls' to v 3.5.0.
 
 # nanonext 0.10.2
 
