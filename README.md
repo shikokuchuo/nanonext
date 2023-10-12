@@ -959,7 +959,7 @@ v1.6.0 alpha (a54820f) and ‘libmbedtls’ v3.5.0 will be automatically
 compiled from the package sources during installation.
 
 For previous R versions, pre-compiled ‘libnng’ v1.6.0 alpha (a54820f)
-and ‘libmbedtls’ v3.4.0 libraries are downloaded and used for
+and ‘libmbedtls’ v3.5.0 libraries are downloaded and used for
 installation instead.
 
 [« Back to ToC](#table-of-contents)
