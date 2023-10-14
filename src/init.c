@@ -92,8 +92,10 @@ static void PreserveObjects(void) {
   SETCAR(nano_aioNFuncs, Rf_lang5(nano_DotcallSymbol, Rf_install("rnng_aio_http"), nano_DataSymbol, nano_ResponseSymbol, Rf_ScalarLogical(0)));
   SETCADR(nano_aioNFuncs, Rf_lang5(nano_DotcallSymbol, Rf_install("rnng_aio_http"), nano_DataSymbol, nano_ResponseSymbol, Rf_ScalarLogical(1)));
   SETCADDR(nano_aioNFuncs, Rf_lang5(nano_DotcallSymbol, Rf_install("rnng_aio_http"), nano_DataSymbol, nano_ResponseSymbol, Rf_ScalarLogical(NA_LOGICAL)));
-  R_PreserveObject(nano_error = Rf_cons(Rf_mkString("errorValue"), R_NilValue));
+  R_PreserveObject(nano_error = Rf_cons(Rf_allocVector(STRSXP, 2), R_NilValue));
   SET_TAG(nano_error, R_ClassSymbol);
+  SET_STRING_ELT(CAR(nano_error), 0, Rf_mkChar("errorValue"));
+  SET_STRING_ELT(CAR(nano_error), 1, Rf_mkChar("try-error"));
   R_PreserveObject(nano_ncurlAio = Rf_cons(Rf_allocVector(STRSXP, 2), R_NilValue));
   SET_TAG(nano_ncurlAio, R_ClassSymbol);
   SET_STRING_ELT(CAR(nano_ncurlAio), 0, Rf_mkChar("ncurlAio"));
