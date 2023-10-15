@@ -39,6 +39,7 @@ SEXP nano_StatusSymbol;
 SEXP nano_StreamSymbol;
 SEXP nano_TextframesSymbol;
 SEXP nano_TlsSymbol;
+SEXP nano_UnresSymbol;
 SEXP nano_UrlSymbol;
 SEXP nano_ValueSymbol;
 
@@ -78,6 +79,7 @@ static void RegisterSymbols(void) {
   nano_StreamSymbol = Rf_install("stream");
   nano_TextframesSymbol = Rf_install("textframes");
   nano_TlsSymbol = Rf_install("tls");
+  nano_UnresSymbol = Rf_install(" unresolved ");
   nano_UrlSymbol = Rf_install("url");
   nano_ValueSymbol = Rf_install("value");
 }
@@ -172,7 +174,7 @@ static const R_CallMethodDef callMethods[] = {
   {"rnng_reap", (DL_FUNC) &rnng_reap, 1},
   {"rnng_recv", (DL_FUNC) &rnng_recv, 4},
   {"rnng_recv_aio", (DL_FUNC) &rnng_recv_aio, 5},
-  {"rnng_request", (DL_FUNC) &rnng_request, 7},
+  {"rnng_request", (DL_FUNC) &rnng_request, 6},
   {"rnng_send", (DL_FUNC) &rnng_send, 4},
   {"rnng_send_aio", (DL_FUNC) &rnng_send_aio, 5},
   {"rnng_set_opt", (DL_FUNC) &rnng_set_opt, 3},
