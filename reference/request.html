@@ -21,7 +21,7 @@ A signalling version of the function takes a 'conditionVariable' as an
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.10.2.9002</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.10.2.9003</span>
       </span>
     </div>
 
@@ -73,8 +73,7 @@ A signalling version of the function takes a 'conditionVariable' as an
 <span>  send_mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"serial"</span>, <span class="st">"raw"</span>, <span class="st">"next"</span><span class="op">)</span>,</span>
 <span>  recv_mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"serial"</span>, <span class="st">"character"</span>, <span class="st">"complex"</span>, <span class="st">"double"</span>, <span class="st">"integer"</span>, <span class="st">"logical"</span>,</span>
 <span>    <span class="st">"numeric"</span>, <span class="st">"raw"</span>, <span class="st">"string"</span><span class="op">)</span>,</span>
-<span>  timeout <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  autoclose <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  timeout <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">request_signal</span><span class="op">(</span></span>
@@ -122,12 +121,6 @@ the vector of choices e.g. 1L for 'serial', 2L for 'character' etc.</p></dd>
 <dt>timeout</dt>
 <dd><p>[default NULL] integer value in milliseconds or NULL, which
 applies a socket-specific default, usually the same as no timeout.</p></dd>
-
-
-<dt>autoclose</dt>
-<dd><p>[default FALSE] logical value whether to automatically close
-the pipe connection upon a successful asynchronous receive (may be used
-to synchronise with the rep node).</p></dd>
 
 
 <dt>cv</dt>
