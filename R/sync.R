@@ -198,11 +198,19 @@ pipe_notify <- function(socket, cv, cv2 = NULL, add = TRUE, remove = TRUE, flag 
 
 #' Lock / Unlock a Socket
 #'
-#' Prevents further pipe connections from being established at a Socket.
+#' Prevents further pipe connections from being established at a Socket. If a
+#'     socket is locked, new pipe connections are closed before they can be
+#'     added to the socket.
 #'
 #' @param socket a Socket.
 #' @param cv (optional) a 'conditionVariable'. If supplied, the socket is locked
 #'     only while the value of the condition variable is non-zero.
+#' @param decr [default FALSE] applicable only if 'cv' is specified, should be
+#'     set to TRUE only if a \code{\link{pipe_notify}} event on removal has been
+#'     registered on 'cv'. In this case, the counter within the
+#'     'conditionVariable' is decremented to offset the increment that is
+#'     registered for the pipe removal, even though this occurs before it has
+#'     been added to the socket.
 #'
 #' @return Invisibly, zero on success (will otherwise error).
 #'
@@ -229,7 +237,7 @@ pipe_notify <- function(socket, cv, cv2 = NULL, add = TRUE, remove = TRUE, flag 
 #'
 #' @export
 #'
-lock <- function(socket, cv = NULL) invisible(.Call(rnng_socket_lock, socket, cv))
+lock <- function(socket, cv = NULL, decr = FALSE) invisible(.Call(rnng_socket_lock, socket, cv, decr))
 
 #' @rdname lock
 #' @export

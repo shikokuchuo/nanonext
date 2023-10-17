@@ -5,7 +5,7 @@
 \alias{unlock}
 \title{Lock / Unlock a Socket}
 \usage{
-lock(socket, cv = NULL)
+lock(socket, cv = NULL, decr = FALSE)
 
 unlock(socket)
 }
@@ -14,12 +14,21 @@ unlock(socket)
 
 \item{cv}{(optional) a 'conditionVariable'. If supplied, the socket is locked
 only while the value of the condition variable is non-zero.}
+
+\item{decr}{[default FALSE] applicable only if 'cv' is specified, should be
+set to TRUE only if a \code{\link{pipe_notify}} event on removal has been
+registered on 'cv'. In this case, the counter within the
+'conditionVariable' is decremented to offset the increment that is
+registered for the pipe removal, even though this occurs before it has
+been added to the socket.}
 }
 \value{
 Invisibly, zero on success (will otherwise error).
 }
 \description{
-Prevents further pipe connections from being established at a Socket.
+Prevents further pipe connections from being established at a Socket. If a
+    socket is locked, new pipe connections are closed before they can be
+    added to the socket.
 }
 \examples{
 s <- socket("bus", listen = "inproc://nanolock")

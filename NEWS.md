@@ -1,4 +1,8 @@
-# nanonext 0.10.2.9003 (development)
+# nanonext 0.10.2.9004 (development)
+
+#### New Features
+
+* `lock()` adds logical argument 'decr', which allows the socket locking mechanism to work correctly with 'conditionVariables' for which a pipe removal notification has been registered.
 
 #### Updates
 

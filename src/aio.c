@@ -139,7 +139,32 @@ static void pipe_cb_dropcon(nng_pipe p, nng_pipe_ev ev, void *arg) {
 
   if (arg != NULL) {
     nano_cv *ncv = (nano_cv *) arg;
-    if (ncv->condition)
+    nng_mtx *mtx = ncv->mtx;
+    int cond;
+    nng_mtx_lock(mtx);
+    cond = ncv->condition;
+    nng_mtx_unlock(mtx);
+    if (cond)
+      nng_pipe_close(p);
+
+  } else {
+    nng_pipe_close(p);
+  }
+
+}
+
+static void pipe_cb_dropcon_decr(nng_pipe p, nng_pipe_ev ev, void *arg) {
+
+  if (arg != NULL) {
+    nano_cv *ncv = (nano_cv *) arg;
+    nng_mtx *mtx = ncv->mtx;
+    int cond;
+    nng_mtx_lock(mtx);
+    cond = ncv->condition;
+    if (cond)
+      ncv->condition--;
+    nng_mtx_unlock(mtx);
+    if (cond)
       nng_pipe_close(p);
   } else {
     nng_pipe_close(p);
@@ -792,7 +817,7 @@ SEXP rnng_unresolved(SEXP x) {
     SEXP value = Rf_findVarInFrame(x, nano_DataSymbol);
     if (value == R_UnboundValue)
       value = Rf_findVarInFrame(x, nano_ResultSymbol);
-    xc = value == nano_unresolved || value == nano_UnresSymbol || TYPEOF(value) == ENVSXP && Rf_inherits(value, "unresolvedValue");
+    xc = value == nano_unresolved || value == nano_UnresSymbol || (TYPEOF(value) == ENVSXP && Rf_inherits(value, "unresolvedValue"));
     break;
   case LGLSXP:
     xc = x == nano_unresolved;
@@ -2002,7 +2027,7 @@ SEXP rnng_pipe_notify(SEXP socket, SEXP cv, SEXP cv2, SEXP add, SEXP remove, SEX
 
 }
 
-SEXP rnng_socket_lock(SEXP socket, SEXP cv) {
+SEXP rnng_socket_lock(SEXP socket, SEXP cv, SEXP decrement) {
 
   if (R_ExternalPtrTag(socket) != nano_SocketSymbol)
     Rf_error("'socket' is not a valid Socket");
@@ -2012,8 +2037,9 @@ SEXP rnng_socket_lock(SEXP socket, SEXP cv) {
   if (cv != R_NilValue) {
     if (R_ExternalPtrTag(cv) != nano_CvSymbol)
       Rf_error("'cv' is not a valid Condition Variable");
+    const int decr = LOGICAL(decrement)[0];
     nano_cv *ncv = (nano_cv *) R_ExternalPtrAddr(cv);
-    xc = nng_pipe_notify(*sock, NNG_PIPE_EV_ADD_PRE, pipe_cb_dropcon, ncv);
+    xc = nng_pipe_notify(*sock, NNG_PIPE_EV_ADD_PRE, decr ? pipe_cb_dropcon_decr : pipe_cb_dropcon, ncv);
   } else {
     xc = nng_pipe_notify(*sock, NNG_PIPE_EV_ADD_PRE, pipe_cb_dropcon, NULL);
   }

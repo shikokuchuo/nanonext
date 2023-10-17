@@ -284,7 +284,7 @@ extern SEXP rnng_sha256(SEXP, SEXP, SEXP);
 extern SEXP rnng_sha384(SEXP, SEXP, SEXP);
 extern SEXP rnng_sha512(SEXP, SEXP, SEXP);
 extern SEXP rnng_sleep(SEXP);
-extern SEXP rnng_socket_lock(SEXP, SEXP);
+extern SEXP rnng_socket_lock(SEXP, SEXP, SEXP);
 extern SEXP rnng_socket_unlock(SEXP);
 extern SEXP rnng_stats_get(SEXP, SEXP);
 extern SEXP rnng_status_code(SEXP);
