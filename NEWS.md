@@ -1,11 +1,8 @@
-# nanonext 0.10.2.9004 (development)
-
-#### New Features
-
-* `lock()` adds logical argument 'decr', which allows the socket locking mechanism to work correctly with 'conditionVariables' for which a pipe removal notification has been registered.
+# nanonext 0.10.2.9005 (development)
 
 #### Updates
 
+* `lock()` supplying 'cv' has improved behaviour which locks the socket whilst allowing for both initial connections and re-connections (when the 'cv' is registered for both add and remove pipe events).
 * Improves listener / dialer logic for TLS connections, allowing *inter alia* synchronous dials.
 * `request()` logical argument 'ack' removed as a method of synchronising with the rep node.
 * Removes `weakref()`, `weakref_key()` and `weakref_value()`: please use equivalent functions from the `rlang` package instead.

@@ -5,7 +5,7 @@
 \alias{unlock}
 \title{Lock / Unlock a Socket}
 \usage{
-lock(socket, cv = NULL, decr = FALSE)
+lock(socket, cv = NULL)
 
 unlock(socket)
 }
@@ -13,14 +13,10 @@ unlock(socket)
 \item{socket}{a Socket.}
 
 \item{cv}{(optional) a 'conditionVariable'. If supplied, the socket is locked
-only while the value of the condition variable is non-zero.}
-
-\item{decr}{[default FALSE] applicable only if 'cv' is specified, should be
-set to TRUE only if a \code{\link{pipe_notify}} event on removal has been
-registered on 'cv'. In this case, the counter within the
-'conditionVariable' is decremented to offset the increment that is
-registered for the pipe removal, even though this occurs before it has
-been added to the socket.}
+only whilst the condition variable is an odd value. This is designed to
+allow an initial connection, as well as subsequent re-connections after a
+connection has ended, if the conditon variable is also registered with
+\code{\link{pipe_notify}} for both add and remove pipe events.}
 }
 \value{
 Invisibly, zero on success (will otherwise error).

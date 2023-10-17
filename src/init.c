@@ -184,7 +184,7 @@ static const R_CallMethodDef callMethods[] = {
   {"rnng_sha384", (DL_FUNC) &rnng_sha384, 3},
   {"rnng_sha512", (DL_FUNC) &rnng_sha512, 3},
   {"rnng_sleep", (DL_FUNC) &rnng_sleep, 1},
-  {"rnng_socket_lock", (DL_FUNC) &rnng_socket_lock, 3},
+  {"rnng_socket_lock", (DL_FUNC) &rnng_socket_lock, 2},
   {"rnng_socket_unlock", (DL_FUNC) &rnng_socket_unlock, 1},
   {"rnng_stats_get", (DL_FUNC) &rnng_stats_get, 2},
   {"rnng_status_code", (DL_FUNC) &rnng_status_code, 1},

@@ -204,13 +204,10 @@ pipe_notify <- function(socket, cv, cv2 = NULL, add = TRUE, remove = TRUE, flag 
 #'
 #' @param socket a Socket.
 #' @param cv (optional) a 'conditionVariable'. If supplied, the socket is locked
-#'     only while the value of the condition variable is non-zero.
-#' @param decr [default FALSE] applicable only if 'cv' is specified, should be
-#'     set to TRUE only if a \code{\link{pipe_notify}} event on removal has been
-#'     registered on 'cv'. In this case, the counter within the
-#'     'conditionVariable' is decremented to offset the increment that is
-#'     registered for the pipe removal, even though this occurs before it has
-#'     been added to the socket.
+#'     only whilst the condition variable is an odd value. This is designed to
+#'     allow an initial connection, as well as subsequent re-connections after a
+#'     connection has ended, if the conditon variable is also registered with
+#'     \code{\link{pipe_notify}} for both add and remove pipe events.
 #'
 #' @return Invisibly, zero on success (will otherwise error).
 #'
@@ -237,7 +234,7 @@ pipe_notify <- function(socket, cv, cv2 = NULL, add = TRUE, remove = TRUE, flag 
 #'
 #' @export
 #'
-lock <- function(socket, cv = NULL, decr = FALSE) invisible(.Call(rnng_socket_lock, socket, cv, decr))
+lock <- function(socket, cv = NULL) invisible(.Call(rnng_socket_lock, socket, cv))
 
 #' @rdname lock
 #' @export
