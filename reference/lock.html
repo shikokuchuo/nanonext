@@ -19,7 +19,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.10.2.9004</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.10.2.9005</span>
       </span>
     </div>
 
@@ -63,7 +63,7 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">lock</span><span class="op">(</span><span class="va">socket</span>, cv <span class="op">=</span> <span class="cn">NULL</span>, decr <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">lock</span><span class="op">(</span><span class="va">socket</span>, cv <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">unlock</span><span class="op">(</span><span class="va">socket</span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -76,16 +76,10 @@
 
 <dt>cv</dt>
 <dd><p>(optional) a 'conditionVariable'. If supplied, the socket is locked
-only while the value of the condition variable is non-zero.</p></dd>
-
-
-<dt>decr</dt>
-<dd><p>[default FALSE] applicable only if 'cv' is specified, should be
-set to TRUE only if a <code><a href="pipe_notify.html">pipe_notify</a></code> event on removal has been
-registered on 'cv'. In this case, the counter within the
-'conditionVariable' is decremented to offset the increment that is
-registered for the pipe removal, even though this occurs before it has
-been added to the socket.</p></dd>
+only whilst the condition variable is an odd value. This is designed to
+allow an initial connection, as well as subsequent re-connections after a
+connection has ended, if the conditon variable is also registered with
+<code><a href="pipe_notify.html">pipe_notify</a></code> for both add and remove pipe events.</p></dd>
 
 </dl></div>
     <div id="value">
