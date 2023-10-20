@@ -25,7 +25,7 @@ cv_signal signals a condition variable."><meta property="og:image" content="http
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.10.2.9005</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.10.2.9006</span>
       </span>
     </div>
 
@@ -81,6 +81,8 @@ cv_signal signals a condition variable."><meta property="og:image" content="http
 <span></span>
 <span><span class="fu">until</span><span class="op">(</span><span class="va">cv</span>, <span class="va">msec</span><span class="op">)</span></span>
 <span></span>
+<span><span class="fu">.until</span><span class="op">(</span><span class="va">cv</span>, <span class="va">msec</span><span class="op">)</span></span>
+<span></span>
 <span><span class="fu">cv_value</span><span class="op">(</span><span class="va">cv</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">cv_reset</span><span class="op">(</span><span class="va">cv</span><span class="op">)</span></span>
@@ -108,6 +110,10 @@ to be signalled.</p></dd>
 
 <p>For <strong>wait</strong> and <strong>until</strong>: (invisibly) logical TRUE, or else
     FALSE if a flag has been set.</p>
+
+
+<p>For <strong>.until</strong>: (invisibly) logical TRUE if signalled, or else FALSE
+    if the timeout was reached.</p>
 
 
 <p>For <strong>cv_value</strong>: integer value of the condition variable.</p>
@@ -149,8 +155,8 @@ to be signalled.</p></dd>
 
 <p>The condition variable also contains a flag that certain signalling
     functions such as <code><a href="pipe_notify.html">pipe_notify</a></code> can set. When this flag has
-    been set, all subsequent <code>wait</code> or <code>until</code> calls will return
-    logical FALSE instead of TRUE.</p>
+    been set, all subsequent <code>wait</code> calls will return logical FALSE
+    instead of TRUE.</p>
 <p>Note that the flag is not automatically reset, but may be reset manually
     using <code>cv_reset</code>.</p>
     </div>

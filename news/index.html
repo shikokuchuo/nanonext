@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.10.2.9005</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.10.2.9006</span>
       </span>
     </div>
 
@@ -54,9 +54,14 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.10.2.9005" id="nanonext-01029005-development">nanonext 0.10.2.9005 (development)<a class="anchor" aria-label="anchor" href="#nanonext-01029005-development"></a></h2>
+<h2 class="page-header" data-toc-text="0.10.2.9006" id="nanonext-01029006-development">nanonext 0.10.2.9006 (development)<a class="anchor" aria-label="anchor" href="#nanonext-01029006-development"></a></h2>
 <div class="section level5">
-<h5 id="updates-0-10-2-9005">Updates<a class="anchor" aria-label="anchor" href="#updates-0-10-2-9005"></a></h5>
+<h5 id="new-features-0-10-2-9006">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-10-2-9006"></a></h5>
+<ul><li>
+<code><a href="../reference/cv.html">.until()</a></code> contains revised behaviour for this synchronisation primitive that will be ported to <code><a href="../reference/cv.html">until()</a></code> in a future version. The function now returns FALSE instead of TRUE if the timeout has been reached.</li>
+</ul></div>
+<div class="section level5">
+<h5 id="updates-0-10-2-9006">Updates<a class="anchor" aria-label="anchor" href="#updates-0-10-2-9006"></a></h5>
 <ul><li>
 <code><a href="../reference/lock.html">lock()</a></code> supplying ‘cv’ has improved behaviour which locks the socket whilst allowing for both initial connections and re-connections (when the ‘cv’ is registered for both add and remove pipe events).</li>
 <li>Improves listener / dialer logic for TLS connections, allowing <em>inter alia</em> synchronous dials.</li>
