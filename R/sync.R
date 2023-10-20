@@ -26,6 +26,9 @@
 #'     For \strong{wait} and \strong{until}: (invisibly) logical TRUE, or else
 #'     FALSE if a flag has been set.
 #'
+#'     For \strong{.until}: (invisibly) logical TRUE if signalled, or else FALSE
+#'     if the timeout was reached.
+#'
 #'     For \strong{cv_value}: integer value of the condition variable.
 #'
 #'     For \strong{cv_reset} and \strong{cv_signal}: zero (invisibly).
@@ -60,8 +63,8 @@
 #'
 #'     The condition variable also contains a flag that certain signalling
 #'     functions such as \code{\link{pipe_notify}} can set. When this flag has
-#'     been set, all subsequent \code{wait} or \code{until} calls will return
-#'     logical FALSE instead of TRUE.
+#'     been set, all subsequent \code{wait} calls will return logical FALSE
+#'     instead of TRUE.
 #'
 #'     Note that the flag is not automatically reset, but may be reset manually
 #'     using \code{cv_reset}.
@@ -103,6 +106,11 @@ wait <- function(cv) invisible(.Call(rnng_cv_wait, cv))
 #' @export
 #'
 until <- function(cv, msec) invisible(.Call(rnng_cv_until, cv, msec))
+
+#' @rdname cv
+#' @export
+#'
+.until <- function(cv, msec) invisible(.Call(rnng_cv_until2, cv, msec))
 
 #' Condition Variables - Value
 #'

@@ -1,4 +1,8 @@
-# nanonext 0.10.2.9005 (development)
+# nanonext 0.10.2.9006 (development)
+
+#### New Features
+
+* `.until()` contains revised behaviour for this synchronisation primitive that will be ported to `until()` in a future version. The function now returns FALSE instead of TRUE if the timeout has been reached.
 
 #### Updates
 
