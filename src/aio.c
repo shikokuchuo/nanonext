@@ -1725,7 +1725,7 @@ SEXP rnng_cv_until2(SEXP cvar, SEXP msec) {
     break;
   }
 
-  uint8_t signalled = 1;
+  int signalled = 1;
   nng_mtx_lock(mtx);
   while (ncv->condition == 0) {
     if (nng_cv_until(cv, time) == NNG_ETIMEDOUT) {
@@ -1735,6 +1735,7 @@ SEXP rnng_cv_until2(SEXP cvar, SEXP msec) {
   }
   if (signalled) ncv->condition--;
   nng_mtx_unlock(mtx);
+  if (!signalled) R_CheckUserInterrupt();
 
   return Rf_ScalarLogical(signalled);
 
