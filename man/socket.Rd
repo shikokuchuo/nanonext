@@ -50,17 +50,17 @@ Open a Socket implementing 'protocol', and optionally dial (establish an
     address.
 }
 \details{
-NNG presents a socket view of networking. The sockets are constructed
-    using protocol-specific functions, as a given socket implements precisely
-    one protocol.
+NNG presents a socket view of networking. The sockets are
+    constructed using protocol-specific functions, as a given socket
+    implements precisely one protocol.
 
     Each socket may be used to send and receive messages (if the protocol
     supports it, and implements the appropriate protocol semantics). For
     example, sub sockets automatically filter incoming messages to discard
     those for topics that have not been subscribed.
 
-    This function (optionally) binds a single Dialer and/or Listener to a Socket.
-    More complex network topologies may be created by binding further
+    This function (optionally) binds a single Dialer and/or Listener to a
+    Socket. More complex network topologies may be created by binding further
     Dialers/Listeners to the Socket as required using \code{\link{dial}} and
     \code{\link{listen}}.
 
@@ -70,14 +70,16 @@ NNG presents a socket view of networking. The sockets are constructed
 \section{Protocols}{
 
 
-    The following Scalability Protocols (communication patterns) are implemented:
+    The following Scalability Protocols (communication patterns) are
+    implemented:
     \itemize{
-    \item{Bus (mesh networks) - protocol: 'bus'}
-    \item{Pair (two-way radio) - protocol: 'pair'}
-    \item{Pipeline (one-way pipe) - protocol: 'push', 'pull'}
-    \item{Publisher/Subscriber (topics & broadcast) - protocol: 'pub', 'sub'}
-    \item{Request/Reply (RPC) - protocol: 'req', 'rep'}
-    \item{Survey (voting & service discovery) - protocol: 'surveyor', 'respondent'}
+    \item Bus (mesh networks) - protocol: 'bus'
+    \item Pair (two-way radio) - protocol: 'pair'
+    \item Pipeline (one-way pipe) - protocol: 'push', 'pull'
+    \item Publisher/Subscriber (topics & broadcast) - protocol: 'pub', 'sub'
+    \item Request/Reply (RPC) - protocol: 'req', 'rep'
+    \item Survey (voting & service discovery) - protocol: 'surveyor',
+    'respondent'
     }
 
     Please see \link{protocols} for further documentation.
@@ -88,11 +90,11 @@ NNG presents a socket view of networking. The sockets are constructed
 
     The following communications transports may be used:
     \itemize{
-    \item{Inproc (in-process) - url: 'inproc://'}
-    \item{IPC (inter-process communications) - url: 'ipc://' (or 'abstract://'
-    on Linux)}
-    \item{TCP and TLS over TCP - url: 'tcp://' and 'tls+tcp://'}
-    \item{WebSocket and TLS over WebSocket - url: 'ws://' and 'wss://'}
+    \item Inproc (in-process) - url: 'inproc://'
+    \item IPC (inter-process communications) - url: 'ipc://' (or
+    'abstract://' on Linux)
+    \item TCP and TLS over TCP - url: 'tcp://' and 'tls+tcp://'
+    \item WebSocket and TLS over WebSocket - url: 'ws://' and 'wss://'
     }
 
     Please see \link{transports} for further documentation.

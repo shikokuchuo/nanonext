@@ -49,16 +49,16 @@
 #' @section Global Options:
 #'
 #'     \itemize{
-#'       \item{'reconnect-time-min' [type 'ms']}
+#'       \item 'reconnect-time-min' [type 'ms']
 #'
-#'       {This is the minimum amount of time (milliseconds) to wait before
+#'       This is the minimum amount of time (milliseconds) to wait before
 #'       attempting to establish a connection after a previous attempt has
 #'       failed. This can be set on a socket, but it can also be overridden on
-#'       an individual dialer. The option is irrelevant for listeners.}
+#'       an individual dialer. The option is irrelevant for listeners.
 #'
-#'       \item{'reconnect-time-max' [type 'ms']}
+#'       \item 'reconnect-time-max' [type 'ms']
 #'
-#'       {This is the maximum amount of time (milliseconds) to wait before
+#'       This is the maximum amount of time (milliseconds) to wait before
 #'       attempting to establish a connection after a previous attempt has
 #'       failed. If this is non-zero, then the time between successive
 #'       connection attempts will start at the value of 'reconnect-time-min',
@@ -66,11 +66,11 @@
 #'       zero, then no exponential back-off between connection attempts is done,
 #'       and each attempt will wait the time specified by 'reconnect-time-min'.
 #'       This can be set on a socket, but it can also be overridden on an
-#'       individual dialer. The option is irrelevant for listeners.}
+#'       individual dialer. The option is irrelevant for listeners.
 #'
-#'     \item{'recv-size-max' [type 'size']}
+#'     \item 'recv-size-max' [type 'size']
 #'
-#'       {This is the maximum message size that the will be accepted from a
+#'       This is the maximum message size that the will be accepted from a
 #'       remote peer. If a peer attempts to send a message larger than this,
 #'       then the message will be discarded. If the value of this is zero, then
 #'       no limit on message sizes is enforced. This option exists to prevent
@@ -80,114 +80,114 @@
 #'       overridden for on a per-dialer or per-listener basis.
 #'       NOTE: Applications on hostile networks should set this to a non-zero
 #'       value to prevent denial-of-service attacks.
-#'       NOTE: Some transports may have further message size restrictions.}
+#'       NOTE: Some transports may have further message size restrictions.
 #'
-#'     \item{'recv-buffer' [type 'int']}
+#'     \item 'recv-buffer' [type 'int']
 #'
-#'       {This is the depth of the socket’s receive buffer as a number of
+#'       This is the depth of the socket’s receive buffer as a number of
 #'       messages. Messages received by a transport may be buffered until the
 #'       application has accepted them for delivery. This value must be an
 #'       integer between 0 and 8192, inclusive. NOTE: Not all protocols support
 #'       buffering received messages. For example req can only deal with a
-#'       single reply at a time.}
+#'       single reply at a time.
 #'
-#'     \item{'recv-timeout' [type 'ms']}
+#'     \item 'recv-timeout' [type 'ms']
 #'
-#'       {This is the socket receive timeout in milliseconds. When no message is
+#'       This is the socket receive timeout in milliseconds. When no message is
 #'       available for receiving at the socket for this period of time, receive
-#'       operations will fail with a return value of 5L ('timed out').}
+#'       operations will fail with a return value of 5L ('timed out').
 #'
-#'     \item{'send-buffer' [type 'int']}
+#'     \item 'send-buffer' [type 'int']
 #'
-#'       {This is the depth of the socket send buffer as a number of messages.
+#'       This is the depth of the socket send buffer as a number of messages.
 #'       Messages sent by an application may be buffered by the socket until a
 #'       transport is ready to accept them for delivery. This value must be an
 #'       integer between 0 and 8192, inclusive.
 #'       NOTE: Not all protocols support buffering sent messages; generally
 #'       multicast protocols like pub will simply discard messages when they
-#'       cannot be delivered immediately.}
+#'       cannot be delivered immediately.
 #'
-#'     \item{'send-timeout' [type 'ms']}
+#'     \item 'send-timeout' [type 'ms']
 #'
-#'       {This is the socket send timeout in milliseconds. When a message cannot
+#'       This is the socket send timeout in milliseconds. When a message cannot
 #'       be queued for delivery by the socket for this period of time (such as
 #'       if send buffers are full), the operation will fail with a return value
-#'       of 5L ('timed out').}
+#'       of 5L ('timed out').
 #'
-#'     \item{'socket-name' [type 'string']}
+#'     \item 'socket-name' [type 'string']
 #'
-#'       {This is the socket name. By default this is a string corresponding to
+#'       This is the socket name. By default this is a string corresponding to
 #'       the value of the socket. The string must fit within 64-bytes, including
 #'       the terminating NUL byte. The value is intended for application use,
-#'       and is not used for anything in the library itself.}
+#'       and is not used for anything in the library itself.
 #'
-#'     \item{'url' [type 'string']}
+#'     \item 'url' [type 'string']
 #'
-#'       {This read-only option is used on a listener or dialer to obtain the
-#'       URL with which it was configured.}
+#'       This read-only option is used on a listener or dialer to obtain the
+#'       URL with which it was configured.
 #'
 #'     }
 #'
 #' @section Protocol-specific Options:
 #'
 #'     \itemize{
-#'       \item{'req:resend-time' [type 'ms']}
+#'       \item 'req:resend-time' [type 'ms']
 #'
-#'       {(Request protocol) When a new request is started, a timer of this
+#'       (Request protocol) When a new request is started, a timer of this
 #'       duration is also started. If no reply is received before this timer
 #'       expires, then the request will be resent. (Requests are also
 #'       automatically resent if the peer to whom the original request was sent
 #'       disconnects, or if a peer becomes available while the requester is
-#'       waiting for an available peer.)}
+#'       waiting for an available peer.)
 #'
-#'       \item{'sub:subscribe' [type 'string']}
+#'       \item 'sub:subscribe' [type 'string']
 #'
-#'       {(Subscribe protocol) This option registers a topic that the subscriber
+#'       (Subscribe protocol) This option registers a topic that the subscriber
 #'       is interested in. Each incoming message is checked against the list of
 #'       subscribed topics. If the body begins with the entire set of bytes in
 #'       the topic, then the message is accepted. If no topic matches, then the
-#'       message is discarded. To receive all messages, set the topic to NULL. }
+#'       message is discarded. To receive all messages, set the topic to NULL.
 #'
-#'       \item{'sub:unsubscribe' [type 'string']}
+#'       \item 'sub:unsubscribe' [type 'string']
 #'
-#'       {(Subscribe protocol) This option removes a topic from the subscription
+#'       (Subscribe protocol) This option removes a topic from the subscription
 #'       list. Note that if the topic was not previously subscribed to with
-#'       'sub:subscribe' then an 'entry not found' error will result.}
+#'       'sub:subscribe' then an 'entry not found' error will result.
 #'
-#'       \item{'sub:prefnew' [type 'bool']}
+#'       \item 'sub:prefnew' [type 'bool']
 #'
-#'       {(Subscribe protocol) This option specifies the behavior of the
+#'       (Subscribe protocol) This option specifies the behavior of the
 #'       subscriber when the queue is full. When TRUE (the default), the
 #'       subscriber will make room in the queue by removing the oldest message.
 #'       When FALSE, the subscriber will reject messages if the message queue
-#'       does not have room.}
+#'       does not have room.
 #'
-#'     \item{'surveyor:survey-time' [type 'ms']}
+#'     \item 'surveyor:survey-time' [type 'ms']
 #'
-#'       {(Surveyor protocol) Duration of surveys. When a new survey is started,
+#'       (Surveyor protocol) Duration of surveys. When a new survey is started,
 #'       a timer of this duration is also started. Any responses arriving after
 #'       this time will be discarded. Attempts to receive after the timer expires
 #'       with no other surveys started will result in an 'incorrect state' error.
 #'       Attempts to receive when this timer expires will result in a 'timed
-#'       out' error.}
+#'       out' error.
 #'
 #'     }
 #'
 #' @section Transport-specific Options:
 #'
 #'     \itemize{
-#'       \item{'ipc:permissions' [type 'int']}
+#'       \item 'ipc:permissions' [type 'int']
 #'
-#'       {(IPC transport) This option may be applied to a listener to configure
+#'       (IPC transport) This option may be applied to a listener to configure
 #'       the permissions that are used on the UNIX domain socket created by that
 #'       listener. This property is only supported on POSIX systems. The value
 #'       is of type int, representing the normal permission bits on a file, such
 #'       as 0600 (typically meaning read-write to the owner, and no permissions
-#'       for anyone else.) The default is system-specific, most often 0644.}
+#'       for anyone else.) The default is system-specific, most often 0644.
 #'
-#'       \item{'tcp-nodelay' [type 'bool']}
+#'       \item 'tcp-nodelay' [type 'bool']
 #'
-#'       {(TCP transport) This option is used to disable (or enable) the use of
+#'       (TCP transport) This option is used to disable (or enable) the use of
 #'       Nagle's algorithm for TCP connections. When TRUE (the default),
 #'       messages are sent immediately by the underlying TCP stream without
 #'       waiting to gather more data. When FALSE, Nagle’s algorithm is enabled,
@@ -195,11 +195,11 @@
 #'       Nagle’s algorithm is useful on low-bandwidth connections to reduce
 #'       overhead, but it comes at a cost to latency. When used on a dialer or
 #'       a listener, the value affects how newly created connections will be
-#'       configured.}
+#'       configured.
 #'
-#'       \item{'tcp-keepalive' [type 'bool']}
+#'       \item 'tcp-keepalive' [type 'bool']
 #'
-#'       {(TCP transport) This option is used to enable the sending of keep-alive
+#'       (TCP transport) This option is used to enable the sending of keep-alive
 #'       messages on the underlying TCP stream. This option is FALSE by default.
 #'       When enabled, if no messages are seen for a period of time, then a zero
 #'       length TCP message is sent with the ACK flag set in an attempt to tickle
@@ -210,35 +210,35 @@
 #'       configured. This option has two purposes. First, it can be used to
 #'       detect dead peers on an otherwise quiescent network. Second, it can be
 #'       used to keep connection table entries in NAT and other middleware from
-#'       expiring due to lack of activity.}
+#'       expiring due to lack of activity.
 #'
-#'       \item{'tcp-bound-port' [type 'int']}
+#'       \item 'tcp-bound-port' [type 'int']
 #'
-#'       {(TCP transport) Local TCP port number. This is used on a listener, and
+#'       (TCP transport) Local TCP port number. This is used on a listener, and
 #'       is intended to be used after starting the listener in combination with
 #'       a wildcard (0) local port. This determines the actual ephemeral port
 #'       that was selected and bound. The value is provided as an integer, but
 #'       only the low order 16 bits will be set, and is in native byte order for
-#'       convenience.}
+#'       convenience.
 #'
-#'       \item{'ws:request-headers' [type 'string']}
+#'       \item 'ws:request-headers' [type 'string']
 #'
-#'       {(WebSocket transport) Concatenation of multiple lines terminated by
+#'       (WebSocket transport) Concatenation of multiple lines terminated by
 #'       CRLF sequences, that can be used to add further headers to the HTTP
 #'       request sent when connecting. This option can be set on dialers, and
-#'       must be done before the transport is started.}
+#'       must be done before the transport is started.
 #'
-#'       \item{'ws:response-headers' [type 'string']}
+#'       \item 'ws:response-headers' [type 'string']
 #'
-#'       {(WebSocket transport) Concatenation of multiple lines terminated by
+#'       (WebSocket transport) Concatenation of multiple lines terminated by
 #'       CRLF sequences, that can be used to add further headers to the HTTP
 #'       response sent when connecting. This option can be set on listeners,
-#'       and must be done before the transport is started.}
+#'       and must be done before the transport is started.
 #'
-#'       \item{'ws:request-uri' [type 'string']}
+#'       \item 'ws:request-uri' [type 'string']
 #'
-#'       {(WebSocket transport) For obtaining the URI sent by the client. This
-#'       can be useful when a handler supports an entire directory tree.}
+#'       (WebSocket transport) For obtaining the URI sent by the client. This
+#'       can be useful when a handler supports an entire directory tree.
 #'
 #'     }
 #'
@@ -308,8 +308,8 @@ opt <- function(object, name)
 #'
 #' @details To use pub/sub the publisher must:
 #'     \itemize{
-#'     \item{specify \code{mode = 'raw'} when sending.}
-#'     \item{ensure the sent vector starts with the topic.}
+#'     \item specify \code{mode = 'raw'} when sending.
+#'     \item ensure the sent vector starts with the topic.
 #'     }
 #'     The subscriber should then receive specifying the correct mode.
 #'
@@ -364,15 +364,15 @@ unsubscribe <- function(con, topic = NULL)
 #'
 #' @details After using this function, to start a new survey, the surveyor must:
 #'     \itemize{
-#'     \item{send a message.}
-#'     \item{switch to receiving responses.}
+#'     \item send a message.
+#'     \item switch to receiving responses.
 #'     }
 #'
 #'     To respond to a survey, the respondent must:
 #'     \itemize{
-#'     \item{receive the survey message.}
-#'     \item{send a reply using \code{\link{send_aio}} before the survey
-#'     has timed out (a reply can only be sent after receiving a survey).}
+#'     \item receive the survey message.
+#'     \item send a reply using \code{\link{send_aio}} before the survey has
+#'     timed out (a reply can only be sent after receiving a survey).
 #'     }
 #'
 #' @examples

@@ -135,8 +135,8 @@ Transports supported by \pkg{nanonext}.
 
     \itemize{
 
-    \item A URI may be restricted to IPv6 using the scheme tls+tcp6://, or IPv4
-    using the scheme tls+tcp4://.
+    \item A URI may be restricted to IPv6 using the scheme tls+tcp6://, or
+    IPv4 using the scheme tls+tcp4://.
 
     }
 }
@@ -180,10 +180,10 @@ Transports supported by \pkg{nanonext}.
     connections will be permitted, with IPv4 addresses mapped to IPv6
     addresses.)
 
-    \item This transport makes use of shared HTTP server instances, permitting
-    multiple sockets or listeners to be configured with the same hostname and
-    port. When creating a new listener, it is registered with an existing
-    HTTP server instance if one can be found. Note that the matching
+    \item This transport makes use of shared HTTP server instances,
+    permitting multiple sockets or listeners to be configured with the same
+    hostname and port. When creating a new listener, it is registered with an
+    existing HTTP server instance if one can be found. Note that the matching
     algorithm is somewhat simple, using only a string based hostname or IP
     address and port to match. Therefore it is recommended to use only IP
     addresses or the empty string as the hostname in listener URLs.
