@@ -15,7 +15,8 @@ strcat(a, b)
 A character vector of length 1.
 }
 \description{
-A fast implementation that appends one character value after another.
+[DEPRECATED - This function will be removed in a future package version] A
+    fast implementation that appends one character value after another.
 }
 \details{
 If either 'a' or 'b' is a vector of length greater than 1, only the

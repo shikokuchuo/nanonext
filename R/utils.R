@@ -258,7 +258,8 @@ status_code <- function(x) .Call(rnng_status_code, x)
 
 #' Concatenate Strings
 #'
-#' A fast implementation that appends one character value after another.
+#' [DEPRECATED - This function will be removed in a future package version] A
+#'     fast implementation that appends one character value after another.
 #'
 #' @param a character value.
 #' @param b character value.

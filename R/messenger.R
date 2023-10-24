@@ -67,7 +67,7 @@ messenger <- function(url, auth = NULL) {
     cat("\r", `length<-`(intro, i), sep = " ", file = stdout())
     msleep(32L)
   }
-  cat(strcat("\n| url: ", url), file = stdout())
+  cat(sprintf("\n| url: %s", url), file = stdout())
 
   s <- send(sock, data = writeBin(":c ", raw()), mode = 2L, block = FALSE)
   if (s) {
@@ -75,9 +75,9 @@ messenger <- function(url, auth = NULL) {
       cat("\n| connection error... exiting\n", file = stderr())
       return(invisible())
     }
-    cat(strcat("\n| peer offline: ", format.POSIXct(Sys.time())), file = stderr())
+    cat(sprintf("\n| peer offline: %s", format.POSIXct(Sys.time())), file = stderr())
   } else {
-    cat(strcat("\n| peer online: ", format.POSIXct(Sys.time())), file = stderr())
+    cat(sprintf("\n| peer online: %s", format.POSIXct(Sys.time())), file = stderr())
     r <- recv(sock, mode = 5L, block = TRUE)
     for (i in seq_len(32L))
       lock[r[i]] == r[i + 32L] || {

@@ -10,6 +10,7 @@
 * `lock()` supplying 'cv' has improved behaviour which locks the socket whilst allowing for both initial connections and re-connections (when the 'cv' is registered for both add and remove pipe events).
 * Improves listener / dialer logic for TLS connections, allowing *inter alia* synchronous dials.
 * `request()` logical argument 'ack' removed as a method of synchronising with the rep node.
+* `strcat()` is deprecated and will be removed in a future package version (re-focusing on core functions).
 * Removes `weakref()`, `weakref_key()` and `weakref_value()`: please use equivalent functions from the `rlang` package instead.
 * Fixes memory leaks detected with valgrind.
 * Upgrades bundled 'libmbedtls' to v 3.5.0.
