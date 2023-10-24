@@ -142,7 +142,7 @@ static SEXP nano_inHook(SEXP x, SEXP fun) {
   SET_VECTOR_ELT(list, xlen, x);
   PROTECT(names = Rf_getAttrib(list, R_NamesSymbol));
   char *idx = R_alloc(sizeof(char), NANONEXT_SERIAL_MAXLEN);
-  snprintf(idx, NANONEXT_SERIAL_MAXLEN, "%ld", xlen + 1);
+  snprintf(idx, NANONEXT_SERIAL_MAXLEN, "%d", (int) xlen + 1);
   PROTECT(out = Rf_mkChar(idx));
   if (names == R_NilValue) {
     names = Rf_ScalarString(out);
