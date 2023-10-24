@@ -164,8 +164,8 @@ For an authoritative guide please refer to the online documentation for
     and finally a TCP port number. For example, to contact port 4433 on the
     localhost either of the following URIs could be used:
     tls+tcp://127.0.0.1:4433 or tls+tcp://localhost:4433.</p>
-<p></p><ul><li><p>A URI may be restricted to IPv6 using the scheme tls+tcp6://, or IPv4
-    using the scheme tls+tcp4://.</p></li>
+<p></p><ul><li><p>A URI may be restricted to IPv6 using the scheme tls+tcp6://, or
+    IPv4 using the scheme tls+tcp4://.</p></li>
 </ul></div>
     <div id="websocket">
     <h2>WebSocket</h2>
@@ -199,10 +199,10 @@ For an authoritative guide please refer to the online documentation for
     it will map to the special IPv6 address ::, and both IPv4 and IPv6
     connections will be permitted, with IPv4 addresses mapped to IPv6
     addresses.)</p></li>
-<li><p>This transport makes use of shared HTTP server instances, permitting
-    multiple sockets or listeners to be configured with the same hostname and
-    port. When creating a new listener, it is registered with an existing
-    HTTP server instance if one can be found. Note that the matching
+<li><p>This transport makes use of shared HTTP server instances,
+    permitting multiple sockets or listeners to be configured with the same
+    hostname and port. When creating a new listener, it is registered with an
+    existing HTTP server instance if one can be found. Note that the matching
     algorithm is somewhat simple, using only a string based hostname or IP
     address and port to match. Therefore it is recommended to use only IP
     addresses or the empty string as the hostname in listener URLs.</p></li>

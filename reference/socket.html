@@ -122,15 +122,15 @@ documentation).</p></dd>
     </div>
     <div id="details">
     <h2>Details</h2>
-    <p>NNG presents a socket view of networking. The sockets are constructed
-    using protocol-specific functions, as a given socket implements precisely
-    one protocol.</p>
+    <p>NNG presents a socket view of networking. The sockets are
+    constructed using protocol-specific functions, as a given socket
+    implements precisely one protocol.</p>
 <p>Each socket may be used to send and receive messages (if the protocol
     supports it, and implements the appropriate protocol semantics). For
     example, sub sockets automatically filter incoming messages to discard
     those for topics that have not been subscribed.</p>
-<p>This function (optionally) binds a single Dialer and/or Listener to a Socket.
-    More complex network topologies may be created by binding further
+<p>This function (optionally) binds a single Dialer and/or Listener to a
+    Socket. More complex network topologies may be created by binding further
     Dialers/Listeners to the Socket as required using <code><a href="dial.html">dial</a></code> and
     <code><a href="listen.html">listen</a></code>.</p>
 <p>New contexts may also be created using <code><a href="context.html">context</a></code> if the
@@ -141,12 +141,14 @@ documentation).</p></dd>
     
 
 
-<p>The following Scalability Protocols (communication patterns) are implemented:</p><ul><li><p>Bus (mesh networks) - protocol: 'bus'</p></li>
+<p>The following Scalability Protocols (communication patterns) are
+    implemented:</p><ul><li><p>Bus (mesh networks) - protocol: 'bus'</p></li>
 <li><p>Pair (two-way radio) - protocol: 'pair'</p></li>
 <li><p>Pipeline (one-way pipe) - protocol: 'push', 'pull'</p></li>
 <li><p>Publisher/Subscriber (topics &amp; broadcast) - protocol: 'pub', 'sub'</p></li>
 <li><p>Request/Reply (RPC) - protocol: 'req', 'rep'</p></li>
-<li><p>Survey (voting &amp; service discovery) - protocol: 'surveyor', 'respondent'</p></li>
+<li><p>Survey (voting &amp; service discovery) - protocol: 'surveyor',
+    'respondent'</p></li>
 </ul><p>Please see <a href="protocols.html">protocols</a> for further documentation.</p>
     </div>
     <div id="transports">
@@ -155,8 +157,8 @@ documentation).</p></dd>
 
 
 <p>The following communications transports may be used:</p><ul><li><p>Inproc (in-process) - url: 'inproc://'</p></li>
-<li><p>IPC (inter-process communications) - url: 'ipc://' (or 'abstract://'
-    on Linux)</p></li>
+<li><p>IPC (inter-process communications) - url: 'ipc://' (or
+    'abstract://' on Linux)</p></li>
 <li><p>TCP and TLS over TCP - url: 'tcp://' and 'tls+tcp://'</p></li>
 <li><p>WebSocket and TLS over WebSocket - url: 'ws://' and 'wss://'</p></li>
 </ul><p>Please see <a href="transports.html">transports</a> for further documentation.</p>
