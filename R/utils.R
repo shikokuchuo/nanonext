@@ -272,3 +272,49 @@ status_code <- function(x) .Call(rnng_status_code, x)
 #' @export
 #'
 strcat <- function(a, b) .Call(rnng_strcat, a, b)
+
+#' Configure Next Mode
+#'
+#' Configures 'next' mode by registering 'refhook' functions for serialization
+#'     and unserialization. This permits sending and receiving reference
+#'     objects, such as those accessed via an external pointer, between
+#'     different R sessions.
+#'
+#' @param inhook a function (for custom serialization). The signature for this
+#'     function must accept a list and return a raw vector, e.g.
+#'     \code{safetensors::safe_serialize}, or else NULL to reset.
+#' @param outhook a function (for custom unserialization). The signature for
+#'     this function must accept a raw vector and return a list, e.g.
+#'     \code{safetensors::safe_load_file}, or else NULL to reset.
+#'
+#' @return Invisibly, a pairlist comprising the currently-registered 'next'
+#'     configuration.
+#'
+#' @details Calling this function without any arguments returns (invisibly) the
+#'     currently-registered 'next' configuration.
+#'
+#'     Alternatively, calling this function with a configuration pairlist
+#'     previously returned by this function registers the supplied configuration.
+#'
+#' @section Refhook:
+#'
+#'     The 'refhook' functions are a native feature of R's serialization
+#'     mechanism and apply to all non-system reference objects (external
+#'     pointers, weak references, and all environments other than namespace and
+#'     package environments and the Global Environment).
+#'
+#' @examples
+#' cfg <- next_config(inhook = function(x) serialize(x, NULL),
+#'                    outhook = unserialize)
+#' cfg
+#'
+#' nul <- next_config(NULL, NULL)
+#' print(next_config())
+#'
+#' print(next_config(cfg))
+#' print(next_config(nul))
+#'
+#' @export
+#'
+next_config <- function(inhook, outhook)
+  invisible(.Call(rnng_next_config, if (missing(inhook)) "" else inhook, if (missing(outhook)) "" else outhook))

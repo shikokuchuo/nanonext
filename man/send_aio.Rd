@@ -13,12 +13,9 @@ send_aio(con, data, mode = c("serial", "raw", "next"), timeout = NULL)
 
 \item{mode}{[default 'serial'] one of 'serial' to send serialised R objects,
 'raw' to send atomic vectors of any type as a raw byte vector, or 'next'
-to send in a new R-compatible serialisation format. For Streams, 'raw' is
-the only option and this argument is ignored. Use 'serial' to ensure
-perfect reproducibility within R, although 'raw' must be used when
-interfacing with external applications which do not understand R
-serialisation. Alternatively, for performance, specify an integer position
-in the vector of choices e.g. 1L for 'serial' or 2L for 'raw' etc.}
+(see 'Send Modes' section below). Alternatively, specify an integer
+position in the vector of choices e.g. 1L for 'serial' or 2L for 'raw'
+etc. For Streams, 'raw' is the only option and this argument is ignored.}
 
 \item{timeout}{[default NULL] integer value in milliseconds or NULL, which
 applies a socket-specific default, usually the same as no timeout.}
@@ -43,6 +40,25 @@ Async send is always non-blocking and returns a 'sendAio'
 
     Alternatively, to stop the async operation, use \code{\link{stop_aio}}.
 }
+\section{Send Modes}{
+
+
+    The default mode 'serial' sends serialised R objects to ensure perfect
+    reproducibility within R. When receiving, the corresponding mode 'serial'
+    should be used.
+
+    Mode 'raw' sends atomic vectors of any type as a raw byte vector, and
+    must be used when interfacing with external applications or raw system
+    sockets, where R serialization is not in use. When receiving, the mode
+    corresponding to the vector sent should be used.
+
+    Mode 'next' sends serialised R objects, with native extensions enabled by
+    \code{\link{next_config}}. This allows 'refhook' functions to be
+    registered for custom serialization and unserialization of reference
+    objects, such as those accessed via an external pointer. When receiving,
+    mode 'serial' should be used as 'next' sends are fully compatible.
+}
+
 \examples{
 pub <- socket("pub", dial = "inproc://nanonext")
 

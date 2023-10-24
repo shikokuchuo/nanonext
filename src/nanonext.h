@@ -163,6 +163,7 @@ typedef struct nano_cv_duo_s {
 #define ERROR_RET(xc) { Rf_warning("%d | %s", xc, nng_strerror(xc)); return mk_error(xc); }
 #define NANONEXT_INIT_BUFSIZE 16384
 #define NANONEXT_SERIAL_VER 3
+#define NANONEXT_SERIAL_MAXLEN 65536
 #define NANO_ALLOC(x, sz)                                      \
   (x)->buf = R_Calloc(sz, unsigned char);                      \
   (x)->len = (R_xlen_t) sz;                                    \
@@ -226,6 +227,8 @@ extern SEXP nano_error;
 extern SEXP nano_ncurlAio;
 extern SEXP nano_ncurlSession;
 extern SEXP nano_recvAio;
+extern SEXP nano_refHook;
+extern SEXP nano_refList;
 extern SEXP nano_sendAio;
 extern SEXP nano_success;
 extern SEXP nano_unresolved;
@@ -269,6 +272,7 @@ extern SEXP rnng_ncurl_aio(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 extern SEXP rnng_ncurl_session(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 extern SEXP rnng_ncurl_session_close(SEXP);
 extern SEXP rnng_ncurl_transact(SEXP);
+extern SEXP rnng_next_config(SEXP, SEXP);
 extern SEXP rnng_pipe_notify(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 extern SEXP rnng_protocol_open(SEXP, SEXP);
 extern SEXP rnng_random(SEXP, SEXP);

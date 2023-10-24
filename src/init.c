@@ -51,6 +51,8 @@ SEXP nano_error;
 SEXP nano_ncurlAio;
 SEXP nano_ncurlSession;
 SEXP nano_recvAio;
+SEXP nano_refHook;
+SEXP nano_refList;
 SEXP nano_sendAio;
 SEXP nano_success;
 SEXP nano_unresolved;
@@ -106,6 +108,7 @@ static void PreserveObjects(void) {
   SET_TAG(nano_ncurlSession, R_ClassSymbol);
   R_PreserveObject(nano_recvAio = Rf_cons(Rf_mkString("recvAio"), R_NilValue));
   SET_TAG(nano_recvAio, R_ClassSymbol);
+  R_PreserveObject(nano_refHook = Rf_list2(R_NilValue, R_NilValue));
   R_PreserveObject(nano_sendAio = Rf_cons(Rf_mkString("sendAio"), R_NilValue));
   SET_TAG(nano_sendAio, R_ClassSymbol);
   R_PreserveObject(nano_success = Rf_ScalarInteger(0));
@@ -117,6 +120,7 @@ static void ReleaseObjects(void) {
   R_ReleaseObject(nano_unresolved);
   R_ReleaseObject(nano_success);
   R_ReleaseObject(nano_sendAio);
+  R_ReleaseObject(nano_refHook);
   R_ReleaseObject(nano_recvAio);
   R_ReleaseObject(nano_ncurlSession);
   R_ReleaseObject(nano_ncurlAio);
@@ -169,6 +173,7 @@ static const R_CallMethodDef callMethods[] = {
   {"rnng_ncurl_session", (DL_FUNC) &rnng_ncurl_session, 8},
   {"rnng_ncurl_session_close", (DL_FUNC) &rnng_ncurl_session_close, 1},
   {"rnng_ncurl_transact", (DL_FUNC) &rnng_ncurl_transact, 1},
+  {"rnng_next_config", (DL_FUNC) &rnng_next_config, 2},
   {"rnng_pipe_notify", (DL_FUNC) &rnng_pipe_notify, 6},
   {"rnng_protocol_open", (DL_FUNC) &rnng_protocol_open, 2},
   {"rnng_random", (DL_FUNC) &rnng_random, 2},
@@ -212,6 +217,7 @@ static const R_ExternalMethodDef externalMethods[] = {
 void attribute_visible R_init_nanonext(DllInfo* dll) {
   RegisterSymbols();
   PreserveObjects();
+  nano_refList = R_NilValue;
 #if NNG_MAJOR_VERSION == 1 && NNG_MINOR_VERSION < 6
   nng_mtx_alloc(&shr_mtx);
 #endif

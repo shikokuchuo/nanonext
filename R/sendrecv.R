@@ -24,17 +24,14 @@
 #' @param data an object (a vector, if mode = 'raw').
 #' @param mode [default 'serial'] one of 'serial' to send serialised R objects,
 #'     'raw' to send atomic vectors of any type as a raw byte vector, or 'next'
-#'     to send in a new R-compatible serialisation format. For Streams, 'raw' is
-#'     the only option and this argument is ignored. Use 'serial' to ensure
-#'     perfect reproducibility within R, although 'raw' must be used when
-#'     interfacing with external applications which do not understand R
-#'     serialisation. Alternatively, for performance, specify an integer position
-#'     in the vector of choices e.g. 1L for 'serial' or 2L for 'raw' etc.
+#'     (see 'Send Modes' section below). Alternatively, specify an integer
+#'     position in the vector of choices e.g. 1L for 'serial' or 2L for 'raw'
+#'     etc. For Streams, 'raw' is the only option and this argument is ignored.
 #' @param block [default NULL] which applies the connection default (see section
-#'     'Blocking' below). Specify logical TRUE to block until successful or FALSE
-#'     to return immediately even if unsuccessful (e.g. if no connection is
-#'     available), or else an integer value specifying the maximum time to block
-#'     in milliseconds, after which the operation will time out.
+#'     'Blocking' below). Specify logical TRUE to block until successful or
+#'     FALSE to return immediately even if unsuccessful (e.g. if no connection
+#'     is available), or else an integer value specifying the maximum time to
+#'     block in milliseconds, after which the operation will time out.
 #'
 #' @return Integer exit code (zero on success).
 #'
@@ -51,9 +48,26 @@
 #'
 #'     For Streams: the default behaviour is blocking with \code{block = TRUE}.
 #'     This will wait until the send has completed. Set a timeout to ensure that
-#'     the function returns under all scenarios. As the underlying implementation
-#'     uses an asynchronous send with a wait, it is recommended to set a positive
-#'     integer value for \code{block} rather than FALSE.
+#'     the function returns under all scenarios. As the underlying
+#'     implementation uses an asynchronous send with a wait, it is recommended
+#'     to set a positive integer value for \code{block} rather than FALSE.
+#'
+#' @section Send Modes:
+#'
+#'     The default mode 'serial' sends serialised R objects to ensure perfect
+#'     reproducibility within R. When receiving, the corresponding mode 'serial'
+#'     should be used.
+#'
+#'     Mode 'raw' sends atomic vectors of any type as a raw byte vector, and
+#'     must be used when interfacing with external applications or raw system
+#'     sockets, where R serialization is not in use. When receiving, the mode
+#'     corresponding to the vector sent should be used.
+#'
+#'     Mode 'next' sends serialised R objects, with native extensions enabled by
+#'     \code{\link{next_config}}. This allows 'refhook' functions to be
+#'     registered for custom serialization and unserialization of reference
+#'     objects, such as those accessed via an external pointer. When receiving,
+#'     mode 'serial' should be used as 'next' sends are fully compatible.
 #'
 #' @seealso \code{\link{send_aio}} for asynchronous send.
 #' @examples
@@ -90,11 +104,10 @@ send <- function(con, data, mode = c("serial", "raw", "next"), block = NULL)
 #'     'character', 'complex', 'double', 'integer', 'logical', 'numeric', 'raw',
 #'     or 'string'. The default 'serial' means a serialised R object, for the
 #'     other modes, the raw vector received will be converted into the respective
-#'     mode. Note that 'string' is a faster alternative to 'character' for
-#'     receiving a character vector of length 1. For Streams, 'serial' is not an
-#'     option and the default is 'character'. Alternatively, for performance,
-#'     specify an integer position in the vector of choices e.g. 1L for 'serial',
-#'     2L for 'character' etc.
+#'     mode. 'string' is a faster alternative to 'character' for receiving a
+#'     length 1 character string. For Streams, 'serial' is not an option and the
+#'     default is 'character'. Alternatively, specify an integer position in the
+#'     vector of choices e.g. 1L for 'serial', 2L for 'character' etc.
 #' @param n [default 65536L] applicable to Streams only, the maximum number of
 #'     bytes to receive. Can be an over-estimate, but note that a buffer of this
 #'     size is reserved.

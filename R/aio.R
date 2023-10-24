@@ -41,6 +41,8 @@
 #'
 #'     Alternatively, to stop the async operation, use \code{\link{stop_aio}}.
 #'
+#' @inheritSection send Send Modes
+#'
 #' @examples
 #' pub <- socket("pub", dial = "inproc://nanonext")
 #'

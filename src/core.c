@@ -127,6 +127,48 @@ SEXP rawToChar(unsigned char *buf, const size_t sz) {
 
 }
 
+static SEXP nano_inHook(SEXP x, SEXP fun) {
+
+  SEXP list, names, out;
+  R_xlen_t xlen;
+  if (fun == R_NilValue) {
+    xlen = 0;
+    list = Rf_allocVector(VECSXP, 1);
+  } else {
+    xlen = Rf_xlength(fun);
+    list = Rf_lengthgets(fun, xlen + 1);
+  }
+  PROTECT(list);
+  SET_VECTOR_ELT(list, xlen, x);
+  PROTECT(names = Rf_getAttrib(list, R_NamesSymbol));
+  char *idx = R_alloc(sizeof(char), NANONEXT_SERIAL_MAXLEN);
+  snprintf(idx, NANONEXT_SERIAL_MAXLEN, "%ld", xlen + 1);
+  PROTECT(out = Rf_mkChar(idx));
+  if (names == R_NilValue) {
+    names = Rf_ScalarString(out);
+  } else {
+    SET_STRING_ELT(names, xlen, out);
+  }
+  Rf_namesgets(list, names);
+  if (xlen)
+    R_ReleaseObject(nano_refList);
+
+  UNPROTECT(3);
+  R_PreserveObject(nano_refList = list);
+  return Rf_ScalarString(out);
+
+}
+
+static SEXP nano_outHook(SEXP x, SEXP fun) {
+
+  SEXP index;
+  index = Rf_coerceVector(x, INTSXP);
+  int idx = INTEGER(index)[0] - 1;
+
+  return VECTOR_ELT(fun, idx);
+
+}
+
 void nano_serialize(nano_buf *buf, SEXP object) {
 
   NANO_ALLOC(buf, NANONEXT_INIT_BUFSIZE);
@@ -156,7 +198,7 @@ void nano_serialize_next(nano_buf *buf, SEXP object) {
 
   NANO_ALLOC(buf, NANONEXT_INIT_BUFSIZE);
   buf->buf[0] = 7u;
-  buf->cur += 4;
+  buf->cur += 8;
 
   struct R_outpstream_st output_stream;
 
@@ -171,11 +213,35 @@ void nano_serialize_next(nano_buf *buf, SEXP object) {
     NANONEXT_SERIAL_VER,
     nano_write_char,
     nano_write_bytes,
-    NULL,
-    R_NilValue
+    nano_inHook,
+    nano_refList
   );
 
   R_Serialize(object, &output_stream);
+
+  *((int *) (buf->buf + 1)) = (int) buf->cur;
+
+  if (nano_refList != R_NilValue) {
+    SEXP call, out;
+    PROTECT(call = Rf_lcons(CAR(nano_refHook), Rf_cons(nano_refList, R_NilValue)));
+    PROTECT(out = Rf_eval(call, R_GlobalEnv));
+    if (TYPEOF(out) != RAWSXP) {
+      R_ReleaseObject(nano_refList);
+      nano_refList = R_NilValue;
+      Rf_error("serialization refhook did not return a raw vector");
+    }
+    R_xlen_t xlen = XLENGTH(out);
+    if (buf->cur + xlen > buf->len) {
+      buf->len = buf->cur + xlen;
+      buf->buf = R_Realloc(buf->buf, buf->len, unsigned char);
+    }
+    memcpy(buf->buf + buf->cur, STDVEC_DATAPTR(out), xlen);
+    buf->cur += xlen;
+
+    UNPROTECT(2);
+    R_ReleaseObject(nano_refList);
+    nano_refList = R_NilValue;
+  }
 
 }
 
@@ -206,13 +272,28 @@ SEXP nano_unserialize(unsigned char *buf, const size_t sz) {
   case 66:
   case 88:
     cur = 0; break;
-  case 7:
-    cur = 4; break;
+  case 7: ;
+    SEXP raw, call;
+    const int offset = *(int *) (buf + 1);
+    if (sz > offset) {
+      PROTECT(raw = Rf_allocVector(RAWSXP, sz - offset));
+      memcpy(STDVEC_DATAPTR(raw), buf + offset, sz - offset);
+      PROTECT(call = Rf_lcons(CADR(nano_refHook), Rf_cons(raw, R_NilValue)));
+      nano_refList = Rf_eval(call, R_GlobalEnv);
+      if (TYPEOF(nano_refList) != VECSXP) {
+        nano_refList = R_NilValue;
+        Rf_error("unserialization refhook did not return a list");
+      }
+      R_PreserveObject(nano_refList);
+      UNPROTECT(2);
+    }
+    cur = 8; break;
   default:
     Rf_warning("received data could not be unserialized");
     return nano_decode(buf, sz, 8);
   }
 
+  SEXP out;
   nano_buf nbuf;
   struct R_inpstream_st input_stream;
 
@@ -226,11 +307,15 @@ SEXP nano_unserialize(unsigned char *buf, const size_t sz) {
     R_pstream_any_format,
     nano_read_char,
     nano_read_bytes,
-    NULL,
-    R_NilValue
+    cur ? nano_outHook : NULL,
+    nano_refList
   );
 
-  return R_Unserialize(&input_stream);
+  PROTECT(out = R_Unserialize(&input_stream));
+  R_ReleaseObject(nano_refList);
+  nano_refList = R_NilValue;
+  UNPROTECT(1);
+  return out;
 
 }
 
@@ -1325,5 +1410,33 @@ SEXP rnng_strcat(SEXP a, SEXP b) {
 void rnng_fini(void) {
 
   nng_fini();
+
+}
+
+SEXP rnng_next_config(SEXP infun, SEXP outfun) {
+
+  switch(TYPEOF(infun)) {
+  case LISTSXP:
+    if (Rf_xlength(infun) == 2)
+      rnng_next_config(CAR(infun), CADR(infun));
+    break;
+  case CLOSXP:
+  case BUILTINSXP:
+  case SPECIALSXP:
+  case NILSXP:
+    SETCAR(nano_refHook, infun);
+    break;
+  }
+
+  switch(TYPEOF(outfun)) {
+  case CLOSXP:
+  case BUILTINSXP:
+  case SPECIALSXP:
+  case NILSXP:
+    SETCADR(nano_refHook, outfun);
+    break;
+  }
+
+  return Rf_shallow_duplicate(nano_refHook);
 
 }
