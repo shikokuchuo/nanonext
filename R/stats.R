@@ -39,38 +39,38 @@
 #'
 #'     The following stats may be requested for a Socket:
 #'     \itemize{
-#'     \item{'id'} {- numeric id of the socket.}
-#'     \item{'name'} {- character socket name.}
-#'     \item{'protocol'} {- character protocol type e.g. 'bus'.}
-#'     \item{'pipes'} {- numeric number of pipes (active connections).}
-#'     \item{'dialers'} {- numeric number of listeners attached to the socket.}
-#'     \item{'listeners'} {- numeric number of dialers attached to the socket.}
+#'     \item 'id' - numeric id of the socket.
+#'     \item 'name' - character socket name.
+#'     \item 'protocol' - character protocol type e.g. 'bus'.
+#'     \item 'pipes' - numeric number of pipes (active connections).
+#'     \item 'dialers' - numeric number of listeners attached to the socket.
+#'     \item 'listeners' - numeric number of dialers attached to the socket.
 #'     }
 #'
 #'     The following stats may be requested for a Listener / Dialer:
 #'     \itemize{
-#'     \item{'id'} {- numeric id of the listener / dialer.}
-#'     \item{'socket'} {- numeric id of the socket of the listener / dialer.}
-#'     \item{'url'} {- character URL address.}
-#'     \item{'pipes'} {- numeric number of pipes (active connections).}
+#'     \item 'id' - numeric id of the listener / dialer.
+#'     \item 'socket' - numeric id of the socket of the listener / dialer.
+#'     \item 'url' - character URL address.
+#'     \item 'pipes' - numeric number of pipes (active connections).
 #'     }
 #'
 #'     The following additional stats may be requested for a Listener:
 #'     \itemize{
-#'     \item{'accept'} {- numeric total number of connection attempts, whether
-#'     successful or not.}
-#'     \item{'reject'} {- numeric total number of rejected connection attempts
-#'     e.g. due to incompatible protocols.}
+#'     \item 'accept' - numeric total number of connection attempts, whether
+#'     successful or not.
+#'     \item 'reject' - numeric total number of rejected connection attempts
+#'     e.g. due to incompatible protocols.
 #'     }
 #'
 #'     The following additional stats may be requested for a Dialer:
 #'     \itemize{
-#'     \item{'connect'} {- numeric total number of connection attempts, whether
-#'     successful or not.}
-#'     \item{'reject'} {- numeric total number of rejected connection attempts
-#'     e.g. due to incompatible protocols.}
-#'     \item{'refused'} {- numeric total number of refused connections e.g. when
-#'     starting synchronously with no listener on the other side.}
+#'     \item 'connect' - numeric total number of connection attempts, whether
+#'     successful or not.
+#'     \item 'reject' - numeric total number of rejected connection attempts
+#'     e.g. due to incompatible protocols.
+#'     \item 'refused' - numeric total number of refused connections e.g. when
+#'     starting synchronously with no listener on the other side.
 #'     }
 #'
 #' @examples

@@ -96,16 +96,16 @@ ncurl <- function(url,
 #' @return An 'ncurlAio' (object of class 'ncurlAio' and 'recvAio') (invisibly).
 #'     The following elements may be accessed:
 #'     \itemize{
-#'     \item{\code{$status}} {- integer HTTP repsonse status code (200 - OK).
-#'     Use \code{\link{status_code}} for a translation of the meaning.}
-#'     \item{\code{$headers}} {- named list of response headers supplied in
+#'     \item \code{$status} - integer HTTP repsonse status code (200 - OK).
+#'     Use \code{\link{status_code}} for a translation of the meaning.
+#'     \item \code{$headers} - named list of response headers supplied in
 #'     'response', or NULL otherwise. If the status code is within the 300
 #'     range, i.e. a redirect, the response header 'Location' is automatically
-#'     appended to return the redirect address.}
-#'     \item{\code{$data}} {- the response body, as a character string if
+#'     appended to return the redirect address.
+#'     \item \code{$data} - the response body, as a character string if
 #'     'convert' = TRUE (may be further parsed as html, json, xml etc. as
 #'     required), or a raw byte vector if FALSE (use \code{\link{writeBin}} to
-#'     save as a file).}
+#'     save as a file).
 #'     }
 #'
 #' @seealso \code{\link{ncurl_session}} for persistent connections.
@@ -167,16 +167,16 @@ ncurl_session <- function(url,
 #'
 #' @return For \code{transact}: a named list of 3 elements:
 #'     \itemize{
-#'     \item{\code{$status}} {- integer HTTP repsonse status code (200 - OK).
-#'     Use \code{\link{status_code}} for a translation of the meaning.}
-#'     \item{\code{$headers}} {- named list of response headers (if specified in
+#'     \item \code{$status} - integer HTTP repsonse status code (200 - OK).
+#'     Use \code{\link{status_code}} for a translation of the meaning.
+#'     \item \code{$headers} - named list of response headers (if specified in
 #'     the session), or NULL otherwise. If the status code is within the 300
 #'     range, i.e. a redirect, the response header 'Location' is automatically
-#'     appended to return the redirect address.}
-#'     \item{\code{$data}} {- the response body as a character string (if
+#'     appended to return the redirect address.
+#'     \item \code{$data} - the response body as a character string (if
 #'     'convert = TRUE' was specified for the session), which may be further
 #'     parsed as html, json, xml etc. as required, or else a raw byte vector,
-#'     which may be saved as a file using \code{\link{writeBin}}.}
+#'     which may be saved as a file using \code{\link{writeBin}}.
 #'     }
 #'
 #' @rdname ncurl_session
