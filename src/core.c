@@ -213,13 +213,13 @@ void nano_serialize_next(nano_buf *buf, SEXP object) {
     NANONEXT_SERIAL_VER,
     nano_write_char,
     nano_write_bytes,
-    nano_inHook,
+    CAR(nano_refHook) != R_NilValue ? nano_inHook : NULL,
     nano_refList
   );
 
   R_Serialize(object, &output_stream);
 
-  *((int *) (buf->buf + 1)) = (int) buf->cur;
+  *((int *) (buf->buf + 4)) = (int) buf->cur;
 
   if (nano_refList != R_NilValue) {
     SEXP call, out;
@@ -274,7 +274,7 @@ SEXP nano_unserialize(unsigned char *buf, const size_t sz) {
     cur = 0; break;
   case 7: ;
     SEXP raw, call;
-    const int offset = *(int *) (buf + 1);
+    const int offset = *(int *) (buf + 4);
     if (sz > offset) {
       PROTECT(raw = Rf_allocVector(RAWSXP, sz - offset));
       memcpy(STDVEC_DATAPTR(raw), buf + offset, sz - offset);
