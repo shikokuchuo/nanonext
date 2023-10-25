@@ -12,11 +12,10 @@ strcat(a, b)
 \item{b}{character value.}
 }
 \value{
-A character vector of length 1.
+A character string.
 }
 \description{
-[DEPRECATED - This function will be removed in a future package version] A
-    fast implementation that appends one character value after another.
+A fast implementation that combines two character values into a single string.
 }
 \details{
 If either 'a' or 'b' is a vector of length greater than 1, only the
