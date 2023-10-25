@@ -1,4 +1,4 @@
-# nanonext 0.10.2.9008 (development)
+# nanonext 0.10.2.9009 (development)
 
 #### New Features
 
@@ -9,6 +9,7 @@
 
 * `lock()` supplying 'cv' has improved behaviour which locks the socket whilst allowing for both initial connections and re-connections (when the 'cv' is registered for both add and remove pipe events).
 * Improves listener / dialer logic for TLS connections, allowing *inter alia* synchronous dials.
+* `pipe_notify()` arguments 'add', 'remove' and 'flag' now default to FALSE instead of TRUE for easier selective specification of the events to signal.
 * `request()` logical argument 'ack' removed as a method of synchronising with the rep node.
 * `strcat()` is deprecated and will be removed in a future package version (re-focusing on core functions).
 * Removes `weakref()`, `weakref_key()` and `weakref_value()`: please use equivalent functions from the `rlang` package instead.

@@ -160,13 +160,14 @@ cv_signal <- function(cv) invisible(.Call(rnng_cv_signal, cv))
 #' @param cv2 [default NULL] optionally, if specified, a second 'conditionVariable'
 #'     to signal. Note that this cv is signalled sequentially after the first
 #'     condition variable.
-#' @param add [default TRUE] logical value whether to signal when a pipe is added.
-#' @param remove [default TRUE] logical value whether to signal when a pipe is
+#' @param add [default FALSE] logical value whether to signal when a pipe is
+#'     added.
+#' @param remove [default FALSE] logical value whether to signal when a pipe is
 #'     removed.
-#' @param flag [default TRUE] logical value whether to also set a flag in the
+#' @param flag [default FALSE] logical value whether to also set a flag in the
 #'     'conditionVariable'. This can help distinguish between different types of
-#'     signal, and causes any subsequent \code{\link{wait}} or \code{\link{until}}
-#'     to return FALSE instead of TRUE.
+#'     signal, and causes any subsequent \code{\link{wait}} to return FALSE
+#'     instead of TRUE.
 #'
 #' @details For add: this event occurs after the pipe is fully added to the
 #'     socket. Prior to this time, it is not possible to communicate over the
@@ -201,7 +202,7 @@ cv_signal <- function(cv) invisible(.Call(rnng_cv_signal, cv))
 #'
 #' @export
 #'
-pipe_notify <- function(socket, cv, cv2 = NULL, add = TRUE, remove = TRUE, flag = TRUE)
+pipe_notify <- function(socket, cv, cv2 = NULL, add = FALSE, remove = FALSE, flag = FALSE)
   invisible(.Call(rnng_pipe_notify, socket, cv, cv2, add, remove, flag))
 
 #' Lock / Unlock a Socket
