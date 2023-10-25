@@ -39,7 +39,6 @@ SEXP nano_StatusSymbol;
 SEXP nano_StreamSymbol;
 SEXP nano_TextframesSymbol;
 SEXP nano_TlsSymbol;
-SEXP nano_UnresSymbol;
 SEXP nano_UrlSymbol;
 SEXP nano_ValueSymbol;
 
@@ -81,7 +80,6 @@ static void RegisterSymbols(void) {
   nano_StreamSymbol = Rf_install("stream");
   nano_TextframesSymbol = Rf_install("textframes");
   nano_TlsSymbol = Rf_install("tls");
-  nano_UnresSymbol = Rf_install(" unresolved ");
   nano_UrlSymbol = Rf_install("url");
   nano_ValueSymbol = Rf_install("value");
 }

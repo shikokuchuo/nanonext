@@ -216,7 +216,6 @@ extern SEXP nano_StatusSymbol;
 extern SEXP nano_StreamSymbol;
 extern SEXP nano_TextframesSymbol;
 extern SEXP nano_TlsSymbol;
-extern SEXP nano_UnresSymbol;
 extern SEXP nano_UrlSymbol;
 extern SEXP nano_ValueSymbol;
 
