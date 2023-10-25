@@ -1,4 +1,4 @@
-# nanonext 0.10.2.9010 (development)
+# nanonext 0.10.2.9011 (development)
 
 #### New Features
 
@@ -11,7 +11,6 @@
 * Improves listener / dialer logic for TLS connections, allowing *inter alia* synchronous dials.
 * `pipe_notify()` arguments 'add', 'remove' and 'flag' now default to FALSE instead of TRUE for easier selective specification of the events to signal.
 * `request()` logical argument 'ack' removed as a method of synchronising with the rep node.
-* Removes `weakref()`, `weakref_key()` and `weakref_value()`: please use equivalent functions from the `rlang` package instead.
 * Fixes memory leaks detected with valgrind.
 * Upgrades bundled 'libmbedtls' to v 3.5.0.
 

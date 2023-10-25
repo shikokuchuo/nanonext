@@ -303,6 +303,9 @@ extern SEXP rnng_unresolved(SEXP);
 extern SEXP rnng_unresolved2(SEXP);
 extern SEXP rnng_url_parse(SEXP);
 extern SEXP rnng_version(void);
+extern SEXP rnng_weakref_make(SEXP, SEXP);
+extern SEXP rnng_weakref_key(SEXP);
+extern SEXP rnng_weakref_value(SEXP);
 extern SEXP rnng_write_cert(SEXP, SEXP, SEXP);
 
 #endif
