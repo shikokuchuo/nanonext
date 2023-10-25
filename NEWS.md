@@ -2,8 +2,8 @@
 
 #### New Features
 
-* `next_config()` enables native extensions when sending using mode 'next'. Registers hook functions for custom serialization and unserialization of reference objects (such as those accessed via an external pointer).
-* `.until()` contains revised behaviour for this synchronisation primitive that will be ported to `until()` in a future version. The function now returns FALSE instead of TRUE if the timeout has been reached.
+* `next_config()` enables native extensions when using send mode 'next'. Registers hook functions for custom serialization and unserialization of reference objects (such as those accessed via an external pointer).
+* `.until()` contains revised behaviour for this synchronisation primitive, returning FALSE instead of TRUE if the timeout has been reached. This function will replace `until()` in a future package version.
 
 #### Updates
 
