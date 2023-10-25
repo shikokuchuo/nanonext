@@ -58,9 +58,9 @@
 <div class="section level5">
 <h5 id="new-features-0-10-2-9011">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-10-2-9011"></a></h5>
 <ul><li>
-<code><a href="../reference/next_config.html">next_config()</a></code> enables native extensions when sending using mode ‘next’. Registers hook functions for custom serialization and unserialization of reference objects (such as those accessed via an external pointer).</li>
+<code><a href="../reference/next_config.html">next_config()</a></code> enables native extensions when using send mode ‘next’. Registers hook functions for custom serialization and unserialization of reference objects (such as those accessed via an external pointer).</li>
 <li>
-<code><a href="../reference/cv.html">.until()</a></code> contains revised behaviour for this synchronisation primitive that will be ported to <code><a href="../reference/cv.html">until()</a></code> in a future version. The function now returns FALSE instead of TRUE if the timeout has been reached.</li>
+<code><a href="../reference/cv.html">.until()</a></code> contains revised behaviour for this synchronisation primitive, returning FALSE instead of TRUE if the timeout has been reached. This function will replace <code><a href="../reference/cv.html">until()</a></code> in a future package version.</li>
 </ul></div>
 <div class="section level5">
 <h5 id="updates-0-10-2-9011">Updates<a class="anchor" aria-label="anchor" href="#updates-0-10-2-9011"></a></h5>
