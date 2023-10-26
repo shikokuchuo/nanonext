@@ -861,16 +861,13 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
       nano_serialize_next(&buf, data); break;
     }
 
-    if ((xc = nng_msg_alloc(&msg, 0))) {
-      NANO_FREE(buf);
-      goto exitlevel1;
-    }
+    if ((xc = nng_msg_alloc(&msg, 0)))
+      goto exitlevel2;
 
     if ((xc = nng_msg_append(msg, buf.buf, buf.cur)) ||
         (xc = nng_aio_alloc(&saio->aio, saio_complete, saio))) {
       nng_msg_free(msg);
-      NANO_FREE(buf);
-      goto exitlevel1;
+      goto exitlevel2;
     }
 
     nng_aio_set_msg(saio->aio, msg);
@@ -897,16 +894,13 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
       nano_serialize_next(&buf, data); break;
     }
 
-    if ((xc = nng_msg_alloc(&msg, 0))) {
-      NANO_FREE(buf);
-      goto exitlevel1;
-    }
+    if ((xc = nng_msg_alloc(&msg, 0)))
+      goto exitlevel2;
 
     if ((xc = nng_msg_append(msg, buf.buf, buf.cur)) ||
         (xc = nng_aio_alloc(&saio->aio, saio_complete, saio))) {
       nng_msg_free(msg);
-      NANO_FREE(buf);
-      goto exitlevel1;
+      goto exitlevel2;
     }
 
     nng_aio_set_msg(saio->aio, msg);
@@ -968,6 +962,8 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
   UNPROTECT(3);
   return env;
 
+  exitlevel2:
+  NANO_FREE(buf);
   exitlevel1:
   R_Free(saio);
   return mk_error_data(-xc);
