@@ -1008,9 +1008,6 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP bytes) {
 
 SEXP rnng_set_opt(SEXP object, SEXP opt, SEXP value) {
 
-  if (TYPEOF(object) != EXTPTRSXP)
-    Rf_error("'object' is not a valid Socket, Context, Stream, Listener or Dialer");
-
   const char *op = CHAR(STRING_ELT(opt, 0));
   const int typ = TYPEOF(value);
   int xc, val;
@@ -1169,9 +1166,6 @@ SEXP rnng_set_opt(SEXP object, SEXP opt, SEXP value) {
 
 SEXP rnng_subscribe(SEXP object, SEXP value, SEXP sub) {
 
-  if (TYPEOF(object) != EXTPTRSXP)
-    Rf_error("'object' is not a valid Socket, Context, Stream, Listener or Dialer");
-
   const char *op = LOGICAL(sub)[0] ? "sub:subscribe" : "sub:unsubscribe";
   nano_buf buf;
   int xc;
@@ -1201,9 +1195,6 @@ SEXP rnng_subscribe(SEXP object, SEXP value, SEXP sub) {
 }
 
 SEXP rnng_get_opt(SEXP object, SEXP opt) {
-
-  if (TYPEOF(object) != EXTPTRSXP)
-    Rf_error("'object' is not a valid Socket, Context, Stream, Listener or Dialer");
 
   const char *op = CHAR(STRING_ELT(opt, 0));
   SEXP out;
