@@ -18,20 +18,10 @@
 
 #' Condition Variables
 #'
-#' \code{cv} creates a new condition variable (protected by a mutex internal to
-#'     the object).
+#' Creates a new condition variable (protected by a mutex internal to the
+#'     object).
 #'
-#' @return For \strong{cv}: a 'conditionVariable' object.
-#'
-#'     For \strong{wait} and \strong{until}: (invisibly) logical TRUE, or else
-#'     FALSE if a flag has been set.
-#'
-#'     For \strong{.until}: (invisibly) logical TRUE if signalled, or else FALSE
-#'     if the timeout was reached.
-#'
-#'     For \strong{cv_value}: integer value of the condition variable.
-#'
-#'     For \strong{cv_reset} and \strong{cv_signal}: zero (invisibly).
+#' @return A 'conditionVariable' object.
 #'
 #' @details Pass the 'conditionVariable' to the signalling forms of the
 #'     asynchronous receive functions: \code{\link{recv_aio_signal}} or
@@ -43,7 +33,7 @@
 #'     incrementing it by 1.
 #'
 #'     This will cause the R execution thread waiting on the condition variable
-#'     using \code{wait} or \code{until} to wake and continue.
+#'     using \code{\link{wait}} or \code{\link{until}} to wake and continue.
 #'
 #'     For argument 'msec', non-integer values will be coerced to integer.
 #'     Non-numeric input will be ignored and return immediately.
@@ -52,46 +42,59 @@
 #'
 #'     The condition internal to this 'conditionVariable' maintains a state
 #'     (value). Each signal increments the value by 1. Each time
-#'     \code{wait} or \code{until} returns (apart from due to timeout), the
-#'     value is decremented by 1.
+#'     \code{\link{wait}} or \code{\link{until}} returns (apart from due to
+#'     timeout), the value is decremented by 1.
 #'
-#'     The internal condition may be inspected at any time using \code{cv_value}
-#'     and reset using \code{cv_reset}. This affords a high degree of
-#'     flexibility in designing complex concurrent applications.
+#'     The internal condition may be inspected at any time using
+#'     \code{\link{cv_value}} and reset using \code{\link{cv_reset}}. This
+#'     affords a high degree of flexibility in designing complex concurrent
+#'     applications.
 #'
 #' @section Flag:
 #'
 #'     The condition variable also contains a flag that certain signalling
 #'     functions such as \code{\link{pipe_notify}} can set. When this flag has
-#'     been set, all subsequent \code{wait} calls will return logical FALSE
-#'     instead of TRUE.
+#'     been set, all subsequent \code{\link{wait}} calls will return logical
+#'     FALSE instead of TRUE.
 #'
 #'     Note that the flag is not automatically reset, but may be reset manually
-#'     using \code{cv_reset}.
+#'     using \code{\link{cv_reset}}.
 #'
 #' @examples
 #' cv <- cv()
+#' cv
 #'
 #' @export
 #'
 cv <- function() .Call(rnng_cv_alloc)
 
-#' Condition Variables - Wait
+#' Wait / Until
 #'
 #' \code{wait} waits on a condition being signalled by completion of an
 #'     asynchronous receive.
 #'
 #' @param cv a 'conditionVariable' object.
 #'
+#' @return For \strong{wait} and \strong{until}: (invisibly) logical TRUE, or
+#'     else FALSE if a flag has been set.
+#'
+#'     For \strong{.until}: (invisibly) logical TRUE if signalled, or else FALSE
+#'     if the timeout was reached.
+#'
+#' @details These synchronisation primitives take a 'conditionVariable'. See
+#'     \code{\link{cv}} for further details of how the condition and flag
+#'     operates.
+#'
 #' @examples
+#' cv <- cv()
+#'
 #' # wait(cv) # uncommenting will block until the cv is signalled
 #'
-#' @rdname cv
 #' @export
 #'
 wait <- function(cv) invisible(.Call(rnng_cv_wait, cv))
 
-#' Condition Variables - Until
+#' Until
 #'
 #' \code{until} waits until a future time on a condition being signalled by
 #'     completion of an asynchronous receive.
@@ -102,24 +105,34 @@ wait <- function(cv) invisible(.Call(rnng_cv_wait, cv))
 #' @examples
 #' until(cv, 10L)
 #'
-#' @rdname cv
+#' @rdname wait
 #' @export
 #'
 until <- function(cv, msec) invisible(.Call(rnng_cv_until, cv, msec))
 
-#' @rdname cv
+#' @rdname wait
 #' @export
 #'
 .until <- function(cv, msec) invisible(.Call(rnng_cv_until2, cv, msec))
 
-#' Condition Variables - Value
+#' Condition Variables - Utilities
 #'
 #' \code{cv_value} inspects the internal value of a condition variable.
 #'
+#' @inheritParams wait
+#'
+#' @return For \strong{cv_value}: integer value of the condition variable.
+#'
+#'     For \strong{cv_reset} and \strong{cv_signal}: zero (invisibly).
+#'
+#' @details These functions work with a 'conditionVariable'. See \code{\link{cv}}
+#'     for further details of how the condition and flag operates.
+#'
 #' @examples
+#' cv <- cv()
+#'
 #' cv_value(cv)
 #'
-#' @rdname cv
 #' @export
 #'
 cv_value <- function(cv) .Call(rnng_cv_value, cv)
@@ -131,7 +144,7 @@ cv_value <- function(cv) .Call(rnng_cv_value, cv)
 #' @examples
 #' cv_reset(cv)
 #'
-#' @rdname cv
+#' @rdname cv_value
 #' @export
 #'
 cv_reset <- function(cv) invisible(.Call(rnng_cv_reset, cv))
@@ -141,11 +154,10 @@ cv_reset <- function(cv) invisible(.Call(rnng_cv_reset, cv))
 #' \code{cv_signal} signals a condition variable.
 #'
 #' @examples
-#' cv_value(cv)
 #' cv_signal(cv)
 #' cv_value(cv)
 #'
-#' @rdname cv
+#' @rdname cv_value
 #' @export
 #'
 cv_signal <- function(cv) invisible(.Call(rnng_cv_signal, cv))
