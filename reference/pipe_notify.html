@@ -93,7 +93,7 @@ removed.</p></dd>
 <dt>flag</dt>
 <dd><p>[default FALSE] logical value whether to also set a flag in the
 'conditionVariable'. This can help distinguish between different types of
-signal, and causes any subsequent <code><a href="cv.html">wait</a></code> to return FALSE
+signal, and causes any subsequent <code><a href="wait.html">wait</a></code> to return FALSE
 instead of TRUE.</p></dd>
 
 </dl></div>
@@ -120,25 +120,25 @@ instead of TRUE.</p></dd>
 <span class="r-in"><span><span class="va">cv2</span> <span class="op">&lt;-</span> <span class="fu"><a href="cv.html">cv</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">pipe_notify</span><span class="op">(</span><span class="va">s</span>, <span class="va">cv</span>, <span class="va">cv2</span>, add <span class="op">=</span> <span class="cn">TRUE</span>, remove <span class="op">=</span> <span class="cn">TRUE</span>, flag <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="cv.html">cv_value</a></span><span class="op">(</span><span class="va">cv</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="cv_value.html">cv_value</a></span><span class="op">(</span><span class="va">cv</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
-<span class="r-in"><span><span class="fu"><a href="cv.html">cv_value</a></span><span class="op">(</span><span class="va">cv2</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="cv_value.html">cv_value</a></span><span class="op">(</span><span class="va">cv2</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">s1</span> <span class="op">&lt;-</span> <span class="fu"><a href="socket.html">socket</a></span><span class="op">(</span>dial <span class="op">=</span> <span class="st">"inproc://nanopipe"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="cv.html">cv_value</a></span><span class="op">(</span><span class="va">cv</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="cv_value.html">cv_value</a></span><span class="op">(</span><span class="va">cv</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
-<span class="r-in"><span><span class="fu"><a href="cv.html">cv_value</a></span><span class="op">(</span><span class="va">cv2</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="cv_value.html">cv_value</a></span><span class="op">(</span><span class="va">cv2</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
 <span class="r-in"><span><span class="fu"><a href="close.html">close</a></span><span class="op">(</span><span class="va">s1</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="cv.html">cv_value</a></span><span class="op">(</span><span class="va">cv</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="cv_value.html">cv_value</a></span><span class="op">(</span><span class="va">cv</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2</span>
-<span class="r-in"><span><span class="fu"><a href="cv.html">cv_value</a></span><span class="op">(</span><span class="va">cv2</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="cv_value.html">cv_value</a></span><span class="op">(</span><span class="va">cv2</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="op">(</span><span class="fu"><a href="cv.html">wait</a></span><span class="op">(</span><span class="va">cv</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">(</span><span class="fu"><a href="wait.html">wait</a></span><span class="op">(</span><span class="va">cv</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE</span>
-<span class="r-in"><span><span class="op">(</span><span class="fu"><a href="cv.html">wait</a></span><span class="op">(</span><span class="va">cv2</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">(</span><span class="fu"><a href="wait.html">wait</a></span><span class="op">(</span><span class="va">cv2</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="close.html">close</a></span><span class="op">(</span><span class="va">s</span><span class="op">)</span></span></span>

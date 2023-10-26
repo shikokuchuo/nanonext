@@ -60,7 +60,7 @@
 <ul><li>
 <code><a href="../reference/next_config.html">next_config()</a></code> enables native extensions when using send mode ‘next’. Registers hook functions for custom serialization and unserialization of reference objects (such as those accessed via an external pointer).</li>
 <li>
-<code><a href="../reference/cv.html">.until()</a></code> contains revised behaviour for this synchronisation primitive, returning FALSE instead of TRUE if the timeout has been reached. This function will replace <code><a href="../reference/cv.html">until()</a></code> in a future package version.</li>
+<code><a href="../reference/wait.html">.until()</a></code> contains revised behaviour for this synchronisation primitive, returning FALSE instead of TRUE if the timeout has been reached. This function will replace <code><a href="../reference/wait.html">until()</a></code> in a future package version.</li>
 </ul></div>
 <div class="section level5">
 <h5 id="updates-0-10-2-9012">Updates<a class="anchor" aria-label="anchor" href="#updates-0-10-2-9012"></a></h5>
@@ -122,7 +122,7 @@
 <code><a href="../reference/ncurl.html">ncurl()</a></code> now always returns the response message body at <code>$data</code> whether convert is TRUE or FALSE.</li>
 <li>The argument ‘keep.raw’ for all receive functions (previously-deprecated) is removed.</li>
 <li>
-<code><a href="../reference/cv.html">cv_reset()</a></code> and <code><a href="../reference/cv.html">cv_signal()</a></code> now both return invisible zero rather than NULL.</li>
+<code><a href="../reference/cv_value.html">cv_reset()</a></code> and <code><a href="../reference/cv_value.html">cv_signal()</a></code> now both return invisible zero rather than NULL.</li>
 <li>Function <code>device()</code> is removed partially due to its non-interruptible blocking behaviour.</li>
 </ul><p><em>Other changes:</em></p>
 <ul><li>Improvements to recv (mode = ‘serial’) and <code><a href="../reference/ncurl.html">ncurl()</a></code>:
@@ -214,7 +214,7 @@
 <h2 class="page-header" data-toc-text="0.8.3" id="nanonext-083">nanonext 0.8.3<small>2023-05-06</small><a class="anchor" aria-label="anchor" href="#nanonext-083"></a></h2>
 <div class="section level5">
 <h5 id="new-features-0-8-3">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-8-3"></a></h5>
-<ul><li>Implements <code><a href="../reference/cv.html">cv_signal()</a></code> and <code>timed_signal()</code> for signalling a condition variable, the latter after a specified time (from a newly-created thread).</li>
+<ul><li>Implements <code><a href="../reference/cv_value.html">cv_signal()</a></code> and <code>timed_signal()</code> for signalling a condition variable, the latter after a specified time (from a newly-created thread).</li>
 <li>Implements <code><a href="../reference/dot-context.html">.context()</a></code>, a performance alternative to <code><a href="../reference/context.html">context()</a></code> that does not create the full object.</li>
 <li>Adds utility <code>nanonext_version()</code> for providing the package version, NNG and mbed TLS library versions in a single string.</li>
 <li>
@@ -243,7 +243,7 @@
 <code><a href="../reference/context.html">context()</a></code> gains the argument ‘verify’ with a default of TRUE. This adds additional protection to notably the <code><a href="../reference/request.html">request()</a></code> and <code><a href="../reference/request.html">request_signal()</a></code> functions when using timeouts, as these require a connection to be present.</li>
 <li>Sending and hashing of language objects and symbols is now possible after fixes to serialisation.</li>
 <li>
-<code><a href="../reference/cv.html">until()</a></code> now works as intended.</li>
+<code><a href="../reference/wait.html">until()</a></code> now works as intended.</li>
 <li>Removes recently-introduced <code>msg_pipe()</code> and <code>'weakref&lt;-'()</code> to maintain simplicity of user interface.</li>
 <li>Internal performance enhancements.</li>
 </ul></div>
@@ -253,7 +253,7 @@
 <div class="section level5">
 <h5 id="new-features-0-8-1">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-8-1"></a></h5>
 <ul><li>Implements synchronisation primitives from the NNG library. Condition variables allow the R execution thread to wait until it is signalled by an incoming message or pipe event.
-<ul><li>adds core functions <code><a href="../reference/cv.html">cv()</a></code>, <code><a href="../reference/cv.html">wait()</a></code>, <code><a href="../reference/cv.html">until()</a></code>, <code><a href="../reference/cv.html">cv_value()</a></code>, and <code><a href="../reference/cv.html">cv_reset()</a></code>.</li>
+<ul><li>adds core functions <code><a href="../reference/cv.html">cv()</a></code>, <code><a href="../reference/wait.html">wait()</a></code>, <code><a href="../reference/wait.html">until()</a></code>, <code><a href="../reference/cv_value.html">cv_value()</a></code>, and <code><a href="../reference/cv_value.html">cv_reset()</a></code>.</li>
 <li>adds signalling receive functions <code><a href="../reference/recv_aio.html">recv_aio_signal()</a></code> and <code><a href="../reference/request.html">request_signal()</a></code>.</li>
 <li>
 <code><a href="../reference/pipe_notify.html">pipe_notify()</a></code> signals up to 2 condition variables whenever pipes are added or removed at a socket.</li>
