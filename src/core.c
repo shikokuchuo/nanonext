@@ -160,11 +160,9 @@ static SEXP nano_inHook(SEXP x, SEXP fun) {
 
 static SEXP nano_outHook(SEXP x, SEXP fun) {
 
-  SEXP index;
-  index = Rf_coerceVector(x, INTSXP);
-  int idx = INTEGER(index)[0] - 1;
+  const int i = atoi(CHAR(STRING_ELT(x, 0))) - 1;
 
-  return VECTOR_ELT(fun, idx);
+  return VECTOR_ELT(fun, i);
 
 }
 
