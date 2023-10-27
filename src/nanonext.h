@@ -163,7 +163,7 @@ typedef struct nano_cv_duo_s {
 #define ERROR_RET(xc) { Rf_warning("%d | %s", xc, nng_strerror(xc)); return mk_error(xc); }
 #define NANONEXT_INIT_BUFSIZE 16384
 #define NANONEXT_SERIAL_VER 3
-#define NANONEXT_SERIAL_MAXLEN 65536
+#define NANONEXT_INT_STRLEN 12
 #define NANO_ALLOC(x, sz)                                      \
   (x)->buf = R_Calloc(sz, unsigned char);                      \
   (x)->len = (R_xlen_t) sz;                                    \

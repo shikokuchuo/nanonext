@@ -131,30 +131,29 @@ static SEXP nano_inHook(SEXP x, SEXP fun) {
 
   SEXP list, names, out;
   R_xlen_t xlen;
-  if (fun == R_NilValue) {
+  if (nano_refList == R_NilValue) {
     xlen = 0;
-    list = Rf_allocVector(VECSXP, 1);
+    PROTECT(list = Rf_allocVector(VECSXP, 1));
+    SET_VECTOR_ELT(list, xlen, x);
   } else {
-    xlen = Rf_xlength(fun);
-    list = Rf_lengthgets(fun, xlen + 1);
+    xlen = Rf_xlength(nano_refList);
+    PROTECT(list = Rf_lengthgets(nano_refList, xlen + 1));
+    SET_VECTOR_ELT(list, xlen, x);
   }
-  PROTECT(list);
-  SET_VECTOR_ELT(list, xlen, x);
-  PROTECT(names = Rf_getAttrib(list, R_NamesSymbol));
-  char *idx = R_alloc(sizeof(char), NANONEXT_SERIAL_MAXLEN);
-  snprintf(idx, NANONEXT_SERIAL_MAXLEN, "%d", (int) xlen + 1);
+  char idx[NANONEXT_INT_STRLEN];
+  snprintf(idx, NANONEXT_INT_STRLEN, "%d", (int) xlen + 1);
   PROTECT(out = Rf_mkChar(idx));
-  if (names == R_NilValue) {
-    names = Rf_ScalarString(out);
+  if (xlen == 0) {
+    PROTECT(names = Rf_ScalarString(out));
   } else {
+    PROTECT(names = Rf_getAttrib(list, R_NamesSymbol));
     SET_STRING_ELT(names, xlen, out);
+    R_ReleaseObject(nano_refList);
   }
   Rf_namesgets(list, names);
-  if (xlen)
-    R_ReleaseObject(nano_refList);
+  R_PreserveObject(nano_refList = list);
 
   UNPROTECT(3);
-  R_PreserveObject(nano_refList = list);
   return Rf_ScalarString(out);
 
 }
@@ -214,7 +213,7 @@ void nano_serialize_next(nano_buf *buf, SEXP object) {
     nano_write_char,
     nano_write_bytes,
     CAR(nano_refHook) != R_NilValue ? nano_inHook : NULL,
-    nano_refList
+    R_NilValue
   );
 
   R_Serialize(object, &output_stream);
