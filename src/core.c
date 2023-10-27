@@ -129,15 +129,16 @@ SEXP rawToChar(unsigned char *buf, const size_t sz) {
 
 static SEXP nano_inHook(SEXP x, SEXP fun) {
 
-  SEXP list, names, out;
+  SEXP refList, list, names, out;
   R_xlen_t xlen;
-  if (nano_refList == R_NilValue) {
+  refList = nano_refList;
+  if (refList == R_NilValue) {
     xlen = 0;
     PROTECT(list = Rf_allocVector(VECSXP, 1));
     SET_VECTOR_ELT(list, xlen, x);
   } else {
-    xlen = Rf_xlength(nano_refList);
-    PROTECT(list = Rf_lengthgets(nano_refList, xlen + 1));
+    xlen = Rf_xlength(refList);
+    PROTECT(list = Rf_lengthgets(refList, xlen + 1));
     SET_VECTOR_ELT(list, xlen, x);
   }
   char idx[NANONEXT_INT_STRLEN];
