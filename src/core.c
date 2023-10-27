@@ -1383,12 +1383,13 @@ SEXP rnng_strcat(SEXP a, SEXP b) {
   const size_t alen = strlen(ap);
   const size_t blen = strlen(bp);
 
-  char *buf = R_alloc(sizeof(char), alen + blen + 1);
+  char *buf = nng_alloc(alen + blen + 1);
   memcpy(buf, ap, alen);
   memcpy(buf + alen, bp, blen + 1);
 
   PROTECT(out = Rf_allocVector(STRSXP, 1));
   SET_STRING_ELT(out, 0, Rf_mkCharLenCE(buf, alen + blen, CE_NATIVE));
+  nng_free(buf, alen + blen + 1);
 
   UNPROTECT(1);
   return out;
