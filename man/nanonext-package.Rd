@@ -13,7 +13,7 @@ R binding for NNG (Nanomsg Next Gen), a successor to ZeroMQ. NNG is a
     concurrency framework for distributed computing, utilising 'aio' objects
     which resolve automatically upon completion of asynchronous operations,
     and synchronisation primitives allowing R to wait upon concurrent
-    messaging threads. Intrinsically supports intra and inter-process
+    messaging threads. Intrinsically supports in-process and inter-process
     communications, TCP, WebSocket and secure TLS transports.
 }
 \section{Usage notes}{
