@@ -23,11 +23,9 @@ knitr::opts_chunk$set(
 [![DOI](https://zenodo.org/badge/451104675.svg)](https://zenodo.org/badge/latestdoi/451104675)
 <!-- badges: end -->
 
-R binding for NNG (Nanomsg Next Gen), a successor to ZeroMQ. NNG is a high-performance socket library implementing scalability protocols, a cross-platform standard for common communications patterns such as publish/subscribe, request/reply or service discovery.
+R binding for NNG (Nanomsg Next Gen), a successor to ZeroMQ. NNG implements Scalability Protocols, a reliable, high-performance messaging standard. Provides for common communications needs including publish/subscribe, request/reply and service discovery, over in-process, IPC, TCP, WebSocket and secure TLS transports.
 
-Serves as a concurrency framework for distributed computing, utilising 'aio' objects which resolve automatically upon completion of asynchronous operations, and synchronisation primitives allowing R to wait upon concurrent messaging threads.
-
-Intrinsically supports in-process and inter-process communications, TCP, WebSocket and secure TLS transports.
+As its own threaded concurrency framework, offers an intuitive toolkit for asynchronous programming and distributed computing, utilising 'aio' objects which resolve automatically upon completion, and synchronisation primitives which allow R to wait upon concurrent messaging threads.
 
 Designed for performance and reliability, the NNG library is written in C and [`nanonext`](https://doi.org/10.5281/zenodo.7903429) is a lightweight zero-dependency wrapper.
 

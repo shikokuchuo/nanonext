@@ -14,18 +14,16 @@ badge](https://shikokuchuo.r-universe.dev/badges/nanonext?color=3f72af)](https:/
 [![DOI](https://zenodo.org/badge/451104675.svg)](https://zenodo.org/badge/latestdoi/451104675)
 <!-- badges: end -->
 
-R binding for NNG (Nanomsg Next Gen), a successor to ZeroMQ. NNG is a
-high-performance socket library implementing scalability protocols, a
-cross-platform standard for common communications patterns such as
-publish/subscribe, request/reply or service discovery.
+R binding for NNG (Nanomsg Next Gen), a successor to ZeroMQ. NNG
+implements Scalability Protocols, a reliable, high-performance messaging
+standard. Provides for common communications needs including
+publish/subscribe, request/reply and service discovery, over in-process,
+IPC, TCP, WebSocket and secure TLS transports.
 
-Serves as a concurrency framework for distributed computing, utilising
-‘aio’ objects which resolve automatically upon completion of
-asynchronous operations, and synchronisation primitives allowing R to
-wait upon concurrent messaging threads.
-
-Intrinsically supports in-process and inter-process communications, TCP,
-WebSocket and secure TLS transports.
+As its own threaded concurrency framework, offers an intuitive toolkit
+for asynchronous programming and distributed computing, utilising ‘aio’
+objects which resolve automatically upon completion, and synchronisation
+primitives which allow R to wait upon concurrent messaging threads.
 
 Designed for performance and reliability, the NNG library is written in
 C and [`nanonext`](https://doi.org/10.5281/zenodo.7903429) is a
@@ -370,7 +368,7 @@ aio
 #> < recvAio >
 #>  - $data for message data
 aio$data |> str()
-#>  num [1:100000000] -0.427 1.253 0.112 -1.945 0.404 ...
+#>  num [1:100000000] -0.227 -1.929 0.173 -0.994 -2.38 ...
 ```
 
 As `call_aio()` is blocking and will wait for completion, an alternative
@@ -537,7 +535,7 @@ throughout, or alternatively ‘localhost’, but not a mixture of the two.
 cert <- write_cert(cn = "127.0.0.1")
 str(cert)
 #> List of 2
-#>  $ server: chr [1:2] "-----BEGIN CERTIFICATE-----\nMIIFOTCCAyGgAwIBAgIBATANBgkqhkiG9w0BAQsFADA0MRIwEAYDVQQDDAkxMjcu\nMC4wLjExETAPBgNV"| __truncated__ "-----BEGIN RSA PRIVATE KEY-----\nMIIJJwIBAAKCAgEArRJb+8SkY/KW/Dje12uRgL+ZGqV8j5jWjxMSyxmStX4xbwCO\nQd0ACE9RdDrT"| __truncated__
+#>  $ server: chr [1:2] "-----BEGIN CERTIFICATE-----\nMIIFOTCCAyGgAwIBAgIBATANBgkqhkiG9w0BAQsFADA0MRIwEAYDVQQDDAkxMjcu\nMC4wLjExETAPBgNV"| __truncated__ "-----BEGIN RSA PRIVATE KEY-----\nMIIJKAIBAAKCAgEArbyzn+n3bqsmsmZsQz3QOiwyCO+QdBDaVRSvJUajFnCWYu6+\nJDJaT2dmQMA6"| __truncated__
 #>  $ client: chr [1:2] "-----BEGIN CERTIFICATE-----\nMIIFOTCCAyGgAwIBAgIBATANBgkqhkiG9w0BAQsFADA0MRIwEAYDVQQDDAkxMjcu\nMC4wLjExETAPBgNV"| __truncated__ ""
 
 ser <- tls_config(server = cert$server)
@@ -706,7 +704,7 @@ ncurl("https://postman-echo.com/get")
 #> NULL
 #> 
 #> $data
-#> [1] "{\n  \"args\": {},\n  \"headers\": {\n    \"x-forwarded-proto\": \"https\",\n    \"x-forwarded-port\": \"443\",\n    \"host\": \"postman-echo.com\",\n    \"x-amzn-trace-id\": \"Root=1-653b8580-0f276c010557157e4590277b\"\n  },\n  \"url\": \"https://postman-echo.com/get\"\n}"
+#> [1] "{\n  \"args\": {},\n  \"headers\": {\n    \"x-forwarded-proto\": \"https\",\n    \"x-forwarded-port\": \"443\",\n    \"host\": \"postman-echo.com\",\n    \"x-amzn-trace-id\": \"Root=1-653ee47f-7b6335a46adea18b1f7b4a55\"\n  },\n  \"url\": \"https://postman-echo.com/get\"\n}"
 ```
 
 For advanced use, supports additional HTTP methods such as POST or PUT.
@@ -725,10 +723,10 @@ res
 
 call_aio(res)$headers
 #> $date
-#> [1] "Fri, 27 Oct 2023 09:40:16 GMT"
+#> [1] "Sun, 29 Oct 2023 23:02:24 GMT"
 
 res$data
-#> [1] "{\n  \"args\": {},\n  \"data\": {\n    \"key\": \"value\"\n  },\n  \"files\": {},\n  \"form\": {},\n  \"headers\": {\n    \"x-forwarded-proto\": \"https\",\n    \"x-forwarded-port\": \"443\",\n    \"host\": \"postman-echo.com\",\n    \"x-amzn-trace-id\": \"Root=1-653b8580-126f7b90664352a077113507\",\n    \"content-length\": \"16\",\n    \"content-type\": \"application/json\",\n    \"authorization\": \"Bearer APIKEY\"\n  },\n  \"json\": {\n    \"key\": \"value\"\n  },\n  \"url\": \"https://postman-echo.com/post\"\n}"
+#> [1] "{\n  \"args\": {},\n  \"data\": {\n    \"key\": \"value\"\n  },\n  \"files\": {},\n  \"form\": {},\n  \"headers\": {\n    \"x-forwarded-proto\": \"https\",\n    \"x-forwarded-port\": \"443\",\n    \"host\": \"postman-echo.com\",\n    \"x-amzn-trace-id\": \"Root=1-653ee480-72b2e2df32a30a3468a0796b\",\n    \"content-length\": \"16\",\n    \"content-type\": \"application/json\",\n    \"authorization\": \"Bearer APIKEY\"\n  },\n  \"json\": {\n    \"key\": \"value\"\n  },\n  \"url\": \"https://postman-echo.com/post\"\n}"
 ```
 
 In this respect, it may be used as a performant and lightweight method
@@ -759,7 +757,7 @@ transact(sess)
 #> 
 #> $headers
 #> $headers$Date
-#> [1] "Fri, 27 Oct 2023 09:40:17 GMT"
+#> [1] "Sun, 29 Oct 2023 23:02:24 GMT"
 #> 
 #> $headers$`Content-Type`
 #> [1] "application/json; charset=utf-8"
@@ -772,8 +770,8 @@ transact(sess)
 #>  [76] 77 61 72 64 65 64 2d 70 6f 72 74 22 3a 20 22 34 34 33 22 2c 0a 20 20 20 20
 #> [101] 22 68 6f 73 74 22 3a 20 22 70 6f 73 74 6d 61 6e 2d 65 63 68 6f 2e 63 6f 6d
 #> [126] 22 2c 0a 20 20 20 20 22 78 2d 61 6d 7a 6e 2d 74 72 61 63 65 2d 69 64 22 3a
-#> [151] 20 22 52 6f 6f 74 3d 31 2d 36 35 33 62 38 35 38 31 2d 36 63 33 62 39 34 32
-#> [176] 64 37 33 33 36 30 30 65 37 33 35 35 38 64 36 32 32 22 2c 0a 20 20 20 20 22
+#> [151] 20 22 52 6f 6f 74 3d 31 2d 36 35 33 65 65 34 38 30 2d 37 62 65 61 38 37 63
+#> [176] 38 33 62 33 65 31 36 38 38 36 35 66 65 66 62 35 35 22 2c 0a 20 20 20 20 22
 #> [201] 63 6f 6e 74 65 6e 74 2d 74 79 70 65 22 3a 20 22 61 70 70 6c 69 63 61 74 69
 #> [226] 6f 6e 2f 6a 73 6f 6e 22 2c 0a 20 20 20 20 22 61 75 74 68 6f 72 69 7a 61 74
 #> [251] 69 6f 6e 22 3a 20 22 42 65 61 72 65 72 20 41 50 49 4b 45 59 22 0a 20 20 7d
