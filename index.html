@@ -19,15 +19,15 @@
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
 <script src="pkgdown.js"></script><link href="extra.css" rel="stylesheet">
 <meta property="og:title" content="NNG (Nanomsg Next Gen) Lightweight Messaging Library">
-<meta property="og:description" content="R binding for NNG (Nanomsg Next Gen), a successor to ZeroMQ. NNG is
-    a high-performance socket library implementing scalability protocols, a
-    cross-platform standard for common communications patterns such as
-    publish/subscribe, request/reply or service discovery. Serves as a
-    concurrency framework for distributed computing, utilising aio objects
-    which resolve automatically upon completion of asynchronous operations, and
-    synchronisation primitives allowing R to wait upon concurrent messaging
-    threads. Intrinsically supports in-process and inter-process communications,
-    TCP, WebSocket and secure TLS transports.">
+<meta property="og:description" content="R binding for NNG (Nanomsg Next Gen), a successor to ZeroMQ. NNG
+    implements Scalability Protocols, a reliable, high-performance messaging
+    standard. Provides for common communications needs including
+    publish/subscribe, request/reply and service discovery, over in-process,
+    IPC, TCP, WebSocket and secure TLS transports. As its own threaded
+    concurrency framework, offers an intuitive toolkit for asynchronous
+    programming and distributed computing, utilising aio objects which resolve
+    automatically upon completion, and synchronisation primitives which allow R
+    to wait upon concurrent messaging threads.">
 <meta property="og:image" content="https://shikokuchuo.net/nanonext/logo.png">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -93,9 +93,8 @@
 </h1></div>
 <!-- badges: start -->
 
-<p>R binding for NNG (Nanomsg Next Gen), a successor to ZeroMQ. NNG is a high-performance socket library implementing scalability protocols, a cross-platform standard for common communications patterns such as publish/subscribe, request/reply or service discovery.</p>
-<p>Serves as a concurrency framework for distributed computing, utilising ‘aio’ objects which resolve automatically upon completion of asynchronous operations, and synchronisation primitives allowing R to wait upon concurrent messaging threads.</p>
-<p>Intrinsically supports in-process and inter-process communications, TCP, WebSocket and secure TLS transports.</p>
+<p>R binding for NNG (Nanomsg Next Gen), a successor to ZeroMQ. NNG implements Scalability Protocols, a reliable, high-performance messaging standard. Provides for common communications needs including publish/subscribe, request/reply and service discovery, over in-process, IPC, TCP, WebSocket and secure TLS transports.</p>
+<p>As its own threaded concurrency framework, offers an intuitive toolkit for asynchronous programming and distributed computing, utilising ‘aio’ objects which resolve automatically upon completion, and synchronisation primitives which allow R to wait upon concurrent messaging threads.</p>
 <p>Designed for performance and reliability, the NNG library is written in C and <a href="https://doi.org/10.5281/zenodo.7903429" class="external-link"><code>nanonext</code></a> is a lightweight zero-dependency wrapper.</p>
 <p>Provides the interface for code and processes to communicate with each other - receive data generated in Python, perform analysis in R, and send results to a C++ program – all on the same computer or on networks spanning the globe.</p>
 <p>Implemented scalability protocols:</p>
@@ -322,7 +321,7 @@
 <span><span class="co">#&gt; &lt; recvAio &gt;</span></span>
 <span><span class="co">#&gt;  - $data for message data</span></span>
 <span><span class="va">aio</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] -0.427 1.253 0.112 -1.945 0.404 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] -0.227 -1.929 0.173 -0.994 -2.38 ...</span></span></code></pre></div>
 <p>As <code><a href="reference/call_aio.html">call_aio()</a></code> is blocking and will wait for completion, an alternative is to query <code>aio$data</code> directly. This will return an ‘unresolved’ logical NA value if the calculation is yet to complete.</p>
 <p>In this example the calculation is returned, but other operations may reside entirely on the server side, for example writing data to disk.</p>
 <p>In such a case, calling or querying the value confirms that the operation has completed, and provides the return value of the function, which may typically be NULL or an exit code.</p>
@@ -414,7 +413,7 @@
 <code class="sourceCode R"><span><span class="va">cert</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/write_cert.html">write_cert</a></span><span class="op">(</span>cn <span class="op">=</span> <span class="st">"127.0.0.1"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">cert</span><span class="op">)</span></span>
 <span><span class="co">#&gt; List of 2</span></span>
-<span><span class="co">#&gt;  $ server: chr [1:2] "-----BEGIN CERTIFICATE-----\nMIIFOTCCAyGgAwIBAgIBATANBgkqhkiG9w0BAQsFADA0MRIwEAYDVQQDDAkxMjcu\nMC4wLjExETAPBgNV"| __truncated__ "-----BEGIN RSA PRIVATE KEY-----\nMIIJJwIBAAKCAgEArRJb+8SkY/KW/Dje12uRgL+ZGqV8j5jWjxMSyxmStX4xbwCO\nQd0ACE9RdDrT"| __truncated__</span></span>
+<span><span class="co">#&gt;  $ server: chr [1:2] "-----BEGIN CERTIFICATE-----\nMIIFOTCCAyGgAwIBAgIBATANBgkqhkiG9w0BAQsFADA0MRIwEAYDVQQDDAkxMjcu\nMC4wLjExETAPBgNV"| __truncated__ "-----BEGIN RSA PRIVATE KEY-----\nMIIJKAIBAAKCAgEArbyzn+n3bqsmsmZsQz3QOiwyCO+QdBDaVRSvJUajFnCWYu6+\nJDJaT2dmQMA6"| __truncated__</span></span>
 <span><span class="co">#&gt;  $ client: chr [1:2] "-----BEGIN CERTIFICATE-----\nMIIFOTCCAyGgAwIBAgIBATANBgkqhkiG9w0BAQsFADA0MRIwEAYDVQQDDAkxMjcu\nMC4wLjExETAPBgNV"| __truncated__ ""</span></span>
 <span></span>
 <span><span class="va">ser</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/tls_config.html">tls_config</a></span><span class="op">(</span>server <span class="op">=</span> <span class="va">cert</span><span class="op">$</span><span class="va">server</span><span class="op">)</span></span>
@@ -556,7 +555,7 @@
 <span><span class="co">#&gt; NULL</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $data</span></span>
-<span><span class="co">#&gt; [1] "{\n  \"args\": {},\n  \"headers\": {\n    \"x-forwarded-proto\": \"https\",\n    \"x-forwarded-port\": \"443\",\n    \"host\": \"postman-echo.com\",\n    \"x-amzn-trace-id\": \"Root=1-653b8580-0f276c010557157e4590277b\"\n  },\n  \"url\": \"https://postman-echo.com/get\"\n}"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "{\n  \"args\": {},\n  \"headers\": {\n    \"x-forwarded-proto\": \"https\",\n    \"x-forwarded-port\": \"443\",\n    \"host\": \"postman-echo.com\",\n    \"x-amzn-trace-id\": \"Root=1-653ee47f-7b6335a46adea18b1f7b4a55\"\n  },\n  \"url\": \"https://postman-echo.com/get\"\n}"</span></span></code></pre></div>
 <p>For advanced use, supports additional HTTP methods such as POST or PUT.</p>
 <div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ncurl_aio.html">ncurl_aio</a></span><span class="op">(</span><span class="st">"https://postman-echo.com/post"</span>,</span>
@@ -572,10 +571,10 @@
 <span></span>
 <span><span class="fu"><a href="reference/call_aio.html">call_aio</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span><span class="op">$</span><span class="va">headers</span></span>
 <span><span class="co">#&gt; $date</span></span>
-<span><span class="co">#&gt; [1] "Fri, 27 Oct 2023 09:40:16 GMT"</span></span>
+<span><span class="co">#&gt; [1] "Sun, 29 Oct 2023 23:02:24 GMT"</span></span>
 <span></span>
 <span><span class="va">res</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt; [1] "{\n  \"args\": {},\n  \"data\": {\n    \"key\": \"value\"\n  },\n  \"files\": {},\n  \"form\": {},\n  \"headers\": {\n    \"x-forwarded-proto\": \"https\",\n    \"x-forwarded-port\": \"443\",\n    \"host\": \"postman-echo.com\",\n    \"x-amzn-trace-id\": \"Root=1-653b8580-126f7b90664352a077113507\",\n    \"content-length\": \"16\",\n    \"content-type\": \"application/json\",\n    \"authorization\": \"Bearer APIKEY\"\n  },\n  \"json\": {\n    \"key\": \"value\"\n  },\n  \"url\": \"https://postman-echo.com/post\"\n}"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "{\n  \"args\": {},\n  \"data\": {\n    \"key\": \"value\"\n  },\n  \"files\": {},\n  \"form\": {},\n  \"headers\": {\n    \"x-forwarded-proto\": \"https\",\n    \"x-forwarded-port\": \"443\",\n    \"host\": \"postman-echo.com\",\n    \"x-amzn-trace-id\": \"Root=1-653ee480-72b2e2df32a30a3468a0796b\",\n    \"content-length\": \"16\",\n    \"content-type\": \"application/json\",\n    \"authorization\": \"Bearer APIKEY\"\n  },\n  \"json\": {\n    \"key\": \"value\"\n  },\n  \"url\": \"https://postman-echo.com/post\"\n}"</span></span></code></pre></div>
 <p>In this respect, it may be used as a performant and lightweight method for making REST API requests.</p>
 <p><code><a href="reference/ncurl_session.html">ncurl_session()</a></code> creates a re-usable open connection and presents a much faster and more efficient solution for repeated polling of an API endpoint. <code><a href="reference/ncurl_session.html">transact()</a></code> is then used to request data multiple times as required. This method allows a polling frequency that exceeds a server’s new connection limits, where this is permitted.</p>
 <p>By specifying <code>convert = FALSE</code>, the received binary data is made available as a raw vector. This may be fed into ‘json’ parsers which can operate directly on such data etc.</p>
@@ -594,7 +593,7 @@
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $headers</span></span>
 <span><span class="co">#&gt; $headers$Date</span></span>
-<span><span class="co">#&gt; [1] "Fri, 27 Oct 2023 09:40:17 GMT"</span></span>
+<span><span class="co">#&gt; [1] "Sun, 29 Oct 2023 23:02:24 GMT"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $headers$`Content-Type`</span></span>
 <span><span class="co">#&gt; [1] "application/json; charset=utf-8"</span></span>
@@ -607,8 +606,8 @@
 <span><span class="co">#&gt;  [76] 77 61 72 64 65 64 2d 70 6f 72 74 22 3a 20 22 34 34 33 22 2c 0a 20 20 20 20</span></span>
 <span><span class="co">#&gt; [101] 22 68 6f 73 74 22 3a 20 22 70 6f 73 74 6d 61 6e 2d 65 63 68 6f 2e 63 6f 6d</span></span>
 <span><span class="co">#&gt; [126] 22 2c 0a 20 20 20 20 22 78 2d 61 6d 7a 6e 2d 74 72 61 63 65 2d 69 64 22 3a</span></span>
-<span><span class="co">#&gt; [151] 20 22 52 6f 6f 74 3d 31 2d 36 35 33 62 38 35 38 31 2d 36 63 33 62 39 34 32</span></span>
-<span><span class="co">#&gt; [176] 64 37 33 33 36 30 30 65 37 33 35 35 38 64 36 32 32 22 2c 0a 20 20 20 20 22</span></span>
+<span><span class="co">#&gt; [151] 20 22 52 6f 6f 74 3d 31 2d 36 35 33 65 65 34 38 30 2d 37 62 65 61 38 37 63</span></span>
+<span><span class="co">#&gt; [176] 38 33 62 33 65 31 36 38 38 36 35 66 65 66 62 35 35 22 2c 0a 20 20 20 20 22</span></span>
 <span><span class="co">#&gt; [201] 63 6f 6e 74 65 6e 74 2d 74 79 70 65 22 3a 20 22 61 70 70 6c 69 63 61 74 69</span></span>
 <span><span class="co">#&gt; [226] 6f 6e 2f 6a 73 6f 6e 22 2c 0a 20 20 20 20 22 61 75 74 68 6f 72 69 7a 61 74</span></span>
 <span><span class="co">#&gt; [251] 69 6f 6e 22 3a 20 22 42 65 61 72 65 72 20 41 50 49 4b 45 59 22 0a 20 20 7d</span></span>
