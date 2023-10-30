@@ -1,4 +1,4 @@
-# nanonext 0.10.2.9017 (development)
+# nanonext 0.10.2.9018 (development)
 
 #### New Features
 
@@ -10,7 +10,6 @@
 * `lock()` supplying 'cv' has improved behaviour which locks the socket whilst allowing for both initial connections and re-connections (when the 'cv' is registered for both add and remove pipe events).
 * Improves listener / dialer logic for TLS connections, allowing *inter alia* synchronous dials.
 * `pipe_notify()` arguments 'add', 'remove' and 'flag' now default to FALSE instead of TRUE for easier selective specification of the events to signal.
-* `request()` logical argument 'autoclose' replaces 'ack', as a more stable method of synchronising with the rep node.
 * Fixes memory leaks detected with valgrind.
 * Upgrades bundled 'libmbedtls' to v 3.5.0.
 
