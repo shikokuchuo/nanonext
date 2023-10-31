@@ -137,6 +137,7 @@ typedef struct nano_handle_s {
 #define NANONEXT_INIT_BUFSIZE 16384
 #define NANONEXT_SERIAL_VER 3
 #define NANONEXT_INT_STRLEN 12
+#define NANONEXT_ACK_MS 100
 #define NANO_ALLOC(x, sz)                                      \
   (x)->buf = R_Calloc(sz, unsigned char);                      \
   (x)->len = (R_xlen_t) sz;                                    \

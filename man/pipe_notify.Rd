@@ -11,9 +11,9 @@ pipe_notify(socket, cv, cv2 = NULL, add = FALSE, remove = FALSE, flag = FALSE)
 
 \item{cv}{a 'conditionVariable' to signal.}
 
-\item{cv2}{[default NULL] optionally, if specified, a second 'conditionVariable'
-to signal. Note that this cv is signalled sequentially after the first
-condition variable.}
+\item{cv2}{[default NULL] optionally, if specified, a second
+'conditionVariable' to signal. Note that this cv is signalled
+sequentially after the first condition variable.}
 
 \item{add}{[default FALSE] logical value whether to signal when a pipe is
 added.}

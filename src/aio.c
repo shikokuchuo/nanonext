@@ -260,6 +260,7 @@ static void raio_complete_ack(void *arg) {
     nng_aio *aio;
     if (nng_aio_alloc(&aio, NULL, NULL) == 0) {
       nng_aio_set_msg(aio, msg);
+      nng_aio_set_timeout(aio, (nng_duration) NANONEXT_ACK_MS);
       nng_ctx_send(*ctx, aio);
       nng_aio_wait(aio);
       if (nng_aio_result(aio))

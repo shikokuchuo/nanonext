@@ -2,16 +2,62 @@
 % Please edit documentation in R/sync.R
 \name{cv}
 \alias{cv}
+\alias{wait}
+\alias{until}
+\alias{.until}
+\alias{cv_value}
+\alias{cv_reset}
+\alias{cv_signal}
 \title{Condition Variables}
 \usage{
 cv()
+
+wait(cv)
+
+until(cv, msec)
+
+.until(cv, msec)
+
+cv_value(cv)
+
+cv_reset(cv)
+
+cv_signal(cv)
+}
+\arguments{
+\item{cv}{a 'conditionVariable' object.}
+
+\item{msec}{maximum time in milliseconds to wait for the condition variable
+to be signalled.}
 }
 \value{
-A 'conditionVariable' object.
+For \strong{cv}: a 'conditionVariable' object.
+
+    For \strong{wait} and \strong{until}: (invisibly) logical TRUE, or else
+    FALSE if a flag has been set.
+
+    For \strong{.until}: (invisibly) logical TRUE if signalled, or else FALSE
+    if the timeout was reached.
+
+    For \strong{cv_value}: integer value of the condition variable.
+
+    For \strong{cv_reset} and \strong{cv_signal}: zero (invisibly).
 }
 \description{
-Creates a new condition variable (protected by a mutex internal to the
-    object).
+\code{cv} creates a new condition variable (protected by a mutex internal to
+    the object).
+
+\code{wait} waits on a condition being signalled by completion of an
+    asynchronous receive or pipe event.
+
+\code{until} waits until a future time on a condition being signalled by
+    completion of an asynchronous receive or pipe event.
+
+\code{cv_value} inspects the internal value of a condition variable.
+
+\code{cv_reset} resets the internal value and flag of a condition variable.
+
+\code{cv_signal} signals a condition variable.
 }
 \details{
 Pass the 'conditionVariable' to the signalling forms of the
@@ -24,7 +70,7 @@ Pass the 'conditionVariable' to the signalling forms of the
     incrementing it by 1.
 
     This will cause the R execution thread waiting on the condition variable
-    using \code{\link{wait}} or \code{\link{until}} to wake and continue.
+    using \code{wait} or \code{until} to wake and continue.
 
     For argument 'msec', non-integer values will be coerced to integer.
     Non-numeric input will be ignored and return immediately.
@@ -34,13 +80,12 @@ Pass the 'conditionVariable' to the signalling forms of the
 
     The condition internal to this 'conditionVariable' maintains a state
     (value). Each signal increments the value by 1. Each time
-    \code{\link{wait}} or \code{\link{until}} returns (apart from due to
-    timeout), the value is decremented by 1.
+    \code{wait} or \code{until} returns (apart from due to timeout), the
+    value is decremented by 1.
 
-    The internal condition may be inspected at any time using
-    \code{\link{cv_value}} and reset using \code{\link{cv_reset}}. This
-    affords a high degree of flexibility in designing complex concurrent
-    applications.
+    The internal condition may be inspected at any time using \code{cv_value}
+    and reset using \code{cv_reset}. This affords a high degree of
+    flexibility in designing complex concurrent applications.
 }
 
 \section{Flag}{
@@ -48,15 +93,26 @@ Pass the 'conditionVariable' to the signalling forms of the
 
     The condition variable also contains a flag that certain signalling
     functions such as \code{\link{pipe_notify}} can set. When this flag has
-    been set, all subsequent \code{\link{wait}} calls will return logical
-    FALSE instead of TRUE.
+    been set, all subsequent \code{wait} calls will return logical FALSE
+    instead of TRUE.
 
     Note that the flag is not automatically reset, but may be reset manually
-    using \code{\link{cv_reset}}.
+    using \code{cv_reset}.
 }
 
 \examples{
 cv <- cv()
-cv
+
+# wait(cv) # uncommenting will block until the cv is signalled
+
+until(cv, 10L)
+
+cv_value(cv)
+
+cv_reset(cv)
+
+cv_value(cv)
+cv_signal(cv)
+cv_value(cv)
 
 }
