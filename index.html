@@ -50,7 +50,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.10.2.9020</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.10.2.9021</span>
       </span>
     </div>
 
@@ -335,7 +335,7 @@
 <p><code>nanonext</code> implements cross-platform synchronisation primitives provided by the NNG library.</p>
 <p>As the R interpreter runs on a single thread, synchronisation primitives such as mutexes and condition variables are not natively implemented in the R language. However, as NNG is inherently threaded and messaging can be asynchronous, it is possible to synchronise between NNG events happening independently and the main R execution thread.</p>
 <p>The events that can be signalled include asynchronous receive completions, and pipe events - these are when connections are established or when they are dropped.</p>
-<p>Condition variables can be used simply to record such events, or more powerfully, to wait upon these events. The condition variables implemented in <code>nanonext</code> include a both a condition (value) and flag (binary). Each signal increments the value, and each return of <code><a href="reference/wait.html">wait()</a></code> or <code><a href="reference/wait.html">until()</a></code> decrements the value. A non-zero condition allows waiting threads to continue.</p>
+<p>Condition variables can be used simply to record such events, or more powerfully, to wait upon these events. The condition variables implemented in <code>nanonext</code> include a both a condition (value) and flag (binary). Each signal increments the value, and each return of <code><a href="reference/cv.html">wait()</a></code> or <code><a href="reference/cv.html">until()</a></code> decrements the value. A non-zero condition allows waiting threads to continue.</p>
 <p>In any situation where polling for an event presents a solution, waiting upon a condition to be signalled can be more efficient, both in terms of consuming no resources while waiting, and also being synchronised with the event (having no latency).</p>
 <p>The following shows how condition variables and signalling work in practice.</p>
 <p>Example 1: set up a socket, and wait for the other side to connect:</p>
@@ -343,7 +343,7 @@
 <code class="sourceCode R"><span><span class="va">sock</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/socket.html">socket</a></span><span class="op">(</span><span class="st">"pair"</span>, listen <span class="op">=</span> <span class="st">"inproc://nanopipe"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">cv</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/cv.html">cv</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># create new condition variable</span></span>
-<span><span class="fu"><a href="reference/cv_value.html">cv_value</a></span><span class="op">(</span><span class="va">cv</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/cv.html">cv_value</a></span><span class="op">(</span><span class="va">cv</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 0</span></span>
 <span></span>
 <span><span class="fu"><a href="reference/pipe_notify.html">pipe_notify</a></span><span class="op">(</span><span class="va">sock</span>, cv <span class="op">=</span> <span class="va">cv</span>, add <span class="op">=</span> <span class="cn">TRUE</span>, remove <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
@@ -353,17 +353,17 @@
 <span><span class="co"># for illustration:</span></span>
 <span><span class="va">sock2</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/socket.html">socket</a></span><span class="op">(</span><span class="st">"pair"</span>, dial <span class="op">=</span> <span class="st">"inproc://nanopipe"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="reference/cv_value.html">cv_value</a></span><span class="op">(</span><span class="va">cv</span><span class="op">)</span> <span class="co"># incremented when pipe to 'sock2' was created</span></span>
+<span><span class="fu"><a href="reference/cv.html">cv_value</a></span><span class="op">(</span><span class="va">cv</span><span class="op">)</span> <span class="co"># incremented when pipe to 'sock2' was created</span></span>
 <span><span class="co">#&gt; [1] 1</span></span>
 <span></span>
-<span><span class="fu"><a href="reference/wait.html">wait</a></span><span class="op">(</span><span class="va">cv</span><span class="op">)</span> <span class="co"># wait() now does not block</span></span>
+<span><span class="fu"><a href="reference/cv.html">wait</a></span><span class="op">(</span><span class="va">cv</span><span class="op">)</span> <span class="co"># wait() now does not block</span></span>
 <span></span>
-<span><span class="fu"><a href="reference/cv_value.html">cv_value</a></span><span class="op">(</span><span class="va">cv</span><span class="op">)</span> <span class="co"># wait() decrements the CV value - calling wait() again will block</span></span>
+<span><span class="fu"><a href="reference/cv.html">cv_value</a></span><span class="op">(</span><span class="va">cv</span><span class="op">)</span> <span class="co"># wait() decrements the CV value - calling wait() again will block</span></span>
 <span><span class="co">#&gt; [1] 0</span></span>
 <span></span>
 <span><span class="fu"><a href="reference/close.html">close</a></span><span class="op">(</span><span class="va">sock2</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="reference/cv_value.html">cv_value</a></span><span class="op">(</span><span class="va">cv</span><span class="op">)</span> <span class="co"># incremented when pipe to 'sock2' was destroyed</span></span>
+<span><span class="fu"><a href="reference/cv.html">cv_value</a></span><span class="op">(</span><span class="va">cv</span><span class="op">)</span> <span class="co"># incremented when pipe to 'sock2' was destroyed</span></span>
 <span><span class="co">#&gt; [1] 1</span></span>
 <span></span>
 <span><span class="fu"><a href="reference/close.html">close</a></span><span class="op">(</span><span class="va">sock</span><span class="op">)</span></span></code></pre></div>
@@ -373,7 +373,7 @@
 <span><span class="va">sock2</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/socket.html">socket</a></span><span class="op">(</span><span class="st">"pair"</span>, dial <span class="op">=</span> <span class="st">"inproc://nanosignal"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">cv</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/cv.html">cv</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># create new condition variable</span></span>
-<span><span class="fu"><a href="reference/cv_value.html">cv_value</a></span><span class="op">(</span><span class="va">cv</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/cv.html">cv_value</a></span><span class="op">(</span><span class="va">cv</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 0</span></span>
 <span></span>
 <span><span class="fu"><a href="reference/pipe_notify.html">pipe_notify</a></span><span class="op">(</span><span class="va">sock</span>, cv <span class="op">=</span> <span class="va">cv</span>, add <span class="op">=</span> <span class="cn">FALSE</span>, remove <span class="op">=</span> <span class="cn">TRUE</span>, flag <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
@@ -384,7 +384,7 @@
 <span><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/recv_aio.html">recv_aio_signal</a></span><span class="op">(</span><span class="va">sock</span>, cv <span class="op">=</span> <span class="va">cv</span><span class="op">)</span> <span class="co"># same cv passed to signalling form of recv_aio()</span></span>
 <span></span>
 <span><span class="co"># wakes as soon as the asynchronous receive completes</span></span>
-<span><span class="fu"><a href="reference/wait.html">wait</a></span><span class="op">(</span><span class="va">cv</span><span class="op">)</span> <span class="op">||</span> <span class="kw"><a href="https://rdrr.io/r/base/stop.html" class="external-link">stop</a></span><span class="op">(</span><span class="st">"peer disconnected"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/cv.html">wait</a></span><span class="op">(</span><span class="va">cv</span><span class="op">)</span> <span class="op">||</span> <span class="kw"><a href="https://rdrr.io/r/base/stop.html" class="external-link">stop</a></span><span class="op">(</span><span class="st">"peer disconnected"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] TRUE</span></span>
 <span></span>
 <span><span class="va">r</span><span class="op">$</span><span class="va">data</span></span>
@@ -393,7 +393,7 @@
 <span><span class="fu"><a href="reference/close.html">close</a></span><span class="op">(</span><span class="va">sock</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/close.html">close</a></span><span class="op">(</span><span class="va">sock2</span><span class="op">)</span></span></code></pre></div>
 <p>The above example shows the working of the flag within the condition variable. As the pipe notification was specified to raise a flag, this can be used to distinguish between a pipe event signal and a message receive signal.</p>
-<p>In the case a flag is raised, <code><a href="reference/wait.html">wait()</a></code> returns FALSE rather than TRUE. So the above code will stop with the custom error message upon disconnect or else continue. This affords a way of handling disconnects that would not be possible if simply using <code><a href="reference/call_aio.html">call_aio()</a></code>, which is also a blocking wait (on a single message).</p>
+<p>In the case a flag is raised, <code><a href="reference/cv.html">wait()</a></code> returns FALSE rather than TRUE. So the above code will stop with the custom error message upon disconnect or else continue. This affords a way of handling disconnects that would not be possible if simply using <code><a href="reference/call_aio.html">call_aio()</a></code>, which is also a blocking wait (on a single message).</p>
 <p>As can be seen, this type of mechanism presents a powerful way of waiting simulatenously on multiple events, and also distinguishing between them. <code><a href="reference/pipe_notify.html">pipe_notify()</a></code> can also be set to signal two condition variables upon each event, providing even more flexibility in creating complex concurrent applications.</p>
 <p>For further details, please refer to the function documentation for <code><a href="reference/cv.html">cv()</a></code>.</p>
 <p><a href="#table-of-contents">« Back to ToC</a></p>

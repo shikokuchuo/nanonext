@@ -34,9 +34,6 @@
     <loc>https://shikokuchuo.net/nanonext/reference/cv.html</loc>
   </url>
   <url>
-    <loc>https://shikokuchuo.net/nanonext/reference/cv_value.html</loc>
-  </url>
-  <url>
     <loc>https://shikokuchuo.net/nanonext/reference/dial.html</loc>
   </url>
   <url>
@@ -170,9 +167,6 @@
   </url>
   <url>
     <loc>https://shikokuchuo.net/nanonext/reference/unresolved.html</loc>
-  </url>
-  <url>
-    <loc>https://shikokuchuo.net/nanonext/reference/wait.html</loc>
   </url>
   <url>
     <loc>https://shikokuchuo.net/nanonext/reference/weakref.html</loc>
