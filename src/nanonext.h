@@ -252,7 +252,7 @@ extern SEXP rnng_random(SEXP, SEXP);
 extern SEXP rnng_reap(SEXP);
 extern SEXP rnng_recv(SEXP, SEXP, SEXP, SEXP);
 extern SEXP rnng_recv_aio(SEXP, SEXP, SEXP, SEXP, SEXP);
-extern SEXP rnng_request(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
+extern SEXP rnng_request(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 extern SEXP rnng_send(SEXP, SEXP, SEXP, SEXP);
 extern SEXP rnng_send_aio(SEXP, SEXP, SEXP, SEXP, SEXP);
 extern SEXP rnng_set_opt(SEXP, SEXP, SEXP);
