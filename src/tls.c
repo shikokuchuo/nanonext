@@ -79,7 +79,13 @@ SEXP nano_hashToChar(unsigned char *buf, const size_t sz) {
 
 }
 
-// SHA-2 Cryptographic Hash Algorithms -----------------------------------------
+// SHA-1 and SHA-2 Cryptographic Hash Algorithms -------------------------------
+
+#define SHA1_KEY_SIZE 20
+#define SHA224_KEY_SIZE 28
+#define SHA256_KEY_SIZE 32
+#define SHA384_KEY_SIZE 48
+#define SHA512_KEY_SIZE 64
 
 SEXP rnng_sha224(SEXP x, SEXP key, SEXP convert) {
 

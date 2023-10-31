@@ -19,7 +19,28 @@
 #define NANONEXT_SUPPLEMENTALS
 #include "nanonext.h"
 
-// statics ---------------------------------------------------------------------
+// internals -------------------------------------------------------------------
+
+typedef struct nano_cv_s {
+  int condition;
+  uint8_t flag;
+  nng_mtx *mtx;
+  nng_cv *cv;
+} nano_cv;
+
+typedef struct nano_cv_aio_s {
+  nng_aio *aio;
+  nano_aio_typ type;
+  int mode;
+  int result;
+  void *data;
+  nano_cv *cv;
+} nano_cv_aio;
+
+typedef struct nano_cv_duo_s {
+  nano_cv *cv;
+  nano_cv *cv2;
+} nano_cv_duo;
 
 static SEXP mk_error_data(const int xc) {
 

@@ -215,12 +215,12 @@ nanotestaio(rek <- request(req$context, c(1+3i, 4+2i), send_mode = 2L, recv_mode
 nanotest(is.integer(reply(ctx, execute = identity, recv_mode = 3L, send_mode = "ra", timeout = 500)))
 nanotest(is.complex(call_aio(rek)[["data"]]))
 
-nanotest(length(nxt <- next_config(inhook = function(x) serialize(x, NULL), outhook = unserialize)) == 2L)
+nanotest(is.pairlist(nxt <- next_config(inhook = function(x) serialize(x, NULL), outhook = unserialize)))
+nanotest(length(nxt) == 2L)
+nanotest(is.function(nxt[[1L]]))
 nanotest(is.integer(req$send(list(new.env(), new.env()), mode = 3L, block = 500)))
 nanotest(is.environment(recv(rep, block = 500)[[1L]]))
-nanotest(is.pairlist(nnl <- next_config(NULL, NULL)))
-nanotest(is.function(next_config(nxt)[[1L]]))
-nanotest(is.pairlist(next_config(nnl)))
+nanotest(is.pairlist(next_config(NULL, NULL, mark = TRUE)))
 nanotestn(unlist(next_config()))
 
 nanotest(inherits(cv <- cv(), "conditionVariable"))

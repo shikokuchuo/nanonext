@@ -20,6 +20,8 @@
 
 // internals -------------------------------------------------------------------
 
+static uint8_t special_bit = 0;
+
 SEXP mk_error(const int xc) {
 
   SEXP err = Rf_ScalarInteger(xc);
@@ -196,6 +198,7 @@ void nano_serialize_next(nano_buf *buf, SEXP object) {
 
   NANO_ALLOC(buf, NANONEXT_INIT_BUFSIZE);
   buf->buf[0] = 7u;
+  buf->buf[2] = special_bit;
   buf->cur += 8;
 
   struct R_outpstream_st output_stream;
@@ -1425,13 +1428,11 @@ void rnng_fini(void) {
 
 }
 
-SEXP rnng_next_config(SEXP infun, SEXP outfun) {
+SEXP rnng_next_config(SEXP infun, SEXP outfun, SEXP mark) {
+
+  special_bit = (uint8_t) LOGICAL(mark)[0];
 
   switch(TYPEOF(infun)) {
-  case LISTSXP:
-    if (Rf_xlength(infun) == 2)
-      rnng_next_config(CAR(infun), CADR(infun));
-    break;
   case CLOSXP:
   case BUILTINSXP:
   case SPECIALSXP:

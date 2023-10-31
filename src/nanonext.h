@@ -86,27 +86,6 @@ typedef struct nano_handle_s {
   nng_tls_config *cfg;
 } nano_handle;
 
-typedef struct nano_cv_s {
-  int condition;
-  uint8_t flag;
-  nng_mtx *mtx;
-  nng_cv *cv;
-} nano_cv;
-
-typedef struct nano_cv_aio_s {
-  nng_aio *aio;
-  nano_aio_typ type;
-  int mode;
-  int result;
-  void *data;
-  nano_cv *cv;
-} nano_cv_aio;
-
-typedef struct nano_cv_duo_s {
-  nano_cv *cv;
-  nano_cv *cv2;
-} nano_cv_duo;
-
 #endif
 
 #ifdef NANONEXT_TIME
@@ -120,12 +99,6 @@ typedef struct nano_cv_duo_s {
 #include <mbedtls/sha256.h>
 #include <mbedtls/sha512.h>
 #include <mbedtls/version.h>
-
-#define SHA1_KEY_SIZE 20
-#define SHA224_KEY_SIZE 28
-#define SHA256_KEY_SIZE 32
-#define SHA384_KEY_SIZE 48
-#define SHA512_KEY_SIZE 64
 
 #endif
 
@@ -271,7 +244,7 @@ extern SEXP rnng_ncurl_aio(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 extern SEXP rnng_ncurl_session(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 extern SEXP rnng_ncurl_session_close(SEXP);
 extern SEXP rnng_ncurl_transact(SEXP);
-extern SEXP rnng_next_config(SEXP, SEXP);
+extern SEXP rnng_next_config(SEXP, SEXP, SEXP);
 extern SEXP rnng_pipe_notify(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 extern SEXP rnng_protocol_open(SEXP, SEXP);
 extern SEXP rnng_random(SEXP, SEXP);

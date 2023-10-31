@@ -4,7 +4,7 @@
 \alias{next_config}
 \title{Configure Next Mode}
 \usage{
-next_config(inhook, outhook)
+next_config(inhook, outhook, mark = FALSE)
 }
 \arguments{
 \item{inhook}{a function (for custom serialization). The signature for this
@@ -14,23 +14,23 @@ function must accept a list and return a raw vector, e.g.
 \item{outhook}{a function (for custom unserialization). The signature for
 this function must accept a raw vector and return a list, e.g.
 \code{safetensors::safe_load_file}, or else NULL to reset.}
+
+\item{mark}{[default FALSE] (for advanced use only) logical value, whether to
+mark serialized data with a special bit.}
 }
 \value{
-Invisibly, a pairlist comprising the currently-registered 'next'
-    configuration.
+Invisibly, a pairlist comprising the currently-registered 'refhook'
+    functions.
 }
 \description{
-Configures 'next' mode by registering 'refhook' functions for serialization
-    and unserialization. This permits sending and receiving reference
+Configures send mode 'next'. By registering 'refhook' functions for
+    serialization and unserialization, allows sending and receiving reference
     objects, such as those accessed via an external pointer, between
     different R sessions.
 }
 \details{
 Calling this function without any arguments returns (invisibly) the
-    currently-registered 'next' configuration.
-
-    Alternatively, calling this function with a configuration pairlist
-    previously returned by this function registers the supplied configuration.
+    currently-registered 'refhook' functions (and resets 'mark' to FALSE).
 }
 \section{Refhook}{
 
@@ -43,13 +43,11 @@ Calling this function without any arguments returns (invisibly) the
 
 \examples{
 cfg <- next_config(inhook = function(x) serialize(x, NULL),
-                   outhook = unserialize)
+                   outhook = unserialize,
+                   mark = TRUE)
 cfg
 
-nul <- next_config(NULL, NULL)
+next_config(NULL, NULL)
 print(next_config())
-
-print(next_config(cfg))
-print(next_config(nul))
 
 }

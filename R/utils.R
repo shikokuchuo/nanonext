@@ -337,8 +337,8 @@ weakref_value <- function(w) .Call(rnng_weakref_value, w)
 
 #' Configure Next Mode
 #'
-#' Configures 'next' mode by registering 'refhook' functions for serialization
-#'     and unserialization. This permits sending and receiving reference
+#' Configures send mode 'next'. By registering 'refhook' functions for
+#'     serialization and unserialization, allows sending and receiving reference
 #'     objects, such as those accessed via an external pointer, between
 #'     different R sessions.
 #'
@@ -348,15 +348,14 @@ weakref_value <- function(w) .Call(rnng_weakref_value, w)
 #' @param outhook a function (for custom unserialization). The signature for
 #'     this function must accept a raw vector and return a list, e.g.
 #'     \code{safetensors::safe_load_file}, or else NULL to reset.
+#' @param mark [default FALSE] (for advanced use only) logical value, whether to
+#'     mark serialized data with a special bit.
 #'
-#' @return Invisibly, a pairlist comprising the currently-registered 'next'
-#'     configuration.
+#' @return Invisibly, a pairlist comprising the currently-registered 'refhook'
+#'     functions.
 #'
 #' @details Calling this function without any arguments returns (invisibly) the
-#'     currently-registered 'next' configuration.
-#'
-#'     Alternatively, calling this function with a configuration pairlist
-#'     previously returned by this function registers the supplied configuration.
+#'     currently-registered 'refhook' functions (and resets 'mark' to FALSE).
 #'
 #' @section Refhook:
 #'
@@ -367,16 +366,14 @@ weakref_value <- function(w) .Call(rnng_weakref_value, w)
 #'
 #' @examples
 #' cfg <- next_config(inhook = function(x) serialize(x, NULL),
-#'                    outhook = unserialize)
+#'                    outhook = unserialize,
+#'                    mark = TRUE)
 #' cfg
 #'
-#' nul <- next_config(NULL, NULL)
+#' next_config(NULL, NULL)
 #' print(next_config())
-#'
-#' print(next_config(cfg))
-#' print(next_config(nul))
 #'
 #' @export
 #'
-next_config <- function(inhook, outhook)
-  invisible(.Call(rnng_next_config, if (missing(inhook)) "" else inhook, if (missing(outhook)) "" else outhook))
+next_config <- function(inhook, outhook, mark = FALSE)
+  invisible(.Call(rnng_next_config, if (missing(inhook)) "" else inhook, if (missing(outhook)) "" else outhook, mark))
