@@ -252,10 +252,13 @@ static void raio_complete_ack(void *arg) {
   if (res == 0)
     raio->data = nng_aio_get_msg(raio->aio);
 
-  nng_msg *msg;
-
 #if NNG_MAJOR_VERSION == 1 && NNG_MINOR_VERSION < 6
 
+  nng_mtx_lock(shr_mtx);
+  raio->result = res - !res;
+  nng_mtx_unlock(shr_mtx);
+
+  nng_msg *msg;
   if (nng_msg_alloc(&msg, 0) == 0) {
     nng_aio *aio;
     if (nng_aio_alloc(&aio, NULL, NULL) == 0) {
@@ -271,17 +274,14 @@ static void raio_complete_ack(void *arg) {
     }
   }
 
-  nng_mtx_lock(shr_mtx);
-  raio->result = res - !res;
-  nng_mtx_unlock(shr_mtx);
-
 #else
 
+  raio->result = res - !res;
+  nng_msg *msg;
   if (nng_msg_alloc(&msg, 0) == 0) {
     if (nng_ctx_sendmsg(*ctx, msg, NNG_FLAG_NONBLOCK))
       nng_msg_free(msg);
   }
-  raio->result = res - !res;
 
 #endif
 
