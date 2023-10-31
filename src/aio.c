@@ -256,7 +256,7 @@ static void raio_complete_ack(void *arg) {
 #else
 
   if (nng_msg_alloc(&msg, 0) == 0) {
-    if (nng_ctx_sendmsg(*ctx, msg, 0))
+    if (nng_ctx_sendmsg(*ctx, msg, NNG_FLAG_NONBLOCK))
       nng_msg_free(msg);
   }
   raio->result = res - !res;
