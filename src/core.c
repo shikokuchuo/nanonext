@@ -1428,7 +1428,7 @@ void rnng_fini(void) {
 
 }
 
-SEXP rnng_next_config(SEXP infun, SEXP outfun, SEXP mark) {
+SEXP rnng_next_mode(SEXP infun, SEXP outfun, SEXP mark) {
 
   special_bit = (uint8_t) LOGICAL(mark)[0];
 

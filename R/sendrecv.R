@@ -64,10 +64,10 @@
 #'     corresponding to the vector sent should be used.
 #'
 #'     Mode 'next' sends serialised R objects, with native extensions enabled by
-#'     \code{\link{next_config}}. This allows 'refhook' functions to be
-#'     registered for custom serialization and unserialization of reference
-#'     objects, such as those accessed via an external pointer. When receiving,
-#'     mode 'serial' should be used as 'next' sends are fully compatible.
+#'     \code{\link{nextmode}}. This allows 'refhook' functions to be registered
+#'     for custom serialization and unserialization of reference objects, such
+#'     as those accessed via an external pointer. When receiving, mode 'serial'
+#'     should be used as 'next' sends are fully compatible.
 #'
 #' @seealso \code{\link{send_aio}} for asynchronous send.
 #' @examples

@@ -335,7 +335,7 @@ weakref_key <- function(w) .Call(rnng_weakref_key, w)
 #'
 weakref_value <- function(w) .Call(rnng_weakref_value, w)
 
-#' Configure Next Mode
+#' Next Mode Settings
 #'
 #' Configures send mode 'next'. By registering 'refhook' functions for
 #'     serialization and unserialization, allows sending and receiving reference
@@ -365,15 +365,15 @@ weakref_value <- function(w) .Call(rnng_weakref_value, w)
 #'     package environments and the Global Environment).
 #'
 #' @examples
-#' cfg <- next_config(inhook = function(x) serialize(x, NULL),
-#'                    outhook = unserialize,
-#'                    mark = TRUE)
+#' cfg <- nextmode(inhook = function(x) serialize(x, NULL),
+#'                 outhook = unserialize,
+#'                 mark = TRUE)
 #' cfg
 #'
-#' next_config(NULL, NULL)
-#' print(next_config())
+#' nextmode(NULL, NULL)
+#' print(nextmode())
 #'
 #' @export
 #'
-next_config <- function(inhook, outhook, mark = FALSE)
-  invisible(.Call(rnng_next_config, if (missing(inhook)) "" else inhook, if (missing(outhook)) "" else outhook, mark))
+nextmode <- function(inhook, outhook, mark = FALSE)
+  invisible(.Call(rnng_next_mode, if (missing(inhook)) "" else inhook, if (missing(outhook)) "" else outhook, mark))

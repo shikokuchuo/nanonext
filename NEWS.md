@@ -1,8 +1,8 @@
-# nanonext 0.10.2.9023 (development)
+# nanonext 0.10.2.9024 (development)
 
 #### New Features
 
-* `next_config()` configures settings for send mode 'next'. Registers hook functions for custom serialization and unserialization of reference objects (such as those accessed via an external pointer).
+* `nextmode()` configures settings for send mode 'next'. Registers hook functions for custom serialization and unserialization of reference objects (such as those accessed via an external pointer).
 * `.until()` contains revised behaviour for this synchronisation primitive, returning FALSE instead of TRUE if the timeout has been reached. This function will replace `until()` in a future package version.
 
 #### Updates
