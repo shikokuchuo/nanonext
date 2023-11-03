@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.10.2.9024</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.10.4</span>
       </span>
     </div>
 
@@ -54,21 +54,19 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.10.2.9024" id="nanonext-01029024-development">nanonext 0.10.2.9024 (development)<a class="anchor" aria-label="anchor" href="#nanonext-01029024-development"></a></h2>
+<h2 class="page-header" data-toc-text="0.10.4" id="nanonext-0104">nanonext 0.10.4<a class="anchor" aria-label="anchor" href="#nanonext-0104"></a></h2>
 <div class="section level5">
-<h5 id="new-features-0-10-2-9024">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-10-2-9024"></a></h5>
+<h5 id="new-features-0-10-4">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-10-4"></a></h5>
 <ul><li>
 <code><a href="../reference/nextmode.html">nextmode()</a></code> configures settings for send mode ‘next’. Registers hook functions for custom serialization and unserialization of reference objects (such as those accessed via an external pointer).</li>
 <li>
 <code><a href="../reference/cv.html">.until()</a></code> contains revised behaviour for this synchronisation primitive, returning FALSE instead of TRUE if the timeout has been reached. This function will replace <code><a href="../reference/cv.html">until()</a></code> in a future package version.</li>
 </ul></div>
 <div class="section level5">
-<h5 id="updates-0-10-2-9024">Updates<a class="anchor" aria-label="anchor" href="#updates-0-10-2-9024"></a></h5>
+<h5 id="updates-0-10-4">Updates<a class="anchor" aria-label="anchor" href="#updates-0-10-4"></a></h5>
 <ul><li>
 <code><a href="../reference/lock.html">lock()</a></code> supplying ‘cv’ has improved behaviour which locks the socket whilst allowing for both initial connections and re-connections (when the ‘cv’ is registered for both add and remove pipe events).</li>
 <li>Improves listener / dialer logic for TLS connections, allowing <em>inter alia</em> synchronous dials.</li>
-<li>
-<code><a href="../reference/pipe_notify.html">pipe_notify()</a></code> arguments ‘add’, ‘remove’ and ‘flag’ now default to FALSE instead of TRUE for easier selective specification of the events to signal.</li>
 <li>
 <code><a href="../reference/request.html">request()</a></code> argument ‘ack’ removed due to stability considerations.</li>
 <li>Fixes memory leaks detected with valgrind.</li>
