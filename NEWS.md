@@ -1,3 +1,9 @@
+# nanonext 0.10.4.9000 (development)
+
+#### Updates
+
+* `pipe_notify()` arguments 'add', 'remove' and 'flag' now default to FALSE instead of TRUE for easier selective specification of the events to signal.
+
 # nanonext 0.10.4
 
 #### New Features

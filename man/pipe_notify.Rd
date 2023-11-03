@@ -4,7 +4,7 @@
 \alias{pipe_notify}
 \title{Pipe Notify}
 \usage{
-pipe_notify(socket, cv, cv2 = NULL, add = TRUE, remove = TRUE, flag = TRUE)
+pipe_notify(socket, cv, cv2 = NULL, add = FALSE, remove = FALSE, flag = FALSE)
 }
 \arguments{
 \item{socket}{a Socket.}
@@ -15,13 +15,13 @@ pipe_notify(socket, cv, cv2 = NULL, add = TRUE, remove = TRUE, flag = TRUE)
 'conditionVariable' to signal. Note that this cv is signalled
 sequentially after the first condition variable.}
 
-\item{add}{[default TRUE] logical value whether to signal when a pipe is
+\item{add}{[default FALSE] logical value whether to signal when a pipe is
 added.}
 
-\item{remove}{[default TRUE] logical value whether to signal when a pipe is
+\item{remove}{[default FALSE] logical value whether to signal when a pipe is
 removed.}
 
-\item{flag}{[default TRUE] logical value whether to also set a flag in the
+\item{flag}{[default FALSE] logical value whether to also set a flag in the
 'conditionVariable'. This can help distinguish between different types of
 signal, and causes any subsequent \code{\link{wait}} to return FALSE
 instead of TRUE.}
