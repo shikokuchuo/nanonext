@@ -18,7 +18,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.10.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.10.4.9000</span>
       </span>
     </div>
 
@@ -61,7 +61,7 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">pipe_notify</span><span class="op">(</span><span class="va">socket</span>, <span class="va">cv</span>, cv2 <span class="op">=</span> <span class="cn">NULL</span>, add <span class="op">=</span> <span class="cn">TRUE</span>, remove <span class="op">=</span> <span class="cn">TRUE</span>, flag <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">pipe_notify</span><span class="op">(</span><span class="va">socket</span>, <span class="va">cv</span>, cv2 <span class="op">=</span> <span class="cn">NULL</span>, add <span class="op">=</span> <span class="cn">FALSE</span>, remove <span class="op">=</span> <span class="cn">FALSE</span>, flag <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -81,17 +81,17 @@ sequentially after the first condition variable.</p></dd>
 
 
 <dt>add</dt>
-<dd><p>[default TRUE] logical value whether to signal when a pipe is
+<dd><p>[default FALSE] logical value whether to signal when a pipe is
 added.</p></dd>
 
 
 <dt>remove</dt>
-<dd><p>[default TRUE] logical value whether to signal when a pipe is
+<dd><p>[default FALSE] logical value whether to signal when a pipe is
 removed.</p></dd>
 
 
 <dt>flag</dt>
-<dd><p>[default TRUE] logical value whether to also set a flag in the
+<dd><p>[default FALSE] logical value whether to also set a flag in the
 'conditionVariable'. This can help distinguish between different types of
 signal, and causes any subsequent <code><a href="cv.html">wait</a></code> to return FALSE
 instead of TRUE.</p></dd>
