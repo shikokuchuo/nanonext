@@ -1708,40 +1708,6 @@ SEXP rnng_cv_until(SEXP cvar, SEXP msec) {
     break;
   }
 
-  uint8_t signalled = 1;
-  nng_mtx_lock(mtx);
-  while (ncv->condition == 0) {
-    if (nng_cv_until(cv, time) == NNG_ETIMEDOUT) {
-      signalled = 0;
-      break;
-    }
-  }
-  if (signalled) ncv->condition--;
-  nng_mtx_unlock(mtx);
-
-  return Rf_ScalarLogical(ncv->flag == 0);
-
-}
-
-SEXP rnng_cv_until2(SEXP cvar, SEXP msec) {
-
-  if (R_ExternalPtrTag(cvar) != nano_CvSymbol)
-    Rf_error("'cv' is not a valid Condition Variable");
-
-  nano_cv *ncv = (nano_cv *) R_ExternalPtrAddr(cvar);
-  nng_cv *cv = ncv->cv;
-  nng_mtx *mtx = ncv->mtx;
-
-  nng_time time = nng_clock();
-  switch (TYPEOF(msec)) {
-  case INTSXP:
-    time = time + (nng_time) INTEGER(msec)[0];
-    break;
-  case REALSXP:
-    time = time + (nng_time) Rf_asInteger(msec);
-    break;
-  }
-
   int signalled = 1;
   nng_mtx_lock(mtx);
   while (ncv->condition == 0) {

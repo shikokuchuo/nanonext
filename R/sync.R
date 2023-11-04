@@ -23,10 +23,10 @@
 #'
 #' @return For \strong{cv}: a 'conditionVariable' object.
 #'
-#'     For \strong{wait} and \strong{until}: (invisibly) logical TRUE, or else
-#'     FALSE if a flag has been set.
+#'     For \strong{wait}: (invisibly) logical TRUE, or else FALSE if a flag has
+#'     been set.
 #'
-#'     For \strong{.until}: (invisibly) logical TRUE if signalled, or else FALSE
+#'     For \strong{until}: (invisibly) logical TRUE if signalled, or else FALSE
 #'     if the timeout was reached.
 #'
 #'     For \strong{cv_value}: integer value of the condition variable.
@@ -107,10 +107,9 @@ wait <- function(cv) invisible(.Call(rnng_cv_wait, cv))
 #'
 until <- function(cv, msec) invisible(.Call(rnng_cv_until, cv, msec))
 
-#' @rdname cv
 #' @export
 #'
-.until <- function(cv, msec) invisible(.Call(rnng_cv_until2, cv, msec))
+.until <- until
 
 #' Condition Variables - Value
 #'

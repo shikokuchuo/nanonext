@@ -2,6 +2,7 @@
 
 #### Updates
 
+* `until()` updated to be identical to `.until()`, returning FALSE instead of TRUE if the timeout has been reached.
 * `pipe_notify()` arguments 'add', 'remove' and 'flag' now default to FALSE instead of TRUE for easier selective specification of the events to signal.
 
 # nanonext 0.10.4

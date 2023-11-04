@@ -4,7 +4,6 @@
 \alias{cv}
 \alias{wait}
 \alias{until}
-\alias{.until}
 \alias{cv_value}
 \alias{cv_reset}
 \alias{cv_signal}
@@ -15,8 +14,6 @@ cv()
 wait(cv)
 
 until(cv, msec)
-
-.until(cv, msec)
 
 cv_value(cv)
 
@@ -33,10 +30,10 @@ to be signalled.}
 \value{
 For \strong{cv}: a 'conditionVariable' object.
 
-    For \strong{wait} and \strong{until}: (invisibly) logical TRUE, or else
-    FALSE if a flag has been set.
+    For \strong{wait}: (invisibly) logical TRUE, or else FALSE if a flag has
+    been set.
 
-    For \strong{.until}: (invisibly) logical TRUE if signalled, or else FALSE
+    For \strong{until}: (invisibly) logical TRUE if signalled, or else FALSE
     if the timeout was reached.
 
     For \strong{cv_value}: integer value of the condition variable.
