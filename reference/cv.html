@@ -81,8 +81,6 @@ cv_signal signals a condition variable."><meta property="og:image" content="http
 <span></span>
 <span><span class="fu">until</span><span class="op">(</span><span class="va">cv</span>, <span class="va">msec</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">.until</span><span class="op">(</span><span class="va">cv</span>, <span class="va">msec</span><span class="op">)</span></span>
-<span></span>
 <span><span class="fu">cv_value</span><span class="op">(</span><span class="va">cv</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">cv_reset</span><span class="op">(</span><span class="va">cv</span><span class="op">)</span></span>
@@ -108,11 +106,11 @@ to be signalled.</p></dd>
 <p>For <strong>cv</strong>: a 'conditionVariable' object.</p>
 
 
-<p>For <strong>wait</strong> and <strong>until</strong>: (invisibly) logical TRUE, or else
-    FALSE if a flag has been set.</p>
+<p>For <strong>wait</strong>: (invisibly) logical TRUE, or else FALSE if a flag has
+    been set.</p>
 
 
-<p>For <strong>.until</strong>: (invisibly) logical TRUE if signalled, or else FALSE
+<p>For <strong>until</strong>: (invisibly) logical TRUE if signalled, or else FALSE
     if the timeout was reached.</p>
 
 
