@@ -166,7 +166,7 @@ recv_aio_signal <- function(con,
 #' Retrieve the value of an asynchronous Aio operation, waiting for the
 #'     operation to complete if still in progress.
 #'
-#' @param aio an Aio (object of class 'sendAio' or 'recvAio').
+#' @param aio an Aio (object of class 'sendAio', 'recvAio' or 'ncurlAio').
 #'
 #' @return The passed object (invisibly).
 #'
@@ -198,6 +198,9 @@ recv_aio_signal <- function(con,
 #'     \code{\link{unresolved}} may also be used, which returns TRUE only if an
 #'     Aio or Aio value has yet to resolve and FALSE otherwise. This is suitable
 #'     for use in control flow statements such as \code{while} or \code{if}.
+#'
+#'     This function is blocking with no ability to interrupt. A
+#'     user-interruptible version is available in \code{\link{wait_aio}}.
 #'
 #' @examples
 #' s1 <- socket("pair", listen = "inproc://nanonext")

@@ -7,7 +7,7 @@
 call_aio(aio)
 }
 \arguments{
-\item{aio}{an Aio (object of class 'sendAio' or 'recvAio').}
+\item{aio}{an Aio (object of class 'sendAio', 'recvAio' or 'ncurlAio').}
 }
 \value{
 The passed object (invisibly).
@@ -46,6 +46,9 @@ For a 'recvAio', the received value may be retrieved at \code{$data}.
     \code{\link{unresolved}} may also be used, which returns TRUE only if an
     Aio or Aio value has yet to resolve and FALSE otherwise. This is suitable
     for use in control flow statements such as \code{while} or \code{if}.
+
+    This function is blocking with no ability to interrupt. A
+    user-interruptible version is available in \code{\link{wait_aio}}.
 }
 
 \examples{

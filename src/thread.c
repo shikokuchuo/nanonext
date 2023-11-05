@@ -26,12 +26,35 @@
 // # nocov start
 // tested interactively
 
+typedef struct nano_thread_aio_s {
+  nng_thread *thr;
+  nano_cv *cv;
+  nng_aio *aio;
+} nano_thread_aio;
+
 static void thread_finalizer(SEXP xptr) {
 
   if (R_ExternalPtrAddr(xptr) == NULL)
     return;
   nng_thread *xp = (nng_thread *) R_ExternalPtrAddr(xptr);
   nng_thread_destroy(xp);
+
+}
+
+static void thread_aio_finalizer(SEXP xptr) {
+
+  if (R_ExternalPtrAddr(xptr) == NULL)
+    return;
+  nano_thread_aio *xp = (nano_thread_aio *) R_ExternalPtrAddr(xptr);
+  nano_cv *ncv = xp->cv;
+  nng_mtx *mtx = ncv->mtx;
+  nng_cv *cv = ncv->cv;
+  nng_aio_stop(xp->aio);
+  nng_thread_destroy(xp->thr);
+  nng_cv_free(cv);
+  nng_mtx_free(mtx);
+  R_Free(ncv);
+  R_Free(xp);
 
 }
 
@@ -165,3 +188,95 @@ SEXP rnng_messenger_thread_create(SEXP args) {
 }
 
 // # nocov end
+
+static void rnng_wait_thread(void *args) {
+
+  nano_thread_aio *taio = (nano_thread_aio *) args;
+  nano_cv *ncv = taio->cv;
+  nng_mtx *mtx = ncv->mtx;
+  nng_cv *cv = ncv->cv;
+
+  nng_aio_wait(taio->aio);
+
+  nng_mtx_lock(mtx);
+  ncv->condition++;
+  nng_cv_wake(cv);
+  nng_mtx_unlock(mtx);
+
+}
+
+SEXP rnng_wait_thread_create(SEXP aio) {
+
+  if (TYPEOF(aio) != ENVSXP)
+    return aio;
+
+  const SEXP coreaio = Rf_findVarInFrame(aio, nano_AioSymbol);
+  if (R_ExternalPtrTag(coreaio) != nano_AioSymbol)
+    return aio;
+
+  nano_aio *aiop = (nano_aio *) R_ExternalPtrAddr(coreaio);
+
+  nano_thread_aio *taio = R_Calloc(1, nano_thread_aio);
+  nano_cv *ncv = R_Calloc(1, nano_cv);
+  taio->aio = aiop->aio;
+  taio->cv = ncv;
+  nng_mtx *mtx;
+  nng_cv *cv;
+
+  int xc, signalled = 1;
+
+  if ((xc = nng_mtx_alloc(&mtx))) {
+    R_Free(ncv);
+    ERROR_OUT(xc);
+  }
+
+  if ((xc = nng_cv_alloc(&cv, mtx))) {
+    nng_mtx_free(ncv->mtx);
+    R_Free(ncv);
+    ERROR_OUT(xc);
+  }
+
+  ncv->mtx = mtx;
+  ncv->cv = cv;
+
+  nng_thread_create(&taio->thr, rnng_wait_thread, taio);
+
+  SEXP xptr;
+  PROTECT(xptr = R_MakeExternalPtr(taio, R_NilValue, R_NilValue));
+  R_RegisterCFinalizerEx(xptr, thread_aio_finalizer, TRUE);
+  UNPROTECT(1);
+
+  while (1) {
+    nng_mtx_lock(mtx);
+    while (ncv->condition == 0) {
+      if (nng_cv_until(cv, 2000) == NNG_ETIMEDOUT) {
+        signalled = 0;
+        break;
+      }
+    }
+    if (signalled) {
+      ncv->condition--;
+      nng_mtx_unlock(mtx);
+      break;
+    } else {
+      nng_mtx_unlock(mtx);
+      R_CheckUserInterrupt();
+      signalled = 1;
+    }
+  }
+
+  switch (aiop->type) {
+  case RECVAIO:
+  case IOV_RECVAIO:
+  case HTTP_AIO:
+    Rf_findVarInFrame(aio, nano_DataSymbol);
+    break;
+  case SENDAIO:
+  case IOV_SENDAIO:
+    Rf_findVarInFrame(aio, nano_ResultSymbol);
+    break;
+  }
+
+  return aio;
+
+}
