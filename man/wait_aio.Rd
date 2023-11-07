@@ -18,9 +18,9 @@ Retrieve the value of an asynchronous Aio operation, waiting for the
 }
 \details{
 This function is identical to \code{\link{call_aio}} except that it
-    is user-interruptible. If interrupted, the aio is stopped upon garbage
-    collection, and hence the aio may return an 'errorValue' 20 'Operation
-    canceled' if it was still unresolved at the time.
+    is user-interruptible. If interrupted, the aio is stopped upon the next
+    garbage collection event, and hence may return an 'errorValue' 20
+    'Operation canceled' if it remains unresolved by that time.
 }
 \examples{
 s1 <- socket("pair", listen = "inproc://nanonext")

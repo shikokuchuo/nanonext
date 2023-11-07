@@ -2,7 +2,7 @@
 
 #### New Features
 
-* `wait_aio()` is a user-interruptible version of `call_aio()`.
+* Introduces `wait_aio()`, a user-interruptible version of `call_aio()`.
 
 #### Updates
 

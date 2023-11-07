@@ -199,7 +199,7 @@ static void rnng_wait_thread(void *args) {
   nng_aio_wait(taio->aio);
 
   nng_mtx_lock(mtx);
-  ncv->condition++;
+  ncv->condition = 1;
   nng_cv_wake(cv);
   nng_mtx_unlock(mtx);
 
@@ -244,7 +244,6 @@ SEXP rnng_wait_thread_create(SEXP aio) {
   SEXP xptr;
   PROTECT(xptr = R_MakeExternalPtr(taio, R_NilValue, R_NilValue));
   R_RegisterCFinalizerEx(xptr, thread_aio_finalizer, TRUE);
-  UNPROTECT(1);
 
   while (1) {
     nng_mtx_lock(mtx);
@@ -254,15 +253,10 @@ SEXP rnng_wait_thread_create(SEXP aio) {
         break;
       }
     }
-    if (signalled) {
-      ncv->condition--;
-      nng_mtx_unlock(mtx);
-      break;
-    } else {
-      nng_mtx_unlock(mtx);
-      R_CheckUserInterrupt();
-      signalled = 1;
-    }
+    nng_mtx_unlock(mtx);
+    if (signalled) break;
+    R_CheckUserInterrupt();
+    signalled = 1;
   }
 
   switch (aiop->type) {
@@ -277,6 +271,7 @@ SEXP rnng_wait_thread_create(SEXP aio) {
     break;
   }
 
+  UNPROTECT(1);
   return aio;
 
 }
