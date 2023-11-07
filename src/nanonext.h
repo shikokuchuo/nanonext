@@ -86,6 +86,13 @@ typedef struct nano_handle_s {
   nng_tls_config *cfg;
 } nano_handle;
 
+typedef struct nano_cv_s {
+  int condition;
+  uint8_t flag;
+  nng_mtx *mtx;
+  nng_cv *cv;
+} nano_cv;
+
 #endif
 
 #ifdef NANONEXT_TIME
@@ -276,6 +283,7 @@ extern SEXP rnng_unresolved(SEXP);
 extern SEXP rnng_unresolved2(SEXP);
 extern SEXP rnng_url_parse(SEXP);
 extern SEXP rnng_version(void);
+extern SEXP rnng_wait_thread_create(SEXP);
 extern SEXP rnng_weakref_make(SEXP, SEXP);
 extern SEXP rnng_weakref_key(SEXP);
 extern SEXP rnng_weakref_value(SEXP);

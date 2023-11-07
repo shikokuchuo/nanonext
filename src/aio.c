@@ -21,13 +21,6 @@
 
 // internals -------------------------------------------------------------------
 
-typedef struct nano_cv_s {
-  int condition;
-  uint8_t flag;
-  nng_mtx *mtx;
-  nng_cv *cv;
-} nano_cv;
-
 typedef struct nano_cv_aio_s {
   nng_aio *aio;
   nano_aio_typ type;
@@ -1716,9 +1709,13 @@ SEXP rnng_cv_until(SEXP cvar, SEXP msec) {
       break;
     }
   }
-  if (signalled) ncv->condition--;
-  nng_mtx_unlock(mtx);
-  if (!signalled) R_CheckUserInterrupt();
+  if (signalled) {
+    ncv->condition--;
+    nng_mtx_unlock(mtx);
+  } else {
+    nng_mtx_unlock(mtx);
+    R_CheckUserInterrupt();
+  }
 
   return Rf_ScalarLogical(signalled);
 

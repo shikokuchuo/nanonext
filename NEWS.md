@@ -1,5 +1,9 @@
 # nanonext 0.10.4.9000 (development)
 
+#### New Features
+
+* Introduces `wait_aio()`, a user-interruptible version of `call_aio()`.
+
 #### Updates
 
 * `until()` updated to be identical to `.until()`, returning FALSE instead of TRUE if the timeout has been reached.
