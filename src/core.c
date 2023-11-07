@@ -131,6 +131,7 @@ SEXP rawToChar(unsigned char *buf, const size_t sz) {
 
 static SEXP nano_inHook(SEXP x, SEXP fun) {
 
+  if (TYPEOF(x) != EXTPTRSXP) return R_NilValue;
   SEXP refList, list, names, out;
   R_xlen_t xlen;
   refList = nano_refList;
