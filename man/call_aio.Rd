@@ -2,9 +2,12 @@
 % Please edit documentation in R/aio.R
 \name{call_aio}
 \alias{call_aio}
+\alias{wait_aio}
 \title{Call the Value of an Asynchronous Aio Operation}
 \usage{
 call_aio(aio)
+
+wait_aio(aio)
 }
 \arguments{
 \item{aio}{an Aio (object of class 'sendAio', 'recvAio' or 'ncurlAio').}
@@ -13,8 +16,10 @@ call_aio(aio)
 The passed object (invisibly).
 }
 \description{
-Retrieve the value of an asynchronous Aio operation, waiting for the
-    operation to complete if still in progress.
+\code{call_aio} retrieves the value of an asynchronous Aio operation, waiting
+    for the operation to complete if still in progress.
+
+\code{wait_aio} is identical to \code{call_aio} but allows user interrupts.
 }
 \details{
 For a 'recvAio', the received value may be retrieved at \code{$data}.
@@ -46,9 +51,15 @@ For a 'recvAio', the received value may be retrieved at \code{$data}.
     \code{\link{unresolved}} may also be used, which returns TRUE only if an
     Aio or Aio value has yet to resolve and FALSE otherwise. This is suitable
     for use in control flow statements such as \code{while} or \code{if}.
+}
 
-    This function is blocking with no ability to interrupt. A
-    user-interruptible version is available in \code{\link{wait_aio}}.
+\section{Wait}{
+
+
+    \code{wait_aio} is identical to \code{call_aio} except that it is
+    user-interruptible. If interrupted, the aio is stopped upon the next
+    garbage collection event, and hence may return an 'errorValue' 20
+    'Operation canceled' if it remains unresolved by that time.
 }
 
 \examples{
@@ -62,7 +73,7 @@ res$result
 
 msg <- recv_aio(s2, timeout = 100)
 msg
-call_aio(msg)$data
+wait_aio(msg)$data
 
 close(s1)
 close(s2)

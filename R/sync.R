@@ -248,37 +248,3 @@ lock <- function(socket, cv = NULL) invisible(.Call(rnng_socket_lock, socket, cv
 #' @export
 #'
 unlock <- function(socket) invisible(.Call(rnng_socket_unlock, socket))
-
-#' Wait for the Value of an Asynchronous Aio Operation
-#'
-#' Retrieve the value of an asynchronous Aio operation, waiting for the
-#'     operation to complete if still in progress.
-#'
-#' @param aio an Aio (object of class 'sendAio', 'recvAio' or 'ncurlAio').
-#'
-#' @details This function is identical to \code{\link{call_aio}} except that it
-#'     is user-interruptible. If interrupted, the aio is stopped upon the next
-#'     garbage collection event, and hence may return an 'errorValue' 20
-#'     'Operation canceled' if it remains unresolved by that time.
-#'
-#' @return The passed object (invisibly).
-#'
-#' @examples
-#' s1 <- socket("pair", listen = "inproc://nanonext")
-#' s2 <- socket("pair", dial = "inproc://nanonext")
-#'
-#' res <- send_aio(s1, data.frame(a = 1, b = 2), timeout = 100)
-#' res
-#' wait_aio(res)
-#' res$result
-#'
-#' msg <- recv_aio(s2, timeout = 100)
-#' msg
-#' wait_aio(msg)$data
-#'
-#' close(s1)
-#' close(s2)
-#'
-#' @export
-#'
-wait_aio <- function(aio) invisible(.Call(rnng_wait_thread_create, aio))

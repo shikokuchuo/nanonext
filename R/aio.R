@@ -163,8 +163,8 @@ recv_aio_signal <- function(con,
 
 #' Call the Value of an Asynchronous Aio Operation
 #'
-#' Retrieve the value of an asynchronous Aio operation, waiting for the
-#'     operation to complete if still in progress.
+#' \code{call_aio} retrieves the value of an asynchronous Aio operation, waiting
+#'     for the operation to complete if still in progress.
 #'
 #' @param aio an Aio (object of class 'sendAio', 'recvAio' or 'ncurlAio').
 #'
@@ -199,9 +199,6 @@ recv_aio_signal <- function(con,
 #'     Aio or Aio value has yet to resolve and FALSE otherwise. This is suitable
 #'     for use in control flow statements such as \code{while} or \code{if}.
 #'
-#'     This function is blocking with no ability to interrupt. A
-#'     user-interruptible version is available in \code{\link{wait_aio}}.
-#'
 #' @examples
 #' s1 <- socket("pair", listen = "inproc://nanonext")
 #' s2 <- socket("pair", dial = "inproc://nanonext")
@@ -213,7 +210,7 @@ recv_aio_signal <- function(con,
 #'
 #' msg <- recv_aio(s2, timeout = 100)
 #' msg
-#' call_aio(msg)$data
+#' wait_aio(msg)$data
 #'
 #' close(s1)
 #' close(s2)
@@ -221,6 +218,24 @@ recv_aio_signal <- function(con,
 #' @export
 #'
 call_aio <- function(aio) invisible(.Call(rnng_aio_call, aio))
+
+#' Wait for the Value of an Asynchronous Aio Operation
+#'
+#' \code{wait_aio} is identical to \code{call_aio} but allows user interrupts.
+#'
+#' @param aio an Aio (object of class 'sendAio', 'recvAio' or 'ncurlAio').
+#'
+#' @section Wait:
+#'
+#'     \code{wait_aio} is identical to \code{call_aio} except that it is
+#'     user-interruptible. If interrupted, the aio is stopped upon the next
+#'     garbage collection event, and hence may return an 'errorValue' 20
+#'     'Operation canceled' if it remains unresolved by that time.
+#'
+#' @rdname call_aio
+#' @export
+#'
+wait_aio <- function(aio) invisible(.Call(rnng_wait_thread_create, aio))
 
 #' Stop Asynchronous Aio Operation
 #'
