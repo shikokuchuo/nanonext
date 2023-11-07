@@ -3,6 +3,7 @@
 #### New Features
 
 * Introduces `wait_aio()`, a user-interruptible version of `call_aio()`.
+* Implements `%->%` signal forwarder from one 'conditionVariable' to another.
 
 #### Updates
 

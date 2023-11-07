@@ -248,3 +248,26 @@ lock <- function(socket, cv = NULL) invisible(.Call(rnng_socket_lock, socket, cv
 #' @export
 #'
 unlock <- function(socket) invisible(.Call(rnng_socket_unlock, socket))
+
+#' Signal Forwarder
+#'
+#' Forwards signals from one 'conditionVariable' to another.
+#'
+#' @param cv a 'conditionVariable' object, from which to forward the signal.
+#' @param cv2 a 'conditionVariable' object, to which to forward the signal.
+#'
+#' @return Invisible NULL.
+#'
+#' @examples
+#' cv <- cv()
+#' cv2 <- cv()
+#'
+#' cv %->% cv2
+#'
+#' cv_signal(cv)
+#' cv_value(cv)
+#' cv_value(cv2)
+#'
+#' @export
+#'
+`%->%` <- function(cv, cv2) invisible(.Call(rnng_signal_thread_create, cv, cv2))

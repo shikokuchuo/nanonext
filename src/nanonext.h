@@ -267,6 +267,7 @@ extern SEXP rnng_sha224(SEXP, SEXP, SEXP);
 extern SEXP rnng_sha256(SEXP, SEXP, SEXP);
 extern SEXP rnng_sha384(SEXP, SEXP, SEXP);
 extern SEXP rnng_sha512(SEXP, SEXP, SEXP);
+extern SEXP rnng_signal_thread_create(SEXP, SEXP);
 extern SEXP rnng_sleep(SEXP);
 extern SEXP rnng_socket_lock(SEXP, SEXP);
 extern SEXP rnng_socket_unlock(SEXP);
