@@ -131,7 +131,8 @@ SEXP rawToChar(unsigned char *buf, const size_t sz) {
 
 static SEXP nano_inHook(SEXP x, SEXP fun) {
 
-  if (TYPEOF(x) != EXTPTRSXP) return R_NilValue;
+  if (TYPEOF(x) != EXTPTRSXP)
+    return R_NilValue;
   SEXP refList, list, names, out;
   R_xlen_t xlen;
   refList = nano_refList;
@@ -215,7 +216,7 @@ void nano_serialize_next(nano_buf *buf, SEXP object) {
     NANONEXT_SERIAL_VER,
     nano_write_char,
     nano_write_bytes,
-    CAR(nano_refHook) != R_NilValue ? nano_inHook : NULL,
+    nano_refHookIn != R_NilValue ? nano_inHook : NULL,
     R_NilValue
   );
 
@@ -225,7 +226,7 @@ void nano_serialize_next(nano_buf *buf, SEXP object) {
 
   if (nano_refList != R_NilValue) {
     SEXP call, out;
-    PROTECT(call = Rf_lcons(CAR(nano_refHook), Rf_cons(nano_refList, R_NilValue)));
+    PROTECT(call = Rf_lcons(nano_refHookIn, Rf_cons(nano_refList, R_NilValue)));
     PROTECT(out = Rf_eval(call, R_GlobalEnv));
     if (TYPEOF(out) != RAWSXP) {
       R_ReleaseObject(nano_refList);
@@ -280,7 +281,7 @@ SEXP nano_unserialize(unsigned char *buf, const size_t sz) {
     if (sz > offset) {
       PROTECT(raw = Rf_allocVector(RAWSXP, sz - offset));
       memcpy(STDVEC_DATAPTR(raw), buf + offset, sz - offset);
-      PROTECT(call = Rf_lcons(CADR(nano_refHook), Rf_cons(raw, R_NilValue)));
+      PROTECT(call = Rf_lcons(nano_refHookOut, Rf_cons(raw, R_NilValue)));
       nano_refList = Rf_eval(call, R_GlobalEnv);
       if (TYPEOF(nano_refList) != VECSXP) {
         nano_refList = R_NilValue;
@@ -1431,20 +1432,32 @@ SEXP rnng_next_mode(SEXP infun, SEXP outfun, SEXP mark) {
   case CLOSXP:
   case BUILTINSXP:
   case SPECIALSXP:
-  case NILSXP:
-    SETCAR(nano_refHook, infun);
+    if (nano_refHookIn != R_NilValue)
+      R_ReleaseObject(nano_refHookIn);
+    R_PreserveObject(nano_refHookIn = infun);
     break;
+  case NILSXP:
+    if (nano_refHookIn != R_NilValue) {
+      R_ReleaseObject(nano_refHookIn);
+      nano_refHookIn = R_NilValue;
+    }
   }
 
   switch(TYPEOF(outfun)) {
   case CLOSXP:
   case BUILTINSXP:
   case SPECIALSXP:
-  case NILSXP:
-    SETCADR(nano_refHook, outfun);
+    if (nano_refHookOut != R_NilValue)
+      R_ReleaseObject(nano_refHookOut);
+    R_PreserveObject(nano_refHookOut = outfun);
     break;
+  case NILSXP:
+    if (nano_refHookOut != R_NilValue) {
+      R_ReleaseObject(nano_refHookOut);
+      nano_refHookOut = R_NilValue;
+    }
   }
 
-  return Rf_shallow_duplicate(nano_refHook);
+  return Rf_cons(nano_refHookIn, Rf_cons(nano_refHookOut, R_NilValue));
 
 }
