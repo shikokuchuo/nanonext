@@ -112,12 +112,18 @@ static void PreserveObjects(void) {
   R_PreserveObject(nano_success = Rf_ScalarInteger(0));
   R_PreserveObject(nano_unresolved = Rf_shallow_duplicate(Rf_ScalarLogical(NA_LOGICAL)));
   Rf_classgets(nano_unresolved, Rf_mkString("unresolvedValue"));
-  nano_refList = R_NilValue;
   nano_refHookIn = R_NilValue;
   nano_refHookOut = R_NilValue;
+  nano_refList = R_NilValue;
 }
 
 static void ReleaseObjects(void) {
+  if (nano_refList != R_NilValue)
+    R_ReleaseObject(nano_refList);
+  if (nano_refHookOut != R_NilValue)
+    R_ReleaseObject(nano_refHookOut);
+  if (nano_refHookIn != R_NilValue)
+    R_ReleaseObject(nano_refHookIn);
   R_ReleaseObject(nano_unresolved);
   R_ReleaseObject(nano_success);
   R_ReleaseObject(nano_sendAio);
@@ -128,12 +134,6 @@ static void ReleaseObjects(void) {
   R_ReleaseObject(nano_aioNFuncs);
   R_ReleaseObject(nano_aioFuncs);
   R_ReleaseObject(nano_aioFormals);
-  if (nano_refList != R_NilValue)
-    R_ReleaseObject(nano_refList);
-  if (nano_refHookIn != R_NilValue)
-    R_ReleaseObject(nano_refHookIn);
-  if (nano_refHookOut != R_NilValue)
-    R_ReleaseObject(nano_refHookOut);
 }
 
 static const R_CMethodDef cMethods[] = {

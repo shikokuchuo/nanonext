@@ -314,10 +314,11 @@ SEXP nano_unserialize(unsigned char *buf, const size_t sz) {
     nano_refList
   );
 
-  PROTECT(out = R_Unserialize(&input_stream));
-  R_ReleaseObject(nano_refList);
-  nano_refList = R_NilValue;
-  UNPROTECT(1);
+  out = R_Unserialize(&input_stream);
+  if (cur) {
+    R_ReleaseObject(nano_refList);
+    nano_refList = R_NilValue;
+  }
   return out;
 
 }
