@@ -270,27 +270,30 @@ void nano_serialize_xdr(nano_buf *buf, SEXP object) {
 
 SEXP nano_unserialize(unsigned char *buf, const size_t sz) {
 
-  int cur;
+  int cur, offset;
+  SEXP reflist;
+
   switch (buf[0]) {
   case 66:
   case 88:
-    cur = 0; break;
+    offset = 0;
+    cur = 0;
+    break;
   case 7: ;
     SEXP raw, call;
-    const int offset = *(int *) (buf + 4);
-    if (sz > offset) {
-      PROTECT(raw = Rf_allocVector(RAWSXP, sz - offset));
-      memcpy(STDVEC_DATAPTR(raw), buf + offset, sz - offset);
+    offset = *(int *) (buf + 4);
+    cur = sz - offset;
+    if (cur) {
+      PROTECT(raw = Rf_allocVector(RAWSXP, cur));
+      memcpy(STDVEC_DATAPTR(raw), buf + offset, cur);
       PROTECT(call = Rf_lcons(nano_refHookOut, Rf_cons(raw, R_NilValue)));
-      nano_refList = Rf_eval(call, R_GlobalEnv);
-      if (TYPEOF(nano_refList) != VECSXP) {
-        nano_refList = R_NilValue;
+      PROTECT(reflist = Rf_eval(call, R_GlobalEnv));
+      if (TYPEOF(reflist) != VECSXP)
         Rf_error("unserialization refhook did not return a list");
-      }
-      R_PreserveObject(nano_refList);
-      UNPROTECT(2);
     }
-    cur = 8; break;
+    offset = cur;
+    cur = 8;
+    break;
   default:
     Rf_warning("received data could not be unserialized");
     return nano_decode(buf, sz, 8);
@@ -310,15 +313,13 @@ SEXP nano_unserialize(unsigned char *buf, const size_t sz) {
     R_pstream_any_format,
     nano_read_char,
     nano_read_bytes,
-    cur ? nano_outHook : NULL,
-    nano_refList
+    offset ? nano_outHook : NULL,
+    offset ? reflist : R_NilValue
   );
 
   out = R_Unserialize(&input_stream);
-  if (cur) {
-    R_ReleaseObject(nano_refList);
-    nano_refList = R_NilValue;
-  }
+
+  if (offset) UNPROTECT(3);
   return out;
 
 }
