@@ -17,6 +17,11 @@ Invisible NULL.
 \description{
 Forwards signals from one 'conditionVariable' to another.
 }
+\details{
+This is an experimental function, and may not be suitable for all
+    situations. When used, any waits should be performed on 'cv2' and not
+    'cv'.
+}
 \examples{
 cv <- cv()
 cv2 <- cv()

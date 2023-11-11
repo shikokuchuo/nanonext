@@ -258,6 +258,10 @@ unlock <- function(socket) invisible(.Call(rnng_socket_unlock, socket))
 #'
 #' @return Invisible NULL.
 #'
+#' @details This is an experimental function, and may not be suitable for all
+#'     situations. When used, any waits should be performed on 'cv2' and not
+#'     'cv'.
+#'
 #' @examples
 #' cv <- cv()
 #' cv2 <- cv()
