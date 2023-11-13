@@ -9,12 +9,11 @@ nextmode(inhook, outhook, mark = FALSE)
 \arguments{
 \item{inhook}{a function (for custom serialization). The signature for this
 function must accept a list of external pointer objects and return a raw
-vector, e.g. \code{safetensors::safe_serialize}, or else NULL to reset.}
+vector, e.g. \code{torch:::torch_serialize}, or else NULL to reset.}
 
 \item{outhook}{a function (for custom unserialization). The signature for
 this function must accept a raw vector and return a list of external
-pointer objects, e.g. \code{safetensors::safe_load_file}, or else NULL to
-reset.}
+pointer objects, e.g. \code{torch::torch_load}, or else NULL to reset.}
 
 \item{mark}{[default FALSE] (for advanced use only) logical value, whether to
 mark serialized data with a special bit.}
