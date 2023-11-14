@@ -352,6 +352,6 @@ SEXP rnng_signal_thread_create(SEXP cv, SEXP cv2) {
   R_RegisterCFinalizerEx(xptr, thread_duo_finalizer, TRUE);
   R_MakeWeakRef(xptr, cv, R_NilValue, FALSE);
 
-  return R_NilValue;
+  return cv;
 
 }
