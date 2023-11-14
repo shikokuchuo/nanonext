@@ -9,7 +9,7 @@ nextmode(inhook, outhook, mark = FALSE)
 \arguments{
 \item{inhook}{a function (for custom serialization). The signature for this
 function must accept a list of external pointer objects and return a raw
-vector, e.g. \code{torch:::torch_serialize}, or else NULL to reset.}
+vector, e.g. \code{torch::torch_serialize}, or else NULL to reset.}
 
 \item{outhook}{a function (for custom unserialization). The signature for
 this function must accept a raw vector and return a list of external
