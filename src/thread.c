@@ -311,7 +311,7 @@ static void rnng_signal_thread(void *args) {
   nng_mtx *mtx2 = ncv2->mtx;
   nng_cv *cv2 = ncv2->cv;
 
-  int cond = 0;
+  int incr, cond = 0;
 
   nng_mtx_lock(mtx);
   while (ncv->condition == cond)
@@ -321,17 +321,18 @@ static void rnng_signal_thread(void *args) {
     nng_mtx_unlock(mtx);
     return;
   }
+  incr = ncv->condition - cond;
+  cond = cond + incr;
   nng_mtx_unlock(mtx);
 
   while (1) {
 
     nng_mtx_lock(mtx2);
-    ncv2->condition++;
+    ncv2->condition = ncv2->condition + incr;
     nng_cv_wake(cv2);
     nng_mtx_unlock(mtx2);
 
     nng_mtx_lock(mtx);
-    cond = ncv->condition;
     while (ncv->condition == cond)
       nng_cv_wait(cv);
     if (ncv->condition < 0) {
@@ -339,6 +340,8 @@ static void rnng_signal_thread(void *args) {
       nng_mtx_unlock(mtx);
       break;
     }
+    incr = ncv->condition - cond;
+    cond = cond + incr;
     nng_mtx_unlock(mtx);
 
   }
