@@ -311,10 +311,10 @@ static void rnng_signal_thread(void *args) {
   nng_mtx *mtx2 = ncv2->mtx;
   nng_cv *cv2 = ncv2->cv;
 
-  int cond;
+  int cond = 0;
 
   nng_mtx_lock(mtx);
-  while (ncv->condition == 0)
+  while (ncv->condition == cond)
     nng_cv_wait(cv);
   if (ncv->condition < 0) {
     ncv->condition = cond;
