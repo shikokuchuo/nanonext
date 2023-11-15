@@ -131,16 +131,17 @@ SEXP rawToChar(unsigned char *buf, const size_t sz) {
 
 static SEXP nano_inHook(SEXP x, SEXP fun) {
 
-  SEXP refList, list, names, out;
+  if (TYPEOF(x) != EXTPTRSXP)
+    return R_NilValue;
+  SEXP list, names, out;
   R_xlen_t xlen;
-  refList = nano_refList;
-  if (refList == R_NilValue) {
+  if (nano_refList == R_NilValue) {
     xlen = 0;
     PROTECT(list = Rf_allocVector(VECSXP, 1));
     SET_VECTOR_ELT(list, xlen, x);
   } else {
-    xlen = Rf_xlength(refList);
-    PROTECT(list = Rf_lengthgets(refList, xlen + 1));
+    xlen = Rf_xlength(nano_refList);
+    PROTECT(list = Rf_lengthgets(nano_refList, xlen + 1));
     SET_VECTOR_ELT(list, xlen, x);
   }
   char idx[NANONEXT_INT_STRLEN];
@@ -214,17 +215,16 @@ void nano_serialize_next(nano_buf *buf, SEXP object) {
     NANONEXT_SERIAL_VER,
     nano_write_char,
     nano_write_bytes,
-    CAR(nano_refHook) != R_NilValue ? nano_inHook : NULL,
+    nano_refHookIn != R_NilValue ? nano_inHook : NULL,
     R_NilValue
   );
 
   R_Serialize(object, &output_stream);
 
-  *((int *) (buf->buf + 4)) = (int) buf->cur;
-
   if (nano_refList != R_NilValue) {
+    *((uint32_t *) (buf->buf + 4)) = (uint32_t) buf->cur;
     SEXP call, out;
-    PROTECT(call = Rf_lcons(CAR(nano_refHook), Rf_cons(nano_refList, R_NilValue)));
+    PROTECT(call = Rf_lcons(nano_refHookIn, Rf_cons(nano_refList, R_NilValue)));
     PROTECT(out = Rf_eval(call, R_GlobalEnv));
     if (TYPEOF(out) != RAWSXP) {
       R_ReleaseObject(nano_refList);
@@ -268,27 +268,29 @@ void nano_serialize_xdr(nano_buf *buf, SEXP object) {
 
 SEXP nano_unserialize(unsigned char *buf, const size_t sz) {
 
-  int cur;
+  uint32_t offset;
+  size_t cur;
+  SEXP reflist;
+
   switch (buf[0]) {
   case 66:
   case 88:
-    cur = 0; break;
+    offset = 0;
+    cur = 0;
+    break;
   case 7: ;
     SEXP raw, call;
-    const int offset = *(int *) (buf + 4);
-    if (sz > offset) {
+    offset = *(uint32_t *) (buf + 4);
+    if (offset) {
       PROTECT(raw = Rf_allocVector(RAWSXP, sz - offset));
       memcpy(STDVEC_DATAPTR(raw), buf + offset, sz - offset);
-      PROTECT(call = Rf_lcons(CADR(nano_refHook), Rf_cons(raw, R_NilValue)));
-      nano_refList = Rf_eval(call, R_GlobalEnv);
-      if (TYPEOF(nano_refList) != VECSXP) {
-        nano_refList = R_NilValue;
+      PROTECT(call = Rf_lcons(nano_refHookOut, Rf_cons(raw, R_NilValue)));
+      PROTECT(reflist = Rf_eval(call, R_GlobalEnv));
+      if (TYPEOF(reflist) != VECSXP)
         Rf_error("unserialization refhook did not return a list");
-      }
-      R_PreserveObject(nano_refList);
-      UNPROTECT(2);
     }
-    cur = 8; break;
+    cur = 8;
+    break;
   default:
     Rf_warning("received data could not be unserialized");
     return nano_decode(buf, sz, 8);
@@ -308,14 +310,13 @@ SEXP nano_unserialize(unsigned char *buf, const size_t sz) {
     R_pstream_any_format,
     nano_read_char,
     nano_read_bytes,
-    cur ? nano_outHook : NULL,
-    nano_refList
+    offset ? nano_outHook : NULL,
+    offset ? reflist : R_NilValue
   );
 
-  PROTECT(out = R_Unserialize(&input_stream));
-  R_ReleaseObject(nano_refList);
-  nano_refList = R_NilValue;
-  UNPROTECT(1);
+  out = R_Unserialize(&input_stream);
+
+  if (offset) UNPROTECT(3);
   return out;
 
 }
@@ -1430,20 +1431,32 @@ SEXP rnng_next_mode(SEXP infun, SEXP outfun, SEXP mark) {
   case CLOSXP:
   case BUILTINSXP:
   case SPECIALSXP:
-  case NILSXP:
-    SETCAR(nano_refHook, infun);
+    if (nano_refHookIn != R_NilValue)
+      R_ReleaseObject(nano_refHookIn);
+    R_PreserveObject(nano_refHookIn = infun);
     break;
+  case NILSXP:
+    if (nano_refHookIn != R_NilValue) {
+      R_ReleaseObject(nano_refHookIn);
+      nano_refHookIn = R_NilValue;
+    }
   }
 
   switch(TYPEOF(outfun)) {
   case CLOSXP:
   case BUILTINSXP:
   case SPECIALSXP:
-  case NILSXP:
-    SETCADR(nano_refHook, outfun);
+    if (nano_refHookOut != R_NilValue)
+      R_ReleaseObject(nano_refHookOut);
+    R_PreserveObject(nano_refHookOut = outfun);
     break;
+  case NILSXP:
+    if (nano_refHookOut != R_NilValue) {
+      R_ReleaseObject(nano_refHookOut);
+      nano_refHookOut = R_NilValue;
+    }
   }
 
-  return Rf_shallow_duplicate(nano_refHook);
+  return Rf_cons(nano_refHookIn, Rf_cons(nano_refHookOut, R_NilValue));
 
 }

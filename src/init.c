@@ -50,7 +50,8 @@ SEXP nano_error;
 SEXP nano_ncurlAio;
 SEXP nano_ncurlSession;
 SEXP nano_recvAio;
-SEXP nano_refHook;
+SEXP nano_refHookIn;
+SEXP nano_refHookOut;
 SEXP nano_refList;
 SEXP nano_sendAio;
 SEXP nano_success;
@@ -106,19 +107,26 @@ static void PreserveObjects(void) {
   SET_TAG(nano_ncurlSession, R_ClassSymbol);
   R_PreserveObject(nano_recvAio = Rf_cons(Rf_mkString("recvAio"), R_NilValue));
   SET_TAG(nano_recvAio, R_ClassSymbol);
-  R_PreserveObject(nano_refHook = Rf_list2(R_NilValue, R_NilValue));
   R_PreserveObject(nano_sendAio = Rf_cons(Rf_mkString("sendAio"), R_NilValue));
   SET_TAG(nano_sendAio, R_ClassSymbol);
   R_PreserveObject(nano_success = Rf_ScalarInteger(0));
   R_PreserveObject(nano_unresolved = Rf_shallow_duplicate(Rf_ScalarLogical(NA_LOGICAL)));
   Rf_classgets(nano_unresolved, Rf_mkString("unresolvedValue"));
+  nano_refHookIn = R_NilValue;
+  nano_refHookOut = R_NilValue;
+  nano_refList = R_NilValue;
 }
 
 static void ReleaseObjects(void) {
+  if (nano_refList != R_NilValue)
+    R_ReleaseObject(nano_refList);
+  if (nano_refHookOut != R_NilValue)
+    R_ReleaseObject(nano_refHookOut);
+  if (nano_refHookIn != R_NilValue)
+    R_ReleaseObject(nano_refHookIn);
   R_ReleaseObject(nano_unresolved);
   R_ReleaseObject(nano_success);
   R_ReleaseObject(nano_sendAio);
-  R_ReleaseObject(nano_refHook);
   R_ReleaseObject(nano_recvAio);
   R_ReleaseObject(nano_ncurlSession);
   R_ReleaseObject(nano_ncurlAio);
@@ -219,7 +227,6 @@ static const R_ExternalMethodDef externalMethods[] = {
 void attribute_visible R_init_nanonext(DllInfo* dll) {
   RegisterSymbols();
   PreserveObjects();
-  nano_refList = R_NilValue;
 #if NNG_MAJOR_VERSION == 1 && NNG_MINOR_VERSION < 6
   nng_mtx_alloc(&shr_mtx);
 #endif

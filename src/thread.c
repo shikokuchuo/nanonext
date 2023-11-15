@@ -248,7 +248,7 @@ SEXP rnng_wait_thread_create(SEXP aio) {
   nng_mtx *mtx;
   nng_cv *cv;
 
-  int xc, signalled = 1;
+  int xc, signalled;
 
   if ((xc = nng_mtx_alloc(&mtx))) {
     R_Free(ncv);
@@ -271,6 +271,7 @@ SEXP rnng_wait_thread_create(SEXP aio) {
   R_RegisterCFinalizerEx(xptr, thread_aio_finalizer, TRUE);
 
   while (1) {
+    signalled = 1;
     nng_mtx_lock(mtx);
     while (ncv->condition == 0) {
       if (nng_cv_until(cv, 2000) == NNG_ETIMEDOUT) {
@@ -281,7 +282,6 @@ SEXP rnng_wait_thread_create(SEXP aio) {
     nng_mtx_unlock(mtx);
     if (signalled) break;
     R_CheckUserInterrupt();
-    signalled = 1;
   }
 
   switch (aiop->type) {

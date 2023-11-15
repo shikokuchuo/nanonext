@@ -8,39 +8,29 @@ nextmode(inhook, outhook, mark = FALSE)
 }
 \arguments{
 \item{inhook}{a function (for custom serialization). The signature for this
-function must accept a list and return a raw vector, e.g.
-\code{safetensors::safe_serialize}, or else NULL to reset.}
+function must accept a list of external pointer objects and return a raw
+vector, e.g. \code{torch::torch_serialize}, or else NULL to reset.}
 
 \item{outhook}{a function (for custom unserialization). The signature for
-this function must accept a raw vector and return a list, e.g.
-\code{safetensors::safe_load_file}, or else NULL to reset.}
+this function must accept a raw vector and return a list of external
+pointer objects, e.g. \code{torch::torch_load}, or else NULL to reset.}
 
 \item{mark}{[default FALSE] (for advanced use only) logical value, whether to
 mark serialized data with a special bit.}
 }
 \value{
-Invisibly, a pairlist comprising the currently-registered 'refhook'
-    functions.
+Invisibly, a pairlist comprising the currently-registered 'inhook'
+    and 'outhook' functions.
 }
 \description{
-Configures send mode 'next'. By registering 'refhook' functions for
-    serialization and unserialization, allows sending and receiving reference
-    objects, such as those accessed via an external pointer, between
-    different R sessions.
+Configures send mode 'next' by registering functions for custom serialization
+    and unserialization of external pointer objects, allowing these to be
+    sent and received between different R sessions.
 }
 \details{
 Calling this function without any arguments returns (invisibly) the
-    currently-registered 'refhook' functions (and resets 'mark' to FALSE).
+    currently-registered functions (and resets 'mark' to FALSE).
 }
-\section{Refhook}{
-
-
-    The 'refhook' functions are a native feature of R's serialization
-    mechanism and apply to all non-system reference objects (external
-    pointers, weak references, and all environments other than namespace and
-    package environments and the Global Environment).
-}
-
 \examples{
 cfg <- nextmode(inhook = function(x) serialize(x, NULL),
                 outhook = unserialize,
