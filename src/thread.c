@@ -313,7 +313,23 @@ static void rnng_signal_thread(void *args) {
 
   int cond;
 
+  nng_mtx_lock(mtx);
+  while (ncv->condition == 0)
+    nng_cv_wait(cv);
+  if (ncv->condition < 0) {
+    ncv->condition = cond;
+    nng_mtx_unlock(mtx);
+    return;
+  }
+  nng_mtx_unlock(mtx);
+
   while (1) {
+
+    nng_mtx_lock(mtx2);
+    ncv2->condition++;
+    nng_cv_wake(cv2);
+    nng_mtx_unlock(mtx2);
+
     nng_mtx_lock(mtx);
     cond = ncv->condition;
     while (ncv->condition == cond)
@@ -325,10 +341,6 @@ static void rnng_signal_thread(void *args) {
     }
     nng_mtx_unlock(mtx);
 
-    nng_mtx_lock(mtx2);
-    ncv2->condition++;
-    nng_cv_wake(cv2);
-    nng_mtx_unlock(mtx2);
   }
 
 }
@@ -342,8 +354,17 @@ SEXP rnng_signal_thread_create(SEXP cv, SEXP cv2) {
     Rf_error("'cv2' is not a valid Condition Variable");
 
   nano_thread_duo *duo = R_Calloc(1, nano_thread_duo);
-  duo->cv = (nano_cv *) R_ExternalPtrAddr(cv);
-  duo->cv2 = (nano_cv *) R_ExternalPtrAddr(cv2);
+  nano_cv *ncv = (nano_cv *) R_ExternalPtrAddr(cv);
+  nano_cv *ncv2 = (nano_cv *) R_ExternalPtrAddr(cv2);
+  duo->cv = ncv;
+  duo->cv2 = ncv2;
+
+  nng_mtx *dmtx = ncv->mtx;
+  nng_cv *dcv = ncv->cv;
+
+  nng_mtx_lock(dmtx);
+  ncv->condition = 0;
+  nng_mtx_unlock(dmtx);
 
   nng_thread_create(&duo->thr, rnng_signal_thread, duo);
 

@@ -12,14 +12,17 @@ cv \%~>\% cv2
 \item{cv2}{a 'conditionVariable' object, to which to forward the signal.}
 }
 \value{
-Invisibly, 'cv'.
+Invisibly, 'cv' (with the condition value reset to zero).
 }
 \description{
 Forwards signals from one 'conditionVariable' to another.
 }
 \details{
-This is an experimental function. When used, waits should be
-    performed only on 'cv2' and not 'cv'. Waiting on 'cv' is not supported.
+This is an experimental operator.
+
+    The condition value of 'cv' is reset to zero. It is intended that 'cv' be
+    used as a counter and that waits should be performed on 'cv2'. Waiting on
+    'cv' is not supported in conjunction with use of this operator.
 }
 \examples{
 cv <- cv()

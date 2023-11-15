@@ -256,10 +256,13 @@ unlock <- function(socket) invisible(.Call(rnng_socket_unlock, socket))
 #' @param cv a 'conditionVariable' object, from which to forward the signal.
 #' @param cv2 a 'conditionVariable' object, to which to forward the signal.
 #'
-#' @return Invisibly, 'cv'.
+#' @return Invisibly, 'cv' (with the condition value reset to zero).
 #'
-#' @details This is an experimental function. When used, waits should be
-#'     performed only on 'cv2' and not 'cv'. Waiting on 'cv' is not supported.
+#' @details This is an experimental operator.
+#'
+#'     The condition value of 'cv' is reset to zero. It is intended that 'cv' be
+#'     used as a counter and that waits should be performed on 'cv2'. Waiting on
+#'     'cv' is not supported in conjunction with use of this operator.
 #'
 #' @examples
 #' cv <- cv()
