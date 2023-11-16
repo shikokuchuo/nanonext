@@ -32,6 +32,12 @@ typedef struct nano_thread_aio_s {
   nng_aio *aio;
 } nano_thread_aio;
 
+typedef struct nano_thread_duo_s {
+  nng_thread *thr;
+  nano_cv *cv;
+  nano_cv *cv2;
+} nano_thread_duo;
+
 static void thread_finalizer(SEXP xptr) {
 
   if (R_ExternalPtrAddr(xptr) == NULL)
@@ -54,6 +60,25 @@ static void thread_aio_finalizer(SEXP xptr) {
   nng_cv_free(cv);
   nng_mtx_free(mtx);
   R_Free(ncv);
+  R_Free(xp);
+
+}
+
+static void thread_duo_finalizer(SEXP xptr) {
+
+  if (R_ExternalPtrAddr(xptr) == NULL)
+    return;
+  nano_thread_duo *xp = (nano_thread_duo *) R_ExternalPtrAddr(xptr);
+  nano_cv *ncv = xp->cv;
+  nng_mtx *mtx = ncv->mtx;
+  nng_cv *cv = ncv->cv;
+
+  nng_mtx_lock(mtx);
+  ncv->condition = -1;
+  nng_cv_wake(cv);
+  nng_mtx_unlock(mtx);
+
+  nng_thread_destroy(xp->thr);
   R_Free(xp);
 
 }
@@ -273,5 +298,82 @@ SEXP rnng_wait_thread_create(SEXP aio) {
 
   UNPROTECT(1);
   return aio;
+
+}
+
+static void rnng_signal_thread(void *args) {
+
+  nano_thread_duo *duo = (nano_thread_duo *) args;
+  nano_cv *ncv = duo->cv;
+  nng_mtx *mtx = ncv->mtx;
+  nng_cv *cv = ncv->cv;
+  nano_cv *ncv2 = duo->cv2;
+  nng_mtx *mtx2 = ncv2->mtx;
+  nng_cv *cv2 = ncv2->cv;
+
+  int incr, cond = 0;
+
+  nng_mtx_lock(mtx);
+  while (ncv->condition == cond)
+    nng_cv_wait(cv);
+  if (ncv->condition < 0) {
+    ncv->condition = cond;
+    nng_mtx_unlock(mtx);
+    return;
+  }
+  incr = ncv->condition - cond;
+  cond = cond + incr;
+  nng_mtx_unlock(mtx);
+
+  while (1) {
+
+    nng_mtx_lock(mtx2);
+    ncv2->condition = ncv2->condition + incr;
+    nng_cv_wake(cv2);
+    nng_mtx_unlock(mtx2);
+
+    nng_mtx_lock(mtx);
+    while (ncv->condition == cond)
+      nng_cv_wait(cv);
+    if (ncv->condition < 0) {
+      ncv->condition = cond;
+      nng_mtx_unlock(mtx);
+      break;
+    }
+    incr = ncv->condition - cond;
+    cond = cond + incr;
+    nng_mtx_unlock(mtx);
+
+  }
+
+}
+
+SEXP rnng_signal_thread_create(SEXP cv, SEXP cv2) {
+
+  if (R_ExternalPtrTag(cv) != nano_CvSymbol)
+    Rf_error("'cv' is not a valid Condition Variable");
+
+  if (R_ExternalPtrTag(cv2) != nano_CvSymbol)
+    Rf_error("'cv2' is not a valid Condition Variable");
+
+  nano_thread_duo *duo = R_Calloc(1, nano_thread_duo);
+  nano_cv *ncv = (nano_cv *) R_ExternalPtrAddr(cv);
+  nano_cv *ncv2 = (nano_cv *) R_ExternalPtrAddr(cv2);
+  duo->cv = ncv;
+  duo->cv2 = ncv2;
+
+  nng_mtx *dmtx = ncv->mtx;
+  nng_mtx_lock(dmtx);
+  ncv->condition = 0;
+  nng_mtx_unlock(dmtx);
+
+  nng_thread_create(&duo->thr, rnng_signal_thread, duo);
+
+  SEXP xptr = R_MakeExternalPtr(duo, R_NilValue, R_NilValue);
+  Rf_setAttrib(cv, nano_CvSymbol, xptr);
+  R_RegisterCFinalizerEx(xptr, thread_duo_finalizer, TRUE);
+  R_MakeWeakRef(xptr, cv, R_NilValue, FALSE);
+
+  return cv2;
 
 }

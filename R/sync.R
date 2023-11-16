@@ -248,3 +248,37 @@ lock <- function(socket, cv = NULL) invisible(.Call(rnng_socket_lock, socket, cv
 #' @export
 #'
 unlock <- function(socket) invisible(.Call(rnng_socket_unlock, socket))
+
+#' Signal Forwarder
+#'
+#' Forwards signals from one 'conditionVariable' to another.
+#'
+#' @param cv a 'conditionVariable' object, from which to forward the signal.
+#' @param cv2 a 'conditionVariable' object, to which the signal is forwarded.
+#'
+#' @return Invisibly, 'cv2'.
+#'
+#' @details This is an experimental operator.
+#'
+#'     The condition value of 'cv' is initially reset to zero when this operator
+#'     returns.
+#'
+#'     Changes in the condition value of 'cv' are forwarded to 'cv2', but only
+#'     on each occassion 'cv' is signalled. This means that waiting on 'cv'
+#'     will cause a temporary divergence between the actual condition value of
+#'     'cv' and that recorded at 'cv2', until the next time 'cv' is signalled.
+#'
+#' @examples
+#' cva <- cv(); cvb <- cv(); cv1 <- cv(); cv2 <- cv()
+#'
+#' cva %~>% cv1 %~>% cv2
+#' cvb %~>% cv2
+#'
+#' cv_signal(cva)
+#' cv_signal(cvb)
+#' cv_value(cv1)
+#' cv_value(cv2)
+#'
+#' @export
+#'
+`%~>%` <- function(cv, cv2) invisible(.Call(rnng_signal_thread_create, cv, cv2))
