@@ -9,10 +9,10 @@ cv \%~>\% cv2
 \arguments{
 \item{cv}{a 'conditionVariable' object, from which to forward the signal.}
 
-\item{cv2}{a 'conditionVariable' object, to which to forward the signal.}
+\item{cv2}{a 'conditionVariable' object, to which the signal is forwarded.}
 }
 \value{
-Invisibly, 'cv' (with the condition value reset to zero).
+Invisibly, 'cv2'.
 }
 \description{
 Forwards signals from one 'conditionVariable' to another.
@@ -20,18 +20,23 @@ Forwards signals from one 'conditionVariable' to another.
 \details{
 This is an experimental operator.
 
-    The condition value of 'cv' is reset to zero. It is intended that 'cv' be
-    used as a counter and that waits should be performed on 'cv2'. Waiting on
-    'cv' is not supported in conjunction with use of this operator.
+    The condition value of 'cv' is initially reset to zero when this operator
+    returns.
+
+    Changes in the condition value of 'cv' are forwarded to 'cv2', but only
+    on each occassion 'cv' is signalled. This means that waiting on 'cv'
+    will cause a temporary divergence between the actual condition value of
+    'cv' and that recorded at 'cv2', until the next time 'cv' is signalled.
 }
 \examples{
-cv <- cv()
-cv2 <- cv()
+cva <- cv(); cvb <- cv(); cv1 <- cv(); cv2 <- cv()
 
-cv \%~>\% cv2
+cva \%~>\% cv1 \%~>\% cv2
+cvb \%~>\% cv2
 
-cv_signal(cv)
-cv_value(cv)
+cv_signal(cva)
+cv_signal(cvb)
+cv_value(cv1)
 cv_value(cv2)
 
 }

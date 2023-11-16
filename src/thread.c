@@ -363,8 +363,6 @@ SEXP rnng_signal_thread_create(SEXP cv, SEXP cv2) {
   duo->cv2 = ncv2;
 
   nng_mtx *dmtx = ncv->mtx;
-  nng_cv *dcv = ncv->cv;
-
   nng_mtx_lock(dmtx);
   ncv->condition = 0;
   nng_mtx_unlock(dmtx);
@@ -376,6 +374,6 @@ SEXP rnng_signal_thread_create(SEXP cv, SEXP cv2) {
   R_RegisterCFinalizerEx(xptr, thread_duo_finalizer, TRUE);
   R_MakeWeakRef(xptr, cv, R_NilValue, FALSE);
 
-  return cv;
+  return cv2;
 
 }
