@@ -341,31 +341,30 @@ weakref_value <- function(w) .Call(rnng_weakref_value, w)
 #'     and unserialization of external pointer objects, allowing these to be
 #'     sent and received between different R sessions.
 #'
-#' @param inhook a function (for custom serialization). The signature for this
-#'     function must accept a list of external pointer objects and return a raw
-#'     vector, e.g. \code{torch::torch_serialize}, or else NULL to reset.
-#' @param outhook a function (for custom unserialization). The signature for
-#'     this function must accept a raw vector and return a list of external
-#'     pointer objects, e.g. \code{torch::torch_load}, or else NULL to reset.
+#' @param refhook a list of two functions (for custom serialization /
+#'     unserialization). The signature for the first function must accept a list
+#'     of external pointer objects and return a raw vector, e.g.
+#'     \code{torch::torch_serialize}, and the second must accept a raw vector
+#'     and return a list of external pointer objects, e.g.
+#'     \code{torch::torch_load}, or else NULL to reset.
 #' @param mark [default FALSE] (for advanced use only) logical value, whether to
 #'     mark serialized data with a special bit.
 #'
-#' @return Invisibly, a pairlist comprising the currently-registered 'inhook'
-#'     and 'outhook' functions.
+#' @return Invisibly, a list comprising the currently-registered 'refhook'
+#'     functions.
 #'
 #' @details Calling this function without any arguments returns (invisibly) the
-#'     currently-registered functions (and resets 'mark' to FALSE).
+#'     currently-registered 'refhook' functions (and resets 'mark' to FALSE).
 #'
 #' @examples
-#' cfg <- nextmode(inhook = function(x) serialize(x, NULL),
-#'                 outhook = unserialize,
-#'                 mark = TRUE)
-#' cfg
+#' nextmode(refhook = list(function(x) serialize(x, NULL), unserialize),
+#'          mark = TRUE)
+#' print(nextmode())
 #'
-#' nextmode(NULL, NULL)
+#' nextmode(NULL)
 #' print(nextmode())
 #'
 #' @export
 #'
-nextmode <- function(inhook, outhook, mark = FALSE)
-  invisible(.Call(rnng_next_mode, if (missing(inhook)) "" else inhook, if (missing(outhook)) "" else outhook, mark))
+nextmode <- function(refhook = list(), mark = FALSE)
+  invisible(.Call(rnng_next_mode, refhook, mark))

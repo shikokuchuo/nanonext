@@ -1423,40 +1423,42 @@ void rnng_fini(void) {
 
 }
 
-SEXP rnng_next_mode(SEXP infun, SEXP outfun, SEXP mark) {
+SEXP rnng_next_mode(SEXP refhook, SEXP mark) {
 
+  SEXPTYPE typ;
+  SEXP out;
   special_bit = (uint8_t) LOGICAL(mark)[0];
 
-  switch(TYPEOF(infun)) {
-  case CLOSXP:
-  case BUILTINSXP:
-  case SPECIALSXP:
+  switch(TYPEOF(refhook)) {
+  case VECSXP:
+    if (Rf_xlength(refhook) != 2) break;
+    typ = TYPEOF(VECTOR_ELT(refhook, 0));
+    if (typ != CLOSXP && typ != SPECIALSXP && typ != BUILTINSXP) break;
+    typ = TYPEOF(VECTOR_ELT(refhook, 1));
+    if (typ != CLOSXP && typ != SPECIALSXP && typ != BUILTINSXP) break;
     if (nano_refHookIn != R_NilValue)
       R_ReleaseObject(nano_refHookIn);
-    R_PreserveObject(nano_refHookIn = infun);
-    break;
+    R_PreserveObject(nano_refHookIn = VECTOR_ELT(refhook, 0));
+    if (nano_refHookOut != R_NilValue)
+      R_ReleaseObject(nano_refHookOut);
+    R_PreserveObject(nano_refHookOut = VECTOR_ELT(refhook, 1));
+    return refhook;
   case NILSXP:
     if (nano_refHookIn != R_NilValue) {
       R_ReleaseObject(nano_refHookIn);
       nano_refHookIn = R_NilValue;
     }
-  }
-
-  switch(TYPEOF(outfun)) {
-  case CLOSXP:
-  case BUILTINSXP:
-  case SPECIALSXP:
-    if (nano_refHookOut != R_NilValue)
-      R_ReleaseObject(nano_refHookOut);
-    R_PreserveObject(nano_refHookOut = outfun);
-    break;
-  case NILSXP:
     if (nano_refHookOut != R_NilValue) {
       R_ReleaseObject(nano_refHookOut);
       nano_refHookOut = R_NilValue;
     }
   }
 
-  return Rf_cons(nano_refHookIn, Rf_cons(nano_refHookOut, R_NilValue));
+  PROTECT(out = Rf_allocVector(VECSXP, 2));
+  SET_VECTOR_ELT(out, 0, nano_refHookIn);
+  SET_VECTOR_ELT(out, 1, nano_refHookOut);
+  UNPROTECT(1);
+
+  return out;
 
 }

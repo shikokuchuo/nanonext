@@ -4,23 +4,22 @@
 \alias{nextmode}
 \title{Next Mode Settings}
 \usage{
-nextmode(inhook, outhook, mark = FALSE)
+nextmode(refhook = list(), mark = FALSE)
 }
 \arguments{
-\item{inhook}{a function (for custom serialization). The signature for this
-function must accept a list of external pointer objects and return a raw
-vector, e.g. \code{torch::torch_serialize}, or else NULL to reset.}
-
-\item{outhook}{a function (for custom unserialization). The signature for
-this function must accept a raw vector and return a list of external
-pointer objects, e.g. \code{torch::torch_load}, or else NULL to reset.}
+\item{refhook}{a list of two functions (for custom serialization /
+unserialization). The signature for the first function must accept a list
+of external pointer objects and return a raw vector, e.g.
+\code{torch::torch_serialize}, and the second must accept a raw vector
+and return a list of external pointer objects, e.g.
+\code{torch::torch_load}, or else NULL to reset.}
 
 \item{mark}{[default FALSE] (for advanced use only) logical value, whether to
 mark serialized data with a special bit.}
 }
 \value{
-Invisibly, a pairlist comprising the currently-registered 'inhook'
-    and 'outhook' functions.
+Invisibly, a list comprising the currently-registered 'refhook'
+    functions.
 }
 \description{
 Configures send mode 'next' by registering functions for custom serialization
@@ -29,15 +28,14 @@ Configures send mode 'next' by registering functions for custom serialization
 }
 \details{
 Calling this function without any arguments returns (invisibly) the
-    currently-registered functions (and resets 'mark' to FALSE).
+    currently-registered 'refhook' functions (and resets 'mark' to FALSE).
 }
 \examples{
-cfg <- nextmode(inhook = function(x) serialize(x, NULL),
-                outhook = unserialize,
-                mark = TRUE)
-cfg
+nextmode(refhook = list(function(x) serialize(x, NULL), unserialize),
+         mark = TRUE)
+print(nextmode())
 
-nextmode(NULL, NULL)
+nextmode(NULL)
 print(nextmode())
 
 }
