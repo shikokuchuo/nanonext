@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.10.4.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.10.4.9002</span>
       </span>
     </div>
 
@@ -54,15 +54,19 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.10.4.9001" id="nanonext-01049001-development">nanonext 0.10.4.9001 (development)<a class="anchor" aria-label="anchor" href="#nanonext-01049001-development"></a></h2>
+<h2 class="page-header" data-toc-text="0.10.4.9002" id="nanonext-01049002-development">nanonext 0.10.4.9002 (development)<a class="anchor" aria-label="anchor" href="#nanonext-01049002-development"></a></h2>
 <div class="section level5">
-<h5 id="new-features-0-10-4-9001">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-10-4-9001"></a></h5>
+<h5 id="new-features-0-10-4-9002">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-10-4-9002"></a></h5>
 <ul><li>Introduces <code><a href="../reference/call_aio.html">wait_aio()</a></code>, a user-interruptible version of <code><a href="../reference/call_aio.html">call_aio()</a></code>.</li>
 <li>Implements <code>%~&gt;%</code> signal forwarder from one ‘conditionVariable’ to another.</li>
 </ul></div>
 <div class="section level5">
-<h5 id="updates-0-10-4-9001">Updates<a class="anchor" aria-label="anchor" href="#updates-0-10-4-9001"></a></h5>
-<ul><li>Restricts <code><a href="../reference/nextmode.html">nextmode()</a></code> to register custom serialization and unserialization functions for external pointer objects for simplicity.</li>
+<h5 id="updates-0-10-4-9002">Updates<a class="anchor" aria-label="anchor" href="#updates-0-10-4-9002"></a></h5>
+<ul><li>
+<code><a href="../reference/nextmode.html">nextmode()</a></code> improvements:
+<ul><li>simplified function signature to take a ‘refhook’ argument comprising a list of serialization / unserialization functions.</li>
+<li>registered ‘refhook’ functions apply to external pointer type objects only.</li>
+</ul></li>
 <li>
 <code><a href="../reference/cv.html">until()</a></code> updated to be identical to <code>.until()</code>, returning FALSE instead of TRUE if the timeout has been reached.</li>
 <li>
