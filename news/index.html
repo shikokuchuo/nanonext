@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.10.4.9002</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.10.4.9003</span>
       </span>
     </div>
 
@@ -54,14 +54,14 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.10.4.9002" id="nanonext-01049002-development">nanonext 0.10.4.9002 (development)<a class="anchor" aria-label="anchor" href="#nanonext-01049002-development"></a></h2>
+<h2 class="page-header" data-toc-text="0.10.4.9003" id="nanonext-01049003-development">nanonext 0.10.4.9003 (development)<a class="anchor" aria-label="anchor" href="#nanonext-01049003-development"></a></h2>
 <div class="section level5">
-<h5 id="new-features-0-10-4-9002">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-10-4-9002"></a></h5>
+<h5 id="new-features-0-10-4-9003">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-10-4-9003"></a></h5>
 <ul><li>Introduces <code><a href="../reference/call_aio.html">wait_aio()</a></code>, a user-interruptible version of <code><a href="../reference/call_aio.html">call_aio()</a></code>.</li>
 <li>Implements <code>%~&gt;%</code> signal forwarder from one ‘conditionVariable’ to another.</li>
 </ul></div>
 <div class="section level5">
-<h5 id="updates-0-10-4-9002">Updates<a class="anchor" aria-label="anchor" href="#updates-0-10-4-9002"></a></h5>
+<h5 id="updates-0-10-4-9003">Updates<a class="anchor" aria-label="anchor" href="#updates-0-10-4-9003"></a></h5>
 <ul><li>
 <code><a href="../reference/nextmode.html">nextmode()</a></code> improvements:
 <ul><li>simplified function signature to take a ‘refhook’ argument comprising a list of serialization / unserialization functions.</li>
@@ -72,6 +72,7 @@
 <li>
 <code><a href="../reference/pipe_notify.html">pipe_notify()</a></code> arguments ‘add’, ‘remove’ and ‘flag’ now default to FALSE instead of TRUE for easier selective specification of the events to signal.</li>
 <li>The weak references interface is removed as ‘non-core’.</li>
+<li>Applies fix nanomsg/nng#1702 to bundled ‘libnng’ v1.6.0 (a54820f).</li>
 <li>Upgrades bundled ‘libmbedtls’ to v 3.5.1.</li>
 </ul></div>
 </div>
