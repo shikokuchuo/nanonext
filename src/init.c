@@ -136,11 +136,6 @@ static void ReleaseObjects(void) {
   R_ReleaseObject(nano_aioFormals);
 }
 
-static const R_CMethodDef cMethods[] = {
-  {"rnng_fini", (DL_FUNC) &rnng_fini, 0},
-  {NULL, NULL, 0, NULL}
-};
-
 static const R_CallMethodDef callMethods[] = {
   {"rnng_aio_call", (DL_FUNC) &rnng_aio_call, 1},
   {"rnng_aio_get_msg", (DL_FUNC) &rnng_aio_get_msg, 1},
@@ -230,7 +225,7 @@ void attribute_visible R_init_nanonext(DllInfo* dll) {
 #if NNG_MAJOR_VERSION == 1 && NNG_MINOR_VERSION < 6
   nng_mtx_alloc(&shr_mtx);
 #endif
-  R_registerRoutines(dll, cMethods, callMethods, NULL, externalMethods);
+  R_registerRoutines(dll, NULL, callMethods, NULL, externalMethods);
   R_useDynamicSymbols(dll, FALSE);
   R_forceSymbols(dll, TRUE);
 }

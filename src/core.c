@@ -1415,13 +1415,7 @@ SEXP rnng_weakref_value(SEXP w) {
 
 }
 
-// misc ------------------------------------------------------------------------
-
-void rnng_fini(void) {
-
-  nng_fini();
-
-}
+// next mode selector ----------------------------------------------------------
 
 SEXP rnng_next_mode(SEXP refhook, SEXP mark) {
 
