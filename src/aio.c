@@ -346,8 +346,10 @@ static void reqsaio_finalizer(SEXP xptr) {
   if (R_ExternalPtrAddr(xptr) == NULL)
     return;
   nano_aio *xp = (nano_aio *) R_ExternalPtrAddr(xptr);
+#if NNG_MAJOR_VERSION == 1 && NNG_MINOR_VERSION < 6
   nng_ctx *ctx = (nng_ctx *) xp->data;
   nng_ctx_close(*ctx);
+#endif
   nng_aio_free(xp->aio);
   R_Free(xp);
 
@@ -1579,7 +1581,9 @@ SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeou
   }
 
   nano_aio *saio = R_Calloc(1, nano_aio);
+#if NNG_MAJOR_VERSION == 1 && NNG_MINOR_VERSION < 6
   saio->data = ctx;
+#endif
 
   if ((xc = nng_msg_alloc(&msg, 0))) {
     R_Free(saio);
@@ -1903,7 +1907,9 @@ SEXP rnng_cv_request(SEXP con, SEXP data, SEXP cvar, SEXP sendmode, SEXP recvmod
   }
 
   nano_aio *saio = R_Calloc(1, nano_aio);
+#if NNG_MAJOR_VERSION == 1 && NNG_MINOR_VERSION < 6
   saio->data = ctx;
+#endif
 
   if ((xc = nng_msg_alloc(&msg, 0))) {
     R_Free(saio);
