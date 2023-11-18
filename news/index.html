@@ -71,6 +71,7 @@
 <code><a href="../reference/cv.html">until()</a></code> updated to be identical to <code>.until()</code>, returning FALSE instead of TRUE if the timeout has been reached.</li>
 <li>
 <code><a href="../reference/pipe_notify.html">pipe_notify()</a></code> arguments ‘add’, ‘remove’ and ‘flag’ now default to FALSE instead of TRUE for easier selective specification of the events to signal.</li>
+<li>The weak references interface is removed as ‘non-core’.</li>
 <li>Upgrades bundled ‘libmbedtls’ to v 3.5.1.</li>
 </ul></div>
 </div>
@@ -197,7 +198,7 @@
 <code><a href="../reference/write_cert.html">write_cert()</a></code> generates 4096 bit RSA keys and self-signed X.509 certificates for use with <code><a href="../reference/tls_config.html">tls_config()</a></code>.</li>
 </ul></li>
 <li>
-<code><a href="../reference/weakref.html">weakref()</a></code>, <code><a href="../reference/weakref.html">weakref_key()</a></code> and <code><a href="../reference/weakref.html">weakref_value()</a></code> implement an interface to R’s weak reference system. These may be used for synchronising the lifetimes of objects with reference objects such as Sockets or Aios, or creating read-only objects accessible by the weakref value alone.</li>
+<code>weakref()</code>, <code>weakref_key()</code> and <code>weakref_value()</code> implement an interface to R’s weak reference system. These may be used for synchronising the lifetimes of objects with reference objects such as Sockets or Aios, or creating read-only objects accessible by the weakref value alone.</li>
 <li>
 <code><a href="../reference/strcat.html">strcat()</a></code> provides a simple, fast utility to concatenate two strings.</li>
 </ul></div>
