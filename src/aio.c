@@ -37,12 +37,13 @@ typedef struct nano_cv_duo_s {
 
 static SEXP mk_error_data(const int xc) {
 
-  const char *names[] = {xc < 0 ? "result" : "data", ""};
+  const char *names[] = {xc < 0 ? "result" : "data", "value", ""};
   SEXP out = PROTECT(Rf_mkNamed(VECSXP, names));
   SEXP err = Rf_ScalarInteger(abs(xc));
   SET_ATTRIB(err, nano_error);
   SET_OBJECT(err, 1);
   SET_VECTOR_ELT(out, 0, err);
+  SET_VECTOR_ELT(out, 1, err);
   UNPROTECT(1);
   return out;
 
