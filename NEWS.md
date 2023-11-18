@@ -12,6 +12,7 @@
   + registered 'refhook' functions apply to external pointer type objects only.
 * `until()` updated to be identical to `.until()`, returning FALSE instead of TRUE if the timeout has been reached.
 * `pipe_notify()` arguments 'add', 'remove' and 'flag' now default to FALSE instead of TRUE for easier selective specification of the events to signal.
+* The weak references interface is removed as 'non-core'.
 * Upgrades bundled 'libmbedtls' to v 3.5.1.
 
 # nanonext 0.10.4

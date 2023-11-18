@@ -275,66 +275,6 @@ status_code <- function(x) .Call(rnng_status_code, x)
 #'
 strcat <- function(a, b) .Call(rnng_strcat, a, b)
 
-# nanonext - Weak References ---------------------------------------------------
-
-#' Weak References
-#'
-#' \code{weakref} creates a new weak reference, a special type of R object that
-#'     associates a value with a key. The value is kept alive for as long as the
-#'     key remains reachable (i.e. has yet to be garbage collected), even if the
-#'     value itself is no longer referenced.
-#'
-#' @param key a reference object (such as an environment or external pointer).
-#' @param value an object.
-#'
-#' @return For \code{weakref}: a weak reference.
-#'
-#'     For \code{weakref_key} and \code{weakref_value}: the key or value
-#'     associated with the weak reference, or NULL if no longer reachable.
-#'
-#' @examples
-#' k <- new.env()
-#' v <- "value"
-#'
-#' w <- weakref(k, v)
-#' w
-#' typeof(w)
-#'
-#' @export
-#'
-weakref <- function(key, value) .Call(rnng_weakref_make, key, value)
-
-#' Weakref Key
-#'
-#' \code{weakref_key} retrieves the key associated with a weak reference.
-#'
-#' @param w a weak reference.
-#'
-#' @examples
-#' key <- weakref_key(w)
-#' identical(key, k)
-#'
-#' @rdname weakref
-#' @export
-#'
-weakref_key <- function(w) .Call(rnng_weakref_key, w)
-
-#' Weakref Value
-#'
-#' \code{weakref_value} retrieves the value associated with a weak reference.
-#'
-#' @examples
-#' value <- weakref_value(w)
-#' identical(value, v)
-#'
-#' rm(v)
-#' weakref_value(w)
-#'
-#' @rdname weakref
-#' @export
-#'
-weakref_value <- function(w) .Call(rnng_weakref_value, w)
-
 #' Next Mode Settings
 #'
 #' Configures send mode 'next' by registering functions for custom serialization
