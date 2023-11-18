@@ -4,6 +4,7 @@
 \alias{cv}
 \alias{wait}
 \alias{until}
+\alias{.until}
 \alias{cv_value}
 \alias{cv_reset}
 \alias{cv_signal}
@@ -14,6 +15,8 @@ cv()
 wait(cv)
 
 until(cv, msec)
+
+.until(cv, msec)
 
 cv_value(cv)
 

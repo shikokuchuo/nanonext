@@ -107,6 +107,7 @@ wait <- function(cv) invisible(.Call(rnng_cv_wait, cv))
 #'
 until <- function(cv, msec) invisible(.Call(rnng_cv_until, cv, msec))
 
+#' @rdname cv
 #' @export
 #'
 .until <- until
