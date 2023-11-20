@@ -223,15 +223,6 @@ call_aio <- function(aio) invisible(.Call(rnng_aio_call, aio))
 #'
 #' \code{wait_aio} is identical to \code{call_aio} but allows user interrupts.
 #'
-#' @param aio an Aio (object of class 'sendAio', 'recvAio' or 'ncurlAio').
-#'
-#' @section Wait:
-#'
-#'     \code{wait_aio} is identical to \code{call_aio} except that it is
-#'     user-interruptible. If interrupted, the aio is stopped upon the next
-#'     garbage collection event, and hence may return an 'errorValue' 20
-#'     'Operation canceled' if it remains unresolved by that time.
-#'
 #' @rdname call_aio
 #' @export
 #'

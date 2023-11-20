@@ -53,15 +53,6 @@ For a 'recvAio', the received value may be retrieved at \code{$data}.
     for use in control flow statements such as \code{while} or \code{if}.
 }
 
-\section{Wait}{
-
-
-    \code{wait_aio} is identical to \code{call_aio} except that it is
-    user-interruptible. If interrupted, the aio is stopped upon the next
-    garbage collection event, and hence may return an 'errorValue' 20
-    'Operation canceled' if it remains unresolved by that time.
-}
-
 \examples{
 s1 <- socket("pair", listen = "inproc://nanonext")
 s2 <- socket("pair", dial = "inproc://nanonext")
