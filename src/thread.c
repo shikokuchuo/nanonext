@@ -55,6 +55,7 @@ static void thread_aio_finalizer(SEXP xptr) {
   nano_cv *ncv = xp->cv;
   nng_mtx *mtx = ncv->mtx;
   nng_cv *cv = ncv->cv;
+  nng_aio_stop(xp->aio);
   nng_thread_destroy(xp->thr);
   nng_cv_free(cv);
   nng_mtx_free(mtx);
