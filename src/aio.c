@@ -1264,11 +1264,11 @@ SEXP rnng_aio_http(SEXP env, SEXP response, SEXP type) {
     const R_xlen_t rlen = Rf_xlength(response);
     switch (TYPEOF(response)) {
     case STRSXP:
-      PROTECT(response = Rf_lengthgets(response, rlen + 1));
+      PROTECT(response = Rf_xlengthgets(response, rlen + 1));
       SET_STRING_ELT(response, rlen, Rf_mkChar("Location"));
       break;
     case VECSXP:
-      PROTECT(response = Rf_lengthgets(response, rlen + 1));
+      PROTECT(response = Rf_xlengthgets(response, rlen + 1));
       SET_VECTOR_ELT(response, rlen, Rf_mkString("Location"));
       break;
     default:

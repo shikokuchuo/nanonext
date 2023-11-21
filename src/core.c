@@ -141,7 +141,7 @@ static SEXP nano_inHook(SEXP x, SEXP fun) {
     SET_VECTOR_ELT(list, xlen, x);
   } else {
     xlen = Rf_xlength(nano_refList);
-    PROTECT(list = Rf_lengthgets(nano_refList, xlen + 1));
+    PROTECT(list = Rf_xlengthgets(nano_refList, xlen + 1));
     SET_VECTOR_ELT(list, xlen, x);
   }
   char idx[NANONEXT_INT_STRLEN];
