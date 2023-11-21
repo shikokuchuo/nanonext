@@ -1,8 +1,8 @@
-# nanonext 0.10.4.9005 (development)
+# nanonext 0.10.4.9006 (development)
 
 #### New Features
 
-* Introduces `wait_aio()`, a user-interruptible version of `call_aio()`.
+* Introduces `call_aio_safe()`, a user-interruptible version of `call_aio()`, safe for interactive use.
 * Implements `%~>%` signal forwarder from one 'conditionVariable' to another.
 
 #### Updates
