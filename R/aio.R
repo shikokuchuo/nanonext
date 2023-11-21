@@ -210,7 +210,7 @@ recv_aio_signal <- function(con,
 #'
 #' msg <- recv_aio(s2, timeout = 100)
 #' msg
-#' call_aio_safe(msg)$data
+#' call_safe(msg)$data
 #'
 #' close(s1)
 #' close(s2)
@@ -221,13 +221,13 @@ call_aio <- function(aio) invisible(.Call(rnng_aio_call, aio))
 
 #' Wait for the Value of an Asynchronous Aio Operation
 #'
-#' \code{call_aio_safe} is identical to \code{call_aio} but allows user
+#' \code{call_safe} is identical to \code{call_aio} but allows user
 #'     interrupts, thus being safe for interactive use.
 #'
 #' @rdname call_aio
 #' @export
 #'
-call_aio_safe <- function(aio) invisible(.Call(rnng_wait_thread_create, aio))
+call_safe <- function(aio) invisible(.Call(rnng_wait_thread_create, aio))
 
 #' Stop Asynchronous Aio Operation
 #'

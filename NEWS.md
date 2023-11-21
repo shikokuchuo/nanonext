@@ -2,7 +2,7 @@
 
 #### New Features
 
-* Introduces `call_aio_safe()`, a user-interruptible version of `call_aio()`, safe for interactive use.
+* Introduces `call_safe()`, a user-interruptible version of `call_aio()`, safe for interactive use.
 * Implements `%~>%` signal forwarder from one 'conditionVariable' to another.
 
 #### Updates
