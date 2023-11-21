@@ -219,7 +219,7 @@ recv_aio_signal <- function(con,
 #'
 call_aio <- function(aio) invisible(.Call(rnng_aio_call, aio))
 
-#' Wait for the Value of an Asynchronous Aio Operation
+#' Call the Value of an Asynchronous Aio Operation
 #'
 #' \code{call_safe} is identical to \code{call_aio} but allows user
 #'     interrupts, thus being safe for interactive use.

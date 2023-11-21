@@ -3,6 +3,7 @@
 \name{cv}
 \alias{cv}
 \alias{wait}
+\alias{wait_safe}
 \alias{until}
 \alias{.until}
 \alias{cv_value}
@@ -13,6 +14,8 @@
 cv()
 
 wait(cv)
+
+wait_safe(cv)
 
 until(cv, msec)
 
@@ -49,6 +52,9 @@ For \strong{cv}: a 'conditionVariable' object.
 
 \code{wait} waits on a condition being signalled by completion of an
     asynchronous receive or pipe event.
+
+\code{wait_safe} is identical to \code{wait} but allows user interrupts, thus
+    being safe for interactive use.
 
 \code{until} waits until a future time on a condition being signalled by
     completion of an asynchronous receive or pipe event.
@@ -104,6 +110,7 @@ Pass the 'conditionVariable' to the signalling forms of the
 cv <- cv()
 
 # wait(cv) # uncommenting will block until the cv is signalled
+# wait_safe(cv) # block until the cv is signalled or interrupted
 
 until(cv, 10L)
 

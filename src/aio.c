@@ -1676,14 +1676,16 @@ SEXP rnng_cv_wait(SEXP cvar) {
   nano_cv *ncv = (nano_cv *) R_ExternalPtrAddr(cvar);
   nng_cv *cv = ncv->cv;
   nng_mtx *mtx = ncv->mtx;
+  uint8_t flag;
 
   nng_mtx_lock(mtx);
   while (ncv->condition == 0)
     nng_cv_wait(cv);
   ncv->condition--;
+  flag = ncv->flag;
   nng_mtx_unlock(mtx);
 
-  return Rf_ScalarLogical(ncv->flag == 0);
+  return Rf_ScalarLogical(flag == 0);
 
 }
 
@@ -1723,6 +1725,40 @@ SEXP rnng_cv_until(SEXP cvar, SEXP msec) {
   }
 
   return Rf_ScalarLogical(signalled);
+
+}
+
+SEXP rnng_cv_wait_safe(SEXP cvar) {
+
+  if (R_ExternalPtrTag(cvar) != nano_CvSymbol)
+    Rf_error("'cv' is not a valid Condition Variable");
+
+  nano_cv *ncv = (nano_cv *) R_ExternalPtrAddr(cvar);
+  nng_cv *cv = ncv->cv;
+  nng_mtx *mtx = ncv->mtx;
+  uint8_t flag;
+
+  do {
+    int signalled = 1;
+    nng_mtx_lock(mtx);
+    while (ncv->condition == 0) {
+      if (nng_cv_until(cv, 2000) == NNG_ETIMEDOUT) {
+        signalled = 0;
+        break;
+      }
+    }
+    if (signalled) {
+      ncv->condition--;
+      flag = ncv->flag;
+      nng_mtx_unlock(mtx);
+      break;
+    } else {
+      nng_mtx_unlock(mtx);
+      R_CheckUserInterrupt();
+    }
+  } while (1);
+
+  return Rf_ScalarLogical(flag == 0);
 
 }
 

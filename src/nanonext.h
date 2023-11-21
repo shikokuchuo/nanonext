@@ -235,6 +235,7 @@ extern SEXP rnng_cv_signal(SEXP);
 extern SEXP rnng_cv_until(SEXP, SEXP);
 extern SEXP rnng_cv_value(SEXP);
 extern SEXP rnng_cv_wait(SEXP);
+extern SEXP rnng_cv_wait_safe(SEXP);
 extern SEXP rnng_dial(SEXP, SEXP, SEXP, SEXP, SEXP);
 extern SEXP rnng_dialer_close(SEXP);
 extern SEXP rnng_dialer_start(SEXP, SEXP);
