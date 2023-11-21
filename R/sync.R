@@ -85,7 +85,7 @@ cv <- function() .Call(rnng_cv_alloc)
 #'
 #' @examples
 #' # wait(cv) # uncommenting will block until the cv is signalled
-#' # wait_safe(cv) # block until the cv is signalled or interrupted
+#' # wait_(cv) # block until the cv is signalled or interrupted
 #'
 #' @rdname cv
 #' @export
@@ -94,13 +94,13 @@ wait <- function(cv) invisible(.Call(rnng_cv_wait, cv))
 
 #' Condition Variables - Wait Safe
 #'
-#' \code{wait_safe} is identical to \code{wait} but allows user interrupts, thus
+#' \code{wait_} is identical to \code{wait} but allows user interrupts, thus
 #'     being safe for interactive use.
 #'
 #' @rdname cv
 #' @export
 #'
-wait_safe <- function(cv) invisible(.Call(rnng_cv_wait_safe, cv))
+wait_ <- function(cv) invisible(.Call(rnng_cv_wait_safe, cv))
 
 #' Condition Variables - Until
 #'

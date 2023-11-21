@@ -2,12 +2,12 @@
 % Please edit documentation in R/aio.R
 \name{call_aio}
 \alias{call_aio}
-\alias{call_safe}
+\alias{call_aio_}
 \title{Call the Value of an Asynchronous Aio Operation}
 \usage{
 call_aio(aio)
 
-call_safe(aio)
+call_aio_(aio)
 }
 \arguments{
 \item{aio}{an Aio (object of class 'sendAio', 'recvAio' or 'ncurlAio').}
@@ -19,7 +19,7 @@ The passed object (invisibly).
 \code{call_aio} retrieves the value of an asynchronous Aio operation, waiting
     for the operation to complete if still in progress.
 
-\code{call_safe} is identical to \code{call_aio} but allows user
+\code{call_aio_} is identical to \code{call_aio} but allows user
     interrupts, thus being safe for interactive use.
 }
 \details{
@@ -65,7 +65,7 @@ res$result
 
 msg <- recv_aio(s2, timeout = 100)
 msg
-call_safe(msg)$data
+call_aio_(msg)$data
 
 close(s1)
 close(s2)
