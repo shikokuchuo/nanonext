@@ -1736,10 +1736,11 @@ SEXP rnng_cv_wait_safe(SEXP cvar) {
   nano_cv *ncv = (nano_cv *) R_ExternalPtrAddr(cvar);
   nng_cv *cv = ncv->cv;
   nng_mtx *mtx = ncv->mtx;
+  int signalled;
   uint8_t flag;
 
   do {
-    int signalled = 1;
+    signalled = 1;
     nng_mtx_lock(mtx);
     while (ncv->condition == 0) {
       if (nng_cv_until(cv, 2000) == NNG_ETIMEDOUT) {
@@ -1747,16 +1748,14 @@ SEXP rnng_cv_wait_safe(SEXP cvar) {
         break;
       }
     }
-    if (signalled) {
-      ncv->condition--;
-      flag = ncv->flag;
-      nng_mtx_unlock(mtx);
-      break;
-    } else {
-      nng_mtx_unlock(mtx);
-      R_CheckUserInterrupt();
-    }
+    if (signalled) break;
+    nng_mtx_unlock(mtx);
+    R_CheckUserInterrupt();
   } while (1);
+
+  ncv->condition--;
+  flag = ncv->flag;
+  nng_mtx_unlock(mtx);
 
   return Rf_ScalarLogical(flag == 0);
 
