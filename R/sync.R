@@ -79,7 +79,8 @@ cv <- function() .Call(rnng_cv_alloc)
 #' Condition Variables - Wait
 #'
 #' \code{wait} waits on a condition being signalled by completion of an
-#'     asynchronous receive or pipe event.
+#'     asynchronous receive or pipe event. \cr \code{wait_} is a variant that
+#'     allows user interrupts, suitable for interactive use.
 #'
 #' @param cv a 'conditionVariable' object.
 #'
@@ -92,11 +93,6 @@ cv <- function() .Call(rnng_cv_alloc)
 #'
 wait <- function(cv) invisible(.Call(rnng_cv_wait, cv))
 
-#' Condition Variables - Wait Safe
-#'
-#' \code{wait_} is identical to \code{wait} but allows user interrupts, thus
-#'     being safe for interactive use.
-#'
 #' @rdname cv
 #' @export
 #'
@@ -117,11 +113,6 @@ wait_ <- function(cv) invisible(.Call(rnng_cv_wait_safe, cv))
 #' @export
 #'
 until <- function(cv, msec) invisible(.Call(rnng_cv_until, cv, msec))
-
-#' @rdname cv
-#' @export
-#'
-.until <- until
 
 #' Condition Variables - Value
 #'
@@ -160,6 +151,19 @@ cv_reset <- function(cv) invisible(.Call(rnng_cv_reset, cv))
 #' @export
 #'
 cv_signal <- function(cv) invisible(.Call(rnng_cv_signal, cv))
+
+#' Condition Variables - Until
+#'
+#' This function is identical to \code{\link{until}} and deprecated.
+#'
+#' @inheritParams until
+#'
+#' @return (invisibly) logical TRUE if signalled, or else FALSE if the timeout
+#'     was reached.
+#'
+#' @export
+#'
+.until <- until
 
 #' Pipe Notify
 #'

@@ -5,7 +5,6 @@
 \alias{wait}
 \alias{wait_}
 \alias{until}
-\alias{.until}
 \alias{cv_value}
 \alias{cv_reset}
 \alias{cv_signal}
@@ -18,8 +17,6 @@ wait(cv)
 wait_(cv)
 
 until(cv, msec)
-
-.until(cv, msec)
 
 cv_value(cv)
 
@@ -51,10 +48,8 @@ For \strong{cv}: a 'conditionVariable' object.
     the object).
 
 \code{wait} waits on a condition being signalled by completion of an
-    asynchronous receive or pipe event.
-
-\code{wait_} is identical to \code{wait} but allows user interrupts, thus
-    being safe for interactive use.
+    asynchronous receive or pipe event. \cr \code{wait_} is a variant that
+    allows user interrupts, suitable for interactive use.
 
 \code{until} waits until a future time on a condition being signalled by
     completion of an asynchronous receive or pipe event.
