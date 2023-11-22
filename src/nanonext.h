@@ -233,6 +233,7 @@ extern SEXP rnng_cv_request(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 extern SEXP rnng_cv_reset(SEXP);
 extern SEXP rnng_cv_signal(SEXP);
 extern SEXP rnng_cv_until(SEXP, SEXP);
+extern SEXP rnng_cv_until_safe(SEXP, SEXP);
 extern SEXP rnng_cv_value(SEXP);
 extern SEXP rnng_cv_wait(SEXP);
 extern SEXP rnng_cv_wait_safe(SEXP);

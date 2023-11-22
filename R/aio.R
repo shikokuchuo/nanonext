@@ -221,8 +221,8 @@ call_aio <- function(aio) invisible(.Call(rnng_aio_call, aio))
 
 #' Call the Value of an Asynchronous Aio Operation
 #'
-#' \code{call_aio_} is identical to \code{call_aio} but allows user
-#'     interrupts, thus being safe for interactive use.
+#' \code{call_aio_} is a variant that allows user interrupts, suitable for
+#'     interactive use.
 #'
 #' @rdname call_aio
 #' @export

@@ -273,11 +273,14 @@ SEXP rnng_wait_thread_create(SEXP aio) {
   R_MakeWeakRef(coreaio, xptr, R_NilValue, FALSE);
   UNPROTECT(2);
 
+  nng_time time = nng_clock();
+
   while (1) {
+    time = time + 400;
     signalled = 1;
     nng_mtx_lock(mtx);
     while (ncv->condition == 0) {
-      if (nng_cv_until(cv, 2000) == NNG_ETIMEDOUT) {
+      if (nng_cv_until(cv, time) == NNG_ETIMEDOUT) {
         signalled = 0;
         break;
       }

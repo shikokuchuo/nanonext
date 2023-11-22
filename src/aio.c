@@ -1698,6 +1698,7 @@ SEXP rnng_cv_until(SEXP cvar, SEXP msec) {
   nng_cv *cv = ncv->cv;
   nng_mtx *mtx = ncv->mtx;
 
+  int signalled = 1;
   nng_time time = nng_clock();
   switch (TYPEOF(msec)) {
   case INTSXP:
@@ -1708,7 +1709,6 @@ SEXP rnng_cv_until(SEXP cvar, SEXP msec) {
     break;
   }
 
-  int signalled = 1;
   nng_mtx_lock(mtx);
   while (ncv->condition == 0) {
     if (nng_cv_until(cv, time) == NNG_ETIMEDOUT) {
@@ -1738,12 +1738,14 @@ SEXP rnng_cv_wait_safe(SEXP cvar) {
   nng_mtx *mtx = ncv->mtx;
   int signalled;
   uint8_t flag;
+  nng_time time = nng_clock();
 
-  do {
+  while (1) {
+    time = time + 400;
     signalled = 1;
     nng_mtx_lock(mtx);
     while (ncv->condition == 0) {
-      if (nng_cv_until(cv, 2000) == NNG_ETIMEDOUT) {
+      if (nng_cv_until(cv, time) == NNG_ETIMEDOUT) {
         signalled = 0;
         break;
       }
@@ -1751,13 +1753,60 @@ SEXP rnng_cv_wait_safe(SEXP cvar) {
     if (signalled) break;
     nng_mtx_unlock(mtx);
     R_CheckUserInterrupt();
-  } while (1);
+  }
 
   ncv->condition--;
   flag = ncv->flag;
   nng_mtx_unlock(mtx);
 
   return Rf_ScalarLogical(flag == 0);
+
+}
+
+SEXP rnng_cv_until_safe(SEXP cvar, SEXP msec) {
+
+  if (R_ExternalPtrTag(cvar) != nano_CvSymbol)
+    Rf_error("'cv' is not a valid Condition Variable");
+
+  nano_cv *ncv = (nano_cv *) R_ExternalPtrAddr(cvar);
+  nng_cv *cv = ncv->cv;
+  nng_mtx *mtx = ncv->mtx;
+  int signalled;
+
+  nng_time time, period, now;
+  switch (TYPEOF(msec)) {
+  case INTSXP:
+    period = (nng_time) INTEGER(msec)[0];
+    break;
+  case REALSXP:
+    period = (nng_time) Rf_asInteger(msec);
+    break;
+  }
+
+  now = nng_clock();
+
+  do {
+    time = period > 400 ? now + 400 : now + period;
+    period = period > 400 ? period - 400 : 0;
+    signalled = 1;
+    nng_mtx_lock(mtx);
+    while (ncv->condition == 0) {
+      if (nng_cv_until(cv, time) == NNG_ETIMEDOUT) {
+        signalled = 0;
+        break;
+      }
+    }
+    if (signalled) {
+      ncv->condition--;
+      nng_mtx_unlock(mtx);
+      break;
+    }
+    nng_mtx_unlock(mtx);
+    R_CheckUserInterrupt();
+    now += 400;
+  } while (period > 0);
+
+  return Rf_ScalarLogical(signalled);
 
 }
 

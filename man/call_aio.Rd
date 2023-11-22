@@ -19,8 +19,8 @@ The passed object (invisibly).
 \code{call_aio} retrieves the value of an asynchronous Aio operation, waiting
     for the operation to complete if still in progress.
 
-\code{call_aio_} is identical to \code{call_aio} but allows user
-    interrupts, thus being safe for interactive use.
+\code{call_aio_} is a variant that allows user interrupts, suitable for
+    interactive use.
 }
 \details{
 For a 'recvAio', the received value may be retrieved at \code{$data}.

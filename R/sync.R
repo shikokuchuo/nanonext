@@ -101,18 +101,25 @@ wait_ <- function(cv) invisible(.Call(rnng_cv_wait_safe, cv))
 #' Condition Variables - Until
 #'
 #' \code{until} waits until a future time on a condition being signalled by
-#'     completion of an asynchronous receive or pipe event.
+#'     completion of an asynchronous receive or pipe event. \cr \code{until_} is
+#'     a variant that allows user interrupts, suitable for interactive use.
 #'
 #' @param msec maximum time in milliseconds to wait for the condition variable
 #'     to be signalled.
 #'
 #' @examples
 #' until(cv, 10L)
+#' until_(cv, 10L)
 #'
 #' @rdname cv
 #' @export
 #'
 until <- function(cv, msec) invisible(.Call(rnng_cv_until, cv, msec))
+
+#' @rdname cv
+#' @export
+#'
+until_ <- function(cv, msec) invisible(.Call(rnng_cv_until_safe, cv, msec))
 
 #' Condition Variables - Value
 #'
