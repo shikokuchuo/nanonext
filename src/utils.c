@@ -261,16 +261,20 @@ SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP follow, SEXP method, SEXP headers,
   code = nng_http_res_get_status(res), relo = code >= 300 && code < 400;
 
   if (relo && LOGICAL(follow)[0]) {
+    const char *location = nng_http_res_get_header(res, "Location");
+    if (location == NULL) goto resume;
     nng_url_free(url);
-    xc = nng_url_parse(&url, nng_http_res_get_header(res, "Location"));
+    xc = nng_url_parse(&url, location);
     nng_http_res_free(res);
     nng_http_req_free(req);
     nng_http_client_free(client);
     if (xc)
-      mk_error_ncurl(xc);
+      return mk_error_ncurl(xc);
     cfg = NULL;
     goto relocall;
   }
+
+  resume: ;
 
   SEXP out, vec, rvec;
   void *dat;

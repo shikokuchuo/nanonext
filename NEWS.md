@@ -1,4 +1,4 @@
-# nanonext 0.10.4.9009 (development)
+# nanonext 0.10.4.9010 (development)
 
 #### New Features
 
@@ -13,8 +13,9 @@
   + registered 'refhook' functions apply to external pointer type objects only.
 * `until()` updated to be identical to `.until()`, returning FALSE instead of TRUE if the timeout has been reached.
 * `pipe_notify()` arguments 'add', 'remove' and 'flag' now default to FALSE instead of TRUE for easier selective specification of the events to signal.
+* Fixes potential segfault at `ncurl()` when the relocation address is missing and 'follow' is set to TRUE.
 * The weak references interface is removed as 'non-core'.
-* Applies fixes nanomsg/nng#1702 and nanomsg/nng#1705 to bundled 'libnng' v1.6.0 (a54820f).
+* Applies fix nanomsg/nng#1702 to bundled 'libnng' v1.6.0 (a54820f).
 * Upgrades bundled 'libmbedtls' to v 3.5.1.
 
 # nanonext 0.10.4
