@@ -10,8 +10,7 @@ reap(con)
 \item{con}{a Socket, Context, Listener or Dialer.}
 }
 \value{
-Invisibly, an integer exit code (zero on success). Warnings are not
-    generated in case of non-success.
+Integer zero on success, or else an integer 'errorValue'.
 }
 \description{
 A faster alternative to \code{close} for Sockets, Contexts, Listeners and
@@ -19,7 +18,7 @@ A faster alternative to \code{close} for Sockets, Contexts, Listeners and
 }
 \details{
 May be used on unclassed external pointers e.g. those created by
-    \code{\link{.context}}.
+    \code{\link{.context}}. Returns silently and does not warn or error.
 }
 \examples{
 s <- socket("req")

@@ -1,4 +1,4 @@
-# nanonext 0.10.4.9013 (development)
+# nanonext 0.10.4.9014 (development)
 
 #### New Features
 
@@ -12,7 +12,7 @@
 * `nextmode()` improvements:
   + simplified function signature to take a 'refhook' argument comprising a list of serialization / unserialization functions.
   + registered 'refhook' functions apply to external pointer type objects only.
-* `reap()` updated to not throw warnings, even if unsuccessful, for easier programmatic use.
+* `reap()` updated to always return either a zero on success or else an integer 'errorValue'.
 * `pipe_notify()` arguments 'add', 'remove' and 'flag' now default to FALSE instead of TRUE for easier selective specification of the events to signal.
 * Fixes regression in release 0.10.4 that caused a potential segfault using `ncurl()` with 'follow' set to TRUE when the server returns a missing or invalid relocation address.
 * The weak references interface is removed as 'non-core'.

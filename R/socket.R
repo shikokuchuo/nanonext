@@ -168,11 +168,10 @@ close.nanoSocket <- function(con, ...) invisible(.Call(rnng_close, con))
 #'
 #' @param con a Socket, Context, Listener or Dialer.
 #'
-#' @return Invisibly, an integer exit code (zero on success). Warnings are not
-#'     generated in case of non-success.
+#' @return Integer zero on success, or else an integer 'errorValue'.
 #'
 #' @details May be used on unclassed external pointers e.g. those created by
-#'     \code{\link{.context}}.
+#'     \code{\link{.context}}. Returns silently and does not warn or error.
 #'
 #' @seealso \code{\link{close}}
 #'

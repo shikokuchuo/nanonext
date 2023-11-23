@@ -178,7 +178,7 @@ SEXP rnng_reap(SEXP con) {
     xc = nng_dialer_close(*(nng_dialer *) R_ExternalPtrAddr(con));
 
   } else {
-    Rf_error("'con' is not a valid Socket, Context, Listener or Dialer");
+    xc = 3;
   }
 
   if (xc)
