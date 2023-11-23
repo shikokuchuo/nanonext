@@ -1,4 +1,4 @@
-# nanonext 0.10.4.9012 (development)
+# nanonext 0.10.4.9013 (development)
 
 #### New Features
 
@@ -8,10 +8,11 @@
 
 #### Updates
 
+* `until()` updated to be identical to `.until()`, returning FALSE instead of TRUE if the timeout has been reached.
 * `nextmode()` improvements:
   + simplified function signature to take a 'refhook' argument comprising a list of serialization / unserialization functions.
   + registered 'refhook' functions apply to external pointer type objects only.
-* `until()` updated to be identical to `.until()`, returning FALSE instead of TRUE if the timeout has been reached.
+* `reap()` updated to not throw warnings, even if unsuccessful, for easier programmatic use.
 * `pipe_notify()` arguments 'add', 'remove' and 'flag' now default to FALSE instead of TRUE for easier selective specification of the events to signal.
 * Fixes regression in release 0.10.4 that caused a potential segfault using `ncurl()` with 'follow' set to TRUE when the server returns a missing or invalid relocation address.
 * The weak references interface is removed as 'non-core'.

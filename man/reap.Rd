@@ -10,7 +10,8 @@ reap(con)
 \item{con}{a Socket, Context, Listener or Dialer.}
 }
 \value{
-Invisibly, an integer exit code (zero on success).
+Invisibly, an integer exit code (zero on success). Warnings are not
+    generated in case of non-success.
 }
 \description{
 A faster alternative to \code{close} for Sockets, Contexts, Listeners and
@@ -29,6 +30,7 @@ ctx <- .context(s)
 reap(ctx)
 reap(s[["dialer"]][[1]])
 reap(s[["listener"]][[1]])
+reap(s)
 reap(s)
 
 }

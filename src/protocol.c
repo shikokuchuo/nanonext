@@ -182,7 +182,7 @@ SEXP rnng_reap(SEXP con) {
   }
 
   if (xc)
-    ERROR_RET(xc);
+    return mk_error(xc);
 
   Rf_setAttrib(con, nano_StateSymbol, Rf_mkString("closed"));
   return nano_success;
