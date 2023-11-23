@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.10.4.9012</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.10.4.9013</span>
       </span>
     </div>
 
@@ -54,22 +54,24 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.10.4.9012" id="nanonext-01049012-development">nanonext 0.10.4.9012 (development)<a class="anchor" aria-label="anchor" href="#nanonext-01049012-development"></a></h2>
+<h2 class="page-header" data-toc-text="0.10.4.9013" id="nanonext-01049013-development">nanonext 0.10.4.9013 (development)<a class="anchor" aria-label="anchor" href="#nanonext-01049013-development"></a></h2>
 <div class="section level5">
-<h5 id="new-features-0-10-4-9012">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-10-4-9012"></a></h5>
+<h5 id="new-features-0-10-4-9013">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-10-4-9013"></a></h5>
 <ul><li>Introduces <code><a href="../reference/call_aio.html">call_aio_()</a></code>, a user-interruptible version of <code><a href="../reference/call_aio.html">call_aio()</a></code> suitable for interactive use.</li>
 <li>Introduces <code><a href="../reference/cv.html">wait_()</a></code> and <code><a href="../reference/cv.html">until_()</a></code> user-interruptible versions of <code><a href="../reference/cv.html">wait()</a></code> and <code><a href="../reference/cv.html">until()</a></code> suitable for interactive use.</li>
 <li>Implements <code>%~&gt;%</code> signal forwarder from one ‘conditionVariable’ to another.</li>
 </ul></div>
 <div class="section level5">
-<h5 id="updates-0-10-4-9012">Updates<a class="anchor" aria-label="anchor" href="#updates-0-10-4-9012"></a></h5>
+<h5 id="updates-0-10-4-9013">Updates<a class="anchor" aria-label="anchor" href="#updates-0-10-4-9013"></a></h5>
 <ul><li>
+<code><a href="../reference/cv.html">until()</a></code> updated to be identical to <code><a href="../reference/dot-until.html">.until()</a></code>, returning FALSE instead of TRUE if the timeout has been reached.</li>
+<li>
 <code><a href="../reference/nextmode.html">nextmode()</a></code> improvements:
 <ul><li>simplified function signature to take a ‘refhook’ argument comprising a list of serialization / unserialization functions.</li>
 <li>registered ‘refhook’ functions apply to external pointer type objects only.</li>
 </ul></li>
 <li>
-<code><a href="../reference/cv.html">until()</a></code> updated to be identical to <code><a href="../reference/dot-until.html">.until()</a></code>, returning FALSE instead of TRUE if the timeout has been reached.</li>
+<code><a href="../reference/reap.html">reap()</a></code> updated to not throw warnings, even if unsuccessful, for easier programmatic use.</li>
 <li>
 <code><a href="../reference/pipe_notify.html">pipe_notify()</a></code> arguments ‘add’, ‘remove’ and ‘flag’ now default to FALSE instead of TRUE for easier selective specification of the events to signal.</li>
 <li>Fixes regression in release 0.10.4 that caused a potential segfault using <code><a href="../reference/ncurl.html">ncurl()</a></code> with ‘follow’ set to TRUE when the server returns a missing or invalid relocation address.</li>
