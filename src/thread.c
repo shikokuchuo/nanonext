@@ -377,7 +377,6 @@ SEXP rnng_signal_thread_create(SEXP cv, SEXP cv2) {
   SEXP xptr = R_MakeExternalPtr(duo, R_NilValue, R_NilValue);
   Rf_setAttrib(cv, nano_CvSymbol, xptr);
   R_RegisterCFinalizerEx(xptr, thread_duo_finalizer, TRUE);
-  R_MakeWeakRef(xptr, cv, R_NilValue, FALSE);
 
   return cv2;
 
