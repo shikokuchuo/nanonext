@@ -1781,6 +1781,8 @@ SEXP rnng_cv_until_safe(SEXP cvar, SEXP msec) {
   case REALSXP:
     period = (nng_time) Rf_asInteger(msec);
     break;
+  default:
+    period = 0;
   }
 
   now = nng_clock();
