@@ -329,11 +329,11 @@ The [`mirai`](https://doi.org/10.5281/zenodo.7912722) package (<https://cran.r-p
 
 `nanonext` implements cross-platform synchronisation primitives provided by the NNG library.
 
-As the R interpreter runs on a single thread, synchronisation primitives such as mutexes and condition variables are not natively implemented in the R language. However, as NNG is inherently threaded and messaging can be asynchronous, it is possible to synchronise between NNG events happening independently and the main R execution thread.
+As the R interpreter runs on a single thread, synchronisation primitives such as mutexes and condition variables are not natively implemented in the R language. However, as NNG is inherently threaded and messaging can be asynchronous, it is possible to synchronise between NNG events and the main R execution thread.
 
-The events that can be signalled include asynchronous receive completions, and pipe events - these are when connections are established or when they are dropped.
+The events that can be signalled include asynchronous receive completions, and pipe events - when connections are established or dropped.
 
-Condition variables can be used simply to record such events, or more powerfully, to wait upon these events. The condition variables implemented in `nanonext` include a both a condition (value) and flag (binary). Each signal increments the value, and each return of `wait()` or `until()` decrements the value. A non-zero condition allows waiting threads to continue.
+Condition variables can be used simply to record such events, or more powerfully, to wait upon them. The condition variables implemented in `nanonext` include a both a condition (value) and flag (boolean). Each signal increments the value, and each successful return of `wait()` or `until()` decrements the value. A non-zero condition allows waiting threads to continue.
 
 In any situation where polling for an event presents a solution, waiting upon a condition to be signalled can be more efficient, both in terms of consuming no resources while waiting, and also being synchronised with the event (having no latency).
 

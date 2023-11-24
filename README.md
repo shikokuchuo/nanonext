@@ -369,7 +369,7 @@ aio
 #> < recvAio >
 #>  - $data for message data
 aio$data |> str()
-#>  num [1:100000000] 0.247 -0.744 0.243 -0.578 0.487 ...
+#>  num [1:100000000] -0.336 0.1306 -0.0282 -0.075 -1.6175 ...
 ```
 
 As `call_aio()` is blocking and will wait for completion, an alternative
@@ -398,18 +398,18 @@ by the NNG library.
 As the R interpreter runs on a single thread, synchronisation primitives
 such as mutexes and condition variables are not natively implemented in
 the R language. However, as NNG is inherently threaded and messaging can
-be asynchronous, it is possible to synchronise between NNG events
-happening independently and the main R execution thread.
+be asynchronous, it is possible to synchronise between NNG events and
+the main R execution thread.
 
 The events that can be signalled include asynchronous receive
-completions, and pipe events - these are when connections are
-established or when they are dropped.
+completions, and pipe events - when connections are established or
+dropped.
 
 Condition variables can be used simply to record such events, or more
-powerfully, to wait upon these events. The condition variables
-implemented in `nanonext` include a both a condition (value) and flag
-(binary). Each signal increments the value, and each return of `wait()`
-or `until()` decrements the value. A non-zero condition allows waiting
+powerfully, to wait upon them. The condition variables implemented in
+`nanonext` include a both a condition (value) and flag (boolean). Each
+signal increments the value, and each successful return of `wait()` or
+`until()` decrements the value. A non-zero condition allows waiting
 threads to continue.
 
 In any situation where polling for an event presents a solution, waiting
@@ -536,7 +536,7 @@ throughout, or alternatively ‘localhost’, but not a mixture of the two.
 cert <- write_cert(cn = "127.0.0.1")
 str(cert)
 #> List of 2
-#>  $ server: chr [1:2] "-----BEGIN CERTIFICATE-----\nMIIFOTCCAyGgAwIBAgIBATANBgkqhkiG9w0BAQsFADA0MRIwEAYDVQQDDAkxMjcu\nMC4wLjExETAPBgNV"| __truncated__ "-----BEGIN RSA PRIVATE KEY-----\nMIIJKQIBAAKCAgEA9SHLY3NAPjiznsVgpEvUwSMgVV9kvjS5Bh8ix+580alCjuHK\nNe5rMDhq50ER"| __truncated__
+#>  $ server: chr [1:2] "-----BEGIN CERTIFICATE-----\nMIIFOTCCAyGgAwIBAgIBATANBgkqhkiG9w0BAQsFADA0MRIwEAYDVQQDDAkxMjcu\nMC4wLjExETAPBgNV"| __truncated__ "-----BEGIN RSA PRIVATE KEY-----\nMIIJKQIBAAKCAgEA6XEIcx0YQLptWuFw0lpBqh48T4etl/KG5EgfqMMIBBxtR/Fr\nvrEFVPdYKq/Z"| __truncated__
 #>  $ client: chr [1:2] "-----BEGIN CERTIFICATE-----\nMIIFOTCCAyGgAwIBAgIBATANBgkqhkiG9w0BAQsFADA0MRIwEAYDVQQDDAkxMjcu\nMC4wLjExETAPBgNV"| __truncated__ ""
 
 ser <- tls_config(server = cert$server)
@@ -705,7 +705,7 @@ ncurl("https://postman-echo.com/get")
 #> NULL
 #> 
 #> $data
-#> [1] "{\n  \"args\": {},\n  \"headers\": {\n    \"x-forwarded-proto\": \"https\",\n    \"x-forwarded-port\": \"443\",\n    \"host\": \"postman-echo.com\",\n    \"x-amzn-trace-id\": \"Root=1-655e9beb-3e8ce3383e7fffe77efa4317\"\n  },\n  \"url\": \"https://postman-echo.com/get\"\n}"
+#> [1] "{\n  \"args\": {},\n  \"headers\": {\n    \"x-forwarded-proto\": \"https\",\n    \"x-forwarded-port\": \"443\",\n    \"host\": \"postman-echo.com\",\n    \"x-amzn-trace-id\": \"Root=1-656113bc-119a9a6b47e4cdc92852940d\"\n  },\n  \"url\": \"https://postman-echo.com/get\"\n}"
 ```
 
 For advanced use, supports additional HTTP methods such as POST or PUT.
@@ -724,10 +724,10 @@ res
 
 call_aio(res)$headers
 #> $date
-#> [1] "Thu, 23 Nov 2023 00:25:15 GMT"
+#> [1] "Fri, 24 Nov 2023 21:21:00 GMT"
 
 res$data
-#> [1] "{\n  \"args\": {},\n  \"data\": {\n    \"key\": \"value\"\n  },\n  \"files\": {},\n  \"form\": {},\n  \"headers\": {\n    \"x-forwarded-proto\": \"https\",\n    \"x-forwarded-port\": \"443\",\n    \"host\": \"postman-echo.com\",\n    \"x-amzn-trace-id\": \"Root=1-655e9beb-2f4e479e361b97f022e7e658\",\n    \"content-length\": \"16\",\n    \"content-type\": \"application/json\",\n    \"authorization\": \"Bearer APIKEY\"\n  },\n  \"json\": {\n    \"key\": \"value\"\n  },\n  \"url\": \"https://postman-echo.com/post\"\n}"
+#> [1] "{\n  \"args\": {},\n  \"data\": {\n    \"key\": \"value\"\n  },\n  \"files\": {},\n  \"form\": {},\n  \"headers\": {\n    \"x-forwarded-proto\": \"https\",\n    \"x-forwarded-port\": \"443\",\n    \"host\": \"postman-echo.com\",\n    \"x-amzn-trace-id\": \"Root=1-656113bc-041198a502069ba40623c004\",\n    \"content-length\": \"16\",\n    \"content-type\": \"application/json\",\n    \"authorization\": \"Bearer APIKEY\"\n  },\n  \"json\": {\n    \"key\": \"value\"\n  },\n  \"url\": \"https://postman-echo.com/post\"\n}"
 ```
 
 In this respect, it may be used as a performant and lightweight method
@@ -758,7 +758,7 @@ transact(sess)
 #> 
 #> $headers
 #> $headers$Date
-#> [1] "Thu, 23 Nov 2023 00:25:16 GMT"
+#> [1] "Fri, 24 Nov 2023 21:21:01 GMT"
 #> 
 #> $headers$`Content-Type`
 #> [1] "application/json; charset=utf-8"
@@ -771,8 +771,8 @@ transact(sess)
 #>  [76] 77 61 72 64 65 64 2d 70 6f 72 74 22 3a 20 22 34 34 33 22 2c 0a 20 20 20 20
 #> [101] 22 68 6f 73 74 22 3a 20 22 70 6f 73 74 6d 61 6e 2d 65 63 68 6f 2e 63 6f 6d
 #> [126] 22 2c 0a 20 20 20 20 22 78 2d 61 6d 7a 6e 2d 74 72 61 63 65 2d 69 64 22 3a
-#> [151] 20 22 52 6f 6f 74 3d 31 2d 36 35 35 65 39 62 65 63 2d 32 32 61 38 35 32 37
-#> [176] 37 31 36 66 65 30 33 31 35 33 62 30 65 37 66 62 39 22 2c 0a 20 20 20 20 22
+#> [151] 20 22 52 6f 6f 74 3d 31 2d 36 35 36 31 31 33 62 64 2d 30 64 31 61 65 31 63
+#> [176] 65 30 36 61 35 62 64 36 61 37 36 32 37 61 36 62 61 22 2c 0a 20 20 20 20 22
 #> [201] 63 6f 6e 74 65 6e 74 2d 74 79 70 65 22 3a 20 22 61 70 70 6c 69 63 61 74 69
 #> [226] 6f 6e 2f 6a 73 6f 6e 22 2c 0a 20 20 20 20 22 61 75 74 68 6f 72 69 7a 61 74
 #> [251] 69 6f 6e 22 3a 20 22 42 65 61 72 65 72 20 41 50 49 4b 45 59 22 0a 20 20 7d
