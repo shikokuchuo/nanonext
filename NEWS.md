@@ -1,4 +1,4 @@
-# nanonext 0.10.4.9015 (development)
+# nanonext 0.10.4.9016 (development)
 
 #### New Features
 
@@ -16,7 +16,7 @@
 * `pipe_notify()` arguments 'add', 'remove' and 'flag' now default to FALSE instead of TRUE for easier selective specification of the events to signal.
 * Fixes regression in release 0.10.4 that caused a potential segfault using `ncurl()` with 'follow' set to TRUE when the server returns a missing or invalid relocation address.
 * The weak references interface is removed as 'non-core'.
-* Applies fix nanomsg/nng#1702 to bundled 'libnng' v1.6.0 (a54820f).
+* Upgrades bundled 'libnng' to v1.6.0 alpha build 003f055.
 * Upgrades bundled 'libmbedtls' to v 3.5.1.
 
 # nanonext 0.10.4
