@@ -225,7 +225,8 @@ void nano_serialize_next(nano_buf *buf, SEXP object) {
   R_Serialize(object, &output_stream);
 
   if (registered && nano_refList != R_NilValue) {
-    *((uint64_t *) (buf->buf + 4)) = (uint64_t) buf->cur;
+    uint64_t cursor = (uint64_t) buf->cur;
+    memcpy(buf->buf + 4, &cursor, 8);
     SEXP call, out;
     PROTECT(call = Rf_lcons(nano_refHookIn, Rf_cons(nano_refList, R_NilValue)));
     PROTECT(out = Rf_eval(call, R_GlobalEnv));
