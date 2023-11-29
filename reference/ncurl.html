@@ -152,27 +152,13 @@ NULL, certificates are not validated.</p></dd>
 <span class="r-in"><span>       response <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"date"</span>, <span class="st">"content-type"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>       timeout <span class="op">=</span> <span class="fl">1200L</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $status</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 200</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 'errorValue' int 5 | Timed out</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $headers</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $headers$date</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Wed, 29 Nov 2023 10:45:35 GMT"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $headers$`content-type`</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "application/json; charset=utf-8"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 'errorValue' int 5 | Timed out</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $data</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   [1] 7b 0a 20 20 22 61 72 67 73 22 3a 20 7b 7d 2c 0a 20 20 22 68 65 61 64 65 72</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [26] 73 22 3a 20 7b 0a 20 20 20 20 22 78 2d 66 6f 72 77 61 72 64 65 64 2d 70 72</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [51] 6f 74 6f 22 3a 20 22 68 74 74 70 73 22 2c 0a 20 20 20 20 22 78 2d 66 6f 72</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [76] 77 61 72 64 65 64 2d 70 6f 72 74 22 3a 20 22 34 34 33 22 2c 0a 20 20 20 20</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [101] 22 68 6f 73 74 22 3a 20 22 70 6f 73 74 6d 61 6e 2d 65 63 68 6f 2e 63 6f 6d</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [126] 22 2c 0a 20 20 20 20 22 78 2d 61 6d 7a 6e 2d 74 72 61 63 65 2d 69 64 22 3a</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [151] 20 22 52 6f 6f 74 3d 31 2d 36 35 36 37 31 36 34 66 2d 30 38 32 38 38 32 30</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [176] 33 33 36 62 61 34 30 32 35 37 65 39 64 34 62 65 31 22 0a 20 20 7d 2c 0a 20</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [201] 20 22 75 72 6c 22 3a 20 22 68 74 74 70 73 3a 2f 2f 70 6f 73 74 6d 61 6e 2d</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [226] 65 63 68 6f 2e 63 6f 6d 2f 67 65 74 22 0a 7d</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 'errorValue' int 5 | Timed out</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span><span class="fu">ncurl</span><span class="op">(</span><span class="st">"https://postman-echo.com/put"</span>,</span></span>
 <span class="r-in"><span>      method <span class="op">=</span> <span class="st">"PUT"</span>,</span></span>
@@ -186,7 +172,7 @@ NULL, certificates are not validated.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $data</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "{\n  \"args\": {},\n  \"data\": \"hello world\",\n  \"files\": {},\n  \"form\": {},\n  \"headers\": {\n    \"x-forwarded-proto\": \"https\",\n    \"x-forwarded-port\": \"443\",\n    \"host\": \"postman-echo.com\",\n    \"x-amzn-trace-id\": \"Root=1-6567164f-3aa9d89452f8f06d185263ec\",\n    \"content-length\": \"11\",\n    \"authorization\": \"Bearer APIKEY\",\n    \"content-type\": \"application/json\"\n  },\n  \"json\": null,\n  \"url\": \"https://postman-echo.com/put\"\n}"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "{\n  \"args\": {},\n  \"data\": \"hello world\",\n  \"files\": {},\n  \"form\": {},\n  \"headers\": {\n    \"x-forwarded-proto\": \"https\",\n    \"x-forwarded-port\": \"443\",\n    \"host\": \"postman-echo.com\",\n    \"x-amzn-trace-id\": \"Root=1-656721c0-6a30117e77805aa5537ec364\",\n    \"content-length\": \"11\",\n    \"authorization\": \"Bearer APIKEY\",\n    \"content-type\": \"application/json\"\n  },\n  \"json\": null,\n  \"url\": \"https://postman-echo.com/put\"\n}"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span><span class="fu">ncurl</span><span class="op">(</span><span class="st">"https://postman-echo.com/post"</span>,</span></span>
 <span class="r-in"><span>      method <span class="op">=</span> <span class="st">"POST"</span>,</span></span>
@@ -200,7 +186,7 @@ NULL, certificates are not validated.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $data</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "{\n  \"args\": {},\n  \"data\": {\n    \"key\": \"value\"\n  },\n  \"files\": {},\n  \"form\": {},\n  \"headers\": {\n    \"x-forwarded-proto\": \"https\",\n    \"x-forwarded-port\": \"443\",\n    \"host\": \"postman-echo.com\",\n    \"x-amzn-trace-id\": \"Root=1-6567164f-134248da5c43717765b85fe7\",\n    \"content-length\": \"15\",\n    \"content-type\": \"application/json\"\n  },\n  \"json\": {\n    \"key\": \"value\"\n  },\n  \"url\": \"https://postman-echo.com/post\"\n}"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "{\n  \"args\": {},\n  \"data\": {\n    \"key\": \"value\"\n  },\n  \"files\": {},\n  \"form\": {},\n  \"headers\": {\n    \"x-forwarded-proto\": \"https\",\n    \"x-forwarded-port\": \"443\",\n    \"host\": \"postman-echo.com\",\n    \"x-amzn-trace-id\": \"Root=1-656721c1-014de36424b7ddfa0422b2fe\",\n    \"content-length\": \"15\",\n    \"content-type\": \"application/json\"\n  },\n  \"json\": {\n    \"key\": \"value\"\n  },\n  \"url\": \"https://postman-echo.com/post\"\n}"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
