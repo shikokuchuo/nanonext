@@ -69,12 +69,11 @@
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>refhook</dt>
-<dd><p>a list of two functions (for custom serialization /
-unserialization). The signature for the first function must accept a list
-of external pointer objects and return a raw vector, e.g.
-<code>torch::torch_serialize</code>, and the second must accept a raw vector
-and return a list of external pointer objects, e.g.
-<code>torch::torch_load</code>, or else NULL to reset.</p></dd>
+<dd><p><strong>either</strong> a list of two functions: the signature for the
+first must accept a list of external pointer objects and return a raw
+vector, e.g. <code>torch::torch_serialize</code>, and the second must accept a
+raw vector and return a list of external pointer objects, e.g.
+<code>torch::torch_load</code>,<br><strong>or else</strong> NULL to reset.</p></dd>
 
 
 <dt>mark</dt>
@@ -90,7 +89,7 @@ mark serialized data with a special bit.</p></dd>
     </div>
     <div id="details">
     <h2>Details</h2>
-    <p>Calling this function without any arguments returns the
+    <p>Calling this function without any arguments returns a list of the
     currently-registered 'refhook' functions (and resets 'mark' to FALSE).</p>
     </div>
 
@@ -100,7 +99,7 @@ mark serialized data with a special bit.</p></dd>
 <span class="r-in"><span>         mark <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> function(x) serialize(x, NULL)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x564fcdf4c3d0&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x563fe0bf6938&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[2]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> function (connection, refhook = NULL) </span>
@@ -110,13 +109,13 @@ mark serialized data with a special bit.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         stop("'connection' must be a connection")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     .Internal(unserialize(connection, refhook))</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;bytecode: 0x564fcdf79720&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;bytecode: 0x563fe0c49dd8&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: namespace:base&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span><span class="fu">nextmode</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> function(x) serialize(x, NULL)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x564fcdf4c3d0&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x563fe0bf6938&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[2]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> function (connection, refhook = NULL) </span>
@@ -126,7 +125,7 @@ mark serialized data with a special bit.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         stop("'connection' must be a connection")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     .Internal(unserialize(connection, refhook))</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;bytecode: 0x564fcdf79720&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;bytecode: 0x563fe0c49dd8&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: namespace:base&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
