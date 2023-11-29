@@ -290,21 +290,20 @@ strcat <- function(a, b) .Call(rnng_strcat, a, b)
 #' @param mark [default FALSE] (for advanced use only) logical value, whether to
 #'     mark serialized data with a special bit.
 #'
-#' @return Invisibly, a list comprising the currently-registered 'refhook'
-#'     functions.
+#' @return A list comprising the currently-registered 'refhook' functions.
 #'
-#' @details Calling this function without any arguments returns (invisibly) the
+#' @details Calling this function without any arguments returns the
 #'     currently-registered 'refhook' functions (and resets 'mark' to FALSE).
 #'
 #' @examples
 #' nextmode(refhook = list(function(x) serialize(x, NULL), unserialize),
 #'          mark = TRUE)
-#' print(nextmode())
+#' nextmode()
 #'
 #' nextmode(NULL)
-#' print(nextmode())
+#' nextmode()
 #'
 #' @export
 #'
 nextmode <- function(refhook = list(), mark = FALSE)
-  invisible(.Call(rnng_next_mode, refhook, mark))
+  .Call(rnng_next_mode, refhook, mark)

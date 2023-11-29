@@ -14,6 +14,7 @@
 * `nextmode()` improvements:
   + simplified function signature to take a 'refhook' argument comprising a list of serialization / unserialization functions.
   + registered 'refhook' functions apply to external pointer type objects only.
+  + no longer returns invisibly for easier confimation that the correct functions have been registered.
 * `reap()` updated to always return either a zero on success or else an integer 'errorValue'.
 * `pipe_notify()` arguments 'add', 'remove' and 'flag' now default to FALSE instead of TRUE for easier selective specification of the events to signal.
 * Fixes regression in release 0.10.4 that caused a potential segfault using `ncurl()` with 'follow' set to TRUE when the server returns a missing or invalid relocation address.

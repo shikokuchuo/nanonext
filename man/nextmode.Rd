@@ -18,8 +18,7 @@ and return a list of external pointer objects, e.g.
 mark serialized data with a special bit.}
 }
 \value{
-Invisibly, a list comprising the currently-registered 'refhook'
-    functions.
+A list comprising the currently-registered 'refhook' functions.
 }
 \description{
 Configures send mode 'next' by registering functions for custom serialization
@@ -27,15 +26,15 @@ Configures send mode 'next' by registering functions for custom serialization
     sent and received between different R sessions.
 }
 \details{
-Calling this function without any arguments returns (invisibly) the
+Calling this function without any arguments returns the
     currently-registered 'refhook' functions (and resets 'mark' to FALSE).
 }
 \examples{
 nextmode(refhook = list(function(x) serialize(x, NULL), unserialize),
          mark = TRUE)
-print(nextmode())
+nextmode()
 
 nextmode(NULL)
-print(nextmode())
+nextmode()
 
 }
