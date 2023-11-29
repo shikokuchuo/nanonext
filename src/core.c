@@ -275,34 +275,38 @@ SEXP nano_unserialize(unsigned char *buf, const size_t sz) {
   size_t cur;
   SEXP reflist;
 
-  switch (buf[0]) {
-  case 66:
-  case 88:
-    offset = 0;
-    cur = 0;
-    break;
-  case 7:
-    if (buf[1]) {
-      offset = *(uint64_t *) (buf + 4);
-      if (offset) {
-        SEXP raw, call;
-        PROTECT(raw = Rf_allocVector(RAWSXP, sz - offset));
-        memcpy(STDVEC_DATAPTR(raw), buf + offset, sz - offset);
-        PROTECT(call = Rf_lcons(nano_refHookOut, Rf_cons(raw, R_NilValue)));
-        PROTECT(reflist = Rf_eval(call, R_GlobalEnv));
-        if (TYPEOF(reflist) != VECSXP)
-          Rf_error("unserialization refhook did not return a list");
+  if (sz > 12) {
+    switch (buf[0]) {
+    case 66:
+    case 88:
+      offset = 0;
+      cur = 0;
+      goto resume;
+    case 7:
+      if (buf[1]) {
+        offset = *(uint64_t *) (buf + 4);
+        if (offset) {
+          SEXP raw, call;
+          PROTECT(raw = Rf_allocVector(RAWSXP, sz - offset));
+          memcpy(STDVEC_DATAPTR(raw), buf + offset, sz - offset);
+          PROTECT(call = Rf_lcons(nano_refHookOut, Rf_cons(raw, R_NilValue)));
+          PROTECT(reflist = Rf_eval(call, R_GlobalEnv));
+          if (TYPEOF(reflist) != VECSXP)
+            Rf_error("unserialization refhook did not return a list");
+        }
+        cur = 12;
+        goto resume;
       }
-      cur = 12;
-      break;
+      offset = 0;
+      cur = 4;
+      goto resume;
     }
-    offset = 0;
-    cur = 4;
-    break;
-  default:
-    Rf_warning("received data could not be unserialized");
-    return nano_decode(buf, sz, 8);
   }
+
+  Rf_warning("received data could not be unserialized");
+  return nano_decode(buf, sz, 8);
+
+  resume: ;
 
   SEXP out;
   nano_buf nbuf;
