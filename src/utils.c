@@ -263,12 +263,13 @@ SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP follow, SEXP method, SEXP headers,
   if (relo && LOGICAL(follow)[0]) {
     const char *location = nng_http_res_get_header(res, "Location");
     if (location == NULL) goto resume;
-    nng_url_free(url);
+    nng_url *oldurl = url;
     xc = nng_url_parse(&url, location);
     if (xc) goto resume;
     nng_http_res_free(res);
     nng_http_req_free(req);
     nng_http_client_free(client);
+    nng_url_free(oldurl);
     cfg = NULL;
     goto relocall;
   }
