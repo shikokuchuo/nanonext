@@ -197,10 +197,13 @@ void nano_serialize(nano_buf *buf, SEXP object) {
 
 void nano_serialize_next(nano_buf *buf, SEXP object) {
 
+  const uint8_t registered = nano_refHookIn != R_NilValue;
+
   NANO_ALLOC(buf, NANONEXT_INIT_BUFSIZE);
   buf->buf[0] = 7u;
-  buf->buf[1] = special_bit;
-  buf->cur += 12;
+  buf->buf[1] = registered;
+  buf->buf[2] = special_bit;
+  buf->cur += registered ? 12 : 4;
 
   struct R_outpstream_st output_stream;
 
@@ -215,13 +218,13 @@ void nano_serialize_next(nano_buf *buf, SEXP object) {
     NANONEXT_SERIAL_VER,
     nano_write_char,
     nano_write_bytes,
-    nano_refHookIn != R_NilValue ? nano_inHook : NULL,
+    registered ? nano_inHook : NULL,
     R_NilValue
   );
 
   R_Serialize(object, &output_stream);
 
-  if (nano_refList != R_NilValue) {
+  if (registered && nano_refList != R_NilValue) {
     *((uint64_t *) (buf->buf + 4)) = (uint64_t) buf->cur;
     SEXP call, out;
     PROTECT(call = Rf_lcons(nano_refHookIn, Rf_cons(nano_refList, R_NilValue)));
@@ -268,7 +271,7 @@ void nano_serialize_xdr(nano_buf *buf, SEXP object) {
 
 SEXP nano_unserialize(unsigned char *buf, const size_t sz) {
 
-  uint32_t offset;
+  uint64_t offset;
   size_t cur;
   SEXP reflist;
 
@@ -279,7 +282,7 @@ SEXP nano_unserialize(unsigned char *buf, const size_t sz) {
     cur = 0;
     break;
   case 7:
-    if (sz > 12 && (buf[12] == 66 || buf[12] == 88)) {
+    if (buf[1]) {
       offset = *(uint64_t *) (buf + 4);
       if (offset) {
         SEXP raw, call;
@@ -293,6 +296,9 @@ SEXP nano_unserialize(unsigned char *buf, const size_t sz) {
       cur = 12;
       break;
     }
+    offset = 0;
+    cur = 4;
+    break;
   default:
     Rf_warning("received data could not be unserialized");
     return nano_decode(buf, sz, 8);
