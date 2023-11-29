@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.10.4.9021</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.10.4.9022</span>
       </span>
     </div>
 
@@ -82,7 +82,9 @@
     <h2>Details</h2>
     <p>This is an experimental operator.</p>
 <p>The condition value of 'cv' is initially reset to zero when this operator
-    returns.</p>
+    returns. Only one forwarder can be active on a 'cv' at any given time,
+    and assigning a new forwarding target cancels any currently existing
+    forwarding.</p>
 <p>Changes in the condition value of 'cv' are forwarded to 'cv2', but only
     on each occassion 'cv' is signalled. This means that waiting on 'cv'
     will cause a temporary divergence between the actual condition value of
