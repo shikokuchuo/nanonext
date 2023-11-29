@@ -175,7 +175,7 @@ static void saio_complete(void *arg) {
   if (res)
     nng_msg_free(nng_aio_get_msg(saio->aio));
 
-#if NNG_MAJOR_VERSION == 1 && NNG_MINOR_VERSION < 6
+#ifdef NANONEXT_LEGACY_NNG
   nng_mtx_lock(shr_mtx);
   saio->result = res - !res;
   nng_mtx_unlock(shr_mtx);
@@ -192,7 +192,7 @@ static void isaio_complete(void *arg) {
   if (iaio->data != NULL)
     R_Free(iaio->data);
 
-#if NNG_MAJOR_VERSION == 1 && NNG_MINOR_VERSION < 6
+#ifdef NANONEXT_LEGACY_NNG
   nng_mtx_lock(shr_mtx);
   iaio->result = res - !res;
   nng_mtx_unlock(shr_mtx);
@@ -209,7 +209,7 @@ static void raio_complete(void *arg) {
   if (res == 0)
     raio->data = nng_aio_get_msg(raio->aio);
 
-#if NNG_MAJOR_VERSION == 1 && NNG_MINOR_VERSION < 6
+#ifdef NANONEXT_LEGACY_NNG
   nng_mtx_lock(shr_mtx);
   raio->result = res - !res;
   nng_mtx_unlock(shr_mtx);
@@ -243,7 +243,7 @@ static void iraio_complete(void *arg) {
   nano_aio *iaio = (nano_aio *) arg;
   const int res = nng_aio_result(iaio->aio);
 
-#if NNG_MAJOR_VERSION == 1 && NNG_MINOR_VERSION < 6
+#ifdef NANONEXT_LEGACY_NNG
   nng_mtx_lock(shr_mtx);
   iaio->result = res - !res;
   nng_mtx_unlock(shr_mtx);
@@ -346,7 +346,7 @@ static void reqsaio_finalizer(SEXP xptr) {
   if (R_ExternalPtrAddr(xptr) == NULL)
     return;
   nano_aio *xp = (nano_aio *) R_ExternalPtrAddr(xptr);
-#if NNG_MAJOR_VERSION == 1 && NNG_MINOR_VERSION < 6
+#ifdef NANONEXT_LEGACY_NNG
   nng_ctx *ctx = (nng_ctx *) xp->data;
   nng_ctx_close(*ctx);
 #endif
@@ -647,7 +647,7 @@ SEXP rnng_aio_result(SEXP env) {
 
   nano_aio *saio = (nano_aio *) R_ExternalPtrAddr(aio);
 
-#if NNG_MAJOR_VERSION == 1 && NNG_MINOR_VERSION < 6
+#ifdef NANONEXT_LEGACY_NNG
   int res;
   nng_mtx_lock(shr_mtx);
   res = saio->result;
@@ -679,7 +679,7 @@ SEXP rnng_aio_get_msg(SEXP env) {
 
   nano_aio *raio = (nano_aio *) R_ExternalPtrAddr(aio);
 
-#if NNG_MAJOR_VERSION == 1 && NNG_MINOR_VERSION < 6
+#ifdef NANONEXT_LEGACY_NNG
   int res;
   nng_mtx_lock(shr_mtx);
   res = raio->result;
@@ -839,7 +839,7 @@ SEXP rnng_unresolved2(SEXP aio) {
 
   nano_aio *aiop = (nano_aio *) R_ExternalPtrAddr(coreaio);
 
-#if NNG_MAJOR_VERSION == 1 && NNG_MINOR_VERSION < 6
+#ifdef NANONEXT_LEGACY_NNG
   int res;
   nng_mtx_lock(shr_mtx);
   res = aiop->result;
@@ -1238,7 +1238,7 @@ SEXP rnng_aio_http(SEXP env, SEXP response, SEXP type) {
 
   nano_aio *haio = (nano_aio *) R_ExternalPtrAddr(aio);
 
-#if NNG_MAJOR_VERSION == 1 && NNG_MINOR_VERSION < 6
+#ifdef NANONEXT_LEGACY_NNG
   int res;
   nng_mtx_lock(shr_mtx);
   res = haio->result;
@@ -1581,7 +1581,7 @@ SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeou
   }
 
   nano_aio *saio = R_Calloc(1, nano_aio);
-#if NNG_MAJOR_VERSION == 1 && NNG_MINOR_VERSION < 6
+#ifdef NANONEXT_LEGACY_NNG
   saio->data = ctx;
 #endif
 
@@ -1993,7 +1993,7 @@ SEXP rnng_cv_request(SEXP con, SEXP data, SEXP cvar, SEXP sendmode, SEXP recvmod
   }
 
   nano_aio *saio = R_Calloc(1, nano_aio);
-#if NNG_MAJOR_VERSION == 1 && NNG_MINOR_VERSION < 6
+#ifdef NANONEXT_LEGACY_NNG
   saio->data = ctx;
 #endif
 

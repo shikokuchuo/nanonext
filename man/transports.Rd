@@ -112,11 +112,11 @@ Transports supported by \pkg{nanonext}.
     (::1) would be specified as tcp://[::1]:80.
 
     \item The special value of 0 (INADDR_ANY) can be used for a listener to
-    indicate that it should listen on all interfaces on the host. A short-hand
-    for this form is to either omit the address, or specify the asterisk (*)
-    character. For example, the following three URIs are all equivalent, and
-    could be used to listen to port 9999 on the host: (1) tcp://0.0.0.0:9999
-    (2) tcp://*:9999 (3) tcp://:9999
+    indicate that it should listen on all interfaces on the host. A
+    shorthand for this form is to either omit the address, or specify the
+    asterisk (*) character. For example, the following three URIs are all
+    equivalent, and could be used to listen to port 9999 on the host:
+    (1) tcp://0.0.0.0:9999 (2) tcp://*:9999 (3) tcp://:9999
     }
 }
 

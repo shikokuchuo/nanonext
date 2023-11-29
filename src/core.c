@@ -199,8 +199,8 @@ void nano_serialize_next(nano_buf *buf, SEXP object) {
 
   NANO_ALLOC(buf, NANONEXT_INIT_BUFSIZE);
   buf->buf[0] = 7u;
-  buf->buf[2] = special_bit;
-  buf->cur += 8;
+  buf->buf[1] = special_bit;
+  buf->cur += 12;
 
   struct R_outpstream_st output_stream;
 
@@ -222,7 +222,7 @@ void nano_serialize_next(nano_buf *buf, SEXP object) {
   R_Serialize(object, &output_stream);
 
   if (nano_refList != R_NilValue) {
-    *((uint32_t *) (buf->buf + 4)) = (uint32_t) buf->cur;
+    *((uint64_t *) (buf->buf + 4)) = (uint64_t) buf->cur;
     SEXP call, out;
     PROTECT(call = Rf_lcons(nano_refHookIn, Rf_cons(nano_refList, R_NilValue)));
     PROTECT(out = Rf_eval(call, R_GlobalEnv));
@@ -278,19 +278,21 @@ SEXP nano_unserialize(unsigned char *buf, const size_t sz) {
     offset = 0;
     cur = 0;
     break;
-  case 7: ;
-    SEXP raw, call;
-    offset = *(uint32_t *) (buf + 4);
-    if (offset) {
-      PROTECT(raw = Rf_allocVector(RAWSXP, sz - offset));
-      memcpy(STDVEC_DATAPTR(raw), buf + offset, sz - offset);
-      PROTECT(call = Rf_lcons(nano_refHookOut, Rf_cons(raw, R_NilValue)));
-      PROTECT(reflist = Rf_eval(call, R_GlobalEnv));
-      if (TYPEOF(reflist) != VECSXP)
-        Rf_error("unserialization refhook did not return a list");
+  case 7:
+    if (sz > 12 && (buf[12] == 66 || buf[12] == 88)) {
+      offset = *(uint64_t *) (buf + 4);
+      if (offset) {
+        SEXP raw, call;
+        PROTECT(raw = Rf_allocVector(RAWSXP, sz - offset));
+        memcpy(STDVEC_DATAPTR(raw), buf + offset, sz - offset);
+        PROTECT(call = Rf_lcons(nano_refHookOut, Rf_cons(raw, R_NilValue)));
+        PROTECT(reflist = Rf_eval(call, R_GlobalEnv));
+        if (TYPEOF(reflist) != VECSXP)
+          Rf_error("unserialization refhook did not return a list");
+      }
+      cur = 12;
+      break;
     }
-    cur = 8;
-    break;
   default:
     Rf_warning("received data could not be unserialized");
     return nano_decode(buf, sz, 8);
@@ -696,7 +698,7 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
 
     nng_msg *msgp;
 
-#if NNG_MAJOR_VERSION == 1 && NNG_MINOR_VERSION < 6
+#ifdef NANONEXT_LEGACY_NNG
 
     const nng_duration dur = block == R_NilValue ? NNG_DURATION_DEFAULT :
       TYPEOF(block) == LGLSXP ? (LOGICAL(block)[0] == 1) * NNG_DURATION_DEFAULT : (nng_duration) Rf_asInteger(block);
@@ -877,7 +879,7 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP bytes) {
     const int mod = nano_matcharg(mode);
     nng_msg *msgp;
 
-#if NNG_MAJOR_VERSION == 1 && NNG_MINOR_VERSION < 6
+#ifdef NANONEXT_LEGACY_NNG
 
     const nng_duration dur = block == R_NilValue ? NNG_DURATION_DEFAULT :
       TYPEOF(block) == LGLSXP ? (LOGICAL(block)[0] == 1) * NNG_DURATION_DEFAULT : (nng_duration) Rf_asInteger(block);

@@ -25,12 +25,12 @@
 #'
 #' @section Bus (mesh networks):
 #'
-#'     [protocol, bus] The bus protocol is useful for routing applications or for
-#'     building mesh networks where every peer is connected to every other peer.
-#'     In this protocol, each message sent by a node is sent to every one of its
-#'     directly connected peers. This socket may be used to send and receive
-#'     messages. Sending messages will attempt to deliver to each directly
-#'     connected peer.
+#'     [protocol, bus] The bus protocol is useful for routing applications or
+#'     for building mesh networks where every peer is connected to every other
+#'     peer. In this protocol, each message sent by a node is sent to every one
+#'     of its directly connected peers. This socket may be used to send and
+#'     receive messages. Sending messages will attempt to deliver to each
+#'     directly connected peer.
 #'
 #'     Messages are only sent to directly connected peers. This means that in
 #'     the event that a peer is connected indirectly, it will not receive
@@ -58,10 +58,10 @@
 #'     In the pipeline pattern, pushers distribute messages to pullers, hence
 #'     useful for solving producer/consumer problems.
 #'
-#'     If multiple peers are connected, the pattern attempts to distribute fairly.
-#'     Each message sent by a pusher will be sent to one of its peer pullers,
-#'     chosen in a round-robin fashion. This property makes this pattern useful
-#'     in load-balancing scenarios.
+#'     If multiple peers are connected, the pattern attempts to distribute
+#'     fairly. Each message sent by a pusher will be sent to one of its peer
+#'     pullers, chosen in a round-robin fashion. This property makes this
+#'     pattern useful in load-balancing scenarios.
 #'
 #'     [protocol, push] The push protocol is one half of a pipeline pattern. The
 #'     other side is the pull protocol.
@@ -230,11 +230,11 @@ NULL
 #'     (::1) would be specified as tcp://[::1]:80.
 #'
 #'     \item The special value of 0 (INADDR_ANY) can be used for a listener to
-#'     indicate that it should listen on all interfaces on the host. A short-hand
-#'     for this form is to either omit the address, or specify the asterisk (*)
-#'     character. For example, the following three URIs are all equivalent, and
-#'     could be used to listen to port 9999 on the host: (1) tcp://0.0.0.0:9999
-#'     (2) tcp://*:9999 (3) tcp://:9999
+#'     indicate that it should listen on all interfaces on the host. A
+#'     shorthand for this form is to either omit the address, or specify the
+#'     asterisk (*) character. For example, the following three URIs are all
+#'     equivalent, and could be used to listen to port 9999 on the host:
+#'     (1) tcp://0.0.0.0:9999 (2) tcp://*:9999 (3) tcp://:9999
 #'     }
 #'
 #' @section TLS:

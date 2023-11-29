@@ -21,6 +21,10 @@
 
 #include <nng/nng.h>
 
+#if NNG_MAJOR_VERSION == 1 && NNG_MINOR_VERSION < 6
+#define NANONEXT_LEGACY_NNG
+#endif
+
 #ifdef NANONEXT_PROTOCOLS
 #include <nng/protocol/bus0/bus.h>
 #include <nng/protocol/pair0/pair.h>
@@ -38,7 +42,7 @@
 #include <nng/supplemental/http/http.h>
 #include <nng/supplemental/tls/tls.h>
 #include <nng/supplemental/util/platform.h>
-#if NNG_MAJOR_VERSION == 1 && NNG_MINOR_VERSION < 6
+#ifdef NANONEXT_LEGACY_NNG
 extern nng_mtx *shr_mtx;
 #endif
 
@@ -117,7 +121,7 @@ typedef struct nano_cv_s {
 
 #ifdef NANONEXT_KEYCERT
 #include <mbedtls/version.h>
-#if MBEDTLS_VERSION_MAJOR == 2
+#if MBEDTLS_VERSION_MAJOR < 3
 #include <mbedtls/config.h>
 #endif
 #include <mbedtls/platform.h>
