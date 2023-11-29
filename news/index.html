@@ -70,6 +70,7 @@
 <code><a href="../reference/nextmode.html">nextmode()</a></code> improvements:
 <ul><li>simplified function signature to take a ‘refhook’ argument comprising a list of serialization / unserialization functions.</li>
 <li>registered ‘refhook’ functions apply to external pointer type objects only.</li>
+<li>no longer returns invisibly for easier confimation that the correct functions have been registered.</li>
 </ul></li>
 <li>
 <code><a href="../reference/reap.html">reap()</a></code> updated to always return either a zero on success or else an integer ‘errorValue’.</li>
