@@ -281,18 +281,17 @@ strcat <- function(a, b) .Call(rnng_strcat, a, b)
 #'     and unserialization of external pointer objects, allowing these to be
 #'     sent and received between different R sessions.
 #'
-#' @param refhook a list of two functions (for custom serialization /
-#'     unserialization). The signature for the first function must accept a list
-#'     of external pointer objects and return a raw vector, e.g.
-#'     \code{torch::torch_serialize}, and the second must accept a raw vector
-#'     and return a list of external pointer objects, e.g.
-#'     \code{torch::torch_load}, or else NULL to reset.
+#' @param refhook \strong{either} a list of two functions: the signature for the
+#'     first must accept a list of external pointer objects and return a raw
+#'     vector, e.g. \code{torch::torch_serialize}, and the second must accept a
+#'     raw vector and return a list of external pointer objects, e.g.
+#'     \code{torch::torch_load},\cr \strong{or else} NULL to reset.
 #' @param mark [default FALSE] (for advanced use only) logical value, whether to
 #'     mark serialized data with a special bit.
 #'
 #' @return A list comprising the currently-registered 'refhook' functions.
 #'
-#' @details Calling this function without any arguments returns the
+#' @details Calling this function without any arguments returns a list of the
 #'     currently-registered 'refhook' functions (and resets 'mark' to FALSE).
 #'
 #' @examples

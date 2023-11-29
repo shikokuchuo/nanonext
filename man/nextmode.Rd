@@ -7,12 +7,11 @@
 nextmode(refhook = list(), mark = FALSE)
 }
 \arguments{
-\item{refhook}{a list of two functions (for custom serialization /
-unserialization). The signature for the first function must accept a list
-of external pointer objects and return a raw vector, e.g.
-\code{torch::torch_serialize}, and the second must accept a raw vector
-and return a list of external pointer objects, e.g.
-\code{torch::torch_load}, or else NULL to reset.}
+\item{refhook}{\strong{either} a list of two functions: the signature for the
+first must accept a list of external pointer objects and return a raw
+vector, e.g. \code{torch::torch_serialize}, and the second must accept a
+raw vector and return a list of external pointer objects, e.g.
+\code{torch::torch_load},\cr \strong{or else} NULL to reset.}
 
 \item{mark}{[default FALSE] (for advanced use only) logical value, whether to
 mark serialized data with a special bit.}
@@ -26,7 +25,7 @@ Configures send mode 'next' by registering functions for custom serialization
     sent and received between different R sessions.
 }
 \details{
-Calling this function without any arguments returns the
+Calling this function without any arguments returns a list of the
     currently-registered 'refhook' functions (and resets 'mark' to FALSE).
 }
 \examples{
