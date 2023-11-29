@@ -361,6 +361,12 @@ SEXP rnng_signal_thread_create(SEXP cv, SEXP cv2) {
   if (R_ExternalPtrTag(cv2) != nano_CvSymbol)
     Rf_error("'cv2' is not a valid Condition Variable");
 
+  SEXP existing = Rf_getAttrib(cv, nano_CvSymbol);
+  if (existing != R_NilValue) {
+    thread_duo_finalizer(existing);
+    R_ClearExternalPtr(existing);
+  }
+
   nano_thread_duo *duo = R_Calloc(1, nano_thread_duo);
   nano_cv *ncv = (nano_cv *) R_ExternalPtrAddr(cv);
   nano_cv *ncv2 = (nano_cv *) R_ExternalPtrAddr(cv2);
