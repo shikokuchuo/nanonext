@@ -134,7 +134,7 @@ nano <- function(protocol = c("bus", "pair", "push", "pull", "pub", "sub",
     }
   }
 
-  nano[["close"]] <- function() reap(.subset2(nano, "socket"))
+  nano[["close"]] <- function() close(.subset2(nano, "socket"))
 
   nano[["dial"]] <- function(url = "inproc://nanonext", tls = NULL, autostart = TRUE) {
     r <- dial(socket, url = url, tls = tls, autostart = autostart)
@@ -198,7 +198,7 @@ nano <- function(protocol = c("bus", "pair", "push", "pull", "pub", "sub",
            nano[["context_open"]] <- function() {
              if (is.null(sock2)) sock2 <<- socket
              nano[["context_close"]] <- function() if (length(sock2)) {
-               r <- reap(socket)
+               r <- close(socket)
                socket <<- sock2
                sock2 <<- NULL
                rm(list = c("context", "context_close"), envir = nano)
@@ -211,7 +211,7 @@ nano <- function(protocol = c("bus", "pair", "push", "pull", "pub", "sub",
            nano[["context_open"]] <- function() {
              if (is.null(sock2)) sock2 <<- socket
              nano[["context_close"]] <- function() if (length(sock2)) {
-               r <- reap(socket)
+               r <- close(socket)
                socket <<- sock2
                sock2 <<- NULL
                rm(list = c("context", "context_close"), envir = nano)
@@ -228,7 +228,7 @@ nano <- function(protocol = c("bus", "pair", "push", "pull", "pub", "sub",
            nano[["context_open"]] <- function() {
              if (is.null(sock2)) sock2 <<- socket
              nano[["context_close"]] <- function() if (length(sock2)) {
-               r <- reap(socket)
+               r <- close(socket)
                socket <<- sock2
                sock2 <<- NULL
                rm(list = c("context", "context_close"), envir = nano)
@@ -243,7 +243,7 @@ nano <- function(protocol = c("bus", "pair", "push", "pull", "pub", "sub",
            nano[["context_open"]] <- function() {
              if (is.null(sock2)) sock2 <<- socket
              nano[["context_close"]] <- function() if (length(sock2)) {
-               r <- reap(socket)
+               r <- close(socket)
                socket <<- sock2
                sock2 <<- NULL
                rm(list = c("context", "context_close"), envir = nano)

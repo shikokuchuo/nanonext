@@ -10,15 +10,19 @@ reap(con)
 \item{con}{a Socket, Context, Listener or Dialer.}
 }
 \value{
-Integer zero on success, or else an integer 'errorValue'.
+Integer zero, or else an integer 'errorValue' if an invalid object
+    was supplied.
 }
 \description{
-A faster alternative to \code{close} for Sockets, Contexts, Listeners and
-    Dialers avoiding S3 method dispatch.
+An alternative to \code{close} for Sockets, Contexts, Listeners and Dialers
+    that runs finalisers, immediately freeing associated resources. For
+    advanced use only.
 }
 \details{
 May be used on unclassed external pointers e.g. those created by
-    \code{\link{.context}}. Returns silently and does not warn or error.
+    \code{\link{.context}}. Returns silently and does not warn or error. On
+    success, the supplied object is stripped to a nil external pointer and
+    may no longer be used.
 }
 \examples{
 s <- socket("req")

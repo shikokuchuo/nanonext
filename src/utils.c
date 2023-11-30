@@ -779,3 +779,31 @@ SEXP rnng_random(SEXP n, SEXP convert) {
   Rf_error("%d | %s", xc, errbuf);
 
 }
+
+SEXP rnng_reap(SEXP con) {
+
+  const SEXP ptrtag = R_ExternalPtrTag(con);
+
+  if (ptrtag == nano_SocketSymbol) {
+    socket_finalizer(con);
+
+  } else if (ptrtag == nano_ContextSymbol) {
+    context_finalizer(con);
+
+  } else if (ptrtag == nano_ListenerSymbol) {
+    listener_finalizer(con);
+
+  } else if (ptrtag == nano_DialerSymbol) {
+    dialer_finalizer(con);
+
+  } else {
+    return mk_error(3);
+  }
+
+  R_SetExternalPtrTag(con, R_NilValue);
+  R_ClearExternalPtr(con);
+  SET_ATTRIB(con, R_NilValue);
+  SET_OBJECT(con, 0);
+  return nano_success;
+
+}

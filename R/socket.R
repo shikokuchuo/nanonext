@@ -163,15 +163,19 @@ close.nanoSocket <- function(con, ...) invisible(.Call(rnng_close, con))
 
 #' Reap
 #'
-#' A faster alternative to \code{close} for Sockets, Contexts, Listeners and
-#'     Dialers avoiding S3 method dispatch.
+#' An alternative to \code{close} for Sockets, Contexts, Listeners and Dialers
+#'     that runs finalisers, immediately freeing associated resources. For
+#'     advanced use only.
 #'
 #' @param con a Socket, Context, Listener or Dialer.
 #'
-#' @return Integer zero on success, or else an integer 'errorValue'.
+#' @return Integer zero, or else an integer 'errorValue' if an invalid object
+#'     was supplied.
 #'
 #' @details May be used on unclassed external pointers e.g. those created by
-#'     \code{\link{.context}}. Returns silently and does not warn or error.
+#'     \code{\link{.context}}. Returns silently and does not warn or error. On
+#'     success, the supplied object is stripped to a nil external pointer and
+#'     may no longer be used.
 #'
 #' @seealso \code{\link{close}}
 #'
