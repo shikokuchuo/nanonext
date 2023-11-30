@@ -164,18 +164,19 @@ close.nanoSocket <- function(con, ...) invisible(.Call(rnng_close, con))
 #' Reap
 #'
 #' An alternative to \code{close} for Sockets, Contexts, Listeners and Dialers
-#'     that runs finalisers, immediately freeing associated resources. For
-#'     advanced use only.
+#'     that avoids S3 method dispatch. Intended to be called prior to objects
+#'     being discarded - do not attempt to re-use an object supplied to this
+#'     function.
 #'
 #' @param con a Socket, Context, Listener or Dialer.
 #'
-#' @return Integer zero, or else an integer 'errorValue' if an invalid object
-#'     was supplied.
+#' @return Integer zero.
 #'
 #' @details May be used on unclassed external pointers e.g. those created by
-#'     \code{\link{.context}}. Returns silently and does not warn or error. On
-#'     success, the supplied object is stripped to a nil external pointer and
-#'     may no longer be used.
+#'     \code{\link{.context}}. For listeners, runs the finalizer and cleans up
+#'     associated resources including releasing the bound address. Returns
+#'     silently and does not warn or error, nor does it update the state of
+#'     object attributes.
 #'
 #' @seealso \code{\link{close}}
 #'
@@ -188,7 +189,6 @@ close.nanoSocket <- function(con, ...) invisible(.Call(rnng_close, con))
 #' reap(ctx)
 #' reap(s[["dialer"]][[1]])
 #' reap(s[["listener"]][[1]])
-#' reap(s)
 #' reap(s)
 #'
 #' @export

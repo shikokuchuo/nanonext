@@ -785,25 +785,21 @@ SEXP rnng_reap(SEXP con) {
   const SEXP ptrtag = R_ExternalPtrTag(con);
 
   if (ptrtag == nano_SocketSymbol) {
-    socket_finalizer(con);
+    nng_close(*(nng_socket *) R_ExternalPtrAddr(con));
 
   } else if (ptrtag == nano_ContextSymbol) {
-    context_finalizer(con);
+    nng_ctx_close(*(nng_ctx *) R_ExternalPtrAddr(con));
 
   } else if (ptrtag == nano_ListenerSymbol) {
     listener_finalizer(con);
+    R_ClearExternalPtr(con);
+    R_gc();
 
   } else if (ptrtag == nano_DialerSymbol) {
-    dialer_finalizer(con);
+    nng_dialer_close(*(nng_dialer *) R_ExternalPtrAddr(con));
 
-  } else {
-    return mk_error(3);
   }
 
-  R_SetExternalPtrTag(con, R_NilValue);
-  R_ClearExternalPtr(con);
-  SET_ATTRIB(con, R_NilValue);
-  SET_OBJECT(con, 0);
   return nano_success;
 
 }
