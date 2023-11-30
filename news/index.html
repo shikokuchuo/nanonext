@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.10.4.9023</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.10.4.9024</span>
       </span>
     </div>
 
@@ -54,16 +54,16 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.10.4.9023" id="nanonext-01049023">nanonext 0.10.4.9023<a class="anchor" aria-label="anchor" href="#nanonext-01049023"></a></h2>
+<h2 class="page-header" data-toc-text="0.10.4.9024" id="nanonext-01049024">nanonext 0.10.4.9024<a class="anchor" aria-label="anchor" href="#nanonext-01049024"></a></h2>
 <p><em>This is a major stability release bundling the ‘libnng’ v1.6.0 source code.</em></p>
 <div class="section level5">
-<h5 id="new-features-0-10-4-9023">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-10-4-9023"></a></h5>
+<h5 id="new-features-0-10-4-9024">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-10-4-9024"></a></h5>
 <ul><li>Introduces <code><a href="../reference/call_aio.html">call_aio_()</a></code>, a user-interruptible version of <code><a href="../reference/call_aio.html">call_aio()</a></code> suitable for interactive use.</li>
 <li>Introduces <code><a href="../reference/cv.html">wait_()</a></code> and <code><a href="../reference/cv.html">until_()</a></code> user-interruptible versions of <code><a href="../reference/cv.html">wait()</a></code> and <code><a href="../reference/cv.html">until()</a></code> suitable for interactive use.</li>
 <li>Implements <code>%~&gt;%</code> signal forwarder from one ‘conditionVariable’ to another.</li>
 </ul></div>
 <div class="section level5">
-<h5 id="updates-0-10-4-9023">Updates<a class="anchor" aria-label="anchor" href="#updates-0-10-4-9023"></a></h5>
+<h5 id="updates-0-10-4-9024">Updates<a class="anchor" aria-label="anchor" href="#updates-0-10-4-9024"></a></h5>
 <ul><li>
 <code><a href="../reference/cv.html">until()</a></code> updated to be identical to <code><a href="../reference/dot-until.html">.until()</a></code>, returning FALSE instead of TRUE if the timeout has been reached.</li>
 <li>
@@ -73,7 +73,7 @@
 <li>no longer returns invisibly for easier confimation that the correct functions have been registered.</li>
 </ul></li>
 <li>
-<code><a href="../reference/reap.html">reap()</a></code> updated to immediately run finalisers and free associated resources, and always return either a zero on success or else an integer ‘errorValue’.</li>
+<code><a href="../reference/reap.html">reap()</a></code> updated to always return integer zero, and runs the finalizer for listeners to immediately release bound addresses.</li>
 <li>
 <code><a href="../reference/pipe_notify.html">pipe_notify()</a></code> arguments ‘add’, ‘remove’ and ‘flag’ now default to FALSE instead of TRUE for easier selective specification of the events to signal.</li>
 <li>Fixes regression in release 0.10.4 that caused a potential segfault using <code><a href="../reference/ncurl.html">ncurl()</a></code> with ‘follow’ set to TRUE when the server returns a missing or invalid relocation address.</li>
