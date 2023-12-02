@@ -178,7 +178,6 @@ void nano_serialize_xdr(nano_buf *, SEXP);
 SEXP nano_unserialize(unsigned char *, const size_t);
 SEXP nano_hashToChar(unsigned char *, const size_t);
 SEXP rawToChar(unsigned char *, const size_t);
-void context_finalizer(SEXP);
 void dialer_finalizer(SEXP);
 void listener_finalizer(SEXP);
 void socket_finalizer(SEXP);

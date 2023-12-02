@@ -554,7 +554,7 @@ SEXP nano_decode(unsigned char *buf, size_t sz, const int mod) {
 
 // finalizers ------------------------------------------------------------------
 
-void context_finalizer(SEXP xptr) {
+static void context_finalizer(SEXP xptr) {
 
   if (R_ExternalPtrAddr(xptr) == NULL)
     return;
