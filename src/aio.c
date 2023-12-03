@@ -35,6 +35,14 @@ typedef struct nano_cv_duo_s {
   nano_cv *cv2;
 } nano_cv_duo;
 
+typedef struct nano_handle_s {
+  nng_url *url;
+  nng_http_client *cli;
+  nng_http_req *req;
+  nng_http_res *res;
+  nng_tls_config *cfg;
+} nano_handle;
+
 static SEXP mk_error_data(const int xc) {
 
   const char *names[] = {xc < 0 ? "result" : "data", "value", ""};

@@ -22,6 +22,15 @@
 
 static uint8_t special_bit = 0;
 
+typedef union nano_opt_u {
+  char *str;
+  bool b;
+  nng_duration d;
+  int i;
+  size_t s;
+  uint64_t u;
+} nano_opt;
+
 SEXP mk_error(const int xc) {
 
   SEXP err = Rf_ScalarInteger(xc);

@@ -56,16 +56,6 @@ typedef struct nano_dialer_s {
   nng_tls_config *tls;
 } nano_dialer;
 
-typedef struct nano_stream_listener_s {
-  nng_stream_listener *list;
-  nng_tls_config *tls;
-} nano_stream_listener;
-
-typedef struct nano_stream_dialer_s {
-  nng_stream_dialer *dial;
-  nng_tls_config *tls;
-} nano_stream_dialer;
-
 typedef enum nano_aio_typ {
   SENDAIO,
   RECVAIO,
@@ -81,14 +71,6 @@ typedef struct nano_aio_s {
   int result;
   void *data;
 } nano_aio;
-
-typedef struct nano_handle_s {
-  nng_url *url;
-  nng_http_client *cli;
-  nng_http_req *req;
-  nng_http_res *res;
-  nng_tls_config *cfg;
-} nano_handle;
 
 typedef struct nano_cv_s {
   int condition;
@@ -163,15 +145,6 @@ typedef struct nano_buf_s {
   size_t len;
   size_t cur;
 } nano_buf;
-
-typedef union nano_opt_u {
-  char *str;
-  bool b;
-  nng_duration d;
-  int i;
-  size_t s;
-  uint64_t u;
-} nano_opt;
 
 SEXP mk_error(const int);
 SEXP mk_error_ncurl(const int);

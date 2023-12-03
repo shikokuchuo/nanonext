@@ -23,6 +23,16 @@
 
 // internals -------------------------------------------------------------------
 
+typedef struct nano_stream_listener_s {
+  nng_stream_listener *list;
+  nng_tls_config *tls;
+} nano_stream_listener;
+
+typedef struct nano_stream_dialer_s {
+  nng_stream_dialer *dial;
+  nng_tls_config *tls;
+} nano_stream_dialer;
+
 SEXP mk_error_ncurl(const int xc) {
 
   const char *names[] = {"status", "headers", "data", ""};
