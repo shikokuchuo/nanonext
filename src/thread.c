@@ -149,8 +149,7 @@ SEXP rnng_messenger(SEXP url) {
   nng_socket *sock = R_Calloc(1, nng_socket);
   nano_listener *lp;
   nano_dialer *dp;
-  uint8_t dialer = 0;
-  int xc;
+  int xc, dialer = 0;
   SEXP socket, con;
 
   xc = nng_pair0_open(sock);
@@ -160,7 +159,12 @@ SEXP rnng_messenger(SEXP url) {
   }
   lp = R_Calloc(1, nano_listener);
   xc = nng_listen(*sock, up, &lp->list, 0);
-  if (xc == 10 || xc == 15) {
+  if (xc) {
+    if (xc != 10 && xc != 15) {
+      R_Free(lp);
+      R_Free(sock);
+      ERROR_OUT(xc);
+    }
     R_Free(lp);
     dp = R_Calloc(1, nano_dialer);
     xc = nng_dial(*sock, up, &dp->dial, 0);
@@ -170,11 +174,6 @@ SEXP rnng_messenger(SEXP url) {
       ERROR_OUT(xc);
     }
     dialer = 1;
-
-  } else if (xc) {
-    R_Free(lp);
-    R_Free(sock);
-    ERROR_OUT(xc);
   }
 
   PROTECT(socket = R_MakeExternalPtr(sock, nano_SocketSymbol, R_NilValue));
