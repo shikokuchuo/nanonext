@@ -153,8 +153,8 @@ static SEXP nano_inHook(SEXP x, SEXP fun) {
     PROTECT(list = Rf_xlengthgets(nano_refList, xlen + 1));
     SET_VECTOR_ELT(list, xlen, x);
   }
-  char idx[NANONEXT_INT_STRLEN];
-  snprintf(idx, NANONEXT_INT_STRLEN, "%d", (int) xlen + 1);
+  char idx[NANONEXT_LD_STRLEN];
+  snprintf(idx, NANONEXT_LD_STRLEN, "%ld", (long int) xlen + 1);
   PROTECT(out = Rf_mkChar(idx));
   if (xlen == 0) {
     PROTECT(names = Rf_ScalarString(out));
@@ -173,7 +173,7 @@ static SEXP nano_inHook(SEXP x, SEXP fun) {
 
 static SEXP nano_outHook(SEXP x, SEXP fun) {
 
-  const int i = atoi(CHAR(STRING_ELT(x, 0))) - 1;
+  const long int i = atol(CHAR(STRING_ELT(x, 0))) - 1;
 
   return VECTOR_ELT(fun, i);
 
