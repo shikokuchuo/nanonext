@@ -281,12 +281,10 @@ unlock <- function(socket) invisible(.Call(rnng_socket_unlock, socket))
 #'
 #' @return Invisibly, 'cv2'.
 #'
-#' @details This is an experimental operator.
-#'
-#'     The condition value of 'cv' is initially reset to zero when this operator
-#'     returns. Only one forwarder can be active on a 'cv' at any given time,
-#'     and assigning a new forwarding target cancels any currently existing
-#'     forwarding.
+#' @details The condition value of 'cv' is initially reset to zero when this
+#'     operator returns. Only one forwarder can be active on a 'cv' at any given
+#'     time, and assigning a new forwarding target cancels any currently
+#'     existing forwarding.
 #'
 #'     Changes in the condition value of 'cv' are forwarded to 'cv2', but only
 #'     on each occassion 'cv' is signalled. This means that waiting on 'cv'

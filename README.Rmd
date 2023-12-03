@@ -281,7 +281,7 @@ Can be used to perform computationally-expensive calculations or I/O-bound opera
 
 ```{r rpcserver, eval=FALSE}
 library(nanonext)
-rep <- socket("rep", listen = "tcp://127.0.0.1:6546")
+rep <- socket("rep", listen = "tcp://127.0.0.1:6556")
 ctxp <- context(rep)
 r <- reply(ctxp, execute = rnorm, send_mode = "raw")
 
@@ -291,7 +291,7 @@ r <- reply(ctxp, execute = rnorm, send_mode = "raw")
 
 ```{r rpcclient}
 library(nanonext)
-req <- socket("req", dial = "tcp://127.0.0.1:6546")
+req <- socket("req", dial = "tcp://127.0.0.1:6556")
 ctxq <- context(req)
 aio <- request(ctxq, data = 1e8, recv_mode = "double")
 
@@ -720,7 +720,7 @@ For previous R versions, pre-compiled 'libnng' v1.6.0 and 'libmbedtls' v3.5.1 li
 
 We would like to acknowledge in particular:
 
-- [Garrett D'Amore](https://github.com/gdamore), author of the NNG library, who has been generous with advice and also implemented a feature request specifically for a more efficient 'aio' implementation in {nanonext}.
+- [Garrett D'Amore](https://github.com/gdamore), author of the NNG library, for being generous with advice and implementing a feature request specifically for a more efficient 'aio' implementation in {nanonext}.
 - The [R Consortium](https://www.r-consortium.org/) for funding the development of the secure TLS capabilities in the package, and [Henrik Bengtsson](https://github.com/HenrikBengtsson) and [William Landau](https://github.com/wlandau/)'s roles in making this possible.
 - [R Core](https://www.r-project.org/contributors.html) for various auxiliary functions for serialisation and raw / character conversion, which have been adopted by the package.
 - [Luke Tierney](https://homepage.stat.uiowa.edu/~luke/) for documenting R's serialization mechanism and [mikefc](https://github.com/coolbutuseless) for meticulous annotations in {serializer}, which led to the package's own implementation of a low-level interface to R serialisation.

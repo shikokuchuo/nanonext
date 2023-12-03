@@ -334,7 +334,7 @@ function, in this case `rnorm()`, before sending back the result.
 
 ``` r
 library(nanonext)
-rep <- socket("rep", listen = "tcp://127.0.0.1:6546")
+rep <- socket("rep", listen = "tcp://127.0.0.1:6556")
 ctxp <- context(rep)
 r <- reply(ctxp, execute = rnorm, send_mode = "raw")
 ```
@@ -344,7 +344,7 @@ request and returns immediately with a `recvAio` object.
 
 ``` r
 library(nanonext)
-req <- socket("req", dial = "tcp://127.0.0.1:6546")
+req <- socket("req", dial = "tcp://127.0.0.1:6556")
 ctxq <- context(req)
 aio <- request(ctxq, data = 1e8, recv_mode = "double")
 ```
@@ -369,7 +369,7 @@ aio
 #> < recvAio >
 #>  - $data for message data
 aio$data |> str()
-#>  num [1:100000000] -0.427 -0.221 -0.17 1.674 2.19 ...
+#>  num [1:100000000] 0.407 -1.5 -1.106 1.436 1.583 ...
 ```
 
 As `call_aio()` is blocking and will wait for completion, an alternative
@@ -536,7 +536,7 @@ throughout, or alternatively ‘localhost’, but not a mixture of the two.
 cert <- write_cert(cn = "127.0.0.1")
 str(cert)
 #> List of 2
-#>  $ server: chr [1:2] "-----BEGIN CERTIFICATE-----\nMIIFOTCCAyGgAwIBAgIBATANBgkqhkiG9w0BAQsFADA0MRIwEAYDVQQDDAkxMjcu\nMC4wLjExETAPBgNV"| __truncated__ "-----BEGIN RSA PRIVATE KEY-----\nMIIJKQIBAAKCAgEAsYJjSAL7uXSbhJhszdKNJOrjzLyQtIOgKvO+zYBY5lNeyvy4\nQQ3CYLJ4MVft"| __truncated__
+#>  $ server: chr [1:2] "-----BEGIN CERTIFICATE-----\nMIIFOTCCAyGgAwIBAgIBATANBgkqhkiG9w0BAQsFADA0MRIwEAYDVQQDDAkxMjcu\nMC4wLjExETAPBgNV"| __truncated__ "-----BEGIN RSA PRIVATE KEY-----\nMIIJKQIBAAKCAgEA90D/sZQuOywMZ62HyEWzYRCajD/KqVlV1Au4In1I62ZmKFaQ\nn5ZUr98b7j2j"| __truncated__
 #>  $ client: chr [1:2] "-----BEGIN CERTIFICATE-----\nMIIFOTCCAyGgAwIBAgIBATANBgkqhkiG9w0BAQsFADA0MRIwEAYDVQQDDAkxMjcu\nMC4wLjExETAPBgNV"| __truncated__ ""
 
 ser <- tls_config(server = cert$server)
@@ -705,7 +705,7 @@ ncurl("https://postman-echo.com/get")
 #> NULL
 #> 
 #> $data
-#> [1] "{\n  \"args\": {},\n  \"headers\": {\n    \"x-forwarded-proto\": \"https\",\n    \"x-forwarded-port\": \"443\",\n    \"host\": \"postman-echo.com\",\n    \"x-amzn-trace-id\": \"Root=1-6563bd39-4a4f0c5f37a820b7029940b2\"\n  },\n  \"url\": \"https://postman-echo.com/get\"\n}"
+#> [1] "{\n  \"args\": {},\n  \"headers\": {\n    \"x-forwarded-proto\": \"https\",\n    \"x-forwarded-port\": \"443\",\n    \"host\": \"postman-echo.com\",\n    \"x-amzn-trace-id\": \"Root=1-656c8a38-04210c966ab490ac58e0166d\"\n  },\n  \"url\": \"https://postman-echo.com/get\"\n}"
 ```
 
 For advanced use, supports additional HTTP methods such as POST or PUT.
@@ -724,10 +724,10 @@ res
 
 call_aio(res)$headers
 #> $date
-#> [1] "Sun, 26 Nov 2023 21:48:42 GMT"
+#> [1] "Sun, 03 Dec 2023 14:01:29 GMT"
 
 res$data
-#> [1] "{\n  \"args\": {},\n  \"data\": {\n    \"key\": \"value\"\n  },\n  \"files\": {},\n  \"form\": {},\n  \"headers\": {\n    \"x-forwarded-proto\": \"https\",\n    \"x-forwarded-port\": \"443\",\n    \"host\": \"postman-echo.com\",\n    \"x-amzn-trace-id\": \"Root=1-6563bd3a-2f8a566d5bc3a44e4b4b3adf\",\n    \"content-length\": \"16\",\n    \"content-type\": \"application/json\",\n    \"authorization\": \"Bearer APIKEY\"\n  },\n  \"json\": {\n    \"key\": \"value\"\n  },\n  \"url\": \"https://postman-echo.com/post\"\n}"
+#> [1] "{\n  \"args\": {},\n  \"data\": {\n    \"key\": \"value\"\n  },\n  \"files\": {},\n  \"form\": {},\n  \"headers\": {\n    \"x-forwarded-proto\": \"https\",\n    \"x-forwarded-port\": \"443\",\n    \"host\": \"postman-echo.com\",\n    \"x-amzn-trace-id\": \"Root=1-656c8a39-3e90001b06e5fa636e3bc2af\",\n    \"content-length\": \"16\",\n    \"content-type\": \"application/json\",\n    \"authorization\": \"Bearer APIKEY\"\n  },\n  \"json\": {\n    \"key\": \"value\"\n  },\n  \"url\": \"https://postman-echo.com/post\"\n}"
 ```
 
 In this respect, it may be used as a performant and lightweight method
@@ -758,7 +758,7 @@ transact(sess)
 #> 
 #> $headers
 #> $headers$Date
-#> [1] "Sun, 26 Nov 2023 21:48:42 GMT"
+#> [1] "Sun, 03 Dec 2023 14:01:29 GMT"
 #> 
 #> $headers$`Content-Type`
 #> [1] "application/json; charset=utf-8"
@@ -771,8 +771,8 @@ transact(sess)
 #>  [76] 77 61 72 64 65 64 2d 70 6f 72 74 22 3a 20 22 34 34 33 22 2c 0a 20 20 20 20
 #> [101] 22 68 6f 73 74 22 3a 20 22 70 6f 73 74 6d 61 6e 2d 65 63 68 6f 2e 63 6f 6d
 #> [126] 22 2c 0a 20 20 20 20 22 78 2d 61 6d 7a 6e 2d 74 72 61 63 65 2d 69 64 22 3a
-#> [151] 20 22 52 6f 6f 74 3d 31 2d 36 35 36 33 62 64 33 61 2d 34 35 64 36 62 63 31
-#> [176] 62 34 31 30 61 62 32 61 61 31 31 30 36 34 61 61 62 22 2c 0a 20 20 20 20 22
+#> [151] 20 22 52 6f 6f 74 3d 31 2d 36 35 36 63 38 61 33 39 2d 36 35 31 64 66 37 65
+#> [176] 39 37 31 33 31 33 37 33 62 34 33 37 39 34 35 39 36 22 2c 0a 20 20 20 20 22
 #> [201] 63 6f 6e 74 65 6e 74 2d 74 79 70 65 22 3a 20 22 61 70 70 6c 69 63 61 74 69
 #> [226] 6f 6e 2f 6a 73 6f 6e 22 2c 0a 20 20 20 20 22 61 75 74 68 6f 72 69 7a 61 74
 #> [251] 69 6f 6e 22 3a 20 22 42 65 61 72 65 72 20 41 50 49 4b 45 59 22 0a 20 20 7d
@@ -973,9 +973,9 @@ v3.5.1 libraries are downloaded and used for installation instead.
 We would like to acknowledge in particular:
 
 - [Garrett D’Amore](https://github.com/gdamore), author of the NNG
-  library, who has been generous with advice and also implemented a
-  feature request specifically for a more efficient ‘aio’ implementation
-  in {nanonext}.
+  library, for being generous with advice and implementing a feature
+  request specifically for a more efficient ‘aio’ implementation in
+  {nanonext}.
 - The [R Consortium](https://www.r-consortium.org/) for funding the
   development of the secure TLS capabilities in the package, and [Henrik
   Bengtsson](https://github.com/HenrikBengtsson) and [William

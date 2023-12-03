@@ -1208,14 +1208,7 @@ SEXP rnng_get_opt(SEXP object, SEXP opt) {
   const char *op = CHAR(STRING_ELT(opt, 0));
   SEXP out;
   int xc, typ;
-  union optval_u {
-    char *str;
-    bool b;
-    nng_duration d;
-    int i;
-    size_t s;
-    uint64_t u;
-  } optval;
+  nano_opt optval;
 
   const SEXP ptrtag = R_ExternalPtrTag(object);
   if (ptrtag == nano_SocketSymbol) {

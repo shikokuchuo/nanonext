@@ -165,6 +165,15 @@ typedef struct nano_buf_s {
   size_t cur;
 } nano_buf;
 
+typedef union nano_opt_u {
+  char *str;
+  bool b;
+  nng_duration d;
+  int i;
+  size_t s;
+  uint64_t u;
+} nano_opt;
+
 SEXP mk_error(const int);
 SEXP mk_error_ncurl(const int);
 SEXP nano_decode(unsigned char *, size_t, const int);
