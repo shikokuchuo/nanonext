@@ -48,7 +48,7 @@ static void nano_write_char(R_outpstream_t stream, int c) {
     buf->buf = R_Realloc(buf->buf, buf->len, unsigned char);
   }
 
-  buf->buf[buf->cur++] = (unsigned char) c;
+  buf->buf[buf->cur++] = (char) c;
 
 }
 
