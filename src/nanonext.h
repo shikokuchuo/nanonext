@@ -148,15 +148,14 @@ typedef struct nano_cv_s {
 #define NANONEXT_INIT_BUFSIZE 16384
 #define NANONEXT_SERIAL_VER 3
 #define NANONEXT_INT_STRLEN 12
-#define NANONEXT_ACK_MS 100
 #define NANO_ALLOC(x, sz)                                      \
   (x)->buf = R_Calloc(sz, unsigned char);                      \
-  (x)->len = (R_xlen_t) sz;                                    \
+  (x)->len = sz;                                    \
   (x)->cur = 0
 #define NANO_INIT(x, ptr, sz)                                  \
   (x)->buf = ptr;                                              \
   (x)->len = 0;                                                \
-  (x)->cur = (R_xlen_t) sz
+  (x)->cur = sz
 #define NANO_FREE(x) if (x.len) R_Free(x.buf)
 
 typedef struct nano_buf_s {
