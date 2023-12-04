@@ -1,3 +1,9 @@
+# nanonext 0.11.0.9000 (development)
+
+#### Updates
+
+* Deprecated function `.until()` is removed.
+
 # nanonext 0.11.0
 
 *This is a major stability release bundling the 'libnng' v1.6.0 source code.*

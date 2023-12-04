@@ -54,7 +54,7 @@ Async send is always non-blocking and returns a 'sendAio'
 
     Mode 'next' sends serialised R objects, with native extensions enabled by
     \code{\link{next_config}}. This configures custom serialization and
-    unserialization functions for external pointer type objects. When
+    unserialization functions for external pointer reference objects. When
     receiving, mode 'serial' should be used as 'next' sends are fully
     compatible.
 }

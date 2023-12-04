@@ -21,18 +21,17 @@ A list comprising the currently-registered 'refhook' functions.
 }
 \description{
 Configures send mode 'next' by registering functions for custom serialization
-    and unserialization of external pointer objects, allowing these to be
-    sent and received between different R sessions.
+    and unserialization of external pointer reference objects, allowing these
+    to be sent and received between different R sessions.
 }
 \details{
 Calling this function without any arguments returns a list of the
     currently-registered 'refhook' functions (and resets 'mark' to FALSE).
 }
 \examples{
-g <- next_config(refhook = list(function(x) serialize(x, NULL), unserialize),
-                 mark = TRUE)
+g <- next_config(refhook = list(function(x) serialize(x, NULL), unserialize))
 next_config()
-next_config(g)
+next_config(g, mark = TRUE)
 
 next_config(NULL)
 next_config()

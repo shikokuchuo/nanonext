@@ -78,7 +78,7 @@ Receive will block while awaiting a message to arrive and is usually
 
     Mode 'next' sends serialised R objects, with native extensions enabled by
     \code{\link{next_config}}. This configures custom serialization and
-    unserialization functions for external pointer type objects. When
+    unserialization functions for external pointer reference objects. When
     receiving, mode 'serial' should be used as 'next' sends are fully
     compatible.
 }

@@ -159,19 +159,6 @@ cv_reset <- function(cv) invisible(.Call(rnng_cv_reset, cv))
 #'
 cv_signal <- function(cv) invisible(.Call(rnng_cv_signal, cv))
 
-#' Condition Variables - Until
-#'
-#' This function is identical to \code{\link{until}} and deprecated.
-#'
-#' @inheritParams until
-#'
-#' @return (invisibly) logical TRUE if signalled, or else FALSE if the timeout
-#'     was reached.
-#'
-#' @export
-#'
-.until <- until
-
 #' Pipe Notify
 #'
 #' Signals a 'conditionVariable' whenever pipes (individual connections) are
