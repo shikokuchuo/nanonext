@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.11.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.11.0.9000</span>
       </span>
     </div>
 
@@ -54,7 +54,14 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.11.0" id="nanonext-0110">nanonext 0.11.0<a class="anchor" aria-label="anchor" href="#nanonext-0110"></a></h2>
+<h2 class="page-header" data-toc-text="0.11.0.9000" id="nanonext-01109000-development">nanonext 0.11.0.9000 (development)<a class="anchor" aria-label="anchor" href="#nanonext-01109000-development"></a></h2>
+<div class="section level5">
+<h5 id="updates-0-11-0-9000">Updates<a class="anchor" aria-label="anchor" href="#updates-0-11-0-9000"></a></h5>
+<ul><li>Deprecated function <code>.until()</code> is removed.</li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="0.11.0" id="nanonext-0110">nanonext 0.11.0<small>2023-12-04</small><a class="anchor" aria-label="anchor" href="#nanonext-0110"></a></h2>
 <p><em>This is a major stability release bundling the ‘libnng’ v1.6.0 source code.</em></p>
 <div class="section level5">
 <h5 id="new-features-0-11-0">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-11-0"></a></h5>
@@ -71,7 +78,7 @@
 <li>no longer returns invisibly for easier confimation that the correct functions have been registered.</li>
 </ul></li>
 <li>
-<code><a href="../reference/cv.html">until()</a></code> updated to be identical to <code><a href="../reference/dot-until.html">.until()</a></code>, returning FALSE instead of TRUE if the timeout has been reached.</li>
+<code><a href="../reference/cv.html">until()</a></code> updated to be identical to <code>.until()</code>, returning FALSE instead of TRUE if the timeout has been reached.</li>
 <li>
 <code><a href="../reference/reap.html">reap()</a></code> updated to no longer warn in cases it returns an ‘errorValue’.</li>
 <li>
@@ -89,7 +96,7 @@
 <ul><li>
 <code>nextmode()</code> configures settings for send mode ‘next’. Registers hook functions for custom serialization and unserialization of reference objects (such as those accessed via an external pointer).</li>
 <li>
-<code><a href="../reference/dot-until.html">.until()</a></code> contains revised behaviour for this synchronisation primitive, returning FALSE instead of TRUE if the timeout has been reached. This function will replace <code><a href="../reference/cv.html">until()</a></code> in a future package version.</li>
+<code>.until()</code> contains revised behaviour for this synchronisation primitive, returning FALSE instead of TRUE if the timeout has been reached. This function will replace <code><a href="../reference/cv.html">until()</a></code> in a future package version.</li>
 </ul></div>
 <div class="section level5">
 <h5 id="updates-0-10-4">Updates<a class="anchor" aria-label="anchor" href="#updates-0-10-4"></a></h5>
