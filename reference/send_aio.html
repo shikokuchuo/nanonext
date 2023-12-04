@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.10.4.9025</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.10.4.9026</span>
       </span>
     </div>
 
@@ -116,10 +116,10 @@ applies a socket-specific default, usually the same as no timeout.</p></dd>
     sockets, where R serialization is not in use. When receiving, the mode
     corresponding to the vector sent should be used.</p>
 <p>Mode 'next' sends serialised R objects, with native extensions enabled by
-    <code><a href="nextmode.html">nextmode</a></code>. This allows custom serialization and
-    unserialization functions to be registered for objects accessed via an
-    external pointer. When receiving, mode 'serial' should be used as 'next'
-    sends are fully compatible.</p>
+    <code><a href="next_config.html">next_config</a></code>. This configures custom serialization and
+    unserialization functions for external pointer type objects. When
+    receiving, mode 'serial' should be used as 'next' sends are fully
+    compatible.</p>
     </div>
 
     <div id="ref-examples">

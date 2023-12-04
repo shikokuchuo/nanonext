@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.10.4.9025</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.10.4.9026</span>
       </span>
     </div>
 
@@ -54,21 +54,21 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.10.4.9025" id="nanonext-01049025">nanonext 0.10.4.9025<a class="anchor" aria-label="anchor" href="#nanonext-01049025"></a></h2>
+<h2 class="page-header" data-toc-text="0.10.4.9026" id="nanonext-01049026">nanonext 0.10.4.9026<a class="anchor" aria-label="anchor" href="#nanonext-01049026"></a></h2>
 <p><em>This is a major stability release bundling the ‘libnng’ v1.6.0 source code.</em></p>
 <div class="section level5">
-<h5 id="new-features-0-10-4-9025">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-10-4-9025"></a></h5>
+<h5 id="new-features-0-10-4-9026">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-10-4-9026"></a></h5>
 <ul><li>Introduces <code><a href="../reference/call_aio.html">call_aio_()</a></code>, a user-interruptible version of <code><a href="../reference/call_aio.html">call_aio()</a></code> suitable for interactive use.</li>
 <li>Introduces <code><a href="../reference/cv.html">wait_()</a></code> and <code><a href="../reference/cv.html">until_()</a></code> user-interruptible versions of <code><a href="../reference/cv.html">wait()</a></code> and <code><a href="../reference/cv.html">until()</a></code> suitable for interactive use.</li>
 <li>Implements <code>%~&gt;%</code> signal forwarder from one ‘conditionVariable’ to another.</li>
 </ul></div>
 <div class="section level5">
-<h5 id="updates-0-10-4-9025">Updates<a class="anchor" aria-label="anchor" href="#updates-0-10-4-9025"></a></h5>
+<h5 id="updates-0-10-4-9026">Updates<a class="anchor" aria-label="anchor" href="#updates-0-10-4-9026"></a></h5>
 <ul><li>
 <code><a href="../reference/cv.html">until()</a></code> updated to be identical to <code><a href="../reference/dot-until.html">.until()</a></code>, returning FALSE instead of TRUE if the timeout has been reached.</li>
 <li>
-<code><a href="../reference/nextmode.html">nextmode()</a></code> improvements:
-<ul><li>simplified function signature to take a ‘refhook’ argument comprising a list of serialization / unserialization functions.</li>
+<code><a href="../reference/next_config.html">next_config()</a></code> replaces <code>nextmode()</code> with the following improvements:
+<ul><li>simplified ‘refhook’ argument takes a pair of serialization and unserialization functions as a list.</li>
 <li>registered ‘refhook’ functions apply to external pointer type objects only.</li>
 <li>no longer returns invisibly for easier confimation that the correct functions have been registered.</li>
 </ul></li>
@@ -87,7 +87,7 @@
 <div class="section level5">
 <h5 id="new-features-0-10-4">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-10-4"></a></h5>
 <ul><li>
-<code><a href="../reference/nextmode.html">nextmode()</a></code> configures settings for send mode ‘next’. Registers hook functions for custom serialization and unserialization of reference objects (such as those accessed via an external pointer).</li>
+<code>nextmode()</code> configures settings for send mode ‘next’. Registers hook functions for custom serialization and unserialization of reference objects (such as those accessed via an external pointer).</li>
 <li>
 <code><a href="../reference/dot-until.html">.until()</a></code> contains revised behaviour for this synchronisation primitive, returning FALSE instead of TRUE if the timeout has been reached. This function will replace <code><a href="../reference/cv.html">until()</a></code> in a future package version.</li>
 </ul></div>
