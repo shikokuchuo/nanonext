@@ -1,4 +1,4 @@
-# nanonext 0.10.4.9025
+# nanonext 0.10.4.9026
 
 *This is a major stability release bundling the 'libnng' v1.6.0 source code.*
 
@@ -11,8 +11,8 @@
 #### Updates
 
 * `until()` updated to be identical to `.until()`, returning FALSE instead of TRUE if the timeout has been reached.
-* `nextmode()` improvements:
-  + simplified function signature to take a 'refhook' argument comprising a list of serialization / unserialization functions.
+* `next_config()` replaces `nextmode()` with the following improvements:
+  + simplified 'refhook' argument takes a pair of serialization and unserialization functions as a list.
   + registered 'refhook' functions apply to external pointer type objects only.
   + no longer returns invisibly for easier confimation that the correct functions have been registered.
 * `reap()` updated to no longer warn in cases it returns an 'errorValue'.

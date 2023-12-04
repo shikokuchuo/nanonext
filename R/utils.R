@@ -275,7 +275,7 @@ status_code <- function(x) .Call(rnng_status_code, x)
 #'
 strcat <- function(a, b) .Call(rnng_strcat, a, b)
 
-#' Next Mode Settings
+#' Configure Next Mode
 #'
 #' Configures send mode 'next' by registering functions for custom serialization
 #'     and unserialization of external pointer objects, allowing these to be
@@ -295,14 +295,15 @@ strcat <- function(a, b) .Call(rnng_strcat, a, b)
 #'     currently-registered 'refhook' functions (and resets 'mark' to FALSE).
 #'
 #' @examples
-#' nextmode(refhook = list(function(x) serialize(x, NULL), unserialize),
-#'          mark = TRUE)
-#' nextmode()
+#' g <- next_config(refhook = list(function(x) serialize(x, NULL), unserialize),
+#'                  mark = TRUE)
+#' next_config()
+#' next_config(g)
 #'
-#' nextmode(NULL)
-#' nextmode()
+#' next_config(NULL)
+#' next_config()
 #'
 #' @export
 #'
-nextmode <- function(refhook = list(), mark = FALSE)
-  .Call(rnng_next_mode, refhook, mark)
+next_config <- function(refhook = list(), mark = FALSE)
+  .Call(rnng_next_config, refhook, mark)

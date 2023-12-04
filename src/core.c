@@ -1412,7 +1412,7 @@ SEXP rnng_strcat(SEXP a, SEXP b) {
 
 // next mode selector ----------------------------------------------------------
 
-SEXP rnng_next_mode(SEXP refhook, SEXP mark) {
+SEXP rnng_next_config(SEXP refhook, SEXP mark) {
 
   SEXPTYPE typ;
   SEXP out;

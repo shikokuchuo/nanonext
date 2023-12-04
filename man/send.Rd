@@ -61,10 +61,10 @@ Send data over a connection (Socket, Context or Stream).
     corresponding to the vector sent should be used.
 
     Mode 'next' sends serialised R objects, with native extensions enabled by
-    \code{\link{nextmode}}. This allows custom serialization and
-    unserialization functions to be registered for objects accessed via an
-    external pointer. When receiving, mode 'serial' should be used as 'next'
-    sends are fully compatible.
+    \code{\link{next_config}}. This configures custom serialization and
+    unserialization functions for external pointer type objects. When
+    receiving, mode 'serial' should be used as 'next' sends are fully
+    compatible.
 }
 
 \examples{
