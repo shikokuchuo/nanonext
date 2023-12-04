@@ -1,4 +1,4 @@
-# nanonext 0.10.4.9026
+# nanonext 0.11.0
 
 *This is a major stability release bundling the 'libnng' v1.6.0 source code.*
 
@@ -10,11 +10,11 @@
 
 #### Updates
 
-* `until()` updated to be identical to `.until()`, returning FALSE instead of TRUE if the timeout has been reached.
 * `next_config()` replaces `nextmode()` with the following improvements:
   + simplified 'refhook' argument takes a pair of serialization and unserialization functions as a list.
   + registered 'refhook' functions apply to external pointer type objects only.
   + no longer returns invisibly for easier confimation that the correct functions have been registered.
+* `until()` updated to be identical to `.until()`, returning FALSE instead of TRUE if the timeout has been reached.
 * `reap()` updated to no longer warn in cases it returns an 'errorValue'.
 * `pipe_notify()` arguments 'add', 'remove' and 'flag' now default to FALSE instead of TRUE for easier selective specification of the events to signal.
 * Fixes regression in release 0.10.4 that caused a potential segfault using `ncurl()` with 'follow' set to TRUE when the server returns a missing or invalid relocation address.
