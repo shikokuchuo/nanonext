@@ -26,7 +26,7 @@
 * Fixes regression in release 0.10.4 that caused a potential segfault using `ncurl()` with 'follow' set to TRUE when the server returns a missing or invalid relocation address.
 * The weak references interface is removed as 'non-core'.
 * Upgrades bundled 'libnng' to v1.6.0 release.
-* Upgrades bundled 'libmbedtls' to v 3.5.1.
+* Upgrades bundled 'libmbedtls' to v3.5.1.
 
 # nanonext 0.10.4
 
@@ -41,7 +41,7 @@
 * Improves listener / dialer logic for TLS connections, allowing *inter alia* synchronous dials.
 * `request()` argument 'ack' removed due to stability considerations.
 * Fixes memory leaks detected with valgrind.
-* Upgrades bundled 'libmbedtls' to v 3.5.0.
+* Upgrades bundled 'libmbedtls' to v3.5.0.
 
 # nanonext 0.10.2
 
