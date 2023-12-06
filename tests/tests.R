@@ -520,12 +520,15 @@ nanotest(is.integer(base64dec(base64enc(c(1L, 2L)), convert = NA)))
 nanotesterr(base64dec("__"), "not valid base64")
 nanotesterr(base64dec(404), "not valid base64")
 
-file <- tempfile()
-on.exit(unlink(file))
 pem <- "-----BEGIN CERTIFICATE----- -----END CERTIFICATE-----"
-cat(pem, file = file)
-nanotesterr(tls_config(client = file), "Cryptographic error")
-nanotesterr(tls_config(server = file), "Cryptographic error")
+test_tls <- function(pem) {
+  file <- tempfile()
+  on.exit(unlink(file))
+  cat(pem, file = file)
+  nanotesterr(tls_config(client = file), "Cryptographic error")
+  nanotesterr(tls_config(server = file), "Cryptographic error")
+}
+nanotest(test_tls(pem = pem))
 nanotesterr(tls_config(client = c(pem, pem)), "Cryptographic error")
 nanotesterr(tls_config(server = c(pem, pem)), "Cryptographic error")
 nanotest(is.list(cert <- write_cert(cn = "127.0.0.1")))
