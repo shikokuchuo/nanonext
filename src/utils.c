@@ -385,6 +385,7 @@ SEXP rnng_stream_dial(SEXP url, SEXP textframes, SEXP tls) {
   if (tls != R_NilValue && R_ExternalPtrTag(tls) != nano_TlsSymbol)
     Rf_error("'tls' is not a valid TLS Configuration");
   nano_stream_dialer *nsd = R_Calloc(1, nano_stream_dialer);
+  nsd->tls = NULL;
   nng_stream *stream;
   nng_url *up;
   nng_aio *aiop;
@@ -479,6 +480,7 @@ SEXP rnng_stream_listen(SEXP url, SEXP textframes, SEXP tls) {
   if (tls != R_NilValue && R_ExternalPtrTag(tls) != nano_TlsSymbol)
     Rf_error("'tls' is not a valid TLS Configuration");
   nano_stream_listener *nsl = R_Calloc(1, nano_stream_listener);
+  nsl->tls = NULL;
   nng_stream *stream;
   nng_url *up;
   nng_aio *aiop;
