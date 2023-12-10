@@ -176,7 +176,8 @@ cv_signal <- function(cv) invisible(.Call(rnng_cv_signal, cv))
 #' @param flag [default FALSE] logical value whether to also set a flag in the
 #'     'conditionVariable'. This can help distinguish between different types of
 #'     signal, and causes any subsequent \code{\link{wait}} to return FALSE
-#'     instead of TRUE.
+#'     instead of TRUE. If specified as NA, this sets a flag and additionally
+#'     signals a user interrupt (SIGINT).
 #'
 #' @details For add: this event occurs after the pipe is fully added to the
 #'     socket. Prior to this time, it is not possible to communicate over the

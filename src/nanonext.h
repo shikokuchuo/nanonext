@@ -81,6 +81,10 @@ typedef struct nano_cv_s {
 
 #endif
 
+#ifdef NANONEXT_SIGNALS
+#include <signal.h>
+#endif
+
 #ifdef NANONEXT_TIME
 #include <time.h>
 #endif
