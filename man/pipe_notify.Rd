@@ -24,9 +24,9 @@ removed.}
 \item{flag}{[default FALSE] logical value whether to also set a flag in the
 'conditionVariable'. This can help distinguish between different types of
 signal, and causes any subsequent \code{\link{wait}} to return FALSE
-instead of TRUE. If an integer value is supplied (or equivalently a
-signal from the \pkg{tools} package e.g. \code{tools::SIGINT}), this sets
-a flag and additionally raises this signal.}
+instead of TRUE. If a signal from the \pkg{tools} package, e.g.
+\code{tools::SIGINT}, or an equivalent integer value is supplied, this
+sets a flag and additionally raises this signal upon the pipe event.}
 }
 \value{
 Invisibly, zero on success (will otherwise error).
