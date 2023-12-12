@@ -94,7 +94,9 @@ removed.</p></dd>
 <dd><p>[default FALSE] logical value whether to also set a flag in the
 'conditionVariable'. This can help distinguish between different types of
 signal, and causes any subsequent <code><a href="cv.html">wait</a></code> to return FALSE
-instead of TRUE.</p></dd>
+instead of TRUE. If an integer value is supplied (or equivalently a
+signal from the <span class="pkg">tools</span> package e.g. <code><a href="https://rdrr.io/r/tools/pskill.html" class="external-link">tools::SIGINT</a></code>), this sets
+a flag and additionally raises this signal.</p></dd>
 
 </dl></div>
     <div id="value">
