@@ -2,7 +2,7 @@
 
 #### New Features
 
-* `pipe_notify()` argument 'flag' gains an NA option, which additionally raises an interrupt (SIGINT) upon the pipe event.
+* `pipe_notify()` argument 'flag' allows optionally supplying a signal value to raise upon a pipe event.
 
 #### Updates
 
