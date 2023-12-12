@@ -1,5 +1,9 @@
 # nanonext 0.11.0.9000 (development)
 
+#### New Features
+
+* `pipe_notify()` argument 'flag' allows optionally supplying a signal value to raise upon a pipe event.
+
 #### Updates
 
 * Deprecated function `.until()` is removed.

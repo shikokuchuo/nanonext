@@ -20,7 +20,6 @@
 #include "nanonext.h"
 
 SEXP nano_AioSymbol;
-SEXP nano_AioHttpSymbol;
 SEXP nano_ContextSymbol;
 SEXP nano_CvSymbol;
 SEXP nano_DataSymbol;

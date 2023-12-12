@@ -16,6 +16,7 @@
 
 // nanonext - C level - Async Functions ----------------------------------------
 
+#define NANONEXT_SIGNALS
 #define NANONEXT_SUPPLEMENTALS
 #include "nanonext.h"
 
@@ -30,9 +31,15 @@ typedef struct nano_cv_aio_s {
   nano_cv *cv;
 } nano_cv_aio;
 
+typedef struct nano_cv_solo_s {
+  nano_cv *cv;
+  int typ;
+} nano_cv_solo;
+
 typedef struct nano_cv_duo_s {
   nano_cv *cv;
   nano_cv *cv2;
+  int typ;
 } nano_cv_duo;
 
 typedef struct nano_handle_s {
@@ -85,76 +92,78 @@ static SEXP mk_error_haio(const int xc, SEXP env) {
 
 // aio completion callbacks ----------------------------------------------------
 
-static void pipe_cb_signal_cv(nng_pipe p, nng_pipe_ev ev, void *arg) {
+static void pipe_cb_signal_solo(nng_pipe p, nng_pipe_ev ev, void *arg) {
 
-  nano_cv *ncv = (nano_cv *) arg;
+  nano_cv_solo *solo = (nano_cv_solo *) arg;
+  int typ = solo->typ;
+  nano_cv *ncv = solo->cv;
+
   nng_cv *cv = ncv->cv;
   nng_mtx *mtx = ncv->mtx;
 
-  nng_mtx_lock(mtx);
-  ncv->condition++;
-  nng_cv_wake(cv);
-  nng_mtx_unlock(mtx);
+  if (typ) {
+    nng_mtx_lock(mtx);
+    ncv->flag = 1;
+    ncv->condition++;
+    nng_cv_wake(cv);
+    nng_mtx_unlock(mtx);
+    if (typ != 1) {
+#ifdef _WIN32
+      raise(typ);
+#else
+      kill(getpid(), typ);
+#endif
+    }
+  } else {
+    nng_mtx_lock(mtx);
+    ncv->condition++;
+    nng_cv_wake(cv);
+    nng_mtx_unlock(mtx);
+  }
 
 }
 
-static void pipe_cb_signal_cv_duo(nng_pipe p, nng_pipe_ev ev, void *arg) {
+static void pipe_cb_signal_duo(nng_pipe p, nng_pipe_ev ev, void *arg) {
 
   nano_cv_duo *duo = (nano_cv_duo *) arg;
+  int typ = duo->typ;
   nano_cv *ncv = duo->cv;
   nano_cv *ncv2 = duo->cv2;
+
   nng_cv *cv = ncv->cv;
-  nng_cv *cv2 = ncv2->cv;
   nng_mtx *mtx = ncv->mtx;
+  nng_cv *cv2 = ncv2->cv;
   nng_mtx *mtx2 = ncv2->mtx;
 
-  nng_mtx_lock(mtx);
-  ncv->condition++;
-  nng_cv_wake(cv);
-  nng_mtx_unlock(mtx);
+  if (typ) {
+    nng_mtx_lock(mtx);
+    ncv->flag = 1;
+    ncv->condition++;
+    nng_cv_wake(cv);
+    nng_mtx_unlock(mtx);
+    nng_mtx_lock(mtx2);
+    ncv2->flag = 1;
+    ncv2->condition++;
+    nng_cv_wake(cv2);
+    nng_mtx_unlock(mtx2);
+    if (typ != 1) {
+#ifdef _WIN32
+      raise(typ);
+#else
+      kill(getpid(), typ);
+#endif
+    }
 
-  nng_mtx_lock(mtx2);
-  ncv2->condition++;
-  nng_cv_wake(cv2);
-  nng_mtx_unlock(mtx2);
-
-}
-
-static void pipe_cb_flag_cv(nng_pipe p, nng_pipe_ev ev, void *arg) {
-
-  nano_cv *ncv = (nano_cv *) arg;
-  nng_cv *cv = ncv->cv;
-  nng_mtx *mtx = ncv->mtx;
-
-  nng_mtx_lock(mtx);
-  ncv->flag = 1;
-  ncv->condition++;
-  nng_cv_wake(cv);
-  nng_mtx_unlock(mtx);
-
-}
-
-static void pipe_cb_flag_cv_duo(nng_pipe p, nng_pipe_ev ev, void *arg) {
-
-  nano_cv_duo *duo = (nano_cv_duo *) arg;
-  nano_cv *ncv = duo->cv;
-  nano_cv *ncv2 = duo->cv2;
-  nng_cv *cv = ncv->cv;
-  nng_cv *cv2 = ncv2->cv;
-  nng_mtx *mtx = ncv->mtx;
-  nng_mtx *mtx2 = ncv2->mtx;
-
-  nng_mtx_lock(mtx);
-  ncv->flag = 1;
-  ncv->condition++;
-  nng_cv_wake(cv);
-  nng_mtx_unlock(mtx);
-
-  nng_mtx_lock(mtx2);
-  ncv2->flag = 1;
-  ncv2->condition++;
-  nng_cv_wake(cv2);
-  nng_mtx_unlock(mtx2);
+  } else {
+    nng_mtx_lock(mtx);
+    ncv->condition++;
+    nng_cv_wake(cv);
+    nng_mtx_unlock(mtx);
+    nng_mtx_lock(mtx2);
+    ncv2->condition++;
+    nng_cv_wake(cv2);
+    nng_mtx_unlock(mtx2);
+  }
 
 }
 
@@ -359,6 +368,15 @@ static void reqsaio_finalizer(SEXP xptr) {
   nng_ctx_close(*ctx);
 #endif
   nng_aio_free(xp->aio);
+  R_Free(xp);
+
+}
+
+static void cv_solo_finalizer(SEXP xptr) {
+
+  if (R_ExternalPtrAddr(xptr) == NULL)
+    return;
+  nano_cv_solo *xp = (nano_cv_solo *) R_ExternalPtrAddr(xptr);
   R_Free(xp);
 
 }
@@ -2074,49 +2092,45 @@ SEXP rnng_pipe_notify(SEXP socket, SEXP cv, SEXP cv2, SEXP add, SEXP remove, SEX
   nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(socket);
   nano_cv *cvp = (nano_cv *) R_ExternalPtrAddr(cv);
   int xc;
+  SEXP xptr;
 
   if (cv2 != R_NilValue) {
 
     if (R_ExternalPtrTag(cv2) != nano_CvSymbol)
       Rf_error("'cv2' is not a valid Condition Variable");
-    nano_cv *cvp2 = (nano_cv *) R_ExternalPtrAddr(cv2);
+
     nano_cv_duo *duo = R_Calloc(1, nano_cv_duo);
+    duo->typ = *(int *) STDVEC_DATAPTR(flag);
     duo->cv = cvp;
-    duo->cv2 = cvp2;
+    duo->cv2 = cv2 != R_NilValue ? (nano_cv *) R_ExternalPtrAddr(cv2) : NULL;
 
-    if (LOGICAL(add)[0]) {
-      xc = nng_pipe_notify(*sock, NNG_PIPE_EV_ADD_POST,
-                           LOGICAL(flag)[0] ? pipe_cb_flag_cv_duo : pipe_cb_signal_cv_duo, duo);
-      if (xc)
-        ERROR_OUT(xc);
-    }
-    if (LOGICAL(remove)[0]) {
-      xc = nng_pipe_notify(*sock, NNG_PIPE_EV_REM_POST,
-                           LOGICAL(flag)[0] ? pipe_cb_flag_cv_duo : pipe_cb_signal_cv_duo, duo);
-      if (xc)
-        ERROR_OUT(xc);
-    }
+    if (LOGICAL(add)[0] && (xc = nng_pipe_notify(*sock, NNG_PIPE_EV_ADD_POST, pipe_cb_signal_duo, duo)))
+      ERROR_OUT(xc);
 
-    SEXP duoptr;
-    PROTECT(duoptr = R_MakeExternalPtr(duo, R_NilValue, R_NilValue));
-    R_RegisterCFinalizerEx(duoptr, cv_duo_finalizer, TRUE);
-    R_MakeWeakRef(cv, duoptr, R_NilValue, FALSE);
+    if (LOGICAL(remove)[0] && (xc = nng_pipe_notify(*sock, NNG_PIPE_EV_REM_POST, pipe_cb_signal_duo, duo)))
+      ERROR_OUT(xc);
+
+    PROTECT(xptr = R_MakeExternalPtr(duo, R_NilValue, R_NilValue));
+    R_RegisterCFinalizerEx(xptr, cv_duo_finalizer, TRUE);
+    R_MakeWeakRef(cv, xptr, R_NilValue, FALSE);
     UNPROTECT(1);
 
   } else {
 
-    if (LOGICAL(add)[0]) {
-      xc = nng_pipe_notify(*sock, NNG_PIPE_EV_ADD_POST,
-                           LOGICAL(flag)[0] ? pipe_cb_flag_cv : pipe_cb_signal_cv, cvp);
-      if (xc)
-        ERROR_OUT(xc);
-    }
-    if (LOGICAL(remove)[0]) {
-      xc = nng_pipe_notify(*sock, NNG_PIPE_EV_REM_POST,
-                           LOGICAL(flag)[0] ? pipe_cb_flag_cv : pipe_cb_signal_cv, cvp);
-      if (xc)
-        ERROR_OUT(xc);
-    }
+    nano_cv_solo *solo = R_Calloc(1, nano_cv_solo);
+    solo->typ = *(int *) STDVEC_DATAPTR(flag);
+    solo->cv = cvp;
+
+    if (LOGICAL(add)[0] && (xc = nng_pipe_notify(*sock, NNG_PIPE_EV_ADD_POST, pipe_cb_signal_solo, solo)))
+      ERROR_OUT(xc);
+
+    if (LOGICAL(remove)[0] && (xc = nng_pipe_notify(*sock, NNG_PIPE_EV_REM_POST, pipe_cb_signal_solo, solo)))
+      ERROR_OUT(xc);
+
+    PROTECT(xptr = R_MakeExternalPtr(solo, R_NilValue, R_NilValue));
+    R_RegisterCFinalizerEx(xptr, cv_solo_finalizer, TRUE);
+    R_MakeWeakRef(cv, xptr, R_NilValue, FALSE);
+    UNPROTECT(1);
 
   }
 
