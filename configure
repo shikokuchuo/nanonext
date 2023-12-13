@@ -54,11 +54,8 @@ then
 fi
 echo "#include <mbedtls/version.h>
 int main() {
-#if MBEDTLS_VERSION_MAJOR >= 2 && MBEDTLS_VERSION_MINOR >=5 || MBEDTLS_VERSION_MAJOR >= 3
-    return 0;
-#else
-    void *err;
-    return *err;
+#if MBEDTLS_VERSION_MAJOR < 2 || MBEDTLS_VERSION_MAJOR == 2 && MBEDTLS_VERSION_MINOR < 5
+    *(void *) 0 = 0;
 #endif
 }" | ${CC} ${PKG_CFLAGS} -xc - -o /dev/null > /dev/null 2>&1
 
