@@ -56,30 +56,28 @@
 #'
 #' @section Conceptual overview:
 #'
-#'     NNG presents a socket view of networking. The sockets are constructed
-#'     using protocol-specific functions, as a given socket implements precisely
-#'     one protocol.
+#'     NNG presents a socket view of networking. A socket implements precisely
+#'     one protocol, such as 'bus', etc.
 #'
 #'     Each socket can be used to send and receive messages (if the protocol
 #'     supports it, and implements the appropriate protocol semantics). For
-#'     example, sub sockets automatically filter incoming messages to discard
-#'     those for topics that have not been subscribed.
+#'     example, the 'sub' protocol automatically filters incoming messages to
+#'     discard topics that have not been subscribed.
 #'
-#'     NNG sockets are message oriented, so that messages are either delivered
+#'     NNG sockets are message-oriented, and messages are either delivered
 #'     wholly, or not at all. Partial delivery is not possible. Furthermore, NNG
 #'     does not provide any other delivery or ordering guarantees; messages may
-#'     be dropped or reordered (some protocols, such as req may offer stronger
+#'     be dropped or reordered (some protocols, such as 'req' may offer stronger
 #'     guarantees by performing their own retry and validation schemes).
 #'
 #'     Each socket can have zero, one, or many endpoints, which are either
-#'     listeners or dialers (a given socket may freely choose whether it uses
-#'     listeners, dialers, or both). These endpoints provide access to
-#'     underlying transports, such as TCP, etc.
+#'     listeners or dialers (a given socket may use listeners, dialers, or
+#'     both). These endpoints provide access to underlying transports, such as
+#'     TCP, etc.
 #'
 #'     Each endpoint is associated with a URL, which is a service address.
-#'     For dialers, this will be the service address that will be contacted,
-#'     whereas for listeners this is where the listener will accept new
-#'     connections.
+#'     For dialers, this is the service address that is contacted, whereas for
+#'     listeners this is where the listener will accept new connections.
 #'
 #' @section Links:
 #'

@@ -27,13 +27,12 @@
 #'
 #'     [protocol, bus] The bus protocol is useful for routing applications or
 #'     for building mesh networks where every peer is connected to every other
-#'     peer. In this protocol, each message sent by a node is sent to every one
-#'     of its directly connected peers. This socket may be used to send and
-#'     receive messages. Sending messages will attempt to deliver to each
-#'     directly connected peer.
+#'     peer.
 #'
-#'     Messages are only sent to directly connected peers. This means that in
-#'     the event that a peer is connected indirectly, it will not receive
+#'     In this protocol, each message sent by a node is sent to every one
+#'     of its directly-connected peers. This protocol may be used to send and
+#'     receive messages. Sending messages will attempt to deliver to each
+#'     directly connected peer. Indirectly-connected peers will not receive
 #'     messages. When using this protocol to build mesh networks, it is
 #'     therefore important that a fully-connected mesh network be constructed.
 #'
@@ -48,7 +47,8 @@
 #'
 #'     [protocol, pair] The pair protocol implements a peer-to-peer pattern,
 #'     where relationships between peers are one-to-one. Only one peer may be
-#'     connected to another peer at a time, but both may speak freely.
+#'     connected to another peer at a time, but both may send and receive
+#'     messages freely.
 #'
 #'     Normally, this pattern will block when attempting to send a message
 #'     if no peer is able to receive the message.
@@ -72,15 +72,15 @@
 #' @section Publisher/Subscriber (topics & broadcast):
 #'
 #'     In a publisher/subscriber pattern, a publisher sends data, which is
-#'     broadcast to all subscribers. The subscribing applications only see the
-#'     data to which they have subscribed.
+#'     broadcast to all subscribers. The subscriber only see the data to which
+#'     they have subscribed.
 #'
 #'     [protocol, pub] The pub protocol is one half of a publisher/subscriber
-#'     pattern. This socket may be used to send messages, but is unable to
+#'     pattern. This protocol may be used to send messages, but is unable to
 #'     receive them.
 #'
 #'     [protocol, sub] The sub protocol is one half of a publisher/subscriber
-#'     pattern. This socket may be used to receive messages, but is unable to
+#'     pattern. This protocol may be used to receive messages, but is unable to
 #'     send them.
 #'
 #' @section Request/Reply (RPC):
@@ -104,20 +104,20 @@
 #'
 #'     In a survey pattern, a surveyor sends a survey, which is broadcast to all
 #'     peer respondents. The respondents then have a chance to reply (but are
-#'     not obliged to reply). The survey itself is a timed event, so that
-#'     responses received after the survey has finished are discarded.
+#'     not obliged). The survey itself is a timed event, so that responses
+#'     received after the survey has finished are discarded.
 #'
 #'     [protocol, surveyor] The surveyor protocol is one half of a survey
-#'     pattern. This socket may be used to send messages (surveys), and then to
-#'     receive replies. A reply can only be received after sending a survey.
+#'     pattern. This protocol may be used to send messages (surveys), and then
+#'     to receive replies. A reply can only be received after sending a survey.
 #'     A surveyor can normally expect to receive at most one reply from each
-#'     responder. (Messages can be duplicated in some topologies, so there is no
-#'     guarantee of this.)
+#'     responder (messages may be duplicated in some topologies, so there is no
+#'     guarantee of this).
 #'
 #'     [protocol, respondent] The respondent protocol is one half of a survey
-#'     pattern. This socket may be used to receive messages, and then to send
+#'     pattern. This protocol may be used to receive messages, and then to send
 #'     replies. A reply can only be sent after receiving a survey, and generally
-#'     the reply will be sent to the surveyor from whom the last survey was
+#'     the reply will be sent to the surveyor from which the last survey was
 #'     received.
 #'
 #' @name protocols
