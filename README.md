@@ -89,7 +89,7 @@ or the development version from rOpenSci R-universe:
 install.packages("nanonext", repos = "https://shikokuchuo.r-universe.dev")
 ```
 
-### Interfaces
+### Quick Start
 
 `nanonext` offers 2 equivalent interfaces: a functional interface, and
 an object-oriented interface.
@@ -207,8 +207,6 @@ package sources during installation.
 
 For previous R versions, pre-compiled ‘libnng’ v1.6.0 and ‘libmbedtls’
 v3.5.1 libraries are downloaded and used for installation instead.
-
-[« Back to ToC](#table-of-contents)
 
 ### Acknowledgements and Links
 
