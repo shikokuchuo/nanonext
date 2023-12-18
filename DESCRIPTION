@@ -31,3 +31,7 @@ SystemRequirements: 'libnng' >= 1.5 and 'libmbedtls' >= 2.5, or 'cmake' to
 Depends: 
     R (>= 3.5)
 RoxygenNote: 7.2.3
+Suggests: 
+    knitr,
+    markdown
+VignetteBuilder: knitr
