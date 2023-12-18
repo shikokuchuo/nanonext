@@ -20,29 +20,35 @@ high-performance standard for common communications patterns including
 publish/subscribe, request/reply and service discovery, over in-process,
 IPC, TCP, WebSocket and secure TLS transports.
 
-As its own threaded concurrency framework, provides a toolkit for
-asynchronous programming and distributed computing, with intuitive ‘aio’
-objects which resolve automatically upon completion of asynchronous
-operations, and synchronisation primitives allowing R to wait upon
-events signalled by concurrent threads.
+As its own [threaded concurrency
+framework](https://shikokuchuo.net/nanonext/articles/nanonext.html#async-and-concurrency),
+provides a toolkit for asynchronous programming and distributed
+computing, with intuitive ‘aio’ objects which resolve automatically upon
+completion of asynchronous operations, and [synchronisation
+primitives](https://shikokuchuo.net/nanonext/articles/nanonext.html#synchronisation-primitives)
+allowing R to wait upon events signalled by concurrent threads.
 
 Designed for performance and reliability, the NNG library is written in
 C and [`nanonext`](https://doi.org/10.5281/zenodo.7903429) is a
 lightweight zero-dependency wrapper.
 
 Provides the interface for code and processes to communicate with each
-other - receive data generated in Python, perform analysis in R, and
-send results to a C++ program – all on the same computer or on networks
-spanning the globe.
+other - [receive data generated in Python, perform analysis in R, and
+send results to a C++
+program](https://shikokuchuo.net/nanonext/articles/nanonext.html#cross-language-exchange)
+– all on the same computer or on networks spanning the globe.
 
 Implemented scalability protocols:
 
 - Bus (mesh networks)
 - Pair (two-way radio)
 - Push/Pull (one-way pipeline)
-- Publisher/Subscriber (topics & broadcast)
-- Request/Reply (RPC)
-- Surveyor/Respondent (voting & service discovery)
+- [Publisher/Subscriber](https://shikokuchuo.net/nanonext/articles/nanonext.html#publisher-subscriber-model)
+  (topics & broadcast)
+- [Request/Reply](https://shikokuchuo.net/nanonext/articles/nanonext.html#rpc-and-distributed-computing)
+  (RPC)
+- [Surveyor/Respondent](https://shikokuchuo.net/nanonext/articles/nanonext.html#surveyor-respondent-model)
+  (voting & service discovery)
 
 Supported transports:
 
@@ -50,7 +56,8 @@ Supported transports:
 - IPC (inter-process)
 - TCP (IPv4 or IPv6)
 - WebSocket
-- TLS (over TCP and WebSocket)
+- [TLS](https://shikokuchuo.net/nanonext/articles/nanonext.html#tls-secure-connections)
+  (over TCP and WebSocket)
 
 Development of the TLS implementation was generously supported by the
 <a href="https://www.r-consortium.org/all-projects/awarded-projects/2023-group-1" alt="R Consortium ISC Grant 2023"><img src="man/figures/RConsortium.png" alt="R Consortium logo" width="100" /></a>
@@ -58,13 +65,15 @@ Development of the TLS implementation was generously supported by the
 
 Web utilities:
 
-- `ncurl()` - (async) http(s) client
-- `stream()` - secure websockets client / generic low-level socket
-  interface
+- [ncurl](https://shikokuchuo.net/nanonext/articles/nanonext.html#ncurl-async-http-client) -
+  (async) http(s) client
+- [stream](https://shikokuchuo.net/nanonext/articles/nanonext.html#stream-websocket-client) -
+  secure websockets client / generic low-level socket interface
+- [sha1\|224\|256\|384\|512](https://shikokuchuo.net/nanonext/articles/nanonext.html#cryptographic-hashing) -
+  cryptographic hash and HMAC algorithms
+- [base64enc\|dec](https://shikokuchuo.net/nanonext/articles/nanonext.html#cryptographic-hashing) -
+  base64 encoding and decoding
 - `messenger()` - console-based instant messaging with authentication
-- `sha1()` `sha224()` `sha256()` `sha384()` `sha512()` - cryptographic
-  hash and HMAC algorithms
-- `base64enc()` `base64dec()` - base64 encoding and decoding
 
 ### Installation
 

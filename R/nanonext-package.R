@@ -54,6 +54,10 @@
 #'     Guide to the options that can be inspected and set using: \link{opt} /
 #'     \link{opt<-}
 #'
+#' @section Reference Manual:
+#'
+#' \code{vignette("nanonext", package = "nanonext")}
+#'
 #' @section Conceptual overview:
 #'
 #'     NNG presents a socket view of networking. A socket implements precisely

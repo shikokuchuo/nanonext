@@ -46,6 +46,12 @@ R binding for NNG (Nanomsg Next Gen), a successor to ZeroMQ. NNG is a socket
     \link{opt<-}
 }
 
+\section{Reference Manual}{
+
+
+\code{vignette("nanonext", package = "nanonext")}
+}
+
 \section{Conceptual overview}{
 
 
