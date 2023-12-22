@@ -183,17 +183,17 @@ within the package sources.
 
 **It is recommended for optimal performance and stability to let the
 package automatically compile bundled versions of ‘libmbedtls’ and
-‘libnng’ during installation.** To always compile the libraries from
-source even if system installations exist, set the `NANONEXT_LIBS`
-environment variable prior to installation e.g. by
+‘libnng’ during installation.** To ensure the libraries are compiled
+from source even if system installations are present, set the
+`NANONEXT_LIBS` environment variable prior to installation e.g. by
 `Sys.setenv(NANONEXT_LIBS = 1)`.
 
-It is neither necessary nor recommended to install system libraries, but
-‘libnng’ is available as libnng-dev (deb) or nng-devel (rpm), and
-‘libmbedtls’ is available as libmbedtls-dev (deb) or libmbedtls-devel
-(rpm). The `INCLUDE_DIR` and `LIB_DIR` environment variables may be set
-prior to package installation to specify a custom location for
-‘libmbedtls’ or ‘libnng’ other than the standard filesystem locations.
+Although not recommended to use system libraries, ‘libnng’ is available
+as libnng-dev (deb) or nng-devel (rpm), and ‘libmbedtls’ as
+libmbedtls-dev (deb) or libmbedtls-devel (rpm). The `INCLUDE_DIR` and
+`LIB_DIR` environment variables may be set prior to package installation
+to specify a custom location for ‘libmbedtls’ or ‘libnng’ other than the
+standard filesystem locations.
 
 *Additional requirements for Solaris: (i) the ‘xz’ package - available
 on OpenCSW, and (ii) a more recent version of ‘cmake’ than available on
