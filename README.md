@@ -36,7 +36,7 @@ Provides the interface for code and processes to communicate with each
 other - [receive data generated in Python, perform analysis in R, and
 send results to a C++
 program](https://shikokuchuo.net/nanonext/articles/nanonext.html#cross-language-exchange)
-– all on the same computer or on networks spanning the globe.
+– on the same computer or across networks spanning the globe.
 
 Implemented scalability protocols:
 

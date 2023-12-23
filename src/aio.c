@@ -890,11 +890,6 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
   const SEXP ptrtag = R_ExternalPtrTag(con);
   if (ptrtag == nano_SocketSymbol) {
 
-    nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(con);
-    nng_msg *msg;
-    saio = R_Calloc(1, nano_aio);
-    saio->type = SENDAIO;
-
     switch (nano_encodes(mode)) {
     case 1:
       nano_serialize(&buf, data); break;
@@ -903,6 +898,11 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
     default:
       nano_serialize_next(&buf, data); break;
     }
+
+    nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(con);
+    nng_msg *msg;
+    saio = R_Calloc(1, nano_aio);
+    saio->type = SENDAIO;
 
     if ((xc = nng_msg_alloc(&msg, 0)))
       goto exitlevel2;
@@ -923,11 +923,6 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
 
   } else if (ptrtag == nano_ContextSymbol) {
 
-    nng_ctx *ctxp = (nng_ctx *) R_ExternalPtrAddr(con);
-    nng_msg *msg;
-    saio = R_Calloc(1, nano_aio);
-    saio->type = SENDAIO;
-
     switch (nano_encodes(mode)) {
     case 1:
       nano_serialize(&buf, data); break;
@@ -936,6 +931,11 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
     default:
       nano_serialize_next(&buf, data); break;
     }
+
+    nng_ctx *ctxp = (nng_ctx *) R_ExternalPtrAddr(con);
+    nng_msg *msg;
+    saio = R_Calloc(1, nano_aio);
+    saio->type = SENDAIO;
 
     if ((xc = nng_msg_alloc(&msg, 0)))
       goto exitlevel2;
@@ -956,11 +956,12 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
 
   } else if (ptrtag == nano_StreamSymbol) {
 
-    nng_stream *sp = (nng_stream *) R_ExternalPtrAddr(con);
     const int frames = LOGICAL(Rf_getAttrib(con, nano_TextframesSymbol))[0];
-    nng_iov iov;
 
     nano_encode(&buf, data);
+
+    nng_stream *sp = (nng_stream *) R_ExternalPtrAddr(con);
+    nng_iov iov;
 
     saio = R_Calloc(1, nano_aio);
     saio->type = IOV_SENDAIO;
@@ -1018,15 +1019,16 @@ SEXP rnng_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP bytes, SEXP clo) {
   const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) Rf_asInteger(timeout);
   nano_aio *raio;
   SEXP aio;
-  int xc;
+  int mod, xc;
 
   const SEXP ptrtag = R_ExternalPtrTag(con);
   if (ptrtag == nano_SocketSymbol) {
 
+    mod = nano_matcharg(mode);
     nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(con);
     raio = R_Calloc(1, nano_aio);
     raio->type = RECVAIO;
-    raio->mode = nano_matcharg(mode);
+    raio->mode = mod;
 
     if ((xc = nng_aio_alloc(&raio->aio, raio_complete, raio)))
       goto exitlevel1;
@@ -1039,10 +1041,11 @@ SEXP rnng_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP bytes, SEXP clo) {
 
   } else if (ptrtag == nano_ContextSymbol) {
 
+    mod = nano_matcharg(mode);
     nng_ctx *ctxp = (nng_ctx *) R_ExternalPtrAddr(con);
     raio = R_Calloc(1, nano_aio);
     raio->type = RECVAIO;
-    raio->mode = nano_matcharg(mode);
+    raio->mode = mod;
 
     if ((xc = nng_aio_alloc(&raio->aio, raio_complete, raio)))
       goto exitlevel1;
@@ -1055,13 +1058,14 @@ SEXP rnng_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP bytes, SEXP clo) {
 
   } else if (ptrtag == nano_StreamSymbol) {
 
-    nng_stream *sp = (nng_stream *) R_ExternalPtrAddr(con);
+    mod = nano_matchargs(mode);
     const size_t xlen = (size_t) Rf_asInteger(bytes);
+    nng_stream *sp = (nng_stream *) R_ExternalPtrAddr(con);
     nng_iov iov;
 
     raio = R_Calloc(1, nano_aio);
     raio->type = IOV_RECVAIO;
-    raio->mode = nano_matchargs(mode);
+    raio->mode = mod;
     raio->data = R_Calloc(xlen, unsigned char);
     iov.iov_len = xlen;
     iov.iov_buf = raio->data;
@@ -1113,6 +1117,9 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP dat
                     SEXP timeout, SEXP tls, SEXP clo) {
 
   const char *httr = CHAR(STRING_ELT(http, 0));
+  const char *mthd = method != R_NilValue ? CHAR(STRING_ELT(method, 0)) : NULL;
+  const int conv = LOGICAL(convert)[0];
+  const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) Rf_asInteger(timeout);
   if (tls != R_NilValue && R_ExternalPtrTag(tls) != nano_TlsSymbol)
     Rf_error("'tls' is not a valid TLS Configuration");
   nano_aio *haio = R_Calloc(1, nano_aio);
@@ -1122,7 +1129,7 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP dat
 
   haio->type = HTTP_AIO;
   haio->data = handle;
-  haio->mode = LOGICAL(convert)[0];
+  haio->mode = conv;
   handle->cfg = NULL;
 
   if ((xc = nng_url_parse(&handle->url, httr)))
@@ -1131,12 +1138,8 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP dat
     goto exitlevel2;
   if ((xc = nng_http_req_alloc(&handle->req, handle->url)))
     goto exitlevel3;
-
-  if (method != R_NilValue) {
-    const char *met = CHAR(STRING_ELT(method, 0));
-    if ((xc = nng_http_req_set_method(handle->req, met)))
-      goto exitlevel4;
-  }
+  if (mthd != NULL && (xc = nng_http_req_set_method(handle->req, mthd)))
+    goto exitlevel4;
 
   if (headers != R_NilValue) {
     R_xlen_t hlen = Rf_xlength(headers);
@@ -1197,8 +1200,7 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP dat
 
   }
 
-  if (timeout != R_NilValue)
-    nng_aio_set_timeout(haio->aio, (nng_duration) Rf_asInteger(timeout));
+  nng_aio_set_timeout(haio->aio, dur);
   nng_http_client_transact(handle->cli, handle->req, handle->res, haio->aio);
 
   PROTECT(aio = R_MakeExternalPtr(haio, nano_AioSymbol, R_NilValue));

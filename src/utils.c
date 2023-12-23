@@ -174,8 +174,11 @@ SEXP rnng_is_error_value(SEXP x) {
 SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP follow, SEXP method, SEXP headers,
                 SEXP data, SEXP response, SEXP timeout, SEXP tls) {
 
-  const int conv = LOGICAL(convert)[0];
   const char *addr = CHAR(STRING_ELT(http, 0));
+  const char *mthd = method != R_NilValue ? CHAR(STRING_ELT(method, 0)) : NULL;
+  const int conv = LOGICAL(convert)[0];
+  const int cont = LOGICAL(follow)[0];
+  const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) Rf_asInteger(timeout);
   if (tls != R_NilValue && R_ExternalPtrTag(tls) != nano_TlsSymbol)
     Rf_error("'tls' is not a valid TLS Configuration");
   nng_url *url;
@@ -196,10 +199,8 @@ SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP follow, SEXP method, SEXP headers,
     goto exitlevel2;
   if ((xc = nng_http_req_alloc(&req, url)))
     goto exitlevel3;
-  if (method != R_NilValue) {
-    if ((xc = nng_http_req_set_method(req, CHAR(STRING_ELT(method, 0)))))
-      goto exitlevel4;
-  }
+  if (mthd != NULL && (xc = nng_http_req_set_method(req, mthd)))
+    goto exitlevel4;
   if (headers != R_NilValue) {
     const R_xlen_t hlen = Rf_xlength(headers);
     SEXP names = Rf_getAttrib(headers, R_NamesSymbol);
@@ -257,8 +258,7 @@ SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP follow, SEXP method, SEXP headers,
 
   }
 
-  if (timeout != R_NilValue)
-    nng_aio_set_timeout(aio, (nng_duration) Rf_asInteger(timeout));
+  nng_aio_set_timeout(aio, dur);
   nng_http_client_transact(client, req, res, aio);
   nng_aio_wait(aio);
   if ((xc = nng_aio_result(aio)))
@@ -270,7 +270,7 @@ SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP follow, SEXP method, SEXP headers,
 
   code = nng_http_res_get_status(res), relo = code >= 300 && code < 400;
 
-  if (relo && LOGICAL(follow)[0]) {
+  if (relo && cont) {
     const char *location = nng_http_res_get_header(res, "Location");
     if (location == NULL) goto resume;
     nng_url *oldurl = url;

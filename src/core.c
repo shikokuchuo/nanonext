@@ -242,6 +242,7 @@ void nano_serialize_next(nano_buf *buf, SEXP object) {
     if (TYPEOF(out) != RAWSXP) {
       R_ReleaseObject(nano_refList);
       nano_refList = R_NilValue;
+      if (buf->len) R_Free(buf->buf);
       Rf_error("serialization refhook did not return a raw vector");
     }
     R_xlen_t xlen = XLENGTH(out);
@@ -650,13 +651,12 @@ SEXP rnng_ctx_close(SEXP context) {
 
 SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
 
+  const int flags = block == R_NilValue ? -2 : TYPEOF(block) == LGLSXP ? 0 : Rf_asInteger(block);
   nano_buf buf;
   int xc;
 
   const SEXP ptrtag = R_ExternalPtrTag(con);
   if (ptrtag == nano_SocketSymbol) {
-
-    nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(con);
 
     switch (nano_encodes(mode)) {
     case 1:
@@ -667,21 +667,17 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
       nano_serialize_next(&buf, data); break;
     }
 
-    if (block == R_NilValue) {
+    nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(con);
 
-      xc = nng_send(*sock, buf.buf, buf.cur, NNG_FLAG_NONBLOCK);
-      NANO_FREE(buf);
+    if (flags <= 0) {
 
-    } else if (TYPEOF(block) == LGLSXP) {
-
-      xc = nng_send(*sock, buf.buf, buf.cur, (LOGICAL(block)[0] == 0) * NNG_FLAG_NONBLOCK);
+      xc = nng_send(*sock, buf.buf, buf.cur, flags ? NNG_FLAG_NONBLOCK : (LOGICAL(block)[0] == 0) * NNG_FLAG_NONBLOCK);
       NANO_FREE(buf);
 
     } else {
 
       nng_msg *msgp;
       nng_aio *aiop;
-      const nng_duration dur = (nng_duration) Rf_asInteger(block);
 
       if ((xc = nng_msg_alloc(&msgp, 0)))
         goto exitlevel1;
@@ -693,7 +689,7 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
       }
 
       nng_aio_set_msg(aiop, msgp);
-      nng_aio_set_timeout(aiop, dur);
+      nng_aio_set_timeout(aiop, flags);
       nng_send_aio(*sock, aiop);
       NANO_FREE(buf);
       nng_aio_wait(aiop);
@@ -705,8 +701,6 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
 
   } else if (ptrtag == nano_ContextSymbol) {
 
-    nng_ctx *ctxp = (nng_ctx *) R_ExternalPtrAddr(con);
-
     switch (nano_encodes(mode)) {
     case 1:
       nano_serialize(&buf, data); break;
@@ -716,12 +710,10 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
       nano_serialize_next(&buf, data); break;
     }
 
+    nng_ctx *ctxp = (nng_ctx *) R_ExternalPtrAddr(con);
     nng_msg *msgp;
 
 #ifdef NANONEXT_LEGACY_NNG
-
-    const nng_duration dur = block == R_NilValue ? NNG_DURATION_DEFAULT :
-      TYPEOF(block) == LGLSXP ? (LOGICAL(block)[0] == 1) * NNG_DURATION_DEFAULT : (nng_duration) Rf_asInteger(block);
 
     nng_aio *aiop;
 
@@ -735,7 +727,7 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
     }
 
     nng_aio_set_msg(aiop, msgp);
-    nng_aio_set_timeout(aiop, dur);
+    nng_aio_set_timeout(aiop, flags ? flags : (LOGICAL(block)[0] == 1) * NNG_DURATION_DEFAULT);
     nng_ctx_send(*ctxp, aiop);
     NANO_FREE(buf);
     nng_aio_wait(aiop);
@@ -745,26 +737,13 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
 
 #else
 
-    if (block == R_NilValue) {
+    if (flags <= 0) {
 
       if ((xc = nng_msg_alloc(&msgp, 0)))
         goto exitlevel1;
 
       if ((xc = nng_msg_append(msgp, buf.buf, buf.cur)) ||
-          (xc = nng_ctx_sendmsg(*ctxp, msgp, 0))) {
-        nng_msg_free(msgp);
-        goto exitlevel1;
-      }
-
-      NANO_FREE(buf);
-
-    } else if (TYPEOF(block) == LGLSXP) {
-
-      if ((xc = nng_msg_alloc(&msgp, 0)))
-        goto exitlevel1;
-
-      if ((xc = nng_msg_append(msgp, buf.buf, buf.cur)) ||
-          (xc = nng_ctx_sendmsg(*ctxp, msgp, (LOGICAL(block)[0] == 0) * NNG_FLAG_NONBLOCK))) {
+          (xc = nng_ctx_sendmsg(*ctxp, msgp, flags ? 0 : (LOGICAL(block)[0] == 0) * NNG_FLAG_NONBLOCK))) {
         nng_msg_free(msgp);
         goto exitlevel1;
       }
@@ -773,7 +752,6 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
 
     } else {
 
-      const nng_duration dur = (nng_duration) Rf_asInteger(block);
       nng_aio *aiop;
 
       if ((xc = nng_msg_alloc(&msgp, 0)))
@@ -786,7 +764,7 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
       }
 
       nng_aio_set_msg(aiop, msgp);
-      nng_aio_set_timeout(aiop, dur);
+      nng_aio_set_timeout(aiop, flags);
       nng_ctx_send(*ctxp, aiop);
       NANO_FREE(buf);
       nng_aio_wait(aiop);
@@ -800,15 +778,14 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
 
   } else if (ptrtag == nano_StreamSymbol) {
 
-    nng_stream *sp = (nng_stream *) R_ExternalPtrAddr(con);
-    nng_aio *aiop;
-    nng_iov iov;
-    const nng_duration dur = block == R_NilValue ? NNG_DURATION_DEFAULT :
-      TYPEOF(block) == LGLSXP ? (LOGICAL(block)[0] == 1) * NNG_DURATION_DEFAULT : (nng_duration) Rf_asInteger(block);
+    const int frames = LOGICAL(Rf_getAttrib(con, nano_TextframesSymbol))[0];
 
     nano_encode(&buf, data);
 
-    const int frames = LOGICAL(Rf_getAttrib(con, nano_TextframesSymbol))[0];
+    nng_stream *sp = (nng_stream *) R_ExternalPtrAddr(con);
+    nng_aio *aiop;
+    nng_iov iov;
+
     iov.iov_len = buf.cur - (frames == 1);
     iov.iov_buf = buf.buf;
 
@@ -820,7 +797,7 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
       return mk_error(xc);
     }
 
-    nng_aio_set_timeout(aiop, dur);
+    nng_aio_set_timeout(aiop, flags ? flags : (LOGICAL(block)[0] == 1) * NNG_DURATION_DEFAULT);
     nng_stream_send(sp, aiop);
     nng_aio_wait(aiop);
     xc = nng_aio_result(aiop);
@@ -843,6 +820,8 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
 
 SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP bytes) {
 
+  const int flags = block == R_NilValue ? -2 : TYPEOF(block) == LGLSXP ? 0 : Rf_asInteger(block);
+  const int mod = nano_matcharg(mode);
   int xc;
   unsigned char *buf;
   size_t sz;
@@ -852,20 +831,10 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP bytes) {
   if (ptrtag == nano_SocketSymbol) {
 
     nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(con);
-    const int mod = nano_matcharg(mode);
 
-    if (block == R_NilValue) {
+    if (flags <= 0) {
 
-      xc = nng_recv(*sock, &buf, &sz, NNG_FLAG_ALLOC + NNG_FLAG_NONBLOCK);
-      if (xc)
-        return mk_error(xc);
-
-      res = nano_decode(buf, sz, mod);
-      nng_free(buf, sz);
-
-    } else if (TYPEOF(block) == LGLSXP) {
-
-      xc = nng_recv(*sock, &buf, &sz, NNG_FLAG_ALLOC + (LOGICAL(block)[0] == 0) * NNG_FLAG_NONBLOCK);
+      xc = nng_recv(*sock, &buf, &sz, NNG_FLAG_ALLOC + (flags || LOGICAL(block)[0] == 0) * NNG_FLAG_NONBLOCK);
       if (xc)
         return mk_error(xc);
 
@@ -875,10 +844,9 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP bytes) {
     } else {
 
       nng_aio *aiop;
-      nng_duration dur = (nng_duration) Rf_asInteger(block);
       if ((xc = nng_aio_alloc(&aiop, NULL, NULL)))
         return mk_error(xc);
-      nng_aio_set_timeout(aiop, dur);
+      nng_aio_set_timeout(aiop, flags);
       nng_recv_aio(*sock, aiop);
       nng_aio_wait(aiop);
       if ((xc = nng_aio_result(aiop))) {
@@ -896,18 +864,15 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP bytes) {
   } else if (ptrtag == nano_ContextSymbol) {
 
     nng_ctx *ctxp = (nng_ctx *) R_ExternalPtrAddr(con);
-    const int mod = nano_matcharg(mode);
     nng_msg *msgp;
 
 #ifdef NANONEXT_LEGACY_NNG
 
-    const nng_duration dur = block == R_NilValue ? NNG_DURATION_DEFAULT :
-      TYPEOF(block) == LGLSXP ? (LOGICAL(block)[0] == 1) * NNG_DURATION_DEFAULT : (nng_duration) Rf_asInteger(block);
     nng_aio *aiop;
 
     if ((xc = nng_aio_alloc(&aiop, NULL, NULL)))
       return mk_error(xc);
-    nng_aio_set_timeout(aiop, dur);
+    nng_aio_set_timeout(aiop, flags ? flags : (LOGICAL(block)[0] == 1) * NNG_DURATION_DEFAULT));
     nng_ctx_recv(*ctxp, aiop);
 
     nng_aio_wait(aiop);
@@ -925,20 +890,9 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP bytes) {
 
 #else
 
-    if (block == R_NilValue) {
+    if (flags <= 0) {
 
-      xc = nng_ctx_recvmsg(*ctxp, &msgp, 0);
-      if (xc)
-        return mk_error(xc);
-
-      buf = nng_msg_body(msgp);
-      sz = nng_msg_len(msgp);
-      res = nano_decode(buf, sz, mod);
-      nng_msg_free(msgp);
-
-    } else if (TYPEOF(block) == LGLSXP) {
-
-      xc = nng_ctx_recvmsg(*ctxp, &msgp, (LOGICAL(block)[0] == 0) * NNG_FLAG_NONBLOCK);
+      xc = nng_ctx_recvmsg(*ctxp, &msgp, flags ? 0 : (LOGICAL(block)[0] == 0) * NNG_FLAG_NONBLOCK);
       if (xc)
         return mk_error(xc);
 
@@ -949,12 +903,11 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP bytes) {
 
     } else {
 
-      const nng_duration dur = (nng_duration) Rf_asInteger(block);
       nng_aio *aiop;
 
       if ((xc = nng_aio_alloc(&aiop, NULL, NULL)))
         return mk_error(xc);
-      nng_aio_set_timeout(aiop, dur);
+      nng_aio_set_timeout(aiop, flags);
       nng_ctx_recv(*ctxp, aiop);
 
       nng_aio_wait(aiop);
@@ -976,11 +929,8 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP bytes) {
 
   } else if (ptrtag == nano_StreamSymbol) {
 
-    nng_stream *sp = (nng_stream *) R_ExternalPtrAddr(con);
-    const int mod = nano_matchargs(mode);
     const size_t xlen = (size_t) Rf_asInteger(bytes);
-    const nng_duration dur = block == R_NilValue ? NNG_DURATION_DEFAULT :
-      TYPEOF(block) == LGLSXP ? (LOGICAL(block)[0] == 1) * NNG_DURATION_DEFAULT : (nng_duration) Rf_asInteger(block);
+    nng_stream *sp = (nng_stream *) R_ExternalPtrAddr(con);
     nng_iov iov;
     nng_aio *aiop;
 
@@ -996,7 +946,7 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP bytes) {
       goto exitlevel1;
     }
 
-    nng_aio_set_timeout(aiop, dur);
+    nng_aio_set_timeout(aiop, flags ? flags : (LOGICAL(block)[0] == 1) * NNG_DURATION_DEFAULT);
     nng_stream_recv(sp, aiop);
 
     nng_aio_wait(aiop);
