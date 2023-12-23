@@ -872,7 +872,7 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP bytes) {
 
     if ((xc = nng_aio_alloc(&aiop, NULL, NULL)))
       return mk_error(xc);
-    nng_aio_set_timeout(aiop, flags ? flags : (LOGICAL(block)[0] == 1) * NNG_DURATION_DEFAULT));
+    nng_aio_set_timeout(aiop, flags ? flags : (LOGICAL(block)[0] == 1) * NNG_DURATION_DEFAULT);
     nng_ctx_recv(*ctxp, aiop);
 
     nng_aio_wait(aiop);

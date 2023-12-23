@@ -34,7 +34,7 @@ HTTP request headers e.g. \code{list(`Content-Type` = "text/plain")} or
 \code{c(Authorization = "Bearer APIKEY")}. Supplying a non-named list or
 vector will error.}
 
-\item{data}{(optional) the request data to be submitted.}
+\item{data}{(optional) character request data to be submitted.}
 
 \item{response}{(optional) a character vector or list specifying the response
 headers to return e.g. \code{c("date", "server")} or \code{list("Date", "Server")}.

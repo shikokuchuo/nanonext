@@ -1164,7 +1164,7 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP dat
     }
   }
 
-  if (data != R_NilValue) {
+  if (data != R_NilValue && TYPEOF(data) == STRSXP) {
     nano_buf enc;
     nano_encode(&enc, data);
     if ((xc = nng_http_req_set_data(handle->req, enc.buf, enc.cur - 1)))
@@ -1364,17 +1364,20 @@ SEXP rnng_ncurl_session(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP
                         SEXP response, SEXP timeout, SEXP tls) {
 
   const char *httr = CHAR(STRING_ELT(http, 0));
+  const char *mthd = method != R_NilValue ? CHAR(STRING_ELT(method, 0)) : NULL;
+  const int conv = LOGICAL(convert)[0];
+  const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) Rf_asInteger(timeout);
   if (tls != R_NilValue && R_ExternalPtrTag(tls) != nano_TlsSymbol)
     Rf_error("'tls' is not a valid TLS Configuration");
+
   nano_aio *haio = R_Calloc(1, nano_aio);
   nano_handle *handle = R_Calloc(1, nano_handle);
-
   int xc;
   SEXP sess, aio;
 
   haio->type = HTTP_AIO;
   haio->data = handle;
-  haio->mode = LOGICAL(convert)[0];
+  haio->mode = conv;
   handle->cfg = NULL;
 
   if ((xc = nng_url_parse(&handle->url, httr)))
@@ -1383,12 +1386,8 @@ SEXP rnng_ncurl_session(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP
     goto exitlevel2;
   if ((xc = nng_http_req_alloc(&handle->req, handle->url)))
     goto exitlevel3;
-
-  if (method != R_NilValue) {
-    const char *met = CHAR(STRING_ELT(method, 0));
-    if ((xc = nng_http_req_set_method(handle->req, met)))
-      goto exitlevel4;
-  }
+  if (mthd != NULL && (xc = nng_http_req_set_method(handle->req, mthd)))
+    goto exitlevel4;
 
   if (headers != R_NilValue) {
     R_xlen_t hlen = Rf_xlength(headers);
@@ -1413,7 +1412,7 @@ SEXP rnng_ncurl_session(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP
     }
   }
 
-  if (data != R_NilValue) {
+  if (data != R_NilValue && TYPEOF(data) == STRSXP) {
     nano_buf enc;
     nano_encode(&enc, data);
     if ((xc = nng_http_req_set_data(handle->req, enc.buf, enc.cur - 1)))
@@ -1449,8 +1448,7 @@ SEXP rnng_ncurl_session(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP
 
   }
 
-  if (timeout != R_NilValue)
-    nng_aio_set_timeout(haio->aio, (nng_duration) Rf_asInteger(timeout));
+  nng_aio_set_timeout(haio->aio, dur);
   nng_http_client_connect(handle->cli, haio->aio);
   nng_aio_wait(haio->aio);
   if ((xc = haio->result) > 0)

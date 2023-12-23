@@ -223,7 +223,7 @@ SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP follow, SEXP method, SEXP headers,
       break;
     }
   }
-  if (data != R_NilValue) {
+  if (data != R_NilValue && TYPEOF(data) == STRSXP) {
     nano_buf enc;
     nano_encode(&enc, data);
     if ((xc = nng_http_req_set_data(req, enc.buf, enc.cur - 1)))
