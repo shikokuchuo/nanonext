@@ -2104,7 +2104,7 @@ SEXP rnng_pipe_notify(SEXP socket, SEXP cv, SEXP cv2, SEXP add, SEXP remove, SEX
     nano_cv_duo *duo = R_Calloc(1, nano_cv_duo);
     duo->typ = *(int *) STDVEC_DATAPTR(flag);
     duo->cv = cvp;
-    duo->cv2 = cv2 != R_NilValue ? (nano_cv *) R_ExternalPtrAddr(cv2) : NULL;
+    duo->cv2 = (nano_cv *) R_ExternalPtrAddr(cv2);
 
     if (LOGICAL(add)[0] && (xc = nng_pipe_notify(*sock, NNG_PIPE_EV_ADD_POST, pipe_cb_signal_duo, duo)))
       ERROR_OUT(xc);
