@@ -239,19 +239,15 @@ void nano_serialize_next(nano_buf *buf, SEXP object) {
     SEXP call, out;
     PROTECT(call = Rf_lcons(nano_refHookIn, Rf_cons(nano_refList, R_NilValue)));
     PROTECT(out = Rf_eval(call, R_GlobalEnv));
-    if (TYPEOF(out) != RAWSXP) {
-      R_ReleaseObject(nano_refList);
-      nano_refList = R_NilValue;
-      if (buf->len) R_Free(buf->buf);
-      Rf_error("serialization refhook did not return a raw vector");
+    if (TYPEOF(out) == RAWSXP) {
+      R_xlen_t xlen = XLENGTH(out);
+      if (buf->cur + xlen > buf->len) {
+        buf->len = buf->cur + xlen;
+        buf->buf = R_Realloc(buf->buf, buf->len, unsigned char);
+      }
+      memcpy(buf->buf + buf->cur, STDVEC_DATAPTR(out), xlen);
+      buf->cur += xlen;
     }
-    R_xlen_t xlen = XLENGTH(out);
-    if (buf->cur + xlen > buf->len) {
-      buf->len = buf->cur + xlen;
-      buf->buf = R_Realloc(buf->buf, buf->len, unsigned char);
-    }
-    memcpy(buf->buf + buf->cur, STDVEC_DATAPTR(out), xlen);
-    buf->cur += xlen;
 
     UNPROTECT(2);
     R_ReleaseObject(nano_refList);
