@@ -350,8 +350,10 @@ SEXP rnng_base64dec(SEXP x, SEXP convert) {
     Rf_error("input is not valid base64");
   unsigned char *buf = R_Calloc(olen, unsigned char);
   xc = mbedtls_base64_decode(buf, olen, &olen, inbuf, inlen);
-  if (xc)
+  if (xc) {
+    R_Free(buf);
     Rf_error("write buffer insufficient");
+  }
 
   switch (*(int *) STDVEC_DATAPTR(convert)) {
   case 0:
