@@ -175,8 +175,6 @@ SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP follow, SEXP method, SEXP headers,
 
   const char *addr = CHAR(STRING_ELT(http, 0));
   const char *mthd = method != R_NilValue ? CHAR(STRING_ELT(method, 0)) : NULL;
-  const int conv = LOGICAL(convert)[0];
-  const int cont = LOGICAL(follow)[0];
   const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) Rf_asInteger(timeout);
   if (tls != R_NilValue && R_ExternalPtrTag(tls) != nano_TlsSymbol)
     Rf_error("'tls' is not a valid TLS Configuration");
@@ -269,7 +267,7 @@ SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP follow, SEXP method, SEXP headers,
 
   code = nng_http_res_get_status(res), relo = code >= 300 && code < 400;
 
-  if (relo && cont) {
+  if (relo && *(int *) STDVEC_DATAPTR(follow)) {
     const char *location = nng_http_res_get_header(res, "Location");
     if (location == NULL) goto resume;
     nng_url *oldurl = url;
@@ -341,7 +339,7 @@ SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP follow, SEXP method, SEXP headers,
 
   nng_http_res_get_data(res, &dat, &sz);
 
-  if (conv) {
+  if (*(int *) STDVEC_DATAPTR(convert)) {
     vec = rawToChar(dat, sz);
   } else {
     vec = Rf_allocVector(RAWSXP, sz);
@@ -399,7 +397,7 @@ SEXP rnng_stream_dial(SEXP url, SEXP textframes, SEXP tls) {
     goto exitlevel2;
 
   if (!strcmp(up->u_scheme, "ws") || !strcmp(up->u_scheme, "wss")) {
-    frames = LOGICAL(textframes)[0];
+    frames = *(int *) STDVEC_DATAPTR(textframes);
     if (frames &&
         ((xc = nng_stream_dialer_set_bool(nsd->dial, "ws:recv-text", 1)) ||
         (xc = nng_stream_dialer_set_bool(nsd->dial, "ws:send-text", 1))))
@@ -494,7 +492,7 @@ SEXP rnng_stream_listen(SEXP url, SEXP textframes, SEXP tls) {
     goto exitlevel2;
 
   if (!strcmp(up->u_scheme, "ws") || !strcmp(up->u_scheme, "wss")) {
-    frames = LOGICAL(textframes)[0];
+    frames = *(int *) STDVEC_DATAPTR(textframes);
     if (frames &&
         ((xc = nng_stream_listener_set_bool(nsl->list, "ws:recv-text", 1)) ||
         (xc = nng_stream_listener_set_bool(nsl->list, "ws:send-text", 1))))

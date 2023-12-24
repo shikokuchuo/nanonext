@@ -1118,7 +1118,6 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP dat
 
   const char *httr = CHAR(STRING_ELT(http, 0));
   const char *mthd = method != R_NilValue ? CHAR(STRING_ELT(method, 0)) : NULL;
-  const int conv = LOGICAL(convert)[0];
   const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) Rf_asInteger(timeout);
   if (tls != R_NilValue && R_ExternalPtrTag(tls) != nano_TlsSymbol)
     Rf_error("'tls' is not a valid TLS Configuration");
@@ -1129,7 +1128,7 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP dat
 
   haio->type = HTTP_AIO;
   haio->data = handle;
-  haio->mode = conv;
+  haio->mode = *(int *) STDVEC_DATAPTR(convert);
   handle->cfg = NULL;
 
   if ((xc = nng_url_parse(&handle->url, httr)))
@@ -1365,7 +1364,6 @@ SEXP rnng_ncurl_session(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP
 
   const char *httr = CHAR(STRING_ELT(http, 0));
   const char *mthd = method != R_NilValue ? CHAR(STRING_ELT(method, 0)) : NULL;
-  const int conv = LOGICAL(convert)[0];
   const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) Rf_asInteger(timeout);
   if (tls != R_NilValue && R_ExternalPtrTag(tls) != nano_TlsSymbol)
     Rf_error("'tls' is not a valid TLS Configuration");
@@ -1377,7 +1375,7 @@ SEXP rnng_ncurl_session(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP
 
   haio->type = HTTP_AIO;
   haio->data = handle;
-  haio->mode = conv;
+  haio->mode = *(int *) STDVEC_DATAPTR(convert);
   handle->cfg = NULL;
 
   if ((xc = nng_url_parse(&handle->url, httr)))

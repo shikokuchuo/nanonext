@@ -251,12 +251,14 @@ SEXP rnng_wait_thread_create(SEXP aio) {
 
   if ((xc = nng_mtx_alloc(&mtx))) {
     R_Free(ncv);
+    R_Free(taio);
     ERROR_OUT(xc);
   }
 
   if ((xc = nng_cv_alloc(&cv, mtx))) {
     nng_mtx_free(ncv->mtx);
     R_Free(ncv);
+    R_Free(taio);
     ERROR_OUT(xc);
   }
 
@@ -366,9 +368,9 @@ SEXP rnng_signal_thread_create(SEXP cv, SEXP cv2) {
     R_ClearExternalPtr(existing);
   }
 
-  nano_thread_duo *duo = R_Calloc(1, nano_thread_duo);
   nano_cv *ncv = (nano_cv *) R_ExternalPtrAddr(cv);
   nano_cv *ncv2 = (nano_cv *) R_ExternalPtrAddr(cv2);
+  nano_thread_duo *duo = R_Calloc(1, nano_thread_duo);
   duo->cv = ncv;
   duo->cv2 = ncv2;
 

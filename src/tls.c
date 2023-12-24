@@ -119,7 +119,7 @@ SEXP rnng_sha224(SEXP x, SEXP key, SEXP convert) {
   if (xc)
     Rf_error("error generating hash");
 
-  if (LOGICAL(convert)[0]) {
+  if (*(int *) STDVEC_DATAPTR(convert)) {
     out = nano_hashToChar(output, SHA224_KEY_SIZE);
   } else {
     out = Rf_allocVector(RAWSXP, SHA224_KEY_SIZE);
@@ -159,7 +159,7 @@ SEXP rnng_sha256(SEXP x, SEXP key, SEXP convert) {
   if (xc)
     Rf_error("error generating hash");
 
-  if (LOGICAL(convert)[0]) {
+  if (*(int *) STDVEC_DATAPTR(convert)) {
     out = nano_hashToChar(output, SHA256_KEY_SIZE);
   } else {
     out = Rf_allocVector(RAWSXP, SHA256_KEY_SIZE);
@@ -203,7 +203,7 @@ SEXP rnng_sha384(SEXP x, SEXP key, SEXP convert) {
   if (xc)
     Rf_error("error generating hash");
 
-  if (LOGICAL(convert)[0]) {
+  if (*(int *) STDVEC_DATAPTR(convert)) {
     out = nano_hashToChar(output, SHA384_KEY_SIZE);
   } else {
     out = Rf_allocVector(RAWSXP, SHA384_KEY_SIZE);
@@ -243,7 +243,7 @@ SEXP rnng_sha512(SEXP x, SEXP key, SEXP convert) {
   if (xc)
     Rf_error("error generating hash");
 
-  if (LOGICAL(convert)[0]) {
+  if (*(int *) STDVEC_DATAPTR(convert)) {
     out = nano_hashToChar(output, SHA512_KEY_SIZE);
   } else {
     out = Rf_allocVector(RAWSXP, SHA512_KEY_SIZE);
@@ -283,7 +283,7 @@ SEXP rnng_sha1(SEXP x, SEXP key, SEXP convert) {
   if (xc)
     Rf_error("error generating hash");
 
-  if (LOGICAL(convert)[0]) {
+  if (*(int *) STDVEC_DATAPTR(convert)) {
     out = nano_hashToChar(output, SHA1_KEY_SIZE);
   } else {
     out = Rf_allocVector(RAWSXP, SHA1_KEY_SIZE);
@@ -307,15 +307,18 @@ SEXP rnng_base64enc(SEXP x, SEXP convert) {
   unsigned char *buf = R_Calloc(olen, unsigned char);
   xc = mbedtls_base64_encode(buf, olen, &olen, hash.buf, hash.cur);
   NANO_FREE(hash);
-  if (xc)
+  if (xc) {
+    R_Free(buf);
     Rf_error("write buffer insufficient");
+  }
 
-  if (LOGICAL(convert)[0]) {
+  if (*(int *) STDVEC_DATAPTR(convert)) {
     out = rawToChar(buf, olen);
   } else {
     out = Rf_allocVector(RAWSXP, olen);
     memcpy(STDVEC_DATAPTR(out), buf, olen);
   }
+
   R_Free(buf);
 
   return out;
@@ -350,7 +353,7 @@ SEXP rnng_base64dec(SEXP x, SEXP convert) {
   if (xc)
     Rf_error("write buffer insufficient");
 
-  switch (LOGICAL(convert)[0]) {
+  switch (*(int *) STDVEC_DATAPTR(convert)) {
   case 0:
     out = Rf_allocVector(RAWSXP, olen);
     memcpy(STDVEC_DATAPTR(out), buf, olen);
