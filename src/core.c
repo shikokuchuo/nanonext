@@ -302,8 +302,6 @@ SEXP nano_unserialize(unsigned char *buf, const size_t sz) {
           memcpy(STDVEC_DATAPTR(raw), buf + offset, sz - offset);
           PROTECT(call = Rf_lcons(nano_refHookOut, Rf_cons(raw, R_NilValue)));
           PROTECT(reflist = Rf_eval(call, R_GlobalEnv));
-          if (TYPEOF(reflist) != VECSXP)
-            Rf_error("unserialization refhook did not return a list");
         }
         cur = 12;
         goto resume;
@@ -651,7 +649,7 @@ SEXP rnng_ctx_close(SEXP context) {
 
 SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
 
-  const int flags = block == R_NilValue ? -2 : TYPEOF(block) == LGLSXP ? 0 : Rf_asInteger(block);
+  const int flags = block == R_NilValue ? NNG_DURATION_DEFAULT : TYPEOF(block) == LGLSXP ? 0 : Rf_asInteger(block);
   nano_buf buf;
   int xc;
 
@@ -820,7 +818,7 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
 
 SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP bytes) {
 
-  const int flags = block == R_NilValue ? -2 : TYPEOF(block) == LGLSXP ? 0 : Rf_asInteger(block);
+  const int flags = block == R_NilValue ? NNG_DURATION_DEFAULT : TYPEOF(block) == LGLSXP ? 0 : Rf_asInteger(block);
   const int mod = nano_matcharg(mode);
   int xc;
   unsigned char *buf;

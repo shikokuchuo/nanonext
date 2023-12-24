@@ -130,9 +130,8 @@ SEXP rnng_url_parse(SEXP url) {
 
   const char *up = CHAR(STRING_ELT(url, 0));
   nng_url *urlp;
-  int xc;
 
-  xc = nng_url_parse(&urlp, up);
+  const int xc = nng_url_parse(&urlp, up);
   if (xc)
     ERROR_OUT(xc);
 
