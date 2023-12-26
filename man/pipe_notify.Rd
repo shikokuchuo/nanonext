@@ -26,7 +26,7 @@ removed.}
 signal, and causes any subsequent \code{\link{wait}} to return FALSE
 instead of TRUE. If a signal from the \pkg{tools} package, e.g.
 \code{tools::SIGINT}, or an equivalent integer value is supplied, this
-sets a flag and additionally raises this signal upon the pipe event.}
+sets a flag and additionally raises this signal upon the flag being set.}
 }
 \value{
 Invisibly, zero on success (will otherwise error).

@@ -74,7 +74,7 @@ typedef struct nano_aio_s {
 
 typedef struct nano_cv_s {
   int condition;
-  uint8_t flag;
+  int flag;
   nng_mtx *mtx;
   nng_cv *cv;
 } nano_cv;
