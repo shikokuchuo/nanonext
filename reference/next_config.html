@@ -72,11 +72,11 @@
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>refhook</dt>
-<dd><p><strong>either</strong> a list of two functions: the signature for the
-first must accept a list of external pointer objects and return a raw
-vector, e.g. <code>torch::torch_serialize</code>, and the second must accept a
-raw vector and return a list of external pointer objects, e.g.
-<code>torch::torch_load</code>,<br><strong>or else</strong> NULL to reset.</p></dd>
+<dd><p><strong>either</strong> a list or pairlist of two functions: the
+signature for the first must accept a list of external pointer objects
+and return a raw vector, e.g. <code>torch::torch_serialize</code>, and the
+second must accept a raw vector and return a list of external pointer
+objects, e.g. <code>torch::torch_load</code>,<br><strong>or else</strong> NULL to reset.</p></dd>
 
 
 <dt>mark</dt>
@@ -88,11 +88,11 @@ mark serialized data with a special bit.</p></dd>
     <h2>Value</h2>
     
 
-<p>A list comprising the currently-registered 'refhook' functions.</p>
+<p>A pairlist comprising the currently-registered 'refhook' functions.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
-    <p>Calling this function without any arguments returns a list of the
+    <p>Calling this function without any arguments returns the pairlist of
     currently-registered 'refhook' functions (and resets 'mark' to FALSE).</p>
     </div>
 
@@ -102,7 +102,7 @@ mark serialized data with a special bit.</p></dd>
 <span class="r-in"><span><span class="fu">next_config</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> function(x) serialize(x, NULL)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x560e240a9698&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x55aea0b66f48&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[2]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> function (connection, refhook = NULL) </span>
@@ -112,13 +112,13 @@ mark serialized data with a special bit.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         stop("'connection' must be a connection")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     .Internal(unserialize(connection, refhook))</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;bytecode: 0x560e240d5638&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;bytecode: 0x55aea0b9ec70&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: namespace:base&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span><span class="fu">next_config</span><span class="op">(</span><span class="va">g</span>, mark <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> function(x) serialize(x, NULL)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x560e240a9698&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x55aea0b66f48&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[2]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> function (connection, refhook = NULL) </span>
@@ -128,7 +128,7 @@ mark serialized data with a special bit.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         stop("'connection' must be a connection")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     .Internal(unserialize(connection, refhook))</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;bytecode: 0x560e240d5638&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;bytecode: 0x55aea0b9ec70&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: namespace:base&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
