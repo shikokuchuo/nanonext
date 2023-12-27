@@ -21,6 +21,7 @@
 // internals -------------------------------------------------------------------
 
 static uint8_t special_bit = 0;
+static uint8_t registered = 0;
 
 typedef union nano_opt_u {
   char *str;
@@ -40,12 +41,12 @@ SEXP mk_error(const int xc) {
 
 }
 
-SEXP eval_safe (void * call) {
+SEXP eval_safe (void *call) {
   return Rf_eval((SEXP) call, R_GlobalEnv);
 }
 
-void rl_reset(void * nothing, Rboolean jump) {
-  if (jump) {
+void rl_reset(void *nothing, Rboolean jump) {
+  if (jump && nothing == NULL) {
     R_ReleaseObject(nano_refList);
     nano_refList = R_NilValue;
   }
@@ -154,10 +155,10 @@ SEXP rawToChar(unsigned char *buf, const size_t sz) {
 static SEXP nano_inHook(SEXP x, SEXP fun) {
 
   if (TYPEOF(x) != EXTPTRSXP)
-    return R_NilValue;
+    return fun;
   SEXP list, names, out;
   R_xlen_t xlen;
-  if (nano_refList == R_NilValue) {
+  if (nano_refList == fun) {
     xlen = 0;
     PROTECT(list = Rf_allocVector(VECSXP, 1));
     SET_VECTOR_ELT(list, xlen, x);
@@ -218,8 +219,6 @@ void nano_serialize(nano_buf *buf, SEXP object) {
 }
 
 void nano_serialize_next(nano_buf *buf, SEXP object) {
-
-  const uint8_t registered = nano_refHookIn != R_NilValue;
 
   NANO_ALLOC(buf, NANONEXT_INIT_BUFSIZE);
   buf->buf[0] = 7u;
@@ -1388,6 +1387,7 @@ SEXP rnng_next_config(SEXP refhook, SEXP mark) {
     if (nano_refHookOut != R_NilValue)
       R_ReleaseObject(nano_refHookOut);
     R_PreserveObject(nano_refHookOut = VECTOR_ELT(refhook, 1));
+    registered = 1;
     return refhook;
   case NILSXP:
     if (nano_refHookIn != R_NilValue) {
@@ -1398,6 +1398,7 @@ SEXP rnng_next_config(SEXP refhook, SEXP mark) {
       R_ReleaseObject(nano_refHookOut);
       nano_refHookOut = R_NilValue;
     }
+    registered = 0;
   }
 
   PROTECT(out = Rf_allocVector(VECSXP, 2));
