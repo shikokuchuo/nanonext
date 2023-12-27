@@ -46,10 +46,8 @@ SEXP eval_safe (void *call) {
 }
 
 void rl_reset(void *nothing, Rboolean jump) {
-  if (jump && nothing == NULL) {
-    R_ReleaseObject(nano_refList);
-    nano_refList = R_NilValue;
-  }
+  if (jump && nothing == NULL)
+    SET_TAG(nano_refHook, R_NilValue);
 }
 
 static void nano_write_char(R_outpstream_t stream, int c) {
@@ -158,13 +156,14 @@ static SEXP nano_inHook(SEXP x, SEXP fun) {
     return fun;
   SEXP list, names, out;
   R_xlen_t xlen;
-  if (nano_refList == fun) {
+  list = TAG(nano_refHook);
+  if (list == R_NilValue) {
     xlen = 0;
     PROTECT(list = Rf_allocVector(VECSXP, 1));
     SET_VECTOR_ELT(list, xlen, x);
   } else {
-    xlen = Rf_xlength(nano_refList);
-    PROTECT(list = Rf_xlengthgets(nano_refList, xlen + 1));
+    xlen = Rf_xlength(list);
+    PROTECT(list = Rf_xlengthgets(list, xlen + 1));
     SET_VECTOR_ELT(list, xlen, x);
   }
   char idx[NANONEXT_LD_STRLEN];
@@ -175,10 +174,9 @@ static SEXP nano_inHook(SEXP x, SEXP fun) {
   } else {
     PROTECT(names = Rf_getAttrib(list, R_NamesSymbol));
     SET_STRING_ELT(names, xlen, out);
-    R_ReleaseObject(nano_refList);
   }
   Rf_namesgets(list, names);
-  R_PreserveObject(nano_refList = list);
+  SET_TAG(nano_refHook, list);
 
   UNPROTECT(3);
   return Rf_ScalarString(out);
@@ -245,11 +243,11 @@ void nano_serialize_next(nano_buf *buf, SEXP object) {
 
   R_Serialize(object, &output_stream);
 
-  if (registered && nano_refList != R_NilValue) {
+  if (registered && TAG(nano_refHook) != R_NilValue) {
     uint64_t cursor = (uint64_t) buf->cur;
     memcpy(buf->buf + 4, &cursor, 8);
     SEXP call, out;
-    PROTECT(call = Rf_lcons(nano_refHookIn, Rf_cons(nano_refList, R_NilValue)));
+    PROTECT(call = Rf_lcons(CAR(nano_refHook), Rf_cons(TAG(nano_refHook), R_NilValue)));
     PROTECT(out = R_UnwindProtect(eval_safe, call, rl_reset, NULL, NULL));
     if (TYPEOF(out) == RAWSXP) {
       R_xlen_t xlen = XLENGTH(out);
@@ -262,8 +260,7 @@ void nano_serialize_next(nano_buf *buf, SEXP object) {
     }
 
     UNPROTECT(2);
-    R_ReleaseObject(nano_refList);
-    nano_refList = R_NilValue;
+    SET_TAG(nano_refHook, R_NilValue);
   }
 
 }
@@ -308,7 +305,7 @@ SEXP nano_unserialize(unsigned char *buf, const size_t sz) {
           SEXP raw, call;
           PROTECT(raw = Rf_allocVector(RAWSXP, sz - offset));
           memcpy(STDVEC_DATAPTR(raw), buf + offset, sz - offset);
-          PROTECT(call = Rf_lcons(nano_refHookOut, Rf_cons(raw, R_NilValue)));
+          PROTECT(call = Rf_lcons(CADR(nano_refHook), Rf_cons(raw, R_NilValue)));
           PROTECT(reflist = Rf_eval(call, R_GlobalEnv));
         }
         cur = 12;
@@ -1370,42 +1367,42 @@ SEXP rnng_strcat(SEXP a, SEXP b) {
 
 SEXP rnng_next_config(SEXP refhook, SEXP mark) {
 
-  SEXPTYPE typ;
-  SEXP out;
   special_bit = (uint8_t) LOGICAL(mark)[0];
+  SEXPTYPE typ1, typ2;
+  int plist;
 
   switch(TYPEOF(refhook)) {
+  case LISTSXP:
+    if (Rf_xlength(refhook) != 2)
+      return nano_refHook;
+    typ1 = TYPEOF(CAR(refhook));
+    typ2 = TYPEOF(CADR(refhook));
+    plist = 1;
+    break;
   case VECSXP:
-    if (Rf_xlength(refhook) != 2) break;
-    typ = TYPEOF(VECTOR_ELT(refhook, 0));
-    if (typ != CLOSXP && typ != SPECIALSXP && typ != BUILTINSXP) break;
-    typ = TYPEOF(VECTOR_ELT(refhook, 1));
-    if (typ != CLOSXP && typ != SPECIALSXP && typ != BUILTINSXP) break;
-    if (nano_refHookIn != R_NilValue)
-      R_ReleaseObject(nano_refHookIn);
-    R_PreserveObject(nano_refHookIn = VECTOR_ELT(refhook, 0));
-    if (nano_refHookOut != R_NilValue)
-      R_ReleaseObject(nano_refHookOut);
-    R_PreserveObject(nano_refHookOut = VECTOR_ELT(refhook, 1));
-    registered = 1;
-    return refhook;
+    if (Rf_xlength(refhook) != 2)
+      return nano_refHook;
+    typ1 = TYPEOF(VECTOR_ELT(refhook, 0));
+    typ2 = TYPEOF(VECTOR_ELT(refhook, 1));
+    plist = 0;
+    break;
   case NILSXP:
-    if (nano_refHookIn != R_NilValue) {
-      R_ReleaseObject(nano_refHookIn);
-      nano_refHookIn = R_NilValue;
-    }
-    if (nano_refHookOut != R_NilValue) {
-      R_ReleaseObject(nano_refHookOut);
-      nano_refHookOut = R_NilValue;
-    }
+    SETCAR(nano_refHook, R_NilValue);
+    SETCADR(nano_refHook, R_NilValue);
     registered = 0;
+  default:
+    return nano_refHook;
   }
 
-  PROTECT(out = Rf_allocVector(VECSXP, 2));
-  SET_VECTOR_ELT(out, 0, nano_refHookIn);
-  SET_VECTOR_ELT(out, 1, nano_refHookOut);
-  UNPROTECT(1);
+  if ((typ1 == CLOSXP || typ1 == SPECIALSXP || typ1 == BUILTINSXP) &&
+      (typ2 == CLOSXP || typ2 == SPECIALSXP || typ2 == BUILTINSXP)) {
 
-  return out;
+    SETCAR(nano_refHook, plist ? CAR(refhook) : VECTOR_ELT(refhook, 0));
+    SETCADR(nano_refHook, plist ? CADR(refhook) : VECTOR_ELT(refhook, 1));
+    registered = 1;
+
+  }
+
+  return nano_refHook;
 
 }

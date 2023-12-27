@@ -49,9 +49,7 @@ SEXP nano_error;
 SEXP nano_ncurlAio;
 SEXP nano_ncurlSession;
 SEXP nano_recvAio;
-SEXP nano_refHookIn;
-SEXP nano_refHookOut;
-SEXP nano_refList;
+SEXP nano_refHook;
 SEXP nano_sendAio;
 SEXP nano_success;
 SEXP nano_unresolved;
@@ -111,18 +109,11 @@ static void PreserveObjects(void) {
   R_PreserveObject(nano_success = Rf_ScalarInteger(0));
   R_PreserveObject(nano_unresolved = Rf_shallow_duplicate(Rf_ScalarLogical(NA_LOGICAL)));
   Rf_classgets(nano_unresolved, Rf_mkString("unresolvedValue"));
-  nano_refHookIn = R_NilValue;
-  nano_refHookOut = R_NilValue;
-  nano_refList = R_NilValue;
+  R_PreserveObject(nano_refHook = Rf_list2(R_NilValue, R_NilValue));
 }
 
 static void ReleaseObjects(void) {
-  if (nano_refList != R_NilValue)
-    R_ReleaseObject(nano_refList);
-  if (nano_refHookOut != R_NilValue)
-    R_ReleaseObject(nano_refHookOut);
-  if (nano_refHookIn != R_NilValue)
-    R_ReleaseObject(nano_refHookIn);
+  R_ReleaseObject(nano_refHook);
   R_ReleaseObject(nano_unresolved);
   R_ReleaseObject(nano_success);
   R_ReleaseObject(nano_sendAio);

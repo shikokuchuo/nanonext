@@ -6,7 +6,8 @@
 
 #### Updates
 
-* Using mode 'next', serialization functions with incorrect signatures are now simply ignored rather than raising errors.
+* `next_config()` now returns a pairlist (of the registered serialization functions) rather than a list (for efficiency).
+* Using mode 'next', serialization functions with incorrect signatures are now simply ignored rather than raise errors.
 * Deprecated function `.until()` is removed.
 * Eliminates potential memory leaks along certain error paths.
 
