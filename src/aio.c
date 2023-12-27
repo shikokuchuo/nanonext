@@ -1858,7 +1858,6 @@ SEXP rnng_cv_recv_aio(SEXP con, SEXP cvar, SEXP mode, SEXP timeout, SEXP bytes, 
     Rf_error("'cv' is not a valid Condition Variable");
 
   const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) Rf_asInteger(timeout);
-
   nano_cv_aio *cv_raio;
   SEXP aio;
   int mod, xc;
@@ -1906,11 +1905,11 @@ SEXP rnng_cv_recv_aio(SEXP con, SEXP cvar, SEXP mode, SEXP timeout, SEXP bytes, 
 
   } else if (ptrtag == nano_StreamSymbol) {
 
-    nng_stream *sp = (nng_stream *) R_ExternalPtrAddr(con);
+    mod = nano_matchargs(mode);
     const size_t xlen = (size_t) Rf_asInteger(bytes);
+    nng_stream *sp = (nng_stream *) R_ExternalPtrAddr(con);
     nng_iov iov;
 
-    mod = nano_matcharg(mode);
     cv_raio = R_Calloc(1, nano_cv_aio);
     cv_raio->cv = (nano_cv *) R_ExternalPtrAddr(cvar);
     cv_raio->type = IOV_RECVAIO;

@@ -824,8 +824,7 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
 SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP bytes) {
 
   const int flags = block == R_NilValue ? NNG_DURATION_DEFAULT : TYPEOF(block) == LGLSXP ? 0 : Rf_asInteger(block);
-  const int mod = nano_matcharg(mode);
-  int xc;
+  int mod, xc;
   unsigned char *buf;
   size_t sz;
   SEXP res;
@@ -833,6 +832,7 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP bytes) {
   const SEXP ptrtag = R_ExternalPtrTag(con);
   if (ptrtag == nano_SocketSymbol) {
 
+    mod = nano_matcharg(mode);
     nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(con);
 
     if (flags <= 0) {
@@ -866,6 +866,7 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP bytes) {
 
   } else if (ptrtag == nano_ContextSymbol) {
 
+    mod = nano_matcharg(mode);
     nng_ctx *ctxp = (nng_ctx *) R_ExternalPtrAddr(con);
     nng_msg *msgp;
 
@@ -932,6 +933,7 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP bytes) {
 
   } else if (ptrtag == nano_StreamSymbol) {
 
+    mod = nano_matchargs(mode);
     const size_t xlen = (size_t) Rf_asInteger(bytes);
     nng_stream *sp = (nng_stream *) R_ExternalPtrAddr(con);
     nng_iov iov;
