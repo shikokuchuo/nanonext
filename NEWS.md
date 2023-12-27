@@ -8,6 +8,7 @@
 
 * Using mode 'next', serialization functions with incorrect signatures are now simply ignored rather than raising errors.
 * Deprecated function `.until()` is removed.
+* Eliminates potential memory leaks along certain error paths.
 
 # nanonext 0.11.0
 

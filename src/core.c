@@ -40,6 +40,17 @@ SEXP mk_error(const int xc) {
 
 }
 
+SEXP eval_safe (void * call) {
+  return Rf_eval((SEXP) call, R_GlobalEnv);
+}
+
+void rl_reset(void * nothing, Rboolean jump) {
+  if (jump) {
+    R_ReleaseObject(nano_refList);
+    nano_refList = R_NilValue;
+  }
+}
+
 static void nano_write_char(R_outpstream_t stream, int c) {
 
   nano_buf *buf = (nano_buf *) stream->data;
@@ -240,7 +251,7 @@ void nano_serialize_next(nano_buf *buf, SEXP object) {
     memcpy(buf->buf + 4, &cursor, 8);
     SEXP call, out;
     PROTECT(call = Rf_lcons(nano_refHookIn, Rf_cons(nano_refList, R_NilValue)));
-    PROTECT(out = Rf_eval(call, R_GlobalEnv));
+    PROTECT(out = R_UnwindProtect(eval_safe, call, rl_reset, NULL, NULL));
     if (TYPEOF(out) == RAWSXP) {
       R_xlen_t xlen = XLENGTH(out);
       if (buf->cur + xlen > buf->len) {
