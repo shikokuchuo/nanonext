@@ -185,7 +185,7 @@ static SEXP nano_inHook(SEXP x, SEXP fun) {
 
 static SEXP nano_outHook(SEXP x, SEXP fun) {
 
-  const long int i = atol(CHAR(STRING_ELT(x, 0))) - 1;
+  const long int i = atol(CHAR(*(SEXP *) STDVEC_DATAPTR(x))) - 1;
 
   return VECTOR_ELT(fun, i);
 
@@ -1347,8 +1347,8 @@ SEXP rnng_stats_get(SEXP object, SEXP stat) {
 SEXP rnng_strcat(SEXP a, SEXP b) {
 
   SEXP out;
-  const char *ap = CHAR(STRING_ELT(a, 0));
-  const char *bp = CHAR(STRING_ELT(b, 0));
+  const char *ap = CHAR(*(SEXP *) STDVEC_DATAPTR(a));
+  const char *bp = CHAR(*(SEXP *) STDVEC_DATAPTR(b));
   const size_t alen = strlen(ap);
   const size_t blen = strlen(bp);
 

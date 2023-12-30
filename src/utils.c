@@ -666,14 +666,17 @@ SEXP rnng_status_code(SEXP x) {
 
 SEXP rnng_tls_config(SEXP client, SEXP server, SEXP pass, SEXP auth) {
 
-  const nng_tls_auth_mode mod = LOGICAL(auth)[0] ? NNG_TLS_AUTH_MODE_REQUIRED : NNG_TLS_AUTH_MODE_OPTIONAL;
+  const nng_tls_auth_mode mod = *(int *) STDVEC_DATAPTR(auth) ? NNG_TLS_AUTH_MODE_REQUIRED : NNG_TLS_AUTH_MODE_OPTIONAL;
   R_xlen_t usefile;
   nng_tls_config *cfg;
   int xc;
+  const char *crl, *file, *key, *pss;
   SEXP xp;
 
   if ((usefile = Rf_xlength(client)) > 0) {
-    const char *file = CHAR(STRING_ELT(client, 0));
+    file = CHAR(STRING_ELT(client, 0));
+    if (usefile > 1)
+      crl = CHAR(STRING_ELT(client, 1));
     if ((xc = nng_tls_config_alloc(&cfg, NNG_TLS_MODE_CLIENT)))
       goto exitlevel1;
     if ((xc = nng_tls_config_auth_mode(cfg, mod)))
@@ -684,14 +687,15 @@ SEXP rnng_tls_config(SEXP client, SEXP server, SEXP pass, SEXP auth) {
       if ((xc = nng_tls_config_ca_file(cfg, file)))
         goto exitlevel2;
     } else {
-      const char *crl = CHAR(STRING_ELT(client, 1));
       if ((xc = nng_tls_config_ca_chain(cfg, file, strncmp(crl, "", 1) ? crl : NULL)))
         goto exitlevel2;
     }
 
   } else if ((usefile = Rf_xlength(server)) > 0) {
-    const char *file = CHAR(STRING_ELT(server, 0));
-    const char *pss = pass != R_NilValue ? CHAR(STRING_ELT(pass, 0)) : NULL;
+    file = CHAR(STRING_ELT(server, 0));
+    pss = pass != R_NilValue ? CHAR(STRING_ELT(pass, 0)) : NULL;
+    if (usefile > 1)
+      key = CHAR(STRING_ELT(server, 1));
     if ((xc = nng_tls_config_alloc(&cfg, NNG_TLS_MODE_SERVER)))
       goto exitlevel1;
     if ((xc = nng_tls_config_auth_mode(cfg, mod)))
@@ -702,7 +706,6 @@ SEXP rnng_tls_config(SEXP client, SEXP server, SEXP pass, SEXP auth) {
       if ((xc = nng_tls_config_cert_key_file(cfg, file, pss)))
         goto exitlevel2;
     } else {
-      const char *key = CHAR(STRING_ELT(server, 1));
       if ((xc = nng_tls_config_own_cert(cfg, file, key, pss)))
         goto exitlevel2;
     }
@@ -747,12 +750,12 @@ SEXP rnng_random(SEXP n, SEXP convert) {
   case INTSXP:
   case LGLSXP:
     sz = INTEGER(n)[0];
-    break;
+    if (sz >= 0) break;
   case REALSXP:
     sz = Rf_asInteger(n);
-    break;
+    if (sz >= 0) break;
   default:
-    Rf_error("'n' must be integer or coercible to integer");
+    Rf_error("'n' must be a non-negative integer or coercible to such");
   }
 
   SEXP out;
@@ -772,7 +775,7 @@ SEXP rnng_random(SEXP n, SEXP convert) {
   mbedtls_ctr_drbg_free(&ctr_drbg);
   mbedtls_entropy_free(&entropy);
 
-  if (LOGICAL(convert)[0]) {
+  if (*(int *) STDVEC_DATAPTR(convert)) {
     out = nano_hashToChar(buf, sz);
   } else {
     out = Rf_allocVector(RAWSXP, sz);

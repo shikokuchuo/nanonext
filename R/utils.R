@@ -112,6 +112,9 @@ msleep <- function(time) invisible(.Call(rnng_sleep, time))
 #' @details If 'n' is non-integer, it will be coerced to integer; if a vector,
 #'     only the first element will be used.
 #'
+#'     The maximum value of 'n' is limited by the entropy collected and too
+#'     large a value will result in an insufficient buffer error.
+#'
 #' @note Results obtained are independent of and do not alter the state of R's
 #'     own pseudo-random number generators.
 #'
