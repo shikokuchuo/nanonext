@@ -124,11 +124,8 @@ fi
 
 echo "#include <nng/nng.h>
 int main() {
-#if NNG_MAJOR_VERSION == 1 && NNG_MINOR_VERSION >= 5 || NNG_MAJOR_VERSION > 1
-    return 0;
-#else
-    void *err;
-    return *err;
+#if NNG_MAJOR_VERSION < 1 || NNG_MAJOR_VERSION == 1 && NNG_MINOR_VERSION < 5
+    *(void *) 0 = 0;
 #endif
 }" | ${CC} ${NNG_CFLAGS} -xc - -o /dev/null > /dev/null 2>&1
 
