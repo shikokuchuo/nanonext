@@ -1,4 +1,4 @@
-# Copyright (C) 2022-2023 Hibiki AI Limited <info@hibiki-ai.com>
+# Copyright (C) 2022-2024 Hibiki AI Limited <info@hibiki-ai.com>
 #
 # This file is part of nanonext.
 #
@@ -102,7 +102,7 @@ msleep <- function(time) invisible(.Call(rnng_sleep, time))
 #'     and an entropy collector combining entropy from multiple sources
 #'     including at least one strong entropy source.
 #'
-#' @param n [default 1L] integer random bytes to generate.
+#' @param n [default 1L] integer random bytes to generate (from 0 to 1024).
 #' @param convert [default TRUE] logical FALSE to return a raw vector, or TRUE
 #'     to return the hex representation of the bytes as a character string.
 #'
@@ -111,9 +111,6 @@ msleep <- function(time) invisible(.Call(rnng_sleep, time))
 #'
 #' @details If 'n' is non-integer, it will be coerced to integer; if a vector,
 #'     only the first element will be used.
-#'
-#'     The maximum value of 'n' is limited by the entropy collected and too
-#'     large a value will result in an insufficient buffer error.
 #'
 #' @note Results obtained are independent of and do not alter the state of R's
 #'     own pseudo-random number generators.

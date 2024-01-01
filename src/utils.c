@@ -1,4 +1,4 @@
-// Copyright (C) 2022-2023 Hibiki AI Limited <info@hibiki-ai.com>
+// Copyright (C) 2022-2024 Hibiki AI Limited <info@hibiki-ai.com>
 //
 // This file is part of nanonext.
 //
@@ -750,12 +750,12 @@ SEXP rnng_random(SEXP n, SEXP convert) {
   case INTSXP:
   case LGLSXP:
     sz = INTEGER(n)[0];
-    if (sz >= 0) break;
+    if (sz >= 0 && sz <= 1024) break;
   case REALSXP:
     sz = Rf_asInteger(n);
-    if (sz >= 0) break;
+    if (sz >= 0 && sz <= 1024) break;
   default:
-    Rf_error("'n' must be a non-negative integer or coercible to such");
+    Rf_error("'n' must be an integer between 0 and 1024 or coercible to such");
   }
 
   SEXP out;

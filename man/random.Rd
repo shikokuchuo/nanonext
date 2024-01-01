@@ -7,7 +7,7 @@
 random(n = 1L, convert = TRUE)
 }
 \arguments{
-\item{n}{[default 1L] integer random bytes to generate.}
+\item{n}{[default 1L] integer random bytes to generate (from 0 to 1024).}
 
 \item{convert}{[default TRUE] logical FALSE to return a raw vector, or TRUE
 to return the hex representation of the bytes as a character string.}
@@ -30,9 +30,6 @@ Strictly not for use in statistical analysis. Non-reproducible and with
 \details{
 If 'n' is non-integer, it will be coerced to integer; if a vector,
     only the first element will be used.
-
-    The maximum value of 'n' is limited by the entropy collected and too
-    large a value will result in an insufficient buffer error.
 }
 \note{
 Results obtained are independent of and do not alter the state of R's
