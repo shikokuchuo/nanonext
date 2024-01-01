@@ -84,7 +84,7 @@
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>n</dt>
-<dd><p>[default 1L] integer random bytes to generate.</p></dd>
+<dd><p>[default 1L] integer random bytes to generate (from 0 to 1024).</p></dd>
 
 
 <dt>convert</dt>
@@ -103,8 +103,6 @@ to return the hex representation of the bytes as a character string.</p></dd>
     <h2>Details</h2>
     <p>If 'n' is non-integer, it will be coerced to integer; if a vector,
     only the first element will be used.</p>
-<p>The maximum value of 'n' is limited by the entropy collected and too
-    large a value will result in an insufficient buffer error.</p>
     </div>
     <div id="note">
     <h2>Note</h2>
@@ -115,11 +113,11 @@ to return the hex representation of the bytes as a character string.</p></dd>
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">random</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "24"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "15"</span>
 <span class="r-in"><span><span class="fu">random</span><span class="op">(</span><span class="fl">8L</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "d9f3c7189e835c27"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "240998f40b353094"</span>
 <span class="r-in"><span><span class="fu">random</span><span class="op">(</span>n <span class="op">=</span> <span class="fl">8L</span>, convert <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 9f 4a d2 de 14 e8 fa 66</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2a 22 85 ef 06 f0 7b c0</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

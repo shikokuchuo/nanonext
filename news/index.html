@@ -68,6 +68,8 @@
 <ul><li>
 <code><a href="../reference/next_config.html">next_config()</a></code> now returns a pairlist (of the registered serialization functions) rather than a list (for efficiency).</li>
 <li>Using mode ‘next’, serialization functions with incorrect signatures are now simply ignored rather than raise errors.</li>
+<li>
+<code><a href="../reference/random.html">random()</a></code> input ‘n’ updated to only accept integers between 0 and 1024.</li>
 <li>Deprecated function <code>.until()</code> is removed.</li>
 <li>Eliminates potential memory leaks along certain error paths.</li>
 </ul></div>
