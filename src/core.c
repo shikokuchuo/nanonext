@@ -1347,8 +1347,8 @@ SEXP rnng_stats_get(SEXP object, SEXP stat) {
 SEXP rnng_strcat(SEXP a, SEXP b) {
 
   SEXP out;
-  const char *ap = CHAR(*(SEXP *) STDVEC_DATAPTR(a));
-  const char *bp = CHAR(*(SEXP *) STDVEC_DATAPTR(b));
+  const char *ap = CHAR(STRING_ELT(a, 0));
+  const char *bp = CHAR(STRING_ELT(b, 0));
   const size_t alen = strlen(ap);
   const size_t blen = strlen(bp);
 
