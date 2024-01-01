@@ -65,7 +65,7 @@ R binding for NNG (Nanomsg Next Gen), a successor to ZeroMQ. NNG is a socket
 
     NNG sockets are message-oriented, and messages are either delivered
     wholly, or not at all. Partial delivery is not possible. Furthermore, NNG
-    does not provide any other delivery or ordering guarantees; messages may
+    does not provide any other delivery or ordering guarantees: messages may
     be dropped or reordered (some protocols, such as 'req' may offer stronger
     guarantees by performing their own retry and validation schemes).
 
@@ -76,7 +76,7 @@ R binding for NNG (Nanomsg Next Gen), a successor to ZeroMQ. NNG is a socket
 
     Each endpoint is associated with a URL, which is a service address.
     For dialers, this is the service address that is contacted, whereas for
-    listeners this is where the listener will accept new connections.
+    listeners this is where new connections will be accepted.
 }
 
 \section{Links}{
