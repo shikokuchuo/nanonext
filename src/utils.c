@@ -760,7 +760,6 @@ SEXP rnng_random(SEXP n, SEXP convert) {
 
   SEXP out;
   unsigned char buf[sz];
-  char errbuf[1024];
   mbedtls_entropy_context entropy;
   mbedtls_ctr_drbg_context ctr_drbg;
   const char *pers = "r-nanonext-rng";
@@ -768,12 +767,16 @@ SEXP rnng_random(SEXP n, SEXP convert) {
   mbedtls_entropy_init(&entropy);
   mbedtls_ctr_drbg_init(&ctr_drbg);
 
-  if ((xc = mbedtls_ctr_drbg_seed(&ctr_drbg, mbedtls_entropy_func, &entropy, (const unsigned char *) pers, strlen(pers))) ||
-      (xc = mbedtls_ctr_drbg_random(&ctr_drbg, buf, sz)))
-    goto exitlevel1;
+  xc = mbedtls_ctr_drbg_seed(&ctr_drbg, mbedtls_entropy_func, &entropy, (const unsigned char *) pers, strlen(pers));
+  if (xc == 0) {
+    xc = mbedtls_ctr_drbg_random(&ctr_drbg, buf, sz);
+  }
 
   mbedtls_ctr_drbg_free(&ctr_drbg);
   mbedtls_entropy_free(&entropy);
+
+  if (xc)
+    Rf_error("error generating random bytes");
 
   if (*(int *) STDVEC_DATAPTR(convert)) {
     out = nano_hashToChar(buf, sz);
@@ -783,11 +786,5 @@ SEXP rnng_random(SEXP n, SEXP convert) {
   }
 
   return out;
-
-  exitlevel1:
-  mbedtls_ctr_drbg_free(&ctr_drbg);
-  mbedtls_entropy_free(&entropy);
-  mbedtls_strerror(xc, errbuf, sizeof(errbuf));
-  Rf_error("%d | %s", xc, errbuf);
 
 }
