@@ -1,4 +1,4 @@
-# nanonext 0.11.0.9003 (development)
+# nanonext 0.11.0.9004 (development)
 
 #### New Features
 
@@ -11,6 +11,7 @@
 * `random()` input 'n' updated to only accept integers between 0 and 1024.
 * Deprecated function `.until()` is removed.
 * Eliminates potential memory leaks along certain error paths.
+* Upgrades bundled 'libnng' to v1.7.0 release.
 
 # nanonext 0.11.0
 
