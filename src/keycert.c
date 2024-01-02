@@ -86,7 +86,7 @@ SEXP rnng_write_cert(SEXP cn, SEXP valid, SEXP inter) {
   char issuer_name[clen];          /* issuer name for certificate        */
   snprintf(issuer_name, clen, "CN=%s,O=Nanonext,C=JP", common);
 
-  int xc;
+  int xc, exit = 1;
   if (interactive) REprintf("Generating key + certificate [    ]");
   mbedtls_x509_crt issuer_crt;
   mbedtls_pk_context loaded_issuer_key;
@@ -179,6 +179,7 @@ SEXP rnng_write_cert(SEXP cn, SEXP valid, SEXP inter) {
   SET_STRING_ELT(cstr, 1, R_BlankString);
 
   if (interactive) REprintf("\b\b\b\b\bdone]\n");
+  exit = 0;
 
   exitlevel1:
 
@@ -193,7 +194,7 @@ SEXP rnng_write_cert(SEXP cn, SEXP valid, SEXP inter) {
   mbedtls_ctr_drbg_free(&ctr_drbg);
   mbedtls_entropy_free(&entropy);
 
-  if (xc) {
+  if (exit) {
     mbedtls_strerror(xc, buf, sizeof(buf));
     Rf_error("%d | %s", xc, buf);
   }
