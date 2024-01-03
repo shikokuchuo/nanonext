@@ -4,12 +4,12 @@ else
     ARC="i386"
 endif
 
-PKG_CFLAGS=-I../src-${ARC}/rwinlib-1.6.0_3.5.1/include -DNNG_STATIC_LIB $(C_VISIBILITY)
-PKG_LIBS=-L../src-${ARC}/rwinlib-1.6.0_3.5.1/lib${R_ARCH} -lnng -lmbedtls -lmbedx509 -lmbedcrypto -lbcrypt -lws2_32
+PKG_CFLAGS=-I../src-${ARC}/rwinlib-1.7.0_3.5.1/include -DNNG_STATIC_LIB $(C_VISIBILITY)
+PKG_LIBS=-L../src-${ARC}/rwinlib-1.7.0_3.5.1/lib${R_ARCH} -lnng -lmbedtls -lmbedx509 -lmbedcrypto -lbcrypt -lws2_32
 
 all: winlibs
 
 winlibs:
-	curl -sL https://github.com/shikokuchuo/rwinlib/archive/refs/tags/v1.6.0_3.5.1.zip -o nng.zip
+	curl -sL https://github.com/shikokuchuo/rwinlib/archive/refs/tags/v1.7.0_3.5.1.zip -o nng.zip
 	unzip -q nng.zip
 	rm -f nng.zip
