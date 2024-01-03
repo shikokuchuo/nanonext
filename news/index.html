@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.11.0.9005</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.11.0.9006</span>
       </span>
     </div>
 
@@ -57,14 +57,14 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.11.0.9005" id="nanonext-01109005-development">nanonext 0.11.0.9005 (development)<a class="anchor" aria-label="anchor" href="#nanonext-01109005-development"></a></h2>
+<h2 class="page-header" data-toc-text="0.11.0.9006" id="nanonext-01109006-development">nanonext 0.11.0.9006 (development)<a class="anchor" aria-label="anchor" href="#nanonext-01109006-development"></a></h2>
 <div class="section level5">
-<h5 id="new-features-0-11-0-9005">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-11-0-9005"></a></h5>
+<h5 id="new-features-0-11-0-9006">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-11-0-9006"></a></h5>
 <ul><li>
 <code><a href="../reference/pipe_notify.html">pipe_notify()</a></code> argument ‘flag’ allows supplying a signal to be raised on a flag being set upon a pipe event.</li>
 </ul></div>
 <div class="section level5">
-<h5 id="updates-0-11-0-9005">Updates<a class="anchor" aria-label="anchor" href="#updates-0-11-0-9005"></a></h5>
+<h5 id="updates-0-11-0-9006">Updates<a class="anchor" aria-label="anchor" href="#updates-0-11-0-9006"></a></h5>
 <ul><li>
 <code><a href="../reference/next_config.html">next_config()</a></code> now returns a pairlist (of the registered serialization functions) rather than a list (for efficiency).</li>
 <li>Using mode ‘next’, serialization functions with incorrect signatures are now simply ignored rather than raise errors.</li>
@@ -72,6 +72,7 @@
 <code><a href="../reference/random.html">random()</a></code> input ‘n’ updated to only accept integers between 0 and 1024.</li>
 <li>Deprecated function <code>.until()</code> is removed.</li>
 <li>Eliminates potential memory leaks along certain error paths.</li>
+<li>Bundled ‘libnng’ source configured for much higher TLS performance.</li>
 <li>Upgrades bundled ‘libnng’ to v1.7.0 release.</li>
 </ul></div>
 </div>
