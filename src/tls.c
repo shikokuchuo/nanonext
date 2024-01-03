@@ -119,7 +119,7 @@ SEXP rnng_sha224(SEXP x, SEXP key, SEXP convert) {
   if (xc)
     Rf_error("error generating hash");
 
-  if (*(int *) STDVEC_DATAPTR(convert)) {
+  if (*NANO_INTEGER(convert)) {
     out = nano_hashToChar(output, SHA224_KEY_SIZE);
   } else {
     out = Rf_allocVector(RAWSXP, SHA224_KEY_SIZE);
@@ -159,7 +159,7 @@ SEXP rnng_sha256(SEXP x, SEXP key, SEXP convert) {
   if (xc)
     Rf_error("error generating hash");
 
-  if (*(int *) STDVEC_DATAPTR(convert)) {
+  if (*NANO_INTEGER(convert)) {
     out = nano_hashToChar(output, SHA256_KEY_SIZE);
   } else {
     out = Rf_allocVector(RAWSXP, SHA256_KEY_SIZE);
@@ -203,7 +203,7 @@ SEXP rnng_sha384(SEXP x, SEXP key, SEXP convert) {
   if (xc)
     Rf_error("error generating hash");
 
-  if (*(int *) STDVEC_DATAPTR(convert)) {
+  if (*NANO_INTEGER(convert)) {
     out = nano_hashToChar(output, SHA384_KEY_SIZE);
   } else {
     out = Rf_allocVector(RAWSXP, SHA384_KEY_SIZE);
@@ -243,7 +243,7 @@ SEXP rnng_sha512(SEXP x, SEXP key, SEXP convert) {
   if (xc)
     Rf_error("error generating hash");
 
-  if (*(int *) STDVEC_DATAPTR(convert)) {
+  if (*NANO_INTEGER(convert)) {
     out = nano_hashToChar(output, SHA512_KEY_SIZE);
   } else {
     out = Rf_allocVector(RAWSXP, SHA512_KEY_SIZE);
@@ -283,7 +283,7 @@ SEXP rnng_sha1(SEXP x, SEXP key, SEXP convert) {
   if (xc)
     Rf_error("error generating hash");
 
-  if (*(int *) STDVEC_DATAPTR(convert)) {
+  if (*NANO_INTEGER(convert)) {
     out = nano_hashToChar(output, SHA1_KEY_SIZE);
   } else {
     out = Rf_allocVector(RAWSXP, SHA1_KEY_SIZE);
@@ -312,7 +312,7 @@ SEXP rnng_base64enc(SEXP x, SEXP convert) {
     Rf_error("write buffer insufficient");
   }
 
-  if (*(int *) STDVEC_DATAPTR(convert)) {
+  if (*NANO_INTEGER(convert)) {
     out = rawToChar(buf, olen);
   } else {
     out = Rf_allocVector(RAWSXP, olen);
@@ -355,7 +355,7 @@ SEXP rnng_base64dec(SEXP x, SEXP convert) {
     Rf_error("write buffer insufficient");
   }
 
-  switch (*(int *) STDVEC_DATAPTR(convert)) {
+  switch (*NANO_INTEGER(convert)) {
   case 0:
     out = Rf_allocVector(RAWSXP, olen);
     memcpy(STDVEC_DATAPTR(out), buf, olen);

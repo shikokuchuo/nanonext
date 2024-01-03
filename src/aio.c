@@ -421,7 +421,7 @@ SEXP rnng_dial(SEXP socket, SEXP url, SEXP tls, SEXP autostart, SEXP error) {
     Rf_error("'tls' is not a valid TLS Configuration");
 
   nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(socket);
-  const int start = LOGICAL(autostart)[0];
+  const int start = *NANO_INTEGER(autostart);
   const char *ur = CHAR(STRING_ELT(url, 0));
   nano_dialer *dp = R_Calloc(1, nano_dialer);
   SEXP dialer, klass, attr, newattr;
@@ -488,7 +488,7 @@ SEXP rnng_dial(SEXP socket, SEXP url, SEXP tls, SEXP autostart, SEXP error) {
   nng_tls_config_free(dp->tls);
   exitlevel1:
   R_Free(dp);
-  if (LOGICAL(error)[0]) ERROR_OUT(xc);
+  if (*NANO_INTEGER(error)) ERROR_OUT(xc);
   ERROR_RET(xc);
 
 }
@@ -504,7 +504,7 @@ SEXP rnng_listen(SEXP socket, SEXP url, SEXP tls, SEXP autostart, SEXP error) {
     Rf_error("'tls' is not a valid TLS Configuration");
 
   nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(socket);
-  const int start = LOGICAL(autostart)[0];
+  const int start = *NANO_INTEGER(autostart);
   const char *ur = CHAR(STRING_ELT(url, 0));
   nano_listener *lp = R_Calloc(1, nano_listener);
   SEXP listener, klass, attr, newattr;
@@ -566,7 +566,7 @@ SEXP rnng_listen(SEXP socket, SEXP url, SEXP tls, SEXP autostart, SEXP error) {
   nng_tls_config_free(lp->tls);
   exitlevel1:
   R_Free(lp);
-  if (LOGICAL(error)[0]) ERROR_OUT(xc);
+  if (*NANO_INTEGER(error)) ERROR_OUT(xc);
   ERROR_RET(xc);
 
 }
@@ -576,7 +576,7 @@ SEXP rnng_dialer_start(SEXP dialer, SEXP async) {
   if (R_ExternalPtrTag(dialer) != nano_DialerSymbol)
     Rf_error("'dialer' is not a valid Dialer");
   nng_dialer *dial = (nng_dialer *) R_ExternalPtrAddr(dialer);
-  const int flags = (LOGICAL(async)[0] == 1) * NNG_FLAG_NONBLOCK;
+  const int flags = (*NANO_INTEGER(async) == 1) * NNG_FLAG_NONBLOCK;
   const int xc = nng_dialer_start(*dial, flags);
   if (xc)
     ERROR_RET(xc);
@@ -923,7 +923,7 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
 
   } else if (ptrtag == nano_StreamSymbol) {
 
-    const int frames = LOGICAL(Rf_getAttrib(con, nano_TextframesSymbol))[0];
+    const int frames = *NANO_INTEGER(Rf_getAttrib(con, nano_TextframesSymbol));
 
     nano_encode(&buf, data);
 
@@ -1095,7 +1095,7 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP dat
 
   haio->type = HTTP_AIO;
   haio->data = handle;
-  haio->mode = *(int *) STDVEC_DATAPTR(convert);
+  haio->mode = *NANO_INTEGER(convert);
   handle->cfg = NULL;
 
   if ((xc = nng_url_parse(&handle->url, httr)))
@@ -1216,7 +1216,7 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP dat
 
 SEXP rnng_aio_http(SEXP env, SEXP response, SEXP type) {
 
-  const int typ = LOGICAL(type)[0];
+  const int typ = *NANO_INTEGER(type);
   SEXP exist;
   switch (typ) {
   case 0: exist = Rf_findVarInFrame(env, nano_ResultSymbol); break;
@@ -1342,7 +1342,7 @@ SEXP rnng_ncurl_session(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP
 
   haio->type = HTTP_AIO;
   haio->data = handle;
-  haio->mode = *(int *) STDVEC_DATAPTR(convert);
+  haio->mode = *NANO_INTEGER(convert);
   handle->cfg = NULL;
 
   if ((xc = nng_url_parse(&handle->url, httr)))
@@ -2056,7 +2056,7 @@ SEXP rnng_pipe_notify(SEXP socket, SEXP cv, SEXP cv2, SEXP add, SEXP remove, SEX
 
   nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(socket);
   nano_cv *cvp = (nano_cv *) R_ExternalPtrAddr(cv);
-  int xc, flg = *(int *) STDVEC_DATAPTR(flag);
+  int xc, flg = *NANO_INTEGER(flag);
   SEXP xptr;
 
   if (cv2 != R_NilValue) {
@@ -2069,10 +2069,10 @@ SEXP rnng_pipe_notify(SEXP socket, SEXP cv, SEXP cv2, SEXP add, SEXP remove, SEX
     duo->cv = cvp;
     duo->cv2 = (nano_cv *) R_ExternalPtrAddr(cv2);
 
-    if (LOGICAL(add)[0] && (xc = nng_pipe_notify(*sock, NNG_PIPE_EV_ADD_POST, pipe_cb_signal_duo, duo)))
+    if (*NANO_INTEGER(add) && (xc = nng_pipe_notify(*sock, NNG_PIPE_EV_ADD_POST, pipe_cb_signal_duo, duo)))
       ERROR_OUT(xc);
 
-    if (LOGICAL(remove)[0] && (xc = nng_pipe_notify(*sock, NNG_PIPE_EV_REM_POST, pipe_cb_signal_duo, duo)))
+    if (*NANO_INTEGER(remove) && (xc = nng_pipe_notify(*sock, NNG_PIPE_EV_REM_POST, pipe_cb_signal_duo, duo)))
       ERROR_OUT(xc);
 
     PROTECT(xptr = R_MakeExternalPtr(duo, R_NilValue, R_NilValue));
@@ -2084,10 +2084,10 @@ SEXP rnng_pipe_notify(SEXP socket, SEXP cv, SEXP cv2, SEXP add, SEXP remove, SEX
 
     cvp->flag = flg < 0 ? 1 : flg;
 
-    if (LOGICAL(add)[0] && (xc = nng_pipe_notify(*sock, NNG_PIPE_EV_ADD_POST, pipe_cb_signal, cvp)))
+    if (*NANO_INTEGER(add) && (xc = nng_pipe_notify(*sock, NNG_PIPE_EV_ADD_POST, pipe_cb_signal, cvp)))
       ERROR_OUT(xc);
 
-    if (LOGICAL(remove)[0] && (xc = nng_pipe_notify(*sock, NNG_PIPE_EV_REM_POST, pipe_cb_signal, cvp)))
+    if (*NANO_INTEGER(remove) && (xc = nng_pipe_notify(*sock, NNG_PIPE_EV_REM_POST, pipe_cb_signal, cvp)))
       ERROR_OUT(xc);
 
   }

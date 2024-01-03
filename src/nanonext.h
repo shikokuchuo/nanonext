@@ -146,6 +146,7 @@ typedef struct nano_cv_s {
   (x)->len = 0;                                                \
   (x)->cur = sz
 #define NANO_FREE(x) if (x.len) R_Free(x.buf)
+#define NANO_INTEGER(x) (int *) STDVEC_DATAPTR(x)
 
 typedef struct nano_buf_s {
   unsigned char *buf;

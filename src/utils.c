@@ -267,7 +267,7 @@ SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP follow, SEXP method, SEXP headers,
 
   code = nng_http_res_get_status(res), relo = code >= 300 && code < 400;
 
-  if (relo && *(int *) STDVEC_DATAPTR(follow)) {
+  if (relo && *NANO_INTEGER(follow)) {
     const char *location = nng_http_res_get_header(res, "Location");
     if (location == NULL) goto resume;
     nng_url *oldurl = url;
@@ -339,7 +339,7 @@ SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP follow, SEXP method, SEXP headers,
 
   nng_http_res_get_data(res, &dat, &sz);
 
-  if (*(int *) STDVEC_DATAPTR(convert)) {
+  if (*NANO_INTEGER(convert)) {
     vec = rawToChar(dat, sz);
   } else {
     vec = Rf_allocVector(RAWSXP, sz);
@@ -397,7 +397,7 @@ SEXP rnng_stream_dial(SEXP url, SEXP textframes, SEXP tls) {
     goto exitlevel2;
 
   if (!strcmp(up->u_scheme, "ws") || !strcmp(up->u_scheme, "wss")) {
-    frames = *(int *) STDVEC_DATAPTR(textframes);
+    frames = *NANO_INTEGER(textframes);
     if (frames &&
         ((xc = nng_stream_dialer_set_bool(nsd->dial, "ws:recv-text", 1)) ||
         (xc = nng_stream_dialer_set_bool(nsd->dial, "ws:send-text", 1))))
@@ -492,7 +492,7 @@ SEXP rnng_stream_listen(SEXP url, SEXP textframes, SEXP tls) {
     goto exitlevel2;
 
   if (!strcmp(up->u_scheme, "ws") || !strcmp(up->u_scheme, "wss")) {
-    frames = *(int *) STDVEC_DATAPTR(textframes);
+    frames = *NANO_INTEGER(textframes);
     if (frames &&
         ((xc = nng_stream_listener_set_bool(nsl->list, "ws:recv-text", 1)) ||
         (xc = nng_stream_listener_set_bool(nsl->list, "ws:send-text", 1))))
@@ -666,7 +666,7 @@ SEXP rnng_status_code(SEXP x) {
 
 SEXP rnng_tls_config(SEXP client, SEXP server, SEXP pass, SEXP auth) {
 
-  const nng_tls_auth_mode mod = *(int *) STDVEC_DATAPTR(auth) ? NNG_TLS_AUTH_MODE_REQUIRED : NNG_TLS_AUTH_MODE_OPTIONAL;
+  const nng_tls_auth_mode mod = *NANO_INTEGER(auth) ? NNG_TLS_AUTH_MODE_REQUIRED : NNG_TLS_AUTH_MODE_OPTIONAL;
   R_xlen_t usefile;
   nng_tls_config *cfg;
   int xc;
@@ -778,7 +778,7 @@ SEXP rnng_random(SEXP n, SEXP convert) {
   if (xc)
     Rf_error("error generating random bytes");
 
-  if (*(int *) STDVEC_DATAPTR(convert)) {
+  if (*NANO_INTEGER(convert)) {
     out = nano_hashToChar(buf, sz);
   } else {
     out = Rf_allocVector(RAWSXP, sz);
