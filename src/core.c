@@ -108,23 +108,13 @@ static SEXP rawOneString(unsigned char *bytes, R_xlen_t nbytes, R_xlen_t *np) {
 
   unsigned char *p;
   R_xlen_t i;
-  char *cbuf;
   SEXP res;
 
   for (i = *np, p = bytes + *np; i < nbytes; p++, i++)
     if (*p == '\0') break;
 
-  if (i < nbytes) {
-    p = bytes + *np;
-    res = Rf_mkCharLenCE((char *) p, (int) (i - *np), CE_NATIVE);
-    *np = i + 1;
-  } else {
-    cbuf = R_chk_calloc(nbytes - *np + 1, sizeof(char));
-    memcpy(cbuf, bytes + *np, nbytes - *np);
-    res = Rf_mkCharLenCE(cbuf, (int) (nbytes - *np), CE_NATIVE);
-    R_Free(cbuf);
-    *np = nbytes;
-  }
+  res = Rf_mkCharLenCE((const char *) (bytes + *np), (int) (i - *np), CE_NATIVE);
+  *np = i < nbytes ? i + 1 : nbytes;
 
   return res;
 
@@ -1352,13 +1342,13 @@ SEXP rnng_strcat(SEXP a, SEXP b) {
   const size_t alen = strlen(ap);
   const size_t blen = strlen(bp);
 
-  char *buf = nng_alloc(alen + blen + 1);
+  char *buf = nng_alloc(alen + blen);
   memcpy(buf, ap, alen);
-  memcpy(buf + alen, bp, blen + 1);
+  memcpy(buf + alen, bp, blen);
 
   PROTECT(out = Rf_allocVector(STRSXP, 1));
   SET_STRING_ELT(out, 0, Rf_mkCharLenCE(buf, alen + blen, CE_NATIVE));
-  nng_free(buf, alen + blen + 1);
+  nng_free(buf, alen + blen);
 
   UNPROTECT(1);
   return out;
