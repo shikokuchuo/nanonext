@@ -361,7 +361,7 @@ print.ncurlAio <- function(x, ...) {
 #'
 print.ncurlSession <- function(x, ...) {
 
-  cat(sprintf("< ncurlSession >\n - %s\n", if (length(attr(x, "aio"))) "transact() to return data" else "not active"), file = stdout())
+  cat(sprintf("< ncurlSession > - %s\n", if (length(attr(x, "aio"))) "transact() to return data" else "not active"), file = stdout())
   invisible(x)
 
 }
@@ -397,7 +397,7 @@ print.conditionVariable <- function(x, ...) {
 #'
 print.tlsConfig <- function(x, ...) {
 
-  cat(sprintf("< TLS %s configuration >\n - auth mode: %s\n", attr(x, "spec"), attr(x, "mode")), file = stdout())
+  cat(sprintf("< TLS %s config | auth mode: %s >\n", attr(x, "spec"), attr(x, "mode")), file = stdout())
   invisible(x)
 
 }

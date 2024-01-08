@@ -6,7 +6,7 @@
 
 #### Updates
 
-* More compact print methods for 'recvAio', 'sendAio', and 'ncurlAio' objects.
+* More compact print methods for 'recvAio', 'sendAio', 'ncurlAio', 'ncurlSession' and 'tlsConfig' objects.
 * `next_config()` now returns a pairlist (of the registered serialization functions) rather than a list (for efficiency).
 * Using mode 'next', serialization functions with incorrect signatures are now simply ignored rather than raise errors.
 * `random()` now explicitly limits argument 'n' to values between 0 and 1024.

@@ -1626,16 +1626,11 @@ SEXP rnng_cv_alloc(void) {
   SEXP xp;
   int xc;
 
-  if ((xc = nng_mtx_alloc(&cvp->mtx))) {
-    R_Free(cvp);
-    ERROR_OUT(xc);
-  }
+  if ((xc = nng_mtx_alloc(&cvp->mtx)))
+    goto exitlevel1;
 
-  if ((xc = nng_cv_alloc(&cvp->cv, cvp->mtx))) {
-    nng_mtx_free(cvp->mtx);
-    R_Free(cvp);
-    ERROR_OUT(xc);
-  }
+  if ((xc = nng_cv_alloc(&cvp->cv, cvp->mtx)))
+    goto exitlevel2;
 
   PROTECT(xp = R_MakeExternalPtr(cvp, nano_CvSymbol, R_NilValue));
   R_RegisterCFinalizerEx(xp, cv_finalizer, TRUE);
@@ -1643,6 +1638,12 @@ SEXP rnng_cv_alloc(void) {
 
   UNPROTECT(1);
   return xp;
+
+  exitlevel2:
+  nng_mtx_free(cvp->mtx);
+  exitlevel1:
+  R_Free(cvp);
+  ERROR_OUT(xc);
 
 }
 
@@ -1860,10 +1861,8 @@ SEXP rnng_cv_recv_aio(SEXP con, SEXP cvar, SEXP mode, SEXP timeout, SEXP bytes, 
     cv_raio->type = RECVAIO;
     cv_raio->mode = mod;
 
-    if ((xc = nng_aio_alloc(&cv_raio->aio, raio_complete_signal, cv_raio))) {
-      R_Free(cv_raio);
-      return mk_error_data(xc);
-    }
+    if ((xc = nng_aio_alloc(&cv_raio->aio, raio_complete_signal, cv_raio)))
+      goto exitlevel1;
 
     nng_aio_set_timeout(cv_raio->aio, dur);
     nng_recv_aio(*sock, cv_raio->aio);
@@ -1880,10 +1879,8 @@ SEXP rnng_cv_recv_aio(SEXP con, SEXP cvar, SEXP mode, SEXP timeout, SEXP bytes, 
     cv_raio->type = RECVAIO;
     cv_raio->mode = mod;
 
-    if ((xc = nng_aio_alloc(&cv_raio->aio, raio_complete_signal, cv_raio))) {
-      R_Free(cv_raio);
-      return mk_error_data(xc);
-    }
+    if ((xc = nng_aio_alloc(&cv_raio->aio, raio_complete_signal, cv_raio)))
+      goto exitlevel1;
 
     nng_aio_set_timeout(cv_raio->aio, dur);
     nng_ctx_recv(*ctxp, cv_raio->aio);
@@ -1906,18 +1903,11 @@ SEXP rnng_cv_recv_aio(SEXP con, SEXP cvar, SEXP mode, SEXP timeout, SEXP bytes, 
     iov.iov_len = xlen;
     iov.iov_buf = cv_raio->data;
 
-    if ((xc = nng_aio_alloc(&cv_raio->aio, iraio_complete_signal, cv_raio))) {
-      R_Free(cv_raio->data);
-      R_Free(cv_raio);
-      return mk_error_data(xc);
-    }
+    if ((xc = nng_aio_alloc(&cv_raio->aio, iraio_complete_signal, cv_raio)))
+      goto exitlevel2;
 
-    if ((xc = nng_aio_set_iov(cv_raio->aio, 1u, &iov))) {
-      nng_aio_free(cv_raio->aio);
-      R_Free(cv_raio->data);
-      R_Free(cv_raio);
-      return mk_error_data(xc);
-    }
+    if ((xc = nng_aio_set_iov(cv_raio->aio, 1u, &iov)))
+      goto exitlevel3;
 
     nng_aio_set_timeout(cv_raio->aio, dur);
     nng_stream_recv(sp, cv_raio->aio);
@@ -1943,6 +1933,14 @@ SEXP rnng_cv_recv_aio(SEXP con, SEXP cvar, SEXP mode, SEXP timeout, SEXP bytes, 
 
   UNPROTECT(3);
   return env;
+
+  exitlevel3:
+  nng_aio_free(cv_raio->aio);
+  exitlevel2:
+  R_Free(cv_raio->data);
+  exitlevel1:
+  R_Free(cv_raio);
+  return mk_error_data(xc);
 
 }
 
