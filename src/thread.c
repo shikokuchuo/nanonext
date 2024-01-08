@@ -1,4 +1,4 @@
-// Copyright (C) 2022-2023 Hibiki AI Limited <info@hibiki-ai.com>
+// Copyright (C) 2022-2024 Hibiki AI Limited <info@hibiki-ai.com>
 //
 // This file is part of nanonext.
 //
@@ -21,10 +21,7 @@
 #define NANONEXT_TIME
 #include "nanonext.h"
 
-// messenger -------------------------------------------------------------------
-
-// # nocov start
-// tested interactively
+// internals -------------------------------------------------------------------
 
 typedef struct nano_thread_aio_s {
   nng_thread *thr;
@@ -38,48 +35,16 @@ typedef struct nano_thread_duo_s {
   nano_cv *cv2;
 } nano_thread_duo;
 
+// messenger -------------------------------------------------------------------
+
+// # nocov start
+// tested interactively
+
 static void thread_finalizer(SEXP xptr) {
 
-  if (R_ExternalPtrAddr(xptr) == NULL)
-    return;
+  if (R_ExternalPtrAddr(xptr) == NULL) return;
   nng_thread *xp = (nng_thread *) R_ExternalPtrAddr(xptr);
   nng_thread_destroy(xp);
-
-}
-
-static void thread_aio_finalizer(SEXP xptr) {
-
-  if (R_ExternalPtrAddr(xptr) == NULL)
-    return;
-  nano_thread_aio *xp = (nano_thread_aio *) R_ExternalPtrAddr(xptr);
-  nano_cv *ncv = xp->cv;
-  nng_mtx *mtx = ncv->mtx;
-  nng_cv *cv = ncv->cv;
-  nng_aio_stop(xp->aio);
-  nng_thread_destroy(xp->thr);
-  nng_cv_free(cv);
-  nng_mtx_free(mtx);
-  R_Free(ncv);
-  R_Free(xp);
-
-}
-
-static void thread_duo_finalizer(SEXP xptr) {
-
-  if (R_ExternalPtrAddr(xptr) == NULL)
-    return;
-  nano_thread_duo *xp = (nano_thread_duo *) R_ExternalPtrAddr(xptr);
-  nano_cv *ncv = xp->cv;
-  nng_mtx *mtx = ncv->mtx;
-  nng_cv *cv = ncv->cv;
-
-  nng_mtx_lock(mtx);
-  ncv->condition = -1;
-  nng_cv_wake(cv);
-  nng_mtx_unlock(mtx);
-
-  nng_thread_destroy(xp->thr);
-  R_Free(xp);
 
 }
 
@@ -212,6 +177,42 @@ SEXP rnng_messenger_thread_create(SEXP args) {
 }
 
 // # nocov end
+
+// threaded functions ----------------------------------------------------------
+
+static void thread_aio_finalizer(SEXP xptr) {
+
+  if (R_ExternalPtrAddr(xptr) == NULL) return;
+  nano_thread_aio *xp = (nano_thread_aio *) R_ExternalPtrAddr(xptr);
+  nano_cv *ncv = xp->cv;
+  nng_mtx *mtx = ncv->mtx;
+  nng_cv *cv = ncv->cv;
+  nng_aio_stop(xp->aio);
+  nng_thread_destroy(xp->thr);
+  nng_cv_free(cv);
+  nng_mtx_free(mtx);
+  R_Free(ncv);
+  R_Free(xp);
+
+}
+
+static void thread_duo_finalizer(SEXP xptr) {
+
+  if (R_ExternalPtrAddr(xptr) == NULL) return;
+  nano_thread_duo *xp = (nano_thread_duo *) R_ExternalPtrAddr(xptr);
+  nano_cv *ncv = xp->cv;
+  nng_mtx *mtx = ncv->mtx;
+  nng_cv *cv = ncv->cv;
+
+  nng_mtx_lock(mtx);
+  ncv->condition = -1;
+  nng_cv_wake(cv);
+  nng_mtx_unlock(mtx);
+
+  nng_thread_destroy(xp->thr);
+  R_Free(xp);
+
+}
 
 static void rnng_wait_thread(void *args) {
 

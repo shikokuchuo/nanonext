@@ -1,4 +1,4 @@
-# nanonext 0.11.0.9009 (development)
+# nanonext 0.11.0.9010 (development)
 
 #### New Features
 
@@ -6,12 +6,13 @@
 
 #### Updates
 
+* More compact print methods for 'recvAio', 'sendAio', and 'ncurlAio' objects.
 * `next_config()` now returns a pairlist (of the registered serialization functions) rather than a list (for efficiency).
 * Using mode 'next', serialization functions with incorrect signatures are now simply ignored rather than raise errors.
-* `random()` input 'n' updated to only accept integers between 0 and 1024.
+* `random()` now explicitly limits argument 'n' to values between 0 and 1024.
 * Deprecated function `.until()` is removed.
 * Eliminates potential memory leaks along certain error paths.
-* Bundled 'libnng' source configured for much higher TLS performance.
+* Fixes bug which prevented much higher TLS performance when using the bundled 'libnng' source.
 * Upgrades bundled 'libnng' to v1.7.0 release.
 
 # nanonext 0.11.0

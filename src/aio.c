@@ -1,4 +1,4 @@
-// Copyright (C) 2022-2023 Hibiki AI Limited <info@hibiki-ai.com>
+// Copyright (C) 2022-2024 Hibiki AI Limited <info@hibiki-ai.com>
 //
 // This file is part of nanonext.
 //
@@ -267,8 +267,7 @@ static void iraio_complete_signal(void *arg) {
 
 void dialer_finalizer(SEXP xptr) {
 
-  if (R_ExternalPtrAddr(xptr) == NULL)
-    return;
+  if (R_ExternalPtrAddr(xptr) == NULL) return;
   nano_dialer *xp = (nano_dialer *) R_ExternalPtrAddr(xptr);
   nng_dialer_close(xp->dial);
   if (xp->tls != NULL)
@@ -279,8 +278,7 @@ void dialer_finalizer(SEXP xptr) {
 
 void listener_finalizer(SEXP xptr) {
 
-  if (R_ExternalPtrAddr(xptr) == NULL)
-    return;
+  if (R_ExternalPtrAddr(xptr) == NULL) return;
   nano_listener *xp = (nano_listener *) R_ExternalPtrAddr(xptr);
   nng_listener_close(xp->list);
   if (xp->tls != NULL)
@@ -291,8 +289,7 @@ void listener_finalizer(SEXP xptr) {
 
 static void saio_finalizer(SEXP xptr) {
 
-  if (R_ExternalPtrAddr(xptr) == NULL)
-    return;
+  if (R_ExternalPtrAddr(xptr) == NULL) return;
   nano_aio *xp = (nano_aio *) R_ExternalPtrAddr(xptr);
   nng_aio_free(xp->aio);
   R_Free(xp);
@@ -301,8 +298,7 @@ static void saio_finalizer(SEXP xptr) {
 
 static void raio_finalizer(SEXP xptr) {
 
-  if (R_ExternalPtrAddr(xptr) == NULL)
-    return;
+  if (R_ExternalPtrAddr(xptr) == NULL) return;
   nano_aio *xp = (nano_aio *) R_ExternalPtrAddr(xptr);
   nng_aio_free(xp->aio);
   if (xp->data != NULL)
@@ -313,8 +309,7 @@ static void raio_finalizer(SEXP xptr) {
 
 static void cvraio_finalizer(SEXP xptr) {
 
-  if (R_ExternalPtrAddr(xptr) == NULL)
-    return;
+  if (R_ExternalPtrAddr(xptr) == NULL) return;
   nano_cv_aio *xp = (nano_cv_aio *) R_ExternalPtrAddr(xptr);
   nng_aio_free(xp->aio);
   if (xp->data != NULL)
@@ -325,8 +320,7 @@ static void cvraio_finalizer(SEXP xptr) {
 
 static void cv_finalizer(SEXP xptr) {
 
-  if (R_ExternalPtrAddr(xptr) == NULL)
-    return;
+  if (R_ExternalPtrAddr(xptr) == NULL) return;
   nano_cv *xp = (nano_cv *) R_ExternalPtrAddr(xptr);
   nng_cv_free(xp->cv);
   nng_mtx_free(xp->mtx);
@@ -336,8 +330,7 @@ static void cv_finalizer(SEXP xptr) {
 
 static void reqsaio_finalizer(SEXP xptr) {
 
-  if (R_ExternalPtrAddr(xptr) == NULL)
-    return;
+  if (R_ExternalPtrAddr(xptr) == NULL) return;
   nano_aio *xp = (nano_aio *) R_ExternalPtrAddr(xptr);
 #ifdef NANONEXT_LEGACY_NNG
   nng_ctx *ctx = (nng_ctx *) xp->data;
@@ -350,8 +343,7 @@ static void reqsaio_finalizer(SEXP xptr) {
 
 static void cv_duo_finalizer(SEXP xptr) {
 
-  if (R_ExternalPtrAddr(xptr) == NULL)
-    return;
+  if (R_ExternalPtrAddr(xptr) == NULL) return;
   nano_cv_duo *xp = (nano_cv_duo *) R_ExternalPtrAddr(xptr);
   R_Free(xp);
 
@@ -359,8 +351,7 @@ static void cv_duo_finalizer(SEXP xptr) {
 
 static void iaio_finalizer(SEXP xptr) {
 
-  if (R_ExternalPtrAddr(xptr) == NULL)
-    return;
+  if (R_ExternalPtrAddr(xptr) == NULL) return;
   nano_aio *xp = (nano_aio *) R_ExternalPtrAddr(xptr);
   nng_aio_free(xp->aio);
   if (xp->data != NULL)
@@ -371,8 +362,7 @@ static void iaio_finalizer(SEXP xptr) {
 
 static void cviaio_finalizer(SEXP xptr) {
 
-  if (R_ExternalPtrAddr(xptr) == NULL)
-    return;
+  if (R_ExternalPtrAddr(xptr) == NULL) return;
   nano_cv_aio *xp = (nano_cv_aio *) R_ExternalPtrAddr(xptr);
   nng_aio_free(xp->aio);
   if (xp->data != NULL)
@@ -383,8 +373,7 @@ static void cviaio_finalizer(SEXP xptr) {
 
 static void haio_finalizer(SEXP xptr) {
 
-  if (R_ExternalPtrAddr(xptr) == NULL)
-    return;
+  if (R_ExternalPtrAddr(xptr) == NULL) return;
   nano_aio *xp = (nano_aio *) R_ExternalPtrAddr(xptr);
   nano_handle *handle = (nano_handle *) xp->data;
   nng_aio_free(xp->aio);
@@ -401,8 +390,7 @@ static void haio_finalizer(SEXP xptr) {
 
 static void session_finalizer(SEXP xptr) {
 
-  if (R_ExternalPtrAddr(xptr) == NULL)
-    return;
+  if (R_ExternalPtrAddr(xptr) == NULL) return;
   nng_http_conn *xp = (nng_http_conn *) R_ExternalPtrAddr(xptr);
   nng_http_conn_close(xp);
 
@@ -425,6 +413,7 @@ SEXP rnng_dial(SEXP socket, SEXP url, SEXP tls, SEXP autostart, SEXP error) {
   const char *ur = CHAR(STRING_ELT(url, 0));
   nano_dialer *dp = R_Calloc(1, nano_dialer);
   SEXP dialer, klass, attr, newattr;
+  nng_url *up;
   int xc;
 
   if (sec) {
@@ -432,14 +421,11 @@ SEXP rnng_dial(SEXP socket, SEXP url, SEXP tls, SEXP autostart, SEXP error) {
       goto exitlevel1;
     dp->tls = (nng_tls_config *) R_ExternalPtrAddr(tls);
     nng_tls_config_hold(dp->tls);
-    nng_url *up;
     if ((xc = nng_url_parse(&up, ur)))
       goto exitlevel2;
     if ((xc = nng_tls_config_server_name(dp->tls, up->u_hostname)) ||
-        (xc = nng_dialer_set_ptr(dp->dial, NNG_OPT_TLS_CONFIG, dp->tls))) {
-      nng_url_free(up);
-      goto exitlevel2;
-    }
+        (xc = nng_dialer_set_ptr(dp->dial, NNG_OPT_TLS_CONFIG, dp->tls)))
+      goto exitlevel3;
     nng_url_free(up);
   }
 
@@ -484,6 +470,8 @@ SEXP rnng_dial(SEXP socket, SEXP url, SEXP tls, SEXP autostart, SEXP error) {
   UNPROTECT(2);
   return nano_success;
 
+  exitlevel3:
+  nng_url_free(up);
   exitlevel2:
   nng_tls_config_free(dp->tls);
   exitlevel1:
@@ -508,6 +496,7 @@ SEXP rnng_listen(SEXP socket, SEXP url, SEXP tls, SEXP autostart, SEXP error) {
   const char *ur = CHAR(STRING_ELT(url, 0));
   nano_listener *lp = R_Calloc(1, nano_listener);
   SEXP listener, klass, attr, newattr;
+  nng_url *up;
   int xc;
 
   if (sec) {
@@ -515,14 +504,11 @@ SEXP rnng_listen(SEXP socket, SEXP url, SEXP tls, SEXP autostart, SEXP error) {
       goto exitlevel1;
     lp->tls = (nng_tls_config *) R_ExternalPtrAddr(tls);
     nng_tls_config_hold(lp->tls);
-    nng_url *up;
     if ((xc = nng_url_parse(&up, ur)))
       goto exitlevel2;
     if ((xc = nng_tls_config_server_name(lp->tls, up->u_hostname)) ||
-        (xc = nng_listener_set_ptr(lp->list, NNG_OPT_TLS_CONFIG, lp->tls))) {
-      nng_url_free(up);
-      goto exitlevel2;
-    }
+        (xc = nng_listener_set_ptr(lp->list, NNG_OPT_TLS_CONFIG, lp->tls)))
+      goto exitlevel3;
     nng_url_free(up);
   }
 
@@ -562,6 +548,8 @@ SEXP rnng_listen(SEXP socket, SEXP url, SEXP tls, SEXP autostart, SEXP error) {
   UNPROTECT(2);
   return nano_success;
 
+  exitlevel3:
+  nng_url_free(up);
   exitlevel2:
   nng_tls_config_free(lp->tls);
   exitlevel1:

@@ -52,8 +52,7 @@ SEXP mk_error_ncurl(const int xc) {
 
 static void stream_finalizer(SEXP xptr) {
 
-  if (R_ExternalPtrAddr(xptr) == NULL)
-    return;
+  if (R_ExternalPtrAddr(xptr) == NULL) return;
   nng_stream *xp = (nng_stream *) R_ExternalPtrAddr(xptr);
   nng_stream_close(xp);
   nng_stream_free(xp);
@@ -62,8 +61,7 @@ static void stream_finalizer(SEXP xptr) {
 
 static void stream_listener_finalizer(SEXP xptr) {
 
-  if (R_ExternalPtrAddr(xptr) == NULL)
-    return;
+  if (R_ExternalPtrAddr(xptr) == NULL) return;
   nano_stream_listener *xp = (nano_stream_listener *) R_ExternalPtrAddr(xptr);
   nng_stream_listener_close(xp->list);
   nng_stream_listener_free(xp->list);
@@ -75,8 +73,7 @@ static void stream_listener_finalizer(SEXP xptr) {
 
 static void stream_dialer_finalizer(SEXP xptr) {
 
-  if (R_ExternalPtrAddr(xptr) == NULL)
-    return;
+  if (R_ExternalPtrAddr(xptr) == NULL) return;
   nano_stream_dialer *xp = (nano_stream_dialer *) R_ExternalPtrAddr(xptr);
   nng_stream_dialer_close(xp->dial);
   nng_stream_dialer_free(xp->dial);
@@ -88,8 +85,7 @@ static void stream_dialer_finalizer(SEXP xptr) {
 
 static void tls_finalizer(SEXP xptr) {
 
-  if (R_ExternalPtrAddr(xptr) == NULL)
-    return;
+  if (R_ExternalPtrAddr(xptr) == NULL) return;
   nng_tls_config *xp = (nng_tls_config *) R_ExternalPtrAddr(xptr);
   nng_tls_config_free(xp);
 

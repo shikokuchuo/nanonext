@@ -559,8 +559,7 @@ SEXP nano_decode(unsigned char *buf, size_t sz, const int mod) {
 
 static void context_finalizer(SEXP xptr) {
 
-  if (R_ExternalPtrAddr(xptr) == NULL)
-    return;
+  if (R_ExternalPtrAddr(xptr) == NULL) return;
   nng_ctx *xp = (nng_ctx *) R_ExternalPtrAddr(xptr);
   nng_ctx_close(*xp);
   R_Free(xp);
