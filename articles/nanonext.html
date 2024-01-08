@@ -272,7 +272,7 @@ in the Aio as <code>$data</code>.</p>
 <span><span class="va">aio</span></span>
 <span><span class="co">#&gt; &lt; recvAio | $data &gt;</span></span>
 <span><span class="va">aio</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] 0.401 1.019 -1.349 -1.363 -1.401 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] 1.018 -1.367 -0.694 -0.987 -0.187 ...</span></span></code></pre></div>
 <p>As <code><a href="../reference/call_aio.html">call_aio()</a></code> is blocking and will wait for completion,
 an alternative is to query <code>aio$data</code> directly. This will
 return an ‘unresolved’ logical NA value if the calculation is yet to
@@ -423,18 +423,16 @@ not a mixture of the two.</p>
 <code class="sourceCode R"><span><span class="va">cert</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/write_cert.html">write_cert</a></span><span class="op">(</span>cn <span class="op">=</span> <span class="st">"127.0.0.1"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">cert</span><span class="op">)</span></span>
 <span><span class="co">#&gt; List of 2</span></span>
-<span><span class="co">#&gt;  $ server: chr [1:2] "-----BEGIN CERTIFICATE-----\nMIIFOTCCAyGgAwIBAgIBATANBgkqhkiG9w0BAQsFADA0MRIwEAYDVQQDDAkxMjcu\nMC4wLjExETAPBgNV"| __truncated__ "-----BEGIN RSA PRIVATE KEY-----\nMIIJJwIBAAKCAgEAirfNH84zv6a21zKiFn79V6oQMz4EpYIb82YVYu3yBXtpePoR\nwJFisYuMd6bd"| __truncated__</span></span>
+<span><span class="co">#&gt;  $ server: chr [1:2] "-----BEGIN CERTIFICATE-----\nMIIFOTCCAyGgAwIBAgIBATANBgkqhkiG9w0BAQsFADA0MRIwEAYDVQQDDAkxMjcu\nMC4wLjExETAPBgNV"| __truncated__ "-----BEGIN RSA PRIVATE KEY-----\nMIIJJwIBAAKCAgEAwguj4bMVmj2nGrra5j20QlOo9hVRkXbO+jmyK3gqsdnRYDTn\nypYcp8ObEga2"| __truncated__</span></span>
 <span><span class="co">#&gt;  $ client: chr [1:2] "-----BEGIN CERTIFICATE-----\nMIIFOTCCAyGgAwIBAgIBATANBgkqhkiG9w0BAQsFADA0MRIwEAYDVQQDDAkxMjcu\nMC4wLjExETAPBgNV"| __truncated__ ""</span></span>
 <span></span>
 <span><span class="va">ser</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tls_config.html">tls_config</a></span><span class="op">(</span>server <span class="op">=</span> <span class="va">cert</span><span class="op">$</span><span class="va">server</span><span class="op">)</span></span>
 <span><span class="va">ser</span></span>
-<span><span class="co">#&gt; &lt; TLS server configuration &gt;</span></span>
-<span><span class="co">#&gt;  - auth mode: optional</span></span>
+<span><span class="co">#&gt; &lt; TLS server config | auth mode: optional &gt;</span></span>
 <span></span>
 <span><span class="va">cli</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tls_config.html">tls_config</a></span><span class="op">(</span>client <span class="op">=</span> <span class="va">cert</span><span class="op">$</span><span class="va">client</span><span class="op">)</span></span>
 <span><span class="va">cli</span></span>
-<span><span class="co">#&gt; &lt; TLS client configuration &gt;</span></span>
-<span><span class="co">#&gt;  - auth mode: required</span></span>
+<span><span class="co">#&gt; &lt; TLS client config | auth mode: required &gt;</span></span>
 <span></span>
 <span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/socket.html">socket</a></span><span class="op">(</span>listen <span class="op">=</span> <span class="st">"tls+tcp://127.0.0.1:5558"</span>, tls <span class="op">=</span> <span class="va">ser</span><span class="op">)</span></span>
 <span><span class="va">s1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/socket.html">socket</a></span><span class="op">(</span>dial <span class="op">=</span> <span class="st">"tls+tcp://127.0.0.1:5558"</span>, tls <span class="op">=</span> <span class="va">cli</span><span class="op">)</span></span>
@@ -578,7 +576,7 @@ asynchronously, returning immediately with an ‘ncurlAio’.</p>
 <span><span class="co">#&gt; NULL</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $data</span></span>
-<span><span class="co">#&gt; [1] "{\n  \"args\": {},\n  \"headers\": {\n    \"x-forwarded-proto\": \"https\",\n    \"x-forwarded-port\": \"443\",\n    \"host\": \"postman-echo.com\",\n    \"x-amzn-trace-id\": \"Root=1-659bc6b3-4e59f11a5f41e9291ac894c7\"\n  },\n  \"url\": \"https://postman-echo.com/get\"\n}"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "{\n  \"args\": {},\n  \"headers\": {\n    \"x-forwarded-proto\": \"https\",\n    \"x-forwarded-port\": \"443\",\n    \"host\": \"postman-echo.com\",\n    \"x-amzn-trace-id\": \"Root=1-659c037f-620d52181c19506d465b0d25\"\n  },\n  \"url\": \"https://postman-echo.com/get\"\n}"</span></span></code></pre></div>
 <p>For advanced use, supports additional HTTP methods such as POST or
 PUT.</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
@@ -592,10 +590,10 @@ PUT.</p>
 <span></span>
 <span><span class="fu"><a href="../reference/call_aio.html">call_aio</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span><span class="op">$</span><span class="va">headers</span></span>
 <span><span class="co">#&gt; $date</span></span>
-<span><span class="co">#&gt; [1] "Mon, 08 Jan 2024 09:56:04 GMT"</span></span>
+<span><span class="co">#&gt; [1] "Mon, 08 Jan 2024 14:15:28 GMT"</span></span>
 <span></span>
 <span><span class="va">res</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt; [1] "{\n  \"args\": {},\n  \"data\": {\n    \"key\": \"value\"\n  },\n  \"files\": {},\n  \"form\": {},\n  \"headers\": {\n    \"x-forwarded-proto\": \"https\",\n    \"x-forwarded-port\": \"443\",\n    \"host\": \"postman-echo.com\",\n    \"x-amzn-trace-id\": \"Root=1-659bc6b4-34c684f4738aced56f7e61b5\",\n    \"content-length\": \"16\",\n    \"content-type\": \"application/json\",\n    \"authorization\": \"Bearer APIKEY\"\n  },\n  \"json\": {\n    \"key\": \"value\"\n  },\n  \"url\": \"https://postman-echo.com/post\"\n}"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "{\n  \"args\": {},\n  \"data\": {\n    \"key\": \"value\"\n  },\n  \"files\": {},\n  \"form\": {},\n  \"headers\": {\n    \"x-forwarded-proto\": \"https\",\n    \"x-forwarded-port\": \"443\",\n    \"host\": \"postman-echo.com\",\n    \"x-amzn-trace-id\": \"Root=1-659c0380-7f4964845fab808564de9eee\",\n    \"content-length\": \"16\",\n    \"content-type\": \"application/json\",\n    \"authorization\": \"Bearer APIKEY\"\n  },\n  \"json\": {\n    \"key\": \"value\"\n  },\n  \"url\": \"https://postman-echo.com/post\"\n}"</span></span></code></pre></div>
 <p>In this respect, it may be used as a performant and lightweight
 method for making REST API requests.</p>
 <p><code><a href="../reference/ncurl_session.html">ncurl_session()</a></code> creates a re-usable open connection and
@@ -612,8 +610,7 @@ which can operate directly on such data etc.</p>
 <span>                      headers <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>`Content-Type` <span class="op">=</span> <span class="st">"application/json"</span>, Authorization <span class="op">=</span> <span class="st">"Bearer APIKEY"</span><span class="op">)</span>,</span>
 <span>                      response <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Date"</span>, <span class="st">"Content-Type"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">sess</span></span>
-<span><span class="co">#&gt; &lt; ncurlSession &gt;</span></span>
-<span><span class="co">#&gt;  - transact() to return data</span></span>
+<span><span class="co">#&gt; &lt; ncurlSession &gt; - transact() to return data</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/ncurl_session.html">transact</a></span><span class="op">(</span><span class="va">sess</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $status</span></span>
@@ -621,7 +618,7 @@ which can operate directly on such data etc.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $headers</span></span>
 <span><span class="co">#&gt; $headers$Date</span></span>
-<span><span class="co">#&gt; [1] "Mon, 08 Jan 2024 09:56:04 GMT"</span></span>
+<span><span class="co">#&gt; [1] "Mon, 08 Jan 2024 14:15:29 GMT"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $headers$`Content-Type`</span></span>
 <span><span class="co">#&gt; [1] "application/json; charset=utf-8"</span></span>
@@ -632,7 +629,7 @@ which can operate directly on such data etc.</p>
 <span><span class="co">#&gt;  [41] 72 77 61 72 64 65 64 2d 70 72 6f 74 6f 22 3a 20 22 68 74 74 70 73 22 2c 0a 20 20 20 20 22 78 2d 66 6f 72 77 61 72 64 65</span></span>
 <span><span class="co">#&gt;  [81] 64 2d 70 6f 72 74 22 3a 20 22 34 34 33 22 2c 0a 20 20 20 20 22 68 6f 73 74 22 3a 20 22 70 6f 73 74 6d 61 6e 2d 65 63 68</span></span>
 <span><span class="co">#&gt; [121] 6f 2e 63 6f 6d 22 2c 0a 20 20 20 20 22 78 2d 61 6d 7a 6e 2d 74 72 61 63 65 2d 69 64 22 3a 20 22 52 6f 6f 74 3d 31 2d 36</span></span>
-<span><span class="co">#&gt; [161] 35 39 62 63 36 62 34 2d 37 64 36 39 32 62 37 66 36 34 33 39 32 32 65 64 30 63 64 39 66 30 66 61 22 2c 0a 20 20 20 20 22</span></span>
+<span><span class="co">#&gt; [161] 35 39 63 30 33 38 31 2d 33 30 38 33 32 33 64 38 36 33 65 61 37 62 34 36 31 66 38 38 62 30 66 36 22 2c 0a 20 20 20 20 22</span></span>
 <span><span class="co">#&gt; [201] 63 6f 6e 74 65 6e 74 2d 74 79 70 65 22 3a 20 22 61 70 70 6c 69 63 61 74 69 6f 6e 2f 6a 73 6f 6e 22 2c 0a 20 20 20 20 22</span></span>
 <span><span class="co">#&gt; [241] 61 75 74 68 6f 72 69 7a 61 74 69 6f 6e 22 3a 20 22 42 65 61 72 65 72 20 41 50 49 4b 45 59 22 0a 20 20 7d 2c 0a 20 20 22</span></span>
 <span><span class="co">#&gt; [281] 75 72 6c 22 3a 20 22 68 74 74 70 73 3a 2f 2f 70 6f 73 74 6d 61 6e 2d 65 63 68 6f 2e 63 6f 6d 2f 67 65 74 22 0a 7d</span></span></code></pre></div>
