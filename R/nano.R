@@ -321,11 +321,8 @@ print.nanoListener <- function(x, ...) {
 #'
 print.nanoStream <- function(x, ...) {
 
-  if (length(attr(x, "dialer")))
-    cat(sprintf("< nanoStream >\n - type: dialer\n - url: %s\n - textframes: %s\n", attr(x, "url"), attr(x, "textframes")), file = stdout()) else
-      if (length(attr(x, "listener")))
-        cat(sprintf("< nanoStream >\n - type: listener\n - url: %s\n - textframes: %s\n", attr(x, "url"), attr(x, "textframes")), file = stdout()) else
-          cat("< nanoStream >\n - not active\n", file = stdout())
+  cat(sprintf("< nanoStream >\n - mode: %s\n - state: %s\n - url: %s\n - textframes: %s\n",
+              attr(x, "mode"), attr(x, "state"), attr(x, "url"), attr(x, "textframes")), file = stdout())
   invisible(x)
 
 }

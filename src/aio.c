@@ -915,7 +915,7 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
 
     nano_encode(&buf, data);
 
-    nng_stream *sp = (nng_stream *) R_ExternalPtrAddr(con);
+    nng_stream **sp = (nng_stream **) R_ExternalPtrAddr(con);
     nng_iov iov;
 
     saio = R_Calloc(1, nano_aio);
@@ -937,7 +937,7 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
     }
 
     nng_aio_set_timeout(saio->aio, dur);
-    nng_stream_send(sp, saio->aio);
+    nng_stream_send(*sp, saio->aio);
 
     PROTECT(aio = R_MakeExternalPtr(saio, nano_AioSymbol, R_NilValue));
     R_RegisterCFinalizerEx(aio, iaio_finalizer, TRUE);
@@ -1015,7 +1015,7 @@ SEXP rnng_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP bytes, SEXP clo) {
 
     mod = nano_matchargs(mode);
     const size_t xlen = (size_t) Rf_asInteger(bytes);
-    nng_stream *sp = (nng_stream *) R_ExternalPtrAddr(con);
+    nng_stream **sp = (nng_stream **) R_ExternalPtrAddr(con);
     nng_iov iov;
 
     raio = R_Calloc(1, nano_aio);
@@ -1032,7 +1032,7 @@ SEXP rnng_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP bytes, SEXP clo) {
       goto exitlevel3;
 
     nng_aio_set_timeout(raio->aio, dur);
-    nng_stream_recv(sp, raio->aio);
+    nng_stream_recv(*sp, raio->aio);
 
     PROTECT(aio = R_MakeExternalPtr(raio, nano_AioSymbol, R_NilValue));
     R_RegisterCFinalizerEx(aio, iaio_finalizer, TRUE);
@@ -1892,7 +1892,7 @@ SEXP rnng_cv_recv_aio(SEXP con, SEXP cvar, SEXP mode, SEXP timeout, SEXP bytes, 
 
     mod = nano_matchargs(mode);
     const size_t xlen = (size_t) Rf_asInteger(bytes);
-    nng_stream *sp = (nng_stream *) R_ExternalPtrAddr(con);
+    nng_stream **sp = (nng_stream **) R_ExternalPtrAddr(con);
     nng_iov iov;
 
     cv_raio = R_Calloc(1, nano_cv_aio);
@@ -1910,7 +1910,7 @@ SEXP rnng_cv_recv_aio(SEXP con, SEXP cvar, SEXP mode, SEXP timeout, SEXP bytes, 
       goto exitlevel3;
 
     nng_aio_set_timeout(cv_raio->aio, dur);
-    nng_stream_recv(sp, cv_raio->aio);
+    nng_stream_recv(*sp, cv_raio->aio);
 
     PROTECT(aio = R_MakeExternalPtr(cv_raio, nano_AioSymbol, R_NilValue));
     R_RegisterCFinalizerEx(aio, cviaio_finalizer, TRUE);

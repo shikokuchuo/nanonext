@@ -24,11 +24,13 @@
 // internals -------------------------------------------------------------------
 
 typedef struct nano_stream_listener_s {
+  nng_stream *stream;
   nng_stream_listener *list;
   nng_tls_config *tls;
 } nano_stream_listener;
 
 typedef struct nano_stream_dialer_s {
+  nng_stream *stream;
   nng_stream_dialer *dial;
   nng_tls_config *tls;
 } nano_stream_dialer;
@@ -50,20 +52,13 @@ SEXP mk_error_ncurl(const int xc) {
 
 // finalizers ------------------------------------------------------------------
 
-static void stream_finalizer(SEXP xptr) {
-
-  if (R_ExternalPtrAddr(xptr) == NULL) return;
-  nng_stream *xp = (nng_stream *) R_ExternalPtrAddr(xptr);
-  nng_stream_close(xp);
-  nng_stream_free(xp);
-
-}
-
 static void stream_listener_finalizer(SEXP xptr) {
 
   if (R_ExternalPtrAddr(xptr) == NULL) return;
   nano_stream_listener *xp = (nano_stream_listener *) R_ExternalPtrAddr(xptr);
+  nng_stream_close(xp->stream);
   nng_stream_listener_close(xp->list);
+  nng_stream_free(xp->stream);
   nng_stream_listener_free(xp->list);
   if (xp->tls != NULL)
     nng_tls_config_free(xp->tls);
@@ -75,7 +70,9 @@ static void stream_dialer_finalizer(SEXP xptr) {
 
   if (R_ExternalPtrAddr(xptr) == NULL) return;
   nano_stream_dialer *xp = (nano_stream_dialer *) R_ExternalPtrAddr(xptr);
+  nng_stream_close(xp->stream);
   nng_stream_dialer_close(xp->dial);
+  nng_stream_free(xp->stream);
   nng_stream_dialer_free(xp->dial);
   if (xp->tls != NULL)
     nng_tls_config_free(xp->tls);
@@ -379,11 +376,10 @@ SEXP rnng_stream_dial(SEXP url, SEXP textframes, SEXP tls) {
     Rf_error("'tls' is not a valid TLS Configuration");
   nano_stream_dialer *nsd = R_Calloc(1, nano_stream_dialer);
   nsd->tls = NULL;
-  nng_stream *stream;
   nng_url *up;
   nng_aio *aiop;
   int xc, frames = 0;
-  SEXP st, sd, klass;
+  SEXP sd, klass;
 
   if ((xc = nng_url_parse(&up, add)))
     goto exitlevel1;
@@ -430,27 +426,25 @@ SEXP rnng_stream_dial(SEXP url, SEXP textframes, SEXP tls) {
   if ((xc = nng_aio_result(aiop)))
     goto exitlevel5;
 
-  stream = nng_aio_get_output(aiop, 0);
+  nsd->stream = nng_aio_get_output(aiop, 0);
 
   nng_aio_free(aiop);
   nng_url_free(up);
 
-  PROTECT(st = R_MakeExternalPtr(stream, nano_StreamSymbol, R_NilValue));
-  R_RegisterCFinalizerEx(st, stream_finalizer, TRUE);
-
-  PROTECT(sd = R_MakeExternalPtr(nsd, R_NilValue, R_NilValue));
+  PROTECT(sd = R_MakeExternalPtr(nsd, nano_StreamSymbol, R_NilValue));
   R_RegisterCFinalizerEx(sd, stream_dialer_finalizer, TRUE);
-  Rf_setAttrib(st, nano_DialerSymbol, sd);
-  Rf_setAttrib(st, nano_UrlSymbol, url);
-  Rf_setAttrib(st, nano_TextframesSymbol, Rf_ScalarLogical(frames));
+  Rf_setAttrib(sd, R_ModeSymbol, Rf_mkString("dialer"));
+  Rf_setAttrib(sd, nano_StateSymbol, Rf_mkString("opened"));
+  Rf_setAttrib(sd, nano_UrlSymbol, url);
+  Rf_setAttrib(sd, nano_TextframesSymbol, Rf_ScalarLogical(frames));
 
   klass = Rf_allocVector(STRSXP, 2);
-  Rf_classgets(st, klass);
+  Rf_classgets(sd, klass);
   SET_STRING_ELT(klass, 0, Rf_mkChar("nanoStream"));
   SET_STRING_ELT(klass, 1, Rf_mkChar("nano"));
 
-  UNPROTECT(2);
-  return st;
+  UNPROTECT(1);
+  return sd;
 
   exitlevel5:
   nng_aio_free(aiop);
@@ -474,11 +468,10 @@ SEXP rnng_stream_listen(SEXP url, SEXP textframes, SEXP tls) {
     Rf_error("'tls' is not a valid TLS Configuration");
   nano_stream_listener *nsl = R_Calloc(1, nano_stream_listener);
   nsl->tls = NULL;
-  nng_stream *stream;
   nng_url *up;
   nng_aio *aiop;
   int xc, frames = 0;
-  SEXP st, sl, klass;
+  SEXP sl, klass;
 
   if ((xc = nng_url_parse(&up, add)))
     goto exitlevel1;
@@ -527,27 +520,25 @@ SEXP rnng_stream_listen(SEXP url, SEXP textframes, SEXP tls) {
   if ((xc = nng_aio_result(aiop)))
     goto exitlevel5;
 
-  stream = nng_aio_get_output(aiop, 0);
+  nsl->stream = nng_aio_get_output(aiop, 0);
 
   nng_aio_free(aiop);
   nng_url_free(up);
 
-  PROTECT(st = R_MakeExternalPtr(stream, nano_StreamSymbol, R_NilValue));
-  R_RegisterCFinalizerEx(st, stream_finalizer, TRUE);
-
-  PROTECT(sl = R_MakeExternalPtr(nsl, R_NilValue, R_NilValue));
+  PROTECT(sl = R_MakeExternalPtr(nsl, nano_StreamSymbol, R_NilValue));
   R_RegisterCFinalizerEx(sl, stream_listener_finalizer, TRUE);
-  Rf_setAttrib(st, nano_ListenerSymbol, sl);
-  Rf_setAttrib(st, nano_UrlSymbol, url);
-  Rf_setAttrib(st, nano_TextframesSymbol, Rf_ScalarLogical(frames));
+  Rf_setAttrib(sl, R_ModeSymbol, Rf_mkString("listener"));
+  Rf_setAttrib(sl, nano_StateSymbol, Rf_mkString("opened"));
+  Rf_setAttrib(sl, nano_UrlSymbol, url);
+  Rf_setAttrib(sl, nano_TextframesSymbol, Rf_ScalarLogical(frames));
 
   klass = Rf_allocVector(STRSXP, 2);
-  Rf_classgets(st, klass);
+  Rf_classgets(sl, klass);
   SET_STRING_ELT(klass, 0, Rf_mkChar("nanoStream"));
   SET_STRING_ELT(klass, 1, Rf_mkChar("nano"));
 
-  UNPROTECT(2);
-  return st;
+  UNPROTECT(1);
+  return sl;
 
   exitlevel5:
   nng_aio_free(aiop);
@@ -568,15 +559,17 @@ SEXP rnng_stream_close(SEXP stream) {
 
   if (R_ExternalPtrTag(stream) != nano_StreamSymbol)
     Rf_error("'stream' is not a valid or active Stream");
-  nng_stream *sp = (nng_stream *) R_ExternalPtrAddr(stream);
-  nng_stream_close(sp);
-  nng_stream_free(sp);
+
+  SEXP mode = Rf_getAttrib(stream, R_ModeSymbol);
+  const char *mod = CHAR(STRING_ELT(mode, 0));
+  if (!strncmp(mod, "dialer", 6)) {
+    stream_dialer_finalizer(stream);
+  } else {
+    stream_listener_finalizer(stream);
+  }
   R_SetExternalPtrTag(stream, R_NilValue);
   R_ClearExternalPtr(stream);
-  Rf_setAttrib(stream, nano_ListenerSymbol, R_NilValue);
-  Rf_setAttrib(stream, nano_DialerSymbol, R_NilValue);
-  Rf_setAttrib(stream, nano_UrlSymbol, R_NilValue);
-  Rf_setAttrib(stream, nano_TextframesSymbol, R_NilValue);
+  Rf_setAttrib(stream, nano_StateSymbol, Rf_mkString("closed"));
 
   return nano_success;
 

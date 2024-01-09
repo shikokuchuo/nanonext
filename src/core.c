@@ -774,7 +774,7 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
 
     nano_encode(&buf, data);
 
-    nng_stream *sp = (nng_stream *) R_ExternalPtrAddr(con);
+    nng_stream **sp = (nng_stream **) R_ExternalPtrAddr(con);
     nng_aio *aiop;
     nng_iov iov;
 
@@ -790,7 +790,7 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
     }
 
     nng_aio_set_timeout(aiop, flags ? flags : (*NANO_INTEGER(block) == 1) * NNG_DURATION_DEFAULT);
-    nng_stream_send(sp, aiop);
+    nng_stream_send(*sp, aiop);
     nng_aio_wait(aiop);
     xc = nng_aio_result(aiop);
     nng_aio_free(aiop);
@@ -924,7 +924,7 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP bytes) {
 
     mod = nano_matchargs(mode);
     const size_t xlen = (size_t) Rf_asInteger(bytes);
-    nng_stream *sp = (nng_stream *) R_ExternalPtrAddr(con);
+    nng_stream **sp = (nng_stream **) R_ExternalPtrAddr(con);
     nng_iov iov;
     nng_aio *aiop;
 
@@ -941,7 +941,7 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP bytes) {
     }
 
     nng_aio_set_timeout(aiop, flags ? flags : (*NANO_INTEGER(block) == 1) * NNG_DURATION_DEFAULT);
-    nng_stream_recv(sp, aiop);
+    nng_stream_recv(*sp, aiop);
 
     nng_aio_wait(aiop);
     if ((xc = nng_aio_result(aiop))) {
@@ -1033,27 +1033,27 @@ SEXP rnng_set_opt(SEXP object, SEXP opt, SEXP value) {
 
   } else if (ptrtag == nano_StreamSymbol) {
 
-    nng_stream *st = (nng_stream *) R_ExternalPtrAddr(object);
+    nng_stream **st = (nng_stream **) R_ExternalPtrAddr(object);
     switch (typ) {
     case NILSXP:
-      xc = nng_stream_set(st, op, NULL, 0);
+      xc = nng_stream_set(*st, op, NULL, 0);
       break;
     case STRSXP:
-      xc = nng_stream_set_string(st, op, CHAR(STRING_ELT(value, 0)));
+      xc = nng_stream_set_string(*st, op, CHAR(STRING_ELT(value, 0)));
       break;
     case REALSXP:
     case INTSXP:
       val = Rf_asInteger(value);
-      xc = nng_stream_set_ms(st, op, (nng_duration) val);
+      xc = nng_stream_set_ms(*st, op, (nng_duration) val);
       if (xc == 0) break;
-      xc = nng_stream_set_size(st, op, (size_t) val);
+      xc = nng_stream_set_size(*st, op, (size_t) val);
       if (xc == 0) break;
-      xc = nng_stream_set_int(st, op, val);
+      xc = nng_stream_set_int(*st, op, val);
       if (xc == 0) break;
-      xc = nng_stream_set_uint64(st, op, (uint64_t) val);
+      xc = nng_stream_set_uint64(*st, op, (uint64_t) val);
       break;
     case LGLSXP:
-      xc = nng_stream_set_bool(st, op, (bool) *NANO_INTEGER(value));
+      xc = nng_stream_set_bool(*st, op, (bool) *NANO_INTEGER(value));
       break;
     default:
       Rf_error("type of 'value' not supported");
@@ -1202,19 +1202,19 @@ SEXP rnng_get_opt(SEXP object, SEXP opt) {
 
   } else if (ptrtag == nano_StreamSymbol) {
 
-    nng_stream *st = (nng_stream *) R_ExternalPtrAddr(object);
+    nng_stream **st = (nng_stream **) R_ExternalPtrAddr(object);
     for (;;) {
-      xc = nng_stream_get_string(st, op, &optval.str);
+      xc = nng_stream_get_string(*st, op, &optval.str);
       if (xc == 0) { typ = 1; break; }
-      xc = nng_stream_get_ms(st, op, &optval.d);
+      xc = nng_stream_get_ms(*st, op, &optval.d);
       if (xc == 0) { typ = 2; break; }
-      xc = nng_stream_get_size(st, op, &optval.s);
+      xc = nng_stream_get_size(*st, op, &optval.s);
       if (xc == 0) { typ = 3; break; }
-      xc = nng_stream_get_int(st, op, &optval.i);
+      xc = nng_stream_get_int(*st, op, &optval.i);
       if (xc == 0) { typ = 4; break; }
-      xc = nng_stream_get_bool(st, op, &optval.b);
+      xc = nng_stream_get_bool(*st, op, &optval.b);
       if (xc == 0) { typ = 5; break; }
-      xc = nng_stream_get_uint64(st, op, &optval.u);
+      xc = nng_stream_get_uint64(*st, op, &optval.u);
       typ = 6; break;
     }
 
