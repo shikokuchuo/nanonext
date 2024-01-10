@@ -23,14 +23,12 @@
 
 // internals -------------------------------------------------------------------
 
-typedef enum nano_stream_typ {
-  DIALER,
-  LISTENER
-} nano_stream_typ;
-
 typedef struct nano_stream_s {
   nng_stream *stream;
-  nano_stream_typ type;
+  enum {
+    STREAM_DIALER,
+    STREAM_LISTENER
+  } type;
   union {
     nng_stream_dialer *dial;
     nng_stream_listener *list;
@@ -61,7 +59,7 @@ static void stream_finalizer(SEXP xptr) {
   nano_stream *xp = (nano_stream *) R_ExternalPtrAddr(xptr);
   nng_stream_close(xp->stream);
   nng_stream_free(xp->stream);
-  if (xp->type == DIALER) {
+  if (xp->type == STREAM_DIALER) {
     nng_stream_dialer_close(xp->endpoint.dial);
     nng_stream_dialer_free(xp->endpoint.dial);
   } else {
@@ -369,7 +367,7 @@ SEXP rnng_stream_dial(SEXP url, SEXP textframes, SEXP tls) {
   if (tls != R_NilValue && R_ExternalPtrTag(tls) != nano_TlsSymbol)
     Rf_error("'tls' is not a valid TLS Configuration");
   nano_stream *nst = R_Calloc(1, nano_stream);
-  nst->type = DIALER;
+  nst->type = STREAM_DIALER;
   nst->tls = NULL;
   nng_url *up;
   nng_aio *aiop;
@@ -462,7 +460,7 @@ SEXP rnng_stream_listen(SEXP url, SEXP textframes, SEXP tls) {
   if (tls != R_NilValue && R_ExternalPtrTag(tls) != nano_TlsSymbol)
     Rf_error("'tls' is not a valid TLS Configuration");
   nano_stream *nst = R_Calloc(1, nano_stream);
-  nst->type = LISTENER;
+  nst->type = STREAM_LISTENER;
   nst->tls = NULL;
   nng_url *up;
   nng_aio *aiop;
