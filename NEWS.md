@@ -1,4 +1,4 @@
-# nanonext 0.11.0.9012 (development)
+# nanonext 0.11.0.9013 (development)
 
 #### New Features
 
@@ -7,10 +7,10 @@
 #### Updates
 
 * More compact print methods for 'recvAio', 'sendAio', 'ncurlAio', 'ncurlSession' and 'tlsConfig' objects.
+* `random()` now explicitly limits argument 'n' to values between 0 and 1024.
 * `next_config()` now returns a pairlist (of the registered serialization functions) rather than a list (for efficiency).
 * Using mode 'next', serialization functions with incorrect signatures are now simply ignored rather than raise errors.
-* `random()` now explicitly limits argument 'n' to values between 0 and 1024.
-* 'nanoStream' objects simplified internally, and gain the attributes 'mode' and 'state'.
+* 'nanoStream' objects simplified internally with updated attributes 'mode' and 'state'.
 * Deprecated function `.until()` is removed.
 * Eliminates potential memory leaks along certain error paths.
 * Fixes bug which prevented much higher TLS performance when using the bundled 'libnng' source.

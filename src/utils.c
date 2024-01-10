@@ -17,24 +17,12 @@
 // nanonext - C level - Utilities ----------------------------------------------
 
 #define NANONEXT_PROTOCOLS
+#define NANONEXT_HTTP
 #define NANONEXT_SUPPLEMENTALS
 #define NANONEXT_MBED
 #include "nanonext.h"
 
 // internals -------------------------------------------------------------------
-
-typedef struct nano_stream_s {
-  nng_stream *stream;
-  enum {
-    STREAM_DIALER,
-    STREAM_LISTENER
-  } type;
-  union {
-    nng_stream_dialer *dial;
-    nng_stream_listener *list;
-  } endpoint;
-  nng_tls_config *tls;
-} nano_stream;
 
 SEXP mk_error_ncurl(const int xc) {
 
@@ -59,12 +47,12 @@ static void stream_finalizer(SEXP xptr) {
   nano_stream *xp = (nano_stream *) R_ExternalPtrAddr(xptr);
   nng_stream_close(xp->stream);
   nng_stream_free(xp->stream);
-  if (xp->type == STREAM_DIALER) {
-    nng_stream_dialer_close(xp->endpoint.dial);
-    nng_stream_dialer_free(xp->endpoint.dial);
-  } else {
+  if (xp->listener) {
     nng_stream_listener_close(xp->endpoint.list);
     nng_stream_listener_free(xp->endpoint.list);
+  } else {
+    nng_stream_dialer_close(xp->endpoint.dial);
+    nng_stream_dialer_free(xp->endpoint.dial);
   }
   if (xp->tls != NULL)
     nng_tls_config_free(xp->tls);
@@ -367,11 +355,12 @@ SEXP rnng_stream_dial(SEXP url, SEXP textframes, SEXP tls) {
   if (tls != R_NilValue && R_ExternalPtrTag(tls) != nano_TlsSymbol)
     Rf_error("'tls' is not a valid TLS Configuration");
   nano_stream *nst = R_Calloc(1, nano_stream);
-  nst->type = STREAM_DIALER;
+  nst->listener = 0;
+  nst->textframes = *NANO_INTEGER(textframes) != 0;
   nst->tls = NULL;
   nng_url *up;
   nng_aio *aiop;
-  int xc, frames = 0;
+  int xc;
   SEXP sd, klass;
 
   if ((xc = nng_url_parse(&up, add)))
@@ -382,8 +371,7 @@ SEXP rnng_stream_dial(SEXP url, SEXP textframes, SEXP tls) {
     goto exitlevel2;
 
   if (!strcmp(up->u_scheme, "ws") || !strcmp(up->u_scheme, "wss")) {
-    frames = *NANO_INTEGER(textframes);
-    if (frames &&
+    if (nst->textframes &&
         ((xc = nng_stream_dialer_set_bool(nst->endpoint.dial, "ws:recv-text", 1)) ||
         (xc = nng_stream_dialer_set_bool(nst->endpoint.dial, "ws:send-text", 1))))
       goto exitlevel3;
@@ -426,10 +414,9 @@ SEXP rnng_stream_dial(SEXP url, SEXP textframes, SEXP tls) {
 
   PROTECT(sd = R_MakeExternalPtr(nst, nano_StreamSymbol, R_NilValue));
   R_RegisterCFinalizerEx(sd, stream_finalizer, TRUE);
-  Rf_setAttrib(sd, R_ModeSymbol, Rf_mkString("dialer"));
+  Rf_setAttrib(sd, R_ModeSymbol, Rf_mkString(nst->textframes ? "dialer text frames" : "dialer"));
   Rf_setAttrib(sd, nano_StateSymbol, Rf_mkString("opened"));
   Rf_setAttrib(sd, nano_UrlSymbol, url);
-  Rf_setAttrib(sd, nano_TextframesSymbol, Rf_ScalarLogical(frames));
 
   klass = Rf_allocVector(STRSXP, 2);
   Rf_classgets(sd, klass);
@@ -460,11 +447,12 @@ SEXP rnng_stream_listen(SEXP url, SEXP textframes, SEXP tls) {
   if (tls != R_NilValue && R_ExternalPtrTag(tls) != nano_TlsSymbol)
     Rf_error("'tls' is not a valid TLS Configuration");
   nano_stream *nst = R_Calloc(1, nano_stream);
-  nst->type = STREAM_LISTENER;
+  nst->listener = 1;
+  nst->textframes = *NANO_INTEGER(textframes) != 0;
   nst->tls = NULL;
   nng_url *up;
   nng_aio *aiop;
-  int xc, frames = 0;
+  int xc;
   SEXP sl, klass;
 
   if ((xc = nng_url_parse(&up, add)))
@@ -475,8 +463,7 @@ SEXP rnng_stream_listen(SEXP url, SEXP textframes, SEXP tls) {
     goto exitlevel2;
 
   if (!strcmp(up->u_scheme, "ws") || !strcmp(up->u_scheme, "wss")) {
-    frames = *NANO_INTEGER(textframes);
-    if (frames &&
+    if (nst->textframes &&
         ((xc = nng_stream_listener_set_bool(nst->endpoint.list, "ws:recv-text", 1)) ||
         (xc = nng_stream_listener_set_bool(nst->endpoint.list, "ws:send-text", 1))))
       goto exitlevel3;
@@ -521,10 +508,9 @@ SEXP rnng_stream_listen(SEXP url, SEXP textframes, SEXP tls) {
 
   PROTECT(sl = R_MakeExternalPtr(nst, nano_StreamSymbol, R_NilValue));
   R_RegisterCFinalizerEx(sl, stream_finalizer, TRUE);
-  Rf_setAttrib(sl, R_ModeSymbol, Rf_mkString("listener"));
+  Rf_setAttrib(sl, R_ModeSymbol, Rf_mkString(nst->textframes ? "listener text frames" : "listener"));
   Rf_setAttrib(sl, nano_StateSymbol, Rf_mkString("opened"));
   Rf_setAttrib(sl, nano_UrlSymbol, url);
-  Rf_setAttrib(sl, nano_TextframesSymbol, Rf_ScalarLogical(frames));
 
   klass = Rf_allocVector(STRSXP, 2);
   Rf_classgets(sl, klass);

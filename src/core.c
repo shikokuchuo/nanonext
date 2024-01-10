@@ -16,6 +16,7 @@
 
 // nanonext - C level - Core Functions -----------------------------------------
 
+#define NANONEXT_SUPPLEMENTALS
 #include "nanonext.h"
 
 // internals -------------------------------------------------------------------
@@ -566,6 +567,28 @@ static void context_finalizer(SEXP xptr) {
 
 }
 
+void dialer_finalizer(SEXP xptr) {
+
+  if (R_ExternalPtrAddr(xptr) == NULL) return;
+  nano_dialer *xp = (nano_dialer *) R_ExternalPtrAddr(xptr);
+  nng_dialer_close(xp->dial);
+  if (xp->tls != NULL)
+    nng_tls_config_free(xp->tls);
+  R_Free(xp);
+
+}
+
+void listener_finalizer(SEXP xptr) {
+
+  if (R_ExternalPtrAddr(xptr) == NULL) return;
+  nano_listener *xp = (nano_listener *) R_ExternalPtrAddr(xptr);
+  nng_listener_close(xp->list);
+  if (xp->tls != NULL)
+    nng_tls_config_free(xp->tls);
+  R_Free(xp);
+
+}
+
 // contexts --------------------------------------------------------------------
 
 SEXP rnng_ctx_open(SEXP socket) {
@@ -635,6 +658,224 @@ SEXP rnng_ctx_close(SEXP context) {
     ERROR_RET(xc);
 
   Rf_setAttrib(context, nano_StateSymbol, Rf_mkString("closed"));
+  return nano_success;
+
+}
+
+// dialers and listeners -------------------------------------------------------
+
+SEXP rnng_dial(SEXP socket, SEXP url, SEXP tls, SEXP autostart, SEXP error) {
+
+  if (R_ExternalPtrTag(socket) != nano_SocketSymbol)
+    Rf_error("'socket' is not a valid Socket");
+
+  const uint8_t sec = tls != R_NilValue;
+
+  if (sec && R_ExternalPtrTag(tls) != nano_TlsSymbol)
+    Rf_error("'tls' is not a valid TLS Configuration");
+
+  nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(socket);
+  const int start = *NANO_INTEGER(autostart);
+  const char *ur = CHAR(STRING_ELT(url, 0));
+  nano_dialer *dp = R_Calloc(1, nano_dialer);
+  SEXP dialer, klass, attr, newattr;
+  nng_url *up;
+  int xc;
+
+  if (sec) {
+    if ((xc = nng_dialer_create(&dp->dial, *sock, ur)))
+      goto exitlevel1;
+    dp->tls = (nng_tls_config *) R_ExternalPtrAddr(tls);
+    nng_tls_config_hold(dp->tls);
+    if ((xc = nng_url_parse(&up, ur)))
+      goto exitlevel2;
+    if ((xc = nng_tls_config_server_name(dp->tls, up->u_hostname)) ||
+        (xc = nng_dialer_set_ptr(dp->dial, NNG_OPT_TLS_CONFIG, dp->tls)))
+      goto exitlevel3;
+    nng_url_free(up);
+  }
+
+  switch (start) {
+  case 0:
+    xc = sec ? 0 : nng_dialer_create(&dp->dial, *sock, ur);
+    break;
+  case 1:
+    xc = sec ? nng_dialer_start(dp->dial, NNG_FLAG_NONBLOCK) : nng_dial(*sock, ur, &dp->dial, NNG_FLAG_NONBLOCK);
+    break;
+  default:
+    xc = sec ? nng_dialer_start(dp->dial, 0) : nng_dial(*sock, ur, &dp->dial, 0);
+  }
+  if (xc)
+    goto exitlevel1;
+
+  PROTECT(dialer = R_MakeExternalPtr(dp, nano_DialerSymbol, R_NilValue));
+  R_RegisterCFinalizerEx(dialer, dialer_finalizer, TRUE);
+
+  klass = Rf_allocVector(STRSXP, 2);
+  Rf_classgets(dialer, klass);
+  SET_STRING_ELT(klass, 0, Rf_mkChar("nanoDialer"));
+  SET_STRING_ELT(klass, 1, Rf_mkChar("nano"));
+  Rf_setAttrib(dialer, nano_IdSymbol, Rf_ScalarInteger(nng_dialer_id(dp->dial)));
+  Rf_setAttrib(dialer, nano_UrlSymbol, url);
+  Rf_setAttrib(dialer, nano_StateSymbol, Rf_mkString(start ? "started" : "not started"));
+  Rf_setAttrib(dialer, nano_SocketSymbol, Rf_ScalarInteger(nng_socket_id(*sock)));
+
+  attr = Rf_getAttrib(socket, nano_DialerSymbol);
+  if (attr == R_NilValue) {
+    PROTECT(newattr = Rf_allocVector(VECSXP, 1));
+    SET_VECTOR_ELT(newattr, 0, dialer);
+  } else {
+    R_xlen_t xlen = Rf_xlength(attr);
+    PROTECT(newattr = Rf_allocVector(VECSXP, xlen + 1));
+    for (R_xlen_t i = 0; i < xlen; i++)
+      SET_VECTOR_ELT(newattr, i, VECTOR_ELT(attr, i));
+    SET_VECTOR_ELT(newattr, xlen, dialer);
+  }
+  Rf_setAttrib(socket, nano_DialerSymbol, newattr);
+
+  UNPROTECT(2);
+  return nano_success;
+
+  exitlevel3:
+    nng_url_free(up);
+  exitlevel2:
+    nng_tls_config_free(dp->tls);
+  exitlevel1:
+    R_Free(dp);
+  if (*NANO_INTEGER(error)) ERROR_OUT(xc);
+  ERROR_RET(xc);
+
+}
+
+SEXP rnng_listen(SEXP socket, SEXP url, SEXP tls, SEXP autostart, SEXP error) {
+
+  if (R_ExternalPtrTag(socket) != nano_SocketSymbol)
+    Rf_error("'socket' is not a valid Socket");
+
+  const uint8_t sec = tls != R_NilValue;
+
+  if (sec && R_ExternalPtrTag(tls) != nano_TlsSymbol)
+    Rf_error("'tls' is not a valid TLS Configuration");
+
+  nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(socket);
+  const int start = *NANO_INTEGER(autostart);
+  const char *ur = CHAR(STRING_ELT(url, 0));
+  nano_listener *lp = R_Calloc(1, nano_listener);
+  SEXP listener, klass, attr, newattr;
+  nng_url *up;
+  int xc;
+
+  if (sec) {
+    if ((xc = nng_listener_create(&lp->list, *sock, ur)))
+      goto exitlevel1;
+    lp->tls = (nng_tls_config *) R_ExternalPtrAddr(tls);
+    nng_tls_config_hold(lp->tls);
+    if ((xc = nng_url_parse(&up, ur)))
+      goto exitlevel2;
+    if ((xc = nng_tls_config_server_name(lp->tls, up->u_hostname)) ||
+        (xc = nng_listener_set_ptr(lp->list, NNG_OPT_TLS_CONFIG, lp->tls)))
+      goto exitlevel3;
+    nng_url_free(up);
+  }
+
+  if (start) {
+    xc = sec ? nng_listener_start(lp->list, 0) : nng_listen(*sock, ur, &lp->list, 0);
+  } else {
+    xc = sec ? 0 : nng_listener_create(&lp->list, *sock, ur);
+  }
+  if (xc)
+    goto exitlevel1;
+
+  PROTECT(listener = R_MakeExternalPtr(lp, nano_ListenerSymbol, R_NilValue));
+  R_RegisterCFinalizerEx(listener, listener_finalizer, TRUE);
+
+  klass = Rf_allocVector(STRSXP, 2);
+  Rf_classgets(listener, klass);
+  SET_STRING_ELT(klass, 0, Rf_mkChar("nanoListener"));
+  SET_STRING_ELT(klass, 1, Rf_mkChar("nano"));
+  Rf_setAttrib(listener, nano_IdSymbol, Rf_ScalarInteger(nng_listener_id(lp->list)));
+  Rf_setAttrib(listener, nano_UrlSymbol, url);
+  Rf_setAttrib(listener, nano_StateSymbol, Rf_mkString(start ? "started" : "not started"));
+  Rf_setAttrib(listener, nano_SocketSymbol, Rf_ScalarInteger(nng_socket_id(*sock)));
+
+  attr = Rf_getAttrib(socket, nano_ListenerSymbol);
+  if (attr == R_NilValue) {
+    PROTECT(newattr = Rf_allocVector(VECSXP, 1));
+    SET_VECTOR_ELT(newattr, 0, listener);
+  } else {
+    R_xlen_t xlen = Rf_xlength(attr);
+    PROTECT(newattr = Rf_allocVector(VECSXP, xlen + 1));
+    for (R_xlen_t i = 0; i < xlen; i++)
+      SET_VECTOR_ELT(newattr, i, VECTOR_ELT(attr, i));
+    SET_VECTOR_ELT(newattr, xlen, listener);
+  }
+  Rf_setAttrib(socket, nano_ListenerSymbol, newattr);
+
+  UNPROTECT(2);
+  return nano_success;
+
+  exitlevel3:
+    nng_url_free(up);
+  exitlevel2:
+    nng_tls_config_free(lp->tls);
+  exitlevel1:
+    R_Free(lp);
+  if (*NANO_INTEGER(error)) ERROR_OUT(xc);
+  ERROR_RET(xc);
+
+}
+
+SEXP rnng_dialer_start(SEXP dialer, SEXP async) {
+
+  if (R_ExternalPtrTag(dialer) != nano_DialerSymbol)
+    Rf_error("'dialer' is not a valid Dialer");
+  nng_dialer *dial = (nng_dialer *) R_ExternalPtrAddr(dialer);
+  const int flags = (*NANO_INTEGER(async) == 1) * NNG_FLAG_NONBLOCK;
+  const int xc = nng_dialer_start(*dial, flags);
+  if (xc)
+    ERROR_RET(xc);
+
+  Rf_setAttrib(dialer, nano_StateSymbol, Rf_mkString("started"));
+  return nano_success;
+
+}
+
+SEXP rnng_listener_start(SEXP listener) {
+
+  if (R_ExternalPtrTag(listener) != nano_ListenerSymbol)
+    Rf_error("'listener' is not a valid Listener");
+  nng_listener *list = (nng_listener *) R_ExternalPtrAddr(listener);
+  const int xc = nng_listener_start(*list, 0);
+  if (xc)
+    ERROR_RET(xc);
+
+  Rf_setAttrib(listener, nano_StateSymbol, Rf_mkString("started"));
+  return nano_success;
+
+}
+
+SEXP rnng_dialer_close(SEXP dialer) {
+
+  if (R_ExternalPtrTag(dialer) != nano_DialerSymbol)
+    Rf_error("'dialer' is not a valid Dialer");
+  nng_dialer *dial = (nng_dialer *) R_ExternalPtrAddr(dialer);
+  const int xc = nng_dialer_close(*dial);
+  if (xc)
+    ERROR_RET(xc);
+  Rf_setAttrib(dialer, nano_StateSymbol, Rf_mkString("closed"));
+  return nano_success;
+
+}
+
+SEXP rnng_listener_close(SEXP listener) {
+
+  if (R_ExternalPtrTag(listener) != nano_ListenerSymbol)
+    Rf_error("'listener' is not a valid Listener");
+  nng_listener *list = (nng_listener *) R_ExternalPtrAddr(listener);
+  const int xc = nng_listener_close(*list);
+  if (xc)
+    ERROR_RET(xc);
+  Rf_setAttrib(listener, nano_StateSymbol, Rf_mkString("closed"));
   return nano_success;
 
 }
@@ -770,15 +1011,14 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
 
   } else if (ptrtag == nano_StreamSymbol) {
 
-    const int frames = *NANO_INTEGER(Rf_getAttrib(con, nano_TextframesSymbol));
-
     nano_encode(&buf, data);
 
-    nng_stream **sp = (nng_stream **) R_ExternalPtrAddr(con);
+    nano_stream *nst = (nano_stream *) R_ExternalPtrAddr(con);
+    nng_stream *sp = nst->stream;
     nng_aio *aiop;
     nng_iov iov;
 
-    iov.iov_len = buf.cur - (frames == 1);
+    iov.iov_len = buf.cur - nst->textframes;
     iov.iov_buf = buf.buf;
 
     if ((xc = nng_aio_alloc(&aiop, NULL, NULL)))
@@ -790,7 +1030,7 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
     }
 
     nng_aio_set_timeout(aiop, flags ? flags : (*NANO_INTEGER(block) == 1) * NNG_DURATION_DEFAULT);
-    nng_stream_send(*sp, aiop);
+    nng_stream_send(sp, aiop);
     nng_aio_wait(aiop);
     xc = nng_aio_result(aiop);
     nng_aio_free(aiop);

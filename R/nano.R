@@ -321,8 +321,8 @@ print.nanoListener <- function(x, ...) {
 #'
 print.nanoStream <- function(x, ...) {
 
-  cat(sprintf("< nanoStream >\n - mode: %s\n - state: %s\n - url: %s\n - textframes: %s\n",
-              attr(x, "mode"), attr(x, "state"), attr(x, "url"), attr(x, "textframes")), file = stdout())
+  cat(sprintf("< nanoStream >\n - mode: %s\n - state: %s\n - url: %s\n",
+              attr(x, "mode"), attr(x, "state"), attr(x, "url")), file = stdout())
   invisible(x)
 
 }
