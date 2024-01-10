@@ -1,4 +1,6 @@
-# nanonext 0.11.0.9013 (development)
+# nanonext 0.12.0
+
+*This is a major performance and stability release bundling the 'libnng' v1.7.0 source code.*
 
 #### New Features
 
