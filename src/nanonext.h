@@ -1,4 +1,4 @@
-// Copyright (C) 2022-2023 Hibiki AI Limited <info@hibiki-ai.com>
+// Copyright (C) 2022-2024 Hibiki AI Limited <info@hibiki-ai.com>
 //
 // This file is part of nanonext.
 //
@@ -113,6 +113,14 @@ typedef struct nano_cv_s {
 #include <mbedtls/sha256.h>
 #include <mbedtls/sha512.h>
 #include <mbedtls/version.h>
+
+#define NANO_SHLEN 23
+#define SHA1_KEY_SIZE 20
+#define SHA224_KEY_SIZE 28
+#define SHA256_KEY_SIZE 32
+#define SHA384_KEY_SIZE 48
+#define SHA512_KEY_SIZE 64
+
 #endif
 
 #ifdef NANONEXT_MBED
@@ -169,17 +177,16 @@ typedef struct nano_buf_s {
 
 SEXP mk_error(const int);
 SEXP mk_error_ncurl(const int);
-SEXP nano_decode(unsigned char *, size_t, const int);
-void nano_encode(nano_buf *, SEXP);
-int nano_encodes(SEXP);
-int nano_matcharg(SEXP);
-int nano_matchargs(SEXP);
-void nano_serialize(nano_buf *, SEXP);
-void nano_serialize_next(nano_buf *, SEXP);
-void nano_serialize_xdr(nano_buf *, SEXP);
+SEXP nano_decode(unsigned char *, const size_t, const int);
+void nano_encode(nano_buf *, const SEXP);
+int nano_encodes(const SEXP);
+int nano_matcharg(const SEXP);
+int nano_matchargs(const SEXP);
+void nano_serialize(nano_buf *, const SEXP);
+void nano_serialize_next(nano_buf *, const SEXP);
+void nano_serialize_xdr(nano_buf *, const SEXP);
 SEXP nano_unserialize(unsigned char *, const size_t);
-SEXP nano_hashToChar(unsigned char *, const size_t);
-SEXP rawToChar(unsigned char *, const size_t);
+SEXP rawToChar(const unsigned char *, const size_t);
 void dialer_finalizer(SEXP);
 void listener_finalizer(SEXP);
 void socket_finalizer(SEXP);

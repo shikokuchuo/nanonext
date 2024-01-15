@@ -23,7 +23,7 @@
 static int parse_serial_decimal_format(unsigned char *obuf, size_t obufmax,
                                        const char *ibuf, size_t *len) {
 
-  unsigned long long int dec;
+  unsigned long long dec;
   unsigned int remaining_bytes = sizeof(dec);
   unsigned char *p = obuf;
   unsigned char val;

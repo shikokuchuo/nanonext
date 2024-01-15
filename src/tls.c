@@ -1,4 +1,4 @@
-// Copyright (C) 2022-2023 Hibiki AI Limited <info@hibiki-ai.com>
+// Copyright (C) 2022-2024 Hibiki AI Limited <info@hibiki-ai.com>
 //
 // This file is part of nanonext.
 //
@@ -17,6 +17,7 @@
 // nanonext - C level - Mbed TLS Functions -------------------------------------
 
 #define NANONEXT_TLS
+#define NANONEXT_MBED
 #include "nanonext.h"
 
 // utils -----------------------------------------------------------------------
@@ -37,7 +38,7 @@ SEXP rnng_version(void) {
 
 // Statics ---------------------------------------------------------------------
 
-static nano_buf nano_anytobuf(SEXP x) {
+static nano_buf nano_anytobuf(const SEXP x, const int strip) {
 
   nano_buf hash;
 
@@ -57,12 +58,16 @@ static nano_buf nano_anytobuf(SEXP x) {
   }
 
   nano_serialize_xdr(&hash, x);
+  if (strip) {
+    hash.cur = hash.cur - NANO_SHLEN;
+    memmove(hash.buf, hash.buf + NANO_SHLEN, hash.cur);
+  }
 
   return hash;
 
 }
 
-SEXP nano_hashToChar(unsigned char *buf, const size_t sz) {
+static SEXP nano_hashToChar(unsigned char *buf, const size_t sz) {
 
   SEXP out;
   char cbuf[sz + sz + 1];
@@ -81,12 +86,6 @@ SEXP nano_hashToChar(unsigned char *buf, const size_t sz) {
 
 // SHA-1 and SHA-2 Cryptographic Hash Algorithms -------------------------------
 
-#define SHA1_KEY_SIZE 20
-#define SHA224_KEY_SIZE 28
-#define SHA256_KEY_SIZE 32
-#define SHA384_KEY_SIZE 48
-#define SHA512_KEY_SIZE 64
-
 SEXP rnng_sha224(SEXP x, SEXP key, SEXP convert) {
 
   SEXP out;
@@ -97,7 +96,7 @@ SEXP rnng_sha224(SEXP x, SEXP key, SEXP convert) {
   unsigned char output[SHA256_KEY_SIZE];
 #endif
 
-  nano_buf xhash = nano_anytobuf(x);
+  nano_buf xhash = nano_anytobuf(x, 1);
 
   if (key == R_NilValue) {
 
@@ -108,7 +107,7 @@ SEXP rnng_sha224(SEXP x, SEXP key, SEXP convert) {
 #endif
   } else {
 
-    nano_buf khash = nano_anytobuf(key);
+    nano_buf khash = nano_anytobuf(key, 1);
     xc = mbedtls_md_hmac(mbedtls_md_info_from_type(MBEDTLS_MD_SHA224),
                          khash.buf, khash.cur, xhash.buf, xhash.cur, output);
     NANO_FREE(khash);
@@ -136,7 +135,7 @@ SEXP rnng_sha256(SEXP x, SEXP key, SEXP convert) {
   int xc = 0;
   unsigned char output[SHA256_KEY_SIZE];
 
-  nano_buf xhash = nano_anytobuf(x);
+  nano_buf xhash = nano_anytobuf(x, 1);
 
   if (key == R_NilValue) {
 
@@ -148,7 +147,7 @@ SEXP rnng_sha256(SEXP x, SEXP key, SEXP convert) {
 
   } else {
 
-    nano_buf khash = nano_anytobuf(key);
+    nano_buf khash = nano_anytobuf(key, 1);
     xc = mbedtls_md_hmac(mbedtls_md_info_from_type(MBEDTLS_MD_SHA256),
                          khash.buf, khash.cur, xhash.buf, xhash.cur, output);
     NANO_FREE(khash);
@@ -180,7 +179,7 @@ SEXP rnng_sha384(SEXP x, SEXP key, SEXP convert) {
   unsigned char output[SHA512_KEY_SIZE];
 #endif
 
-  nano_buf xhash = nano_anytobuf(x);
+  nano_buf xhash = nano_anytobuf(x, 1);
 
   if (key == R_NilValue) {
 
@@ -192,7 +191,7 @@ SEXP rnng_sha384(SEXP x, SEXP key, SEXP convert) {
 
   } else {
 
-    nano_buf khash = nano_anytobuf(key);
+    nano_buf khash = nano_anytobuf(key, 1);
     xc = mbedtls_md_hmac(mbedtls_md_info_from_type(MBEDTLS_MD_SHA384),
                          khash.buf, khash.cur, xhash.buf, xhash.cur, output);
     NANO_FREE(khash);
@@ -220,7 +219,7 @@ SEXP rnng_sha512(SEXP x, SEXP key, SEXP convert) {
   int xc = 0;
   unsigned char output[SHA512_KEY_SIZE];
 
-  nano_buf xhash = nano_anytobuf(x);
+  nano_buf xhash = nano_anytobuf(x, 1);
 
   if (key == R_NilValue) {
 
@@ -232,7 +231,7 @@ SEXP rnng_sha512(SEXP x, SEXP key, SEXP convert) {
 
   } else {
 
-    nano_buf khash = nano_anytobuf(key);
+    nano_buf khash = nano_anytobuf(key, 1);
     xc = mbedtls_md_hmac(mbedtls_md_info_from_type(MBEDTLS_MD_SHA512),
                          khash.buf, khash.cur, xhash.buf, xhash.cur, output);
     NANO_FREE(khash);
@@ -260,7 +259,7 @@ SEXP rnng_sha1(SEXP x, SEXP key, SEXP convert) {
   int xc = 0;
   unsigned char output[SHA1_KEY_SIZE];
 
-  nano_buf xhash = nano_anytobuf(x);
+  nano_buf xhash = nano_anytobuf(x, 1);
 
   if (key == R_NilValue) {
 
@@ -272,7 +271,7 @@ SEXP rnng_sha1(SEXP x, SEXP key, SEXP convert) {
 
   } else {
 
-    nano_buf khash = nano_anytobuf(key);
+    nano_buf khash = nano_anytobuf(key, 1);
     xc = mbedtls_md_hmac(mbedtls_md_info_from_type(MBEDTLS_MD_SHA1),
                          khash.buf, khash.cur, xhash.buf, xhash.cur, output);
     NANO_FREE(khash);
@@ -302,7 +301,7 @@ SEXP rnng_base64enc(SEXP x, SEXP convert) {
   int xc;
   size_t olen;
 
-  nano_buf hash = nano_anytobuf(x);
+  nano_buf hash = nano_anytobuf(x, 0);
   xc = mbedtls_base64_encode(NULL, 0, &olen, hash.buf, hash.cur);
   unsigned char *buf = R_Calloc(olen, unsigned char);
   xc = mbedtls_base64_encode(buf, olen, &olen, hash.buf, hash.cur);
@@ -368,6 +367,54 @@ SEXP rnng_base64dec(SEXP x, SEXP convert) {
   }
 
   R_Free(buf);
+
+  return out;
+
+}
+
+// Mbed TLS Random Data Generator ----------------------------------------------
+
+SEXP rnng_random(SEXP n, SEXP convert) {
+
+  int sz, xc;
+  switch (TYPEOF(n)) {
+  case INTSXP:
+  case LGLSXP:
+    sz = INTEGER(n)[0];
+    if (sz >= 0 && sz <= 1024) break;
+  case REALSXP:
+    sz = Rf_asInteger(n);
+    if (sz >= 0 && sz <= 1024) break;
+  default:
+    Rf_error("'n' must be an integer between 0 and 1024 or coercible to such");
+  }
+
+  SEXP out;
+  unsigned char buf[sz];
+  mbedtls_entropy_context entropy;
+  mbedtls_ctr_drbg_context ctr_drbg;
+  const char *pers = "r-nanonext-rng";
+
+  mbedtls_entropy_init(&entropy);
+  mbedtls_ctr_drbg_init(&ctr_drbg);
+
+  xc = mbedtls_ctr_drbg_seed(&ctr_drbg, mbedtls_entropy_func, &entropy, (const unsigned char *) pers, strlen(pers));
+  if (xc == 0) {
+    xc = mbedtls_ctr_drbg_random(&ctr_drbg, buf, sz);
+  }
+
+  mbedtls_ctr_drbg_free(&ctr_drbg);
+  mbedtls_entropy_free(&entropy);
+
+  if (xc)
+    Rf_error("error generating random bytes");
+
+  if (*NANO_INTEGER(convert)) {
+    out = nano_hashToChar(buf, sz);
+  } else {
+    out = Rf_allocVector(RAWSXP, sz);
+    memcpy(STDVEC_DATAPTR(out), buf, sz);
+  }
 
   return out;
 

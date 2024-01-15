@@ -19,7 +19,6 @@
 #define NANONEXT_PROTOCOLS
 #define NANONEXT_HTTP
 #define NANONEXT_SUPPLEMENTALS
-#define NANONEXT_MBED
 #include "nanonext.h"
 
 // internals -------------------------------------------------------------------
@@ -701,53 +700,5 @@ SEXP rnng_tls_config(SEXP client, SEXP server, SEXP pass, SEXP auth) {
     nng_tls_config_free(cfg);
   exitlevel1:
     ERROR_OUT(xc);
-
-}
-
-// Mbed TLS Random Data Generator ----------------------------------------------
-
-SEXP rnng_random(SEXP n, SEXP convert) {
-
-  int sz, xc;
-  switch (TYPEOF(n)) {
-  case INTSXP:
-  case LGLSXP:
-    sz = INTEGER(n)[0];
-    if (sz >= 0 && sz <= 1024) break;
-  case REALSXP:
-    sz = Rf_asInteger(n);
-    if (sz >= 0 && sz <= 1024) break;
-  default:
-    Rf_error("'n' must be an integer between 0 and 1024 or coercible to such");
-  }
-
-  SEXP out;
-  unsigned char buf[sz];
-  mbedtls_entropy_context entropy;
-  mbedtls_ctr_drbg_context ctr_drbg;
-  const char *pers = "r-nanonext-rng";
-
-  mbedtls_entropy_init(&entropy);
-  mbedtls_ctr_drbg_init(&ctr_drbg);
-
-  xc = mbedtls_ctr_drbg_seed(&ctr_drbg, mbedtls_entropy_func, &entropy, (const unsigned char *) pers, strlen(pers));
-  if (xc == 0) {
-    xc = mbedtls_ctr_drbg_random(&ctr_drbg, buf, sz);
-  }
-
-  mbedtls_ctr_drbg_free(&ctr_drbg);
-  mbedtls_entropy_free(&entropy);
-
-  if (xc)
-    Rf_error("error generating random bytes");
-
-  if (*NANO_INTEGER(convert)) {
-    out = nano_hashToChar(buf, sz);
-  } else {
-    out = Rf_allocVector(RAWSXP, sz);
-    memcpy(STDVEC_DATAPTR(out), buf, sz);
-  }
-
-  return out;
 
 }

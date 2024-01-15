@@ -1,3 +1,10 @@
+# nanonext 0.12.0.9000 (development)
+
+#### Updates
+
+* SHA functions now strip the serialization header from serialized R objects prior to hashing. This ensures portability across different R installations (as the R version is written into the header), but could produce different hashes to those obtained using prior versions of this package.
+* `messenger()` specifying 'auth' now works reliably on endpoints using different R versions/platforms due to the above hashing portability fix.
+
 # nanonext 0.12.0
 
 *This is a major performance and stability release bundling the 'libnng' v1.7.0 source code.*

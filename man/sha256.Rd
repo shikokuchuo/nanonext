@@ -34,12 +34,14 @@ Returns a SHA-256, SHA-224, SHA-384, or SHA-512 hash or HMAC of the supplied
 }
 \details{
 For arguments 'x' and 'key', a scalar string or raw vector (with no
-    attributes) is hashed directly, whilst all other objects are first
-    serialised (using R serialisation version 3, big-endian representation).
+    attributes) is hashed directly. All other objects are first serialised
+    using R serialisation version 3, big-endian representation, with the
+    serialization header stripped (for portability across R installations as
+    this contains the R version number).
 
-    The result of hashing is always a raw vector, which is translated to a
-    character string if 'convert' is TRUE, or returned directly if 'convert'
-    is FALSE.
+    The result of hashing is always a byte sequence, which is converted to a
+    character string hex representation if 'convert' is TRUE, or returned as
+    a raw vector if 'convert' is FALSE.
 }
 \examples{
 # SHA-256 hash as character string:

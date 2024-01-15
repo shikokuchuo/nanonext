@@ -121,7 +121,7 @@ static SEXP rawOneString(unsigned char *bytes, R_xlen_t nbytes, R_xlen_t *np) {
 
 }
 
-SEXP rawToChar(unsigned char *buf, const size_t sz) {
+SEXP rawToChar(const unsigned char *buf, const size_t sz) {
 
   SEXP out;
   int i, j;
@@ -158,7 +158,7 @@ static SEXP nano_inHook(SEXP x, SEXP fun) {
     SET_VECTOR_ELT(list, xlen, x);
   }
   char idx[NANONEXT_LD_STRLEN];
-  snprintf(idx, NANONEXT_LD_STRLEN, "%ld", (long int) xlen + 1);
+  snprintf(idx, NANONEXT_LD_STRLEN, "%ld", (long) xlen + 1);
   PROTECT(out = Rf_mkChar(idx));
   if (xlen == 0) {
     PROTECT(names = Rf_ScalarString(out));
@@ -176,13 +176,13 @@ static SEXP nano_inHook(SEXP x, SEXP fun) {
 
 static SEXP nano_outHook(SEXP x, SEXP fun) {
 
-  const long int i = atol(CHAR(*(SEXP *) STDVEC_DATAPTR(x))) - 1;
+  const long i = atol(CHAR(*(SEXP *) STDVEC_DATAPTR(x))) - 1;
 
   return VECTOR_ELT(fun, i);
 
 }
 
-void nano_serialize(nano_buf *buf, SEXP object) {
+void nano_serialize(nano_buf *buf, const SEXP object) {
 
   NANO_ALLOC(buf, NANONEXT_INIT_BUFSIZE);
 
@@ -207,7 +207,7 @@ void nano_serialize(nano_buf *buf, SEXP object) {
 
 }
 
-void nano_serialize_next(nano_buf *buf, SEXP object) {
+void nano_serialize_next(nano_buf *buf, const SEXP object) {
 
   NANO_ALLOC(buf, NANONEXT_INIT_BUFSIZE);
   buf->buf[0] = 7u;
@@ -256,7 +256,7 @@ void nano_serialize_next(nano_buf *buf, SEXP object) {
 
 }
 
-void nano_serialize_xdr(nano_buf *buf, SEXP object) {
+void nano_serialize_xdr(nano_buf *buf, const SEXP object) {
 
   NANO_ALLOC(buf, NANONEXT_INIT_BUFSIZE);
   struct R_outpstream_st output_stream;
@@ -338,7 +338,7 @@ SEXP nano_unserialize(unsigned char *buf, const size_t sz) {
 
 }
 
-void nano_encode(nano_buf *enc, SEXP object) {
+void nano_encode(nano_buf *enc, const SEXP object) {
 
   switch (TYPEOF(object)) {
   case STRSXP: ;
@@ -383,7 +383,7 @@ void nano_encode(nano_buf *enc, SEXP object) {
 
 }
 
-int nano_encodes(SEXP mode) {
+int nano_encodes(const SEXP mode) {
 
   if (TYPEOF(mode) != INTSXP) {
     const char *mod = CHAR(STRING_ELT(mode, 0));
@@ -407,7 +407,7 @@ int nano_encodes(SEXP mode) {
 
 }
 
-int nano_matcharg(SEXP mode) {
+int nano_matcharg(const SEXP mode) {
 
   if (TYPEOF(mode) != INTSXP) {
     const char *mod = CHAR(STRING_ELT(mode, 0));
@@ -442,7 +442,7 @@ int nano_matcharg(SEXP mode) {
 
 }
 
-int nano_matchargs(SEXP mode) {
+int nano_matchargs(const SEXP mode) {
 
   if (TYPEOF(mode) != INTSXP) {
     const char *mod = XLENGTH(mode) == 9 ? CHAR(STRING_ELT(mode, 1)) : CHAR(STRING_ELT(mode, 0));
@@ -476,7 +476,7 @@ int nano_matchargs(SEXP mode) {
 
 }
 
-SEXP nano_decode(unsigned char *buf, size_t sz, const int mod) {
+SEXP nano_decode(unsigned char *buf, const size_t sz, const int mod) {
 
   SEXP data;
   size_t size;
