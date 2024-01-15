@@ -721,16 +721,11 @@ SEXP rnng_dial(SEXP socket, SEXP url, SEXP tls, SEXP autostart, SEXP error) {
   Rf_setAttrib(dialer, nano_SocketSymbol, Rf_ScalarInteger(nng_socket_id(*sock)));
 
   attr = Rf_getAttrib(socket, nano_DialerSymbol);
-  if (attr == R_NilValue) {
-    PROTECT(newattr = Rf_allocVector(VECSXP, 1));
-    SET_VECTOR_ELT(newattr, 0, dialer);
-  } else {
-    R_xlen_t xlen = Rf_xlength(attr);
-    PROTECT(newattr = Rf_allocVector(VECSXP, xlen + 1));
-    for (R_xlen_t i = 0; i < xlen; i++)
-      SET_VECTOR_ELT(newattr, i, VECTOR_ELT(attr, i));
-    SET_VECTOR_ELT(newattr, xlen, dialer);
-  }
+  R_xlen_t xlen = Rf_xlength(attr);
+  PROTECT(newattr = Rf_allocVector(VECSXP, xlen + 1));
+  for (R_xlen_t i = 0; i < xlen; i++)
+    SET_VECTOR_ELT(newattr, i, VECTOR_ELT(attr, i));
+  SET_VECTOR_ELT(newattr, xlen, dialer);
   Rf_setAttrib(socket, nano_DialerSymbol, newattr);
 
   UNPROTECT(2);
@@ -799,16 +794,11 @@ SEXP rnng_listen(SEXP socket, SEXP url, SEXP tls, SEXP autostart, SEXP error) {
   Rf_setAttrib(listener, nano_SocketSymbol, Rf_ScalarInteger(nng_socket_id(*sock)));
 
   attr = Rf_getAttrib(socket, nano_ListenerSymbol);
-  if (attr == R_NilValue) {
-    PROTECT(newattr = Rf_allocVector(VECSXP, 1));
-    SET_VECTOR_ELT(newattr, 0, listener);
-  } else {
-    R_xlen_t xlen = Rf_xlength(attr);
-    PROTECT(newattr = Rf_allocVector(VECSXP, xlen + 1));
-    for (R_xlen_t i = 0; i < xlen; i++)
-      SET_VECTOR_ELT(newattr, i, VECTOR_ELT(attr, i));
-    SET_VECTOR_ELT(newattr, xlen, listener);
-  }
+  R_xlen_t xlen = Rf_xlength(attr);
+  PROTECT(newattr = Rf_allocVector(VECSXP, xlen + 1));
+  for (R_xlen_t i = 0; i < xlen; i++)
+    SET_VECTOR_ELT(newattr, i, VECTOR_ELT(attr, i));
+  SET_VECTOR_ELT(newattr, xlen, listener);
   Rf_setAttrib(socket, nano_ListenerSymbol, newattr);
 
   UNPROTECT(2);
