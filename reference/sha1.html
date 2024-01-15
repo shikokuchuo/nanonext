@@ -20,7 +20,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.12.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.12.0.9000</span>
       </span>
     </div>
 
@@ -97,11 +97,13 @@ a character string or keep as a raw vector.</p></dd>
     <div id="details">
     <h2>Details</h2>
     <p>For arguments 'x' and 'key', a scalar string or raw vector (with no
-    attributes) is hashed directly, whilst all other objects are first
-    serialised (using R serialisation version 3, big-endian representation).</p>
-<p>The result of hashing is always a raw vector, which is translated to a
-    character string if 'convert' is TRUE, or returned directly if 'convert'
-    is FALSE.</p>
+    attributes) is hashed directly. All other objects are first serialised
+    using R serialisation version 3, big-endian representation, with the
+    serialization header stripped (for portability across R installations as
+    this contains the R version number).</p>
+<p>The result of hashing is always a byte sequence, which is converted to a
+    character string hex representation if 'convert' is TRUE, or returned as
+    a raw vector if 'convert' is FALSE.</p>
     </div>
 
     <div id="ref-examples">
