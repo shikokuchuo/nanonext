@@ -99,10 +99,9 @@ non-text data.</p></dd>
 
 
 <dt>headers</dt>
-<dd><p>(optional) a named list or character vector specifying the
-HTTP request headers e.g. <code>list(`Content-Type` = "text/plain")</code> or
-<code>c(Authorization = "Bearer APIKEY")</code>. Supplying a non-named list or
-vector will error.</p></dd>
+<dd><p>(optional) a named character vector specifying the HTTP
+request headers, for example: <br><code>c(Authorization = "Bearer APIKEY", `Content-Type` = "text/plain")</code>
+<br> A non-character or non-named vector will be ignored.</p></dd>
 
 
 <dt>data</dt>
@@ -110,9 +109,9 @@ vector will error.</p></dd>
 
 
 <dt>response</dt>
-<dd><p>(optional) a character vector or list specifying the response
-headers to return e.g. <code>c("date", "server")</code> or <code>list("Date", "Server")</code>.
-These are case-insensitive and will return NULL if not present.</p></dd>
+<dd><p>(optional) a character vector specifying the response headers
+to return e.g. <code>c("date", "server")</code>. These are case-insensitive and
+will return NULL if not present. A non-character vector will be ignored.</p></dd>
 
 
 <dt>timeout</dt>
@@ -167,7 +166,7 @@ NULL, certificates are not validated.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $headers</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $headers$date</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Mon, 15 Jan 2024 11:49:33 GMT"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Mon, 15 Jan 2024 15:27:39 GMT"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $data</span>

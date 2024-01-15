@@ -60,7 +60,9 @@
 <h2 class="page-header" data-toc-text="0.12.0.9000" id="nanonext-01209000-development">nanonext 0.12.0.9000 (development)<a class="anchor" aria-label="anchor" href="#nanonext-01209000-development"></a></h2>
 <div class="section level5">
 <h5 id="updates-0-12-0-9000">Updates<a class="anchor" aria-label="anchor" href="#updates-0-12-0-9000"></a></h5>
-<ul><li>SHA functions now strip the serialization header from serialized R objects prior to hashing. This ensures portability across different R installations (as the R version is written into the header), but could produce different hashes to those obtained using prior versions of this package.</li>
+<ul><li>
+<code><a href="../reference/ncurl.html">ncurl()</a></code>, <code><a href="../reference/ncurl_aio.html">ncurl_aio()</a></code> and <code><a href="../reference/ncurl_session.html">ncurl_session()</a></code> now restrict ‘header’ and ‘response’ arguments to character vectors only, no longer accepting lists (for safety and performance).</li>
+<li>SHA functions now strip the serialization header from serialized R objects prior to hashing. This ensures portability across different R installations (as the R version is written into the header), but could produce different hashes to those obtained using prior versions of this package.</li>
 <li>
 <code><a href="../reference/messenger.html">messenger()</a></code> specifying ‘auth’ now works reliably on endpoints using different R versions/platforms due to the above hashing portability fix.</li>
 </ul></div>
