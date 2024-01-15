@@ -150,14 +150,16 @@ SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP follow, SEXP method, SEXP headers,
   const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) Rf_asInteger(timeout);
   if (tls != R_NilValue && R_ExternalPtrTag(tls) != nano_TlsSymbol)
     Rf_error("'tls' is not a valid TLS Configuration");
+  int chk_resp = response != R_NilValue && TYPEOF(response) == STRSXP;
+
   nng_url *url;
   nng_http_client *client;
   nng_http_req *req;
   nng_http_res *res;
   nng_aio *aio;
   nng_tls_config *cfg = NULL;
-  int xc;
-  uint16_t code, relo;
+  uint16_t code;
+  int relo, xc;
 
   if ((xc = nng_url_parse(&url, addr)))
     goto exitlevel1;
@@ -170,26 +172,16 @@ SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP follow, SEXP method, SEXP headers,
     goto exitlevel3;
   if (mthd != NULL && (xc = nng_http_req_set_method(req, mthd)))
     goto exitlevel4;
-  if (headers != R_NilValue) {
-    const R_xlen_t hlen = Rf_xlength(headers);
-    SEXP names = Rf_getAttrib(headers, R_NamesSymbol);
-    switch (TYPEOF(headers)) {
-    case STRSXP:
+  if (headers != R_NilValue && TYPEOF(headers) == STRSXP) {
+    const R_xlen_t hlen = XLENGTH(headers);
+    SEXP hnames = Rf_getAttrib(headers, R_NamesSymbol);
+    if (TYPEOF(hnames) == STRSXP && XLENGTH(hnames) == hlen) {
       for (R_xlen_t i = 0; i < hlen; i++) {
         if ((xc = nng_http_req_set_header(req,
-                                          CHAR(STRING_ELT(names, i)),
+                                          CHAR(STRING_ELT(hnames, i)),
                                           CHAR(STRING_ELT(headers, i)))))
           goto exitlevel4;
       }
-      break;
-    case VECSXP:
-      for (R_xlen_t i = 0; i < hlen; i++) {
-        if ((xc = nng_http_req_set_header(req,
-                                          CHAR(STRING_ELT(names, i)),
-                                          CHAR(STRING_ELT(VECTOR_ELT(headers, i), 0)))))
-          goto exitlevel4;
-      }
-      break;
     }
   }
   if (data != R_NilValue && TYPEOF(data) == STRSXP) {
@@ -265,43 +257,24 @@ SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP follow, SEXP method, SEXP headers,
   SET_VECTOR_ELT(out, 0, Rf_ScalarInteger(code));
 
   if (relo) {
-    const R_xlen_t rlen = Rf_xlength(response);
-    switch (TYPEOF(response)) {
-    case STRSXP:
+    if (chk_resp) {
+      const R_xlen_t rlen = XLENGTH(response);
       PROTECT(response = Rf_xlengthgets(response, rlen + 1));
       SET_STRING_ELT(response, rlen, Rf_mkChar("Location"));
-      break;
-    case VECSXP:
-      PROTECT(response = Rf_xlengthgets(response, rlen + 1));
-      SET_VECTOR_ELT(response, rlen, Rf_mkString("Location"));
-      break;
-    default:
+    } else {
       PROTECT(response = Rf_mkString("Location"));
+      chk_resp = 1;
     }
   }
 
-  if (response != R_NilValue) {
-    const R_xlen_t rlen = Rf_xlength(response);
+  if (chk_resp) {
+    const R_xlen_t rlen = XLENGTH(response);
     rvec = Rf_allocVector(VECSXP, rlen);
     SET_VECTOR_ELT(out, 1, rvec);
-    switch (TYPEOF(response)) {
-    case STRSXP:
-      Rf_namesgets(rvec, response);
-      for (R_xlen_t i = 0; i < rlen; i++) {
-        const char *r = nng_http_res_get_header(res, CHAR(STRING_ELT(response, i)));
-        SET_VECTOR_ELT(rvec, i, r == NULL ? R_NilValue : Rf_mkString(r));
-      }
-      break;
-    case VECSXP: ;
-      SEXP rnames = Rf_allocVector(STRSXP, rlen);
-      Rf_namesgets(rvec, rnames);
-      for (R_xlen_t i = 0; i < rlen; i++) {
-        SEXP rname = STRING_ELT(VECTOR_ELT(response, i), 0);
-        SET_STRING_ELT(rnames, i, rname);
-        const char *r = nng_http_res_get_header(res, CHAR(rname));
-        SET_VECTOR_ELT(rvec, i, r == NULL ? R_NilValue : Rf_mkString(r));
-      }
-      break;
+    Rf_namesgets(rvec, response);
+    for (R_xlen_t i = 0; i < rlen; i++) {
+      const char *r = nng_http_res_get_header(res, CHAR(STRING_ELT(response, i)));
+      SET_VECTOR_ELT(rvec, i, r == NULL ? R_NilValue : Rf_mkString(r));
     }
   } else {
     rvec = R_NilValue;

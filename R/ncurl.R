@@ -28,14 +28,14 @@
 #'     redirects (not applicable for async requests). If FALSE, the redirect
 #'     address is returned as response header 'Location'.
 #' @param method (optional) the HTTP method (defaults to 'GET' if not specified).
-#' @param headers (optional) a named list or character vector specifying the
-#'     HTTP request headers e.g. \code{list(`Content-Type` = "text/plain")} or
-#'     \code{c(Authorization = "Bearer APIKEY")}. Supplying a non-named list or
-#'     vector will error.
+#' @param headers (optional) a named character vector specifying the HTTP
+#'     request headers, for example: \cr
+#'     \code{c(Authorization = "Bearer APIKEY", `Content-Type` = "text/plain")}
+#'     \cr A non-character or non-named vector will be ignored.
 #' @param data (optional) character request data to be submitted.
-#' @param response (optional) a character vector or list specifying the response
-#'     headers to return e.g. \code{c("date", "server")} or \code{list("Date", "Server")}.
-#'     These are case-insensitive and will return NULL if not present.
+#' @param response (optional) a character vector specifying the response headers
+#'     to return e.g. \code{c("date", "server")}. These are case-insensitive and
+#'     will return NULL if not present. A non-character vector will be ignored.
 #' @param timeout (optional) integer value in milliseconds after which the
 #'     transaction times out if not yet complete.
 #' @param tls (optional) applicable to secure HTTPS sites only, a client TLS
@@ -65,7 +65,7 @@
 #'        timeout = 1200L)
 #' ncurl("https://postman-echo.com/put",
 #'       method = "PUT",
-#'       headers = list(Authorization = "Bearer APIKEY"),
+#'       headers = c(Authorization = "Bearer APIKEY"),
 #'       data = "hello world",
 #'       timeout = 1500L)
 #' ncurl("https://postman-echo.com/post",

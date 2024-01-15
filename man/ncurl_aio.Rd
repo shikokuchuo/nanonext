@@ -24,16 +24,16 @@ non-text data.}
 
 \item{method}{(optional) the HTTP method (defaults to 'GET' if not specified).}
 
-\item{headers}{(optional) a named list or character vector specifying the
-HTTP request headers e.g. \code{list(`Content-Type` = "text/plain")} or
-\code{c(Authorization = "Bearer APIKEY")}. Supplying a non-named list or
-vector will error.}
+\item{headers}{(optional) a named character vector specifying the HTTP
+request headers, for example: \cr
+\code{c(Authorization = "Bearer APIKEY", `Content-Type` = "text/plain")}
+\cr A non-character or non-named vector will be ignored.}
 
 \item{data}{(optional) character request data to be submitted.}
 
-\item{response}{(optional) a character vector or list specifying the response
-headers to return e.g. \code{c("date", "server")} or \code{list("Date", "Server")}.
-These are case-insensitive and will return NULL if not present.}
+\item{response}{(optional) a character vector specifying the response headers
+to return e.g. \code{c("date", "server")}. These are case-insensitive and
+will return NULL if not present. A non-character vector will be ignored.}
 
 \item{timeout}{(optional) integer value in milliseconds after which the
 transaction times out if not yet complete.}
