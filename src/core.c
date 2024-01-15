@@ -145,31 +145,30 @@ static SEXP nano_inHook(SEXP x, SEXP fun) {
 
   if (TYPEOF(x) != EXTPTRSXP)
     return fun;
-  SEXP list, names, out;
+  SEXP newlist, list, newnames, names, out;
   R_xlen_t xlen;
+
   list = TAG(nano_refHook);
-  if (list == R_NilValue) {
-    xlen = 0;
-    PROTECT(list = Rf_allocVector(VECSXP, 1));
-    SET_VECTOR_ELT(list, xlen, x);
-  } else {
-    xlen = Rf_xlength(list);
-    PROTECT(list = Rf_xlengthgets(list, xlen + 1));
-    SET_VECTOR_ELT(list, xlen, x);
-  }
+  xlen = Rf_xlength(list);
+  PROTECT(names = Rf_getAttrib(list, R_NamesSymbol));
+
   char idx[NANONEXT_LD_STRLEN];
   snprintf(idx, NANONEXT_LD_STRLEN, "%ld", (long) xlen + 1);
   PROTECT(out = Rf_mkChar(idx));
-  if (xlen == 0) {
-    PROTECT(names = Rf_ScalarString(out));
-  } else {
-    PROTECT(names = Rf_getAttrib(list, R_NamesSymbol));
-    SET_STRING_ELT(names, xlen, out);
-  }
-  Rf_namesgets(list, names);
-  SET_TAG(nano_refHook, list);
 
-  UNPROTECT(3);
+  PROTECT(newlist = Rf_allocVector(VECSXP, xlen + 1));
+  PROTECT(newnames = Rf_allocVector(STRSXP, xlen + 1));
+  for (R_xlen_t i = 0; i < xlen; i++) {
+    SET_VECTOR_ELT(newlist, i, VECTOR_ELT(list, i));
+    SET_STRING_ELT(newnames, i, STRING_ELT(names, i));
+  }
+  SET_VECTOR_ELT(newlist, xlen, x);
+  SET_STRING_ELT(newnames, xlen, out);
+
+  Rf_namesgets(newlist, newnames);
+  SET_TAG(nano_refHook, newlist);
+
+  UNPROTECT(4);
   return Rf_ScalarString(out);
 
 }
