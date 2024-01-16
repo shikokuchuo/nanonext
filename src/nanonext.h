@@ -61,7 +61,10 @@ typedef struct nano_dialer_s {
 
 typedef struct nano_stream_s {
   nng_stream *stream;
-  int listener;
+  enum {
+    NANO_STREAM_DIALER,
+    NANO_STREAM_LISTENER
+  } mode;
   int textframes;
   union {
     nng_stream_dialer *dial;

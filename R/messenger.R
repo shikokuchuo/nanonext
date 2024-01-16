@@ -1,4 +1,4 @@
-# Copyright (C) 2022-2023 Hibiki AI Limited <info@hibiki-ai.com>
+# Copyright (C) 2022-2024 Hibiki AI Limited <info@hibiki-ai.com>
 #
 # This file is part of nanonext.
 #
@@ -67,28 +67,28 @@ messenger <- function(url, auth = NULL) {
     cat("\r", `length<-`(intro, i), sep = " ", file = stdout())
     msleep(32L)
   }
-  cat(sprintf("\n| url: %s", url), file = stdout())
+  cat(sprintf("\n| url: %s\n", url), file = stdout())
 
   s <- send(sock, data = writeBin(":c ", raw()), mode = 2L, block = FALSE)
   if (s) {
     length(attr(sock, "dialer")) && {
-      cat("\n| connection error... exiting\n", file = stderr())
+      cat("| connection error... exiting\n", file = stderr())
       return(invisible())
     }
-    cat(sprintf("\n| peer offline: %s", format.POSIXct(Sys.time())), file = stderr())
+    cat(sprintf("| peer offline: %s\n", format.POSIXct(Sys.time())), file = stderr())
   } else {
-    cat(sprintf("\n| peer online: %s", format.POSIXct(Sys.time())), file = stderr())
+    cat(sprintf("| peer online: %s\n", format.POSIXct(Sys.time())), file = stderr())
     r <- recv(sock, mode = 5L, block = TRUE)
     for (i in seq_len(32L))
       lock[r[i]] == r[i + 32L] || {
-        cat("\n| authentication failed\n", file = stderr())
+        cat("| authentication failed\n", file = stderr())
         return(invisible())
       }
-    cat("\n| authenticated", file = stderr())
+    cat("| authenticated\n", file = stderr())
   }
 
   sock <- .External(rnng_messenger_thread_create, sock, key)
-  cat("\ntype your message:\n", file = stdout())
+  cat("type your message:\n", file = stdout())
 
   repeat {
     data <- readline()
