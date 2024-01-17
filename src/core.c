@@ -361,14 +361,14 @@ void nano_encode(nano_buf *enc, const SEXP object) {
     }
     break;
   case REALSXP:
-    NANO_INIT(enc, (unsigned char *) DATAPTR(object), XLENGTH(object) * sizeof(double));
+    NANO_INIT(enc, (unsigned char *) DATAPTR_RO(object), XLENGTH(object) * sizeof(double));
     break;
   case INTSXP:
   case LGLSXP:
-    NANO_INIT(enc, (unsigned char *) DATAPTR(object), XLENGTH(object) * sizeof(int));
+    NANO_INIT(enc, (unsigned char *) DATAPTR_RO(object), XLENGTH(object) * sizeof(int));
     break;
   case CPLXSXP:
-    NANO_INIT(enc, (unsigned char *) DATAPTR(object), XLENGTH(object) * 2 * sizeof(double));
+    NANO_INIT(enc, (unsigned char *) DATAPTR_RO(object), XLENGTH(object) * 2 * sizeof(double));
     break;
   case RAWSXP:
     NANO_INIT(enc, (unsigned char *) STDVEC_DATAPTR(object), XLENGTH(object));
