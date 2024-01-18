@@ -1011,15 +1011,16 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
     iov.iov_buf = buf.buf;
 
     if ((xc = nng_aio_alloc(&aiop, NULL, NULL)))
-      return mk_error(xc);
+      goto exitlevel1;
 
     if ((xc = nng_aio_set_iov(aiop, 1u, &iov))) {
       nng_aio_free(aiop);
-      return mk_error(xc);
+      goto exitlevel1;
     }
 
     nng_aio_set_timeout(aiop, flags ? flags : (*NANO_INTEGER(block) == 1) * NNG_DURATION_DEFAULT);
     nng_stream_send(sp, aiop);
+    NANO_FREE(buf);
     nng_aio_wait(aiop);
     xc = nng_aio_result(aiop);
     nng_aio_free(aiop);

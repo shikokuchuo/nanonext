@@ -420,7 +420,7 @@ if (length(s)) {
   nanotestnn(recv(s, block = 500L))
   nanotest(is.character(opt(s, "ws:response-headers")))
   nanotesterr(opt(s, "ws:request-headers") <- "test\n", 24)
-  nanotest(is.integer(send(s, "message1", block = 500L)))
+  nanotest(is.integer(send(s, c("message1", "test"), block = 500L)))
   nanotestnn(recv(s, block = FALSE))
   nanotest(is.integer(send(s, "message2", block = FALSE)))
   nanotestnn(recv(s, mode = 9L, block = 100))
