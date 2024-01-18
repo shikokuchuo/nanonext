@@ -867,9 +867,8 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP dat
     }
   }
   if (data != R_NilValue && TYPEOF(data) == STRSXP) {
-    nano_buf enc;
-    nano_encode(&enc, data);
-    if ((xc = nng_http_req_set_data(handle->req, enc.buf, enc.cur - 1)))
+    nano_buf enc = nano_char_buf(data);
+    if ((xc = nng_http_req_set_data(handle->req, enc.buf, enc.cur)))
       goto exitlevel4;
   }
 
@@ -1082,9 +1081,8 @@ SEXP rnng_ncurl_session(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP
     }
   }
   if (data != R_NilValue && TYPEOF(data) == STRSXP) {
-    nano_buf enc;
-    nano_encode(&enc, data);
-    if ((xc = nng_http_req_set_data(handle->req, enc.buf, enc.cur - 1)))
+    nano_buf enc = nano_char_buf(data);
+    if ((xc = nng_http_req_set_data(handle->req, enc.buf, enc.cur)))
       goto exitlevel4;
   }
 

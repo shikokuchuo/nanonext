@@ -38,6 +38,16 @@ SEXP mk_error_ncurl(const int xc) {
 
 }
 
+nano_buf nano_char_buf(const SEXP data) {
+
+  nano_buf buf;
+  const char *s = CHAR(STRING_ELT(data, 0));
+  NANO_INIT(&buf, (unsigned char *) s, strlen(s));
+
+  return buf;
+
+}
+
 // finalizers ------------------------------------------------------------------
 
 static void stream_finalizer(SEXP xptr) {
@@ -185,9 +195,8 @@ SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP follow, SEXP method, SEXP headers,
     }
   }
   if (data != R_NilValue && TYPEOF(data) == STRSXP) {
-    nano_buf enc;
-    nano_encode(&enc, data);
-    if ((xc = nng_http_req_set_data(req, enc.buf, enc.cur - 1)))
+    nano_buf enc = nano_char_buf(data);
+    if ((xc = nng_http_req_set_data(req, enc.buf, enc.cur)))
       goto exitlevel4;
   }
 

@@ -180,6 +180,7 @@ typedef struct nano_buf_s {
 
 SEXP mk_error(const int);
 SEXP mk_error_ncurl(const int);
+nano_buf nano_char_buf(const SEXP);
 SEXP nano_decode(unsigned char *, const size_t, const int);
 void nano_encode(nano_buf *, const SEXP);
 int nano_encodes(const SEXP);
