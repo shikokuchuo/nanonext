@@ -101,19 +101,16 @@ close.nanoContext <- function(con, ...) invisible(.Call(rnng_ctx_close, con))
 #' @param execute a function which takes the received (converted) data as its
 #'     first argument. Can be an anonymous function of the form \code{function(x) do(x)}.
 #'     Additional arguments can also be passed in through '...'.
-#' @param send_mode [default 'serial'] one of 'serial' to send serialised R
-#'     objects, 'raw' to send atomic vectors of any type as a raw byte vector,
-#'     or 'next' (see 'Send Modes' section below). Alternatively, specify an
-#'     integer position in the vector of choices e.g. 1L for 'serial' or 2L for
-#'     'raw' etc.
-#' @param recv_mode [default 'serial'] mode of vector to be received - one of
-#'     'serial', 'character', 'complex', 'double', 'integer', 'logical',
-#'     'numeric', 'raw', or 'string'. The default 'serial' means a serialised R
-#'     object, for the other modes, the raw vector received will be converted
-#'     into the respective mode. 'string' is a faster alternative to 'character'
-#'     for receiving a length 1 character string. Alternatively, specify an
-#'     integer position in the vector of choices e.g. 1L for 'serial', 2L for
-#'     'character' etc.
+#' @param send_mode [default 'serial'] one of 'serial' (1L) to send serialised R
+#'     objects, 'raw' (2L) to send atomic vectors of any type as a raw byte
+#'     vector, or 'next' (3L) - see 'Send Modes' section below. Either a string
+#'     or equivalent integer value may be supplied.
+#' @param recv_mode [default 'serial'] one of 'serial' (1L), 'character' (2L),
+#'     'complex' (3L), 'double' (4L), 'integer' (5L), 'logical' (6L), 'numeric'
+#'     (7L), 'raw' (8L), or 'string' (9L). Either a string or equivalent integer
+#'     value may be supplied. The default 'serial' means a serialised R object;
+#'     for the other modes, received bytes are converted into the respective
+#'     mode. 'string' is a faster alternative for length one character vectors.
 #' @param timeout [default NULL] integer value in milliseconds or NULL, which
 #'     applies a socket-specific default, usually the same as no timeout. Note
 #'     that this applies to receiving the request. The total elapsed time would

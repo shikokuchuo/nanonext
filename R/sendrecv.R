@@ -22,11 +22,11 @@
 #'
 #' @param con a Socket, Context or Stream.
 #' @param data an object (a vector, if mode = 'raw').
-#' @param mode [default 'serial'] one of 'serial' to send serialised R objects,
-#'     'raw' to send atomic vectors of any type as a raw byte vector, or 'next'
-#'     (see 'Send Modes' section below). Alternatively, specify an integer
-#'     position in the vector of choices e.g. 1L for 'serial' or 2L for 'raw'
-#'     etc. For Streams, 'raw' is the only option and this argument is ignored.
+#' @param mode [default 'serial'] one of 'serial' (1L) to send serialised R
+#'     objects, 'raw' (2L) to send atomic vectors of any type as a raw byte
+#'     vector, or 'next' (3L) - see 'Send Modes' section below. Either a string
+#'     or equivalent integer value may be supplied. For Streams, 'raw' is the
+#'     only option and this argument is ignored.
 #' @param block [default NULL] which applies the connection default (see section
 #'     'Blocking' below). Specify logical TRUE to block until successful or
 #'     FALSE to return immediately even if unsuccessful (e.g. if no connection
@@ -100,14 +100,13 @@ send <- function(con, data, mode = c("serial", "raw", "next"), block = NULL)
 #' Receive data over a connection (Socket, Context or Stream).
 #'
 #' @param con a Socket, Context or Stream.
-#' @param mode [default 'serial'] mode of vector to be received - one of 'serial',
-#'     'character', 'complex', 'double', 'integer', 'logical', 'numeric', 'raw',
-#'     or 'string'. The default 'serial' means a serialised R object, for the
-#'     other modes, the raw vector received will be converted into the respective
-#'     mode. 'string' is a faster alternative to 'character' for receiving a
-#'     length 1 character string. For Streams, 'serial' is not an option and the
-#'     default is 'character'. Alternatively, specify an integer position in the
-#'     vector of choices e.g. 1L for 'serial', 2L for 'character' etc.
+#' @param mode [default 'serial'] one of 'serial' (1L), 'character' (2L),
+#'     'complex' (3L), 'double' (4L), 'integer' (5L), 'logical' (6L), 'numeric'
+#'     (7L), 'raw' (8L), or 'string' (9L). Either a string or equivalent integer
+#'     value may be supplied. The default 'serial' means a serialised R object;
+#'     for the other modes, received bytes are converted into the respective
+#'     mode. 'string' is a faster alternative for length one character vectors.
+#'     For Streams, 'serial' is not an option and the default is 'character'.
 #' @param n [default 65536L] applicable to Streams only, the maximum number of
 #'     bytes to receive. Can be an over-estimate, but note that a buffer of this
 #'     size is reserved.
