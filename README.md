@@ -225,8 +225,8 @@ We would like to acknowledge in particular:
   which have been adopted by the package.
 - [Luke Tierney](https://homepage.stat.uiowa.edu/~luke/) and [Mike
   Cheng](https://github.com/coolbutuseless) for meticulous documentation
-  of R’s serialization mechanism, which led to the package’s own
-  implementation of a low-level interface to R serialisation.
+  of the R serialization mechanism, which led to the package’s own
+  implementation of a low-level interface to R serialization.
 - [Jeroen Ooms](https://github.com/jeroen) - for his ‘Anticonf (tm)’
   configure script, on which our original ‘configure’ was based,
   although much modified since.
