@@ -10,7 +10,7 @@ status](https://www.r-pkg.org/badges/version/nanonext?color=112d4e)](https://CRA
 [![nanonext status
 badge](https://shikokuchuo.r-universe.dev/badges/nanonext?color=3f72af)](https://shikokuchuo.r-universe.dev/nanonext)
 [![R-CMD-check](https://github.com/shikokuchuo/nanonext/workflows/R-CMD-check/badge.svg)](https://github.com/shikokuchuo/nanonext/actions)
-[![codecov](https://codecov.io/gh/shikokuchuo/nanonext/branch/main/graph/badge.svg)](https://app.codecov.io/gh/shikokuchuo/nanonext)
+[![codecov](https://codecov.io/gh/shikokuchuo/nanonext/graph/badge.svg)](https://app.codecov.io/gh/shikokuchuo/nanonext)
 [![DOI](https://zenodo.org/badge/451104675.svg)](https://zenodo.org/badge/latestdoi/451104675)
 <!-- badges: end -->
 
@@ -223,11 +223,10 @@ We would like to acknowledge in particular:
 - [R Core](https://www.r-project.org/contributors.html) for various
   auxiliary functions for serialisation and raw / character conversion,
   which have been adopted by the package.
-- [Luke Tierney](https://homepage.stat.uiowa.edu/~luke/) for documenting
-  R’s serialization mechanism and
-  [mikefc](https://github.com/coolbutuseless) for meticulous annotations
-  in {serializer}, which led to the package’s own implementation of a
-  low-level interface to R serialisation.
+- [Luke Tierney](https://homepage.stat.uiowa.edu/~luke/) and [Mike
+  Cheng](https://github.com/coolbutuseless) for meticulous documentation
+  of R’s serialization mechanism, which led to the package’s own
+  implementation of a low-level interface to R serialisation.
 - [Jeroen Ooms](https://github.com/jeroen) - for his ‘Anticonf (tm)’
   configure script, on which our original ‘configure’ was based,
   although much modified since.

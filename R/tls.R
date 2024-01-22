@@ -88,10 +88,12 @@ tls_config <- function(client = NULL, server = NULL, pass = NULL, auth = is.null
 #'     length 32 for SHA-256, 28 for SHA-224, 48 for SHA-384, and 64 for SHA-512.
 #'
 #' @details For arguments 'x' and 'key', a scalar string or raw vector (with no
-#'     attributes) is hashed directly. All other objects are first serialised
-#'     using R serialisation version 3, big-endian representation, with the
-#'     serialization header stripped (for portability across R installations as
-#'     this contains the R version number).
+#'     attributes) is hashed 'as is'.
+#'
+#'     All other objects are first serialized using R serialization version 3,
+#'     big-endian representation, with the serialization header stripped (for
+#'     portability as this contains the R version number and native encoding
+#'     information).
 #'
 #'     The result of hashing is always a byte sequence, which is converted to a
 #'     character string hex representation if 'convert' is TRUE, or returned as
@@ -163,10 +165,12 @@ sha512 <- function(x, key = NULL, convert = TRUE) .Call(rnng_sha512, x, key, con
 #'     length 20.
 #'
 #' @details For arguments 'x' and 'key', a scalar string or raw vector (with no
-#'     attributes) is hashed directly. All other objects are first serialised
-#'     using R serialisation version 3, big-endian representation, with the
-#'     serialization header stripped (for portability across R installations as
-#'     this contains the R version number).
+#'     attributes) is hashed 'as is'.
+#'
+#'     All other objects are first serialized using R serialization version 3,
+#'     big-endian representation, with the serialization header stripped (for
+#'     portability as this contains the R version number and native encoding
+#'     information).
 #'
 #'     The result of hashing is always a byte sequence, which is converted to a
 #'     character string hex representation if 'convert' is TRUE, or returned as
@@ -205,9 +209,9 @@ sha1 <- function(x, key = NULL, convert = TRUE) .Call(rnng_sha1, x, key, convert
 #'     For \strong{base64dec}: A character string, raw vector, or other object
 #'     depending on the value of 'convert'.
 #'
-#' @details For encoding: a scalar string or raw vector (with no attributes) is
-#'     encoded directly, whilst all other objects are first serialised (using R
-#'     serialisation version 3, big-endian representation).
+#' @details For encoding: a character string or raw vector (with no attributes)
+#'     is encoded 'as is', whilst all other objects are first serialized (using
+#'     R serialisation version 3, big-endian representation).
 #'
 #'     For decoding: the value of 'convert' should be set to TRUE, FALSE or NA
 #'     to be the analogue of the above 3 cases in order to return the original
