@@ -119,7 +119,7 @@ tls_config <- function(client = NULL, server = NULL, pass = NULL, auth = is.null
 #'
 #' @export
 #'
-sha256 <- function(x, key = NULL, convert = TRUE) .Call(rnng_sha256, x, key, convert)
+sha256 <- function(x, key = NULL, convert = TRUE) .Call(rnng_sha256, x, key, convert, 0L)
 
 #' @examples
 #' # SHA-224 hash:
@@ -128,7 +128,7 @@ sha256 <- function(x, key = NULL, convert = TRUE) .Call(rnng_sha256, x, key, con
 #' @rdname sha256
 #' @export
 #'
-sha224 <- function(x, key = NULL, convert = TRUE) .Call(rnng_sha224, x, key, convert)
+sha224 <- function(x, key = NULL, convert = TRUE) .Call(rnng_sha256, x, key, convert, 1L)
 
 #' @examples
 #' # SHA-384 hash:
@@ -137,7 +137,7 @@ sha224 <- function(x, key = NULL, convert = TRUE) .Call(rnng_sha224, x, key, con
 #' @rdname sha256
 #' @export
 #'
-sha384 <- function(x, key = NULL, convert = TRUE) .Call(rnng_sha384, x, key, convert)
+sha384 <- function(x, key = NULL, convert = TRUE) .Call(rnng_sha512, x, key, convert, 1L)
 
 #' @examples
 #' # SHA-512 hash:
@@ -146,7 +146,7 @@ sha384 <- function(x, key = NULL, convert = TRUE) .Call(rnng_sha384, x, key, con
 #' @rdname sha256
 #' @export
 #'
-sha512 <- function(x, key = NULL, convert = TRUE) .Call(rnng_sha512, x, key, convert)
+sha512 <- function(x, key = NULL, convert = TRUE) .Call(rnng_sha512, x, key, convert, 0L)
 
 #' Cryptographic Hashing Using the SHA-1 Algorithm
 #'
