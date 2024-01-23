@@ -112,13 +112,11 @@ typedef struct nano_cv_s {
 #ifdef NANONEXT_TLS
 #include <mbedtls/base64.h>
 #include <mbedtls/md.h>
-#include <mbedtls/sha1.h>
 #include <mbedtls/sha256.h>
 #include <mbedtls/sha512.h>
 #include <mbedtls/version.h>
 
 #define NANO_SHLEN 23
-#define SHA1_KEY_SIZE 20
 #define SHA224_KEY_SIZE 28
 #define SHA256_KEY_SIZE 32
 #define SHA384_KEY_SIZE 48
