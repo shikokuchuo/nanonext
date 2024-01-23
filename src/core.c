@@ -51,18 +51,6 @@ void rl_reset(void *nothing, Rboolean jump) {
     SET_TAG(nano_refHook, R_NilValue);
 }
 
-static void nano_write_char(R_outpstream_t stream, int c) {
-
-  nano_buf *buf = (nano_buf *) stream->data;
-  if (buf->cur >= buf->len) {
-    buf->len <<= 1;
-    buf->buf = R_Realloc(buf->buf, buf->len, unsigned char);
-  }
-
-  buf->buf[buf->cur++] = (char) c;
-
-}
-
 static void nano_write_bytes(R_outpstream_t stream, void *src, int len) {
 
   nano_buf *buf = (nano_buf *) stream->data;
@@ -81,16 +69,6 @@ static void nano_write_bytes(R_outpstream_t stream, void *src, int len) {
 
   memcpy(buf->buf + buf->cur, src, len);
   buf->cur += len;
-
-}
-
-static int nano_read_char(R_inpstream_t stream) {
-
-  nano_buf *buf = (nano_buf *) stream->data;
-  if (buf->cur >= buf->len)
-    Rf_error("unserialization error");
-
-  return buf->buf[buf->cur++];
 
 }
 
@@ -196,7 +174,7 @@ void nano_serialize(nano_buf *buf, const SEXP object) {
     R_pstream_binary_format,
 #endif
     NANONEXT_SERIAL_VER,
-    nano_write_char,
+    NULL,
     nano_write_bytes,
     NULL,
     R_NilValue
@@ -225,7 +203,7 @@ void nano_serialize_next(nano_buf *buf, const SEXP object) {
     R_pstream_binary_format,
 #endif
     NANONEXT_SERIAL_VER,
-    nano_write_char,
+    NULL,
     nano_write_bytes,
     registered ? nano_inHook : NULL,
     R_NilValue
@@ -265,7 +243,7 @@ void nano_serialize_xdr(nano_buf *buf, const SEXP object) {
     (R_pstream_data_t) buf,
     R_pstream_xdr_format,
     NANONEXT_SERIAL_VER,
-    nano_write_char,
+    NULL,
     nano_write_bytes,
     NULL,
     R_NilValue
@@ -324,7 +302,7 @@ SEXP nano_unserialize(unsigned char *buf, const size_t sz) {
     &input_stream,
     (R_pstream_data_t) &nbuf,
     R_pstream_any_format,
-    nano_read_char,
+    NULL,
     nano_read_bytes,
     offset ? nano_outHook : NULL,
     offset ? reflist : R_NilValue
