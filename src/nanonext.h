@@ -244,7 +244,6 @@ SEXP rnng_request(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 SEXP rnng_send(SEXP, SEXP, SEXP, SEXP);
 SEXP rnng_send_aio(SEXP, SEXP, SEXP, SEXP, SEXP);
 SEXP rnng_set_opt(SEXP, SEXP, SEXP);
-SEXP rnng_sha1(SEXP, SEXP, SEXP);
 SEXP rnng_sha256(SEXP, SEXP, SEXP, SEXP);
 SEXP rnng_sha512(SEXP, SEXP, SEXP, SEXP);
 SEXP rnng_signal_thread_create(SEXP, SEXP);

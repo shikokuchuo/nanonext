@@ -178,46 +178,6 @@ SEXP rnng_sha512(SEXP x, SEXP key, SEXP convert, SEXP sha384) {
 
 }
 
-SEXP rnng_sha1(SEXP x, SEXP key, SEXP convert) {
-
-  SEXP out;
-  int xc = 0;
-  unsigned char output[SHA1_KEY_SIZE];
-
-  nano_buf xhash = nano_any_buf(x, 1);
-
-  if (key == R_NilValue) {
-
-#if MBEDTLS_VERSION_MAJOR >= 3
-    xc = mbedtls_sha1(xhash.buf, xhash.cur, output);
-#else
-    xc = mbedtls_sha1_ret(xhash.buf, xhash.cur, output);
-#endif
-
-  } else {
-
-    nano_buf khash = nano_any_buf(key, 1);
-    xc = mbedtls_md_hmac(mbedtls_md_info_from_type(MBEDTLS_MD_SHA1),
-                         khash.buf, khash.cur, xhash.buf, xhash.cur, output);
-    NANO_FREE(khash);
-
-  }
-
-  NANO_FREE(xhash);
-  if (xc)
-    Rf_error("error generating hash");
-
-  if (*NANO_INTEGER(convert)) {
-    out = nano_hash_char(output, SHA1_KEY_SIZE);
-  } else {
-    out = Rf_allocVector(RAWSXP, SHA1_KEY_SIZE);
-    memcpy(STDVEC_DATAPTR(out), output, SHA1_KEY_SIZE);
-  }
-
-  return out;
-
-}
-
 // Base64 encoding decoding ----------------------------------------------------
 
 SEXP rnng_base64enc(SEXP x, SEXP convert) {

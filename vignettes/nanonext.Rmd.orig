@@ -503,7 +503,7 @@ close(s)
 
 ### Cryptographic Hashing
 
-Functions performing hashing using the SHA-1 and SHA-2 series of algorithms are included: `sha1()`, `sha224()`, `sha256()`, `sha384()` and `sha512()`.
+Hash functions using the SHA-2 algorithms are included: `sha224()`, `sha256()`, `sha384()` and `sha512()`.
 
 These expose the secure, optimized implementations from the 'Mbed TLS' library and return a hash either directly as a raw vector or converted to a character string. For use in authentication, raw vectors can be compared directly for the highest performance.
 

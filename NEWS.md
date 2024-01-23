@@ -5,6 +5,7 @@
 * `ncurl()`, `ncurl_aio()` and `ncurl_session()` now restrict 'header' and 'response' arguments to character vectors only, no longer accepting lists (for safety and performance).
 * SHA functions now strip the serialization header from serialized R objects. This ensures portability as the R version and native encoding information is written into the header. Note: hashes will be different to those obtained using prior versions of this package for serialized objects.
 * `messenger()` specifying 'auth' now works reliably on endpoints using different R versions/platforms due to the above hashing portability fix.
+* `sha1()` is removed as a hash option.
 
 # nanonext 0.12.0
 
