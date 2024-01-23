@@ -65,6 +65,8 @@
 <li>SHA functions now strip the serialization header from serialized R objects. This ensures portability as the R version and native encoding information is written into the header. Note: hashes will be different to those obtained using prior versions of this package for serialized objects.</li>
 <li>
 <code><a href="../reference/messenger.html">messenger()</a></code> specifying ‘auth’ now works reliably on endpoints using different R versions/platforms due to the above hashing portability fix.</li>
+<li>
+<code>sha1()</code> is removed as a hash option.</li>
 </ul></div>
 </div>
     <div class="section level2">
@@ -323,7 +325,7 @@
 <code><a href="../reference/pipe_notify.html">pipe_notify()</a></code> signals up to 2 condition variables whenever pipes are added or removed at a socket.</li>
 </ul></li>
 <li>Adds <code>msg_pipe()</code> to return the pipe connection associated with a ‘recvAio’ message.</li>
-<li>Exposes the <code><a href="../reference/sha1.html">sha1()</a></code> cryptographic hash and HMAC generation function from the ‘Mbed TLS’ library (for secure applications, use one of the SHA-2 algorithms instead).</li>
+<li>Exposes the <code>sha1()</code> cryptographic hash and HMAC generation function from the ‘Mbed TLS’ library (for secure applications, use one of the SHA-2 algorithms instead).</li>
 <li>Utility function <code>'weakref&lt;-'()</code> exposes <code>R_MakeWeakRef</code> from R’s C API. Useful for keeping objects alive for as long as required by a dependent object.</li>
 </ul></div>
 <div class="section level5">
