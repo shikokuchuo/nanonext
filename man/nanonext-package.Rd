@@ -3,6 +3,7 @@
 \docType{package}
 \encoding{UTF-8}
 \name{nanonext-package}
+\alias{nanonext}
 \alias{nanonext-package}
 \title{nanonext: NNG (Nanomsg Next Gen) Lightweight Messaging Library}
 \description{
@@ -82,12 +83,19 @@ R binding for NNG (Nanomsg Next Gen), a successor to ZeroMQ. NNG is a socket
 \section{Links}{
 
 
-    \CRANpkg{nanonext} website: \url{https://shikokuchuo.net/nanonext/}
-
     NNG website: \url{https://nng.nanomsg.org/} \cr
     Mbed TLS website: \url{https://www.trustedfirmware.org/projects/mbed-tls/}
 }
 
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://shikokuchuo.net/nanonext/}
+  \item \url{https://github.com/shikokuchuo/nanonext/}
+  \item Report bugs at \url{https://github.com/shikokuchuo/nanonext/issues}
+}
+
+}
 \author{
 Charlie Gao \email{charlie.gao@shikokuchuo.net}
     (\href{https://orcid.org/0000-0002-0750-061X}{ORCID})
