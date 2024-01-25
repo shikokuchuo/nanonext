@@ -84,11 +84,10 @@ static SEXP nano_hash_char(unsigned char *buf, const size_t sz) {
 
 }
 
-// SHA-1 and SHA-2 Cryptographic Hash Algorithms -------------------------------
+// SHA-2 Cryptographic Hash Algorithms -----------------------------------------
 
-SEXP rnng_sha256(SEXP x, SEXP key, SEXP convert, SEXP sha224) {
+static SEXP nano_sha256(const SEXP x, const SEXP key, const SEXP convert, const int is224) {
 
-  const int is224 = *(int *) STDVEC_DATAPTR(sha224);
   const size_t outlen = is224 ? SHA224_KEY_SIZE : SHA256_KEY_SIZE;
 #if MBEDTLS_VERSION_MAJOR >= 3
   unsigned char output[outlen];
@@ -132,9 +131,20 @@ SEXP rnng_sha256(SEXP x, SEXP key, SEXP convert, SEXP sha224) {
 
 }
 
-SEXP rnng_sha512(SEXP x, SEXP key, SEXP convert, SEXP sha384) {
+SEXP rnng_sha224(SEXP x, SEXP key, SEXP convert) {
 
-  const int is384 = *(int *) STDVEC_DATAPTR(sha384);
+  return nano_sha256(x, key, convert, 1);
+
+}
+
+SEXP rnng_sha256(SEXP x, SEXP key, SEXP convert) {
+
+  return nano_sha256(x, key, convert, 0);
+
+}
+
+static SEXP nano_sha512(const SEXP x, const SEXP key, const SEXP convert, const int is384) {
+
   const size_t outlen = is384 ? SHA384_KEY_SIZE : SHA512_KEY_SIZE;
 #if MBEDTLS_VERSION_MAJOR >= 3
   unsigned char output[outlen];
@@ -175,6 +185,18 @@ SEXP rnng_sha512(SEXP x, SEXP key, SEXP convert, SEXP sha384) {
   }
 
   return out;
+
+}
+
+SEXP rnng_sha384(SEXP x, SEXP key, SEXP convert) {
+
+  return nano_sha512(x, key, convert, 1);
+
+}
+
+SEXP rnng_sha512(SEXP x, SEXP key, SEXP convert) {
+
+  return nano_sha512(x, key, convert, 0);
 
 }
 
