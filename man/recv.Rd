@@ -15,13 +15,13 @@ recv(
 \arguments{
 \item{con}{a Socket, Context or Stream.}
 
-\item{mode}{[default 'serial'] one of 'serial' (1L), 'character' (2L),
-'complex' (3L), 'double' (4L), 'integer' (5L), 'logical' (6L), 'numeric'
-(7L), 'raw' (8L), or 'string' (9L). Either a string or equivalent integer
-value may be supplied. The default 'serial' means a serialised R object;
-for the other modes, received bytes are converted into the respective
-mode. 'string' is a faster alternative for length one character vectors.
-For Streams, 'serial' is not an option and the default is 'character'.}
+\item{mode}{[default 'serial'] character value or integer equivalent - one of
+'serial' (1L), 'character' (2L), 'complex' (3L), 'double' (4L), 'integer'
+(5L), 'logical' (6L), 'numeric' (7L), 'raw' (8L), or 'string' (9L). The
+default 'serial' means a serialised R object; for the other modes,
+received bytes are converted into the respective mode. 'string' is a
+faster option for length one character vectors. For Streams, 'serial' is
+not an option and the default is 'character'.}
 
 \item{block}{[default NULL] which applies the connection default (see section
 'Blocking' below). Specify logical TRUE to block until successful or
@@ -51,18 +51,15 @@ In case of an error, an integer 'errorValue' is returned (to be
 \section{Blocking}{
 
 
-    For Sockets: the default behaviour is non-blocking with \code{block = FALSE}.
-    This will return immediately with an error if no messages are available.
-
-    For Contexts: the default behaviour is blocking with \code{block = TRUE}.
-    This will wait until a message is received. Set to FALSE or an integer
-    timeout to ensure that the function returns under all scenarios.
+    For Sockets and Contexts: the default behaviour is non-blocking with
+    \code{block = FALSE}. This will return immediately with an error if no
+    messages are available.
 
     For Streams: the default behaviour is blocking with \code{block = TRUE}.
     This will wait until a message is received. Set a timeout to ensure that
     the function returns under all scenarios. As the underlying implementation
-    uses an asynchronous send with a wait, it is recommended to set a positive
-    integer value for \code{block} rather than FALSE.
+    uses an asynchronous receive with a wait, it is recommended to set a
+    small positive value for \code{block} rather than FALSE.
 }
 
 \examples{

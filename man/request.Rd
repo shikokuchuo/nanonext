@@ -29,17 +29,17 @@ request_signal(
 
 \item{data}{an object (if send_mode = 'raw', a vector).}
 
-\item{send_mode}{[default 'serial'] one of 'serial' (1L) to send serialised R
-objects, 'raw' (2L) to send atomic vectors of any type as a raw byte
-vector, or 'next' (3L) - see 'Send Modes' section below. Either a string
-or equivalent integer value may be supplied.}
+\item{send_mode}{[default 'serial'] character value or integer equivalent -
+one of 'serial' (1L) to send serialised R objects, 'raw' (2L) to send
+atomic vectors of any type as a raw byte vector, or 'next' (3L) - see
+'Send Modes' section below.}
 
-\item{recv_mode}{[default 'serial'] one of 'serial' (1L), 'character' (2L),
-'complex' (3L), 'double' (4L), 'integer' (5L), 'logical' (6L), 'numeric'
-(7L), 'raw' (8L), or 'string' (9L). Either a string or equivalent integer
-value may be supplied. The default 'serial' means a serialised R object;
-for the other modes, received bytes are converted into the respective
-mode. 'string' is a faster alternative for length one character vectors.}
+\item{recv_mode}{[default 'serial'] character value or integer equivalent -
+one of 'serial' (1L), 'character' (2L), 'complex' (3L), 'double' (4L),
+'integer' (5L), 'logical' (6L), 'numeric' (7L), 'raw' (8L), or 'string'
+(9L). The default 'serial' means a serialised R object; for the other
+modes, received bytes are converted into the respective mode. 'string' is
+a faster option for length one character vectors.}
 
 \item{timeout}{[default NULL] integer value in milliseconds or NULL, which
 applies a socket-specific default, usually the same as no timeout.}

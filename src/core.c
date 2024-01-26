@@ -953,7 +953,7 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
         goto exitlevel1;
 
       if ((xc = nng_msg_append(msgp, buf.buf, buf.cur)) ||
-          (xc = nng_ctx_sendmsg(*ctxp, msgp, flags ? 0 : (*NANO_INTEGER(block) == 0) * NNG_FLAG_NONBLOCK))) {
+          (xc = nng_ctx_sendmsg(*ctxp, msgp, flags ? NNG_FLAG_NONBLOCK : (*NANO_INTEGER(block) == 0) * NNG_FLAG_NONBLOCK))) {
         nng_msg_free(msgp);
         goto exitlevel1;
       }
@@ -1044,7 +1044,7 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP bytes) {
 
     if (flags <= 0) {
 
-      xc = nng_recv(*sock, &buf, &sz, NNG_FLAG_ALLOC + (flags || *NANO_INTEGER(block) == 0) * NNG_FLAG_NONBLOCK);
+      xc = nng_recv(*sock, &buf, &sz, NNG_FLAG_ALLOC + (flags != 0 || *NANO_INTEGER(block) == 0) * NNG_FLAG_NONBLOCK);
       if (xc)
         return mk_error(xc);
 
@@ -1103,7 +1103,7 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP bytes) {
 
     if (flags <= 0) {
 
-      xc = nng_ctx_recvmsg(*ctxp, &msgp, flags ? 0 : (*NANO_INTEGER(block) == 0) * NNG_FLAG_NONBLOCK);
+      xc = nng_ctx_recvmsg(*ctxp, &msgp, (flags != 0 || *NANO_INTEGER(block) == 0) * NNG_FLAG_NONBLOCK);
       if (xc)
         return mk_error(xc);
 

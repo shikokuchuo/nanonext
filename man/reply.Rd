@@ -18,20 +18,21 @@ reply(
 \item{context}{a Context.}
 
 \item{execute}{a function which takes the received (converted) data as its
-first argument. Can be an anonymous function of the form \code{function(x) do(x)}.
-Additional arguments can also be passed in through '...'.}
+first argument. Can be an anonymous function of the form
+\code{function(x) do(x)}. Additional arguments can also be passed in
+through '...'.}
 
-\item{recv_mode}{[default 'serial'] one of 'serial' (1L), 'character' (2L),
-'complex' (3L), 'double' (4L), 'integer' (5L), 'logical' (6L), 'numeric'
-(7L), 'raw' (8L), or 'string' (9L). Either a string or equivalent integer
-value may be supplied. The default 'serial' means a serialised R object;
-for the other modes, received bytes are converted into the respective
-mode. 'string' is a faster alternative for length one character vectors.}
+\item{recv_mode}{[default 'serial'] character value or integer equivalent -
+one of 'serial' (1L), 'character' (2L), 'complex' (3L), 'double' (4L),
+'integer' (5L), 'logical' (6L), 'numeric' (7L), 'raw' (8L), or 'string'
+(9L). The default 'serial' means a serialised R object; for the other
+modes, received bytes are converted into the respective mode. 'string' is
+a faster option for length one character vectors.}
 
-\item{send_mode}{[default 'serial'] one of 'serial' (1L) to send serialised R
-objects, 'raw' (2L) to send atomic vectors of any type as a raw byte
-vector, or 'next' (3L) - see 'Send Modes' section below. Either a string
-or equivalent integer value may be supplied.}
+\item{send_mode}{[default 'serial'] character value or integer equivalent -
+one of 'serial' (1L) to send serialised R objects, 'raw' (2L) to send
+atomic vectors of any type as a raw byte vector, or 'next' (3L) - see
+'Send Modes' section below.}
 
 \item{timeout}{[default NULL] integer value in milliseconds or NULL, which
 applies a socket-specific default, usually the same as no timeout. Note
@@ -55,11 +56,11 @@ Receive will block while awaiting a message to arrive and is usually
     the desired behaviour. Set a timeout to allow the function to return
     if no data is forthcoming.
 
-    In the event of an error in either processing the messages or in evaluation
-    of the function with respect to the data, a nul byte \code{00} (or serialized
-    nul byte) will be sent in reply to the client to signal an error. This is
-    to be distinguishable from a possible return value. \code{\link{is_nul_byte}}
-    can be used to test for a nul byte.
+    In the event of an error in either processing the messages or in
+    evaluation of the function with respect to the data, a nul byte \code{00}
+    (or serialized nul byte) will be sent in reply to the client to signal an
+    error. This is to be distinguishable from a possible return value.
+    \code{\link{is_nul_byte}} can be used to test for a nul byte.
 }
 \section{Send Modes}{
 

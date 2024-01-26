@@ -11,11 +11,11 @@ send_aio(con, data, mode = c("serial", "raw", "next"), timeout = NULL)
 
 \item{data}{an object (a vector, if mode = 'raw').}
 
-\item{mode}{[default 'serial'] one of 'serial' (1L) to send serialised R
-objects, 'raw' (2L) to send atomic vectors of any type as a raw byte
-vector, or 'next' (3L) - see 'Send Modes' section below. Either a string
-or equivalent integer value may be supplied. For Streams, 'raw' is the
-only option and this argument is ignored.}
+\item{mode}{[default 'serial'] character value or integer equivalent - one of
+'serial' (1L) to send serialised R objects, 'raw' (2L) to send atomic
+vectors of any type as a raw byte vector, or 'next' (3L) - see 'Send
+Modes' section below. For Streams, 'raw' is the only option and this
+argument is ignored.}
 
 \item{timeout}{[default NULL] integer value in milliseconds or NULL, which
 applies a socket-specific default, usually the same as no timeout.}

@@ -25,13 +25,13 @@ recv_aio_signal(
 \arguments{
 \item{con}{a Socket, Context or Stream.}
 
-\item{mode}{[default 'serial'] one of 'serial' (1L), 'character' (2L),
-'complex' (3L), 'double' (4L), 'integer' (5L), 'logical' (6L), 'numeric'
-(7L), 'raw' (8L), or 'string' (9L). Either a string or equivalent integer
-value may be supplied. The default 'serial' means a serialised R object;
-for the other modes, received bytes are converted into the respective
-mode. 'string' is a faster alternative for length one character vectors.
-For Streams, 'serial' is not an option and the default is 'character'.}
+\item{mode}{[default 'serial'] character value or integer equivalent - one of
+'serial' (1L), 'character' (2L), 'complex' (3L), 'double' (4L), 'integer'
+(5L), 'logical' (6L), 'numeric' (7L), 'raw' (8L), or 'string' (9L). The
+default 'serial' means a serialised R object; for the other modes,
+received bytes are converted into the respective mode. 'string' is a
+faster option for length one character vectors. For Streams, 'serial' is
+not an option and the default is 'character'.}
 
 \item{timeout}{[default NULL] integer value in milliseconds or NULL, which
 applies a socket-specific default, usually the same as no timeout.}

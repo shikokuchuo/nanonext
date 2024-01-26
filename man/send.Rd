@@ -11,11 +11,11 @@ send(con, data, mode = c("serial", "raw", "next"), block = NULL)
 
 \item{data}{an object (a vector, if mode = 'raw').}
 
-\item{mode}{[default 'serial'] one of 'serial' (1L) to send serialised R
-objects, 'raw' (2L) to send atomic vectors of any type as a raw byte
-vector, or 'next' (3L) - see 'Send Modes' section below. Either a string
-or equivalent integer value may be supplied. For Streams, 'raw' is the
-only option and this argument is ignored.}
+\item{mode}{[default 'serial'] character value or integer equivalent - one of
+'serial' (1L) to send serialised R objects, 'raw' (2L) to send atomic
+vectors of any type as a raw byte vector, or 'next' (3L) - see 'Send
+Modes' section below. For Streams, 'raw' is the only option and this
+argument is ignored.}
 
 \item{block}{[default NULL] which applies the connection default (see section
 'Blocking' below). Specify logical TRUE to block until successful or
@@ -32,20 +32,17 @@ Send data over a connection (Socket, Context or Stream).
 \section{Blocking}{
 
 
-    For Sockets: the default behaviour is non-blocking with \code{block = FALSE}.
-    This will return immediately with an error if the message could not be
-    queued for sending. Certain protocol / transport combinations may limit
-    the number of messages that can be queued if they have yet to be received.
-
-    For Contexts: the default behaviour is blocking with \code{block = TRUE}.
-    This will wait until the send has completed. Set to FALSE or an integer
-    timeout to ensure that the function returns under all scenarios.
+    For Sockets and Contexts: the default behaviour is non-blocking with
+    \code{block = FALSE}. This will return immediately with an error if the
+    message could not be queued for sending. Certain protocol / transport
+    combinations may limit the number of messages that can be queued if they
+    have yet to be received.
 
     For Streams: the default behaviour is blocking with \code{block = TRUE}.
     This will wait until the send has completed. Set a timeout to ensure that
     the function returns under all scenarios. As the underlying
     implementation uses an asynchronous send with a wait, it is recommended
-    to set a positive integer value for \code{block} rather than FALSE.
+    to set a small positive value for \code{block} rather than FALSE.
 }
 
 \section{Send Modes}{

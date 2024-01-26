@@ -1,4 +1,4 @@
-# Copyright (C) 2022-2023 Hibiki AI Limited <info@hibiki-ai.com>
+# Copyright (C) 2022-2024 Hibiki AI Limited <info@hibiki-ai.com>
 #
 # This file is part of nanonext.
 #
@@ -99,18 +99,19 @@ close.nanoContext <- function(con, ...) invisible(.Call(rnng_ctx_close, con))
 #'
 #' @param context a Context.
 #' @param execute a function which takes the received (converted) data as its
-#'     first argument. Can be an anonymous function of the form \code{function(x) do(x)}.
-#'     Additional arguments can also be passed in through '...'.
-#' @param send_mode [default 'serial'] one of 'serial' (1L) to send serialised R
-#'     objects, 'raw' (2L) to send atomic vectors of any type as a raw byte
-#'     vector, or 'next' (3L) - see 'Send Modes' section below. Either a string
-#'     or equivalent integer value may be supplied.
-#' @param recv_mode [default 'serial'] one of 'serial' (1L), 'character' (2L),
-#'     'complex' (3L), 'double' (4L), 'integer' (5L), 'logical' (6L), 'numeric'
-#'     (7L), 'raw' (8L), or 'string' (9L). Either a string or equivalent integer
-#'     value may be supplied. The default 'serial' means a serialised R object;
-#'     for the other modes, received bytes are converted into the respective
-#'     mode. 'string' is a faster alternative for length one character vectors.
+#'     first argument. Can be an anonymous function of the form
+#'     \code{function(x) do(x)}. Additional arguments can also be passed in
+#'     through '...'.
+#' @param send_mode [default 'serial'] character value or integer equivalent -
+#'     one of 'serial' (1L) to send serialised R objects, 'raw' (2L) to send
+#'     atomic vectors of any type as a raw byte vector, or 'next' (3L) - see
+#'     'Send Modes' section below.
+#' @param recv_mode [default 'serial'] character value or integer equivalent -
+#'     one of 'serial' (1L), 'character' (2L), 'complex' (3L), 'double' (4L),
+#'     'integer' (5L), 'logical' (6L), 'numeric' (7L), 'raw' (8L), or 'string'
+#'     (9L). The default 'serial' means a serialised R object; for the other
+#'     modes, received bytes are converted into the respective mode. 'string' is
+#'     a faster option for length one character vectors.
 #' @param timeout [default NULL] integer value in milliseconds or NULL, which
 #'     applies a socket-specific default, usually the same as no timeout. Note
 #'     that this applies to receiving the request. The total elapsed time would
@@ -125,11 +126,11 @@ close.nanoContext <- function(con, ...) invisible(.Call(rnng_ctx_close, con))
 #'     the desired behaviour. Set a timeout to allow the function to return
 #'     if no data is forthcoming.
 #'
-#'     In the event of an error in either processing the messages or in evaluation
-#'     of the function with respect to the data, a nul byte \code{00} (or serialized
-#'     nul byte) will be sent in reply to the client to signal an error. This is
-#'     to be distinguishable from a possible return value. \code{\link{is_nul_byte}}
-#'     can be used to test for a nul byte.
+#'     In the event of an error in either processing the messages or in
+#'     evaluation of the function with respect to the data, a nul byte \code{00}
+#'     (or serialized nul byte) will be sent in reply to the client to signal an
+#'     error. This is to be distinguishable from a possible return value.
+#'     \code{\link{is_nul_byte}} can be used to test for a nul byte.
 #'
 #' @inheritSection send Send Modes
 #'
@@ -161,12 +162,13 @@ reply <- function(context,
                   timeout = NULL,
                   ...) {
 
-  res <- recv(context, mode = recv_mode, block = timeout)
+  block <- if (is.null(timeout)) TRUE else timeout
+  res <- recv(context, mode = recv_mode, block = block)
   is_error_value(res) && return(res)
-  on.exit(expr = send(context, data = as.raw(0L), mode = send_mode))
+  on.exit(expr = send(context, data = as.raw(0L), mode = send_mode, block = TRUE))
   data <- execute(res, ...)
   on.exit()
-  send(context, data = data, mode = send_mode, block = timeout)
+  send(context, data = data, mode = send_mode, block = block)
 
 }
 
