@@ -197,7 +197,7 @@ void nano_serialize(nano_buf *buf, const SEXP object) {
 void nano_serialize_next(nano_buf *buf, const SEXP object) {
 
   NANO_ALLOC(buf, NANONEXT_INIT_BUFSIZE);
-  buf->buf[0] = 7u;
+  buf->buf[0] = 0x7;
   buf->buf[1] = registered;
   buf->buf[2] = special_bit;
   buf->cur += registered ? 12 : 4;
@@ -271,12 +271,13 @@ SEXP nano_unserialize(unsigned char *buf, const size_t sz) {
 
   if (sz > 12) {
     switch (buf[0]) {
-    case 66:
-    case 88:
+    case 0x41:
+    case 0x42:
+    case 0x58:
       offset = 0;
       cur = 0;
       goto resume;
-    case 7:
+    case 0x7:
       if (buf[1]) {
         offset = *(uint64_t *) (buf + 4);
         if (offset) {
