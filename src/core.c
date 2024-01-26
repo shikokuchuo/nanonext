@@ -83,6 +83,16 @@ static void nano_read_bytes(R_inpstream_t stream, void *dst, int len) {
 
 }
 
+static int nano_read_char(R_inpstream_t stream) {
+
+  nano_buf *buf = (nano_buf *) stream->data;
+  if (buf->cur >= buf->len)
+    Rf_error("unserialization error");
+
+  return buf->buf[buf->cur++];
+
+}
+
 static SEXP rawOneString(unsigned char *bytes, R_xlen_t nbytes, R_xlen_t *np) {
 
   unsigned char *p;
@@ -302,7 +312,7 @@ SEXP nano_unserialize(unsigned char *buf, const size_t sz) {
     &input_stream,
     (R_pstream_data_t) &nbuf,
     R_pstream_any_format,
-    NULL,
+    nano_read_char,
     nano_read_bytes,
     offset ? nano_outHook : NULL,
     offset ? reflist : R_NilValue
