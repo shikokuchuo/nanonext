@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.12.0.9007</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.12.0.9008</span>
       </span>
     </div>
 
@@ -57,10 +57,12 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.12.0.9007" id="nanonext-01209007-development">nanonext 0.12.0.9007 (development)<a class="anchor" aria-label="anchor" href="#nanonext-01209007-development"></a></h2>
+<h2 class="page-header" data-toc-text="0.12.0.9008" id="nanonext-01209008-development">nanonext 0.12.0.9008 (development)<a class="anchor" aria-label="anchor" href="#nanonext-01209008-development"></a></h2>
+<p><em>Please note this version contains breaking behavioural changes - see updates below.</em></p>
 <div class="section level5">
-<h5 id="updates-0-12-0-9007">Updates<a class="anchor" aria-label="anchor" href="#updates-0-12-0-9007"></a></h5>
-<ul><li>
+<h5 id="updates-0-12-0-9008">Updates<a class="anchor" aria-label="anchor" href="#updates-0-12-0-9008"></a></h5>
+<ul><li>Default blocking behaviour of <code><a href="../reference/send.html">send()</a></code> and <code><a href="../reference/recv.html">recv()</a></code> over Sockets and Contexts aligned to non-blocking (this change is facilitated by the introduction of synchronous context sends in NNG v1.6.0).</li>
+<li>
 <code><a href="../reference/ncurl.html">ncurl()</a></code>, <code><a href="../reference/ncurl_aio.html">ncurl_aio()</a></code> and <code><a href="../reference/ncurl_session.html">ncurl_session()</a></code> now restrict ‘header’ and ‘response’ arguments to character vectors only, no longer accepting lists (for safety and performance).</li>
 <li>SHA functions now strip the serialization header from serialized R objects. This ensures portability as the R version and native encoding information is written into the header. Note: hashes will be different to those obtained using prior versions of this package for serialized objects.</li>
 <li>

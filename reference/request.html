@@ -21,7 +21,7 @@ A signalling version of the function takes a 'conditionVariable' as an
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.12.0.9007</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.12.0.9008</span>
       </span>
     </div>
 
@@ -101,19 +101,19 @@ A signalling version of the function takes a 'conditionVariable' as an
 
 
 <dt>send_mode</dt>
-<dd><p>[default 'serial'] one of 'serial' (1L) to send serialised R
-objects, 'raw' (2L) to send atomic vectors of any type as a raw byte
-vector, or 'next' (3L) - see 'Send Modes' section below. Either a string
-or equivalent integer value may be supplied.</p></dd>
+<dd><p>[default 'serial'] character value or integer equivalent -
+one of 'serial' (1L) to send serialised R objects, 'raw' (2L) to send
+atomic vectors of any type as a raw byte vector, or 'next' (3L) - see
+'Send Modes' section below.</p></dd>
 
 
 <dt>recv_mode</dt>
-<dd><p>[default 'serial'] one of 'serial' (1L), 'character' (2L),
-'complex' (3L), 'double' (4L), 'integer' (5L), 'logical' (6L), 'numeric'
-(7L), 'raw' (8L), or 'string' (9L). Either a string or equivalent integer
-value may be supplied. The default 'serial' means a serialised R object;
-for the other modes, received bytes are converted into the respective
-mode. 'string' is a faster alternative for length one character vectors.</p></dd>
+<dd><p>[default 'serial'] character value or integer equivalent -
+one of 'serial' (1L), 'character' (2L), 'complex' (3L), 'double' (4L),
+'integer' (5L), 'logical' (6L), 'numeric' (7L), 'raw' (8L), or 'string'
+(9L). The default 'serial' means a serialised R object; for the other
+modes, received bytes are converted into the respective mode. 'string' is
+a faster option for length one character vectors.</p></dd>
 
 
 <dt>timeout</dt>

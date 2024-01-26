@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.12.0.9007</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.12.0.9008</span>
       </span>
     </div>
 
@@ -76,11 +76,11 @@
 
 
 <dt>mode</dt>
-<dd><p>[default 'serial'] one of 'serial' (1L) to send serialised R
-objects, 'raw' (2L) to send atomic vectors of any type as a raw byte
-vector, or 'next' (3L) - see 'Send Modes' section below. Either a string
-or equivalent integer value may be supplied. For Streams, 'raw' is the
-only option and this argument is ignored.</p></dd>
+<dd><p>[default 'serial'] character value or integer equivalent - one of
+'serial' (1L) to send serialised R objects, 'raw' (2L) to send atomic
+vectors of any type as a raw byte vector, or 'next' (3L) - see 'Send
+Modes' section below. For Streams, 'raw' is the only option and this
+argument is ignored.</p></dd>
 
 
 <dt>block</dt>
@@ -102,18 +102,16 @@ block in milliseconds, after which the operation will time out.</p></dd>
     
 
 
-<p>For Sockets: the default behaviour is non-blocking with <code>block = FALSE</code>.
-    This will return immediately with an error if the message could not be
-    queued for sending. Certain protocol / transport combinations may limit
-    the number of messages that can be queued if they have yet to be received.</p>
-<p>For Contexts: the default behaviour is blocking with <code>block = TRUE</code>.
-    This will wait until the send has completed. Set to FALSE or an integer
-    timeout to ensure that the function returns under all scenarios.</p>
+<p>For Sockets and Contexts: the default behaviour is non-blocking with
+    <code>block = FALSE</code>. This will return immediately with an error if the
+    message could not be queued for sending. Certain protocol / transport
+    combinations may limit the number of messages that can be queued if they
+    have yet to be received.</p>
 <p>For Streams: the default behaviour is blocking with <code>block = TRUE</code>.
     This will wait until the send has completed. Set a timeout to ensure that
     the function returns under all scenarios. As the underlying
     implementation uses an asynchronous send with a wait, it is recommended
-    to set a positive integer value for <code>block</code> rather than FALSE.</p>
+    to set a small positive value for <code>block</code> rather than FALSE.</p>
     </div>
     <div id="send-modes">
     <h2>Send Modes</h2>
