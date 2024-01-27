@@ -115,7 +115,7 @@ SEXP rawToChar(const unsigned char *buf, const size_t sz) {
   int i, j;
   for (i = 0, j = -1; i < sz; i++) if (buf[i]) j = i; else break;
   if (sz - i > 1) {
-    Rf_warning("data could not be converted to a character string");
+    REprintf("data could not be converted to a character string\n");
     out = Rf_allocVector(RAWSXP, sz);
     memcpy(STDVEC_DATAPTR(out), buf, sz);
     return out;
@@ -296,7 +296,7 @@ SEXP nano_unserialize(unsigned char *buf, const size_t sz) {
     }
   }
 
-  Rf_warning("received data could not be unserialized");
+  REprintf("received data could not be unserialized\n");
   return nano_decode(buf, sz, 8);
 
   resume: ;
@@ -486,7 +486,7 @@ SEXP nano_decode(unsigned char *buf, const size_t sz, const int mod) {
   case 3:
     size = 2 * sizeof(double);
     if (sz % size) {
-      Rf_warning("received data could not be converted to complex");
+      REprintf("received data could not be converted to complex\n");
       data = Rf_allocVector(RAWSXP, sz);
     } else {
       data = Rf_allocVector(CPLXSXP, sz / size);
@@ -495,7 +495,7 @@ SEXP nano_decode(unsigned char *buf, const size_t sz, const int mod) {
   case 4:
     size = sizeof(double);
     if (sz % size) {
-      Rf_warning("received data could not be converted to double");
+      REprintf("received data could not be converted to double\n");
       data = Rf_allocVector(RAWSXP, sz);
     } else {
       data = Rf_allocVector(REALSXP, sz / size);
@@ -504,7 +504,7 @@ SEXP nano_decode(unsigned char *buf, const size_t sz, const int mod) {
   case 5:
     size = sizeof(int);
     if (sz % size) {
-      Rf_warning("received data could not be converted to integer");
+      REprintf("received data could not be converted to integer\n");
       data = Rf_allocVector(RAWSXP, sz);
     } else {
       data = Rf_allocVector(INTSXP, sz / size);
@@ -513,7 +513,7 @@ SEXP nano_decode(unsigned char *buf, const size_t sz, const int mod) {
   case 6:
     size = sizeof(int);
     if (sz % size) {
-      Rf_warning("received data could not be converted to logical");
+      REprintf("received data could not be converted to logical\n");
       data = Rf_allocVector(RAWSXP, sz);
     } else {
       data = Rf_allocVector(LGLSXP, sz / size);
@@ -522,7 +522,7 @@ SEXP nano_decode(unsigned char *buf, const size_t sz, const int mod) {
   case 7:
     size = sizeof(double);
     if (sz % size) {
-      Rf_warning("received data could not be converted to numeric");
+      REprintf("received data could not be converted to numeric\n");
       data = Rf_allocVector(RAWSXP, sz);
     } else {
       data = Rf_allocVector(REALSXP, sz / size);
