@@ -882,7 +882,7 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
 
     if (flags <= 0) {
 
-      xc = nng_send(*sock, buf.buf, buf.cur, flags ? NNG_FLAG_NONBLOCK : (*NANO_INTEGER(block) == 0) * NNG_FLAG_NONBLOCK);
+      xc = nng_send(*sock, buf.buf, buf.cur, flags ? NNG_FLAG_NONBLOCK : (*NANO_INTEGER(block) != 1) * NNG_FLAG_NONBLOCK);
       NANO_FREE(buf);
 
     } else {
@@ -938,7 +938,7 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
     }
 
     nng_aio_set_msg(aiop, msgp);
-    nng_aio_set_timeout(aiop, flags ? flags : (*NANO_INTEGER(block) == 1) * NNG_DURATION_DEFAULT);
+    nng_aio_set_timeout(aiop, flags < 0 ? 0 : flags > 0 : flags : (*NANO_INTEGER(block) == 1) * NNG_DURATION_DEFAULT);
     nng_ctx_send(*ctxp, aiop);
     NANO_FREE(buf);
     nng_aio_wait(aiop);
@@ -954,7 +954,7 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
         goto exitlevel1;
 
       if ((xc = nng_msg_append(msgp, buf.buf, buf.cur)) ||
-          (xc = nng_ctx_sendmsg(*ctxp, msgp, flags ? NNG_FLAG_NONBLOCK : (*NANO_INTEGER(block) == 0) * NNG_FLAG_NONBLOCK))) {
+          (xc = nng_ctx_sendmsg(*ctxp, msgp, flags ? NNG_FLAG_NONBLOCK : (*NANO_INTEGER(block) != 1) * NNG_FLAG_NONBLOCK))) {
         nng_msg_free(msgp);
         goto exitlevel1;
       }
@@ -1007,7 +1007,7 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
       goto exitlevel1;
     }
 
-    nng_aio_set_timeout(aiop, flags ? flags : (*NANO_INTEGER(block) == 1) * NNG_DURATION_DEFAULT);
+    nng_aio_set_timeout(aiop, flags ? flags : (*NANO_INTEGER(block) != 0) * NNG_DURATION_DEFAULT);
     nng_stream_send(sp, aiop);
     NANO_FREE(buf);
     nng_aio_wait(aiop);
@@ -1045,7 +1045,7 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP bytes) {
 
     if (flags <= 0) {
 
-      xc = nng_recv(*sock, &buf, &sz, NNG_FLAG_ALLOC + (flags != 0 || *NANO_INTEGER(block) == 0) * NNG_FLAG_NONBLOCK);
+      xc = nng_recv(*sock, &buf, &sz, NNG_FLAG_ALLOC + (flags < 0 || *NANO_INTEGER(block) != 1) * NNG_FLAG_NONBLOCK);
       if (xc)
         return mk_error(xc);
 
@@ -1084,7 +1084,7 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP bytes) {
 
     if ((xc = nng_aio_alloc(&aiop, NULL, NULL)))
       return mk_error(xc);
-    nng_aio_set_timeout(aiop, flags ? flags : (*NANO_INTEGER(block) == 1) * NNG_DURATION_DEFAULT);
+    nng_aio_set_timeout(aiop, flags < 0 ? 0 : flags > 0 ? flags : (*NANO_INTEGER(block) == 1) * NNG_DURATION_DEFAULT);
     nng_ctx_recv(*ctxp, aiop);
 
     nng_aio_wait(aiop);
@@ -1104,7 +1104,7 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP bytes) {
 
     if (flags <= 0) {
 
-      xc = nng_ctx_recvmsg(*ctxp, &msgp, (flags != 0 || *NANO_INTEGER(block) == 0) * NNG_FLAG_NONBLOCK);
+      xc = nng_ctx_recvmsg(*ctxp, &msgp, (flags < 0 || *NANO_INTEGER(block) != 1) * NNG_FLAG_NONBLOCK);
       if (xc)
         return mk_error(xc);
 
@@ -1159,7 +1159,7 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP bytes) {
       goto exitlevel1;
     }
 
-    nng_aio_set_timeout(aiop, flags ? flags : (*NANO_INTEGER(block) == 1) * NNG_DURATION_DEFAULT);
+    nng_aio_set_timeout(aiop, flags ? flags : (*NANO_INTEGER(block) != 0) * NNG_DURATION_DEFAULT);
     nng_stream_recv(*sp, aiop);
 
     nng_aio_wait(aiop);
