@@ -1,4 +1,4 @@
-# nanonext 0.12.0.9010 (development)
+# nanonext 0.12.0.9011 (development)
 
 *Please note this version contains breaking behavioural changes - see updates below.*
 

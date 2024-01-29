@@ -938,7 +938,7 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
     }
 
     nng_aio_set_msg(aiop, msgp);
-    nng_aio_set_timeout(aiop, flags < 0 ? 0 : flags > 0 : flags : (*NANO_INTEGER(block) == 1) * NNG_DURATION_DEFAULT);
+    nng_aio_set_timeout(aiop, flags < 0 ? 0 : flags > 0 ? flags : (*NANO_INTEGER(block) == 1) * NNG_DURATION_DEFAULT);
     nng_ctx_send(*ctxp, aiop);
     NANO_FREE(buf);
     nng_aio_wait(aiop);
