@@ -1496,13 +1496,12 @@ SEXP rnng_cv_recv_aio(SEXP con, SEXP cvar, SEXP mode, SEXP timeout, SEXP bytes, 
   const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) Rf_asInteger(timeout);
   nano_cv_aio *cv_raio;
   SEXP aio;
-  int mod, xc;
+  int mod, sock, xc;
 
   const SEXP ptrtag = R_ExternalPtrTag(con);
-  if (ptrtag == nano_SocketSymbol) {
+  if ((sock = ptrtag == nano_SocketSymbol) || ptrtag == nano_ContextSymbol) {
 
     mod = nano_matcharg(mode);
-    nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(con);
     cv_raio = R_Calloc(1, nano_cv_aio);
     cv_raio->cv = (nano_cv *) R_ExternalPtrAddr(cvar);
     cv_raio->type = RECVAIO;
@@ -1512,25 +1511,8 @@ SEXP rnng_cv_recv_aio(SEXP con, SEXP cvar, SEXP mode, SEXP timeout, SEXP bytes, 
       goto exitlevel1;
 
     nng_aio_set_timeout(cv_raio->aio, dur);
-    nng_recv_aio(*sock, cv_raio->aio);
-
-    PROTECT(aio = R_MakeExternalPtr(cv_raio, nano_AioSymbol, R_NilValue));
-    R_RegisterCFinalizerEx(aio, cvraio_finalizer, TRUE);
-
-  } else if (ptrtag == nano_ContextSymbol) {
-
-    mod = nano_matcharg(mode);
-    nng_ctx *ctxp = (nng_ctx *) R_ExternalPtrAddr(con);
-    cv_raio = R_Calloc(1, nano_cv_aio);
-    cv_raio->cv = (nano_cv *) R_ExternalPtrAddr(cvar);
-    cv_raio->type = RECVAIO;
-    cv_raio->mode = mod;
-
-    if ((xc = nng_aio_alloc(&cv_raio->aio, raio_complete_signal, cv_raio)))
-      goto exitlevel1;
-
-    nng_aio_set_timeout(cv_raio->aio, dur);
-    nng_ctx_recv(*ctxp, cv_raio->aio);
+    sock ? nng_recv_aio(*(nng_socket *) R_ExternalPtrAddr(con), cv_raio->aio) :
+           nng_ctx_recv(*(nng_ctx *) R_ExternalPtrAddr(con), cv_raio->aio);
 
     PROTECT(aio = R_MakeExternalPtr(cv_raio, nano_AioSymbol, R_NilValue));
     R_RegisterCFinalizerEx(aio, cvraio_finalizer, TRUE);
