@@ -601,10 +601,10 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
   nano_aio *saio;
   SEXP aio;
   nano_buf buf;
-  int xc;
+  int sock, xc;
 
   const SEXP ptrtag = R_ExternalPtrTag(con);
-  if (ptrtag == nano_SocketSymbol) {
+  if ((sock = ptrtag == nano_SocketSymbol) || ptrtag == nano_ContextSymbol) {
 
     switch (nano_encodes(mode)) {
     case 1:
@@ -615,7 +615,6 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
       nano_serialize_next(&buf, data); break;
     }
 
-    nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(con);
     nng_msg *msg;
     saio = R_Calloc(1, nano_aio);
     saio->type = SENDAIO;
@@ -631,40 +630,8 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
 
     nng_aio_set_msg(saio->aio, msg);
     nng_aio_set_timeout(saio->aio, dur);
-    nng_send_aio(*sock, saio->aio);
-    NANO_FREE(buf);
-
-    PROTECT(aio = R_MakeExternalPtr(saio, nano_AioSymbol, R_NilValue));
-    R_RegisterCFinalizerEx(aio, saio_finalizer, TRUE);
-
-  } else if (ptrtag == nano_ContextSymbol) {
-
-    switch (nano_encodes(mode)) {
-    case 1:
-      nano_serialize(&buf, data); break;
-    case 2:
-      nano_encode(&buf, data); break;
-    default:
-      nano_serialize_next(&buf, data); break;
-    }
-
-    nng_ctx *ctxp = (nng_ctx *) R_ExternalPtrAddr(con);
-    nng_msg *msg;
-    saio = R_Calloc(1, nano_aio);
-    saio->type = SENDAIO;
-
-    if ((xc = nng_msg_alloc(&msg, 0)))
-      goto exitlevel1;
-
-    if ((xc = nng_msg_append(msg, buf.buf, buf.cur)) ||
-        (xc = nng_aio_alloc(&saio->aio, saio_complete, saio))) {
-      nng_msg_free(msg);
-      goto exitlevel1;
-    }
-
-    nng_aio_set_msg(saio->aio, msg);
-    nng_aio_set_timeout(saio->aio, dur);
-    nng_ctx_send(*ctxp, saio->aio);
+    sock ? nng_send_aio(*(nng_socket *) R_ExternalPtrAddr(con), saio->aio) :
+           nng_ctx_send(*(nng_ctx *) R_ExternalPtrAddr(con), saio->aio);
     NANO_FREE(buf);
 
     PROTECT(aio = R_MakeExternalPtr(saio, nano_AioSymbol, R_NilValue));
@@ -734,13 +701,12 @@ SEXP rnng_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP bytes, SEXP clo) {
   const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) Rf_asInteger(timeout);
   nano_aio *raio;
   SEXP aio;
-  int mod, xc;
+  int mod, sock, xc;
 
   const SEXP ptrtag = R_ExternalPtrTag(con);
-  if (ptrtag == nano_SocketSymbol) {
+  if ((sock = ptrtag == nano_SocketSymbol) || ptrtag == nano_ContextSymbol) {
 
     mod = nano_matcharg(mode);
-    nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(con);
     raio = R_Calloc(1, nano_aio);
     raio->type = RECVAIO;
     raio->mode = mod;
@@ -749,24 +715,8 @@ SEXP rnng_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP bytes, SEXP clo) {
       goto exitlevel1;
 
     nng_aio_set_timeout(raio->aio, dur);
-    nng_recv_aio(*sock, raio->aio);
-
-    PROTECT(aio = R_MakeExternalPtr(raio, nano_AioSymbol, R_NilValue));
-    R_RegisterCFinalizerEx(aio, raio_finalizer, TRUE);
-
-  } else if (ptrtag == nano_ContextSymbol) {
-
-    mod = nano_matcharg(mode);
-    nng_ctx *ctxp = (nng_ctx *) R_ExternalPtrAddr(con);
-    raio = R_Calloc(1, nano_aio);
-    raio->type = RECVAIO;
-    raio->mode = mod;
-
-    if ((xc = nng_aio_alloc(&raio->aio, raio_complete, raio)))
-      goto exitlevel1;
-
-    nng_aio_set_timeout(raio->aio, dur);
-    nng_ctx_recv(*ctxp, raio->aio);
+    sock ? nng_recv_aio(*(nng_socket *) R_ExternalPtrAddr(con), raio->aio) :
+           nng_ctx_recv(*(nng_ctx *) R_ExternalPtrAddr(con), raio->aio);
 
     PROTECT(aio = R_MakeExternalPtr(raio, nano_AioSymbol, R_NilValue));
     R_RegisterCFinalizerEx(aio, raio_finalizer, TRUE);
