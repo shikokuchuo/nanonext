@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.12.0.9012</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.12.0.9013</span>
       </span>
     </div>
 
@@ -57,10 +57,10 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.12.0.9012" id="nanonext-01209012-development">nanonext 0.12.0.9012 (development)<a class="anchor" aria-label="anchor" href="#nanonext-01209012-development"></a></h2>
+<h2 class="page-header" data-toc-text="0.12.0.9013" id="nanonext-01209013-development">nanonext 0.12.0.9013 (development)<a class="anchor" aria-label="anchor" href="#nanonext-01209013-development"></a></h2>
 <p><em>Please note this version contains breaking behavioural changes - see updates below.</em></p>
 <div class="section level5">
-<h5 id="updates-0-12-0-9012">Updates<a class="anchor" aria-label="anchor" href="#updates-0-12-0-9012"></a></h5>
+<h5 id="updates-0-12-0-9013">Updates<a class="anchor" aria-label="anchor" href="#updates-0-12-0-9013"></a></h5>
 <ul><li>Default blocking behaviour of <code><a href="../reference/send.html">send()</a></code> and <code><a href="../reference/recv.html">recv()</a></code> over Sockets and Contexts aligned to non-blocking (this change is facilitated by the introduction of synchronous context sends in NNG v1.6.0).</li>
 <li>Unserialization / decoding errors where the received message cannot be translated to the specified mode will output a message to stderr, but no longer generate a warning.</li>
 <li>
@@ -70,6 +70,7 @@
 <code><a href="../reference/messenger.html">messenger()</a></code> specifying ‘auth’ now works reliably on endpoints using different R versions/platforms due to the above hashing portability fix.</li>
 <li>
 <code>sha1()</code> is removed as a hash option.</li>
+<li>Internal performance enhancements.</li>
 </ul></div>
 </div>
     <div class="section level2">
