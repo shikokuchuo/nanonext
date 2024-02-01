@@ -1260,8 +1260,8 @@ SEXP rnng_request_impl(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP t
   raio->next = saio;
 
   if ((xc = nng_aio_alloc(&raio->aio, signal ? request_complete_signal : raio_complete, raio))) {
-    nng_aio_free(saio->aio);
     R_Free(raio);
+    nng_aio_free(saio->aio);
     goto exitlevel1;
   }
 
