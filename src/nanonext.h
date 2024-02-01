@@ -87,6 +87,7 @@ typedef struct nano_aio_s {
   int mode;
   int result;
   void *data;
+  void *next;
 } nano_aio;
 
 typedef struct nano_cv_s {
@@ -195,6 +196,7 @@ void socket_finalizer(SEXP);
 SEXP rnng_aio_call(SEXP);
 SEXP rnng_aio_get_msg(SEXP);
 SEXP rnng_aio_get_msg2(SEXP);
+SEXP rnng_aio_get_msg3(SEXP);
 SEXP rnng_aio_http(SEXP, SEXP, SEXP);
 SEXP rnng_aio_result(SEXP);
 SEXP rnng_aio_stop(SEXP);
@@ -206,8 +208,6 @@ SEXP rnng_ctx_close(SEXP);
 SEXP rnng_ctx_create(SEXP);
 SEXP rnng_ctx_open(SEXP);
 SEXP rnng_cv_alloc(void);
-SEXP rnng_cv_recv_aio(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
-SEXP rnng_cv_request(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 SEXP rnng_cv_reset(SEXP);
 SEXP rnng_cv_signal(SEXP);
 SEXP rnng_cv_until(SEXP, SEXP);
@@ -238,7 +238,9 @@ SEXP rnng_random(SEXP, SEXP);
 SEXP rnng_reap(SEXP);
 SEXP rnng_recv(SEXP, SEXP, SEXP, SEXP);
 SEXP rnng_recv_aio(SEXP, SEXP, SEXP, SEXP, SEXP);
+SEXP rnng_recv_aio_signal(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 SEXP rnng_request(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
+SEXP rnng_request_signal(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 SEXP rnng_send(SEXP, SEXP, SEXP, SEXP);
 SEXP rnng_send_aio(SEXP, SEXP, SEXP, SEXP, SEXP);
 SEXP rnng_set_opt(SEXP, SEXP, SEXP);

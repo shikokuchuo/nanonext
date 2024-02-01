@@ -1,4 +1,4 @@
-# Copyright (C) 2022-2023 Hibiki AI Limited <info@hibiki-ai.com>
+# Copyright (C) 2022-2024 Hibiki AI Limited <info@hibiki-ai.com>
 #
 # This file is part of nanonext.
 #
@@ -157,7 +157,7 @@ recv_aio_signal <- function(con,
                                      "integer", "logical", "numeric", "raw", "string"),
                             timeout = NULL,
                             n = 65536L)
-  data <- .Call(rnng_cv_recv_aio, con, cv, mode, timeout, n, environment())
+  data <- .Call(rnng_recv_aio_signal, con, cv, mode, timeout, n, environment())
 
 # Core aio functions -----------------------------------------------------------
 
