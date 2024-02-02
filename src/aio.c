@@ -710,7 +710,8 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
 
 }
 
-SEXP rnng_recv_aio_impl(SEXP con, SEXP mode, SEXP timeout, SEXP bytes, SEXP clo, nano_cv *ncv) {
+SEXP rnng_recv_aio_impl(const SEXP con, const SEXP mode, const SEXP timeout,
+                        const SEXP bytes, const SEXP clo, nano_cv *ncv) {
 
   const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) Rf_asInteger(timeout);
   const int signal = ncv != NULL;
@@ -970,8 +971,7 @@ SEXP rnng_aio_http(SEXP env, SEXP response, SEXP type) {
   nano_handle *handle = (nano_handle *) haio->data;
 
   int chk_resp = response != R_NilValue && TYPEOF(response) == STRSXP;
-  const uint16_t code = nng_http_res_get_status(handle->res);
-  const int relo = code >= 300 && code < 400;
+  const uint16_t code = nng_http_res_get_status(handle->res), relo = code >= 300 && code < 400;
   Rf_defineVar(nano_ResultSymbol, Rf_ScalarInteger(code), env);
 
   if (relo) {
@@ -1216,7 +1216,8 @@ SEXP rnng_ncurl_session_close(SEXP session) {
 
 // request ---------------------------------------------------------------------
 
-SEXP rnng_request_impl(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeout, SEXP clo, nano_cv *ncv) {
+SEXP rnng_request_impl(const SEXP con, const SEXP data, const SEXP sendmode,
+                       const SEXP recvmode, const SEXP timeout, const SEXP clo, nano_cv *ncv) {
 
   const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) Rf_asInteger(timeout);
   const int mod = nano_matcharg(recvmode);

@@ -168,8 +168,8 @@ SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP follow, SEXP method, SEXP headers,
   nng_http_res *res;
   nng_aio *aio;
   nng_tls_config *cfg = NULL;
-  uint16_t code;
-  int relo, xc;
+  uint16_t code, relo;
+  int xc;
 
   if ((xc = nng_url_parse(&url, addr)))
     goto exitlevel1;

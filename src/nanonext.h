@@ -161,7 +161,7 @@ typedef struct nano_cv_s {
 #define NANONEXT_LD_STRLEN 21
 #define NANO_ALLOC(x, sz)                                      \
   (x)->buf = R_Calloc(sz, unsigned char);                      \
-  (x)->len = sz;                                    \
+  (x)->len = sz;                                               \
   (x)->cur = 0
 #define NANO_INIT(x, ptr, sz)                                  \
   (x)->buf = ptr;                                              \
