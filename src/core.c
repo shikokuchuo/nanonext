@@ -62,7 +62,7 @@ static void nano_write_bytes(R_outpstream_t stream, void *src, int len) {
       Rf_error("serialization exceeds max length of raw vector");
     }
     do {
-      buf->len <<= 1;
+      buf->len = buf->len * (double) (buf->len < 1073741824 ? 2 : 1.2);
     } while (buf->len < req);
     buf->buf = R_Realloc(buf->buf, buf->len, unsigned char);
   }
