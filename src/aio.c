@@ -663,7 +663,7 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
     saio->type = IOV_SENDAIO;
     saio->data = R_Calloc(buf.cur, unsigned char);
     memcpy(saio->data, buf.buf, buf.cur);
-    iov.iov_len = buf.cur - TYPEOF(data) == STRSXP * nst->textframes;
+    iov.iov_len = buf.cur - nst->textframes;
     iov.iov_buf = saio->data;
 
     if ((xc = nng_aio_alloc(&saio->aio, isaio_complete, saio))) {

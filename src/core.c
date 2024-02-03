@@ -996,7 +996,7 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
     nng_aio *aiop;
     nng_iov iov;
 
-    iov.iov_len = buf.cur - TYPEOF(data) == STRSXP * nst->textframes;
+    iov.iov_len = buf.cur - nst->textframes;
     iov.iov_buf = buf.buf;
 
     if ((xc = nng_aio_alloc(&aiop, NULL, NULL)))
