@@ -76,8 +76,7 @@ static void nano_skip_bytes(R_outpstream_t stream, void *src, int len) {
 
   nano_buf *buf = (nano_buf *) stream->data;
   if (buf->len <= NANONEXT_SERIAL_HEADERS) {
-    buf->len--;
-    buf->len = buf->len ? buf->len : NANONEXT_INIT_BUFSIZE;
+    buf->len = --buf->len ? buf->len : NANONEXT_INIT_BUFSIZE;
     return;
   }
 
