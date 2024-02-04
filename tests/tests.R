@@ -518,7 +518,7 @@ nanotest(sha256("test") == "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d
 nanotest(length(sha256(c("one", "two"), key = "PRIVATE_key", convert = FALSE)) == 32L)
 nanotest(nchar(sha512(c(1.1, 2.2), as.raw(1L))) == 128L)
 nanotest(length(sha512("testing", convert = FALSE)) == 64L)
-nanotest(length(sha384(as.list(random(1e3L)), "KEY", convert = FALSE)) == 48L)
+nanotest(length(sha384(runif(5e3L), "KEY", convert = FALSE)) == 48L)
 nanotest(nchar(sha384(7000L, key = NULL, convert = TRUE)) == 96L)
 nanotest(length(sha224(c("one", "two"), key = "PRIVATE_key", convert = FALSE)) == 28L)
 nanotest(sha224(as.raw(0L)) == "fff9292b4201617bdc4d3053fce02734166a683d7d858a7f5f59b073")

@@ -117,7 +117,6 @@ typedef struct nano_cv_s {
 #include <mbedtls/sha512.h>
 #include <mbedtls/version.h>
 
-#define NANO_SHLEN 23
 #define SHA224_KEY_SIZE 28
 #define SHA256_KEY_SIZE 32
 #define SHA384_KEY_SIZE 48
@@ -158,6 +157,7 @@ typedef struct nano_cv_s {
 #define ERROR_RET(xc) { Rf_warning("%d | %s", xc, nng_strerror(xc)); return mk_error(xc); }
 #define NANONEXT_INIT_BUFSIZE 8192
 #define NANONEXT_SERIAL_VER 3
+#define NANONEXT_SERIAL_HEADERS 6
 #define NANONEXT_LD_STRLEN 21
 #define NANO_ALLOC(x, sz)                                      \
   (x)->buf = R_Calloc(sz, unsigned char);                      \
@@ -186,7 +186,7 @@ int nano_matcharg(const SEXP);
 int nano_matchargs(const SEXP);
 void nano_serialize(nano_buf *, const SEXP);
 void nano_serialize_next(nano_buf *, const SEXP);
-void nano_serialize_xdr(nano_buf *, const SEXP);
+void nano_serialize_xdr(nano_buf *, const SEXP, const int);
 SEXP nano_unserialize(unsigned char *, const size_t);
 SEXP rawToChar(const unsigned char *, const size_t);
 void dialer_finalizer(SEXP);

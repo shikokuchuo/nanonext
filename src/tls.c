@@ -57,11 +57,7 @@ static nano_buf nano_any_buf(const SEXP x, const int strip) {
     }
   }
 
-  nano_serialize_xdr(&buf, x);
-  if (strip) {
-    buf.cur = buf.cur - NANO_SHLEN;
-    memmove(buf.buf, buf.buf + NANO_SHLEN, buf.cur);
-  }
+  nano_serialize_xdr(&buf, x, strip);
 
   return buf;
 

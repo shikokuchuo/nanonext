@@ -36,9 +36,9 @@ Returns a SHA-256, SHA-224, SHA-384, or SHA-512 hash or HMAC of the supplied
 For arguments 'x' and 'key', a scalar string or raw vector (with no
     attributes) is hashed 'as is'.
 
-    All other objects are first serialized using R serialization version 3,
-    big-endian representation, with the headers stripped (for portability as
-    these contain the R version number and native encoding information).
+    All other objects are first serialized using R serialization v3 XDR, with
+    headers skipped (for portability as these contain R version and encoding
+    information).
 
     The result of hashing is always a byte sequence, which is converted to a
     character string hex representation if 'convert' is TRUE, or returned as

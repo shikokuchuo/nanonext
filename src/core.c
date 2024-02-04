@@ -42,18 +42,44 @@ SEXP mk_error(const int xc) {
 
 }
 
-SEXP eval_safe (void *call) {
+static SEXP eval_safe (void *call) {
   return Rf_eval((SEXP) call, R_GlobalEnv);
 }
 
-void rl_reset(void *nothing, Rboolean jump) {
-  if (jump && nothing == NULL)
+static void rl_reset(void *data, Rboolean jump) {
+  if (jump && data == NULL)
     SET_TAG(nano_refHook, R_NilValue);
 }
 
 static void nano_write_bytes(R_outpstream_t stream, void *src, int len) {
 
   nano_buf *buf = (nano_buf *) stream->data;
+
+  size_t req = buf->cur + (size_t) len;
+  if (req > buf->len) {
+    if (req > R_XLEN_T_MAX) {
+      if (buf->len) R_Free(buf->buf);
+      Rf_error("serialization exceeds max length of raw vector");
+    }
+    do {
+      buf->len = buf->len * (double) (buf->len > 268435456 ? 1.2 : 2);
+    } while (buf->len < req);
+    buf->buf = R_Realloc(buf->buf, buf->len, unsigned char);
+  }
+
+  memcpy(buf->buf + buf->cur, src, len);
+  buf->cur += len;
+
+}
+
+static void nano_skip_bytes(R_outpstream_t stream, void *src, int len) {
+
+  nano_buf *buf = (nano_buf *) stream->data;
+  if (buf->len <= NANONEXT_SERIAL_HEADERS) {
+    buf->len--;
+    buf->len = buf->len ? buf->len : NANONEXT_INIT_BUFSIZE;
+    return;
+  }
 
   size_t req = buf->cur + (size_t) len;
   if (req > buf->len) {
@@ -243,9 +269,11 @@ void nano_serialize_next(nano_buf *buf, const SEXP object) {
 
 }
 
-void nano_serialize_xdr(nano_buf *buf, const SEXP object) {
+void nano_serialize_xdr(nano_buf *buf, const SEXP object, const int skip) {
 
   NANO_ALLOC(buf, NANONEXT_INIT_BUFSIZE);
+  buf->len = skip ? NANONEXT_SERIAL_HEADERS : buf->len;
+
   struct R_outpstream_st output_stream;
 
   R_InitOutPStream(
@@ -254,7 +282,7 @@ void nano_serialize_xdr(nano_buf *buf, const SEXP object) {
     R_pstream_xdr_format,
     NANONEXT_SERIAL_VER,
     NULL,
-    nano_write_bytes,
+    skip ? nano_skip_bytes : nano_write_bytes,
     NULL,
     R_NilValue
   );
