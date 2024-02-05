@@ -666,16 +666,11 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
     iov.iov_len = buf.cur - nst->textframes;
     iov.iov_buf = saio->data;
 
-    if ((xc = nng_aio_alloc(&saio->aio, isaio_complete, saio))) {
-      R_Free(saio->data);
-      goto exitlevel1;
-    }
+    if ((xc = nng_aio_alloc(&saio->aio, isaio_complete, saio)))
+      goto exitlevel2;
 
-    if ((xc = nng_aio_set_iov(saio->aio, 1u, &iov))) {
-      nng_aio_free(saio->aio);
-      R_Free(saio->data);
-      goto exitlevel1;
-    }
+    if ((xc = nng_aio_set_iov(saio->aio, 1u, &iov)))
+      goto exitlevel3;
 
     nng_aio_set_timeout(saio->aio, dur);
     nng_stream_send(sp, saio->aio);
@@ -703,6 +698,10 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
   UNPROTECT(3);
   return env;
 
+  exitlevel3:
+  nng_aio_free(saio->aio);
+  exitlevel2:
+  R_Free(saio->data);
   exitlevel1:
   R_Free(saio);
   NANO_FREE(buf);
@@ -1225,6 +1224,7 @@ SEXP rnng_request_impl(const SEXP con, const SEXP data, const SEXP sendmode,
   nng_ctx *ctx = (nng_ctx *) R_ExternalPtrAddr(con);
   SEXP aio, env, fun;
   nano_buf buf;
+  nano_aio *saio, *raio;
   nng_msg *msg;
   int xc;
 
@@ -1237,7 +1237,7 @@ SEXP rnng_request_impl(const SEXP con, const SEXP data, const SEXP sendmode,
     nano_serialize_next(&buf, data); break;
   }
 
-  nano_aio *saio = R_Calloc(1, nano_aio);
+  saio = R_Calloc(1, nano_aio);
 #ifdef NANONEXT_LEGACY_NNG
   saio->data = ctx;
 #endif
@@ -1255,16 +1255,13 @@ SEXP rnng_request_impl(const SEXP con, const SEXP data, const SEXP sendmode,
   nng_aio_set_msg(saio->aio, msg);
   nng_ctx_send(*ctx, saio->aio);
 
-  nano_aio *raio = R_Calloc(1, nano_aio);
+  raio = R_Calloc(1, nano_aio);
   raio->type = RECVAIO;
   raio->mode = mod;
   raio->next = saio;
 
-  if ((xc = nng_aio_alloc(&raio->aio, signal ? request_complete_signal : raio_complete, raio))) {
-    R_Free(raio);
-    nng_aio_free(saio->aio);
-    goto exitlevel1;
-  }
+  if ((xc = nng_aio_alloc(&raio->aio, signal ? request_complete_signal : raio_complete, raio)))
+    goto exitlevel2;
 
   nng_aio_set_timeout(raio->aio, dur);
   nng_ctx_recv(*ctx, raio->aio);
@@ -1287,6 +1284,9 @@ SEXP rnng_request_impl(const SEXP con, const SEXP data, const SEXP sendmode,
   UNPROTECT(3);
   return env;
 
+  exitlevel2:
+  R_Free(raio);
+  nng_aio_free(saio->aio);
   exitlevel1:
   R_Free(saio);
   NANO_FREE(buf);

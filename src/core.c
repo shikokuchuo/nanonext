@@ -62,7 +62,7 @@ static void nano_write_bytes(R_outpstream_t stream, void *src, int len) {
       Rf_error("serialization exceeds max length of raw vector");
     }
     do {
-      buf->len = buf->len * (double) (buf->len > 268435456 ? 1.2 : 2);
+      buf->len += buf->len > NANONEXT_SERIAL_THR ? NANONEXT_SERIAL_THR : buf->len;
     } while (buf->len < req);
     buf->buf = R_Realloc(buf->buf, buf->len, unsigned char);
   }
@@ -75,25 +75,11 @@ static void nano_write_bytes(R_outpstream_t stream, void *src, int len) {
 static void nano_skip_bytes(R_outpstream_t stream, void *src, int len) {
 
   nano_buf *buf = (nano_buf *) stream->data;
-  if (buf->len <= NANONEXT_SERIAL_HEADERS) {
+  if (buf->len < NANONEXT_INIT_BUFSIZE) {
     buf->len = --buf->len ? buf->len : NANONEXT_INIT_BUFSIZE;
-    return;
+  } else {
+    nano_write_bytes(stream, src, len);
   }
-
-  size_t req = buf->cur + (size_t) len;
-  if (req > buf->len) {
-    if (req > R_XLEN_T_MAX) {
-      if (buf->len) R_Free(buf->buf);
-      Rf_error("serialization exceeds max length of raw vector");
-    }
-    do {
-      buf->len = buf->len * (double) (buf->len > 268435456 ? 1.2 : 2);
-    } while (buf->len < req);
-    buf->buf = R_Realloc(buf->buf, buf->len, unsigned char);
-  }
-
-  memcpy(buf->buf + buf->cur, src, len);
-  buf->cur += len;
 
 }
 
@@ -271,7 +257,7 @@ void nano_serialize_next(nano_buf *buf, const SEXP object) {
 void nano_serialize_xdr(nano_buf *buf, const SEXP object, const int skip) {
 
   NANO_ALLOC(buf, NANONEXT_INIT_BUFSIZE);
-  buf->len = skip ? NANONEXT_SERIAL_HEADERS : buf->len;
+  if (skip) buf->len = NANONEXT_SERIAL_HEADERS;
 
   struct R_outpstream_st output_stream;
 
@@ -1074,7 +1060,7 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP bytes) {
 
       xc = nng_recv(*sock, &buf, &sz, NNG_FLAG_ALLOC + (flags < 0 || *NANO_INTEGER(block) != 1) * NNG_FLAG_NONBLOCK);
       if (xc)
-        return mk_error(xc);
+        goto exitlevel1;
 
       res = nano_decode(buf, sz, mod);
       nng_free(buf, sz);
@@ -1083,13 +1069,13 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP bytes) {
 
       nng_aio *aiop;
       if ((xc = nng_aio_alloc(&aiop, NULL, NULL)))
-        return mk_error(xc);
+        goto exitlevel1;
       nng_aio_set_timeout(aiop, flags);
       nng_recv_aio(*sock, aiop);
       nng_aio_wait(aiop);
       if ((xc = nng_aio_result(aiop))) {
         nng_aio_free(aiop);
-        return mk_error(xc);
+        goto exitlevel1;
       }
       nng_msg *msgp = nng_aio_get_msg(aiop);
       nng_aio_free(aiop);
@@ -1110,14 +1096,14 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP bytes) {
     nng_aio *aiop;
 
     if ((xc = nng_aio_alloc(&aiop, NULL, NULL)))
-      return mk_error(xc);
+      goto exitlevel1;
     nng_aio_set_timeout(aiop, flags < 0 ? 0 : flags > 0 ? flags : (*NANO_INTEGER(block) == 1) * NNG_DURATION_DEFAULT);
     nng_ctx_recv(*ctxp, aiop);
 
     nng_aio_wait(aiop);
     if ((xc = nng_aio_result(aiop))) {
       nng_aio_free(aiop);
-      return mk_error(xc);
+      goto exitlevel1;
     }
 
     msgp = nng_aio_get_msg(aiop);
@@ -1133,7 +1119,7 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP bytes) {
 
       xc = nng_ctx_recvmsg(*ctxp, &msgp, (flags < 0 || *NANO_INTEGER(block) != 1) * NNG_FLAG_NONBLOCK);
       if (xc)
-        return mk_error(xc);
+        goto exitlevel1;
 
       buf = nng_msg_body(msgp);
       sz = nng_msg_len(msgp);
@@ -1145,14 +1131,14 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP bytes) {
       nng_aio *aiop;
 
       if ((xc = nng_aio_alloc(&aiop, NULL, NULL)))
-        return mk_error(xc);
+        goto exitlevel1;
       nng_aio_set_timeout(aiop, flags);
       nng_ctx_recv(*ctxp, aiop);
 
       nng_aio_wait(aiop);
       if ((xc = nng_aio_result(aiop))) {
         nng_aio_free(aiop);
-        return mk_error(xc);
+        goto exitlevel1;
       }
 
       msgp = nng_aio_get_msg(aiop);
@@ -1179,11 +1165,11 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP bytes) {
     iov.iov_buf = buf;
 
     if ((xc = nng_aio_alloc(&aiop, NULL, NULL)))
-      goto exitlevel1;
+      goto exitlevel2;
 
     if ((xc = nng_aio_set_iov(aiop, 1u, &iov))) {
       nng_aio_free(aiop);
-      goto exitlevel1;
+      goto exitlevel2;
     }
 
     nng_aio_set_timeout(aiop, flags ? flags : (*NANO_INTEGER(block) != 0) * NNG_DURATION_DEFAULT);
@@ -1192,7 +1178,7 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP bytes) {
     nng_aio_wait(aiop);
     if ((xc = nng_aio_result(aiop))) {
       nng_aio_free(aiop);
-      goto exitlevel1;
+      goto exitlevel2;
     }
 
     sz = nng_aio_count(aiop);
@@ -1206,8 +1192,9 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP bytes) {
 
   return res;
 
-  exitlevel1:
+  exitlevel2:
   R_Free(buf);
+  exitlevel1:
   return mk_error(xc);
 
 }

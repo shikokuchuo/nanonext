@@ -158,6 +158,7 @@ typedef struct nano_cv_s {
 #define NANONEXT_INIT_BUFSIZE 8192
 #define NANONEXT_SERIAL_VER 3
 #define NANONEXT_SERIAL_HEADERS 6
+#define NANONEXT_SERIAL_THR 134217728
 #define NANONEXT_LD_STRLEN 21
 #define NANO_ALLOC(x, sz)                                      \
   (x)->buf = R_Calloc(sz, unsigned char);                      \
