@@ -206,7 +206,7 @@ v1.7.0 and ‘libmbedtls’ v3.5.2 will be automatically compiled from the
 package sources during installation.
 
 For previous R versions, pre-compiled ‘libnng’ v1.7.0 and ‘libmbedtls’
-v3.5.1 libraries are downloaded and used for installation instead.
+v3.5.2 libraries are downloaded and used for installation instead.
 
 ### Acknowledgements and Links
 
