@@ -2,7 +2,7 @@
 
 # Library versions
 LIB_VER="f338f50"
-TLS_VER="edb8fec"
+TLS_VER="daca7a3"
 
 # Initialise
 PKG_CFLAGS=""

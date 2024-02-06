@@ -1,4 +1,4 @@
-# nanonext 0.12.0.9020 (development)
+# nanonext 0.12.0.9021 (development)
 
 *Please note this version contains breaking behavioural changes - see updates below.*
 
@@ -11,6 +11,7 @@
 * `messenger()` specifying 'auth' now works reliably on endpoints using different R versions/platforms due to the above hashing portability fix.
 * `sha1()` is removed as a hash option.
 * Internal memory-efficiency and performance enhancements.
+* Upgrades bundled 'libmbedtls' to v3.5.2.
 
 # nanonext 0.12.0
 
