@@ -13,7 +13,7 @@ certificate chain (and revocation list if present), used to validate
 certificates presented by peers,\cr
 \strong{or} a length 2 character vector comprising [i] the certificate
 authority certificate chain and [ii] the certificate revocation list, or
-empty character \code{''} if not applicable.}
+empty string \code{''} if not applicable.}
 
 \item{server}{\strong{either} the character path to a file containing
 the PEM-encoded TLS certificate and associated private key (may contain

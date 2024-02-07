@@ -1,15 +1,18 @@
-# nanonext 0.12.0.9021 (development)
-
-*Please note this version contains breaking behavioural changes - see updates below.*
+# nanonext 0.13.0
 
 #### Updates
 
-* Default blocking behaviour of `send()` and `recv()` over Sockets and Contexts aligned to non-blocking (this change is facilitated by the introduction of synchronous context sends in NNG v1.6.0).
-* Unserialization / decoding errors where the received message cannot be translated to the specified mode will output a message to stderr, but no longer generate a warning.
+*Please note the following potentially breaking changes, and only update when ready:*
+
+* Default behaviour of `send()` and `recv()` aligned to non-blocking for both Sockets and Contexts (facilitated by synchronous context sends in NNG since v1.6.0).
 * `ncurl()`, `ncurl_aio()` and `ncurl_session()` now restrict 'header' and 'response' arguments to character vectors only, no longer accepting lists (for safety and performance).
-* SHA functions now skip the serialization header for serialized R objects. This ensures portability as these contain R version and encoding information. Note: hashes will be different to those obtained using prior versions of this package for serialized objects.
-* `messenger()` specifying 'auth' now works reliably on endpoints using different R versions/platforms due to the above hashing portability fix.
+* Unserialization / decoding errors where the received message cannot be translated to the specified mode will output a message to stderr, but no longer generate a warning.
+* SHA functions now skip serialization headers for serialized R objects (ensuring portability as these contain R version and encoding information). This means that, for serialized objects, hashes will be different to those obtained using prior package versions.
 * `sha1()` is removed as a hash option.
+
+*Other changes:*
+
+* `messenger()` specifying 'auth' now works reliably on endpoints using different R versions/platforms due to the above hashing portability fix.
 * Internal memory-efficiency and performance enhancements.
 * Upgrades bundled 'libmbedtls' to v3.5.2.
 
