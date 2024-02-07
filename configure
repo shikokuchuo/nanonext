@@ -15,7 +15,7 @@ CC=`"${R_HOME}/bin/R" CMD config CC`
 CFLAGS=`"${R_HOME}/bin/R" CMD config CFLAGS`
 LDFLAGS=`"${R_HOME}/bin/R" CMD config LDFLAGS`
 
-MACOSX_DEPLOYMENT_TARGET=`echo $CC | tr -dc '[. [:digit:]]'`
+MACOSX_DEPLOYMENT_TARGET=`echo $CC | grep -Eo '[[:digit:]]+([.][[:digit:]]+)$'`
 
 export CC
 export MACOSX_DEPLOYMENT_TARGET
