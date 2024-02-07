@@ -16,9 +16,8 @@ export CC
 
 if [ -z "$MACOSX_DEPLOYMENT_TARGET" ]; then
 MACOSX_DEPLOYMENT_TARGET=`echo $CC | grep -Eo '[[:digit:]]+([.][[:digit:]]+)$'`
-fi
-
 export MACOSX_DEPLOYMENT_TARGET
+fi
 
 # Detect -latomic linker flag for ARM architectures (Raspberry Pi etc.)
 echo "#include <stdint.h>
