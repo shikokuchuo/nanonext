@@ -1579,7 +1579,7 @@ SEXP rnng_strcat(SEXP a, SEXP b) {
   memcpy(buf + alen, bp, blen);
 
   PROTECT(out = Rf_allocVector(STRSXP, 1));
-  SET_STRING_ELT(out, 0, Rf_mkCharLenCE(buf, alen + blen, CE_NATIVE));
+  SET_STRING_ELT(out, 0, Rf_mkCharLenCE(buf, (int) (alen + blen), CE_NATIVE));
   nng_free(buf, alen + blen);
 
   UNPROTECT(1);
