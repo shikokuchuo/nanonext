@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.12.0.9021</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.13.0</span>
       </span>
     </div>
 
@@ -57,19 +57,20 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.12.0.9021" id="nanonext-01209021-development">nanonext 0.12.0.9021 (development)<a class="anchor" aria-label="anchor" href="#nanonext-01209021-development"></a></h2>
-<p><em>Please note this version contains breaking behavioural changes - see updates below.</em></p>
+<h2 class="page-header" data-toc-text="0.13.0" id="nanonext-0130">nanonext 0.13.0<a class="anchor" aria-label="anchor" href="#nanonext-0130"></a></h2>
 <div class="section level5">
-<h5 id="updates-0-12-0-9021">Updates<a class="anchor" aria-label="anchor" href="#updates-0-12-0-9021"></a></h5>
-<ul><li>Default blocking behaviour of <code><a href="../reference/send.html">send()</a></code> and <code><a href="../reference/recv.html">recv()</a></code> over Sockets and Contexts aligned to non-blocking (this change is facilitated by the introduction of synchronous context sends in NNG v1.6.0).</li>
-<li>Unserialization / decoding errors where the received message cannot be translated to the specified mode will output a message to stderr, but no longer generate a warning.</li>
+<h5 id="updates-0-13-0">Updates<a class="anchor" aria-label="anchor" href="#updates-0-13-0"></a></h5>
+<p><em>Please note the following potentially breaking changes, and only update when ready:</em></p>
+<ul><li>Default behaviour of <code><a href="../reference/send.html">send()</a></code> and <code><a href="../reference/recv.html">recv()</a></code> aligned to non-blocking for both Sockets and Contexts (facilitated by synchronous context sends in NNG since v1.6.0).</li>
 <li>
 <code><a href="../reference/ncurl.html">ncurl()</a></code>, <code><a href="../reference/ncurl_aio.html">ncurl_aio()</a></code> and <code><a href="../reference/ncurl_session.html">ncurl_session()</a></code> now restrict ‘header’ and ‘response’ arguments to character vectors only, no longer accepting lists (for safety and performance).</li>
-<li>SHA functions now skip the serialization header for serialized R objects. This ensures portability as these contain R version and encoding information. Note: hashes will be different to those obtained using prior versions of this package for serialized objects.</li>
-<li>
-<code><a href="../reference/messenger.html">messenger()</a></code> specifying ‘auth’ now works reliably on endpoints using different R versions/platforms due to the above hashing portability fix.</li>
+<li>Unserialization / decoding errors where the received message cannot be translated to the specified mode will output a message to stderr, but no longer generate a warning.</li>
+<li>SHA functions now skip serialization headers for serialized R objects (ensuring portability as these contain R version and encoding information). This means that, for serialized objects, hashes will be different to those obtained using prior package versions.</li>
 <li>
 <code>sha1()</code> is removed as a hash option.</li>
+</ul><p><em>Other changes:</em></p>
+<ul><li>
+<code><a href="../reference/messenger.html">messenger()</a></code> specifying ‘auth’ now works reliably on endpoints using different R versions/platforms due to the above hashing portability fix.</li>
 <li>Internal memory-efficiency and performance enhancements.</li>
 <li>Upgrades bundled ‘libmbedtls’ to v3.5.2.</li>
 </ul></div>
