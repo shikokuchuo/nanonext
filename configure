@@ -15,7 +15,7 @@ CC=`"${R_HOME}/bin/R" CMD config CC`
 export CC
 
 if [ -z "$MACOSX_DEPLOYMENT_TARGET" ]; then
-export MACOSX_DEPLOYMENT_TARGET=`echo $CC | grep -Po '(?<=-version-min=)[[:digit:]]+([.][[:digit:]]+)?'`
+export MACOSX_DEPLOYMENT_TARGET=${CC#*-version-min=}
 fi
 
 # Detect -latomic linker flag for ARM architectures (Raspberry Pi etc.)
