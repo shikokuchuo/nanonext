@@ -1,4 +1,4 @@
-# Copyright (C) 2022-2023 Hibiki AI Limited <info@hibiki-ai.com>
+# Copyright (C) 2022-2024 Hibiki AI Limited <info@hibiki-ai.com>
 #
 # This file is part of nanonext.
 #
@@ -191,3 +191,45 @@ close.nanoSocket <- function(con, ...) invisible(.Call(rnng_close, con))
 #' @export
 #'
 reap <- function(con) .Call(rnng_reap, con)
+
+#' Socketpair
+#'
+#' Creates a pair of file descriptors for use with the 'socket://' transport
+#'     (see \link{transports}) [experimental].
+#'
+#' @return A pair of (integer) file descriptors.
+#'
+#' @details The socket file descriptor is passed to the listener using the
+#'     'socket:fd' option (as an integer). Setting this option (which is
+#'     write-only and can be set multiple times) will cause the listener to
+#'     create a pipe backed by the file descriptor.
+#'
+#'     The socket transport uses the URL socket://, without further
+#'     qualification.
+#'
+#' @note Requires 'libnng' >= 1.7.0 and only supported on POSIX platforms.
+#'
+#' @examples
+#' if (package_version(nng_version()[1L]) >= "1.7.0" &&
+#'     .Platform[["OS.type"]] == "unix") {
+#'
+#' fds <- socketpair()
+#' fds
+#'
+#' s1 <- socket(listen = "socket://")
+#' s2 <- socket(listen = "socket://")
+#'
+#' opt(s1$listener[[1]], "socket:fd") <- fds[1]
+#' opt(s2$listener[[1]], "socket:fd") <- fds[2]
+#'
+#' send(s1, "test")
+#' recv(s2)
+#'
+#' close(s1)
+#' close(s2)
+#'
+#' }
+#'
+#' @export
+#'
+socketpair <- function() .Call(rnng_socket_pair)

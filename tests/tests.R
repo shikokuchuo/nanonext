@@ -563,3 +563,9 @@ nanotestxp(tls <- tls_config())
 nanotesterr(stream(dial = "wss://127.0.0.1:5555", textframes = TRUE, tls = tls))
 nanotestxp(s <- socket(listen = "wss://127.0.0.1:5557", tls = tls))
 nanotestz(close(s))
+if (package_version(nng_version()[1L]) >= "1.7.0" && .Platform[["OS.type"]] == "unix") {
+  fds <- socketpair()
+  nanotest(is.integer(fds) && length(fds) == 2L)
+} else {
+  nanotesterr(socketpair(), "Not supported")
+}

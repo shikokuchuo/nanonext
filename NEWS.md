@@ -1,4 +1,13 @@
-# nanonext 0.13.0.9000 (development)
+# nanonext 0.13.0.9001 (development)
+
+#### New Features
+
+* `socketpair()` creates a pair of file descriptors for use with the new 'socket://' transport (available only with NNG library versions >= 1.7.0).
+
+#### Updates
+
+* Fixes cases of 'built for newer macOS version than being linked' warnings on MacOS.
+* Upgrades bundled 'libnng' to v1.7.2.
 
 # nanonext 0.13.0
 

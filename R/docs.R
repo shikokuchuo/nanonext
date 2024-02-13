@@ -1,4 +1,4 @@
-# Copyright (C) 2022-2023 Hibiki AI Limited <info@hibiki-ai.com>
+# Copyright (C) 2022-2024 Hibiki AI Limited <info@hibiki-ai.com>
 #
 # This file is part of nanonext.
 #
@@ -269,7 +269,7 @@ NULL
 #'     / is assumed.) For example, the URI ws://localhost/app/pubsub would use
 #'     port 80 on localhost, with the path /app/pubsub.
 #'
-#'     [\strong{(URI, wss://)}] Secure WebSockets use the scheme wss://, and the
+#'     [\strong{URI, wss://}] Secure WebSockets use the scheme wss://, and the
 #'     default TCP port number of 443. Otherwise the format is the same as for
 #'     regular WebSockets.
 #'
@@ -308,6 +308,19 @@ NULL
 #'     \item The server may also be used by other things (for example to serve
 #'     static content), in the same process.
 #'     }
+#'
+#' @section BSD Socket (experimental):
+#'
+#'     The socket transport provides communication support between peers across
+#'     arbitrary BSD sockets, such as those created with \code{\link{socketpair}}.
+#'
+#'     [\strong{URI, socket://}] This transport uses the URL socket://, without
+#'     further qualification.
+#'
+#'     This transport only supports listeners. The socket file descriptor is
+#'     passed to the listener using the 'socket:fd' option (as an integer).
+#'     Setting this option (which is write-only and can be set multiple times)
+#'     will cause the listener to create a pipe backed by the file descriptor.
 #'
 #' @name transports
 #'
