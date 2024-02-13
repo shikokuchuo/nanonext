@@ -19,7 +19,7 @@ For an authoritative guide please refer to the online documentation for
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.13.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.13.0.9001</span>
       </span>
     </div>
 
@@ -184,7 +184,7 @@ For an authoritative guide please refer to the online documentation for
     specified then port 80 is assumed. If no path is specified then a path of
     / is assumed.) For example, the URI ws://localhost/app/pubsub would use
     port 80 on localhost, with the path /app/pubsub.</p>
-<p>[<strong>(URI, wss://)</strong>] Secure WebSockets use the scheme wss://, and the
+<p>[<strong>URI, wss://</strong>] Secure WebSockets use the scheme wss://, and the
     default TCP port number of 443. Otherwise the format is the same as for
     regular WebSockets.</p>
 <p></p><ul><li><p>A URI may be restricted to IPv6 using the scheme ws6:// or wss6://,
@@ -214,6 +214,20 @@ For an authoritative guide please refer to the online documentation for
 <li><p>The server may also be used by other things (for example to serve
     static content), in the same process.</p></li>
 </ul></div>
+    <div id="bsd-socket-experimental-">
+    <h2>BSD Socket (experimental)</h2>
+    
+
+
+<p>The socket transport provides communication support between peers across
+    arbitrary BSD sockets, such as those created with <code><a href="socketpair.html">socketpair</a></code>.</p>
+<p>[<strong>URI, socket://</strong>] This transport uses the URL socket://, without
+    further qualification.</p>
+<p>This transport only supports listeners. The socket file descriptor is
+    passed to the listener using the 'socket:fd' option (as an integer).
+    Setting this option (which is write-only and can be set multiple times)
+    will cause the listener to create a pipe backed by the file descriptor.</p>
+    </div>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
