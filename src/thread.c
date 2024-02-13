@@ -117,26 +117,19 @@ SEXP rnng_messenger(SEXP url) {
   int xc, dialer = 0;
   SEXP socket, con;
 
-  xc = nng_pair0_open(sock);
-  if (xc) {
-    R_Free(sock);
-    ERROR_OUT(xc);
-  }
+  if ((xc = nng_pair0_open(sock)))
+    goto exitlevel1;
   lp = R_Calloc(1, nano_listener);
-  xc = nng_listen(*sock, up, &lp->list, 0);
-  if (xc) {
+  if ((xc = nng_listen(*sock, up, &lp->list, 0))) {
     if (xc != 10 && xc != 15) {
       R_Free(lp);
-      R_Free(sock);
-      ERROR_OUT(xc);
+      goto exitlevel1;
     }
     R_Free(lp);
     dp = R_Calloc(1, nano_dialer);
-    xc = nng_dial(*sock, up, &dp->dial, 0);
-    if (xc) {
+    if ((xc = nng_dial(*sock, up, &dp->dial, 0))) {
       R_Free(dp);
-      R_Free(sock);
-      ERROR_OUT(xc);
+      goto exitlevel1;
     }
     dialer = 1;
   }
@@ -156,6 +149,10 @@ SEXP rnng_messenger(SEXP url) {
 
   UNPROTECT(2);
   return socket;
+
+  exitlevel1:
+  R_Free(sock);
+  ERROR_OUT(xc);
 
 }
 
@@ -250,18 +247,11 @@ SEXP rnng_wait_thread_create(SEXP aio) {
 
   int xc, signalled;
 
-  if ((xc = nng_mtx_alloc(&mtx))) {
-    R_Free(ncv);
-    R_Free(taio);
-    ERROR_OUT(xc);
-  }
+  if ((xc = nng_mtx_alloc(&mtx)))
+    goto exitlevel1;
 
-  if ((xc = nng_cv_alloc(&cv, mtx))) {
-    nng_mtx_free(ncv->mtx);
-    R_Free(ncv);
-    R_Free(taio);
-    ERROR_OUT(xc);
-  }
+  if ((xc = nng_cv_alloc(&cv, mtx)))
+    goto exitlevel2;
 
   ncv->mtx = mtx;
   ncv->cv = cv;
@@ -305,6 +295,13 @@ SEXP rnng_wait_thread_create(SEXP aio) {
   }
 
   return aio;
+
+  exitlevel2:
+  nng_mtx_free(ncv->mtx);
+  exitlevel1:
+  R_Free(ncv);
+  R_Free(taio);
+  ERROR_OUT(xc);
 
 }
 
