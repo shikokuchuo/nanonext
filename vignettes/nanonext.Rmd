@@ -167,15 +167,15 @@ close(s2)
 
 Can be used to perform computationally-expensive calculations or I/O-bound operations such as writing large amounts of data to disk in a separate 'server' process running concurrently.
 
-[S] Server process: `reply()` will wait for a message and apply a function, in this case `rnorm()`, before sending back the result.
+[S] Server process: `reply()` will wait for a message and apply a function, in this case `rnorm()`, before sending back the result. This is started in a background 'mirai' process.
 
 
 ```r
-library(nanonext)
-rep <- socket("rep", listen = "tcp://127.0.0.1:6556")
-ctxp <- context(rep)
-r <- reply(ctxp, execute = rnorm, send_mode = "raw")
-
+m <- mirai::mirai({
+  library(nanonext)
+  rep <- socket("rep", listen = "tcp://127.0.0.1:6556")
+  reply(context(rep), execute = rnorm, send_mode = "raw")
+})
 ```
 
 [C] Client process: `request()` performs an async send and receive request and returns immediately with a `recvAio` object.
@@ -184,8 +184,7 @@ r <- reply(ctxp, execute = rnorm, send_mode = "raw")
 ```r
 library(nanonext)
 req <- socket("req", dial = "tcp://127.0.0.1:6556")
-ctxq <- context(req)
-aio <- request(ctxq, data = 1e8, recv_mode = "double")
+aio <- request(context(req), data = 1e8, recv_mode = "double")
 ```
 
 At this point, the client can run additional code concurrent with the server processing the request.
@@ -206,7 +205,7 @@ call_aio(aio)
 aio
 #> < recvAio | $data >
 aio$data |> str()
-#>  num [1:100000000] -1.268 0.398 -0.797 0.306 -0.987 ...
+#>  num [1:100000000] 1.725 0.263 0.484 -0.144 -0.809 ...
 ```
 
 As `call_aio()` is blocking and will wait for completion, an alternative is to query `aio$data` directly. This will return an 'unresolved' logical NA value if the calculation is yet to complete.
@@ -325,7 +324,7 @@ Additionally, the convenience function `write_cert()` can automatically generate
 cert <- write_cert(cn = "127.0.0.1")
 str(cert)
 #> List of 2
-#>  $ server: chr [1:2] "-----BEGIN CERTIFICATE-----\nMIIFOTCCAyGgAwIBAgIBATANBgkqhkiG9w0BAQsFADA0MRIwEAYDVQQDDAkxMjcu\nMC4wLjExETAPBgNV"| __truncated__ "-----BEGIN RSA PRIVATE KEY-----\nMIIJKQIBAAKCAgEA87B7slaIzW1RkLBenvc8KCCu7ZwuklkDsIqDjug1JEiLn2UL\nGW8nR4dZcTim"| __truncated__
+#>  $ server: chr [1:2] "-----BEGIN CERTIFICATE-----\nMIIFOTCCAyGgAwIBAgIBATANBgkqhkiG9w0BAQsFADA0MRIwEAYDVQQDDAkxMjcu\nMC4wLjExETAPBgNV"| __truncated__ "-----BEGIN RSA PRIVATE KEY-----\nMIIJKQIBAAKCAgEA8fg2eyflBvg+hiy/0v+/n5Il4tmAop/mq+lbqtWDHBbSb9bn\nepRX3yUXco9J"| __truncated__
 #>  $ client: chr [1:2] "-----BEGIN CERTIFICATE-----\nMIIFOTCCAyGgAwIBAgIBATANBgkqhkiG9w0BAQsFADA0MRIwEAYDVQQDDAkxMjcu\nMC4wLjExETAPBgNV"| __truncated__ ""
 
 ser <- tls_config(server = cert$server)
@@ -483,7 +482,7 @@ ncurl("https://postman-echo.com/get")
 #> NULL
 #> 
 #> $data
-#> [1] "{\n  \"args\": {},\n  \"headers\": {\n    \"x-forwarded-proto\": \"https\",\n    \"x-forwarded-port\": \"443\",\n    \"host\": \"postman-echo.com\",\n    \"x-amzn-trace-id\": \"Root=1-65ca9685-6fb3f1dd442c7ae67768845d\"\n  },\n  \"url\": \"https://postman-echo.com/get\"\n}"
+#> [1] "{\n  \"args\": {},\n  \"headers\": {\n    \"x-forwarded-proto\": \"https\",\n    \"x-forwarded-port\": \"443\",\n    \"host\": \"postman-echo.com\",\n    \"x-amzn-trace-id\": \"Root=1-65cccbc9-7536cf3e51e166df2474cbec\"\n  },\n  \"url\": \"https://postman-echo.com/get\"\n}"
 ```
 
 For advanced use, supports additional HTTP methods such as POST or PUT.
@@ -500,10 +499,10 @@ res
 
 call_aio(res)$headers
 #> $date
-#> [1] "Mon, 12 Feb 2024 22:07:02 GMT"
+#> [1] "Wed, 14 Feb 2024 14:18:49 GMT"
 
 res$data
-#> [1] "{\n  \"args\": {},\n  \"data\": {\n    \"key\": \"value\"\n  },\n  \"files\": {},\n  \"form\": {},\n  \"headers\": {\n    \"x-forwarded-proto\": \"https\",\n    \"x-forwarded-port\": \"443\",\n    \"host\": \"postman-echo.com\",\n    \"x-amzn-trace-id\": \"Root=1-65ca9686-3d0e15bb5e56b63b2f32acd1\",\n    \"content-length\": \"16\",\n    \"content-type\": \"application/json\",\n    \"authorization\": \"Bearer APIKEY\"\n  },\n  \"json\": {\n    \"key\": \"value\"\n  },\n  \"url\": \"https://postman-echo.com/post\"\n}"
+#> [1] "{\n  \"args\": {},\n  \"data\": {\n    \"key\": \"value\"\n  },\n  \"files\": {},\n  \"form\": {},\n  \"headers\": {\n    \"x-forwarded-proto\": \"https\",\n    \"x-forwarded-port\": \"443\",\n    \"host\": \"postman-echo.com\",\n    \"x-amzn-trace-id\": \"Root=1-65cccbc9-64d4d19f6cd7be111b749662\",\n    \"content-length\": \"16\",\n    \"content-type\": \"application/json\",\n    \"authorization\": \"Bearer APIKEY\"\n  },\n  \"json\": {\n    \"key\": \"value\"\n  },\n  \"url\": \"https://postman-echo.com/post\"\n}"
 ```
 
 In this respect, it may be used as a performant and lightweight method for making REST API requests.
@@ -527,7 +526,7 @@ transact(sess)
 #> 
 #> $headers
 #> $headers$Date
-#> [1] "Mon, 12 Feb 2024 22:07:02 GMT"
+#> [1] "Wed, 14 Feb 2024 14:18:50 GMT"
 #> 
 #> $headers$`Content-Type`
 #> [1] "application/json; charset=utf-8"
@@ -538,7 +537,7 @@ transact(sess)
 #>  [41] 72 77 61 72 64 65 64 2d 70 72 6f 74 6f 22 3a 20 22 68 74 74 70 73 22 2c 0a 20 20 20 20 22 78 2d 66 6f 72 77 61 72 64 65
 #>  [81] 64 2d 70 6f 72 74 22 3a 20 22 34 34 33 22 2c 0a 20 20 20 20 22 68 6f 73 74 22 3a 20 22 70 6f 73 74 6d 61 6e 2d 65 63 68
 #> [121] 6f 2e 63 6f 6d 22 2c 0a 20 20 20 20 22 78 2d 61 6d 7a 6e 2d 74 72 61 63 65 2d 69 64 22 3a 20 22 52 6f 6f 74 3d 31 2d 36
-#> [161] 35 63 61 39 36 38 36 2d 32 61 65 35 36 36 66 33 33 38 39 32 39 65 64 61 36 61 63 34 30 37 61 39 22 2c 0a 20 20 20 20 22
+#> [161] 35 63 63 63 62 63 61 2d 37 64 65 64 32 31 35 65 36 65 33 64 32 65 39 66 32 37 38 36 38 38 32 30 22 2c 0a 20 20 20 20 22
 #> [201] 63 6f 6e 74 65 6e 74 2d 74 79 70 65 22 3a 20 22 61 70 70 6c 69 63 61 74 69 6f 6e 2f 6a 73 6f 6e 22 2c 0a 20 20 20 20 22
 #> [241] 61 75 74 68 6f 72 69 7a 61 74 69 6f 6e 22 3a 20 22 42 65 61 72 65 72 20 41 50 49 4b 45 59 22 0a 20 20 7d 2c 0a 20 20 22
 #> [281] 75 72 6c 22 3a 20 22 68 74 74 70 73 3a 2f 2f 70 6f 73 74 6d 61 6e 2d 65 63 68 6f 2e 63 6f 6d 2f 67 65 74 22 0a 7d

@@ -170,6 +170,11 @@ typedef struct nano_cv_s {
   (x)->cur = sz
 #define NANO_FREE(x) if (x.len) R_Free(x.buf)
 #define NANO_INTEGER(x) (int *) DATAPTR_RO(x)
+#define NANO_CLASS(x, cls)                                     \
+  SEXP klass = Rf_cons(Rf_mkString(cls), R_NilValue);          \
+  SET_TAG(klass, R_ClassSymbol);                               \
+  SET_ATTRIB(x, klass);                                        \
+  SET_OBJECT(x, 1)
 
 typedef struct nano_buf_s {
   unsigned char *buf;
@@ -296,10 +301,7 @@ extern SEXP nano_aioFuncs;
 extern SEXP nano_aioNFuncs;
 extern SEXP nano_error;
 extern SEXP nano_ncurlAio;
-extern SEXP nano_ncurlSession;
-extern SEXP nano_recvAio;
 extern SEXP nano_refHook;
-extern SEXP nano_sendAio;
 extern SEXP nano_success;
 extern SEXP nano_unresolved;
 

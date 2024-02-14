@@ -156,13 +156,14 @@ close(s2)
 
 Can be used to perform computationally-expensive calculations or I/O-bound operations such as writing large amounts of data to disk in a separate 'server' process running concurrently.
 
-[S] Server process: `reply()` will wait for a message and apply a function, in this case `rnorm()`, before sending back the result.
+[S] Server process: `reply()` will wait for a message and apply a function, in this case `rnorm()`, before sending back the result. This is started in a background 'mirai' process.
 
-```{r rpcserver, eval=FALSE}
-library(nanonext)
-rep <- socket("rep", listen = "tcp://127.0.0.1:6556")
-ctxp <- context(rep)
-r <- reply(ctxp, execute = rnorm, send_mode = "raw")
+```{r rpcserver}
+m <- mirai::mirai({
+  library(nanonext)
+  rep <- socket("rep", listen = "tcp://127.0.0.1:6556")
+  reply(context(rep), execute = rnorm, send_mode = "raw")
+})
 
 ```
 
@@ -171,8 +172,7 @@ r <- reply(ctxp, execute = rnorm, send_mode = "raw")
 ```{r rpcclient}
 library(nanonext)
 req <- socket("req", dial = "tcp://127.0.0.1:6556")
-ctxq <- context(req)
-aio <- request(ctxq, data = 1e8, recv_mode = "double")
+aio <- request(context(req), data = 1e8, recv_mode = "double")
 
 ```
 
