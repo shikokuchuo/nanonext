@@ -890,12 +890,7 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP dat
 
   SEXP env, fun;
   PROTECT(env = Rf_allocSExp(ENVSXP));
-  SEXP klass = Rf_cons(Rf_allocVector(STRSXP, 2), R_NilValue);
-  SET_TAG(klass, R_ClassSymbol);
-  SET_ATTRIB(env, klass);
-  SET_OBJECT(env, 1);
-  SET_STRING_ELT(CAR(klass), 0, Rf_mkChar("ncurlAio"));
-  SET_STRING_ELT(CAR(klass), 1, Rf_mkChar("recvAio"));
+  NANO_CLASS2(env, "ncurlAio", "recvAio");
   Rf_defineVar(nano_AioSymbol, aio, env);
 
   int i = 0;
@@ -1331,7 +1326,7 @@ SEXP rnng_cv_alloc(void) {
 
   PROTECT(xp = R_MakeExternalPtr(cvp, nano_CvSymbol, R_NilValue));
   R_RegisterCFinalizerEx(xp, cv_finalizer, TRUE);
-  Rf_classgets(xp, Rf_mkString("conditionVariable"));
+  NANO_CLASS(xp, "conditionVariable");
 
   UNPROTECT(1);
   return xp;

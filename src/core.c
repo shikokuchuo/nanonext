@@ -599,7 +599,7 @@ SEXP rnng_ctx_open(SEXP socket) {
 
   nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(socket);
   nng_ctx *ctx = R_Calloc(1, nng_ctx);
-  SEXP context, klass;
+  SEXP context;
   int xc;
 
   xc = nng_ctx_open(ctx, *sock);
@@ -611,10 +611,7 @@ SEXP rnng_ctx_open(SEXP socket) {
   PROTECT(context = R_MakeExternalPtr(ctx, nano_ContextSymbol, R_NilValue));
   R_RegisterCFinalizerEx(context, context_finalizer, TRUE);
 
-  klass = Rf_allocVector(STRSXP, 2);
-  Rf_classgets(context, klass);
-  SET_STRING_ELT(klass, 0, Rf_mkChar("nanoContext"));
-  SET_STRING_ELT(klass, 1, Rf_mkChar("nano"));
+  NANO_CLASS2(context, "nanoContext", "nano");
   Rf_setAttrib(context, nano_IdSymbol, Rf_ScalarInteger(nng_ctx_id(*ctx)));
   Rf_setAttrib(context, nano_StateSymbol, Rf_mkString("opened"));
   Rf_setAttrib(context, nano_ProtocolSymbol, Rf_getAttrib(socket, nano_ProtocolSymbol));
@@ -679,7 +676,7 @@ SEXP rnng_dial(SEXP socket, SEXP url, SEXP tls, SEXP autostart, SEXP error) {
   const int start = *NANO_INTEGER(autostart);
   const char *ur = CHAR(STRING_ELT(url, 0));
   nano_dialer *dp = R_Calloc(1, nano_dialer);
-  SEXP dialer, klass, attr, newattr;
+  SEXP dialer, attr, newattr;
   nng_url *up;
   int xc;
 
@@ -712,10 +709,7 @@ SEXP rnng_dial(SEXP socket, SEXP url, SEXP tls, SEXP autostart, SEXP error) {
   PROTECT(dialer = R_MakeExternalPtr(dp, nano_DialerSymbol, R_NilValue));
   R_RegisterCFinalizerEx(dialer, dialer_finalizer, TRUE);
 
-  klass = Rf_allocVector(STRSXP, 2);
-  Rf_classgets(dialer, klass);
-  SET_STRING_ELT(klass, 0, Rf_mkChar("nanoDialer"));
-  SET_STRING_ELT(klass, 1, Rf_mkChar("nano"));
+  NANO_CLASS2(dialer, "nanoDialer", "nano");
   Rf_setAttrib(dialer, nano_IdSymbol, Rf_ScalarInteger(nng_dialer_id(dp->dial)));
   Rf_setAttrib(dialer, nano_UrlSymbol, url);
   Rf_setAttrib(dialer, nano_StateSymbol, Rf_mkString(start ? "started" : "not started"));
@@ -757,7 +751,7 @@ SEXP rnng_listen(SEXP socket, SEXP url, SEXP tls, SEXP autostart, SEXP error) {
   const int start = *NANO_INTEGER(autostart);
   const char *ur = CHAR(STRING_ELT(url, 0));
   nano_listener *lp = R_Calloc(1, nano_listener);
-  SEXP listener, klass, attr, newattr;
+  SEXP listener, attr, newattr;
   nng_url *up;
   int xc;
 
@@ -785,10 +779,7 @@ SEXP rnng_listen(SEXP socket, SEXP url, SEXP tls, SEXP autostart, SEXP error) {
   PROTECT(listener = R_MakeExternalPtr(lp, nano_ListenerSymbol, R_NilValue));
   R_RegisterCFinalizerEx(listener, listener_finalizer, TRUE);
 
-  klass = Rf_allocVector(STRSXP, 2);
-  Rf_classgets(listener, klass);
-  SET_STRING_ELT(klass, 0, Rf_mkChar("nanoListener"));
-  SET_STRING_ELT(klass, 1, Rf_mkChar("nano"));
+  NANO_CLASS2(listener, "nanoListener", "nano");
   Rf_setAttrib(listener, nano_IdSymbol, Rf_ScalarInteger(nng_listener_id(lp->list)));
   Rf_setAttrib(listener, nano_UrlSymbol, url);
   Rf_setAttrib(listener, nano_StateSymbol, Rf_mkString(start ? "started" : "not started"));

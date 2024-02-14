@@ -92,7 +92,7 @@ static void PreserveObjects(void) {
   SET_STRING_ELT(CAR(nano_error), 1, Rf_mkChar("try-error"));
   R_PreserveObject(nano_success = Rf_ScalarInteger(0));
   R_PreserveObject(nano_unresolved = Rf_shallow_duplicate(Rf_ScalarLogical(NA_LOGICAL)));
-  Rf_classgets(nano_unresolved, Rf_mkString("unresolvedValue"));
+  NANO_CLASS(nano_unresolved, "unresolvedValue");
   R_PreserveObject(nano_refHook = Rf_list2(R_NilValue, R_NilValue));
 }
 

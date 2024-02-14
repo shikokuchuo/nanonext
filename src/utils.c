@@ -342,7 +342,7 @@ SEXP rnng_stream_dial(SEXP url, SEXP textframes, SEXP tls) {
   nng_url *up;
   nng_aio *aiop;
   int xc;
-  SEXP sd, klass;
+  SEXP sd;
 
   if ((xc = nng_url_parse(&up, add)))
     goto exitlevel1;
@@ -395,14 +395,11 @@ SEXP rnng_stream_dial(SEXP url, SEXP textframes, SEXP tls) {
 
   PROTECT(sd = R_MakeExternalPtr(nst, nano_StreamSymbol, R_NilValue));
   R_RegisterCFinalizerEx(sd, stream_finalizer, TRUE);
+
+  NANO_CLASS2(sd, "nanoStream", "nano");
   Rf_setAttrib(sd, R_ModeSymbol, Rf_mkString(nst->textframes ? "dialer text frames" : "dialer"));
   Rf_setAttrib(sd, nano_StateSymbol, Rf_mkString("opened"));
   Rf_setAttrib(sd, nano_UrlSymbol, url);
-
-  klass = Rf_allocVector(STRSXP, 2);
-  Rf_classgets(sd, klass);
-  SET_STRING_ELT(klass, 0, Rf_mkChar("nanoStream"));
-  SET_STRING_ELT(klass, 1, Rf_mkChar("nano"));
 
   UNPROTECT(1);
   return sd;
@@ -434,7 +431,7 @@ SEXP rnng_stream_listen(SEXP url, SEXP textframes, SEXP tls) {
   nng_url *up;
   nng_aio *aiop;
   int xc;
-  SEXP sl, klass;
+  SEXP sl;
 
   if ((xc = nng_url_parse(&up, add)))
     goto exitlevel1;
@@ -489,14 +486,11 @@ SEXP rnng_stream_listen(SEXP url, SEXP textframes, SEXP tls) {
 
   PROTECT(sl = R_MakeExternalPtr(nst, nano_StreamSymbol, R_NilValue));
   R_RegisterCFinalizerEx(sl, stream_finalizer, TRUE);
+
+  NANO_CLASS2(sl, "nanoStream", "nano");
   Rf_setAttrib(sl, R_ModeSymbol, Rf_mkString(nst->textframes ? "listener text frames" : "listener"));
   Rf_setAttrib(sl, nano_StateSymbol, Rf_mkString("opened"));
   Rf_setAttrib(sl, nano_UrlSymbol, url);
-
-  klass = Rf_allocVector(STRSXP, 2);
-  Rf_classgets(sl, klass);
-  SET_STRING_ELT(klass, 0, Rf_mkChar("nanoStream"));
-  SET_STRING_ELT(klass, 1, Rf_mkChar("nano"));
 
   UNPROTECT(1);
   return sl;
@@ -663,7 +657,7 @@ SEXP rnng_tls_config(SEXP client, SEXP server, SEXP pass, SEXP auth) {
 
   PROTECT(xp = R_MakeExternalPtr(cfg, nano_TlsSymbol, R_NilValue));
   R_RegisterCFinalizerEx(xp, tls_finalizer, TRUE);
-  Rf_classgets(xp, Rf_mkString("tlsConfig"));
+  NANO_CLASS(xp, "tlsConfig");
   if (client != R_NilValue) {
     Rf_setAttrib(xp, R_SpecSymbol, Rf_mkString("client"));
     Rf_setAttrib(xp, R_ModeSymbol, Rf_mkString(mod == NNG_TLS_AUTH_MODE_REQUIRED ? "required" : "optional"));

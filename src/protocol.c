@@ -41,7 +41,7 @@ SEXP rnng_protocol_open(SEXP protocol, SEXP raw) {
   const char *pname;
   int xc;
   nng_socket *sock;
-  SEXP socket, klass;
+  SEXP socket;
 
   switch (slen) {
   case 1:
@@ -132,10 +132,7 @@ SEXP rnng_protocol_open(SEXP protocol, SEXP raw) {
   PROTECT(socket = R_MakeExternalPtr(sock, nano_SocketSymbol, R_NilValue));
   R_RegisterCFinalizerEx(socket, socket_finalizer, TRUE);
 
-  klass = Rf_allocVector(STRSXP, 2);
-  Rf_classgets(socket, klass);
-  SET_STRING_ELT(klass, 0, Rf_mkChar("nanoSocket"));
-  SET_STRING_ELT(klass, 1, Rf_mkChar("nano"));
+  NANO_CLASS2(socket, "nanoSocket", "nano");
   Rf_setAttrib(socket, nano_IdSymbol, Rf_ScalarInteger(nng_socket_id(*sock)));
   Rf_setAttrib(socket, nano_StateSymbol, Rf_mkString("opened"));
   Rf_setAttrib(socket, nano_ProtocolSymbol, Rf_mkString(pname));

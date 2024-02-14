@@ -175,6 +175,13 @@ typedef struct nano_cv_s {
   SET_TAG(klass, R_ClassSymbol);                               \
   SET_ATTRIB(x, klass);                                        \
   SET_OBJECT(x, 1)
+#define NANO_CLASS2(x, cls1, cls2)                             \
+  SEXP klass = Rf_cons(Rf_allocVector(STRSXP, 2), R_NilValue); \
+  SET_TAG(klass, R_ClassSymbol);                               \
+  SET_ATTRIB(x, klass);                                        \
+  SET_OBJECT(x, 1);                                            \
+  SET_STRING_ELT(CAR(klass), 0, Rf_mkChar(cls1));              \
+  SET_STRING_ELT(CAR(klass), 1, Rf_mkChar(cls2))
 
 typedef struct nano_buf_s {
   unsigned char *buf;
