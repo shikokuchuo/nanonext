@@ -300,7 +300,6 @@ extern SEXP nano_aioFormals;
 extern SEXP nano_aioFuncs;
 extern SEXP nano_aioNFuncs;
 extern SEXP nano_error;
-extern SEXP nano_ncurlAio;
 extern SEXP nano_refHook;
 extern SEXP nano_success;
 extern SEXP nano_unresolved;

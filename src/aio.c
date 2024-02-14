@@ -890,8 +890,12 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP dat
 
   SEXP env, fun;
   PROTECT(env = Rf_allocSExp(ENVSXP));
-  SET_ATTRIB(env, nano_ncurlAio);
+  SEXP klass = Rf_cons(Rf_allocVector(STRSXP, 2), R_NilValue);
+  SET_TAG(klass, R_ClassSymbol);
+  SET_ATTRIB(env, klass);
   SET_OBJECT(env, 1);
+  SET_STRING_ELT(CAR(klass), 0, Rf_mkChar("ncurlAio"));
+  SET_STRING_ELT(CAR(klass), 1, Rf_mkChar("recvAio"));
   Rf_defineVar(nano_AioSymbol, aio, env);
 
   int i = 0;
