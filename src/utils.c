@@ -678,22 +678,3 @@ SEXP rnng_tls_config(SEXP client, SEXP server, SEXP pass, SEXP auth) {
     ERROR_OUT(xc);
 
 }
-
-// Socket Pair -----------------------------------------------------------------
-
-SEXP rnng_socket_pair(void) {
-
-#if NNG_MAJOR_VERSION == 1 && NNG_MINOR_VERSION < 7
-  ERROR_OUT(9);
-#else
-  int fd[2], xc;
-  if ((xc = nng_socket_pair(fd)))
-    ERROR_OUT(xc);
-
-  SEXP out = Rf_allocVector(INTSXP, 2);
-  memcpy(STDVEC_DATAPTR(out), fd, sizeof(int) * 2);
-
-  return out;
-#endif
-
-}

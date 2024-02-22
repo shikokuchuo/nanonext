@@ -1,8 +1,4 @@
-# nanonext 0.13.0.9003 (development)
-
-#### New Features
-
-* `socketpair()` creates a pair of file descriptors for use with the new 'socket://' transport (available with NNG library versions >= 1.7.0).
+# nanonext 0.13.0.9004 (development)
 
 #### Updates
 

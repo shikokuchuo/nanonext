@@ -58,7 +58,6 @@ Supported transports:
 - WebSocket
 - [TLS](https://shikokuchuo.net/nanonext/articles/nanonext.html#tls-secure-connections)
   (over TCP and WebSocket)
-- BSD sockets
 
 Development of the TLS implementation was generously supported by the
 <a href="https://www.r-consortium.org/all-projects/awarded-projects/2023-group-1" alt="R Consortium ISC Grant 2023"><img src="man/figures/RConsortium.png" alt="R Consortium logo" width="100" /></a>
@@ -219,7 +218,7 @@ We would like to acknowledge in particular:
   {nanonext}.
 - The [R Consortium](https://www.r-consortium.org/) for funding the
   development of the secure TLS capabilities in the package, and [Henrik
-  Bengtsson](https://github.com/HenrikBengtsson) and [William
+  Bengtsson](https://github.com/HenrikBengtsson) and [Will
   Landau](https://github.com/wlandau/)’s roles in making this possible.
 - [R Core](https://www.r-project.org/contributors.html) for various
   auxiliary functions for serialisation and raw / character conversion,

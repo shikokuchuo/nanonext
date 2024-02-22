@@ -200,7 +200,7 @@ Transports supported by \pkg{nanonext}.
 
 
     The socket transport provides communication support between peers across
-    arbitrary BSD sockets, such as those created with \code{\link{socketpair}}.
+    arbitrary BSD sockets, such as those created with socketpair.
 
     [\strong{URI, socket://}] This transport uses the URL socket://, without
     further qualification.
