@@ -233,16 +233,15 @@ We would like to acknowledge in particular:
 
 Links:
 
-`nanonext` website: <https://shikokuchuo.net/nanonext/><br /> `nanonext`
-on CRAN: <https://cran.r-project.org/package=nanonext><br />
+◈ nanonext R package: <https://shikokuchuo.net/nanonext/>
 
-`nanonext` is listed in CRAN Task Views:<br /> - High Performance
+nanonext is listed in CRAN Task Views:<br /> - High Performance
 Computing:
 <https://cran.r-project.org/view=HighPerformanceComputing><br /> - Web
-Technologies: <https://cran.r-project.org/view=WebTechnologies><br />
+Technologies: <https://cran.r-project.org/view=WebTechnologies>
 
 NNG website: <https://nng.nanomsg.org/><br /> Mbed TLS website:
-<https://www.trustedfirmware.org/projects/mbed-tls/><br />
+<https://www.trustedfirmware.org/projects/mbed-tls/>
 
 –
 
