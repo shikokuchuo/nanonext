@@ -223,7 +223,7 @@ We would like to acknowledge in particular:
 - [R Core](https://www.r-project.org/contributors.html) for various
   auxiliary functions for serialisation and raw / character conversion,
   which have been adopted by the package.
-- [Luke Tierney](https://homepage.stat.uiowa.edu/~luke/) and [Mike
+- [Luke Tierney](https://github.com/ltierney/) and [Mike
   Cheng](https://github.com/coolbutuseless) for meticulous documentation
   of the R serialization mechanism, which led to the package’s own
   implementation of a low-level interface to R serialization.
