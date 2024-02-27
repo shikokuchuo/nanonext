@@ -44,10 +44,11 @@ SEXP nano_aioFormals;
 SEXP nano_aioFuncs;
 SEXP nano_aioNFuncs;
 SEXP nano_error;
-SEXP nano_klassString;
 SEXP nano_refHook;
 SEXP nano_success;
 SEXP nano_unresolved;
+
+char *nano_c_klass = NULL;
 
 #ifdef NANONEXT_LEGACY_NNG
 nng_mtx *shr_mtx;
@@ -94,13 +95,11 @@ static void PreserveObjects(void) {
   R_PreserveObject(nano_success = Rf_ScalarInteger(0));
   R_PreserveObject(nano_unresolved = Rf_shallow_duplicate(Rf_ScalarLogical(NA_LOGICAL)));
   NANO_CLASS(nano_unresolved, "unresolvedValue");
-  R_PreserveObject(nano_klassString = Rf_cons(R_NilValue, R_NilValue));
   R_PreserveObject(nano_refHook = Rf_list2(R_NilValue, R_NilValue));
 }
 
 static void ReleaseObjects(void) {
   R_ReleaseObject(nano_refHook);
-  R_ReleaseObject(nano_klassString);
   R_ReleaseObject(nano_unresolved);
   R_ReleaseObject(nano_success);
   R_ReleaseObject(nano_error);
@@ -204,6 +203,8 @@ void attribute_visible R_init_nanonext(DllInfo* dll) {
 
 void attribute_visible R_unload_nanonext(DllInfo *info) {
   ReleaseObjects();
+  if (nano_c_klass != NULL)
+    nng_free(nano_c_klass, strlen(nano_c_klass) + 1);
 #ifdef NANONEXT_LEGACY_NNG
   nng_mtx_free(shr_mtx);
 #endif

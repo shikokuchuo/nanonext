@@ -142,7 +142,7 @@ SEXP rawToChar(const unsigned char *buf, const size_t sz) {
 
 static SEXP nano_inHook(SEXP x, SEXP fun) {
 
-  if (!Rf_inherits(x, CHAR(STRING_ELT(fun, 0))))
+  if (!Rf_inherits(x, (char *) fun))
     return R_NilValue;
 
   SEXP newlist, list, newnames, names, out;
@@ -228,7 +228,7 @@ void nano_serialize_next(nano_buf *buf, const SEXP object) {
     NULL,
     nano_write_bytes,
     registered ? nano_inHook : NULL,
-    registered ? CAR(nano_klassString) : R_NilValue
+    registered ? (SEXP) nano_c_klass : R_NilValue
   );
 
   R_Serialize(object, &output_stream);
@@ -1610,12 +1610,18 @@ SEXP rnng_next_config(SEXP refhook, SEXP klass, SEXP mark) {
     return nano_refHook;
   }
 
+  const char *ks = CHAR(STRING_ELT(klass, 0));
+  const size_t sz = strlen(ks) + 1;
+
   if ((typ1 == CLOSXP || typ1 == SPECIALSXP || typ1 == BUILTINSXP) &&
       (typ2 == CLOSXP || typ2 == SPECIALSXP || typ2 == BUILTINSXP)) {
 
     SETCAR(nano_refHook, plist ? CAR(refhook) : VECTOR_ELT(refhook, 0));
     SETCADR(nano_refHook, plist ? CADR(refhook) : VECTOR_ELT(refhook, 1));
-    SETCAR(nano_klassString, klass);
+    if (nano_c_klass != NULL)
+      nng_free(nano_c_klass, strlen(nano_c_klass) + 1);
+    nano_c_klass = nng_alloc(sz);
+    memcpy(nano_c_klass, ks, sz);
     registered = 1;
 
   }
