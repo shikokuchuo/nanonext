@@ -11,12 +11,11 @@ next_config(refhook = list(), class = "", list = FALSE, mark = FALSE)
 signature for the first must accept a reference object inheriting from
 'class' (or a list of such objects) and return a raw vector, and the
 second must accept a raw vector and return reference objects (or a list
-of such objects),
-\cr \strong{or else} NULL to reset.}
+of such objects), \cr \strong{or else} NULL to reset.}
 
-\item{class}{[default ''] a character string representing the
-class of object that these serialization function will be applied to,
-e.g. 'ArrowTabular' or 'torch_tensor'.}
+\item{class}{[default ""] a character string representing the class of object
+that these serialization function will be applied to, e.g. 'ArrowTabular'
+or 'torch_tensor'.}
 
 \item{list}{[default FALSE] the serialization functions accept and return
 reference object individually e.g. \code{arrow::write_to_raw} and
