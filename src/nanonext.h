@@ -244,7 +244,7 @@ SEXP rnng_ncurl_aio(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 SEXP rnng_ncurl_session(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 SEXP rnng_ncurl_session_close(SEXP);
 SEXP rnng_ncurl_transact(SEXP);
-SEXP rnng_next_config(SEXP, SEXP, SEXP);
+SEXP rnng_next_config(SEXP, SEXP, SEXP, SEXP);
 SEXP rnng_pipe_notify(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 SEXP rnng_protocol_open(SEXP, SEXP);
 SEXP rnng_random(SEXP, SEXP);

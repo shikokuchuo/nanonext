@@ -235,22 +235,52 @@ void nano_serialize_next(nano_buf *buf, const SEXP object) {
 
   if (registered && TAG(nano_refHook) != R_NilValue) {
     uint64_t cursor = (uint64_t) buf->cur;
-    memcpy(buf->buf + 4, &cursor, 8);
+    memcpy(buf->buf + 4, &cursor, sizeof(uint64_t));
     SEXP call, out;
-    PROTECT(call = Rf_lcons(CAR(nano_refHook), Rf_cons(TAG(nano_refHook), R_NilValue)));
-    PROTECT(out = R_UnwindProtect(eval_safe, call, rl_reset, NULL, NULL));
-    if (TYPEOF(out) == RAWSXP) {
-      R_xlen_t xlen = XLENGTH(out);
-      if (buf->cur + xlen > buf->len) {
-        buf->len = buf->cur + xlen;
-        buf->buf = R_Realloc(buf->buf, buf->len, unsigned char);
+
+    if (registered == 1) {
+
+      PROTECT(call = Rf_lcons(CAR(nano_refHook), Rf_cons(TAG(nano_refHook), R_NilValue)));
+      PROTECT(out = R_UnwindProtect(eval_safe, call, rl_reset, NULL, NULL));
+      if (TYPEOF(out) == RAWSXP) {
+        R_xlen_t xlen = XLENGTH(out);
+        if (buf->cur + xlen > buf->len) {
+          buf->len = buf->cur + xlen;
+          buf->buf = R_Realloc(buf->buf, buf->len, unsigned char);
+        }
+        memcpy(buf->buf + buf->cur, STDVEC_DATAPTR(out), xlen);
+        buf->cur += xlen;
       }
-      memcpy(buf->buf + buf->cur, STDVEC_DATAPTR(out), xlen);
-      buf->cur += xlen;
+      UNPROTECT(2);
+
+    } else {
+
+      SEXP refList = TAG(nano_refHook);
+      R_xlen_t llen = Rf_xlength(refList);
+      memcpy(buf->buf + buf->cur, &llen, sizeof(R_xlen_t));
+      buf->cur += sizeof(R_xlen_t);
+
+      for (R_xlen_t i = 0; i < llen; i++) {
+        PROTECT(call = Rf_lcons(CAR(nano_refHook), Rf_cons(VECTOR_ELT(refList, i), R_NilValue)));
+        PROTECT(out = R_UnwindProtect(eval_safe, call, rl_reset, NULL, NULL));
+        if (TYPEOF(out) == RAWSXP) {
+          R_xlen_t xlen = XLENGTH(out);
+          if (buf->cur + xlen + sizeof(R_xlen_t) > buf->len) {
+            buf->len = buf->cur + xlen + sizeof(R_xlen_t);
+            buf->buf = R_Realloc(buf->buf, buf->len, unsigned char);
+          }
+          memcpy(buf->buf + buf->cur, &xlen, sizeof(R_xlen_t));
+          buf->cur += sizeof(R_xlen_t);
+          memcpy(buf->buf + buf->cur, STDVEC_DATAPTR(out), xlen);
+          buf->cur += xlen;
+        }
+        UNPROTECT(2);
+      }
+
     }
 
-    UNPROTECT(2);
     SET_TAG(nano_refHook, R_NilValue);
+
   }
 
 }
@@ -279,6 +309,7 @@ void nano_serialize_xdr(nano_buf *buf, const SEXP object, const int skip) {
 
 SEXP nano_unserialize(unsigned char *buf, const size_t sz) {
 
+  int registered = (int) buf[1];
   uint64_t offset;
   size_t cur;
   SEXP reflist;
@@ -292,14 +323,38 @@ SEXP nano_unserialize(unsigned char *buf, const size_t sz) {
       cur = 0;
       goto resume;
     case 0x7:
-      if (buf[1]) {
+      if (registered) {
         offset = *(uint64_t *) (buf + 4);
         if (offset) {
           SEXP raw, call;
-          PROTECT(raw = Rf_allocVector(RAWSXP, sz - offset));
-          memcpy(STDVEC_DATAPTR(raw), buf + offset, sz - offset);
-          PROTECT(call = Rf_lcons(CADR(nano_refHook), Rf_cons(raw, R_NilValue)));
-          PROTECT(reflist = Rf_eval(call, R_GlobalEnv));
+          if (registered == 1) {
+            PROTECT(raw = Rf_allocVector(RAWSXP, sz - offset));
+            memcpy(STDVEC_DATAPTR(raw), buf + offset, sz - offset);
+            PROTECT(call = Rf_lcons(CADR(nano_refHook), Rf_cons(raw, R_NilValue)));
+            reflist = Rf_eval(call, R_GlobalEnv);
+            SET_TAG(nano_refHook, reflist);
+            UNPROTECT(2);
+          } else {
+            R_xlen_t llen = *(R_xlen_t *) (buf + offset);
+            cur = offset + sizeof(R_xlen_t);
+            reflist = Rf_allocVector(VECSXP, llen);
+            SET_TAG(nano_refHook, reflist);
+
+            SEXP out;
+            R_xlen_t xlen;
+            for (R_xlen_t i = 0; i < llen; i++) {
+              xlen = *(R_xlen_t *) (buf + cur);
+              cur += sizeof(R_xlen_t);
+              PROTECT(raw = Rf_allocVector(RAWSXP, xlen));
+              memcpy(STDVEC_DATAPTR(raw), buf + cur, xlen);
+              cur += xlen;
+              PROTECT(call = Rf_lcons(CADR(nano_refHook), Rf_cons(raw, R_NilValue)));
+              out = Rf_eval(call, R_GlobalEnv);
+              SET_VECTOR_ELT(reflist, i, out);
+              UNPROTECT(2);
+            }
+
+          }
         }
         cur = 12;
         goto resume;
@@ -335,7 +390,9 @@ SEXP nano_unserialize(unsigned char *buf, const size_t sz) {
 
   out = R_Unserialize(&input_stream);
 
-  if (offset) UNPROTECT(3);
+  if (offset)
+    SET_TAG(nano_refHook, R_NilValue);
+
   return out;
 
 }
@@ -1581,7 +1638,7 @@ SEXP rnng_strcat(SEXP a, SEXP b) {
 
 // next mode selector ----------------------------------------------------------
 
-SEXP rnng_next_config(SEXP refhook, SEXP klass, SEXP mark) {
+SEXP rnng_next_config(SEXP refhook, SEXP klass, SEXP list, SEXP mark) {
 
   special_bit = (uint8_t) *NANO_INTEGER(mark);
   SEXPTYPE typ1, typ2;
@@ -1612,6 +1669,7 @@ SEXP rnng_next_config(SEXP refhook, SEXP klass, SEXP mark) {
 
   const char *ks = CHAR(STRING_ELT(klass, 0));
   const size_t sz = strlen(ks) + 1;
+  const int lst = *NANO_INTEGER(list);
 
   if ((typ1 == CLOSXP || typ1 == SPECIALSXP || typ1 == BUILTINSXP) &&
       (typ2 == CLOSXP || typ2 == SPECIALSXP || typ2 == BUILTINSXP)) {
@@ -1622,7 +1680,7 @@ SEXP rnng_next_config(SEXP refhook, SEXP klass, SEXP mark) {
       nng_free(nano_c_klass, strlen(nano_c_klass) + 1);
     nano_c_klass = nng_alloc(sz);
     memcpy(nano_c_klass, ks, sz);
-    registered = 1;
+    registered = lst ? 1 : 2;
 
   }
 

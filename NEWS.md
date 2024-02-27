@@ -1,8 +1,8 @@
-# nanonext 0.13.2.9000 (development)
+# nanonext 0.13.2.9001 (development)
 
 #### New Features
 
-* `next_config()` gains argument 'class', enabling custom serialization to all reference objects supported by R serializaiton (widened from just external pointer type objects).
+* `next_config()` gains argument 'class' and 'list', enabling custom serialization to all reference objects supported by R serializaiton.
 
 # nanonext 0.13.2
 
