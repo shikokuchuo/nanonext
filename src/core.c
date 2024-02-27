@@ -153,7 +153,7 @@ static SEXP nano_inHook(SEXP x, SEXP fun) {
   PROTECT(names = Rf_getAttrib(list, R_NamesSymbol));
 
   char idx[NANONEXT_LD_STRLEN];
-  snprintf(idx, NANONEXT_LD_STRLEN, "%ld", (long) xlen + 1);
+  snprintf(idx, NANONEXT_LD_STRLEN, "%ld", (long) (xlen + 1));
   PROTECT(out = Rf_mkChar(idx));
 
   PROTECT(newlist = Rf_allocVector(VECSXP, xlen + 1));
@@ -257,17 +257,17 @@ void nano_serialize_next(nano_buf *buf, const SEXP object) {
 
       SEXP refList = TAG(nano_refHook);
       SEXP func = CAR(nano_refHook);
-      R_xlen_t llen = Rf_xlength(refList);
-      memcpy(buf->buf + buf->cur, &llen, sizeof(R_xlen_t));
+      long llen = (long) Rf_xlength(refList);
+      memcpy(buf->buf + buf->cur, &llen, sizeof(long));
       buf->cur += sizeof(R_xlen_t);
 
-      for (R_xlen_t i = 0; i < llen; i++) {
+      for (long i = 0; i < llen; i++) {
         PROTECT(call = Rf_lcons(func, Rf_cons(VECTOR_ELT(refList, i), R_NilValue)));
         PROTECT(out = R_UnwindProtect(eval_safe, call, rl_reset, NULL, NULL));
         if (TYPEOF(out) == RAWSXP) {
           R_xlen_t xlen = XLENGTH(out);
-          if (buf->cur + xlen + sizeof(R_xlen_t) > buf->len) {
-            buf->len = buf->cur + xlen + sizeof(R_xlen_t);
+          if (buf->cur + xlen + sizeof(long) > buf->len) {
+            buf->len = buf->cur + xlen + sizeof(long);
             buf->buf = R_Realloc(buf->buf, buf->len, unsigned char);
           }
           memcpy(buf->buf + buf->cur, &xlen, sizeof(R_xlen_t));
@@ -336,8 +336,8 @@ SEXP nano_unserialize(unsigned char *buf, const size_t sz) {
             SET_TAG(nano_refHook, reflist);
             UNPROTECT(2);
           } else {
-            R_xlen_t llen = *(R_xlen_t *) (buf + offset);
-            cur = offset + sizeof(R_xlen_t);
+            long llen = *(long *) (buf + offset);
+            cur = offset + sizeof(long);
             reflist = Rf_allocVector(VECSXP, llen);
             SET_TAG(nano_refHook, reflist);
 
