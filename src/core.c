@@ -142,8 +142,9 @@ SEXP rawToChar(const unsigned char *buf, const size_t sz) {
 
 static SEXP nano_inHook(SEXP x, SEXP fun) {
 
-  if (TYPEOF(x) != EXTPTRSXP)
-    return fun;
+  if (!Rf_inherits(x, CHAR(STRING_ELT(fun, 0))))
+    return R_NilValue;
+
   SEXP newlist, list, newnames, names, out;
   R_xlen_t xlen;
 
@@ -227,7 +228,7 @@ void nano_serialize_next(nano_buf *buf, const SEXP object) {
     NULL,
     nano_write_bytes,
     registered ? nano_inHook : NULL,
-    R_NilValue
+    registered ? CAR(nano_klassString) : R_NilValue
   );
 
   R_Serialize(object, &output_stream);
@@ -1580,7 +1581,7 @@ SEXP rnng_strcat(SEXP a, SEXP b) {
 
 // next mode selector ----------------------------------------------------------
 
-SEXP rnng_next_config(SEXP refhook, SEXP mark) {
+SEXP rnng_next_config(SEXP refhook, SEXP klass, SEXP mark) {
 
   special_bit = (uint8_t) *NANO_INTEGER(mark);
   SEXPTYPE typ1, typ2;
@@ -1614,6 +1615,7 @@ SEXP rnng_next_config(SEXP refhook, SEXP mark) {
 
     SETCAR(nano_refHook, plist ? CAR(refhook) : VECTOR_ELT(refhook, 0));
     SETCADR(nano_refHook, plist ? CADR(refhook) : VECTOR_ELT(refhook, 1));
+    SETCAR(nano_klassString, klass);
     registered = 1;
 
   }

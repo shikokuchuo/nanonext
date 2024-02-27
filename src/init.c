@@ -44,6 +44,7 @@ SEXP nano_aioFormals;
 SEXP nano_aioFuncs;
 SEXP nano_aioNFuncs;
 SEXP nano_error;
+SEXP nano_klassString;
 SEXP nano_refHook;
 SEXP nano_success;
 SEXP nano_unresolved;
@@ -93,11 +94,13 @@ static void PreserveObjects(void) {
   R_PreserveObject(nano_success = Rf_ScalarInteger(0));
   R_PreserveObject(nano_unresolved = Rf_shallow_duplicate(Rf_ScalarLogical(NA_LOGICAL)));
   NANO_CLASS(nano_unresolved, "unresolvedValue");
+  R_PreserveObject(nano_klassString = Rf_cons(R_NilValue, R_NilValue));
   R_PreserveObject(nano_refHook = Rf_list2(R_NilValue, R_NilValue));
 }
 
 static void ReleaseObjects(void) {
   R_ReleaseObject(nano_refHook);
+  R_ReleaseObject(nano_klassString);
   R_ReleaseObject(nano_unresolved);
   R_ReleaseObject(nano_success);
   R_ReleaseObject(nano_error);
@@ -144,7 +147,7 @@ static const R_CallMethodDef callMethods[] = {
   {"rnng_ncurl_session", (DL_FUNC) &rnng_ncurl_session, 8},
   {"rnng_ncurl_session_close", (DL_FUNC) &rnng_ncurl_session_close, 1},
   {"rnng_ncurl_transact", (DL_FUNC) &rnng_ncurl_transact, 1},
-  {"rnng_next_config", (DL_FUNC) &rnng_next_config, 2},
+  {"rnng_next_config", (DL_FUNC) &rnng_next_config, 3},
   {"rnng_pipe_notify", (DL_FUNC) &rnng_pipe_notify, 6},
   {"rnng_protocol_open", (DL_FUNC) &rnng_protocol_open, 2},
   {"rnng_random", (DL_FUNC) &rnng_random, 2},
