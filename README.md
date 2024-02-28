@@ -83,7 +83,7 @@ Install the latest version from the R-releases R-universe, or CRAN:
 install.packages("nanonext", repos = "https://r-releases.r-universe.dev")
 ```
 
-Install the latest development version from the author’s R-universe:
+Or the development build from the author’s R-universe:
 
 ``` r
 install.packages("nanonext", repos = "https://shikokuchuo.r-universe.dev")

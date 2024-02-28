@@ -63,13 +63,13 @@ Web utilities:
 
 Install the latest version from the R-releases R-universe, or CRAN:
 
-```{r runiv, eval=FALSE}
+```{r releases, eval=FALSE}
 install.packages("nanonext", repos = "https://r-releases.r-universe.dev")
 ```
 
-Install the latest development version from the author's R-universe:
+Or the development build from the author's R-universe:
 
-```{r github, eval=FALSE}
+```{r universe, eval=FALSE}
 install.packages("nanonext", repos = "https://shikokuchuo.r-universe.dev")
 ```
 
