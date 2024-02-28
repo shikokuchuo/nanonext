@@ -77,16 +77,16 @@ Web utilities:
 
 ### Installation
 
-Releases are made on rOpenSci R-universe, and also CRAN:
+Install the latest version from the R-releases R-universe, or CRAN:
 
 ``` r
-install.packages("nanonext", repos = c("shikokuchuo.r-universe.dev", "cloud.r-project.org"))
+install.packages("nanonext", repos = "https://r-releases.r-universe.dev")
 ```
 
-Install the latest development version from Github:
+Install the latest development version from the author’s R-universe:
 
 ``` r
-remotes::install_github("shikokuchuo/nanonext")
+install.packages("nanonext", repos = "https://shikokuchuo.r-universe.dev")
 ```
 
 ### Quick Start
