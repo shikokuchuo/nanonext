@@ -338,7 +338,7 @@ SEXP nano_unserialize(unsigned char *buf, const size_t sz) {
           } else {
             long llen = *(long *) (buf + offset);
             cur = offset + sizeof(long);
-            reflist = Rf_allocVector(VECSXP, llen);
+            PROTECT(reflist = Rf_allocVector(VECSXP, llen));
             SET_TAG(nano_refHook, reflist);
 
             SEXP out;
@@ -355,6 +355,7 @@ SEXP nano_unserialize(unsigned char *buf, const size_t sz) {
               SET_VECTOR_ELT(reflist, i, out);
               UNPROTECT(2);
             }
+            UNPROTECT(1);
 
           }
         }
