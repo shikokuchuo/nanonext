@@ -311,6 +311,4 @@ extern SEXP nano_refHook;
 extern SEXP nano_success;
 extern SEXP nano_unresolved;
 
-extern char *nano_c_klass;
-
 #endif
