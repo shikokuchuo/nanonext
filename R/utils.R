@@ -289,10 +289,10 @@ strcat <- function(a, b) .Call(rnng_strcat, a, b)
 #' @param class [default ""] a character string representing the class of object
 #'     that these serialization function will be applied to, e.g. 'ArrowTabular'
 #'     or 'torch_tensor'.
-#' @param list [default FALSE] the serialization functions accept and return
+#' @param vec [default FALSE] the serialization functions accept and return
 #'     reference object individually e.g. \code{arrow::write_to_raw} and
-#'     \code{arrow::read_ipc_stream}. If TRUE, the serialization functions
-#'     accept and return a list of reference objects, e.g.
+#'     \code{arrow::read_ipc_stream}. If TRUE, the serialization functions are
+#'     vectorized and accept and return a list of reference objects, e.g.
 #'     \code{torch::torch_serialize} and \code{torch::torch_load}.
 #' @param mark [default FALSE] (for advanced use only) logical value, whether to
 #'     mark serialized data with a special bit.
@@ -314,5 +314,5 @@ strcat <- function(a, b) .Call(rnng_strcat, a, b)
 #'
 #' @export
 #'
-next_config <- function(refhook = list(), class = "", list = FALSE, mark = FALSE)
-  .Call(rnng_next_config, refhook, class, list, mark)
+next_config <- function(refhook = list(), class = "", vec = FALSE, mark = FALSE)
+  .Call(rnng_next_config, refhook, class, vec, mark)

@@ -4,7 +4,7 @@
 \alias{next_config}
 \title{Configure Next Mode}
 \usage{
-next_config(refhook = list(), class = "", list = FALSE, mark = FALSE)
+next_config(refhook = list(), class = "", vec = FALSE, mark = FALSE)
 }
 \arguments{
 \item{refhook}{\strong{either} a list or pairlist of two functions: the
@@ -17,10 +17,10 @@ of such objects), \cr \strong{or else} NULL to reset.}
 that these serialization function will be applied to, e.g. 'ArrowTabular'
 or 'torch_tensor'.}
 
-\item{list}{[default FALSE] the serialization functions accept and return
+\item{vec}{[default FALSE] the serialization functions accept and return
 reference object individually e.g. \code{arrow::write_to_raw} and
-\code{arrow::read_ipc_stream}. If TRUE, the serialization functions
-accept and return a list of reference objects, e.g.
+\code{arrow::read_ipc_stream}. If TRUE, the serialization functions are
+vectorized and accept and return a list of reference objects, e.g.
 \code{torch::torch_serialize} and \code{torch::torch_load}.}
 
 \item{mark}{[default FALSE] (for advanced use only) logical value, whether to
