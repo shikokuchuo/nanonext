@@ -269,13 +269,13 @@ void nano_serialize_next(nano_buf *buf, const SEXP object) {
         PROTECT(call = Rf_lcons(func, Rf_cons(VECTOR_ELT(refList, i), R_NilValue)));
         PROTECT(out = R_UnwindProtect(eval_safe, call, rl_reset, NULL, NULL));
         if (TYPEOF(out) == RAWSXP) {
-          R_xlen_t xlen = XLENGTH(out);
-          if (buf->cur + xlen + sizeof(R_xlen_t) > buf->len) {
-            buf->len = buf->cur + xlen + sizeof(R_xlen_t);
+          size_t xlen = (size_t) XLENGTH(out);
+          if (buf->cur + xlen + sizeof(size_t) > buf->len) {
+            buf->len = buf->cur + xlen + sizeof(size_t);
             buf->buf = R_Realloc(buf->buf, buf->len, unsigned char);
           }
-          memcpy(buf->buf + buf->cur, &xlen, sizeof(R_xlen_t));
-          buf->cur += sizeof(R_xlen_t);
+          memcpy(buf->buf + buf->cur, &xlen, sizeof(size_t));
+          buf->cur += sizeof(size_t);
           memcpy(buf->buf + buf->cur, STDVEC_DATAPTR(out), xlen);
           buf->cur += xlen;
         }
@@ -343,14 +343,12 @@ SEXP nano_unserialize(unsigned char *buf, const size_t sz) {
             long llen = *(long *) (buf + offset);
             cur = offset + sizeof(long);
             PROTECT(reflist = Rf_allocVector(VECSXP, llen));
-            SET_TAG(nano_refHook, reflist);
-
             SEXP out;
             SEXP func = CADR(nano_refHook);
-            R_xlen_t xlen;
-            for (R_xlen_t i = 0; i < llen; i++) {
-              xlen = *(R_xlen_t *) (buf + cur);
-              cur += sizeof(R_xlen_t);
+            size_t xlen;
+            for (long i = 0; i < llen; i++) {
+              xlen = *(size_t *) (buf + cur);
+              cur += sizeof(size_t);
               PROTECT(raw = Rf_allocVector(RAWSXP, xlen));
               memcpy(STDVEC_DATAPTR(raw), buf + cur, xlen);
               cur += xlen;
@@ -359,6 +357,7 @@ SEXP nano_unserialize(unsigned char *buf, const size_t sz) {
               SET_VECTOR_ELT(reflist, i, out);
               UNPROTECT(2);
             }
+            SET_TAG(nano_refHook, reflist);
             UNPROTECT(1);
 
           }
