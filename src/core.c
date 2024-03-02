@@ -258,6 +258,10 @@ void nano_serialize_next(nano_buf *buf, const SEXP object) {
       SEXP refList = TAG(nano_refHook);
       SEXP func = CAR(nano_refHook);
       long llen = (long) Rf_xlength(refList);
+      if (buf->cur + sizeof(long) > buf->len) {
+        buf->len = buf->cur + NANONEXT_INIT_BUFSIZE;
+        buf->buf = R_Realloc(buf->buf, buf->len, unsigned char);
+      }
       memcpy(buf->buf + buf->cur, &llen, sizeof(long));
       buf->cur += sizeof(R_xlen_t);
 
@@ -266,8 +270,8 @@ void nano_serialize_next(nano_buf *buf, const SEXP object) {
         PROTECT(out = R_UnwindProtect(eval_safe, call, rl_reset, NULL, NULL));
         if (TYPEOF(out) == RAWSXP) {
           R_xlen_t xlen = XLENGTH(out);
-          if (buf->cur + xlen + sizeof(long) > buf->len) {
-            buf->len = buf->cur + xlen + sizeof(long);
+          if (buf->cur + xlen + sizeof(R_xlen_t) > buf->len) {
+            buf->len = buf->cur + xlen + sizeof(R_xlen_t);
             buf->buf = R_Realloc(buf->buf, buf->len, unsigned char);
           }
           memcpy(buf->buf + buf->cur, &xlen, sizeof(R_xlen_t));
