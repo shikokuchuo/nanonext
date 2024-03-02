@@ -1,8 +1,9 @@
-# nanonext 0.13.2.9004 (development)
+# nanonext 0.13.2.9005 (development)
 
 #### New Features
 
-* `next_config()` gains argument 'class' and 'vec', enabling custom serialization to all reference objects supported by R serializaiton.
+* `next_config()` gains argument 'class' and 'vec', enabling custom serialization to all reference objects supported by R serialization.
+* Upgrades bundled 'libnng' to v1.7.3.
 
 # nanonext 0.13.2
 
