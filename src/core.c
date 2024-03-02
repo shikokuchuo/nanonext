@@ -212,7 +212,7 @@ void nano_serialize_next(nano_buf *buf, const SEXP object) {
   buf->buf[0] = 0x7;
   buf->buf[1] = registered;
   buf->buf[2] = special_bit;
-  buf->cur += registered ? 16 : 8;
+  buf->cur += registered ? 16 : 4;
 
   struct R_outpstream_st output_stream;
 
@@ -366,7 +366,7 @@ SEXP nano_unserialize(unsigned char *buf, const size_t sz) {
         goto resume;
       }
       offset = 0;
-      cur = 8;
+      cur = 4;
       goto resume;
     }
   }
