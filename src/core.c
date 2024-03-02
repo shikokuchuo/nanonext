@@ -212,7 +212,7 @@ void nano_serialize_next(nano_buf *buf, const SEXP object) {
   buf->buf[0] = 0x7;
   buf->buf[1] = registered;
   buf->buf[2] = special_bit;
-  buf->cur += registered ? 12 : 4;
+  buf->cur += registered ? 16 : 8;
 
   struct R_outpstream_st output_stream;
 
@@ -235,7 +235,7 @@ void nano_serialize_next(nano_buf *buf, const SEXP object) {
 
   if (registered && TAG(nano_refHook) != R_NilValue) {
     uint64_t cursor = (uint64_t) buf->cur;
-    memcpy(buf->buf + 4, &cursor, sizeof(uint64_t));
+    memcpy(buf->buf + 8, &cursor, sizeof(uint64_t));
     SEXP call, out;
 
     if (registered == 1) {
@@ -329,7 +329,7 @@ SEXP nano_unserialize(unsigned char *buf, const size_t sz) {
       goto resume;
     case 0x7:
       if (registered) {
-        offset = *(uint64_t *) (buf + 4);
+        offset = *(uint64_t *) (buf + 8);
         if (offset) {
           SEXP raw, call;
           if (registered == 1) {
@@ -362,11 +362,11 @@ SEXP nano_unserialize(unsigned char *buf, const size_t sz) {
 
           }
         }
-        cur = 12;
+        cur = 16;
         goto resume;
       }
       offset = 0;
-      cur = 4;
+      cur = 8;
       goto resume;
     }
   }
