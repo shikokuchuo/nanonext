@@ -79,10 +79,16 @@ Web utilities:
 
 ### Installation
 
-Install the latest version from the R-releases R-universe, or CRAN:
+Install the latest version from r-releases R-universe:
 
 ``` r
 install.packages("nanonext", repos = "https://r-releases.r-universe.dev")
+```
+
+Or the previous version from CRAN:
+
+``` r
+install.packages("nanonext")
 ```
 
 Or the development build from the author’s R-universe:
@@ -242,7 +248,7 @@ Computing:
 <https://cran.r-project.org/view=HighPerformanceComputing><br /> - Web
 Technologies: <https://cran.r-project.org/view=WebTechnologies>
 
-NNG website: <https://nng.nanomsg.org/><br /> Mbed TLS website:
+NNG: <https://nng.nanomsg.org/><br /> Mbed TLS:
 <https://www.trustedfirmware.org/projects/mbed-tls/>
 
 –
