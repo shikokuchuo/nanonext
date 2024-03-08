@@ -25,6 +25,7 @@ SEXP nano_CvSymbol;
 SEXP nano_DataSymbol;
 SEXP nano_DialerSymbol;
 SEXP nano_DotcallSymbol;
+SEXP nano_FdSymbol;
 SEXP nano_HeadersSymbol;
 SEXP nano_IdSymbol;
 SEXP nano_ListenerSymbol;
@@ -60,6 +61,7 @@ static void RegisterSymbols(void) {
   nano_DataSymbol = Rf_install("data");
   nano_DialerSymbol = Rf_install("dialer");
   nano_DotcallSymbol = Rf_install(".Call");
+  nano_FdSymbol = Rf_install("fd");
   nano_HeadersSymbol = Rf_install("headers");
   nano_IdSymbol = Rf_install("id");
   nano_ListenerSymbol = Rf_install("listener");

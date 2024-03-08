@@ -66,6 +66,12 @@ NNG presents a socket view of networking. The sockets are
 
     New contexts may also be created using \code{\link{context}} if the
     protocol supports it.
+
+    For supported protocols, an integer file descriptor is appended as the
+    attribute 'fd'. This will become readable when a message is available for
+    receiving on the socket. Attempts should not be made to read or write to
+    the returned file descriptor, but it is suitable for use with poll(),
+    select(), or WSAPoll() on Windows, and similar functions.
 }
 \section{Protocols}{
 
