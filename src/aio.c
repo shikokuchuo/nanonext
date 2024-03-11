@@ -322,6 +322,21 @@ static void request_finalizer(SEXP xptr) {
 
 }
 
+static void request_sock_finalizer(SEXP xptr) {
+
+  if (R_ExternalPtrAddr(xptr) == NULL) return;
+  nano_aio *xp = (nano_aio *) R_ExternalPtrAddr(xptr);
+  nano_aio *saio = (nano_aio *) xp->next;
+  nng_close(*(nng_socket *) saio->data);
+  nng_aio_free(saio->aio);
+  nng_aio_free(xp->aio);
+  if (xp->data != NULL)
+    nng_msg_free((nng_msg *) xp->data);
+  R_Free(saio);
+  R_Free(xp);
+
+}
+
 static void cv_finalizer(SEXP xptr) {
 
   if (R_ExternalPtrAddr(xptr) == NULL) return;
@@ -1234,6 +1249,7 @@ SEXP rnng_request_sock(const SEXP con, const SEXP data, const SEXP sendmode,
   }
 
   saio = R_Calloc(1, nano_aio);
+  saio->data = con;
   saio->next = ncv;
 
   if ((xc = nng_msg_alloc(&msg, 0)))
@@ -1261,7 +1277,7 @@ SEXP rnng_request_sock(const SEXP con, const SEXP data, const SEXP sendmode,
   NANO_FREE(buf);
 
   PROTECT(aio = R_MakeExternalPtr(raio, nano_AioSymbol, R_NilValue));
-  R_RegisterCFinalizerEx(aio, request_finalizer, TRUE);
+  R_RegisterCFinalizerEx(aio, request_sock_finalizer, TRUE);
 
   PROTECT(env = Rf_allocSExp(ENVSXP));
   NANO_CLASS(env, "recvAio");

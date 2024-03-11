@@ -204,7 +204,9 @@ reply <- function(con,
 #'     It is recommended to use a new context for each request to ensure
 #'     consistent state tracking. For safety, the context used for the request
 #'     is closed when all references to the returned 'recvAio' are removed and
-#'     the object is garbage collected.
+#'     the object is garbage collected. If a Socket is supplied, it  will be
+#'     closed after the message has been retrieved and garbage collection
+#'     occurs - please use contexts if wishing to re-use a Socket.
 #'
 #' @inheritSection send Send Modes
 #'
