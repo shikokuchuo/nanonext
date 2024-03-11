@@ -1211,8 +1211,83 @@ SEXP rnng_ncurl_session_close(SEXP session) {
 
 // request ---------------------------------------------------------------------
 
-SEXP rnng_request_impl(const SEXP con, const SEXP data, const SEXP sendmode,
+SEXP rnng_request_sock(const SEXP con, const SEXP data, const SEXP sendmode,
                        const SEXP recvmode, const SEXP timeout, const SEXP clo, nano_cv *ncv) {
+
+  const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) Rf_asInteger(timeout);
+  const int mod = nano_matcharg(recvmode);
+  const int signal = ncv != NULL;
+  nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(con);
+  SEXP aio, env, fun;
+  nano_buf buf;
+  nano_aio *saio, *raio;
+  nng_msg *msg;
+  int xc;
+
+  switch (nano_encodes(sendmode)) {
+  case 1:
+    nano_serialize(&buf, data); break;
+  case 2:
+    nano_encode(&buf, data); break;
+  default:
+    nano_serialize_next(&buf, data); break;
+  }
+
+  saio = R_Calloc(1, nano_aio);
+  saio->next = ncv;
+
+  if ((xc = nng_msg_alloc(&msg, 0)))
+    goto exitlevel1;
+
+  if ((xc = nng_msg_append(msg, buf.buf, buf.cur)) ||
+      (xc = nng_aio_alloc(&saio->aio, sendaio_complete, &saio->aio))) {
+    nng_msg_free(msg);
+    goto exitlevel1;
+  }
+
+  nng_aio_set_msg(saio->aio, msg);
+  nng_send_aio(*sock, saio->aio);
+
+  raio = R_Calloc(1, nano_aio);
+  raio->type = RECVAIO;
+  raio->mode = mod;
+  raio->next = saio;
+
+  if ((xc = nng_aio_alloc(&raio->aio, signal ? request_complete_signal : raio_complete, raio)))
+    goto exitlevel2;
+
+  nng_aio_set_timeout(raio->aio, dur);
+  nng_recv_aio(*sock, raio->aio);
+  NANO_FREE(buf);
+
+  PROTECT(aio = R_MakeExternalPtr(raio, nano_AioSymbol, R_NilValue));
+  R_RegisterCFinalizerEx(aio, request_finalizer, TRUE);
+
+  PROTECT(env = Rf_allocSExp(ENVSXP));
+  NANO_CLASS(env, "recvAio");
+  Rf_defineVar(nano_AioSymbol, aio, env);
+
+  PROTECT(fun = Rf_allocSExp(CLOSXP));
+  SET_FORMALS(fun, nano_aioFormals);
+  SET_BODY(fun, signal ? CADDDR(nano_aioFuncs) : CADR(nano_aioFuncs));
+  SET_CLOENV(fun, clo);
+  R_MakeActiveBinding(nano_DataSymbol, fun, env);
+
+  UNPROTECT(3);
+  return env;
+
+  exitlevel2:
+  R_Free(raio);
+  nng_aio_free(saio->aio);
+  exitlevel1:
+  R_Free(saio);
+  NANO_FREE(buf);
+  return mk_error_data(xc);
+
+}
+
+SEXP rnng_request_ctx(const SEXP con, const SEXP data, const SEXP sendmode,
+                      const SEXP recvmode, const SEXP timeout, const SEXP clo, nano_cv *ncv) {
 
   const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) Rf_asInteger(timeout);
   const int mod = nano_matcharg(recvmode);
@@ -1291,22 +1366,31 @@ SEXP rnng_request_impl(const SEXP con, const SEXP data, const SEXP sendmode,
 
 SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeout, SEXP clo) {
 
-  if (R_ExternalPtrTag(con) != nano_ContextSymbol)
-    Rf_error("'context' is not a valid Context");
-
-  return rnng_request_impl(con, data, sendmode, recvmode, timeout, clo, NULL);
+  const SEXP ptrtag = R_ExternalPtrTag(con);
+  if (ptrtag == nano_ContextSymbol) {
+    return rnng_request_ctx(con, data, sendmode, recvmode, timeout, clo, NULL);
+  } else if (ptrtag == nano_SocketSymbol) {
+    return rnng_request_sock(con, data, sendmode, recvmode, timeout, clo, NULL);
+  } else {
+    error_return("'con' is not a valid Socket or Context");
+  }
 
 }
 
 SEXP rnng_request_signal(SEXP con, SEXP data, SEXP cvar, SEXP sendmode, SEXP recvmode, SEXP timeout, SEXP clo) {
 
-  if (R_ExternalPtrTag(con) != nano_ContextSymbol)
-    Rf_error("'context' is not a valid Context");
   if (R_ExternalPtrTag(cvar) != nano_CvSymbol)
     Rf_error("'cv' is not a valid Condition Variable");
   nano_cv *ncv = (nano_cv *) R_ExternalPtrAddr(cvar);
 
-  return rnng_request_impl(con, data, sendmode, recvmode, timeout, clo, ncv);
+  const SEXP ptrtag = R_ExternalPtrTag(con);
+  if (ptrtag == nano_ContextSymbol) {
+    return rnng_request_ctx(con, data, sendmode, recvmode, timeout, clo, ncv);
+  } else if (ptrtag == nano_SocketSymbol) {
+    return rnng_request_sock(con, data, sendmode, recvmode, timeout, clo, ncv);
+  } else {
+    error_return("'con' is not a valid Socket or Context");
+  }
 
 }
 

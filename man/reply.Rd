@@ -2,10 +2,10 @@
 % Please edit documentation in R/context.R
 \name{reply}
 \alias{reply}
-\title{Reply over Context (RPC Server for Req/Rep Protocol)}
+\title{Reply (RPC Server for Req/Rep Protocol)}
 \usage{
 reply(
-  context,
+  con,
   execute,
   recv_mode = c("serial", "character", "complex", "double", "integer", "logical",
     "numeric", "raw"),
@@ -15,7 +15,7 @@ reply(
 )
 }
 \arguments{
-\item{context}{a Context.}
+\item{con}{a Socket or Context.}
 
 \item{execute}{a function which takes the received (converted) data as its
 first argument. Can be an anonymous function of the form
@@ -47,9 +47,9 @@ become unavailable since sending the request).}
 Integer exit code (zero on success).
 }
 \description{
-Implements an executor/server for the rep node of the req/rep protocol. Awaits
-    data, applies an arbitrary specified function, and returns the result
-    to the caller/client.
+Implements an executor/server for the rep node of the req/rep protocol.
+    Awaits data, applies an arbitrary specified function, and returns the
+    result to the caller/client.
 }
 \details{
 Receive will block while awaiting a message to arrive and is usually

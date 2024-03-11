@@ -3,10 +3,10 @@
 \name{request}
 \alias{request}
 \alias{request_signal}
-\title{Request over Context (RPC Client for Req/Rep Protocol)}
+\title{Request (RPC Client for Req/Rep Protocol)}
 \usage{
 request(
-  context,
+  con,
   data,
   send_mode = c("serial", "raw", "next"),
   recv_mode = c("serial", "character", "complex", "double", "integer", "logical",
@@ -15,7 +15,7 @@ request(
 )
 
 request_signal(
-  context,
+  con,
   data,
   cv,
   send_mode = c("serial", "raw", "next"),
@@ -25,7 +25,7 @@ request_signal(
 )
 }
 \arguments{
-\item{context}{a Context.}
+\item{con}{a Socket or Context.}
 
 \item{data}{an object (if send_mode = 'raw', a vector).}
 
@@ -59,9 +59,9 @@ A signalling version of the function takes a 'conditionVariable' as an
     additional argument and signals it when the async receive is complete.
 }
 \details{
-Sending the request and receiving the result are both performed async,
-    hence the function will return immediately with a 'recvAio' object. Access
-    the return value at \code{$data}.
+Sending the request and receiving the result are both performed
+    async, hence the function will return immediately with a 'recvAio'
+    object. Access the return value at \code{$data}.
 
     This is designed so that the process on the server can run concurrently
     without blocking the client.
@@ -71,7 +71,8 @@ Sending the request and receiving the result are both performed async,
 
     If an error occured in the server process, a nul byte \code{00} will be
     received. This allows an error to be easily distinguished from a NULL
-    return value. \code{\link{is_nul_byte}} can be used to test for a nul byte.
+    return value. \code{\link{is_nul_byte}} can be used to test for a nul
+    byte.
 
     It is recommended to use a new context for each request to ensure
     consistent state tracking. For safety, the context used for the request

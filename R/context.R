@@ -91,13 +91,13 @@ context <- function(socket) .Call(rnng_ctx_open, socket)
 #'
 close.nanoContext <- function(con, ...) invisible(.Call(rnng_ctx_close, con))
 
-#' Reply over Context (RPC Server for Req/Rep Protocol)
+#' Reply (RPC Server for Req/Rep Protocol)
 #'
-#' Implements an executor/server for the rep node of the req/rep protocol. Awaits
-#'     data, applies an arbitrary specified function, and returns the result
-#'     to the caller/client.
+#' Implements an executor/server for the rep node of the req/rep protocol.
+#'     Awaits data, applies an arbitrary specified function, and returns the
+#'     result to the caller/client.
 #'
-#' @param context a Context.
+#' @param con a Socket or Context.
 #' @param execute a function which takes the received (converted) data as its
 #'     first argument. Can be an anonymous function of the form
 #'     \code{function(x) do(x)}. Additional arguments can also be passed in
@@ -154,7 +154,7 @@ close.nanoContext <- function(con, ...) invisible(.Call(rnng_ctx_close, con))
 #'
 #' @export
 #'
-reply <- function(context,
+reply <- function(con,
                   execute,
                   recv_mode = c("serial", "character", "complex", "double",
                                 "integer", "logical", "numeric", "raw"),
@@ -163,16 +163,16 @@ reply <- function(context,
                   ...) {
 
   block <- if (is.null(timeout)) TRUE else timeout
-  res <- recv(context, mode = recv_mode, block = block)
+  res <- recv(con, mode = recv_mode, block = block)
   is_error_value(res) && return(res)
-  on.exit(expr = send(context, data = as.raw(0L), mode = send_mode, block = TRUE))
+  on.exit(expr = send(con, data = as.raw(0L), mode = send_mode, block = TRUE))
   data <- execute(res, ...)
   on.exit()
-  send(context, data = data, mode = send_mode, block = block)
+  send(con, data = data, mode = send_mode, block = block)
 
 }
 
-#' Request over Context (RPC Client for Req/Rep Protocol)
+#' Request (RPC Client for Req/Rep Protocol)
 #'
 #' Implements a caller/client for the req node of the req/rep protocol. Sends
 #'     data to the rep node (executor/server) and returns an Aio, which can be
@@ -186,9 +186,9 @@ reply <- function(context,
 #'
 #' @return A 'recvAio' (object of class 'recvAio') (invisibly).
 #'
-#' @details Sending the request and receiving the result are both performed async,
-#'     hence the function will return immediately with a 'recvAio' object. Access
-#'     the return value at \code{$data}.
+#' @details Sending the request and receiving the result are both performed
+#'     async, hence the function will return immediately with a 'recvAio'
+#'     object. Access the return value at \code{$data}.
 #'
 #'     This is designed so that the process on the server can run concurrently
 #'     without blocking the client.
@@ -198,7 +198,8 @@ reply <- function(context,
 #'
 #'     If an error occured in the server process, a nul byte \code{00} will be
 #'     received. This allows an error to be easily distinguished from a NULL
-#'     return value. \code{\link{is_nul_byte}} can be used to test for a nul byte.
+#'     return value. \code{\link{is_nul_byte}} can be used to test for a nul
+#'     byte.
 #'
 #'     It is recommended to use a new context for each request to ensure
 #'     consistent state tracking. For safety, the context used for the request
@@ -221,15 +222,15 @@ reply <- function(context,
 #'
 #' @export
 #'
-request <- function(context,
+request <- function(con,
                     data,
                     send_mode = c("serial", "raw", "next"),
                     recv_mode = c("serial", "character", "complex", "double",
                                   "integer", "logical", "numeric", "raw", "string"),
                     timeout = NULL)
-  data <- .Call(rnng_request, context, data, send_mode, recv_mode, timeout, environment())
+  data <- .Call(rnng_request, con, data, send_mode, recv_mode, timeout, environment())
 
-#' Request over Context and Signal a Condition Variable
+#' Request and Signal a Condition Variable (RPC Client for Req/Rep Protocol)
 #'
 #' A signalling version of the function takes a 'conditionVariable' as an
 #'     additional argument and signals it when the async receive is complete.
@@ -260,11 +261,11 @@ request <- function(context,
 #' @rdname request
 #' @export
 #'
-request_signal <- function(context,
+request_signal <- function(con,
                            data,
                            cv,
                            send_mode = c("serial", "raw", "next"),
                            recv_mode = c("serial", "character", "complex", "double",
                                          "integer", "logical", "numeric", "raw", "string"),
                            timeout = NULL)
-  data <- .Call(rnng_request_signal, context, data, cv, send_mode, recv_mode, timeout, environment())
+  data <- .Call(rnng_request_signal, con, data, cv, send_mode, recv_mode, timeout, environment())
