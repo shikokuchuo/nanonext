@@ -146,9 +146,10 @@ signal when the async receive is complete.</p></dd>
     return value. <code><a href="is_error_value.html">is_nul_byte</a></code> can be used to test for a nul
     byte.</p>
 <p>It is recommended to use a new context for each request to ensure
-    consistent state tracking. For safety, the context used for the request
-    is closed when all references to the returned 'recvAio' are removed and
-    the object is garbage collected.</p>
+    consistent state tracking. For safety, the Socket or Context used for
+    the request is closed some time after the message has been retrieved,
+    when garbage collection is performed. For this reason, contexts must be
+    used if the socket is intended to be used for more than one request.</p>
 <p><strong>For the signalling version</strong>: when the receive is complete,
     the supplied 'conditionVariable' is signalled by incrementing its value
     by 1. This happens asynchronously and independently of the R execution
