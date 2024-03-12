@@ -1,4 +1,4 @@
-# nanonext 0.13.3.9002 (development)
+# nanonext 0.13.3.9003 (development)
 
 * `request()` and `reply()` now accept sockets in place of contexts, with the argument 'context' amended to the more general 'con'.
 * An integer file descriptor is appended to 'nanoSockets' as the attribute 'fd' - see updated documentation for `socket()`.

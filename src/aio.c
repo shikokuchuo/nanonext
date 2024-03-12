@@ -327,7 +327,6 @@ static void request_sock_finalizer(SEXP xptr) {
   if (R_ExternalPtrAddr(xptr) == NULL) return;
   nano_aio *xp = (nano_aio *) R_ExternalPtrAddr(xptr);
   nano_aio *saio = (nano_aio *) xp->next;
-  nng_close(*(nng_socket *) saio->data);
   nng_aio_free(saio->aio);
   nng_aio_free(xp->aio);
   if (xp->data != NULL)
@@ -1249,7 +1248,6 @@ SEXP rnng_request_sock(const SEXP con, const SEXP data, const SEXP sendmode,
   }
 
   saio = R_Calloc(1, nano_aio);
-  saio->data = con;
   saio->next = ncv;
 
   if ((xc = nng_msg_alloc(&msg, 0)))
