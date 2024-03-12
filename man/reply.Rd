@@ -2,10 +2,10 @@
 % Please edit documentation in R/context.R
 \name{reply}
 \alias{reply}
-\title{Reply (RPC Server for Req/Rep Protocol)}
+\title{Reply over Context (RPC Server for Req/Rep Protocol)}
 \usage{
 reply(
-  con,
+  context,
   execute,
   recv_mode = c("serial", "character", "complex", "double", "integer", "logical",
     "numeric", "raw"),
@@ -15,7 +15,7 @@ reply(
 )
 }
 \arguments{
-\item{con}{a Socket or Context.}
+\item{context}{a Context.}
 
 \item{execute}{a function which takes the received (converted) data as its
 first argument. Can be an anonymous function of the form

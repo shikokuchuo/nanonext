@@ -91,13 +91,13 @@ context <- function(socket) .Call(rnng_ctx_open, socket)
 #'
 close.nanoContext <- function(con, ...) invisible(.Call(rnng_ctx_close, con))
 
-#' Reply (RPC Server for Req/Rep Protocol)
+#' Reply over Context (RPC Server for Req/Rep Protocol)
 #'
 #' Implements an executor/server for the rep node of the req/rep protocol.
 #'     Awaits data, applies an arbitrary specified function, and returns the
 #'     result to the caller/client.
 #'
-#' @param con a Socket or Context.
+#' @param context a Context.
 #' @param execute a function which takes the received (converted) data as its
 #'     first argument. Can be an anonymous function of the form
 #'     \code{function(x) do(x)}. Additional arguments can also be passed in
@@ -154,7 +154,7 @@ close.nanoContext <- function(con, ...) invisible(.Call(rnng_ctx_close, con))
 #'
 #' @export
 #'
-reply <- function(con,
+reply <- function(context,
                   execute,
                   recv_mode = c("serial", "character", "complex", "double",
                                 "integer", "logical", "numeric", "raw"),
@@ -163,16 +163,16 @@ reply <- function(con,
                   ...) {
 
   block <- if (is.null(timeout)) TRUE else timeout
-  res <- recv(con, mode = recv_mode, block = block)
+  res <- recv(context, mode = recv_mode, block = block)
   is_error_value(res) && return(res)
-  on.exit(expr = send(con, data = as.raw(0L), mode = send_mode, block = TRUE))
+  on.exit(expr = send(context, data = as.raw(0L), mode = send_mode, block = TRUE))
   data <- execute(res, ...)
   on.exit()
-  send(con, data = data, mode = send_mode, block = block)
+  send(context, data = data, mode = send_mode, block = block)
 
 }
 
-#' Request (RPC Client for Req/Rep Protocol)
+#' Request over Context (RPC Client for Req/Rep Protocol)
 #'
 #' Implements a caller/client for the req node of the req/rep protocol. Sends
 #'     data to the rep node (executor/server) and returns an Aio, which can be
@@ -222,13 +222,13 @@ reply <- function(con,
 #'
 #' @export
 #'
-request <- function(con,
+request <- function(context,
                     data,
                     send_mode = c("serial", "raw", "next"),
                     recv_mode = c("serial", "character", "complex", "double",
                                   "integer", "logical", "numeric", "raw", "string"),
                     timeout = NULL)
-  data <- .Call(rnng_request, con, data, send_mode, recv_mode, timeout, environment())
+  data <- .Call(rnng_request, context, data, send_mode, recv_mode, timeout, environment())
 
 #' Request and Signal a Condition Variable (RPC Client for Req/Rep Protocol)
 #'
@@ -261,11 +261,11 @@ request <- function(con,
 #' @rdname request
 #' @export
 #'
-request_signal <- function(con,
+request_signal <- function(context,
                            data,
                            cv,
                            send_mode = c("serial", "raw", "next"),
                            recv_mode = c("serial", "character", "complex", "double",
                                          "integer", "logical", "numeric", "raw", "string"),
                            timeout = NULL)
-  data <- .Call(rnng_request_signal, con, data, cv, send_mode, recv_mode, timeout, environment())
+  data <- .Call(rnng_request_signal, context, data, cv, send_mode, recv_mode, timeout, environment())

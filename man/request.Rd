@@ -3,10 +3,10 @@
 \name{request}
 \alias{request}
 \alias{request_signal}
-\title{Request (RPC Client for Req/Rep Protocol)}
+\title{Request over Context (RPC Client for Req/Rep Protocol)}
 \usage{
 request(
-  con,
+  context,
   data,
   send_mode = c("serial", "raw", "next"),
   recv_mode = c("serial", "character", "complex", "double", "integer", "logical",
@@ -15,7 +15,7 @@ request(
 )
 
 request_signal(
-  con,
+  context,
   data,
   cv,
   send_mode = c("serial", "raw", "next"),
@@ -25,7 +25,7 @@ request_signal(
 )
 }
 \arguments{
-\item{con}{a Socket or Context.}
+\item{context}{a Context.}
 
 \item{data}{an object (if send_mode = 'raw', a vector).}
 
