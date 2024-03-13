@@ -1,4 +1,6 @@
-# nanonext 0.13.3.9004 (development)
+# nanonext 0.13.4
+
+#### New Features
 
 * An integer file descriptor is appended to 'nanoSockets' as the attribute 'fd' - see updated documentation for `socket()`.
 

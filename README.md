@@ -79,13 +79,13 @@ Web utilities:
 
 ### Installation
 
-Install the fast release channel version (0.13.3) from R-releases:
+Install the fast channel release (v0.13.4) from R-releases:
 
 ``` r
 install.packages("nanonext", repos = "https://r-releases.r-universe.dev")
 ```
 
-Or the slow release channel version (0.13.2) from CRAN:
+Or the slow channel release (v0.13.2) from CRAN:
 
 ``` r
 install.packages("nanonext")
