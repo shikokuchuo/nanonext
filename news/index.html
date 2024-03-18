@@ -58,7 +58,10 @@
 
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.13.4.9000" id="nanonext-01349000-development">nanonext 0.13.4.9000 (development)<a class="anchor" aria-label="anchor" href="#nanonext-01349000-development"></a></h2>
-</div>
+<ul><li>Removes SHA-2 cryptographic hash functions in favour of the superior streaming implementations in package {secretbase}.</li>
+<li>
+<code>secretbase</code> package added as a suggests dependency in order to support the messenger() function.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.13.4" id="nanonext-0134">nanonext 0.13.4<a class="anchor" aria-label="anchor" href="#nanonext-0134"></a></h2>
 <div class="section level5">
@@ -485,7 +488,7 @@
 <h5 id="new-features-0-6-0">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-6-0"></a></h5>
 <ul><li>Implements <code><a href="../reference/base64enc.html">base64enc()</a></code> and <code><a href="../reference/base64enc.html">base64dec()</a></code> base64 encoding and decoding using the ‘Mbed TLS’ library.</li>
 <li>
-<code><a href="../reference/sha256.html">sha224()</a></code>, <code><a href="../reference/sha256.html">sha256()</a></code>, <code><a href="../reference/sha256.html">sha384()</a></code> and <code><a href="../reference/sha256.html">sha512()</a></code> functions gain an argument ‘convert’ to control whether to return a raw vector or character string.</li>
+<code>sha224()</code>, <code>sha256()</code>, <code>sha384()</code> and <code>sha512()</code> functions gain an argument ‘convert’ to control whether to return a raw vector or character string.</li>
 <li>
 <code><a href="../reference/ncurl.html">ncurl()</a></code> gains the argument ‘follow’ (default FALSE) to control whether redirects are automatically followed.</li>
 </ul></div>
@@ -499,7 +502,7 @@
 <li>
 <code><a href="../reference/ncurl.html">ncurl()</a></code> argument ‘request’ renamed to ‘response’ for specifying response headers to return (to avoid confusion); new argument ‘follow’ (placed between ‘convert’ and ‘method’) controls whether redirects are followed, and there is no longer a user prompt in interactive environments.</li>
 <li>
-<code><a href="../reference/sha256.html">sha224()</a></code>, <code><a href="../reference/sha256.html">sha256()</a></code>, <code><a href="../reference/sha256.html">sha384()</a></code> and <code><a href="../reference/sha256.html">sha512()</a></code> functions no longer return ‘nanoHash’ objects, but a raw vector or character string depending on the new argument ‘convert’.</li>
+<code>sha224()</code>, <code>sha256()</code>, <code>sha384()</code> and <code>sha512()</code> functions no longer return ‘nanoHash’ objects, but a raw vector or character string depending on the new argument ‘convert’.</li>
 </ul><p><em>Other changes:</em></p>
 <ul><li>
 <code><a href="../reference/socket.html">socket()</a></code> and <code><a href="../reference/nano.html">nano()</a></code> now accept non-missing NULL ‘listen’ and ‘dial’ arguments, allowing easier programmatic use.</li>
@@ -524,7 +527,7 @@
 <h2 class="page-header" data-toc-text="0.5.4" id="nanonext-054">nanonext 0.5.4<small>2022-09-02</small><a class="anchor" aria-label="anchor" href="#nanonext-054"></a></h2>
 <div class="section level5">
 <h5 id="new-features-0-5-4">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-5-4"></a></h5>
-<ul><li>Implements <code><a href="../reference/sha256.html">sha224()</a></code>, <code><a href="../reference/sha256.html">sha256()</a></code>, <code><a href="../reference/sha256.html">sha384()</a></code> and <code><a href="../reference/sha256.html">sha512()</a></code> series of fast, optimised cryptographic hash and HMAC generation functions using the ‘Mbed TLS’ library.</li>
+<ul><li>Implements <code>sha224()</code>, <code>sha256()</code>, <code>sha384()</code> and <code>sha512()</code> series of fast, optimised cryptographic hash and HMAC generation functions using the ‘Mbed TLS’ library.</li>
 <li>
 <code><a href="../reference/ncurl.html">ncurl()</a></code> and <code><a href="../reference/stream.html">stream()</a></code> gain the argmument ‘pem’ for optionally specifying a certificate authority certificate chain PEM file for authenticating secure sites.</li>
 <li>
