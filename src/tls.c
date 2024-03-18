@@ -38,7 +38,7 @@ SEXP rnng_version(void) {
 
 // Statics ---------------------------------------------------------------------
 
-static nano_buf nano_any_buf(const SEXP x, const int strip) {
+static nano_buf nano_any_buf(const SEXP x) {
 
   nano_buf buf;
 
@@ -57,7 +57,7 @@ static nano_buf nano_any_buf(const SEXP x, const int strip) {
     }
   }
 
-  nano_serialize_xdr(&buf, x, strip);
+  nano_serialize_xdr(&buf, x);
 
   return buf;
 
@@ -80,122 +80,6 @@ static SEXP nano_hash_char(unsigned char *buf, const size_t sz) {
 
 }
 
-// SHA-2 Cryptographic Hash Algorithms -----------------------------------------
-
-static SEXP nano_sha256(const SEXP x, const SEXP key, const SEXP convert, const int is224) {
-
-  const size_t outlen = is224 ? SHA224_KEY_SIZE : SHA256_KEY_SIZE;
-#if MBEDTLS_VERSION_MAJOR >= 3
-  unsigned char output[outlen];
-#else
-  unsigned char output[SHA256_KEY_SIZE];
-#endif
-  SEXP out;
-  int xc = 0;
-
-  nano_buf xhash = nano_any_buf(x, 1);
-
-  if (key == R_NilValue) {
-
-#if MBEDTLS_VERSION_MAJOR >= 3
-    xc = mbedtls_sha256(xhash.buf, xhash.cur, output, is224);
-#else
-    xc = mbedtls_sha256_ret(xhash.buf, xhash.cur, output, is224);
-#endif
-
-  } else {
-
-    nano_buf khash = nano_any_buf(key, 1);
-    xc = mbedtls_md_hmac(mbedtls_md_info_from_type(is224 ? MBEDTLS_MD_SHA224 : MBEDTLS_MD_SHA256),
-                         khash.buf, khash.cur, xhash.buf, xhash.cur, output);
-    NANO_FREE(khash);
-
-  }
-
-  NANO_FREE(xhash);
-  if (xc)
-    Rf_error("error generating hash");
-
-  if (*NANO_INTEGER(convert)) {
-    out = nano_hash_char(output, outlen);
-  } else {
-    out = Rf_allocVector(RAWSXP, outlen);
-    memcpy(STDVEC_DATAPTR(out), output, outlen);
-  }
-
-  return out;
-
-}
-
-SEXP rnng_sha224(SEXP x, SEXP key, SEXP convert) {
-
-  return nano_sha256(x, key, convert, 1);
-
-}
-
-SEXP rnng_sha256(SEXP x, SEXP key, SEXP convert) {
-
-  return nano_sha256(x, key, convert, 0);
-
-}
-
-static SEXP nano_sha512(const SEXP x, const SEXP key, const SEXP convert, const int is384) {
-
-  const size_t outlen = is384 ? SHA384_KEY_SIZE : SHA512_KEY_SIZE;
-#if MBEDTLS_VERSION_MAJOR >= 3
-  unsigned char output[outlen];
-#else
-  unsigned char output[SHA512_KEY_SIZE];
-#endif
-  SEXP out;
-  int xc = 0;
-
-  nano_buf xhash = nano_any_buf(x, 1);
-
-  if (key == R_NilValue) {
-
-#if MBEDTLS_VERSION_MAJOR >= 3
-    xc = mbedtls_sha512(xhash.buf, xhash.cur, output, is384);
-#else
-    xc = mbedtls_sha512_ret(xhash.buf, xhash.cur, output, is384);
-#endif
-
-  } else {
-
-    nano_buf khash = nano_any_buf(key, 1);
-    xc = mbedtls_md_hmac(mbedtls_md_info_from_type(is384 ? MBEDTLS_MD_SHA384 : MBEDTLS_MD_SHA512),
-                         khash.buf, khash.cur, xhash.buf, xhash.cur, output);
-    NANO_FREE(khash);
-
-  }
-
-  NANO_FREE(xhash);
-  if (xc)
-    Rf_error("error generating hash");
-
-  if (*NANO_INTEGER(convert)) {
-    out = nano_hash_char(output, outlen);
-  } else {
-    out = Rf_allocVector(RAWSXP, outlen);
-    memcpy(STDVEC_DATAPTR(out), output, outlen);
-  }
-
-  return out;
-
-}
-
-SEXP rnng_sha384(SEXP x, SEXP key, SEXP convert) {
-
-  return nano_sha512(x, key, convert, 1);
-
-}
-
-SEXP rnng_sha512(SEXP x, SEXP key, SEXP convert) {
-
-  return nano_sha512(x, key, convert, 0);
-
-}
-
 // Base64 encoding decoding ----------------------------------------------------
 
 SEXP rnng_base64enc(SEXP x, SEXP convert) {
@@ -204,7 +88,7 @@ SEXP rnng_base64enc(SEXP x, SEXP convert) {
   int xc;
   size_t olen;
 
-  nano_buf hash = nano_any_buf(x, 0);
+  nano_buf hash = nano_any_buf(x);
   xc = mbedtls_base64_encode(NULL, 0, &olen, hash.buf, hash.cur);
   unsigned char *buf = R_Calloc(olen, unsigned char);
   xc = mbedtls_base64_encode(buf, olen, &olen, hash.buf, hash.cur);

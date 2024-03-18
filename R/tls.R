@@ -71,91 +71,14 @@
 tls_config <- function(client = NULL, server = NULL, pass = NULL, auth = is.null(server))
   .Call(rnng_tls_config, client, server, pass, auth)
 
-# nanonext - Cryptographic Hashing ---------------------------------------------
-
-#' Cryptographic Hashing Using the SHA-2 Algorithms
-#'
-#' Returns a SHA-256, SHA-224, SHA-384, or SHA-512 hash or HMAC of the supplied
-#'     R object. Uses the optimised implementation from the Mbed TLS library.
-#'
-#' @param x an object.
-#' @param key (optional) supply a secret key to generate an HMAC. If missing or
-#'     NULL, the SHA-256/224/384/512 hash of 'x' is returned.
-#' @param convert [default TRUE] logical value whether to convert the output to
-#'     a character string or keep as a raw vector.
-#'
-#' @return A raw vector or character string depending on 'convert', of byte
-#'     length 32 for SHA-256, 28 for SHA-224, 48 for SHA-384, and 64 for SHA-512.
-#'
-#' @details For arguments 'x' and 'key', a scalar string or raw vector (with no
-#'     attributes) is hashed 'as is'.
-#'
-#'     All other objects are first serialized using R serialization v3 XDR, with
-#'     headers skipped (for portability as these contain R version and encoding
-#'     information).
-#'
-#'     The result of hashing is always a byte sequence, which is converted to a
-#'     character string hex representation if 'convert' is TRUE, or returned as
-#'     a raw vector if 'convert' is FALSE.
-#'
-#' @examples
-#' # SHA-256 hash as character string:
-#' sha256("hello world!")
-#'
-#' # SHA-256 hash as raw vector:
-#' sha256("hello world!", convert = FALSE)
-#'
-#' # Obtain HMAC:
-#' sha256("hello world!", "SECRET_KEY")
-#'
-#' # Hashing a file:
-#' tempfile <- tempfile()
-#' cat(rep(letters, 256), file = tempfile)
-#' con <- file(tempfile, open = "rb")
-#' vec <- NULL
-#' while (length(upd <- readBin(con, raw(), 8192))) vec <- c(vec, upd)
-#' sha256(vec)
-#' close(con)
-#' unlink(tempfile)
-#'
-#' @export
-#'
-sha256 <- function(x, key = NULL, convert = TRUE) .Call(rnng_sha256, x, key, convert)
-
-#' @examples
-#' # SHA-224 hash:
-#' sha224("hello world!")
-#'
-#' @rdname sha256
-#' @export
-#'
-sha224 <- function(x, key = NULL, convert = TRUE) .Call(rnng_sha224, x, key, convert)
-
-#' @examples
-#' # SHA-384 hash:
-#' sha384("hello world!")
-#'
-#' @rdname sha256
-#' @export
-#'
-sha384 <- function(x, key = NULL, convert = TRUE) .Call(rnng_sha384, x, key, convert)
-
-#' @examples
-#' # SHA-512 hash:
-#' sha512("hello world!")
-#'
-#' @rdname sha256
-#' @export
-#'
-sha512 <- function(x, key = NULL, convert = TRUE) .Call(rnng_sha512, x, key, convert)
-
 # nanonext - Base64 Encoding Decoding ------------------------------------------
 
 #' Base64 Encode / Decode
 #'
-#' Encodes / decodes a character string or arbitrary R object to base64 encoding.
+#' Encodes / decodes a character string, raw vector or other object to base64
+#'     encoding.
 #'
-#' @inheritParams sha256
+#' @param x an object.
 #' @param convert For \strong{base64enc}: [default TRUE] logical TRUE to encode
 #'     to a character string or FALSE to a raw vector.\cr
 #'     For \strong{base64dec}: [default TRUE] logical TRUE to convert back to a

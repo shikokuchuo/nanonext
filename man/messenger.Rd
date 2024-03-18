@@ -12,7 +12,8 @@ a character string e.g. 'tcp://127.0.0.1:5555' (see \link{transports}).}
 
 \item{auth}{[default NULL] an R object (possessed by both parties) which
 serves as a pre-shared key on which to authenticate the communication.
-Note: the object is never sent, only a random subset of its SHA-512 hash.}
+Note: the object is never sent, only a random subset of its SHA3-512
+hash.}
 }
 \value{
 Invisible NULL.
@@ -20,6 +21,9 @@ Invisible NULL.
 \description{
 Multi-threaded, console-based, 2-way instant messaging system with
     authentication, based on NNG scalability protocols.
+}
+\note{
+This function requires the \pkg{secretbase} package to be installed.
 }
 \section{Usage}{
 

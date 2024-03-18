@@ -28,8 +28,7 @@ knitr::opts_chunk$set(
 7. [Surveyor / Respondent Model](#surveyor-respondent-model)
 8. [ncurl: (Async) HTTP Client](#ncurl-async-http-client)
 9. [stream: Websocket Client](#stream-websocket-client)
-10. [Cryptographic Hashing](#cryptographic-hashing)
-11. [Options and Statistics](#options-and-statistics)
+10. [Options and Statistics](#options-and-statistics)
 
 ### Cross-language Exchange
 
@@ -461,6 +460,15 @@ transact(sess)
 
 ```
 
+Optimised functions for base64 encoding and decoding from the 'Mbed TLS' library are also exposed as convenience utilities:
+
+```{r b64}
+base64enc("hello world!")
+
+base64dec(base64enc("hello world!"))
+
+```
+
 [&laquo; Back to ToC](#table-of-contents)
 
 ### stream: Websocket Client
@@ -498,36 +506,6 @@ r$data
 close(s)
 
 ```
-
-[&laquo; Back to ToC](#table-of-contents)
-
-### Cryptographic Hashing
-
-Hash functions using the SHA-2 algorithms are included: `sha224()`, `sha256()`, `sha384()` and `sha512()`.
-
-These expose the secure, optimized implementations from the 'Mbed TLS' library and return a hash either directly as a raw vector or converted to a character string. For use in authentication, raw vectors can be compared directly for the highest performance.
-
-To generate an HMAC (hash-based message authentication code), simply supply the value 'key' to use as the secret key.
-
-```{r sha}
-sha256("hello world!")
-
-sha256("hello world!", convert = FALSE)
-
-sha256("hello world!", key = "MY_SECRET")
-
-```
-
-Optimised functions for base64 encoding and decoding from the 'Mbed TLS' library are also provided:
-
-```{r b64}
-base64enc("hello world!")
-
-base64dec(base64enc("hello world!"))
-
-```
-
-Performance is such that base64 decoding a character string into a raw vector can be faster than creating a new raw vector using `as.raw()`.
 
 [&laquo; Back to ToC](#table-of-contents)
 

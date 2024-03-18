@@ -32,6 +32,7 @@ Depends:
     R (>= 3.5)
 Suggests: 
     knitr,
-    markdown
+    markdown,
+    secretbase
 VignetteBuilder: knitr
 RoxygenNote: 7.3.1

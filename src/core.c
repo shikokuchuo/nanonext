@@ -72,17 +72,6 @@ static void nano_write_bytes(R_outpstream_t stream, void *src, int len) {
 
 }
 
-static void nano_skip_bytes(R_outpstream_t stream, void *src, int len) {
-
-  nano_buf *buf = (nano_buf *) stream->data;
-  if (buf->len < NANONEXT_INIT_BUFSIZE) {
-    buf->len = --buf->len ? buf->len : NANONEXT_INIT_BUFSIZE;
-  } else {
-    nano_write_bytes(stream, src, len);
-  }
-
-}
-
 static void nano_read_bytes(R_inpstream_t stream, void *dst, int len) {
 
   nano_buf *buf = (nano_buf *) stream->data;
@@ -290,10 +279,9 @@ void nano_serialize_next(nano_buf *buf, const SEXP object) {
 
 }
 
-void nano_serialize_xdr(nano_buf *buf, const SEXP object, const int skip) {
+void nano_serialize_xdr(nano_buf *buf, const SEXP object) {
 
   NANO_ALLOC(buf, NANONEXT_INIT_BUFSIZE);
-  if (skip) buf->len = NANONEXT_SERIAL_HEADERS;
 
   struct R_outpstream_st output_stream;
 
@@ -303,7 +291,7 @@ void nano_serialize_xdr(nano_buf *buf, const SEXP object, const int skip) {
     R_pstream_xdr_format,
     NANONEXT_SERIAL_VER,
     NULL,
-    skip ? nano_skip_bytes : nano_write_bytes,
+    nano_write_bytes,
     NULL,
     R_NilValue
   );

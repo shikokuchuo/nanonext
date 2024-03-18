@@ -1,5 +1,8 @@
 # nanonext 0.13.4.9000 (development)
 
+* Removes SHA-2 cryptographic hash functions in favour of the superior streaming implementations in package {secretbase}.
+* `secretbase` package added as a suggests dependency in order to support the messenger() function.
+
 # nanonext 0.13.4
 
 #### New Features

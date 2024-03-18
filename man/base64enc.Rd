@@ -26,7 +26,8 @@ For \strong{base64enc}: A character string or raw vector depending on
     depending on the value of 'convert'.
 }
 \description{
-Encodes / decodes a character string or arbitrary R object to base64 encoding.
+Encodes / decodes a character string, raw vector or other object to base64
+    encoding.
 }
 \details{
 For encoding: a character string or raw vector (with no attributes)

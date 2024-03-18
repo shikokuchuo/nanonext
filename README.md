@@ -71,10 +71,6 @@ Web utilities:
   (async) http(s) client
 - [stream](https://shikokuchuo.net/nanonext/articles/nanonext.html#stream-websocket-client) -
   secure websockets client / generic low-level socket interface
-- [sha224\|256\|384\|512](https://shikokuchuo.net/nanonext/articles/nanonext.html#cryptographic-hashing) -
-  cryptographic hash and HMAC algorithms
-- [base64enc\|dec](https://shikokuchuo.net/nanonext/articles/nanonext.html#cryptographic-hashing) -
-  base64 encoding and decoding
 - `messenger()` - console-based instant messaging with authentication
 
 ### Installation

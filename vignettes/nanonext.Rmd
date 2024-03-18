@@ -22,8 +22,7 @@ vignette: >
 7. [Surveyor / Respondent Model](#surveyor-respondent-model)
 8. [ncurl: (Async) HTTP Client](#ncurl-async-http-client)
 9. [stream: Websocket Client](#stream-websocket-client)
-10. [Cryptographic Hashing](#cryptographic-hashing)
-11. [Options and Statistics](#options-and-statistics)
+10. [Options and Statistics](#options-and-statistics)
 
 ### Cross-language Exchange
 
@@ -205,7 +204,7 @@ call_aio(aio)
 aio
 #> < recvAio | $data >
 aio$data |> str()
-#>  num [1:100000000] -0.138 -0.409 1.262 0.852 -0.695 ...
+#>  num [1:100000000] 0.431 0.698 0.385 -0.549 -0.192 ...
 ```
 
 As `call_aio()` is blocking and will wait for completion, an alternative is to query `aio$data` directly. This will return an 'unresolved' logical NA value if the calculation is yet to complete.
@@ -324,7 +323,7 @@ Additionally, the convenience function `write_cert()` can automatically generate
 cert <- write_cert(cn = "127.0.0.1")
 str(cert)
 #> List of 2
-#>  $ server: chr [1:2] "-----BEGIN CERTIFICATE-----\nMIIFOTCCAyGgAwIBAgIBATANBgkqhkiG9w0BAQsFADA0MRIwEAYDVQQDDAkxMjcu\nMC4wLjExETAPBgNV"| __truncated__ "-----BEGIN RSA PRIVATE KEY-----\nMIIJKgIBAAKCAgEAoaMRxvO/HgKKEl9CqUe9F8xus10QRLv2DI+Efw7zYqpjlW+u\nyMgzL2po5ZAl"| __truncated__
+#>  $ server: chr [1:2] "-----BEGIN CERTIFICATE-----\nMIIFOTCCAyGgAwIBAgIBATANBgkqhkiG9w0BAQsFADA0MRIwEAYDVQQDDAkxMjcu\nMC4wLjExETAPBgNV"| __truncated__ "-----BEGIN RSA PRIVATE KEY-----\nMIIJJwIBAAKCAgEArzP2MTyBX5h/N4sM0XJ8wrjK8lKG4kZGFl6T7kaaRfY39yfR\nDhdNAsbuu7is"| __truncated__
 #>  $ client: chr [1:2] "-----BEGIN CERTIFICATE-----\nMIIFOTCCAyGgAwIBAgIBATANBgkqhkiG9w0BAQsFADA0MRIwEAYDVQQDDAkxMjcu\nMC4wLjExETAPBgNV"| __truncated__ ""
 
 ser <- tls_config(server = cert$server)
@@ -482,7 +481,7 @@ ncurl("https://postman-echo.com/get")
 #> NULL
 #> 
 #> $data
-#> [1] "{\n  \"args\": {},\n  \"headers\": {\n    \"x-forwarded-proto\": \"https\",\n    \"x-forwarded-port\": \"443\",\n    \"host\": \"postman-echo.com\",\n    \"x-amzn-trace-id\": \"Root=1-65db2b81-053ca2ba13fefb8f4f31af52\"\n  },\n  \"url\": \"https://postman-echo.com/get\"\n}"
+#> [1] "{\n  \"args\": {},\n  \"headers\": {\n    \"x-forwarded-proto\": \"https\",\n    \"x-forwarded-port\": \"443\",\n    \"host\": \"postman-echo.com\",\n    \"x-amzn-trace-id\": \"Root=1-65f81bd9-0e24b09f41687de24699af60\"\n  },\n  \"url\": \"https://postman-echo.com/get\"\n}"
 ```
 
 For advanced use, supports additional HTTP methods such as POST or PUT.
@@ -499,10 +498,10 @@ res
 
 call_aio(res)$headers
 #> $date
-#> [1] "Sun, 25 Feb 2024 11:58:58 GMT"
+#> [1] "Mon, 18 Mar 2024 10:47:54 GMT"
 
 res$data
-#> [1] "{\n  \"args\": {},\n  \"data\": {\n    \"key\": \"value\"\n  },\n  \"files\": {},\n  \"form\": {},\n  \"headers\": {\n    \"x-forwarded-proto\": \"https\",\n    \"x-forwarded-port\": \"443\",\n    \"host\": \"postman-echo.com\",\n    \"x-amzn-trace-id\": \"Root=1-65db2b81-7c7fcf8614f36d017276a64c\",\n    \"content-length\": \"16\",\n    \"content-type\": \"application/json\",\n    \"authorization\": \"Bearer APIKEY\"\n  },\n  \"json\": {\n    \"key\": \"value\"\n  },\n  \"url\": \"https://postman-echo.com/post\"\n}"
+#> [1] "{\n  \"args\": {},\n  \"data\": {\n    \"key\": \"value\"\n  },\n  \"files\": {},\n  \"form\": {},\n  \"headers\": {\n    \"x-forwarded-proto\": \"https\",\n    \"x-forwarded-port\": \"443\",\n    \"host\": \"postman-echo.com\",\n    \"x-amzn-trace-id\": \"Root=1-65f81bda-351c0797117f43bf6a9127bd\",\n    \"content-length\": \"16\",\n    \"content-type\": \"application/json\",\n    \"authorization\": \"Bearer APIKEY\"\n  },\n  \"json\": {\n    \"key\": \"value\"\n  },\n  \"url\": \"https://postman-echo.com/post\"\n}"
 ```
 
 In this respect, it may be used as a performant and lightweight method for making REST API requests.
@@ -526,7 +525,7 @@ transact(sess)
 #> 
 #> $headers
 #> $headers$Date
-#> [1] "Sun, 25 Feb 2024 11:58:58 GMT"
+#> [1] "Mon, 18 Mar 2024 10:47:54 GMT"
 #> 
 #> $headers$`Content-Type`
 #> [1] "application/json; charset=utf-8"
@@ -537,10 +536,21 @@ transact(sess)
 #>  [41] 72 77 61 72 64 65 64 2d 70 72 6f 74 6f 22 3a 20 22 68 74 74 70 73 22 2c 0a 20 20 20 20 22 78 2d 66 6f 72 77 61 72 64 65
 #>  [81] 64 2d 70 6f 72 74 22 3a 20 22 34 34 33 22 2c 0a 20 20 20 20 22 68 6f 73 74 22 3a 20 22 70 6f 73 74 6d 61 6e 2d 65 63 68
 #> [121] 6f 2e 63 6f 6d 22 2c 0a 20 20 20 20 22 78 2d 61 6d 7a 6e 2d 74 72 61 63 65 2d 69 64 22 3a 20 22 52 6f 6f 74 3d 31 2d 36
-#> [161] 35 64 62 32 62 38 32 2d 34 65 61 31 39 36 39 62 32 39 39 62 66 32 64 36 30 61 36 32 63 34 35 31 22 2c 0a 20 20 20 20 22
+#> [161] 35 66 38 31 62 64 61 2d 36 32 65 39 30 34 34 31 36 64 64 62 36 30 31 63 30 35 64 66 37 61 31 30 22 2c 0a 20 20 20 20 22
 #> [201] 63 6f 6e 74 65 6e 74 2d 74 79 70 65 22 3a 20 22 61 70 70 6c 69 63 61 74 69 6f 6e 2f 6a 73 6f 6e 22 2c 0a 20 20 20 20 22
 #> [241] 61 75 74 68 6f 72 69 7a 61 74 69 6f 6e 22 3a 20 22 42 65 61 72 65 72 20 41 50 49 4b 45 59 22 0a 20 20 7d 2c 0a 20 20 22
 #> [281] 75 72 6c 22 3a 20 22 68 74 74 70 73 3a 2f 2f 70 6f 73 74 6d 61 6e 2d 65 63 68 6f 2e 63 6f 6d 2f 67 65 74 22 0a 7d
+```
+
+Optimised functions for base64 encoding and decoding from the 'Mbed TLS' library are also exposed as convenience utilities:
+
+
+```r
+base64enc("hello world!")
+#> [1] "aGVsbG8gd29ybGQh"
+
+base64dec(base64enc("hello world!"))
+#> [1] "hello world!"
 ```
 
 [&laquo; Back to ToC](#table-of-contents)
@@ -591,41 +601,6 @@ r$data
 
 close(s)
 ```
-
-[&laquo; Back to ToC](#table-of-contents)
-
-### Cryptographic Hashing
-
-Hash functions using the SHA-2 algorithms are included: `sha224()`, `sha256()`, `sha384()` and `sha512()`.
-
-These expose the secure, optimized implementations from the 'Mbed TLS' library and return a hash either directly as a raw vector or converted to a character string. For use in authentication, raw vectors can be compared directly for the highest performance.
-
-To generate an HMAC (hash-based message authentication code), simply supply the value 'key' to use as the secret key.
-
-
-```r
-sha256("hello world!")
-#> [1] "7509e5bda0c762d2bac7f90d758b5b2263fa01ccbc542ab5e3df163be08e6ca9"
-
-sha256("hello world!", convert = FALSE)
-#>  [1] 75 09 e5 bd a0 c7 62 d2 ba c7 f9 0d 75 8b 5b 22 63 fa 01 cc bc 54 2a b5 e3 df 16 3b e0 8e 6c a9
-
-sha256("hello world!", key = "MY_SECRET")
-#> [1] "d8f0e2d368ff632682d55e2c1ccd49c15f8a6a3862d8eb68f1906b6ee658890a"
-```
-
-Optimised functions for base64 encoding and decoding from the 'Mbed TLS' library are also provided:
-
-
-```r
-base64enc("hello world!")
-#> [1] "aGVsbG8gd29ybGQh"
-
-base64dec(base64enc("hello world!"))
-#> [1] "hello world!"
-```
-
-Performance is such that base64 decoding a character string into a raw vector can be faster than creating a new raw vector using `as.raw()`.
 
 [&laquo; Back to ToC](#table-of-contents)
 

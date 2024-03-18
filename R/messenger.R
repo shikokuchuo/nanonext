@@ -28,9 +28,12 @@
 #'     a character string e.g. 'tcp://127.0.0.1:5555' (see \link{transports}).
 #' @param auth [default NULL] an R object (possessed by both parties) which
 #'     serves as a pre-shared key on which to authenticate the communication.
-#'     Note: the object is never sent, only a random subset of its SHA-512 hash.
+#'     Note: the object is never sent, only a random subset of its SHA3-512
+#'     hash.
 #'
 #' @return Invisible NULL.
+#'
+#' @note This function requires the \pkg{secretbase} package to be installed.
 #'
 #' @section Usage:
 #'
@@ -52,7 +55,10 @@
 #'
 messenger <- function(url, auth = NULL) {
 
-  lock <- sha512(auth, convert = FALSE)
+  requireNamespace("secretbase", quietly = TRUE) ||
+    stop("messenger() requires the secretbase package")
+
+  lock <- secretbase::sha3(auth, bits = 512L, convert = FALSE)
   comb <- order(as.integer(random(32L, convert = FALSE)))
   key <- c(comb, as.integer(lock)[comb])
 
