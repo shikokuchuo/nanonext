@@ -12,8 +12,8 @@ a character string e.g. 'tcp://127.0.0.1:5555' (see \link{transports}).}
 
 \item{auth}{[default NULL] an R object (possessed by both parties) which
 serves as a pre-shared key on which to authenticate the communication.
-Note: the object is never sent, only a random subset of its SHA3-512
-hash.}
+Note: the object is never sent, only a random subset of its md5 hash
+after being base64 encoded.}
 }
 \value{
 Invisible NULL.
@@ -23,7 +23,8 @@ Multi-threaded, console-based, 2-way instant messaging system with
     authentication, based on NNG scalability protocols.
 }
 \note{
-This function requires the \pkg{secretbase} package to be installed.
+The authentication protocol is an experimental proof of concept which
+    is not secure, and should not be used for critical applications.
 }
 \section{Usage}{
 
@@ -38,8 +39,5 @@ This function requires the \pkg{secretbase} package to be installed.
     Both parties must supply the same argument for 'auth', otherwise the
     party trying to connect will receive an 'authentication error' and be
     disconnected immediately.
-
-    NOTE: This is currently a proof of concept with an experimental
-    authentication protocol and should not be used for critical applications.
 }
 

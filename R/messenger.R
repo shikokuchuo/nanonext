@@ -28,12 +28,13 @@
 #'     a character string e.g. 'tcp://127.0.0.1:5555' (see \link{transports}).
 #' @param auth [default NULL] an R object (possessed by both parties) which
 #'     serves as a pre-shared key on which to authenticate the communication.
-#'     Note: the object is never sent, only a random subset of its SHA3-512
-#'     hash.
+#'     Note: the object is never sent, only a random subset of its md5 hash
+#'     after being base64 encoded.
 #'
 #' @return Invisible NULL.
 #'
-#' @note This function requires the \pkg{secretbase} package to be installed.
+#' @note The authentication protocol is an experimental proof of concept which
+#'     is not secure, and should not be used for critical applications.
 #'
 #' @section Usage:
 #'
@@ -48,18 +49,12 @@
 #'     party trying to connect will receive an 'authentication error' and be
 #'     disconnected immediately.
 #'
-#'     NOTE: This is currently a proof of concept with an experimental
-#'     authentication protocol and should not be used for critical applications.
-#'
 #' @export
 #'
 messenger <- function(url, auth = NULL) {
 
-  requireNamespace("secretbase", quietly = TRUE) ||
-    stop("messenger() requires the secretbase package")
-
-  lock <- secretbase::sha3(auth, bits = 512L, convert = FALSE)
-  comb <- order(as.integer(random(32L, convert = FALSE)))
+  lock <- md5_object(auth)
+  comb <- order(as.integer(random(20L, convert = FALSE)))
   key <- c(comb, as.integer(lock)[comb])
 
   sock <- .Call(rnng_messenger, url)
@@ -85,8 +80,8 @@ messenger <- function(url, auth = NULL) {
   } else {
     cat(sprintf("| peer online: %s\n", format.POSIXct(Sys.time())), file = stderr())
     r <- recv(sock, mode = 5L, block = TRUE)
-    for (i in seq_len(32L))
-      lock[r[i]] == r[i + 32L] || {
+    for (i in seq_len(20L))
+      lock[r[i]] == r[i + 20L] || {
         cat("| authentication failed\n", file = stderr())
         return(invisible())
       }
@@ -109,3 +104,10 @@ messenger <- function(url, auth = NULL) {
 }
 
 # nocov end
+
+md5_object <- function(x) {
+  file <- tempfile()
+  on.exit(unlink(file))
+  cat(base64enc(x), file = file)
+  charToRaw(md5sum(file))
+}
