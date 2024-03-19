@@ -29,7 +29,7 @@
 #' @param auth [default NULL] an R object (possessed by both parties) which
 #'     serves as a pre-shared key on which to authenticate the communication.
 #'     Note: the object is never sent, only a random subset of its md5 hash
-#'     after being base64 encoded.
+#'     after serialization.
 #'
 #' @return Invisible NULL.
 #'
@@ -108,6 +108,6 @@ messenger <- function(url, auth = NULL) {
 md5_object <- function(x) {
   file <- tempfile()
   on.exit(unlink(file))
-  cat(base64enc(x), file = file)
+  saveRDS(x, file)
   charToRaw(md5sum(file))
 }

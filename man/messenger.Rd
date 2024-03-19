@@ -13,7 +13,7 @@ a character string e.g. 'tcp://127.0.0.1:5555' (see \link{transports}).}
 \item{auth}{[default NULL] an R object (possessed by both parties) which
 serves as a pre-shared key on which to authenticate the communication.
 Note: the object is never sent, only a random subset of its md5 hash
-after being base64 encoded.}
+after serialization.}
 }
 \value{
 Invisible NULL.
