@@ -1,4 +1,4 @@
-# nanonext 0.13.4.9001 (development)
+# nanonext 0.13.4.9002 (development)
 
 * Removes SHA-2 cryptographic hash functions in favour of the superior streaming implementations in the secretbase package.
 

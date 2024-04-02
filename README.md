@@ -7,8 +7,8 @@
 
 [![CRAN
 status](https://www.r-pkg.org/badges/version/nanonext?color=112d4e)](https://CRAN.R-project.org/package=nanonext)
-[![R-releases
-status](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fr-releases.r-universe.dev%2Fapi%2Fpackages%2Fnanonext&query=%24.Version&label=R-releases&color=112d4e)](https://r-releases.r-universe.dev/nanonext)
+[![R-multiverse
+status](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fr-multiverse.r-universe.dev%2Fapi%2Fpackages%2Fnanonext&query=%24.Version&label=R-multiverse&color=112d4e)](https://r-multiverse.r-universe.dev/nanonext)
 [![R-universe
 status](https://shikokuchuo.r-universe.dev/badges/nanonext?color=3f72af)](https://shikokuchuo.r-universe.dev/nanonext)
 [![R-CMD-check](https://github.com/shikokuchuo/nanonext/workflows/R-CMD-check/badge.svg)](https://github.com/shikokuchuo/nanonext/actions)
@@ -76,10 +76,10 @@ Web utilities:
 
 ### Installation
 
-Install the fast channel release (v0.13.4) from R-releases:
+Install the fast channel release (v0.13.4) from R-multiverse:
 
 ``` r
-install.packages("nanonext", repos = "https://r-releases.r-universe.dev")
+install.packages("nanonext", repos = "https://r-multiverse.r-universe.dev")
 ```
 
 Or the slow channel release (v0.13.2) from CRAN:
