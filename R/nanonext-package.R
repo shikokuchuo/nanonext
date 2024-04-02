@@ -95,6 +95,7 @@
 #' @importFrom stats start
 #' @importFrom tools md5sum
 #' @importFrom utils .DollarNames
+#' @importFrom later later
 #' @useDynLib nanonext, .registration = TRUE
 #'
 "_PACKAGE"
