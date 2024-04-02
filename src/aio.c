@@ -20,6 +20,7 @@
 #define NANONEXT_SUPPLEMENTALS
 #define NANONEXT_SIGNALS
 #include "nanonext.h"
+#include "later_shim.h"
 
 // internals -------------------------------------------------------------------
 
@@ -195,6 +196,21 @@ static void isaio_complete(void *arg) {
 
 }
 
+
+static void raio_invoke_cb(void* arg) {
+  nano_aio *raio = (nano_aio *) arg;
+  if (raio->cb == NULL || Rf_isNull(raio->cb)) return;
+  SEXP func = (SEXP)raio->cb;
+  SEXP callExpr, result;
+  if (!Rf_isNull(func)) {
+    PROTECT(callExpr = Rf_lcons(func, R_NilValue)); // Prepare call
+    PROTECT(result = Rf_eval(callExpr, R_GlobalEnv)); // Execute call
+
+    UNPROTECT(2);
+    R_ReleaseObject(func);
+  }
+}
+
 static void raio_complete(void *arg) {
 
   nano_aio *raio = (nano_aio *) arg;
@@ -210,6 +226,7 @@ static void raio_complete(void *arg) {
   raio->result = res - !res;
 #endif
 
+  later2(raio_invoke_cb, arg, 0);
 }
 
 static void raio_complete_signal(void *arg) {
@@ -229,6 +246,7 @@ static void raio_complete_signal(void *arg) {
   nng_cv_wake(cv);
   nng_mtx_unlock(mtx);
 
+  later2(raio_invoke_cb, arg, 0);
 }
 
 static void request_complete_signal(void *arg) {
@@ -709,7 +727,7 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
 }
 
 SEXP rnng_recv_aio_impl(const SEXP con, const SEXP mode, const SEXP timeout,
-                        const SEXP bytes, const SEXP clo, nano_cv *ncv) {
+                        const SEXP bytes, const SEXP clo, const SEXP cb, nano_cv *ncv) {
 
   const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) Rf_asInteger(timeout);
   const int signal = ncv != NULL;
@@ -725,6 +743,12 @@ SEXP rnng_recv_aio_impl(const SEXP con, const SEXP mode, const SEXP timeout,
     raio->next = ncv;
     raio->type = RECVAIO;
     raio->mode = mod;
+    if (Rf_isNull(cb)) {
+      raio->cb = NULL;
+    } else {
+      R_PreserveObject(cb);
+      raio->cb = (void*)cb;
+    }
 
     if ((xc = nng_aio_alloc(&raio->aio, signal ? raio_complete_signal : raio_complete, raio)))
       goto exitlevel1;
@@ -791,19 +815,19 @@ SEXP rnng_recv_aio_impl(const SEXP con, const SEXP mode, const SEXP timeout,
 
 }
 
-SEXP rnng_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP bytes, SEXP clo) {
+SEXP rnng_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP bytes, SEXP clo, SEXP cb) {
 
-  return rnng_recv_aio_impl(con, mode, timeout, bytes, clo, NULL);
+  return rnng_recv_aio_impl(con, mode, timeout, bytes, clo, cb, NULL);
 
 }
 
-SEXP rnng_recv_aio_signal(SEXP con, SEXP cvar, SEXP mode, SEXP timeout, SEXP bytes, SEXP clo) {
+SEXP rnng_recv_aio_signal(SEXP con, SEXP cvar, SEXP mode, SEXP timeout, SEXP bytes, SEXP clo, SEXP cb) {
 
   if (R_ExternalPtrTag(cvar) != nano_CvSymbol)
     Rf_error("'cv' is not a valid Condition Variable");
   nano_cv *ncv = (nano_cv *) R_ExternalPtrAddr(cvar);
 
-  return rnng_recv_aio_impl(con, mode, timeout, bytes, clo, ncv);
+  return rnng_recv_aio_impl(con, mode, timeout, bytes, clo, cb, ncv);
 
 }
 
