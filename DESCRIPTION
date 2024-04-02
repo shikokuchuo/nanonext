@@ -30,6 +30,10 @@ SystemRequirements: 'libnng' >= 1.5 and 'libmbedtls' >= 2.5, or 'cmake' to
     compile NNG and/or Mbed TLS included in package sources
 Depends: 
     R (>= 3.5)
+Imports:
+    later
+LinkingTo: 
+    later
 Suggests: 
     knitr,
     markdown
