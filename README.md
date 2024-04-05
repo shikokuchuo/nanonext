@@ -7,8 +7,6 @@
 
 [![CRAN
 status](https://www.r-pkg.org/badges/version/nanonext?color=112d4e)](https://CRAN.R-project.org/package=nanonext)
-[![R-multiverse
-status](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fr-multiverse.r-universe.dev%2Fapi%2Fpackages%2Fnanonext&query=%24.Version&label=R-multiverse&color=112d4e)](https://r-multiverse.r-universe.dev/nanonext)
 [![R-universe
 status](https://shikokuchuo.r-universe.dev/badges/nanonext?color=3f72af)](https://shikokuchuo.r-universe.dev/nanonext)
 [![R-CMD-check](https://github.com/shikokuchuo/nanonext/workflows/R-CMD-check/badge.svg)](https://github.com/shikokuchuo/nanonext/actions)
@@ -76,13 +74,7 @@ Web utilities:
 
 ### Installation
 
-Install the fast channel release from R-multiverse:
-
-``` r
-install.packages("nanonext", repos = "https://r-multiverse.r-universe.dev")
-```
-
-Or the slow channel release from CRAN:
+Install the latest release from CRAN:
 
 ``` r
 install.packages("nanonext")
@@ -183,7 +175,7 @@ vignette("nanonext", package = "nanonext")
 
 Installation from source requires ‘libnng’ \>= v1.5.0 and ‘libmbedtls’
 \>= 2.5.0 (suitable installations are automatically detected), or else
-‘cmake’ to compile ‘libnng’ v1.7.3 and ‘libmbedtls’ v3.5.2 included
+‘cmake’ to compile ‘libnng’ v1.7.2 and ‘libmbedtls’ v3.5.2 included
 within the package sources.
 
 **It is recommended for optimal performance and stability to let the
@@ -207,10 +199,10 @@ OpenCSW - refer to the ‘cmake’ website for the latest source file.*
 #### Windows
 
 For R \>= 4.2 using the ‘Rtools42’ or ‘Rtools43’ toolchains, ‘libnng’
-v1.7.3 and ‘libmbedtls’ v3.5.2 will be automatically compiled from the
+v1.7.2 and ‘libmbedtls’ v3.5.2 will be automatically compiled from the
 package sources during installation.
 
-For previous R versions, pre-compiled ‘libnng’ v1.7.3 and ‘libmbedtls’
+For previous R versions, pre-compiled ‘libnng’ v1.7.2 and ‘libmbedtls’
 v3.5.2 libraries are downloaded and used for installation instead.
 
 ### Acknowledgements and Links

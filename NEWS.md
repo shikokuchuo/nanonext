@@ -1,30 +1,20 @@
-# nanonext 0.13.5
-
-#### Updates
-
-* Removes SHA-2 cryptographic hash functions (please use the streaming implementation in the secretbase package).
-
-# nanonext 0.13.4
+# nanonext 0.13.5.1
 
 #### New Features
 
 * An integer file descriptor is appended to 'nanoSockets' as the attribute 'fd' - see updated documentation for `socket()`.
-
-# nanonext 0.13.3
-
-#### New Features
-
 * `next_config()` gains argument 'class' and 'vec', enabling custom serialization for all reference object types supported by R serialization.
 
 #### Updates
 
-* Upgrades bundled 'libnng' to v1.7.3.
+* Removes SHA-2 cryptographic hash functions (please use the streaming implementation in the secretbase package).
 
 # nanonext 0.13.2
 
 #### Updates
 
 * Fixes cases of 'built for newer macOS version than being linked' installation warnings on MacOS.
+* Fixes other compiler warnings with additional flags enabled on the CRAN M1mac test machine.
 * Upgrades bundled 'libnng' to v1.7.2.
 
 # nanonext 0.13.0

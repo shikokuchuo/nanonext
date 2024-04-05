@@ -10,6 +10,6 @@ PKG_LIBS=-L../src-${ARC}/rwinlib-1.7.3_3.5.2/lib${R_ARCH} -lnng -lmbedtls -lmbed
 all: winlibs
 
 winlibs:
-	curl -sL https://github.com/shikokuchuo/rwinlib/archive/refs/tags/v1.7.3_3.5.2.zip -o nng.zip
+	curl -sL https://github.com/shikokuchuo/rwinlib/archive/refs/tags/v1.7.2_3.5.2.zip -o nng.zip
 	unzip -q nng.zip
 	rm -f nng.zip
