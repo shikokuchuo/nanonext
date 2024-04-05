@@ -1,3 +1,9 @@
+# nanonext 0.13.5.9000 (development)
+
+#### Updates
+
+* Upgrades bundled 'mbedtls' to v3.6.0 LTS.
+
 # nanonext 0.13.5
 
 #### Updates
