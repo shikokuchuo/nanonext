@@ -1,3 +1,9 @@
+# nanonext 0.13.5.2
+
+#### Updates
+
+* Safer and more efficient memory reads for 'next' serialization corrects for CRAN UBSAN-clang check errors.
+
 # nanonext 0.13.5.1
 
 #### New Features
