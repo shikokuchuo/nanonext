@@ -1,6 +1,8 @@
-# nanonext 0.13.4.9002 (development)
+# nanonext 0.13.5
 
-* Removes SHA-2 cryptographic hash functions in favour of the superior streaming implementations in the secretbase package.
+#### Updates
+
+* Removes SHA-2 cryptographic hash functions (please use the streaming implementation in the secretbase package).
 
 # nanonext 0.13.4
 
