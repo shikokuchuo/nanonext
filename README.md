@@ -88,7 +88,7 @@ Or the slow channel release from CRAN:
 install.packages("nanonext")
 ```
 
-Or the latest development build from R-universe:
+Or the development build from R-universe:
 
 ``` r
 install.packages("nanonext", repos = "https://shikokuchuo.r-universe.dev")
@@ -211,7 +211,7 @@ v1.7.3 and ‘libmbedtls’ v3.6.0 will be automatically compiled from the
 package sources during installation.
 
 For previous R versions, pre-compiled ‘libnng’ v1.7.3 and ‘libmbedtls’
-v3.5.2 libraries are downloaded and used for installation instead.
+v3.6.0 libraries are downloaded and used for installation instead.
 
 ### Acknowledgements and Links
 

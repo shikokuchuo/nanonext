@@ -2,6 +2,7 @@
 
 #### Updates
 
+* Safer and more efficient memory reads for 'next' serialization corrects for CRAN UBSAN-clang check errors.
 * Upgrades bundled 'mbedtls' to v3.6.0 LTS.
 
 # nanonext 0.13.5
