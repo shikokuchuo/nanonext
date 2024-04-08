@@ -61,15 +61,12 @@ Web utilities:
 
 ### Installation
 
-Install the fast channel release from R-multiverse:
-
-```{r releases, eval=FALSE}
-install.packages("nanonext", repos = "https://r-multiverse.r-universe.dev")
-```
-
-Or the slow channel release from CRAN:
+Install the latest release:
 
 ```{r cran, eval=FALSE}
+# Either [1] fast channel from R-multiverse:
+install.packages("nanonext", repos = "https://r-multiverse.r-universe.dev")
+# Or [2] slow channel from CRAN:
 install.packages("nanonext")
 ```
 
