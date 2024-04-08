@@ -50,7 +50,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.13.5.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.13.6</span>
       </span>
     </div>
 
@@ -207,7 +207,7 @@
 <div class="section level4">
 <h4 id="linux--mac--solaris">Linux / Mac / Solaris<a class="anchor" aria-label="anchor" href="#linux--mac--solaris"></a>
 </h4>
-<p>Installation from source requires ‘libnng’ &gt;= v1.5.0 and ‘libmbedtls’ &gt;= 2.5.0 (suitable installations are automatically detected), or else ‘cmake’ to compile ‘libnng’ v1.7.3 and ‘libmbedtls’ v3.6.0 included within the package sources.</p>
+<p>Installation from source requires ‘libnng’ &gt;= v1.5.0 and ‘libmbedtls’ &gt;= 2.5.0 (suitable installations are automatically detected), or else ‘cmake’ to compile ‘libnng’ v1.7.3 and ‘libmbedtls’ v3.6.0 LTS included within the package sources.</p>
 <p><strong>It is recommended for optimal performance and stability to let the package automatically compile bundled versions of ‘libmbedtls’ and ‘libnng’ during installation.</strong> To ensure the libraries are compiled from source even if system installations are present, set the <code>NANONEXT_LIBS</code> environment variable prior to installation e.g. by <code>Sys.setenv(NANONEXT_LIBS = 1)</code>.</p>
 <p>As system libraries, ‘libnng’ is available as libnng-dev (deb) or nng-devel (rpm), and ‘libmbedtls’ as libmbedtls-dev (deb) or libmbedtls-devel (rpm). The <code>INCLUDE_DIR</code> and <code>LIB_DIR</code> environment variables may be set prior to package installation to specify a custom location for ‘libmbedtls’ or ‘libnng’ other than the standard filesystem locations.</p>
 <p><em>Additional requirements for Solaris: (i) the ‘xz’ package - available on OpenCSW, and (ii) a more recent version of ‘cmake’ than available on OpenCSW - refer to the ‘cmake’ website for the latest source file.</em></p>
@@ -215,8 +215,8 @@
 <div class="section level4">
 <h4 id="windows">Windows<a class="anchor" aria-label="anchor" href="#windows"></a>
 </h4>
-<p>For R &gt;= 4.2 using the ‘Rtools42’ or ‘Rtools43’ toolchains, ‘libnng’ v1.7.3 and ‘libmbedtls’ v3.6.0 will be automatically compiled from the package sources during installation.</p>
-<p>For previous R versions, pre-compiled ‘libnng’ v1.7.3 and ‘libmbedtls’ v3.6.0 libraries are downloaded and used for installation instead.</p>
+<p>For R &gt;= 4.2 using the ‘Rtools42’ or ‘Rtools43’ toolchains, ‘libnng’ v1.7.3 and ‘libmbedtls’ v3.6.0 LTS will be automatically compiled from the package sources during installation.</p>
+<p>For previous R versions, pre-compiled ‘libnng’ v1.7.3 and ‘libmbedtls’ v3.6.0 LTS libraries are downloaded and used for installation instead.</p>
 </div>
 </div>
 <div class="section level3">
@@ -225,7 +225,7 @@
 <p>We would like to acknowledge in particular:</p>
 <ul>
 <li>
-<a href="https://github.com/gdamore" class="external-link">Garrett D’Amore</a>, author of the NNG library, for being generous with advice and implementing a feature request specifically for a more efficient ‘aio’ implementation in {nanonext}.</li>
+<a href="https://github.com/gdamore" class="external-link">Garrett D’Amore</a>, author of the NNG library, for generous advice and for implementing a feature request specifically for a more efficient ‘aio’ implementation in <code>nanonext</code>.</li>
 <li>The <a href="https://www.r-consortium.org/" class="external-link">R Consortium</a> for funding the development of the secure TLS capabilities in the package, and <a href="https://github.com/HenrikBengtsson" class="external-link">Henrik Bengtsson</a> and <a href="https://github.com/wlandau/" class="external-link">Will Landau</a>’s roles in making this possible.</li>
 <li>
 <a href="https://www.r-project.org/contributors.html" class="external-link">R Core</a> for various auxiliary functions for serialisation and raw / character conversion, which have been adopted by the package.</li>
