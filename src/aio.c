@@ -196,19 +196,12 @@ static void isaio_complete(void *arg) {
 
 }
 
-
-static void raio_invoke_cb(void* arg) {
+static void raio_invoke_cb(void *arg) {
   nano_aio *raio = (nano_aio *) arg;
-  if (raio->cb == NULL || Rf_isNull(raio->cb)) return;
-  SEXP func = (SEXP)raio->cb;
-  SEXP callExpr, result;
-  if (!Rf_isNull(func)) {
-    PROTECT(callExpr = Rf_lcons(func, R_NilValue)); // Prepare call
-    PROTECT(result = Rf_eval(callExpr, R_GlobalEnv)); // Execute call
-
-    UNPROTECT(2);
-    R_ReleaseObject(func);
-  }
+  SEXP callExpr;
+  PROTECT(callExpr = Rf_lcons((SEXP) raio->cb, R_NilValue));
+  (void) Rf_eval(callExpr, R_GlobalEnv);
+  UNPROTECT(1);
 }
 
 static void raio_complete(void *arg) {
@@ -743,12 +736,7 @@ SEXP rnng_recv_aio_impl(const SEXP con, const SEXP mode, const SEXP timeout,
     raio->next = ncv;
     raio->type = RECVAIO;
     raio->mode = mod;
-    if (Rf_isNull(cb)) {
-      raio->cb = NULL;
-    } else {
-      R_PreserveObject(cb);
-      raio->cb = (void*)cb;
-    }
+    raio->cb = cb;
 
     if ((xc = nng_aio_alloc(&raio->aio, signal ? raio_complete_signal : raio_complete, raio)))
       goto exitlevel1;

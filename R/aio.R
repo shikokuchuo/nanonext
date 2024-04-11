@@ -120,8 +120,8 @@ recv_aio <- function(con,
                      n = 65536L)
   data <- .Call(rnng_recv_aio, con, mode, timeout, n, environment(),
     function() {
-      cb <- data$callback
-      if (!is.null(cb)) {
+      cb <- .subset2(data, "callback")
+      if (is.function(cb)) {
         cb(data)
       }
     }
@@ -166,8 +166,8 @@ recv_aio_signal <- function(con,
                             n = 65536L)
   data <- .Call(rnng_recv_aio_signal, con, cv, mode, timeout, n, environment(),
     function() {
-      cb <- data$callback
-      if (!is.null(cb)) {
+      cb <- .subset2(data, "callback")
+      if (is.function(cb)) {
         cb(data)
       }
     }
@@ -180,14 +180,15 @@ is.promising.recvAio <- function(x) {
 
 #' @exportS3Method promises::as.promise
 as.promise.recvAio <- function(x) {
-  prom <- x$promise
 
-  if (is.null(prom)) {
-    prom <- promises::promise(function(resolve, reject) {
+  promise <- .subset2(x, "promise")
+
+  if (is.null(promise)) {
+    promise <- promises::promise(function(resolve, reject) {
       assign("callback", function(...) {
 
         # WARNING: x$data is heavily side-effecty!
-        value <- x$data
+        value <- .subset2(x, "data")
 
         if (is_error_value(value)) {
           reject(simpleError(nng_error(value)))
@@ -202,19 +203,20 @@ as.promise.recvAio <- function(x) {
 
     if (!inherits(value, "unresolvedValue")) {
       if (is_error_value(value)) {
-        prom <- promises::promise_reject(simpleError(nng_error(value)))
+        promise <- promises::promise_reject(simpleError(nng_error(value)))
       } else {
-        prom <- promises::promise_resolve(value)
+        promise <- promises::promise_resolve(value)
       }
     }
 
     # Save for next time. This is not just an optimization but essential for
     # correct behavior if as.promise is called multiple times, because only one
     # `callback` can exist on the recvAio object at a time.
-    assign("promise", prom, x)
+    assign("promise", promise, x)
   }
 
-  prom
+  promise
+
 }
 
 # Core aio functions -----------------------------------------------------------
