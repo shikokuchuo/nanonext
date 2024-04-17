@@ -258,11 +258,11 @@ static void release_object(void *data, Rboolean jump) {
 }
 
 static void raio_invoke_cb(void *arg) {
-  SEXP call, data = (SEXP) arg;
-  PROTECT(call = Rf_lcons(data, R_NilValue));
-  (void) R_UnwindProtect(eval_safe, call, release_object, data, NULL);
+  SEXP call, env = (SEXP) arg;
+  PROTECT(call = Rf_lcons(CADR(ATTRIB(env)), R_NilValue));
+  (void) R_UnwindProtect(eval_safe, call, release_object, env, NULL);
   UNPROTECT(1);
-  R_ReleaseObject(data);
+  R_ReleaseObject(env);
 }
 
 static void raio_complete_cb(void *arg) {
@@ -280,7 +280,8 @@ static void raio_complete_cb(void *arg) {
   raio->result = res - !res;
 #endif
 
-  later2(raio_invoke_cb, raio->cb, 0);
+  if (CADR(ATTRIB(raio->cb)) != R_NilValue)
+    later2(raio_invoke_cb, raio->cb, 0);
 
 }
 
@@ -302,7 +303,8 @@ static void request_complete_cb(void *arg) {
   nng_cv_wake(cv);
   nng_mtx_unlock(mtx);
 
-  later2(raio_invoke_cb, raio->cb, 0);
+  if (CADR(ATTRIB(raio->cb)) != R_NilValue)
+    later2(raio_invoke_cb, raio->cb, 0);
 
 }
 
@@ -1268,12 +1270,11 @@ SEXP rnng_ncurl_session_close(SEXP session) {
 
 SEXP rnng_request_impl(const SEXP con, const SEXP data, const SEXP sendmode,
                        const SEXP recvmode, const SEXP timeout, const SEXP clo,
-                       nano_cv *ncv, const SEXP cb) {
+                       nano_cv *ncv, const int promises) {
 
   const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) Rf_asInteger(timeout);
   const int mod = nano_matcharg(recvmode);
   const int signal = ncv != NULL;
-  const int promises = cb != NULL;
   nng_ctx *ctx = (nng_ctx *) R_ExternalPtrAddr(con);
   SEXP aio, env, fun;
   nano_buf buf;
@@ -1309,12 +1310,14 @@ SEXP rnng_request_impl(const SEXP con, const SEXP data, const SEXP sendmode,
   nng_ctx_send(*ctx, saio->aio);
 
   raio = R_Calloc(1, nano_aio);
+  PROTECT(env = Rf_allocSExp(ENVSXP));
   raio->type = RECVAIO;
   raio->mode = mod;
   raio->next = saio;
-  if (promises)
-    R_PreserveObject(cb);
-  raio->cb = cb;
+  if (promises) {
+    R_PreserveObject(env);
+    raio->cb = env;
+  }
 
   if ((xc = nng_aio_alloc(&raio->aio,
                           promises ?
@@ -1330,7 +1333,6 @@ SEXP rnng_request_impl(const SEXP con, const SEXP data, const SEXP sendmode,
   PROTECT(aio = R_MakeExternalPtr(raio, nano_AioSymbol, R_NilValue));
   R_RegisterCFinalizerEx(aio, request_finalizer, TRUE);
 
-  PROTECT(env = Rf_allocSExp(ENVSXP));
   NANO_CLASS(env, "recvAio");
   Rf_defineVar(nano_AioSymbol, aio, env);
 
@@ -1344,6 +1346,7 @@ SEXP rnng_request_impl(const SEXP con, const SEXP data, const SEXP sendmode,
   return env;
 
   exitlevel2:
+  UNPROTECT(1);
   R_Free(raio);
   nng_aio_free(saio->aio);
   exitlevel1:
@@ -1358,7 +1361,7 @@ SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeou
   if (R_ExternalPtrTag(con) != nano_ContextSymbol)
     Rf_error("'con' is not a valid Context");
 
-  return rnng_request_impl(con, data, sendmode, recvmode, timeout, clo, NULL, NULL);
+  return rnng_request_impl(con, data, sendmode, recvmode, timeout, clo, NULL, 0);
 
 }
 
@@ -1370,18 +1373,18 @@ SEXP rnng_request_signal(SEXP con, SEXP data, SEXP cvar, SEXP sendmode, SEXP rec
     Rf_error("'cv' is not a valid Condition Variable");
   nano_cv *ncv = (nano_cv *) R_ExternalPtrAddr(cvar);
 
-  return rnng_request_impl(con, data, sendmode, recvmode, timeout, clo, ncv, NULL);
+  return rnng_request_impl(con, data, sendmode, recvmode, timeout, clo, ncv, 0);
 
 }
 
-SEXP rnng_request_promise(SEXP con, SEXP data, SEXP cvar, SEXP sendmode, SEXP recvmode, SEXP timeout, SEXP clo, SEXP cb) {
+SEXP rnng_request_promise(SEXP con, SEXP data, SEXP cvar, SEXP sendmode, SEXP recvmode, SEXP timeout, SEXP clo) {
 
   if (R_ExternalPtrTag(con) != nano_ContextSymbol)
     Rf_error("'con' is not a valid Context");
 
   nano_cv *ncv = R_ExternalPtrTag(cvar) == nano_CvSymbol ? (nano_cv *) R_ExternalPtrAddr(cvar) : NULL;
 
-  return rnng_request_impl(con, data, sendmode, recvmode, timeout, clo, ncv, cb);
+  return rnng_request_impl(con, data, sendmode, recvmode, timeout, clo, ncv, 1);
 
 }
 

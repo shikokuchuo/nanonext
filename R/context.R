@@ -280,8 +280,4 @@ request_promise <- function(context,
                             recv_mode = c("serial", "character", "complex", "double",
                                           "integer", "logical", "numeric", "raw", "string"),
                             timeout = NULL)
-  data <- .Call(rnng_request_promise, context, data, cv, send_mode, recv_mode, timeout, environment(),
-                function() {
-                  cb <- .subset2(data, "callback")
-                  if (is.function(cb)) cb(data)
-                })
+  data <- .Call(rnng_request_promise, context, data, cv, send_mode, recv_mode, timeout, environment())
