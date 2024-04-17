@@ -118,14 +118,7 @@ recv_aio <- function(con,
                               "integer", "logical", "numeric", "raw", "string"),
                      timeout = NULL,
                      n = 65536L)
-  data <- .Call(rnng_recv_aio, con, mode, timeout, n, environment(),
-    function() {
-      cb <- .subset2(data, "callback")
-      if (is.function(cb)) {
-        cb(data)
-      }
-    }
-  )
+  data <- .Call(rnng_recv_aio, con, mode, timeout, n, environment())
 
 #' Receive Async and Signal a Condition
 #'
@@ -164,60 +157,7 @@ recv_aio_signal <- function(con,
                                      "integer", "logical", "numeric", "raw", "string"),
                             timeout = NULL,
                             n = 65536L)
-  data <- .Call(rnng_recv_aio_signal, con, cv, mode, timeout, n, environment(),
-    function() {
-      cb <- .subset2(data, "callback")
-      if (is.function(cb)) {
-        cb(data)
-      }
-    }
-  )
-
-#' @exportS3Method promises::is.promising
-is.promising.recvAio <- function(x) {
-  TRUE
-}
-
-#' @exportS3Method promises::as.promise
-as.promise.recvAio <- function(x) {
-
-  promise <- .subset2(x, "promise")
-
-  if (is.null(promise)) {
-    promise <- promises::promise(function(resolve, reject) {
-      assign("callback", function(...) {
-
-        # WARNING: x$data is heavily side-effecty!
-        value <- .subset2(x, "data")
-
-        if (is_error_value(value)) {
-          reject(simpleError(nng_error(value)))
-        } else {
-          resolve(value)
-        }
-      }, x)
-    })
-
-    # WARNING: x$data is heavily side-effecty!
-    value <- x$data
-
-    if (!inherits(value, "unresolvedValue")) {
-      if (is_error_value(value)) {
-        promise <- promises::promise_reject(simpleError(nng_error(value)))
-      } else {
-        promise <- promises::promise_resolve(value)
-      }
-    }
-
-    # Save for next time. This is not just an optimization but essential for
-    # correct behavior if as.promise is called multiple times, because only one
-    # `callback` can exist on the recvAio object at a time.
-    assign("promise", promise, x)
-  }
-
-  promise
-
-}
+  data <- .Call(rnng_recv_aio_signal, con, cv, mode, timeout, n, environment())
 
 # Core aio functions -----------------------------------------------------------
 

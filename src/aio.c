@@ -196,14 +196,6 @@ static void isaio_complete(void *arg) {
 
 }
 
-static void raio_invoke_cb(void *arg) {
-  nano_aio *raio = (nano_aio *) arg;
-  SEXP callExpr;
-  PROTECT(callExpr = Rf_lcons((SEXP) raio->cb, R_NilValue));
-  (void) Rf_eval(callExpr, R_GlobalEnv);
-  UNPROTECT(1);
-}
-
 static void raio_complete(void *arg) {
 
   nano_aio *raio = (nano_aio *) arg;
@@ -219,7 +211,6 @@ static void raio_complete(void *arg) {
   raio->result = res - !res;
 #endif
 
-  later2(raio_invoke_cb, arg, 0);
 }
 
 static void raio_complete_signal(void *arg) {
@@ -239,7 +230,6 @@ static void raio_complete_signal(void *arg) {
   nng_cv_wake(cv);
   nng_mtx_unlock(mtx);
 
-  later2(raio_invoke_cb, arg, 0);
 }
 
 static void request_complete_signal(void *arg) {
@@ -259,6 +249,55 @@ static void request_complete_signal(void *arg) {
   ncv->condition++;
   nng_cv_wake(cv);
   nng_mtx_unlock(mtx);
+
+}
+
+static void raio_invoke_cb(void *arg) {
+  SEXP callExpr;
+  PROTECT(callExpr = Rf_lcons((SEXP) arg, R_NilValue));
+  (void) Rf_eval(callExpr, R_GlobalEnv);
+  UNPROTECT(1);
+  R_ReleaseObject(arg);
+}
+
+static void raio_complete_cb(void *arg) {
+
+  nano_aio *raio = (nano_aio *) arg;
+  const int res = nng_aio_result(raio->aio);
+  if (res == 0)
+    raio->data = nng_aio_get_msg(raio->aio);
+
+#ifdef NANONEXT_LEGACY_NNG
+  nng_mtx_lock(shr_mtx);
+  raio->result = res - !res;
+  nng_mtx_unlock(shr_mtx);
+#else
+  raio->result = res - !res;
+#endif
+
+  later2(raio_invoke_cb, raio->cb, 0);
+
+}
+
+static void request_complete_cb(void *arg) {
+
+  nano_aio *raio = (nano_aio *) arg;
+  nano_aio *saio = (nano_aio *) raio->next;
+  nano_cv *ncv = (nano_cv *) saio->next;
+  nng_cv *cv = ncv->cv;
+  nng_mtx *mtx = ncv->mtx;
+
+  const int res = nng_aio_result(raio->aio);
+  if (res == 0)
+    raio->data = nng_aio_get_msg(raio->aio);
+
+  nng_mtx_lock(mtx);
+  raio->result = res - !res;
+  ncv->condition++;
+  nng_cv_wake(cv);
+  nng_mtx_unlock(mtx);
+
+  later2(raio_invoke_cb, raio->cb, 0);
 
 }
 
@@ -720,7 +759,7 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
 }
 
 SEXP rnng_recv_aio_impl(const SEXP con, const SEXP mode, const SEXP timeout,
-                        const SEXP bytes, const SEXP clo, const SEXP cb, nano_cv *ncv) {
+                        const SEXP bytes, const SEXP clo, nano_cv *ncv) {
 
   const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) Rf_asInteger(timeout);
   const int signal = ncv != NULL;
@@ -736,7 +775,6 @@ SEXP rnng_recv_aio_impl(const SEXP con, const SEXP mode, const SEXP timeout,
     raio->next = ncv;
     raio->type = RECVAIO;
     raio->mode = mod;
-    raio->cb = cb;
 
     if ((xc = nng_aio_alloc(&raio->aio, signal ? raio_complete_signal : raio_complete, raio)))
       goto exitlevel1;
@@ -803,19 +841,19 @@ SEXP rnng_recv_aio_impl(const SEXP con, const SEXP mode, const SEXP timeout,
 
 }
 
-SEXP rnng_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP bytes, SEXP clo, SEXP cb) {
+SEXP rnng_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP bytes, SEXP clo) {
 
-  return rnng_recv_aio_impl(con, mode, timeout, bytes, clo, cb, NULL);
+  return rnng_recv_aio_impl(con, mode, timeout, bytes, clo, NULL);
 
 }
 
-SEXP rnng_recv_aio_signal(SEXP con, SEXP cvar, SEXP mode, SEXP timeout, SEXP bytes, SEXP clo, SEXP cb) {
+SEXP rnng_recv_aio_signal(SEXP con, SEXP cvar, SEXP mode, SEXP timeout, SEXP bytes, SEXP clo) {
 
   if (R_ExternalPtrTag(cvar) != nano_CvSymbol)
     Rf_error("'cv' is not a valid Condition Variable");
   nano_cv *ncv = (nano_cv *) R_ExternalPtrAddr(cvar);
 
-  return rnng_recv_aio_impl(con, mode, timeout, bytes, clo, cb, ncv);
+  return rnng_recv_aio_impl(con, mode, timeout, bytes, clo, ncv);
 
 }
 
@@ -1224,11 +1262,13 @@ SEXP rnng_ncurl_session_close(SEXP session) {
 // request ---------------------------------------------------------------------
 
 SEXP rnng_request_impl(const SEXP con, const SEXP data, const SEXP sendmode,
-                       const SEXP recvmode, const SEXP timeout, const SEXP clo, nano_cv *ncv) {
+                       const SEXP recvmode, const SEXP timeout, const SEXP clo,
+                       nano_cv *ncv, const SEXP cb) {
 
   const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) Rf_asInteger(timeout);
   const int mod = nano_matcharg(recvmode);
   const int signal = ncv != NULL;
+  const int promises = cb != NULL;
   nng_ctx *ctx = (nng_ctx *) R_ExternalPtrAddr(con);
   SEXP aio, env, fun;
   nano_buf buf;
@@ -1267,8 +1307,15 @@ SEXP rnng_request_impl(const SEXP con, const SEXP data, const SEXP sendmode,
   raio->type = RECVAIO;
   raio->mode = mod;
   raio->next = saio;
+  if (promises)
+    R_PreserveObject(cb);
+  raio->cb = cb;
 
-  if ((xc = nng_aio_alloc(&raio->aio, signal ? request_complete_signal : raio_complete, raio)))
+  if ((xc = nng_aio_alloc(&raio->aio,
+                          promises ?
+                            (signal ? request_complete_cb : raio_complete_cb) :
+                            (signal ? request_complete_signal : raio_complete),
+                          raio)))
     goto exitlevel2;
 
   nng_aio_set_timeout(raio->aio, dur);
@@ -1306,7 +1353,7 @@ SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeou
   if (R_ExternalPtrTag(con) != nano_ContextSymbol)
     Rf_error("'con' is not a valid Context");
 
-  return rnng_request_impl(con, data, sendmode, recvmode, timeout, clo, NULL);
+  return rnng_request_impl(con, data, sendmode, recvmode, timeout, clo, NULL, NULL);
 
 }
 
@@ -1318,7 +1365,18 @@ SEXP rnng_request_signal(SEXP con, SEXP data, SEXP cvar, SEXP sendmode, SEXP rec
     Rf_error("'cv' is not a valid Condition Variable");
   nano_cv *ncv = (nano_cv *) R_ExternalPtrAddr(cvar);
 
-  return rnng_request_impl(con, data, sendmode, recvmode, timeout, clo, ncv);
+  return rnng_request_impl(con, data, sendmode, recvmode, timeout, clo, ncv, NULL);
+
+}
+
+SEXP rnng_request_promise(SEXP con, SEXP data, SEXP cvar, SEXP sendmode, SEXP recvmode, SEXP timeout, SEXP clo, SEXP cb) {
+
+  if (R_ExternalPtrTag(con) != nano_ContextSymbol)
+    Rf_error("'con' is not a valid Context");
+
+  nano_cv *ncv = R_ExternalPtrTag(cvar) == nano_CvSymbol ? (nano_cv *) R_ExternalPtrAddr(cvar) : NULL;
+
+  return rnng_request_impl(con, data, sendmode, recvmode, timeout, clo, ncv, cb);
 
 }
 

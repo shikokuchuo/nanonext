@@ -3,6 +3,7 @@
 \name{request}
 \alias{request}
 \alias{request_signal}
+\alias{request_promise}
 \title{Request over Context (RPC Client for Req/Rep Protocol)}
 \usage{
 request(
@@ -15,6 +16,16 @@ request(
 )
 
 request_signal(
+  context,
+  data,
+  cv,
+  send_mode = c("serial", "raw", "next"),
+  recv_mode = c("serial", "character", "complex", "double", "integer", "logical",
+    "numeric", "raw", "string"),
+  timeout = NULL
+)
+
+request_promise(
   context,
   data,
   cv,

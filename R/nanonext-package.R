@@ -92,10 +92,10 @@
 #' @author Charlie Gao \email{charlie.gao@@shikokuchuo.net}
 #'     (\href{https://orcid.org/0000-0002-0750-061X}{ORCID})
 #'
+#' @importFrom later later
 #' @importFrom stats start
 #' @importFrom tools md5sum
 #' @importFrom utils .DollarNames
-#' @importFrom later later
 #' @useDynLib nanonext, .registration = TRUE
 #'
 "_PACKAGE"

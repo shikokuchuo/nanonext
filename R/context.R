@@ -269,3 +269,19 @@ request_signal <- function(context,
                                          "integer", "logical", "numeric", "raw", "string"),
                            timeout = NULL)
   data <- .Call(rnng_request_signal, context, data, cv, send_mode, recv_mode, timeout, environment())
+
+#' @rdname request
+#' @export
+#'
+request_promise <- function(context,
+                            data,
+                            cv,
+                            send_mode = c("serial", "raw", "next"),
+                            recv_mode = c("serial", "character", "complex", "double",
+                                          "integer", "logical", "numeric", "raw", "string"),
+                            timeout = NULL)
+  data <- .Call(rnng_request_promise, context, data, cv, send_mode, recv_mode, timeout, environment(),
+                function() {
+                  cb <- .subset2(data, "callback")
+                  if (is.function(cb)) cb(data)
+                })

@@ -36,7 +36,6 @@ LinkingTo:
     later
 Suggests: 
     knitr,
-    markdown,
-    promises
+    markdown
 VignetteBuilder: knitr
 RoxygenNote: 7.3.1
