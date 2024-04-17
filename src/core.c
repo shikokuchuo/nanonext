@@ -42,7 +42,7 @@ SEXP mk_error(const int xc) {
 
 }
 
-static SEXP eval_safe (void *call) {
+SEXP eval_safe (void *call) {
   return Rf_eval((SEXP) call, R_GlobalEnv);
 }
 

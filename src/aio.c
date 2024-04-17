@@ -252,12 +252,17 @@ static void request_complete_signal(void *arg) {
 
 }
 
+static void release_object(void *data, Rboolean jump) {
+  if (jump)
+    R_ReleaseObject((SEXP) data);
+}
+
 static void raio_invoke_cb(void *arg) {
-  SEXP callExpr;
-  PROTECT(callExpr = Rf_lcons((SEXP) arg, R_NilValue));
-  (void) Rf_eval(callExpr, R_GlobalEnv);
+  SEXP call, data = (SEXP) arg;
+  PROTECT(call = Rf_lcons(data, R_NilValue));
+  (void) R_UnwindProtect(eval_safe, call, release_object, data, NULL);
   UNPROTECT(1);
-  R_ReleaseObject(arg);
+  R_ReleaseObject(data);
 }
 
 static void raio_complete_cb(void *arg) {
