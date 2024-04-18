@@ -42,12 +42,13 @@ SEXP mk_error(const int xc) {
 
 }
 
-SEXP eval_safe (void *call) {
+static SEXP eval_safe (void *call) {
   return Rf_eval((SEXP) call, R_GlobalEnv);
 }
 
 static void rl_reset(void *data, Rboolean jump) {
-  if (jump && data == NULL)
+  (void) data;
+  if (jump)
     SET_TAG(nano_refHook, R_NilValue);
 }
 

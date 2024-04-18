@@ -232,17 +232,11 @@ static void request_complete_signal(void *arg) {
 
 }
 
-static void release_object(void *data, Rboolean jump) {
-  if (jump)
-    R_ReleaseObject((SEXP) data);
-}
-
 static void raio_invoke_cb(void *arg) {
-  SEXP call, env = (SEXP) arg;
-  PROTECT(call = Rf_lcons(CADR(ATTRIB(env)), R_NilValue));
-  (void) R_UnwindProtect(eval_safe, call, release_object, env, NULL);
+  SEXP call, cb = (SEXP) arg;
+  PROTECT(call = Rf_lcons(cb, R_NilValue));
+  (void) Rf_eval(call, R_GlobalEnv);
   UNPROTECT(1);
-  R_ReleaseObject(env);
 }
 
 static void raio_complete_cb(void *arg) {
@@ -254,8 +248,9 @@ static void raio_complete_cb(void *arg) {
   raio->result = res - !res;
 
   nano_aio *saio = (nano_aio *) raio->next;
-  if (CADR(ATTRIB((SEXP) saio->data)) != R_NilValue)
-    later2(raio_invoke_cb, saio->data, 0);
+  SEXP ax = CADR(ATTRIB((SEXP) saio->data));
+  if (ax != R_NilValue)
+    later2(raio_invoke_cb, ax, 0);
 
 }
 
@@ -277,8 +272,9 @@ static void request_complete_cb(void *arg) {
   nng_cv_wake(cv);
   nng_mtx_unlock(mtx);
 
-  if (CADR(ATTRIB((SEXP) saio->data)) != R_NilValue)
-    later2(raio_invoke_cb, saio->data, 0);
+  SEXP ax = CADR(ATTRIB((SEXP) saio->data));
+  if (ax != R_NilValue)
+    later2(raio_invoke_cb, ax, 0);
 
 }
 
@@ -338,6 +334,8 @@ static void request_finalizer(SEXP xptr) {
   nng_aio_free(xp->aio);
   if (xp->data != NULL)
     nng_msg_free((nng_msg *) xp->data);
+  if (saio->data != NULL)
+    R_ReleaseObject((SEXP) saio->data);
   R_Free(saio);
   R_Free(xp);
 
