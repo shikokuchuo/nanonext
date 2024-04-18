@@ -149,7 +149,7 @@ vignette("nanonext", package = "nanonext")
 
 #### Linux / Mac / Solaris
 
-Installation from source requires 'libnng' >= v1.5.0 and 'libmbedtls' >= 2.5.0 (suitable installations are automatically detected), or else 'cmake' to compile 'libnng' v1.7.3 and 'libmbedtls' v3.6.0 LTS included within the package sources.
+Installation from source requires 'libnng' >= v1.6.0 and 'libmbedtls' >= 2.5.0 (suitable installations are automatically detected), or else 'cmake' to compile 'libnng' v1.7.3 and 'libmbedtls' v3.6.0 LTS included within the package sources.
 
 **It is recommended for optimal performance and stability to let the package automatically compile bundled versions of 'libmbedtls' and 'libnng' during installation.** To ensure the libraries are compiled from source even if system installations are present, set the `NANONEXT_LIBS` environment variable prior to installation e.g. by `Sys.setenv(NANONEXT_LIBS = 1)`.
 
@@ -169,6 +169,7 @@ We would like to acknowledge in particular:
 
 - [Garrett D'Amore](https://github.com/gdamore), author of the NNG library, for generous advice and for implementing a feature request specifically for a more efficient 'aio' implementation in `nanonext`.
 - The [R Consortium](https://www.r-consortium.org/) for funding the development of the secure TLS capabilities in the package, and [Henrik Bengtsson](https://github.com/HenrikBengtsson) and [Will Landau](https://github.com/wlandau/)'s roles in making this possible.
+- [Joe Cheng](https://github.com/jcheng5/) for prototyping the integration of `nanonext` with `later` to support the next generation of completely event-driven promises in `mirai`.
 - [R Core](https://www.r-project.org/contributors.html) for various auxiliary functions for serialisation and raw / character conversion, which have been adopted by the package.
 - [Luke Tierney](https://github.com/ltierney/) and [Mike Cheng](https://github.com/coolbutuseless) for meticulous documentation of the R serialization mechanism, which led to the package's own implementation of a low-level interface to R serialization.
 - [Jeroen Ooms](https://github.com/jeroen) - for his 'Anticonf (tm)' configure script, on which our original 'configure' was based, although much modified since.

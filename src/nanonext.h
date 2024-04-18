@@ -21,10 +21,6 @@
 
 #include <nng/nng.h>
 
-#if NNG_MAJOR_VERSION == 1 && NNG_MINOR_VERSION < 6
-#define NANONEXT_LEGACY_NNG
-#endif
-
 #ifdef NANONEXT_PROTOCOLS
 #include <nng/protocol/bus0/bus.h>
 #include <nng/protocol/pair0/pair.h>
@@ -45,9 +41,6 @@
 #ifdef NANONEXT_SUPPLEMENTALS
 #include <nng/supplemental/tls/tls.h>
 #include <nng/supplemental/util/platform.h>
-#ifdef NANONEXT_LEGACY_NNG
-extern nng_mtx *shr_mtx;
-#endif
 
 typedef struct nano_listener_s {
   nng_listener list;
@@ -253,6 +246,7 @@ SEXP rnng_recv(SEXP, SEXP, SEXP, SEXP);
 SEXP rnng_recv_aio(SEXP, SEXP, SEXP, SEXP, SEXP);
 SEXP rnng_recv_aio_signal(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 SEXP rnng_request(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
+SEXP rnng_request_promise(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 SEXP rnng_request_signal(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 SEXP rnng_send(SEXP, SEXP, SEXP, SEXP);
 SEXP rnng_send_aio(SEXP, SEXP, SEXP, SEXP, SEXP);

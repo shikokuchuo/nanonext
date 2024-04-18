@@ -178,7 +178,7 @@ vignette("nanonext", package = "nanonext")
 
 #### Linux / Mac / Solaris
 
-Installation from source requires ‘libnng’ \>= v1.5.0 and ‘libmbedtls’
+Installation from source requires ‘libnng’ \>= v1.6.0 and ‘libmbedtls’
 \>= 2.5.0 (suitable installations are automatically detected), or else
 ‘cmake’ to compile ‘libnng’ v1.7.3 and ‘libmbedtls’ v3.6.0 LTS included
 within the package sources.
@@ -221,6 +221,9 @@ We would like to acknowledge in particular:
   development of the secure TLS capabilities in the package, and [Henrik
   Bengtsson](https://github.com/HenrikBengtsson) and [Will
   Landau](https://github.com/wlandau/)’s roles in making this possible.
+- [Joe Cheng](https://github.com/jcheng5/) for prototyping the
+  integration of `nanonext` with `later` to support the next generation
+  of completely event-driven promises in `mirai`.
 - [R Core](https://www.r-project.org/contributors.html) for various
   auxiliary functions for serialisation and raw / character conversion,
   which have been adopted by the package.

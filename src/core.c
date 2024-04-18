@@ -47,7 +47,8 @@ static SEXP eval_safe (void *call) {
 }
 
 static void rl_reset(void *data, Rboolean jump) {
-  if (jump && data == NULL)
+  (void) data;
+  if (jump)
     SET_TAG(nano_refHook, R_NilValue);
 }
 
@@ -982,30 +983,6 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
     nng_ctx *ctxp = (nng_ctx *) R_ExternalPtrAddr(con);
     nng_msg *msgp;
 
-#ifdef NANONEXT_LEGACY_NNG
-
-    nng_aio *aiop;
-
-    if ((xc = nng_msg_alloc(&msgp, 0)))
-      goto exitlevel1;
-
-    if ((xc = nng_msg_append(msgp, buf.buf, buf.cur)) ||
-        (xc = nng_aio_alloc(&aiop, NULL, NULL))) {
-      nng_msg_free(msgp);
-      goto exitlevel1;
-    }
-
-    nng_aio_set_msg(aiop, msgp);
-    nng_aio_set_timeout(aiop, flags < 0 ? 0 : flags > 0 ? flags : (*NANO_INTEGER(block) == 1) * NNG_DURATION_DEFAULT);
-    nng_ctx_send(*ctxp, aiop);
-    NANO_FREE(buf);
-    nng_aio_wait(aiop);
-    if ((xc = nng_aio_result(aiop)))
-      nng_msg_free(nng_aio_get_msg(aiop));
-    nng_aio_free(aiop);
-
-#else
-
     if (flags <= 0) {
 
       if ((xc = nng_msg_alloc(&msgp, 0)))
@@ -1042,8 +1019,6 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
       nng_aio_free(aiop);
 
     }
-
-#endif
 
   } else if (ptrtag == nano_StreamSymbol) {
 
@@ -1136,30 +1111,6 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP bytes) {
     nng_ctx *ctxp = (nng_ctx *) R_ExternalPtrAddr(con);
     nng_msg *msgp;
 
-#ifdef NANONEXT_LEGACY_NNG
-
-    nng_aio *aiop;
-
-    if ((xc = nng_aio_alloc(&aiop, NULL, NULL)))
-      goto exitlevel1;
-    nng_aio_set_timeout(aiop, flags < 0 ? 0 : flags > 0 ? flags : (*NANO_INTEGER(block) == 1) * NNG_DURATION_DEFAULT);
-    nng_ctx_recv(*ctxp, aiop);
-
-    nng_aio_wait(aiop);
-    if ((xc = nng_aio_result(aiop))) {
-      nng_aio_free(aiop);
-      goto exitlevel1;
-    }
-
-    msgp = nng_aio_get_msg(aiop);
-    nng_aio_free(aiop);
-    buf = nng_msg_body(msgp);
-    sz = nng_msg_len(msgp);
-    res = nano_decode(buf, sz, mod);
-    nng_msg_free(msgp);
-
-#else
-
     if (flags <= 0) {
 
       xc = nng_ctx_recvmsg(*ctxp, &msgp, (flags < 0 || *NANO_INTEGER(block) != 1) * NNG_FLAG_NONBLOCK);
@@ -1194,8 +1145,6 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP bytes) {
       nng_msg_free(msgp);
 
     }
-
-#endif
 
   } else if (ptrtag == nano_StreamSymbol) {
 

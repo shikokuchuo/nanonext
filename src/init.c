@@ -50,10 +50,6 @@ SEXP nano_refHook;
 SEXP nano_success;
 SEXP nano_unresolved;
 
-#ifdef NANONEXT_LEGACY_NNG
-nng_mtx *shr_mtx;
-#endif
-
 static void RegisterSymbols(void) {
   nano_AioSymbol = Rf_install("aio");
   nano_ContextSymbol = Rf_install("context");
@@ -158,6 +154,7 @@ static const R_CallMethodDef callMethods[] = {
   {"rnng_recv_aio", (DL_FUNC) &rnng_recv_aio, 5},
   {"rnng_recv_aio_signal", (DL_FUNC) &rnng_recv_aio_signal, 6},
   {"rnng_request", (DL_FUNC) &rnng_request, 6},
+  {"rnng_request_promise", (DL_FUNC) &rnng_request_promise, 7},
   {"rnng_request_signal", (DL_FUNC) &rnng_request_signal, 7},
   {"rnng_send", (DL_FUNC) &rnng_send, 4},
   {"rnng_send_aio", (DL_FUNC) &rnng_send_aio, 5},
@@ -192,9 +189,6 @@ static const R_ExternalMethodDef externalMethods[] = {
 void attribute_visible R_init_nanonext(DllInfo* dll) {
   RegisterSymbols();
   PreserveObjects();
-#ifdef NANONEXT_LEGACY_NNG
-  nng_mtx_alloc(&shr_mtx);
-#endif
   R_registerRoutines(dll, NULL, callMethods, NULL, externalMethods);
   R_useDynamicSymbols(dll, FALSE);
   R_forceSymbols(dll, TRUE);
@@ -202,7 +196,4 @@ void attribute_visible R_init_nanonext(DllInfo* dll) {
 
 void attribute_visible R_unload_nanonext(DllInfo *info) {
   ReleaseObjects();
-#ifdef NANONEXT_LEGACY_NNG
-  nng_mtx_free(shr_mtx);
-#endif
 }

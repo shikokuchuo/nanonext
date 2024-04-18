@@ -269,3 +269,21 @@ request_signal <- function(context,
                                          "integer", "logical", "numeric", "raw", "string"),
                            timeout = NULL)
   data <- .Call(rnng_request_signal, context, data, cv, send_mode, recv_mode, timeout, environment())
+
+#' Request2 (RPC Client for Req/Rep Protocol)
+#'
+#' \strong{request2} is the next generation request function that optionally
+#'     takes a condition variable for signalling, and supports event-driven
+#'     promises.
+#'
+#' @rdname request
+#' @export
+#'
+request2 <- function(context,
+                     data,
+                     cv = NULL,
+                     send_mode = c("serial", "raw", "next"),
+                     recv_mode = c("serial", "character", "complex", "double",
+                                   "integer", "logical", "numeric", "raw", "string"),
+                     timeout = NULL)
+  data <- .Call(rnng_request_promise, context, data, cv, send_mode, recv_mode, timeout, environment())
