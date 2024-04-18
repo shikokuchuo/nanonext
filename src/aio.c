@@ -20,7 +20,6 @@
 #define NANONEXT_SUPPLEMENTALS
 #define NANONEXT_SIGNALS
 #include "nanonext.h"
-#include "later_shim.h"
 
 // internals -------------------------------------------------------------------
 

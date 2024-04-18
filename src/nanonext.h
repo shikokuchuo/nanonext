@@ -145,6 +145,7 @@ typedef struct nano_cv_s {
 #include <R.h>
 #include <Rinternals.h>
 #include <R_ext/Visibility.h>
+#include "later_shim.h"
 
 #define ERROR_OUT(xc) Rf_error("%d | %s", xc, nng_strerror(xc))
 #define ERROR_RET(xc) { Rf_warning("%d | %s", xc, nng_strerror(xc)); return mk_error(xc); }

@@ -7,6 +7,7 @@
 
 #### Updates
 
+* Added dependency on `later` to ensure code run asynchronously upon aio completion is run on the main R thread. 
 * Updates minimum 'libnng' version requirement to v1.6.0 (if a suitable system-installed version is not found, the bundled version is compiled from source).
 
 # nanonext 0.13.6
