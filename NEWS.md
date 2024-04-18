@@ -2,6 +2,7 @@
 
 * Integrates with the `later` package to provide the foundation for truly event-driven (non-polling) promises (thanks @jcheng5 for the initial prototype in #28), where side-effects are enacted asynchronously upon aio completion.
 * Adds `request2()` for creating a request that may be turned into an event-driven promise.
+* Updates minimum 'libnng' version requirement to v1.6.0 (if a suitable system-installed version is not found, the bundled version is compiled from source).
 
 # nanonext 0.13.6
 

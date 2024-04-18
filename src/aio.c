@@ -160,14 +160,7 @@ static void saio_complete(void *arg) {
   const int res = nng_aio_result(saio->aio);
   if (res)
     nng_msg_free(nng_aio_get_msg(saio->aio));
-
-#ifdef NANONEXT_LEGACY_NNG
-  nng_mtx_lock(shr_mtx);
   saio->result = res - !res;
-  nng_mtx_unlock(shr_mtx);
-#else
-  saio->result = res - !res;
-#endif
 
 }
 
@@ -185,14 +178,7 @@ static void isaio_complete(void *arg) {
   const int res = nng_aio_result(iaio->aio);
   if (iaio->data != NULL)
     R_Free(iaio->data);
-
-#ifdef NANONEXT_LEGACY_NNG
-  nng_mtx_lock(shr_mtx);
   iaio->result = res - !res;
-  nng_mtx_unlock(shr_mtx);
-#else
-  iaio->result = res - !res;
-#endif
 
 }
 
@@ -203,13 +189,7 @@ static void raio_complete(void *arg) {
   if (res == 0)
     raio->data = nng_aio_get_msg(raio->aio);
 
-#ifdef NANONEXT_LEGACY_NNG
-  nng_mtx_lock(shr_mtx);
   raio->result = res - !res;
-  nng_mtx_unlock(shr_mtx);
-#else
-  raio->result = res - !res;
-#endif
 
 }
 
@@ -271,17 +251,11 @@ static void raio_complete_cb(void *arg) {
   const int res = nng_aio_result(raio->aio);
   if (res == 0)
     raio->data = nng_aio_get_msg(raio->aio);
-
-#ifdef NANONEXT_LEGACY_NNG
-  nng_mtx_lock(shr_mtx);
   raio->result = res - !res;
-  nng_mtx_unlock(shr_mtx);
-#else
-  raio->result = res - !res;
-#endif
 
-  if (CADR(ATTRIB(raio->cb)) != R_NilValue)
-    later2(raio_invoke_cb, raio->cb, 0);
+  nano_aio *saio = (nano_aio *) raio->next;
+  if (CADR(ATTRIB((SEXP) saio->data)) != R_NilValue)
+    later2(raio_invoke_cb, saio->data, 0);
 
 }
 
@@ -303,8 +277,8 @@ static void request_complete_cb(void *arg) {
   nng_cv_wake(cv);
   nng_mtx_unlock(mtx);
 
-  if (CADR(ATTRIB(raio->cb)) != R_NilValue)
-    later2(raio_invoke_cb, raio->cb, 0);
+  if (CADR(ATTRIB((SEXP) saio->data)) != R_NilValue)
+    later2(raio_invoke_cb, saio->data, 0);
 
 }
 
@@ -312,14 +286,7 @@ static void iraio_complete(void *arg) {
 
   nano_aio *iaio = (nano_aio *) arg;
   const int res = nng_aio_result(iaio->aio);
-
-#ifdef NANONEXT_LEGACY_NNG
-  nng_mtx_lock(shr_mtx);
   iaio->result = res - !res;
-  nng_mtx_unlock(shr_mtx);
-#else
-  iaio->result = res - !res;
-#endif
 
 }
 
@@ -367,9 +334,6 @@ static void request_finalizer(SEXP xptr) {
   if (R_ExternalPtrAddr(xptr) == NULL) return;
   nano_aio *xp = (nano_aio *) R_ExternalPtrAddr(xptr);
   nano_aio *saio = (nano_aio *) xp->next;
-#ifdef NANONEXT_LEGACY_NNG
-  nng_ctx_close(*(nng_ctx *) saio->data);
-#endif
   nng_aio_free(saio->aio);
   nng_aio_free(xp->aio);
   if (xp->data != NULL)
@@ -447,15 +411,7 @@ SEXP rnng_aio_result(SEXP env) {
 
   nano_aio *saio = (nano_aio *) R_ExternalPtrAddr(aio);
 
-#ifdef NANONEXT_LEGACY_NNG
-  int res;
-  nng_mtx_lock(shr_mtx);
-  res = saio->result;
-  nng_mtx_unlock(shr_mtx);
-  if (res == 0)
-#else
   if (nng_aio_busy(saio->aio))
-#endif
     return nano_unresolved;
 
   if (saio->result > 0)
@@ -479,15 +435,7 @@ SEXP rnng_aio_get_msg(SEXP env) {
 
   nano_aio *raio = (nano_aio *) R_ExternalPtrAddr(aio);
 
-#ifdef NANONEXT_LEGACY_NNG
-  int res;
-  nng_mtx_lock(shr_mtx);
-  res = raio->result;
-  nng_mtx_unlock(shr_mtx);
-  if (res == 0)
-#else
   if (nng_aio_busy(raio->aio))
-#endif
     return nano_unresolved;
 
   if (raio->result > 0)
@@ -652,15 +600,7 @@ SEXP rnng_unresolved2(SEXP aio) {
 
   nano_aio *aiop = (nano_aio *) R_ExternalPtrAddr(coreaio);
 
-#ifdef NANONEXT_LEGACY_NNG
-  int res;
-  nng_mtx_lock(shr_mtx);
-  res = aiop->result;
-  nng_mtx_unlock(shr_mtx);
-  return Rf_ScalarLogical(!res);
-#else
   return Rf_ScalarLogical(nng_aio_busy(aiop->aio));
-#endif
 
 }
 
@@ -1004,15 +944,7 @@ SEXP rnng_aio_http(SEXP env, SEXP response, SEXP type) {
 
   nano_aio *haio = (nano_aio *) R_ExternalPtrAddr(aio);
 
-#ifdef NANONEXT_LEGACY_NNG
-  int res;
-  nng_mtx_lock(shr_mtx);
-  res = haio->result;
-  nng_mtx_unlock(shr_mtx);
-  if (res == 0)
-#else
   if (nng_aio_busy(haio->aio))
-#endif
     return nano_unresolved;
 
   if (haio->result > 0)
@@ -1292,9 +1224,6 @@ SEXP rnng_request_impl(const SEXP con, const SEXP data, const SEXP sendmode,
   }
 
   saio = R_Calloc(1, nano_aio);
-#ifdef NANONEXT_LEGACY_NNG
-  saio->data = ctx;
-#endif
   saio->next = ncv;
 
   if ((xc = nng_msg_alloc(&msg, 0)))
@@ -1316,7 +1245,7 @@ SEXP rnng_request_impl(const SEXP con, const SEXP data, const SEXP sendmode,
   raio->next = saio;
   if (promises) {
     R_PreserveObject(env);
-    raio->cb = env;
+    saio->data = env;
   }
 
   if ((xc = nng_aio_alloc(&raio->aio,

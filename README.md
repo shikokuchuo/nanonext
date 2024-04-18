@@ -178,7 +178,7 @@ vignette("nanonext", package = "nanonext")
 
 #### Linux / Mac / Solaris
 
-Installation from source requires ‘libnng’ \>= v1.5.0 and ‘libmbedtls’
+Installation from source requires ‘libnng’ \>= v1.6.0 and ‘libmbedtls’
 \>= 2.5.0 (suitable installations are automatically detected), or else
 ‘cmake’ to compile ‘libnng’ v1.7.3 and ‘libmbedtls’ v3.6.0 LTS included
 within the package sources.
