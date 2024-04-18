@@ -3,7 +3,7 @@
 \name{request}
 \alias{request}
 \alias{request_signal}
-\alias{request_promise}
+\alias{request2}
 \title{Request over Context (RPC Client for Req/Rep Protocol)}
 \usage{
 request(
@@ -25,10 +25,10 @@ request_signal(
   timeout = NULL
 )
 
-request_promise(
+request2(
   context,
   data,
-  cv,
+  cv = NULL,
   send_mode = c("serial", "raw", "next"),
   recv_mode = c("serial", "character", "complex", "double", "integer", "logical",
     "numeric", "raw", "string"),
@@ -68,6 +68,10 @@ Implements a caller/client for the req node of the req/rep protocol. Sends
 
 A signalling version of the function takes a 'conditionVariable' as an
     additional argument and signals it when the async receive is complete.
+
+\strong{request2} is the next generation request function that optionally
+    takes a condition variable for signalling, and supports event-driven
+    promises.
 }
 \details{
 Sending the request and receiving the result are both performed
