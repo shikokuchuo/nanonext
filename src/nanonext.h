@@ -145,7 +145,6 @@ typedef struct nano_cv_s {
 #include <R.h>
 #include <Rinternals.h>
 #include <R_ext/Visibility.h>
-#include "later_shim.h"
 
 #define ERROR_OUT(xc) Rf_error("%d | %s", xc, nng_strerror(xc))
 #define ERROR_RET(xc) { Rf_warning("%d | %s", xc, nng_strerror(xc)); return mk_error(xc); }
@@ -182,6 +181,8 @@ typedef struct nano_buf_s {
   size_t len;
   size_t cur;
 } nano_buf;
+
+void later2(void (*func)(void *), void *data, double secs);
 
 SEXP mk_error(const int);
 SEXP mk_error_ncurl(const int);
