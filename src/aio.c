@@ -249,7 +249,7 @@ static void raio_complete_cb(void *arg) {
 
   nano_aio *saio = (nano_aio *) raio->next;
   SEXP ax = CADR(ATTRIB((SEXP) saio->data));
-  if (ax != R_NilValue)
+  if (ax != R_NilValue && TYPEOF(ax) == CLOSXP)
     later2(raio_invoke_cb, ax, 0);
 
 }
@@ -273,7 +273,7 @@ static void request_complete_cb(void *arg) {
   nng_mtx_unlock(mtx);
 
   SEXP ax = CADR(ATTRIB((SEXP) saio->data));
-  if (ax != R_NilValue)
+  if (ax != R_NilValue && TYPEOF(ax) == CLOSXP)
     later2(raio_invoke_cb, ax, 0);
 
 }
