@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.13.6.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.13.6.9002</span>
       </span>
     </div>
 
@@ -57,7 +57,16 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.13.6" id="nanonext-0136-development">nanonext 0.13.6 (development)<a class="anchor" aria-label="anchor" href="#nanonext-0136-development"></a></h2>
+<h2 class="page-header" data-toc-text="0.13.6.9002" id="nanonext-01369002-development">nanonext 0.13.6.9002 (development)<a class="anchor" aria-label="anchor" href="#nanonext-01369002-development"></a></h2>
+<div class="section level5">
+<h5 id="new-features-0-13-6-9002">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-13-6-9002"></a></h5>
+<ul><li>Integrates with the <code>later</code> package to provide the foundation for truly event-driven (non-polling) promises (thanks <a href="https://github.com/jcheng5" class="external-link">@jcheng5</a> for the initial prototype in <a href="https://github.com/shikokuchuo/nanonext/issues/28" class="external-link">#28</a>), where side-effects are enacted asynchronously upon aio completion.</li>
+<li>Adds <code><a href="../reference/request.html">request2()</a></code> for creating a request that may be turned into an event-driven promise.</li>
+</ul></div>
+<div class="section level5">
+<h5 id="updates-0-13-6-9002">Updates<a class="anchor" aria-label="anchor" href="#updates-0-13-6-9002"></a></h5>
+<ul><li>Updates minimum ‘libnng’ version requirement to v1.6.0 (if a suitable system-installed version is not found, the bundled version is compiled from source).</li>
+</ul></div>
 </div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.13.6" id="nanonext-0136">nanonext 0.13.6<a class="anchor" aria-label="anchor" href="#nanonext-0136"></a></h2>
