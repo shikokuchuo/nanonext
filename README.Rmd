@@ -28,7 +28,7 @@ R binding for NNG (Nanomsg Next Gen), a successor to ZeroMQ. NNG is a socket lib
 
 As its own [threaded concurrency framework](https://shikokuchuo.net/nanonext/articles/nanonext.html#async-and-concurrency), provides a toolkit for asynchronous programming and distributed computing, with intuitive 'aio' objects which resolve automatically upon completion of asynchronous operations, and [synchronisation primitives](https://shikokuchuo.net/nanonext/articles/nanonext.html#synchronisation-primitives) allowing R to wait upon events signalled by concurrent threads.
 
-Designed for performance and reliability, the NNG library is written in C and [`nanonext`](https://doi.org/10.5281/zenodo.7903429) is a lightweight zero-dependency wrapper.
+Designed for performance and reliability, [`nanonext`](https://doi.org/10.5281/zenodo.7903429) is a lightweight wrapper around the NNG C library, and is itself implemented almost entirely in C.
 
 Provides the interface for code and processes to communicate with each other - [receive data generated in Python, perform analysis in R, and send results to a C++ program](https://shikokuchuo.net/nanonext/articles/nanonext.html#cross-language-exchange) – on the same computer or across networks spanning the globe.
 

@@ -30,9 +30,10 @@ completion of asynchronous operations, and [synchronisation
 primitives](https://shikokuchuo.net/nanonext/articles/nanonext.html#synchronisation-primitives)
 allowing R to wait upon events signalled by concurrent threads.
 
-Designed for performance and reliability, the NNG library is written in
-C and [`nanonext`](https://doi.org/10.5281/zenodo.7903429) is a
-lightweight zero-dependency wrapper.
+Designed for performance and reliability,
+[`nanonext`](https://doi.org/10.5281/zenodo.7903429) is a lightweight
+wrapper around the NNG C library, and is itself implemented almost
+entirely in C.
 
 Provides the interface for code and processes to communicate with each
 other - [receive data generated in Python, perform analysis in R, and
