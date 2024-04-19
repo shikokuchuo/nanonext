@@ -23,3 +23,4 @@ The object passed as 'x' is returned regardless of whether the
     promise context was set successfully or not. If successful, 'x' is
     modified in place with the promise context.
 }
+\keyword{internal}

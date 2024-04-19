@@ -302,6 +302,7 @@ request2 <- function(context,
 #'
 #' @return The object 'x'.
 #'
+#' @keywords internal
 #' @export
 #'
 set_promise_context <- function(x, ctx) .Call(rnng_set_promise_context, x, ctx)
