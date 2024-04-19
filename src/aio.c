@@ -241,7 +241,7 @@ static void raio_invoke_cb(void *arg) {
   if (data == R_UnboundValue) {
     UNPROTECT(2); return;
   }
-  PROTECT(call = Rf_lang2(nano_ResolveSymbol, data));
+  PROTECT(call = Rf_lcons(nano_ResolveSymbol, Rf_cons(data, R_NilValue)));
   Rf_eval(call, cb);
   UNPROTECT(3);
 }
