@@ -1,9 +1,9 @@
-# nanonext 0.13.6.9005 (development)
+# nanonext 0.13.6.9006 (development)
 
 #### New Features
 
 * Integrates with the `later` package to provide the foundation for truly event-driven (non-polling) promises (thanks @jcheng5 for the initial prototype in #28), where side-effects are enacted asynchronously upon aio completion.
-* Adds `request2()` for creating a request that may be turned into an event-driven promise.
+* `request()` and `request_signal()` are modified internally to support conversion of 'recvAio' to event-driven promises.
 
 #### Updates
 

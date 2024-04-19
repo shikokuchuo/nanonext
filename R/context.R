@@ -270,30 +270,13 @@ request_signal <- function(context,
                            timeout = NULL)
   data <- .Call(rnng_request_signal, context, data, cv, send_mode, recv_mode, timeout, environment())
 
-#' Request2 (RPC Client for Req/Rep Protocol)
-#'
-#' \strong{request2} is the next generation request function that optionally
-#'     takes a condition variable for signalling, and supports event-driven
-#'     promises.
-#'
-#' @rdname request
-#' @export
-#'
-request2 <- function(context,
-                     data,
-                     cv = NULL,
-                     send_mode = c("serial", "raw", "next"),
-                     recv_mode = c("serial", "character", "complex", "double",
-                                   "integer", "logical", "numeric", "raw", "string"),
-                     timeout = NULL)
-  data <- .Call(rnng_request_promise, context, data, cv, send_mode, recv_mode, timeout, environment())
-
 #' Set Promise Context
 #'
-#' Creates an event-driven promise that will resolve asynchronously when the
-#'     request is complete.
+#' If called from an appropriate context, creates an event-driven promise that
+#'     will resolve asynchronously when the request is complete.
 #'
-#' @param x a 'recvAio' object returned by \code{\link{request2}}.
+#' @param x a 'recvAio' object returned by \code{\link{request}} or
+#'     \code{\link{request_signal}}.
 #' @param ctx the context environment.
 #'
 #' @details The object passed as 'x' is returned regardless of whether the

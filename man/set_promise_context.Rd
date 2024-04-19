@@ -7,7 +7,8 @@
 set_promise_context(x, ctx)
 }
 \arguments{
-\item{x}{a 'recvAio' object returned by \code{\link{request2}}.}
+\item{x}{a 'recvAio' object returned by \code{\link{request}} or
+\code{\link{request_signal}}.}
 
 \item{ctx}{the context environment.}
 }
@@ -15,8 +16,8 @@ set_promise_context(x, ctx)
 The object 'x'.
 }
 \description{
-Creates an event-driven promise that will resolve asynchronously when the
-    request is complete.
+If called from an appropriate context, creates an event-driven promise that
+    will resolve asynchronously when the request is complete.
 }
 \details{
 The object passed as 'x' is returned regardless of whether the
