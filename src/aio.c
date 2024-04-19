@@ -232,10 +232,12 @@ static void request_complete_signal(void *arg) {
 }
 
 static void raio_invoke_cb(void *arg) {
-  SEXP call, cb = (SEXP) arg;
-  PROTECT(call = Rf_lcons(cb, R_NilValue));
-  (void) Rf_eval(call, R_GlobalEnv);
-  UNPROTECT(1);
+  SEXP call, x, data, cb = (SEXP) arg;
+  PROTECT(x = Rf_findVarInFrame(cb, nano_XSymbol));
+  PROTECT(data = Rf_findVarInFrame(x, nano_DataSymbol));
+  PROTECT(call = Rf_lang2(nano_ResolveSymbol, data));
+  (void) Rf_eval(call, cb);
+  UNPROTECT(3);
 }
 
 static void raio_complete_cb(void *arg) {
@@ -248,7 +250,7 @@ static void raio_complete_cb(void *arg) {
 
   nano_aio *saio = (nano_aio *) raio->next;
   SEXP ax = CADR(ATTRIB((SEXP) saio->data));
-  if (ax != R_NilValue && TYPEOF(ax) == CLOSXP)
+  if (ax != R_NilValue && TYPEOF(ax) == ENVSXP)
     later2(raio_invoke_cb, ax, 0);
 
 }
@@ -272,7 +274,7 @@ static void request_complete_cb(void *arg) {
   nng_mtx_unlock(mtx);
 
   SEXP ax = CADR(ATTRIB((SEXP) saio->data));
-  if (ax != R_NilValue && TYPEOF(ax) == CLOSXP)
+  if (ax != R_NilValue && TYPEOF(ax) == ENVSXP)
     later2(raio_invoke_cb, ax, 0);
 
 }

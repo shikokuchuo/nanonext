@@ -285,6 +285,7 @@ extern SEXP nano_IdSymbol;
 extern SEXP nano_ListenerSymbol;
 extern SEXP nano_ProtocolSymbol;
 extern SEXP nano_RawSymbol;
+extern SEXP nano_ResolveSymbol;
 extern SEXP nano_ResponseSymbol;
 extern SEXP nano_ResultSymbol;
 extern SEXP nano_SocketSymbol;
@@ -294,6 +295,7 @@ extern SEXP nano_StreamSymbol;
 extern SEXP nano_TlsSymbol;
 extern SEXP nano_UrlSymbol;
 extern SEXP nano_ValueSymbol;
+extern SEXP nano_XSymbol;
 
 extern SEXP nano_aioFormals;
 extern SEXP nano_aioFuncs;

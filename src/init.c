@@ -31,6 +31,7 @@ SEXP nano_IdSymbol;
 SEXP nano_ListenerSymbol;
 SEXP nano_ProtocolSymbol;
 SEXP nano_RawSymbol;
+SEXP nano_ResolveSymbol;
 SEXP nano_ResponseSymbol;
 SEXP nano_ResultSymbol;
 SEXP nano_SocketSymbol;
@@ -40,6 +41,7 @@ SEXP nano_StreamSymbol;
 SEXP nano_TlsSymbol;
 SEXP nano_UrlSymbol;
 SEXP nano_ValueSymbol;
+SEXP nano_XSymbol;
 
 SEXP nano_aioFormals;
 SEXP nano_aioFuncs;
@@ -63,6 +65,7 @@ static void RegisterSymbols(void) {
   nano_ListenerSymbol = Rf_install("listener");
   nano_ProtocolSymbol = Rf_install("protocol");
   nano_RawSymbol = Rf_install("raw");
+  nano_ResolveSymbol = Rf_install("resolve");
   nano_ResponseSymbol = Rf_install("response");
   nano_ResultSymbol = Rf_install("result");
   nano_SocketSymbol = Rf_install("socket");
@@ -72,6 +75,7 @@ static void RegisterSymbols(void) {
   nano_TlsSymbol = Rf_install("tls");
   nano_UrlSymbol = Rf_install("url");
   nano_ValueSymbol = Rf_install("value");
+  nano_XSymbol = Rf_install("x");
 }
 
 static void PreserveObjects(void) {
