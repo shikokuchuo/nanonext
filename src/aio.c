@@ -234,7 +234,9 @@ static void request_complete_signal(void *arg) {
 static void raio_invoke_cb(void *arg) {
   SEXP call, x, data, cb = (SEXP) arg;
   PROTECT(x = Rf_findVarInFrame(cb, nano_XSymbol));
+  if (x == R_UnboundValue) return;
   PROTECT(data = Rf_findVarInFrame(x, nano_DataSymbol));
+  if (data == R_UnboundValue) return;
   PROTECT(call = Rf_lang2(nano_ResolveSymbol, data));
   (void) Rf_eval(call, cb);
   UNPROTECT(3);
