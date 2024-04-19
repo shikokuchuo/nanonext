@@ -234,9 +234,13 @@ static void request_complete_signal(void *arg) {
 static void raio_invoke_cb(void *arg) {
   SEXP call, context, data, cb = (SEXP) arg;
   PROTECT(context = Rf_findVarInFrame(cb, nano_ContextSymbol));
-  if (context == R_UnboundValue) return;
+  if (context == R_UnboundValue) {
+    UNPROTECT(1); return;
+  }
   PROTECT(data = Rf_findVarInFrame(context, nano_DataSymbol));
-  if (data == R_UnboundValue) return;
+  if (data == R_UnboundValue) {
+    UNPROTECT(2); return;
+  }
   PROTECT(call = Rf_lang2(nano_ResolveSymbol, data));
   Rf_eval(call, cb);
   UNPROTECT(3);
@@ -1271,7 +1275,6 @@ SEXP rnng_request_impl(const SEXP con, const SEXP data, const SEXP sendmode,
   return env;
 
   exitlevel2:
-  UNPROTECT(1);
   R_Free(raio);
   nng_aio_free(saio->aio);
   exitlevel1:
