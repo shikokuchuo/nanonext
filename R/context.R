@@ -287,3 +287,22 @@ request2 <- function(context,
                                    "integer", "logical", "numeric", "raw", "string"),
                      timeout = NULL)
   data <- .Call(rnng_request_promise, context, data, cv, send_mode, recv_mode, timeout, environment())
+
+#' Set Promise Context
+#'
+#' When called in the correct context on a 'recvAio' object returned by
+#'     \code{\link{request2}}, creates an event-driven promise that will resolve
+#'     asynchronously when the request is complete.
+#'
+#' @param x an 'recvAio' object returned by \code{\link{request2}}.
+#' @param ctx the context environment.
+#'
+#' @details The object passed as 'x' is returned regardless of whether the
+#'     promise context was set successfully or not. If successful, 'x' is
+#'     modified in place with the promise context.
+#'
+#' @return The object 'x'.
+#'
+#' @export
+#'
+set_promise_context <- function(x, ctx) .Call(rnng_set_promise_context, x, ctx)

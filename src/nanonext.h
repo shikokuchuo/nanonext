@@ -252,6 +252,7 @@ SEXP rnng_request_promise(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 SEXP rnng_request_signal(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 SEXP rnng_send(SEXP, SEXP, SEXP, SEXP);
 SEXP rnng_send_aio(SEXP, SEXP, SEXP, SEXP, SEXP);
+SEXP rnng_set_promise_context(SEXP, SEXP);
 SEXP rnng_set_opt(SEXP, SEXP, SEXP);
 SEXP rnng_signal_thread_create(SEXP, SEXP);
 SEXP rnng_sleep(SEXP);

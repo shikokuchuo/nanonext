@@ -251,9 +251,8 @@ static void raio_complete_cb(void *arg) {
   raio->result = res - !res;
 
   nano_aio *saio = (nano_aio *) raio->next;
-  SEXP cb = ENCLOS((SEXP) saio->data);
-  if (cb != R_NilValue)
-    later2(raio_invoke_cb, cb, 0);
+  if (saio->data != NULL)
+    later2(raio_invoke_cb, saio->data, 0);
 
 }
 
@@ -275,9 +274,8 @@ static void request_complete_cb(void *arg) {
   nng_cv_wake(cv);
   nng_mtx_unlock(mtx);
 
-  SEXP cb = ENCLOS((SEXP) saio->data);
-  if (cb != R_NilValue)
-    later2(raio_invoke_cb, cb, 0);
+  if (saio->data != NULL)
+    later2(raio_invoke_cb, saio->data, 0);
 
 }
 
@@ -1225,6 +1223,7 @@ SEXP rnng_request_impl(const SEXP con, const SEXP data, const SEXP sendmode,
   }
 
   saio = R_Calloc(1, nano_aio);
+  saio->data = NULL;
   saio->next = ncv;
 
   if ((xc = nng_msg_alloc(&msg, 0)))
@@ -1240,14 +1239,9 @@ SEXP rnng_request_impl(const SEXP con, const SEXP data, const SEXP sendmode,
   nng_ctx_send(*ctx, saio->aio);
 
   raio = R_Calloc(1, nano_aio);
-  PROTECT(env = Rf_allocSExp(ENVSXP));
   raio->type = RECVAIO;
   raio->mode = mod;
   raio->next = saio;
-  if (promises) {
-    R_PreserveObject(env);
-    saio->data = env;
-  }
 
   if ((xc = nng_aio_alloc(&raio->aio,
                           promises ?
@@ -1263,6 +1257,7 @@ SEXP rnng_request_impl(const SEXP con, const SEXP data, const SEXP sendmode,
   PROTECT(aio = R_MakeExternalPtr(raio, nano_AioSymbol, R_NilValue));
   R_RegisterCFinalizerEx(aio, request_finalizer, TRUE);
 
+  PROTECT(env = Rf_allocSExp(ENVSXP));
   NANO_CLASS(env, "recvAio");
   Rf_defineVar(nano_AioSymbol, aio, env);
 
@@ -1315,6 +1310,24 @@ SEXP rnng_request_promise(SEXP con, SEXP data, SEXP cvar, SEXP sendmode, SEXP re
   nano_cv *ncv = R_ExternalPtrTag(cvar) == nano_CvSymbol ? (nano_cv *) R_ExternalPtrAddr(cvar) : NULL;
 
   return rnng_request_impl(con, data, sendmode, recvmode, timeout, clo, ncv, 1);
+
+}
+
+SEXP rnng_set_promise_context(SEXP x, SEXP ctx) {
+
+  if (TYPEOF(x) != ENVSXP || TYPEOF(ctx) != ENVSXP)
+    return x;
+
+  SEXP aio = Rf_findVarInFrame(x, nano_AioSymbol);
+  if (R_ExternalPtrTag(aio) != nano_AioSymbol)
+    return x;
+
+  nano_aio *raio = (nano_aio *) R_ExternalPtrAddr(aio);
+  nano_aio *saio = raio->next;
+  R_PreserveObject(ctx);
+  saio->data = ctx;
+
+  return x;
 
 }
 

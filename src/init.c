@@ -160,6 +160,7 @@ static const R_CallMethodDef callMethods[] = {
   {"rnng_request_signal", (DL_FUNC) &rnng_request_signal, 7},
   {"rnng_send", (DL_FUNC) &rnng_send, 4},
   {"rnng_send_aio", (DL_FUNC) &rnng_send_aio, 5},
+  {"rnng_set_promise_context", (DL_FUNC) &rnng_set_promise_context, 2},
   {"rnng_set_opt", (DL_FUNC) &rnng_set_opt, 3},
   {"rnng_signal_thread_create", (DL_FUNC) &rnng_signal_thread_create, 2},
   {"rnng_sleep", (DL_FUNC) &rnng_sleep, 1},
