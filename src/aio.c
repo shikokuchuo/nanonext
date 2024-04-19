@@ -1326,7 +1326,7 @@ SEXP rnng_set_promise_context(SEXP x, SEXP ctx) {
     return x;
 
   nano_aio *raio = (nano_aio *) R_ExternalPtrAddr(aio);
-  nano_aio *saio = raio->next;
+  nano_aio *saio = (nano_aio *) raio->next;
   R_PreserveObject(ctx);
   saio->data = ctx;
 
