@@ -232,10 +232,10 @@ static void request_complete_signal(void *arg) {
 }
 
 static void raio_invoke_cb(void *arg) {
-  SEXP call, x, data, cb = (SEXP) arg;
-  PROTECT(x = Rf_findVarInFrame(cb, nano_XSymbol));
-  if (x == R_UnboundValue) return;
-  PROTECT(data = Rf_findVarInFrame(x, nano_DataSymbol));
+  SEXP call, context, data, cb = (SEXP) arg;
+  PROTECT(context = Rf_findVarInFrame(cb, nano_ContextSymbol));
+  if (context == R_UnboundValue) return;
+  PROTECT(data = Rf_findVarInFrame(context, nano_DataSymbol));
   if (data == R_UnboundValue) return;
   PROTECT(call = Rf_lang2(nano_ResolveSymbol, data));
   (void) Rf_eval(call, cb);
@@ -251,9 +251,9 @@ static void raio_complete_cb(void *arg) {
   raio->result = res - !res;
 
   nano_aio *saio = (nano_aio *) raio->next;
-  SEXP ax = CADR(ATTRIB((SEXP) saio->data));
-  if (ax != R_NilValue && TYPEOF(ax) == ENVSXP)
-    later2(raio_invoke_cb, ax, 0);
+  SEXP cb = ENCLOS((SEXP) saio->data);
+  if (cb != R_NilValue)
+    later2(raio_invoke_cb, cb, 0);
 
 }
 
@@ -275,9 +275,9 @@ static void request_complete_cb(void *arg) {
   nng_cv_wake(cv);
   nng_mtx_unlock(mtx);
 
-  SEXP ax = CADR(ATTRIB((SEXP) saio->data));
-  if (ax != R_NilValue && TYPEOF(ax) == ENVSXP)
-    later2(raio_invoke_cb, ax, 0);
+  SEXP cb = ENCLOS((SEXP) saio->data);
+  if (cb != R_NilValue)
+    later2(raio_invoke_cb, cb, 0);
 
 }
 

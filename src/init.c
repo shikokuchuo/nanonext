@@ -41,7 +41,6 @@ SEXP nano_StreamSymbol;
 SEXP nano_TlsSymbol;
 SEXP nano_UrlSymbol;
 SEXP nano_ValueSymbol;
-SEXP nano_XSymbol;
 
 SEXP nano_aioFormals;
 SEXP nano_aioFuncs;
@@ -75,7 +74,6 @@ static void RegisterSymbols(void) {
   nano_TlsSymbol = Rf_install("tls");
   nano_UrlSymbol = Rf_install("url");
   nano_ValueSymbol = Rf_install("value");
-  nano_XSymbol = Rf_install("x");
 }
 
 static void PreserveObjects(void) {
