@@ -67,7 +67,7 @@
 <div class="section level5">
 <h5 id="updates-0-13-6-9007">Updates<a class="anchor" aria-label="anchor" href="#updates-0-13-6-9007"></a></h5>
 <ul><li>
-<code><a href="../reference/stop_aio.html">stop_aio()</a></code> now causes the ‘aio’ to resolve to an ‘errorValue’ of 20 (Operation canceled) if successfully stopped.</li>
+<code><a href="../reference/stop_aio.html">stop_aio()</a></code> now causes the ‘aio’ to resolve to an ‘errorValue’ of 20 (Operation canceled) if successfully stopped, and returns the ‘aio’ object invisibly.</li>
 <li>
 <code><a href="../reference/nng_error.html">nng_error()</a></code> now returns the error code combined with the message as a character string.</li>
 <li>Adds dependency on <code>later</code> to ensure asynchronous R code is always run on the main R thread.</li>
