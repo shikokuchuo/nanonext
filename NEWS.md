@@ -1,4 +1,4 @@
-# nanonext 0.13.6.9006 (development)
+# nanonext 0.13.6.9007 (development)
 
 #### New Features
 
@@ -7,6 +7,7 @@
 
 #### Updates
 
+* `stop_aio()` now causes the 'aio' to resolve to an 'errorValue' of 20 (Operation canceled) if successfully stopped.
 * `nng_error()` now returns the error code combined with the message as a character string.
 * Adds dependency on `later` to ensure asynchronous R code is always run on the main R thread.
 * Adds 'xz' to SystemRequirements (was the case previously but not explicitly specified) (thanks @gaborcsardi).

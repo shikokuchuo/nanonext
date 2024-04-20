@@ -546,7 +546,6 @@ SEXP rnng_aio_stop(SEXP aio) {
 
   nano_aio *aiop = (nano_aio *) R_ExternalPtrAddr(coreaio);
   nng_aio_stop(aiop->aio);
-  Rf_defineVar(nano_AioSymbol, R_NilValue, aio);
 
   return R_NilValue;
 

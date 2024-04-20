@@ -238,9 +238,10 @@ call_aio_ <- function(aio) invisible(.Call(rnng_wait_thread_create, aio))
 #' @return Invisible NULL.
 #'
 #' @details Stops the asynchronous I/O operation associated with 'aio' by
-#'     aborting, and then waits for it to complete or to be completely aborted.
-#'     The Aio is then deallocated and no further operations may be performed on
-#'     it.
+#'     aborting, and then waits for it to complete or to be completely aborted,
+#'     and for the callback associated with the 'aio' to have completed
+#'     executing. If successful, the 'aio' will resolve to an 'errorValue' 20
+#'     (Operation canceled).
 #'
 #'     Note this function operates silently and does not error even if 'aio' is
 #'     not an active Aio, always returning invisible NULL.
