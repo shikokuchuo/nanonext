@@ -284,6 +284,7 @@ SEXP rnng_wait_thread_create(SEXP aio) {
 
   switch (aiop->type) {
   case RECVAIO:
+  case REQAIO:
   case IOV_RECVAIO:
   case HTTP_AIO:
     Rf_findVarInFrame(aio, nano_DataSymbol);

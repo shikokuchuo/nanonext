@@ -521,6 +521,7 @@ SEXP rnng_aio_call(SEXP aio) {
   nng_aio_wait(aiop->aio);
   switch (aiop->type) {
   case RECVAIO:
+  case REQAIO:
   case IOV_RECVAIO:
   case HTTP_AIO:
     Rf_findVarInFrame(aio, nano_DataSymbol);
@@ -1223,7 +1224,7 @@ SEXP rnng_request_impl(const SEXP con, const SEXP data, const SEXP sendmode,
   nng_ctx_send(*ctx, saio->aio);
 
   raio = R_Calloc(1, nano_aio);
-  raio->type = RECVAIO;
+  raio->type = REQAIO;
   raio->mode = mod;
   raio->next = saio;
 
@@ -1291,9 +1292,11 @@ SEXP rnng_set_promise_context(SEXP x, SEXP ctx) {
     return x;
 
   nano_aio *raio = (nano_aio *) R_ExternalPtrAddr(aio);
-  nano_aio *saio = (nano_aio *) raio->next;
-  R_PreserveObject(ctx);
-  saio->data = ctx;
+  if (raio->type == REQAIO) {
+    nano_aio *saio = (nano_aio *) raio->next;
+    R_PreserveObject(ctx);
+    saio->data = ctx;
+  }
 
   return x;
 

@@ -69,6 +69,7 @@ typedef struct nano_stream_s {
 typedef enum nano_aio_typ {
   SENDAIO,
   RECVAIO,
+  REQAIO,
   IOV_SENDAIO,
   IOV_RECVAIO,
   HTTP_AIO
