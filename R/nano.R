@@ -376,7 +376,7 @@ print.unresolvedValue <- function(x, ...) {
 #'
 print.errorValue <- function(x, ...) {
 
-  cat(sprintf("'errorValue' int %d | %s\n", x, nng_error(x)), file = stdout())
+  cat(sprintf("'errorValue' int %s\n", nng_error(x)), file = stdout())
   invisible(x)
 
 }

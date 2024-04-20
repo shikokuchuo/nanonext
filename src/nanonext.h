@@ -150,8 +150,8 @@ typedef struct nano_cv_s {
 #define ERROR_RET(xc) { Rf_warning("%d | %s", xc, nng_strerror(xc)); return mk_error(xc); }
 #define NANONEXT_INIT_BUFSIZE 8192
 #define NANONEXT_SERIAL_VER 3
-#define NANONEXT_SERIAL_HEADERS 6
 #define NANONEXT_SERIAL_THR 134217728
+#define NANONEXT_ERR_STRLEN 40
 #define NANONEXT_LD_STRLEN 21
 #define NANO_ALLOC(x, sz)                                      \
   (x)->buf = R_Calloc(sz, unsigned char);                      \

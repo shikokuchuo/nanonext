@@ -7,6 +7,7 @@
 
 #### Updates
 
+* `nng_error()` now returns the error code combined with the message as a character string.
 * Adds dependency on `later` to ensure asynchronous R code is always run on the main R thread.
 * Adds 'xz' to SystemRequirements (was the case previously but not explicitly specified) (thanks @gaborcsardi).
 * Updates minimum 'libnng' version requirement to v1.6.0 (where a suitable system-installed version is not found, the bundled version is compiled from source).

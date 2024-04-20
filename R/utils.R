@@ -38,7 +38,8 @@ nng_version <- function() .Call(rnng_version)
 #'
 #' @param xc integer exit code to translate.
 #'
-#' @return A character vector.
+#' @return A character string comprising the error code and error message
+#'     separated by ' | '.
 #'
 #' @examples
 #' nng_error(1L)

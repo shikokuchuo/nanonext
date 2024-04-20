@@ -82,7 +82,10 @@ static void tls_finalizer(SEXP xptr) {
 SEXP rnng_strerror(SEXP error) {
 
   const int xc = Rf_asInteger(error);
-  return Rf_mkString(nng_strerror(xc));
+  char nano_errbuf[NANONEXT_ERR_STRLEN];
+  snprintf(nano_errbuf, NANONEXT_ERR_STRLEN, "%d | %s", xc, nng_strerror(xc));
+
+  return Rf_mkString(nano_errbuf);
 
 }
 

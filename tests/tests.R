@@ -396,7 +396,7 @@ nanotesterr(stream(listen = "errorValue3", tls = "wrong"), "valid TLS")
 nanotesterr(stream(), "specify")
 
 nanotest(is.character(ver <- nng_version()) && length(ver) == 2L)
-nanotest(nng_error(8L) == "Try again")
+nanotest(nng_error(8L) == "8 | Try again")
 nanotest(is_nul_byte(as.raw(0L)))
 nanotest(!is_nul_byte(NULL))
 nanotest(!is_error_value(1L))
