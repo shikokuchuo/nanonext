@@ -547,7 +547,8 @@ SEXP nano_decode(unsigned char *buf, const size_t sz, const int mod) {
       SET_STRING_ELT(data, i, onechar);
       if (XLENGTH(onechar) > 0) m = i;
     }
-    if (i) SETLENGTH(data, m + 1);
+    if (i)
+      data = Rf_xlengthgets(data, m + 1);
     UNPROTECT(1);
     return data;
   case 3:
