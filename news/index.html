@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.13.6.9008</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.13.6.9009</span>
       </span>
     </div>
 
@@ -57,15 +57,15 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.13.6.9008" id="nanonext-01369008-development">nanonext 0.13.6.9008 (development)<a class="anchor" aria-label="anchor" href="#nanonext-01369008-development"></a></h2>
+<h2 class="page-header" data-toc-text="0.13.6.9009" id="nanonext-01369009-development">nanonext 0.13.6.9009 (development)<a class="anchor" aria-label="anchor" href="#nanonext-01369009-development"></a></h2>
 <div class="section level5">
-<h5 id="new-features-0-13-6-9008">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-13-6-9008"></a></h5>
+<h5 id="new-features-0-13-6-9009">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-13-6-9009"></a></h5>
 <ul><li>Integrates with the <code>later</code> package to provide the foundation for truly event-driven (non-polling) promises (thanks <a href="https://github.com/jcheng5" class="external-link">@jcheng5</a> for the initial prototype in <a href="https://github.com/shikokuchuo/nanonext/issues/28" class="external-link">#28</a>), where side-effects are enacted asynchronously upon aio completion.</li>
 <li>
 <code><a href="../reference/request.html">request()</a></code> and <code><a href="../reference/request.html">request_signal()</a></code> are modified internally to support conversion of ‘recvAio’ to event-driven promises.</li>
 </ul></div>
 <div class="section level5">
-<h5 id="updates-0-13-6-9008">Updates<a class="anchor" aria-label="anchor" href="#updates-0-13-6-9008"></a></h5>
+<h5 id="updates-0-13-6-9009">Updates<a class="anchor" aria-label="anchor" href="#updates-0-13-6-9009"></a></h5>
 <ul><li>
 <code><a href="../reference/stop_aio.html">stop_aio()</a></code> now causes the ‘aio’ to resolve to an ‘errorValue’ of 20 (Operation canceled) if successfully stopped.</li>
 <li>
