@@ -36,8 +36,7 @@ typedef union nano_opt_u {
 SEXP mk_error(const int xc) {
 
   SEXP err = Rf_ScalarInteger(xc);
-  SET_ATTRIB(err, nano_error);
-  SET_OBJECT(err, 1);
+  Rf_classgets(err, nano_error);
   return err;
 
 }

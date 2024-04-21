@@ -41,8 +41,7 @@ static SEXP mk_error_data(const int xc) {
   const char *names[] = {xc < 0 ? "result" : "data", "value", ""};
   SEXP out = PROTECT(Rf_mkNamed(VECSXP, names));
   SEXP err = Rf_ScalarInteger(abs(xc));
-  SET_ATTRIB(err, nano_error);
-  SET_OBJECT(err, 1);
+  Rf_classgets(err, nano_error);
   SET_VECTOR_ELT(out, 0, err);
   SET_VECTOR_ELT(out, 1, err);
   UNPROTECT(1);
@@ -53,8 +52,7 @@ static SEXP mk_error_data(const int xc) {
 static SEXP mk_error_aio(const int xc, SEXP env) {
 
   SEXP err = PROTECT(Rf_ScalarInteger(xc));
-  SET_ATTRIB(err, nano_error);
-  SET_OBJECT(err, 1);
+  Rf_classgets(err, nano_error);
   Rf_defineVar(nano_ValueSymbol, err, env);
   Rf_defineVar(nano_AioSymbol, R_NilValue, env);
   UNPROTECT(1);
@@ -65,8 +63,7 @@ static SEXP mk_error_aio(const int xc, SEXP env) {
 static SEXP mk_error_haio(const int xc, SEXP env) {
 
   SEXP err = PROTECT(Rf_ScalarInteger(xc));
-  SET_ATTRIB(err, nano_error);
-  SET_OBJECT(err, 1);
+  Rf_classgets(err, nano_error);
   Rf_defineVar(nano_ResultSymbol, err, env);
   Rf_defineVar(nano_ResponseSymbol, err, env);
   Rf_defineVar(nano_ValueSymbol, err, env);
@@ -666,7 +663,7 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
 
   SEXP env, fun;
   PROTECT(env = Rf_allocSExp(ENVSXP));
-  NANO_CLASS(env, "sendAio");
+  Rf_classgets(env, Rf_mkString("sendAio"));
   Rf_defineVar(nano_AioSymbol, aio, env);
 
   PROTECT(fun = Rf_allocSExp(CLOSXP));
@@ -750,7 +747,7 @@ SEXP rnng_recv_aio_impl(const SEXP con, const SEXP mode, const SEXP timeout,
 
   SEXP env, fun;
   PROTECT(env = Rf_allocSExp(ENVSXP));
-  NANO_CLASS(env, "recvAio");
+  Rf_classgets(env, nano_recvAio);
   Rf_defineVar(nano_AioSymbol, aio, env);
 
   PROTECT(fun = Rf_allocSExp(CLOSXP));
@@ -1078,7 +1075,7 @@ SEXP rnng_ncurl_session(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP
 
   PROTECT(sess = R_MakeExternalPtr(conn, nano_StatusSymbol, R_NilValue));
   R_RegisterCFinalizerEx(sess, session_finalizer, TRUE);
-  NANO_CLASS(sess, "ncurlSession");
+  Rf_classgets(sess, Rf_mkString("ncurlSession"));
 
   PROTECT(aio = R_MakeExternalPtr(haio, nano_AioSymbol, R_NilValue));
   R_RegisterCFinalizerEx(aio, haio_finalizer, TRUE);
@@ -1239,7 +1236,7 @@ SEXP rnng_request_impl(const SEXP con, const SEXP data, const SEXP sendmode,
   R_RegisterCFinalizerEx(aio, request_finalizer, TRUE);
 
   PROTECT(env = Rf_allocSExp(ENVSXP));
-  NANO_CLASS(env, "recvAio");
+  Rf_classgets(env, nano_recvAio);
   Rf_defineVar(nano_AioSymbol, aio, env);
 
   PROTECT(fun = Rf_allocSExp(CLOSXP));
@@ -1318,7 +1315,7 @@ SEXP rnng_cv_alloc(void) {
 
   PROTECT(xp = R_MakeExternalPtr(cvp, nano_CvSymbol, R_NilValue));
   R_RegisterCFinalizerEx(xp, cv_finalizer, TRUE);
-  NANO_CLASS(xp, "conditionVariable");
+  Rf_classgets(xp, Rf_mkString("conditionVariable"));
 
   UNPROTECT(1);
   return xp;

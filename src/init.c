@@ -47,6 +47,7 @@ SEXP nano_aioFuncs;
 SEXP nano_aioNFuncs;
 SEXP nano_error;
 SEXP nano_klassString;
+SEXP nano_recvAio;
 SEXP nano_refHook;
 SEXP nano_success;
 SEXP nano_unresolved;
@@ -87,21 +88,22 @@ static void PreserveObjects(void) {
   SETCAR(nano_aioNFuncs, Rf_lang5(nano_DotcallSymbol, Rf_install("rnng_aio_http"), nano_DataSymbol, nano_ResponseSymbol, Rf_ScalarLogical(0)));
   SETCADR(nano_aioNFuncs, Rf_lang5(nano_DotcallSymbol, Rf_install("rnng_aio_http"), nano_DataSymbol, nano_ResponseSymbol, Rf_ScalarLogical(1)));
   SETCADDR(nano_aioNFuncs, Rf_lang5(nano_DotcallSymbol, Rf_install("rnng_aio_http"), nano_DataSymbol, nano_ResponseSymbol, Rf_ScalarLogical(NA_LOGICAL)));
-  R_PreserveObject(nano_error = Rf_cons(Rf_allocVector(STRSXP, 2), R_NilValue));
-  SET_TAG(nano_error, R_ClassSymbol);
-  SET_STRING_ELT(CAR(nano_error), 0, Rf_mkChar("errorValue"));
-  SET_STRING_ELT(CAR(nano_error), 1, Rf_mkChar("try-error"));
+  R_PreserveObject(nano_error = Rf_allocVector(STRSXP, 2));
+  SET_STRING_ELT(nano_error, 0, Rf_mkChar("errorValue"));
+  SET_STRING_ELT(nano_error, 1, Rf_mkChar("try-error"));
   R_PreserveObject(nano_klassString = Rf_cons(R_NilValue, R_NilValue));
+  R_PreserveObject(nano_recvAio = Rf_mkString("recvAio"));
   R_PreserveObject(nano_refHook = Rf_list2(R_NilValue, R_NilValue));
   R_PreserveObject(nano_success = Rf_ScalarInteger(0));
   R_PreserveObject(nano_unresolved = Rf_shallow_duplicate(Rf_ScalarLogical(NA_LOGICAL)));
-  NANO_CLASS(nano_unresolved, "unresolvedValue");
+  Rf_classgets(nano_unresolved, Rf_mkString("unresolvedValue"));
 }
 
 static void ReleaseObjects(void) {
   R_ReleaseObject(nano_unresolved);
   R_ReleaseObject(nano_success);
   R_ReleaseObject(nano_refHook);
+  R_ReleaseObject(nano_recvAio);
   R_ReleaseObject(nano_klassString);
   R_ReleaseObject(nano_error);
   R_ReleaseObject(nano_aioNFuncs);
