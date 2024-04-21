@@ -973,7 +973,7 @@ SEXP rnng_aio_http(SEXP env, SEXP response, SEXP type) {
   } else {
     vec = Rf_allocVector(RAWSXP, sz);
     if (dat != NULL)
-      memcpy(STDVEC_DATAPTR(vec), dat, sz);
+      memcpy(DATAPTR(vec), dat, sz);
   }
   Rf_defineVar(nano_ValueSymbol, vec, env);
 
@@ -1154,7 +1154,7 @@ SEXP rnng_ncurl_transact(SEXP session) {
   } else {
     vec = Rf_allocVector(RAWSXP, sz);
     if (dat != NULL)
-      memcpy(STDVEC_DATAPTR(vec), dat, sz);
+      memcpy(DATAPTR(vec), dat, sz);
   }
   SET_VECTOR_ELT(out, 2, vec);
 

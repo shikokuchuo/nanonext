@@ -117,7 +117,7 @@ SEXP rawToChar(const unsigned char *buf, const size_t sz) {
   if (sz - i > 1) {
     REprintf("data could not be converted to a character string\n");
     out = Rf_allocVector(RAWSXP, sz);
-    memcpy(STDVEC_DATAPTR(out), buf, sz);
+    memcpy(DATAPTR(out), buf, sz);
     return out;
   }
 
@@ -164,7 +164,7 @@ static SEXP nano_inHook(SEXP x, SEXP fun) {
 
 static SEXP nano_outHook(SEXP x, SEXP fun) {
 
-  const long i = atol(CHAR(*(SEXP *) STDVEC_DATAPTR(x))) - 1;
+  const long i = atol(CHAR(*(SEXP *) DATAPTR_RO(x))) - 1;
 
   return VECTOR_ELT(fun, i);
 
@@ -239,7 +239,7 @@ void nano_serialize_next(nano_buf *buf, const SEXP object) {
           buf->len = buf->cur + xlen;
           buf->buf = R_Realloc(buf->buf, buf->len, unsigned char);
         }
-        memcpy(buf->buf + buf->cur, STDVEC_DATAPTR(out), xlen);
+        memcpy(buf->buf + buf->cur, DATAPTR_RO(out), xlen);
         buf->cur += xlen;
       }
       UNPROTECT(2);
@@ -267,7 +267,7 @@ void nano_serialize_next(nano_buf *buf, const SEXP object) {
           }
           memcpy(buf->buf + buf->cur, &xlen, sizeof(R_xlen_t));
           buf->cur += sizeof(R_xlen_t);
-          memcpy(buf->buf + buf->cur, STDVEC_DATAPTR(out), xlen);
+          memcpy(buf->buf + buf->cur, DATAPTR_RO(out), xlen);
           buf->cur += xlen;
         }
         UNPROTECT(2);
@@ -324,7 +324,7 @@ SEXP nano_unserialize(unsigned char *buf, const size_t sz) {
           SEXP raw, call;
           if (reg == 1) {
             PROTECT(raw = Rf_allocVector(RAWSXP, sz - offset));
-            memcpy(STDVEC_DATAPTR(raw), buf + offset, sz - offset);
+            memcpy(DATAPTR(raw), buf + offset, sz - offset);
             PROTECT(call = Rf_lcons(CADR(nano_refHook), Rf_cons(raw, R_NilValue)));
             reflist = Rf_eval(call, R_GlobalEnv);
             SET_TAG(nano_refHook, reflist);
@@ -340,7 +340,7 @@ SEXP nano_unserialize(unsigned char *buf, const size_t sz) {
               memcpy(&xlen, buf + cur, sizeof(R_xlen_t));
               cur += sizeof(R_xlen_t);
               PROTECT(raw = Rf_allocVector(RAWSXP, xlen));
-              memcpy(STDVEC_DATAPTR(raw), buf + cur, xlen);
+              memcpy(DATAPTR(raw), buf + cur, xlen);
               cur += xlen;
               PROTECT(call = Rf_lcons(func, Rf_cons(raw, R_NilValue)));
               out = Rf_eval(call, R_GlobalEnv);
@@ -427,7 +427,7 @@ void nano_encode(nano_buf *enc, const SEXP object) {
     NANO_INIT(enc, (unsigned char *) DATAPTR_RO(object), XLENGTH(object) * 2 * sizeof(double));
     break;
   case RAWSXP:
-    NANO_INIT(enc, (unsigned char *) STDVEC_DATAPTR(object), XLENGTH(object));
+    NANO_INIT(enc, (unsigned char *) DATAPTR_RO(object), XLENGTH(object));
     break;
   case NILSXP:
     NANO_INIT(enc, NULL, 0);
@@ -606,7 +606,7 @@ SEXP nano_decode(unsigned char *buf, const size_t sz, const int mod) {
     return data;
   }
 
-  memcpy(STDVEC_DATAPTR(data), buf, sz);
+  memcpy(DATAPTR(data), buf, sz);
   return data;
 
 }

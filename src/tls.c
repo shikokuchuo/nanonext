@@ -52,7 +52,7 @@ static nano_buf nano_any_buf(const SEXP x) {
     break;
   case RAWSXP:
     if (ATTRIB(x) == R_NilValue) {
-      NANO_INIT(&buf, (unsigned char *) STDVEC_DATAPTR(x), XLENGTH(x));
+      NANO_INIT(&buf, (unsigned char *) DATAPTR_RO(x), XLENGTH(x));
       return buf;
     }
   }
@@ -102,7 +102,7 @@ SEXP rnng_base64enc(SEXP x, SEXP convert) {
     out = rawToChar(buf, olen);
   } else {
     out = Rf_allocVector(RAWSXP, olen);
-    memcpy(STDVEC_DATAPTR(out), buf, olen);
+    memcpy(DATAPTR(out), buf, olen);
   }
 
   R_Free(buf);
@@ -144,7 +144,7 @@ SEXP rnng_base64dec(SEXP x, SEXP convert) {
   switch (*NANO_INTEGER(convert)) {
   case 0:
     out = Rf_allocVector(RAWSXP, olen);
-    memcpy(STDVEC_DATAPTR(out), buf, olen);
+    memcpy(DATAPTR(out), buf, olen);
     break;
   case 1:
     out = rawToChar(buf, olen);
@@ -200,7 +200,7 @@ SEXP rnng_random(SEXP n, SEXP convert) {
     out = nano_hash_char(buf, sz);
   } else {
     out = Rf_allocVector(RAWSXP, sz);
-    memcpy(STDVEC_DATAPTR(out), buf, sz);
+    memcpy(DATAPTR(out), buf, sz);
   }
 
   return out;
