@@ -121,7 +121,7 @@ SEXP rnng_protocol_open(SEXP protocol, SEXP raw) {
       break;
     }
   default:
-    error_return("'protocol' should be one of bus, pair, push, pull, pub, sub, req, rep, surveyor, respondent");
+    NANO_ERROR("'protocol' should be one of bus, pair, push, pull, pub, sub, req, rep, surveyor, respondent");
   }
 
   if (xc) {
