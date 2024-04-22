@@ -208,7 +208,7 @@ For R \>= 4.2 using the ‘Rtools42’ or ‘Rtools43’ toolchains, ‘libnng�
 v1.8.0 and ‘libmbedtls’ v3.6.0 LTS will be automatically compiled from
 the package sources during installation.
 
-For previous R versions, pre-compiled ‘libnng’ v1.7.3 and ‘libmbedtls’
+For previous R versions, pre-compiled ‘libnng’ v1.8.0 and ‘libmbedtls’
 v3.6.0 LTS libraries are downloaded and used for installation instead.
 
 ### Acknowledgements and Links
