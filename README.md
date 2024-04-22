@@ -63,7 +63,7 @@ Supported transports:
   (over TCP and WebSocket)
 
 Development of the TLS implementation was generously supported by the
-<a href="https://www.r-consortium.org/all-projects/awarded-projects/2023-group-1" alt="R Consortium ISC Grant 2023"><img src="https://www.r-consortium.org/wp-content/uploads/sites/13/2016/09/RConsortium_Horizontal_Pantone.png" alt="R Consortium" width="97" /></a>
+<a href="https://www.r-consortium.org/all-projects/awarded-projects/2023-group-1" alt="R Consortium ISC Grant 2023"><img src="man/figures/RConsortium.png" alt="R Consortium" width="100" /></a>
 .
 
 Web utilities:
@@ -181,7 +181,7 @@ vignette("nanonext", package = "nanonext")
 
 Installation from source requires ‘libnng’ \>= v1.6.0 and ‘libmbedtls’
 \>= 2.5.0 (suitable installations are automatically detected), or else
-‘cmake’ to compile ‘libnng’ v1.7.3 and ‘libmbedtls’ v3.6.0 LTS included
+‘cmake’ to compile ‘libnng’ v1.8.0 and ‘libmbedtls’ v3.6.0 LTS included
 within the package sources.
 
 **It is recommended for optimal performance and stability to let the
@@ -205,7 +205,7 @@ OpenCSW - refer to the ‘cmake’ website for the latest source file.*
 #### Windows
 
 For R \>= 4.2 using the ‘Rtools42’ or ‘Rtools43’ toolchains, ‘libnng’
-v1.7.3 and ‘libmbedtls’ v3.6.0 LTS will be automatically compiled from
+v1.8.0 and ‘libmbedtls’ v3.6.0 LTS will be automatically compiled from
 the package sources during installation.
 
 For previous R versions, pre-compiled ‘libnng’ v1.7.3 and ‘libmbedtls’

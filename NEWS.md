@@ -1,4 +1,4 @@
-# nanonext 0.13.6.9009 (development)
+# nanonext 0.13.6.9010 (development)
 
 #### New Features
 
@@ -12,6 +12,7 @@
 * Adds dependency on `later` to ensure asynchronous R code is always run on the main R thread.
 * Adds 'xz' to SystemRequirements (was the case previously but not explicitly specified) (thanks @gaborcsardi).
 * Updates minimum 'libnng' version requirement to v1.6.0 (where a suitable system-installed version is not found, the bundled version is compiled from source).
+* Upgrades bundled 'libnng' to v1.8.0.
 
 # nanonext 0.13.6
 

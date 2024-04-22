@@ -11,4 +11,4 @@ reference:
   - matches("^[a-zA-Z]*")
 authors:
   R Consortium:
-    html: "<img src='https://www.r-consortium.org/wp-content/uploads/sites/13/2016/09/RConsortium_Horizontal_Pantone.png' alt='R Consortium' width='97' />"
+    html: "<img src='https://shikokuchuo.net/nanonext/reference/figures/RConsortium.png' alt='R Consortium' width='100' />"
