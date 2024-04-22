@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.13.6.9009</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.13.6.9010</span>
       </span>
     </div>
 
@@ -57,15 +57,15 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.13.6.9009" id="nanonext-01369009-development">nanonext 0.13.6.9009 (development)<a class="anchor" aria-label="anchor" href="#nanonext-01369009-development"></a></h2>
+<h2 class="page-header" data-toc-text="0.13.6.9010" id="nanonext-01369010-development">nanonext 0.13.6.9010 (development)<a class="anchor" aria-label="anchor" href="#nanonext-01369010-development"></a></h2>
 <div class="section level5">
-<h5 id="new-features-0-13-6-9009">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-13-6-9009"></a></h5>
+<h5 id="new-features-0-13-6-9010">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-13-6-9010"></a></h5>
 <ul><li>Integrates with the <code>later</code> package to provide the foundation for truly event-driven (non-polling) promises (thanks <a href="https://github.com/jcheng5" class="external-link">@jcheng5</a> for the initial prototype in <a href="https://github.com/shikokuchuo/nanonext/issues/28" class="external-link">#28</a>), where side-effects are enacted asynchronously upon aio completion.</li>
 <li>
 <code><a href="../reference/request.html">request()</a></code> and <code><a href="../reference/request.html">request_signal()</a></code> are modified internally to support conversion of ‘recvAio’ to event-driven promises.</li>
 </ul></div>
 <div class="section level5">
-<h5 id="updates-0-13-6-9009">Updates<a class="anchor" aria-label="anchor" href="#updates-0-13-6-9009"></a></h5>
+<h5 id="updates-0-13-6-9010">Updates<a class="anchor" aria-label="anchor" href="#updates-0-13-6-9010"></a></h5>
 <ul><li>
 <code><a href="../reference/stop_aio.html">stop_aio()</a></code> now causes the ‘aio’ to resolve to an ‘errorValue’ of 20 (Operation canceled) if successfully stopped.</li>
 <li>
@@ -73,6 +73,7 @@
 <li>Adds dependency on <code>later</code> to ensure asynchronous R code is always run on the main R thread.</li>
 <li>Adds ‘xz’ to SystemRequirements (was the case previously but not explicitly specified) (thanks <a href="https://github.com/gaborcsardi" class="external-link">@gaborcsardi</a>).</li>
 <li>Updates minimum ‘libnng’ version requirement to v1.6.0 (where a suitable system-installed version is not found, the bundled version is compiled from source).</li>
+<li>Upgrades bundled ‘libnng’ to v1.8.0.</li>
 </ul></div>
 </div>
     <div class="section level2">
@@ -733,7 +734,7 @@
 
 
       <footer><div class="copyright">
-  <p></p><p>Developed by Charlie Gao, <img src="https://www.r-consortium.org/wp-content/uploads/sites/13/2016/09/RConsortium_Horizontal_Pantone.png" alt="R Consortium" width="97">.</p>
+  <p></p><p>Developed by Charlie Gao, <img src="https://shikokuchuo.net/nanonext/reference/figures/RConsortium.png" alt="R Consortium" width="100">.</p>
 </div>
 
 <div class="pkgdown">
