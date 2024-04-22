@@ -77,7 +77,7 @@ Web utilities:
 
 ### Installation
 
-Install the latest release:
+Install the latest released version:
 
 ``` r
 # Either [1] fast channel from R-multiverse:
@@ -86,7 +86,7 @@ install.packages("nanonext", repos = "https://r-multiverse.r-universe.dev")
 install.packages("nanonext")
 ```
 
-Or the development build from R-universe:
+Or development build from R-universe:
 
 ``` r
 install.packages("nanonext", repos = "https://shikokuchuo.r-universe.dev")

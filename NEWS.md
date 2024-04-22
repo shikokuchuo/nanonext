@@ -3,15 +3,15 @@
 #### New Features
 
 * Integrates with the `later` package to provide the foundation for truly event-driven (non-polling) promises (thanks @jcheng5 for the initial prototype in #28), where side-effects are enacted asynchronously upon aio completion.
-* `request()` and `request_signal()` are modified internally to support conversion of 'recvAio' to event-driven promises.
+  + `request()` and `request_signal()` modified internally to support conversion of 'recvAio' to event-driven promises.
+  + adds dependency on the `later` package to ensure asynchronous R code is always run on the main R thread.
 
 #### Updates
 
 * `stop_aio()` now causes the 'aio' to resolve to an 'errorValue' of 20 (Operation canceled) if successfully stopped.
 * `nng_error()` now returns the error code combined with the message as a character string.
-* Adds dependency on `later` to ensure asynchronous R code is always run on the main R thread.
-* Adds 'xz' to SystemRequirements (was the case previously but not explicitly specified) (thanks @gaborcsardi).
-* Updates minimum 'libnng' version requirement to v1.6.0 (where a suitable system-installed version is not found, the bundled version is compiled from source).
+* Adds 'xz' to SystemRequirements (as was the case previously but not explicitly specified) (thanks @gaborcsardi).
+* Updates minimum 'libnng' version requirement to v1.6.0.
 * Upgrades bundled 'libnng' to v1.8.0.
 
 # nanonext 0.13.6
