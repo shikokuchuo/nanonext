@@ -1555,7 +1555,7 @@ SEXP rnng_pipe_notify(SEXP socket, SEXP cv, SEXP cv2, SEXP add, SEXP remove, SEX
 
     PROTECT(xptr = R_MakeExternalPtr(duo, R_NilValue, R_NilValue));
     R_RegisterCFinalizerEx(xptr, cv_duo_finalizer, TRUE);
-    R_MakeWeakRef(cv, xptr, R_NilValue, FALSE);
+    R_SetExternalPtrProtected(cv, xptr);
     UNPROTECT(1);
 
   } else {

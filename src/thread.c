@@ -134,18 +134,16 @@ SEXP rnng_messenger(SEXP url) {
     dialer = 1;
   }
 
-  PROTECT(socket = R_MakeExternalPtr(sock, nano_SocketSymbol, R_NilValue));
-  R_RegisterCFinalizerEx(socket, socket_finalizer, TRUE);
-
   if (dialer) {
     PROTECT(con = R_MakeExternalPtr(dp, R_NilValue, R_NilValue));
     R_RegisterCFinalizerEx(con, dialer_finalizer, TRUE);
-    Rf_setAttrib(socket, nano_DialerSymbol, R_MissingArg);
   } else {
     PROTECT(con = R_MakeExternalPtr(lp, R_NilValue, R_NilValue));
     R_RegisterCFinalizerEx(con, listener_finalizer, TRUE);
   }
-  R_MakeWeakRef(socket, con, R_NilValue, FALSE);
+  PROTECT(socket = R_MakeExternalPtr(sock, nano_SocketSymbol, con));
+  R_RegisterCFinalizerEx(socket, socket_finalizer, TRUE);
+  if (dialer) Rf_setAttrib(socket, nano_DialerSymbol, R_MissingArg);
 
   UNPROTECT(2);
   return socket;
@@ -166,7 +164,7 @@ SEXP rnng_messenger_thread_create(SEXP args) {
 
   PROTECT(xptr = R_MakeExternalPtr(thr, R_NilValue, R_NilValue));
   R_RegisterCFinalizerEx(xptr, thread_finalizer, TRUE);
-  R_MakeWeakRef(socket, xptr, R_NilValue, FALSE);
+  R_SetExternalPtrProtected(socket, xptr);
 
   UNPROTECT(1);
   return socket;
@@ -262,7 +260,7 @@ SEXP rnng_wait_thread_create(SEXP aio) {
   PROTECT(coreaio);
   PROTECT(xptr = R_MakeExternalPtr(taio, R_NilValue, R_NilValue));
   R_RegisterCFinalizerEx(xptr, thread_aio_finalizer, TRUE);
-  R_MakeWeakRef(coreaio, xptr, R_NilValue, FALSE);
+  R_SetExternalPtrProtected(coreaio, xptr);
   UNPROTECT(2);
 
   nng_time time = nng_clock();
