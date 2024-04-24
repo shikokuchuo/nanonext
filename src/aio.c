@@ -211,17 +211,17 @@ static void raio_complete_signal(void *arg) {
 
 static void raio_invoke_cb(void *arg) {
   SEXP call, context, data, cb = (SEXP) arg;
-  PROTECT(context = Rf_findVarInFrame(cb, nano_ContextSymbol));
-  if (context == R_UnboundValue) {
-    UNPROTECT(1); return;
-  }
-  PROTECT(data = Rf_findVarInFrame(context, nano_DataSymbol));
+  context = Rf_findVarInFrame(cb, nano_ContextSymbol);
+  if (context == R_UnboundValue)
+    return;
+  PROTECT(context);
+  data = Rf_findVarInFrame(context, nano_DataSymbol);
   if (data == R_UnboundValue) {
-    UNPROTECT(2); return;
+    UNPROTECT(1); return;
   }
   PROTECT(call = Rf_lcons(nano_ResolveSymbol, Rf_cons(data, R_NilValue)));
   Rf_eval(call, cb);
-  UNPROTECT(3);
+  UNPROTECT(2);
 }
 
 static void request_complete(void *arg) {
