@@ -1535,7 +1535,6 @@ SEXP rnng_pipe_notify(SEXP socket, SEXP cv, SEXP cv2, SEXP add, SEXP remove, SEX
   nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(socket);
   nano_cv *cvp = (nano_cv *) R_ExternalPtrAddr(cv);
   int xc, flg = *NANO_INTEGER(flag);
-  SEXP xptr;
 
   if (cv2 != R_NilValue) {
 
@@ -1553,10 +1552,9 @@ SEXP rnng_pipe_notify(SEXP socket, SEXP cv, SEXP cv2, SEXP add, SEXP remove, SEX
     if (*NANO_INTEGER(remove) && (xc = nng_pipe_notify(*sock, NNG_PIPE_EV_REM_POST, pipe_cb_signal_duo, duo)))
       ERROR_OUT(xc);
 
-    PROTECT(xptr = R_MakeExternalPtr(duo, R_NilValue, R_NilValue));
-    R_RegisterCFinalizerEx(xptr, cv_duo_finalizer, TRUE);
+    SEXP xptr = R_MakeExternalPtr(duo, R_NilValue, R_NilValue);
     R_SetExternalPtrProtected(cv, xptr);
-    UNPROTECT(1);
+    R_RegisterCFinalizerEx(xptr, cv_duo_finalizer, TRUE);
 
   } else {
 

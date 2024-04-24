@@ -158,15 +158,13 @@ SEXP rnng_messenger_thread_create(SEXP args) {
 
   SEXP socket = CADR(args);
   nng_thread *thr;
-  SEXP xptr;
 
   nng_thread_create(&thr, rnng_messenger_thread, args);
 
-  PROTECT(xptr = R_MakeExternalPtr(thr, R_NilValue, R_NilValue));
-  R_RegisterCFinalizerEx(xptr, thread_finalizer, TRUE);
+  SEXP xptr = R_MakeExternalPtr(thr, R_NilValue, R_NilValue);
   R_SetExternalPtrProtected(socket, xptr);
+  R_RegisterCFinalizerEx(xptr, thread_finalizer, TRUE);
 
-  UNPROTECT(1);
   return socket;
 
 }
