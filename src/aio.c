@@ -317,7 +317,7 @@ static void request_finalizer(SEXP xptr) {
   if (xp->data != NULL)
     nng_msg_free((nng_msg *) xp->data);
   if (saio->data != NULL)
-    nano_ReleaseObject(saio->data);
+    nano_ReleaseObject((SEXP) saio->data);
   R_Free(saio);
   R_Free(xp);
 
