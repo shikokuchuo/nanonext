@@ -178,6 +178,8 @@ typedef struct nano_buf_s {
 
 void later2(void (*func)(void *), void *data, double secs);
 
+SEXP nano_PreserveObject(SEXP);
+void nano_ReleaseObject(SEXP);
 SEXP mk_error(const int);
 SEXP mk_error_ncurl(const int);
 nano_buf nano_char_buf(const SEXP);
@@ -299,5 +301,7 @@ extern SEXP nano_recvAio;
 extern SEXP nano_refHook;
 extern SEXP nano_success;
 extern SEXP nano_unresolved;
+
+extern SEXP nano_precious;
 
 #endif

@@ -33,6 +33,24 @@ typedef union nano_opt_u {
   uint64_t u;
 } nano_opt;
 
+SEXP nano_PreserveObject(SEXP x) {
+
+  SEXP node = Rf_cons(nano_precious, CDR(nano_precious));
+  SETCDR(nano_precious, node);
+  SETCAR(CDR(nano_precious), node);
+  SET_TAG(node, x);
+
+  return node;
+
+}
+
+void nano_ReleaseObject(SEXP node) {
+
+  SETCDR(CAR(node), CDR(node));
+  SETCAR(CDR(node), CAR(node));
+
+}
+
 SEXP mk_error(const int xc) {
 
   SEXP err = Rf_ScalarInteger(xc);

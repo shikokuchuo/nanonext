@@ -208,10 +208,9 @@ static void raio_complete_signal(void *arg) {
 
 }
 
-
 static void raio_invoke_cb(void *arg) {
-  SEXP call, context, data, cb = (SEXP) arg;
-  context = Rf_findVarInFrame(cb, nano_ContextSymbol);
+  SEXP call, context, data, ctx = TAG((SEXP) arg);
+  context = Rf_findVarInFrame(ctx, nano_ContextSymbol);
   if (context == R_UnboundValue)
     return;
   PROTECT(context);
@@ -220,7 +219,7 @@ static void raio_invoke_cb(void *arg) {
     UNPROTECT(1); return;
   }
   PROTECT(call = Rf_lcons(nano_ResolveSymbol, Rf_cons(data, R_NilValue)));
-  Rf_eval(call, cb);
+  Rf_eval(call, ctx);
   UNPROTECT(2);
 }
 
@@ -318,7 +317,7 @@ static void request_finalizer(SEXP xptr) {
   if (xp->data != NULL)
     nng_msg_free((nng_msg *) xp->data);
   if (saio->data != NULL)
-    R_ReleaseObject((SEXP) saio->data);
+    nano_ReleaseObject(saio->data);
   R_Free(saio);
   R_Free(xp);
 
@@ -1291,8 +1290,7 @@ SEXP rnng_set_promise_context(SEXP x, SEXP ctx) {
   nano_aio *raio = (nano_aio *) R_ExternalPtrAddr(aio);
   if (raio->type == REQAIO) {
     nano_aio *saio = (nano_aio *) raio->next;
-    R_PreserveObject(ctx);
-    saio->data = ctx;
+    saio->data = nano_PreserveObject(ctx);
   }
 
   return x;
