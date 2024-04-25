@@ -176,7 +176,8 @@ typedef struct nano_buf_s {
   size_t cur;
 } nano_buf;
 
-void later2(void (*func)(void *), void *data, double secs);
+typedef void (*later_fun)(void (*func)(void *), void *data, double secs);
+extern later_fun later2;
 
 SEXP nano_PreserveObject(SEXP);
 void nano_ReleaseObject(SEXP);

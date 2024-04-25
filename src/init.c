@@ -52,6 +52,7 @@ SEXP nano_success;
 SEXP nano_unresolved;
 
 SEXP nano_precious;
+later_fun later2;
 
 static void RegisterSymbols(void) {
   nano_AioSymbol = Rf_install("aio");
@@ -195,6 +196,7 @@ static const R_ExternalMethodDef externalMethods[] = {
 void attribute_visible R_init_nanonext(DllInfo* dll) {
   RegisterSymbols();
   PreserveObjects();
+  later2 = (later_fun) R_GetCCallable("later", "execLaterNative");
   R_registerRoutines(dll, NULL, callMethods, NULL, externalMethods);
   R_useDynamicSymbols(dll, FALSE);
   R_forceSymbols(dll, TRUE);
