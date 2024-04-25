@@ -92,7 +92,7 @@
 #' @author Charlie Gao \email{charlie.gao@@shikokuchuo.net}
 #'     (\href{https://orcid.org/0000-0002-0750-061X}{ORCID})
 #'
-#' @importFrom later later
+#' @importFrom later run_now
 #' @importFrom stats start
 #' @importFrom tools md5sum
 #' @importFrom utils .DollarNames
