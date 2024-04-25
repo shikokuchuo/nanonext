@@ -275,7 +275,6 @@ extern SEXP nano_CvSymbol;
 extern SEXP nano_DataSymbol;
 extern SEXP nano_DialerSymbol;
 extern SEXP nano_DotcallSymbol;
-extern SEXP nano_FdSymbol;
 extern SEXP nano_HeadersSymbol;
 extern SEXP nano_IdSymbol;
 extern SEXP nano_ListenerSymbol;
