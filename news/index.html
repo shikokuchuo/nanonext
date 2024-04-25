@@ -72,6 +72,7 @@
 <code><a href="../reference/stop_aio.html">stop_aio()</a></code> now causes the ‘aio’ to resolve to an ‘errorValue’ of 20 (Operation canceled) if successfully stopped.</li>
 <li>
 <code><a href="../reference/nng_error.html">nng_error()</a></code> now returns the error code combined with the message as a character string.</li>
+<li>Integer file descriptors are no longer appended to ‘nanoSocket’ attributes.</li>
 <li>Adds ‘xz’ to SystemRequirements (as was the case previously but not explicitly specified) (thanks <a href="https://github.com/gaborcsardi" class="external-link">@gaborcsardi</a>).</li>
 <li>Updates minimum ‘libnng’ version requirement to v1.6.0.</li>
 <li>Upgrades bundled ‘libnng’ to v1.8.0.</li>
