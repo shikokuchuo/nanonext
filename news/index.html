@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.13.6.9015</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.13.6.9014</span>
       </span>
     </div>
 
@@ -57,18 +57,17 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.13.6.9015" id="nanonext-01369015-development">nanonext 0.13.6.9015 (development)<a class="anchor" aria-label="anchor" href="#nanonext-01369015-development"></a></h2>
+<h2 class="page-header" data-toc-text="0.13.6.9014" id="nanonext-01369014-development">nanonext 0.13.6.9014 (development)<a class="anchor" aria-label="anchor" href="#nanonext-01369014-development"></a></h2>
 <div class="section level5">
-<h5 id="new-features-0-13-6-9015">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-13-6-9015"></a></h5>
+<h5 id="new-features-0-13-6-9014">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-13-6-9014"></a></h5>
 <ul><li>Integrates with the <code>later</code> package to provide the foundation for truly event-driven (non-polling) promises (thanks <a href="https://github.com/jcheng5" class="external-link">@jcheng5</a> for the initial prototype in <a href="https://github.com/shikokuchuo/nanonext/issues/28" class="external-link">#28</a>), where side-effects are enacted asynchronously upon aio completion.
 <ul><li>
 <code><a href="../reference/request.html">request()</a></code> and <code><a href="../reference/request.html">request_signal()</a></code> modified internally to support conversion of ‘recvAio’ to event-driven promises.</li>
 <li>adds dependency on the <code>later</code> package to ensure asynchronous R code is always run on the main R thread.</li>
 </ul></li>
-<li>Setting the environment variable <code>NANONEXT_NO_LATER</code> prior to package load does not load the <code>later</code> package, in which case promises will cease to work, but load times will be much faster.</li>
 </ul></div>
 <div class="section level5">
-<h5 id="updates-0-13-6-9015">Updates<a class="anchor" aria-label="anchor" href="#updates-0-13-6-9015"></a></h5>
+<h5 id="updates-0-13-6-9014">Updates<a class="anchor" aria-label="anchor" href="#updates-0-13-6-9014"></a></h5>
 <ul><li>
 <code><a href="../reference/stop_aio.html">stop_aio()</a></code> now causes the ‘aio’ to resolve to an ‘errorValue’ of 20 (Operation canceled) if successfully stopped.</li>
 <li>
