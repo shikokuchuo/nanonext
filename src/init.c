@@ -53,7 +53,7 @@ SEXP nano_unresolved;
 
 SEXP nano_precious;
 
-later_fun eln2;
+static void (*eln2)(void (*)(void *), void *, double, int);
 
 void later2(void (*fun)(void *), void *data) {
   eln2(fun, data, 0, 0);
@@ -201,7 +201,7 @@ static const R_ExternalMethodDef externalMethods[] = {
 void attribute_visible R_init_nanonext(DllInfo* dll) {
   RegisterSymbols();
   PreserveObjects();
-  eln2 = (later_fun) R_GetCCallable("later", "execLaterNative2");
+  eln2 = (void (*)(void (*)(void *), void *, double, int)) R_GetCCallable("later", "execLaterNative2");
   R_registerRoutines(dll, NULL, callMethods, NULL, externalMethods);
   R_useDynamicSymbols(dll, FALSE);
   R_forceSymbols(dll, TRUE);
