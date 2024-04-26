@@ -233,7 +233,7 @@ static void request_complete(void *arg) {
   raio->result = res - !res;
 
   if (saio->data != NULL)
-    later2(raio_invoke_cb, saio->data, 0);
+    later2(raio_invoke_cb, saio->data);
 
 }
 
@@ -256,7 +256,7 @@ static void request_complete_signal(void *arg) {
   nng_mtx_unlock(mtx);
 
   if (saio->data != NULL)
-    later2(raio_invoke_cb, saio->data, 0);
+    later2(raio_invoke_cb, saio->data);
 
 }
 

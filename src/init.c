@@ -55,8 +55,8 @@ SEXP nano_precious;
 
 later_fun eln2;
 
-void later2(void (*fun)(void *), void *data, double secs) {
-  eln2(fun, data, secs, 0);
+void later2(void (*fun)(void *), void *data) {
+  eln2(fun, data, 0, 0);
 }
 
 static void RegisterSymbols(void) {
