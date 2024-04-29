@@ -321,3 +321,17 @@ strcat <- function(a, b) .Call(rnng_strcat, a, b)
 #'
 next_config <- function(refhook = list(), class = "", vec = FALSE, mark = FALSE)
   .Call(rnng_next_config, refhook, class, vec, mark)
+
+#' Internal Package Function
+#'
+#' Do not use. Only present for cleaning up after running examples and tests.
+#'
+#' @examples
+#' rm(list = ls())
+#' gc()
+#' Sys.sleep(1L)
+#' nanonext:::zzz()
+#'
+#' @keywords internal
+#'
+zzz <- function() if (!interactive()) .Call(rnng_fini)
