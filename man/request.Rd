@@ -113,6 +113,7 @@ reply(.context(rep), execute = function(x) x + 1, timeout = 50)
 aio <- request(.context(req), data = 2022)
 aio$data
 
+stop_aio(aio)
 close(req)
 close(rep)
 

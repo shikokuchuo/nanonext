@@ -213,6 +213,7 @@ reply <- function(context,
 #' aio <- request(.context(req), data = 2022)
 #' aio$data
 #'
+#' stop_aio(aio)
 #' close(req)
 #' close(rep)
 #'
