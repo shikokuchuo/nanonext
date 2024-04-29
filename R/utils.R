@@ -334,4 +334,4 @@ next_config <- function(refhook = list(), class = "", vec = FALSE, mark = FALSE)
 #'
 #' @keywords internal
 #'
-zzz <- function() if (!interactive()) .Call(rnng_fini)
+zzz <- function() if (interactive()) later::run_now() else .Call(rnng_fini)
