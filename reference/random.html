@@ -25,7 +25,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.13.6.9016</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.13.6.9017</span>
       </span>
     </div>
 
@@ -96,13 +96,15 @@ to return the hex representation of the bytes as a character string.</p></dd>
     <h2>Value</h2>
     
 
-<p>A length 'n' raw vector, or length one vector of '2n' random
-    characters, depending on the value of 'convert' supplied.</p>
+<p>A length ‘n’ raw vector, or length one vector of ‘2n’</p>
+
+
+<p>random characters, depending on the value of ‘convert’ supplied.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
-    <p>If 'n' is non-integer, it will be coerced to integer; if a vector,
-    only the first element will be used.</p>
+    <p>If ‘n’ is non-integer, it will be coerced to integer; if a
+    vector, only the first element will be used.</p>
     </div>
     <div id="note">
     <h2>Note</h2>
@@ -113,11 +115,11 @@ to return the hex representation of the bytes as a character string.</p></dd>
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">random</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "c1"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "3c"</span>
 <span class="r-in"><span><span class="fu">random</span><span class="op">(</span><span class="fl">8L</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ff3165e9e45597f5"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "a73045e9f2e7788e"</span>
 <span class="r-in"><span><span class="fu">random</span><span class="op">(</span>n <span class="op">=</span> <span class="fl">8L</span>, convert <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] c9 37 56 04 06 66 3d 6b</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] fb 47 98 58 14 f7 a0 97</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

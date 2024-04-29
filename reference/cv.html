@@ -27,7 +27,7 @@ cv_signal signals a condition variable."><meta property="og:image" content="http
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.13.6.9016</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.13.6.9017</span>
       </span>
     </div>
 
@@ -102,7 +102,7 @@ cv_signal signals a condition variable."><meta property="og:image" content="http
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>cv</dt>
-<dd><p>a 'conditionVariable' object.</p></dd>
+<dd><p>a ‘conditionVariable’ object.</p></dd>
 
 
 <dt>msec</dt>
@@ -114,7 +114,7 @@ to be signalled.</p></dd>
     <h2>Value</h2>
     
 
-<p>For <strong>cv</strong>: a 'conditionVariable' object.</p>
+<p>For <strong>cv</strong>: a ‘conditionVariable’ object.</p>
 
 
 <p>For <strong>wait</strong>: (invisibly) logical TRUE, or else FALSE if a flag has
@@ -132,7 +132,7 @@ to be signalled.</p></dd>
     </div>
     <div id="details">
     <h2>Details</h2>
-    <p>Pass the 'conditionVariable' to the signalling forms of the
+    <p>Pass the ‘conditionVariable’ to the signalling forms of the
     asynchronous receive functions: <code><a href="recv_aio.html">recv_aio_signal</a></code> or
     <code><a href="request.html">request_signal</a></code>. Alternatively, to be notified of a pipe
     event, pass it to <code><a href="pipe_notify.html">pipe_notify</a></code>.</p>
@@ -141,16 +141,16 @@ to be signalled.</p></dd>
     incrementing it by 1.</p>
 <p>This will cause the R execution thread waiting on the condition variable
     using <code>wait</code> or <code>until</code> to wake and continue.</p>
-<p>For argument 'msec', non-integer values will be coerced to integer.
-    Non-numeric input will be ignored and return immediately.</p>
+<p>For argument ‘msec’, non-integer values will be coerced to
+    integer. Non-numeric input will be ignored and return immediately.</p>
     </div>
     <div id="condition">
     <h2>Condition</h2>
     
 
 
-<p>The condition internal to this 'conditionVariable' maintains a state
-    (value). Each signal increments the value by 1. Each time
+<p>The condition internal to this ‘conditionVariable’ maintains a
+    state (value). Each signal increments the value by 1. Each time
     <code>wait</code> or <code>until</code> returns (apart from due to timeout), the
     value is decremented by 1.</p>
 <p>The internal condition may be inspected at any time using <code>cv_value</code>

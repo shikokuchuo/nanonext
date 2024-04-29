@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.13.6.9016</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.13.6.9017</span>
       </span>
     </div>
 
@@ -72,15 +72,15 @@
 
 
 <dt>data</dt>
-<dd><p>an object (a vector, if mode = 'raw').</p></dd>
+<dd><p>an object (a vector, if mode = ‘raw’).</p></dd>
 
 
 <dt>mode</dt>
 <dd><p>[default 'serial'] character value or integer equivalent - one of
-'serial' (1L) to send serialised R objects, 'raw' (2L) to send atomic
-vectors of any type as a raw byte vector, or 'next' (3L) - see 'Send
-Modes' section below. For Streams, 'raw' is the only option and this
-argument is ignored.</p></dd>
+‘serial’ (1L) to send serialised R objects, ‘raw’ (2L) to
+send atomic vectors of any type as a raw byte vector, or ‘next’
+(3L) - see ‘Send Modes’ section below. For Streams, ‘raw’
+is the only option and this argument is ignored.</p></dd>
 
 
 <dt>timeout</dt>
@@ -92,18 +92,18 @@ applies a socket-specific default, usually the same as no timeout.</p></dd>
     <h2>Value</h2>
     
 
-<p>A 'sendAio' (object of class 'sendAio') (invisibly).</p>
+<p>A ‘sendAio’ (object of class ‘sendAio’) (invisibly).</p>
     </div>
     <div id="details">
     <h2>Details</h2>
-    <p>Async send is always non-blocking and returns a 'sendAio'
+    <p>Async send is always non-blocking and returns a ‘sendAio’
     immediately.</p>
-<p>For a 'sendAio', the send result is available at <code>$result</code>. An
-    'unresolved' logical NA is returned if the async operation is yet to
-    complete. The resolved value will be zero on success, or else an integer
-    error code.</p>
+<p>For a ‘sendAio’, the send result is available at <code>$result</code>.
+    An ‘unresolved’ logical NA is returned if the async operation is
+    yet to complete. The resolved value will be zero on success, or else an
+    integer error code.</p>
 <p>To wait for and check the result of the send operation, use
-    <code><a href="call_aio.html">call_aio</a></code> on the returned 'sendAio' object.</p>
+    <code><a href="call_aio.html">call_aio</a></code> on the returned ‘sendAio’ object.</p>
 <p>Alternatively, to stop the async operation, use <code><a href="stop_aio.html">stop_aio</a></code>.</p>
     </div>
     <div id="send-modes">
@@ -111,18 +111,18 @@ applies a socket-specific default, usually the same as no timeout.</p></dd>
     
 
 
-<p>The default mode 'serial' sends serialised R objects to ensure perfect
-    reproducibility within R. When receiving, the corresponding mode 'serial'
-    should be used.</p>
-<p>Mode 'raw' sends atomic vectors of any type as a raw byte vector, and
-    must be used when interfacing with external applications or raw system
-    sockets, where R serialization is not in use. When receiving, the mode
-    corresponding to the vector sent should be used.</p>
-<p>Mode 'next' sends serialised R objects, with native extensions enabled by
-    <code><a href="next_config.html">next_config</a></code>. This configures custom serialization and
-    unserialization functions for external pointer reference objects. When
-    receiving, mode 'serial' should be used as 'next' sends are fully
-    compatible.</p>
+<p>The default mode ‘serial’ sends serialised R objects to ensure
+    perfect reproducibility within R. When receiving, the corresponding mode
+    ‘serial’ should be used.</p>
+<p>Mode ‘raw’ sends atomic vectors of any type as a raw byte vector,
+    and must be used when interfacing with external applications or raw
+    system sockets, where R serialization is not in use. When receiving, the
+    mode corresponding to the vector sent should be used.</p>
+<p>Mode ‘next’ sends serialised R objects, with native extensions
+    enabled by <code><a href="next_config.html">next_config</a></code>. This configures custom
+    serialization and unserialization functions for reference objects. When
+    receiving, mode ‘serial’ should be used as ‘next’ sends are
+    fully compatible.</p>
     </div>
 
     <div id="ref-examples">

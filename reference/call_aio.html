@@ -20,7 +20,7 @@ call_aio_ is a variant that allows user interrupts, suitable for
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.13.6.9016</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.13.6.9017</span>
       </span>
     </div>
 
@@ -76,7 +76,8 @@ call_aio_ is a variant that allows user interrupts, suitable for
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>aio</dt>
-<dd><p>an Aio (object of class 'sendAio', 'recvAio' or 'ncurlAio').</p></dd>
+<dd><p>an Aio (object of class ‘sendAio’, ‘recvAio’ or
+‘ncurlAio’).</p></dd>
 
 </dl></div>
     <div id="value">
@@ -87,28 +88,31 @@ call_aio_ is a variant that allows user interrupts, suitable for
     </div>
     <div id="details">
     <h2>Details</h2>
-    <p>For a 'recvAio', the received value may be retrieved at <code>$data</code>.</p>
-<p>For a 'sendAio', the send result may be retrieved at <code>$result</code>. This
-    will be zero on success, or else an integer error code.</p>
-<p>To access the values directly, use for example on a 'recvAio' <code>x</code>:
-    <code>call_aio(x)$data</code>.</p>
-<p>For a 'recvAio', if an error occurred in unserialization or conversion of
-    the message data to the specified mode, a raw vector will be returned
-    instead to allow recovery (accompanied by a warning).</p>
+    <p>For a ‘recvAio’, the received value may be retrieved at
+    <code>$data</code>.</p>
+<p>For a ‘sendAio’, the send result may be retrieved at
+    <code>$result</code>. This will be zero on success, or else an integer error
+    code.</p>
+<p>To access the values directly, use for example on a ‘recvAio’
+    <code>x</code>: <code>call_aio(x)$data</code>.</p>
+<p>For a ‘recvAio’, if an error occurred in unserialization or
+    conversion of the message data to the specified mode, a raw vector will
+    be returned instead to allow recovery (accompanied by a warning).</p>
 <p>Once the value has been successfully retrieved, the Aio is deallocated
     and only the value is stored in the Aio object.</p>
-<p>Note this function operates silently and does not error even if 'aio' is
-    not an active Aio, always returning invisibly the passed object.</p>
+<p>Note this function operates silently and does not error even if
+    ‘aio’ is not an active Aio, always returning invisibly the passed
+    object.</p>
     </div>
     <div id="alternatively">
     <h2>Alternatively</h2>
     
 
 
-<p>Aio values may be accessed directly at <code>$result</code> for a 'sendAio',
-    and <code>$data</code> for a 'recvAio'. If the Aio operation is yet to complete,
-    an 'unresolved' logical NA will be returned. Once complete, the resolved
-    value will be returned instead.</p>
+<p>Aio values may be accessed directly at <code>$result</code> for a
+    ‘sendAio’, and <code>$data</code> for a ‘recvAio’. If the Aio
+    operation is yet to complete, an ‘unresolved’ logical NA will be
+    returned. Once complete, the resolved value will be returned instead.</p>
 <p><code><a href="unresolved.html">unresolved</a></code> may also be used, which returns TRUE only if an
     Aio or Aio value has yet to resolve and FALSE otherwise. This is suitable
     for use in control flow statements such as <code>while</code> or <code>if</code>.</p>
