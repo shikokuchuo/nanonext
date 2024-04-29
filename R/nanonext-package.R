@@ -99,4 +99,6 @@
 #'
 "_PACKAGE"
 
+.onUnload <- function(libpath) library.dynam.unload("nanonext", libpath)
+
 .run_now <- function() later::run_now()

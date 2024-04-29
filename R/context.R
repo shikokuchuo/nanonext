@@ -205,16 +205,17 @@ reply <- function(context,
 #' @inheritSection send Send Modes
 #'
 #' @examples
-#' req <- socket("req", listen = "tcp://127.0.0.1:6546")
-#' rep <- socket("rep", dial = "tcp://127.0.0.1:6546")
-#'
 #' # works if req and rep are running in parallel in different processes
+#'
+#' # req <- socket("req", listen = "tcp://127.0.0.1:6546")
+#' # rep <- socket("rep", dial = "tcp://127.0.0.1:6546")
+#'
 #' # reply(.context(rep), execute = function(x) x + 1, timeout = 50)
 #' # aio <- request(.context(req), data = 2022)
 #' # aio$data
 #'
-#' close(req)
-#' close(rep)
+#' # close(req)
+#' # close(rep)
 #'
 #' @export
 #'
@@ -241,12 +242,12 @@ request <- function(context,
 #' @examples
 #' # Signalling a condition variable
 #'
-#' req <- socket("req", listen = "tcp://127.0.0.1:6546")
-#' ctxq <- context(req)
-#' cv <- cv()
-#' aio <- request_signal(ctxq, data = 2022, cv = cv)
-#' until(cv, 10L)
-#' close(req)
+#' # req <- socket("req", listen = "tcp://127.0.0.1:6546")
+#' # ctxq <- context(req)
+#' # cv <- cv()
+#' # aio <- request_signal(ctxq, data = 2022, cv = cv)
+#' # until(cv, 10L)
+#' # close(req)
 #'
 #' # The following should be run in another process
 #' # rep <- socket("rep", dial = "tcp://127.0.0.1:6546")
