@@ -1,4 +1,4 @@
-# nanonext 0.13.6.9015 (development)
+# nanonext 0.13.6.9016 (development)
 
 #### New Features
 
@@ -12,37 +12,26 @@
 * `nng_error()` now returns the error code combined with the message as a character string.
 * Integer file descriptors are no longer appended to 'nanoSocket' attributes.
 * Adds 'xz' to SystemRequirements (as was the case previously but not explicitly specified) (thanks @gaborcsardi).
+* Re-aligns bundled 'libmbedtls' to v3.5.2 and optimises bundle size.
 * Updates minimum 'libnng' version requirement to v1.6.0.
 * Upgrades bundled 'libnng' to v1.8.0.
 
-# nanonext 0.13.6
+# nanonext 0.13.5.2
 
 #### Updates
 
 * Safer and more efficient memory reads for 'next' serialization corrects for CRAN UBSAN-clang check errors.
-* Upgrades bundled 'libmbedtls' to v3.6.0 LTS.
 
-# nanonext 0.13.5
-
-#### Updates
-
-* Removes SHA-2 cryptographic hash functions (please use the streaming implementation in the secretbase package).
-
-# nanonext 0.13.4
-
-#### New Features
-
-* An integer file descriptor is appended to 'nanoSockets' as the attribute 'fd' - see updated documentation for `socket()`.
-
-# nanonext 0.13.3
+# nanonext 0.13.5.1
 
 #### New Features
 
 * `next_config()` gains argument 'class' and 'vec', enabling custom serialization for all reference object types supported by R serialization.
+* An integer file descriptor is appended to 'nanoSockets' as the attribute 'fd' - see updated documentation for `socket()`.
 
 #### Updates
 
-* Upgrades bundled 'libnng' to v1.7.3.
+* Removes SHA-2 cryptographic hash functions (please use the streaming implementation in the secretbase package).
 
 # nanonext 0.13.2
 
