@@ -7,12 +7,12 @@
 unresolved(aio)
 }
 \arguments{
-\item{aio}{an Aio (object of class 'sendAio' or 'recvAio'), or Aio value
-stored in \code{$result} or \code{$data} as the case may be.}
+\item{aio}{an Aio (object of class \sQuote{sendAio} or \sQuote{recvAio}), or
+Aio value stored in \code{$result} or \code{$data} as the case may be.}
 }
 \value{
-Logical TRUE if 'aio' is an unresolved Aio or Aio value, or FALSE
-    otherwise.
+Logical TRUE if \sQuote{aio} is an unresolved Aio or Aio value, or
+    FALSE otherwise.
 }
 \description{
 Query whether an Aio or Aio value remains unresolved. Unlike
@@ -22,7 +22,8 @@ Query whether an Aio or Aio value remains unresolved. Unlike
 Suitable for use in control flow statements such as \code{while} or
     \code{if}.
 
-    Note: querying resolution may cause a previously unresolved Aio to resolve.
+    Note: querying resolution may cause a previously unresolved Aio to
+    resolve.
 }
 \examples{
 s1 <- socket("pair", listen = "inproc://nanonext")

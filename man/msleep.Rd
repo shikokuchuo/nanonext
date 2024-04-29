@@ -17,7 +17,7 @@ Sleep function. May block for longer than requested, with the actual wait
     time determined by the capabilities of the underlying system.
 }
 \details{
-Non-integer values for 'time' are coerced to integer, and the
+Non-integer values for \sQuote{time} are coerced to integer, and the
     absolute value is taken (the sign is ignored). Non-numeric values are
     ignored, causing the function to return immediately.
 

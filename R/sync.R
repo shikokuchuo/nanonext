@@ -21,7 +21,7 @@
 #' \code{cv} creates a new condition variable (protected by a mutex internal to
 #'     the object).
 #'
-#' @return For \strong{cv}: a 'conditionVariable' object.
+#' @return For \strong{cv}: a \sQuote{conditionVariable} object.
 #'
 #'     For \strong{wait}: (invisibly) logical TRUE, or else FALSE if a flag has
 #'     been set.
@@ -33,7 +33,7 @@
 #'
 #'     For \strong{cv_reset} and \strong{cv_signal}: zero (invisibly).
 #'
-#' @details Pass the 'conditionVariable' to the signalling forms of the
+#' @details Pass the \sQuote{conditionVariable} to the signalling forms of the
 #'     asynchronous receive functions: \code{\link{recv_aio_signal}} or
 #'     \code{\link{request_signal}}. Alternatively, to be notified of a pipe
 #'     event, pass it to \code{\link{pipe_notify}}.
@@ -45,13 +45,13 @@
 #'     This will cause the R execution thread waiting on the condition variable
 #'     using \code{wait} or \code{until} to wake and continue.
 #'
-#'     For argument 'msec', non-integer values will be coerced to integer.
-#'     Non-numeric input will be ignored and return immediately.
+#'     For argument \sQuote{msec}, non-integer values will be coerced to
+#'     integer. Non-numeric input will be ignored and return immediately.
 #'
 #' @section Condition:
 #'
-#'     The condition internal to this 'conditionVariable' maintains a state
-#'     (value). Each signal increments the value by 1. Each time
+#'     The condition internal to this \sQuote{conditionVariable} maintains a
+#'     state (value). Each signal increments the value by 1. Each time
 #'     \code{wait} or \code{until} returns (apart from due to timeout), the
 #'     value is decremented by 1.
 #'
@@ -82,7 +82,7 @@ cv <- function() .Call(rnng_cv_alloc)
 #'     asynchronous receive or pipe event. \cr \code{wait_} is a variant that
 #'     allows user interrupts, suitable for interactive use.
 #'
-#' @param cv a 'conditionVariable' object.
+#' @param cv a \sQuote{conditionVariable} object.
 #'
 #' @examples
 #' # wait(cv) # uncommenting will block until the cv is signalled
@@ -161,22 +161,22 @@ cv_signal <- function(cv) invisible(.Call(rnng_cv_signal, cv))
 
 #' Pipe Notify
 #'
-#' Signals a 'conditionVariable' whenever pipes (individual connections) are
-#'     added or removed at a socket.
+#' Signals a \sQuote{conditionVariable} whenever pipes (individual connections)
+#'     are added or removed at a socket.
 #'
 #' @param socket a Socket.
-#' @param cv a 'conditionVariable' to signal.
+#' @param cv a \sQuote{conditionVariable} to signal.
 #' @param cv2 [default NULL] optionally, if specified, a second
-#'     'conditionVariable' to signal. Note that this cv is signalled
+#'     \sQuote{conditionVariable} to signal. Note that this cv is signalled
 #'     sequentially after the first condition variable.
 #' @param add [default FALSE] logical value whether to signal when a pipe is
 #'     added.
 #' @param remove [default FALSE] logical value whether to signal when a pipe is
 #'     removed.
 #' @param flag [default FALSE] logical value whether to also set a flag in the
-#'     'conditionVariable'. This can help distinguish between different types of
-#'     signal, and causes any subsequent \code{\link{wait}} to return FALSE
-#'     instead of TRUE. If a signal from the \pkg{tools} package, e.g.
+#'     \sQuote{conditionVariable}. This can help distinguish between different
+#'     types of signal, and causes any subsequent \code{\link{wait}} to return
+#'     FALSE instead of TRUE. If a signal from the \pkg{tools} package, e.g.
 #'     \code{tools::SIGINT}, or an equivalent integer value is supplied, this
 #'     sets a flag and additionally raises this signal upon the flag being set.
 #'
@@ -223,11 +223,12 @@ pipe_notify <- function(socket, cv, cv2 = NULL, add = FALSE, remove = FALSE, fla
 #'     added to the socket.
 #'
 #' @param socket a Socket.
-#' @param cv (optional) a 'conditionVariable'. If supplied, the socket is locked
-#'     only whilst the condition variable is an odd value. This is designed to
-#'     allow an initial connection, as well as subsequent re-connections after a
-#'     connection has ended, if the conditon variable is also registered with
-#'     \code{\link{pipe_notify}} for both add and remove pipe events.
+#' @param cv (optional) a \sQuote{conditionVariable}. If supplied, the socket is
+#'     locked only whilst the condition variable is an odd value. This is
+#'     designed to allow an initial connection, as well as subsequent
+#'     re-connections after a connection has ended, if the conditon variable is
+#'     also registered with \code{\link{pipe_notify}} for both add and remove
+#'     pipe events.
 #'
 #' @return Invisibly, zero on success (will otherwise error).
 #'
@@ -263,22 +264,25 @@ unlock <- function(socket) invisible(.Call(rnng_socket_unlock, socket))
 
 #' Signal Forwarder
 #'
-#' Forwards signals from one 'conditionVariable' to another.
+#' Forwards signals from one \sQuote{conditionVariable} to another.
 #'
-#' @param cv a 'conditionVariable' object, from which to forward the signal.
-#' @param cv2 a 'conditionVariable' object, to which the signal is forwarded.
+#' @param cv a \sQuote{conditionVariable} object, from which to forward the
+#'     signal.
+#' @param cv2 a \sQuote{conditionVariable} object, to which the signal is
+#'     forwarded.
 #'
-#' @return Invisibly, 'cv2'.
+#' @return Invisibly, \sQuote{cv2}.
 #'
-#' @details The condition value of 'cv' is initially reset to zero when this
-#'     operator returns. Only one forwarder can be active on a 'cv' at any given
-#'     time, and assigning a new forwarding target cancels any currently
-#'     existing forwarding.
+#' @details The condition value of \sQuote{cv} is initially reset to zero when
+#'     this operator returns. Only one forwarder can be active on a \sQuote{cv}
+#'     at any given time, and assigning a new forwarding target cancels any
+#'     currently existing forwarding.
 #'
-#'     Changes in the condition value of 'cv' are forwarded to 'cv2', but only
-#'     on each occassion 'cv' is signalled. This means that waiting on 'cv'
-#'     will cause a temporary divergence between the actual condition value of
-#'     'cv' and that recorded at 'cv2', until the next time 'cv' is signalled.
+#'     Changes in the condition value of \sQuote{cv} are forwarded to
+#'     \sQuote{cv2}, but only on each occassion \sQuote{cv} is signalled. This
+#'     means that waiting on \sQuote{cv} will cause a temporary divergence
+#'     between the actual condition value of \sQuote{cv} and that recorded at
+#'     \sQuote{cv2}, until the next time \sQuote{cv} is signalled.
 #'
 #' @examples
 #' cva <- cv(); cvb <- cv(); cv1 <- cv(); cv2 <- cv()

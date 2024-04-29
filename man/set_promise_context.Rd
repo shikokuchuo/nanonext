@@ -13,15 +13,15 @@ set_promise_context(x, ctx)
 \item{ctx}{the context environment.}
 }
 \value{
-The object 'x'.
+The object \sQuote{x}.
 }
 \description{
 If called from an appropriate context, creates an event-driven promise that
     will resolve asynchronously when the request is complete.
 }
 \details{
-The object passed as 'x' is returned regardless of whether the
-    promise context was set successfully or not. If successful, 'x' is
-    modified in place with the promise context.
+The object passed as \sQuote{x} is returned regardless of whether
+    the promise context was set successfully or not. If successful,
+    \sQuote{x} is modified in place with the promise context.
 }
 \keyword{internal}

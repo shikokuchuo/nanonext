@@ -7,10 +7,10 @@
 .unresolved(aio)
 }
 \arguments{
-\item{aio}{an Aio (object of class 'sendAio' or 'recvAio').}
+\item{aio}{an Aio (object of class \sQuote{sendAio} or \sQuote{recvAio}).}
 }
 \value{
-Logical TRUE if 'aio' is an unresolved Aio, or FALSE otherwise.
+Logical TRUE if \sQuote{aio} is an unresolved Aio, or FALSE otherwise.
 }
 \description{
 Query whether an Aio remains unresolved. This is an experimental technical
@@ -20,7 +20,7 @@ Query whether an Aio remains unresolved. This is an experimental technical
     or message.
 }
 \details{
-\code{.unresolved()} is not intended to be used for 'recvAio'
+\code{.unresolved()} is not intended to be used for \sQuote{recvAio}
     returned by a signalling function, in which case \code{\link{unresolved}}
     must be used in all cases.
 }

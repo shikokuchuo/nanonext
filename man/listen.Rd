@@ -32,16 +32,16 @@ halts execution.}
 }
 \value{
 Invisibly, an integer exit code (zero on success). A new Listener
-    (object of class 'nanoListener' and 'nano') is created and bound to the
-    Socket if successful.
+    (object of class \sQuote{nanoListener} and \sQuote{nano}) is created and
+    bound to the Socket if successful.
 }
 \description{
 Creates a new Listener and binds it to a Socket.
 }
 \details{
 To view all Listeners bound to a socket use \code{$listener} on the
-    socket, which returns a list of Listener objects. To access any individual
-    Listener (e.g. to set options on it), index into the list e.g.
+    socket, which returns a list of Listener objects. To access any
+    individual Listener (e.g. to set options on it), index into the list e.g.
     \code{$listener[[1]]} to return the first Listener.
 
     A listener is an external pointer to a listener object, which accepts

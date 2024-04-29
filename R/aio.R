@@ -26,18 +26,18 @@
 #' @param timeout [default NULL] integer value in milliseconds or NULL, which
 #'     applies a socket-specific default, usually the same as no timeout.
 #'
-#' @return A 'sendAio' (object of class 'sendAio') (invisibly).
+#' @return A \sQuote{sendAio} (object of class \sQuote{sendAio}) (invisibly).
 #'
-#' @details Async send is always non-blocking and returns a 'sendAio'
+#' @details Async send is always non-blocking and returns a \sQuote{sendAio}
 #'     immediately.
 #'
-#'     For a 'sendAio', the send result is available at \code{$result}. An
-#'     'unresolved' logical NA is returned if the async operation is yet to
-#'     complete. The resolved value will be zero on success, or else an integer
-#'     error code.
+#'     For a \sQuote{sendAio}, the send result is available at \code{$result}.
+#'     An \sQuote{unresolved} logical NA is returned if the async operation is
+#'     yet to complete. The resolved value will be zero on success, or else an
+#'     integer error code.
 #'
 #'     To wait for and check the result of the send operation, use
-#'     \code{\link{call_aio}} on the returned 'sendAio' object.
+#'     \code{\link{call_aio}} on the returned \sQuote{sendAio} object.
 #'
 #'     Alternatively, to stop the async operation, use \code{\link{stop_aio}}.
 #'
@@ -67,21 +67,22 @@ send_aio <- function(con, data, mode = c("serial", "raw", "next"), timeout = NUL
 #' @inheritParams recv
 #' @inheritParams send_aio
 #'
-#' @return A 'recvAio' (object of class 'recvAio') (invisibly).
+#' @return A \sQuote{recvAio} (object of class \sQuote{recvAio}) (invisibly).
 #'
-#' @details Async receive is always non-blocking and returns a 'recvAio'
+#' @details Async receive is always non-blocking and returns a \sQuote{recvAio}
 #'     immediately.
 #'
-#'     For a 'recvAio', the received message is available at \code{$data}. An
-#'     'unresolved' logical NA is returned if the async operation is yet to
-#'     complete.
+#'     For a \sQuote{recvAio}, the received message is available at \code{$data}.
+#'     An \sQuote{unresolved} logical NA is returned if the async operation is
+#'     yet to complete.
 #'
 #'     To wait for the async operation to complete and retrieve the received
-#'     message, use \code{\link{call_aio}} on the returned 'recvAio' object.
+#'     message, use \code{\link{call_aio}} on the returned \sQuote{recvAio}
+#'     object.
 #'
 #'     Alternatively, to stop the async operation, use \code{\link{stop_aio}}.
 #'
-#'     In case of an error, an integer 'errorValue' is returned (to be
+#'     In case of an error, an integer \sQuote{errorValue} is returned (to be
 #'     distiguishable from an integer message value). This can be checked using
 #'     \code{\link{is_error_value}}.
 #'
@@ -122,16 +123,16 @@ recv_aio <- function(con,
 
 #' Receive Async and Signal a Condition
 #'
-#' A signalling version of the function takes a 'conditionVariable' as an
+#' A signalling version of the function takes a \sQuote{conditionVariable} as an
 #'     additional argument and signals it when the async receive is complete.
 #'
-#' @param cv \strong{For the signalling version}: a 'conditionVariable' to
-#'     signal when the async receive is complete.
+#' @param cv \strong{For the signalling version}: a \sQuote{conditionVariable}
+#'     to signal when the async receive is complete.
 #'
 #' @details \strong{For the signalling version}: when the receive is complete,
-#'     the supplied 'conditionVariable' is signalled by incrementing its value
-#'     by 1. This happens asynchronously and independently of the R execution
-#'     thread.
+#'     the supplied \sQuote{conditionVariable} is signalled by incrementing its
+#'     value by 1. This happens asynchronously and independently of the R
+#'     execution thread.
 #'
 #' @examples
 #' # Signalling a condition variable
@@ -166,34 +167,38 @@ recv_aio_signal <- function(con,
 #' \code{call_aio} retrieves the value of an asynchronous Aio operation, waiting
 #'     for the operation to complete if still in progress.
 #'
-#' @param aio an Aio (object of class 'sendAio', 'recvAio' or 'ncurlAio').
+#' @param aio an Aio (object of class \sQuote{sendAio}, \sQuote{recvAio} or
+#'     \sQuote{ncurlAio}).
 #'
 #' @return The passed object (invisibly).
 #'
-#' @details For a 'recvAio', the received value may be retrieved at \code{$data}.
+#' @details For a \sQuote{recvAio}, the received value may be retrieved at
+#'     \code{$data}.
 #'
-#'     For a 'sendAio', the send result may be retrieved at \code{$result}. This
-#'     will be zero on success, or else an integer error code.
+#'     For a \sQuote{sendAio}, the send result may be retrieved at
+#'     \code{$result}. This will be zero on success, or else an integer error
+#'     code.
 #'
-#'     To access the values directly, use for example on a 'recvAio' \code{x}:
-#'     \code{call_aio(x)$data}.
+#'     To access the values directly, use for example on a \sQuote{recvAio}
+#'     \code{x}: \code{call_aio(x)$data}.
 #'
-#'     For a 'recvAio', if an error occurred in unserialization or conversion of
-#'     the message data to the specified mode, a raw vector will be returned
-#'     instead to allow recovery (accompanied by a warning).
+#'     For a \sQuote{recvAio}, if an error occurred in unserialization or
+#'     conversion of the message data to the specified mode, a raw vector will
+#'     be returned instead to allow recovery (accompanied by a warning).
 #'
 #'     Once the value has been successfully retrieved, the Aio is deallocated
 #'     and only the value is stored in the Aio object.
 #'
-#'     Note this function operates silently and does not error even if 'aio' is
-#'     not an active Aio, always returning invisibly the passed object.
+#'     Note this function operates silently and does not error even if
+#'     \sQuote{aio} is not an active Aio, always returning invisibly the passed
+#'     object.
 #'
 #' @section Alternatively:
 #'
-#'     Aio values may be accessed directly at \code{$result} for a 'sendAio',
-#'     and \code{$data} for a 'recvAio'. If the Aio operation is yet to complete,
-#'     an 'unresolved' logical NA will be returned. Once complete, the resolved
-#'     value will be returned instead.
+#'     Aio values may be accessed directly at \code{$result} for a
+#'     \sQuote{sendAio}, and \code{$data} for a \sQuote{recvAio}. If the Aio
+#'     operation is yet to complete, an \sQuote{unresolved} logical NA will be
+#'     returned. Once complete, the resolved value will be returned instead.
 #'
 #'     \code{\link{unresolved}} may also be used, which returns TRUE only if an
 #'     Aio or Aio value has yet to resolve and FALSE otherwise. This is suitable
@@ -237,14 +242,14 @@ call_aio_ <- function(aio) invisible(.Call(rnng_wait_thread_create, aio))
 #'
 #' @return Invisible NULL.
 #'
-#' @details Stops the asynchronous I/O operation associated with 'aio' by
+#' @details Stops the asynchronous I/O operation associated with \sQuote{aio} by
 #'     aborting, and then waits for it to complete or to be completely aborted,
-#'     and for the callback associated with the 'aio' to have completed
-#'     executing. If successful, the 'aio' will resolve to an 'errorValue' 20
-#'     (Operation canceled).
+#'     and for the callback associated with the \sQuote{aio} to have completed
+#'     executing. If successful, the \sQuote{aio} will resolve to an
+#'     \sQuote{errorValue} 20 (Operation canceled).
 #'
-#'     Note this function operates silently and does not error even if 'aio' is
-#'     not an active Aio, always returning invisible NULL.
+#'     Note this function operates silently and does not error even if
+#'     \sQuote{aio} is not an active Aio, always returning invisible NULL.
 #'
 #' @export
 #'
@@ -255,16 +260,17 @@ stop_aio <- function(aio) invisible(.Call(rnng_aio_stop, aio))
 #' Query whether an Aio or Aio value remains unresolved. Unlike
 #'     \code{\link{call_aio}}, this function does not wait for completion.
 #'
-#' @param aio an Aio (object of class 'sendAio' or 'recvAio'), or Aio value
-#'     stored in \code{$result} or \code{$data} as the case may be.
+#' @param aio an Aio (object of class \sQuote{sendAio} or \sQuote{recvAio}), or
+#'     Aio value stored in \code{$result} or \code{$data} as the case may be.
 #'
-#' @return Logical TRUE if 'aio' is an unresolved Aio or Aio value, or FALSE
-#'     otherwise.
+#' @return Logical TRUE if \sQuote{aio} is an unresolved Aio or Aio value, or
+#'     FALSE otherwise.
 #'
 #' @details Suitable for use in control flow statements such as \code{while} or
 #'     \code{if}.
 #'
-#'     Note: querying resolution may cause a previously unresolved Aio to resolve.
+#'     Note: querying resolution may cause a previously unresolved Aio to
+#'     resolve.
 #'
 #' @examples
 #' s1 <- socket("pair", listen = "inproc://nanonext")
@@ -292,11 +298,11 @@ unresolved <- function(aio) .Call(rnng_unresolved, aio)
 #'     altering its state in any way i.e. not attempting to retrieve the result
 #'     or message.
 #'
-#' @param aio an Aio (object of class 'sendAio' or 'recvAio').
+#' @param aio an Aio (object of class \sQuote{sendAio} or \sQuote{recvAio}).
 #'
-#' @return Logical TRUE if 'aio' is an unresolved Aio, or FALSE otherwise.
+#' @return Logical TRUE if \sQuote{aio} is an unresolved Aio, or FALSE otherwise.
 #'
-#' @details \code{.unresolved()} is not intended to be used for 'recvAio'
+#' @details \code{.unresolved()} is not intended to be used for \sQuote{recvAio}
 #'     returned by a signalling function, in which case \code{\link{unresolved}}
 #'     must be used in all cases.
 #'

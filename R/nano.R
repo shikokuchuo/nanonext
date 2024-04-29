@@ -23,7 +23,7 @@
 #'
 #' @inheritParams socket
 #'
-#' @return A nano object of class 'nanoObject'.
+#' @return A nano object of class \sQuote{nanoObject}.
 #'
 #' @details This function encapsulates a Socket, Dialer and/or Listener, and its
 #'     associated methods.

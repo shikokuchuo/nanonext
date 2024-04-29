@@ -15,8 +15,9 @@ socket(
 )
 }
 \arguments{
-\item{protocol}{[default 'bus'] choose protocol - 'bus', 'pair', 'push',
-'pull', 'pub', 'sub', 'req', 'rep', 'surveyor', or 'respondent' - see
+\item{protocol}{[default 'bus'] choose protocol - \sQuote{bus}, \sQuote{pair},
+\sQuote{push}, \sQuote{pull}, \sQuote{pub}, \sQuote{sub}, \sQuote{req},
+\sQuote{rep}, \sQuote{surveyor}, or \sQuote{respondent} - see
 \link{protocols}.}
 
 \item{dial}{(optional) a URL to dial, specifying the transport and address as
@@ -42,11 +43,11 @@ general use - do not enable unless you have a specific need (refer to NNG
 documentation).}
 }
 \value{
-A Socket (object of class 'nanoSocket' and 'nano').
+A Socket (object of class \sQuote{nanoSocket} and \sQuote{nano}).
 }
 \description{
-Open a Socket implementing 'protocol', and optionally dial (establish an
-    outgoing connection) or listen (accept an incoming connection) at an
+Open a Socket implementing \sQuote{protocol}, and optionally dial (establish
+    an outgoing connection) or listen (accept an incoming connection) at an
     address.
 }
 \details{

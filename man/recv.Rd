@@ -16,33 +16,34 @@ recv(
 \item{con}{a Socket, Context or Stream.}
 
 \item{mode}{[default 'serial'] character value or integer equivalent - one of
-'serial' (1L), 'character' (2L), 'complex' (3L), 'double' (4L), 'integer'
-(5L), 'logical' (6L), 'numeric' (7L), 'raw' (8L), or 'string' (9L). The
-default 'serial' means a serialised R object; for the other modes,
-received bytes are converted into the respective mode. 'string' is a
-faster option for length one character vectors. For Streams, 'serial' is
-not an option and the default is 'character'.}
+\sQuote{serial} (1L), \sQuote{character} (2L), \sQuote{complex} (3L),
+\sQuote{double} (4L), \sQuote{integer} (5L), \sQuote{logical} (6L),
+\sQuote{numeric} (7L), \sQuote{raw} (8L), or \sQuote{string} (9L). The
+default \sQuote{serial} means a serialised R object; for the other modes,
+received bytes are converted into the respective mode. \sQuote{string} is
+a faster option for length one character vectors. For Streams,
+\sQuote{serial} is not an option and the default is \sQuote{character}.}
 
 \item{block}{[default NULL] which applies the connection default (see section
-'Blocking' below). Specify logical TRUE to block until successful or
-FALSE to return immediately even if unsuccessful (e.g. if no connection
-is available), or else an integer value specifying the maximum time to
-block in milliseconds, after which the operation will time out.}
+\sQuote{Blocking} below). Specify logical TRUE to block until successful
+or FALSE to return immediately even if unsuccessful (e.g. if no
+connection is available), or else an integer value specifying the maximum
+time to block in milliseconds, after which the operation will time out.}
 
 \item{n}{[default 65536L] applicable to Streams only, the maximum number of
 bytes to receive. Can be an over-estimate, but note that a buffer of this
 size is reserved.}
 }
 \value{
-The received data in the 'mode' specified.
+The received data in the \sQuote{mode} specified.
 }
 \description{
 Receive data over a connection (Socket, Context or Stream).
 }
 \details{
-In case of an error, an integer 'errorValue' is returned (to be
-    distiguishable from an integer message value). This can be verified using
-    \code{\link{is_error_value}}.
+In case of an error, an integer \sQuote{errorValue} is returned (to
+    be distiguishable from an integer message value). This can be verified
+    using \code{\link{is_error_value}}.
 
     If an error occurred in unserialization or conversion of the message data
     to the specified mode, a raw vector will be returned instead to allow
@@ -57,9 +58,10 @@ In case of an error, an integer 'errorValue' is returned (to be
 
     For Streams: the default behaviour is blocking with \code{block = TRUE}.
     This will wait until a message is received. Set a timeout to ensure that
-    the function returns under all scenarios. As the underlying implementation
-    uses an asynchronous receive with a wait, it is recommended to set a
-    small positive value for \code{block} rather than FALSE.
+    the function returns under all scenarios. As the underlying
+    implementation uses an asynchronous receive with a wait, it is
+    recommended to set a small positive value for \code{block} rather than
+    FALSE.
 }
 
 \examples{

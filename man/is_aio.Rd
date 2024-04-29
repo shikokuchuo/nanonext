@@ -19,10 +19,12 @@ Logical value TRUE or FALSE.
 Validator functions for object types created by \{nanonext\}.
 }
 \details{
-Is the object an Aio (inheriting from class 'sendAio' or 'recvAio').
+Is the object an Aio (inheriting from class \sQuote{sendAio} or
+    \sQuote{recvAio}).
 
-    Is the object an object inheriting from class 'nano' i.e. a nanoSocket,
-    nanoContext, nanoStream, nanoListener, nanoDialer, or nano Object.
+    Is the object an object inheriting from class \sQuote{nano} i.e. a
+    nanoSocket, nanoContext, nanoStream, nanoListener, nanoDialer, or nano
+    Object.
 }
 \examples{
 sock <- socket(listen = "inproc://isaio")

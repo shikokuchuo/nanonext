@@ -35,7 +35,7 @@
 #'     server TLS configuration object created by \code{\link{tls_config}}. If
 #'     missing or NULL, certificates are not validated.
 #'
-#' @return A Stream (object of class 'nanoStream' and 'nano').
+#' @return A Stream (object of class \sQuote{nanoStream} and \sQuote{nano}).
 #'
 #' @details A Stream is used for raw byte stream connections. Byte streams are
 #'     reliable in that data will not be delivered out of order, or with portions

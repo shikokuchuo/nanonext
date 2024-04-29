@@ -28,6 +28,7 @@ SEXP nano_DotcallSymbol;
 SEXP nano_HeadersSymbol;
 SEXP nano_IdSymbol;
 SEXP nano_ListenerSymbol;
+SEXP nano_LNSymbol;
 SEXP nano_ProtocolSymbol;
 SEXP nano_RawSymbol;
 SEXP nano_ResolveSymbol;
@@ -46,12 +47,25 @@ SEXP nano_aioFuncs;
 SEXP nano_aioNFuncs;
 SEXP nano_error;
 SEXP nano_klassString;
+SEXP nano_onLoad;
+SEXP nano_precious;
 SEXP nano_recvAio;
 SEXP nano_refHook;
 SEXP nano_success;
 SEXP nano_unresolved;
 
-SEXP nano_precious;
+void (*eln2)(void (*)(void *), void *, double, int);
+
+void later2(void (*fun)(void *), void *data) {
+  eln2(fun, data, 0, 0);
+}
+
+void eln2dummy(void (*fun)(void *), void *data, double secs, int loop) {
+  (void) fun;
+  (void) data;
+  (void) secs;
+  (void) loop;
+}
 
 static void RegisterSymbols(void) {
   nano_AioSymbol = Rf_install("aio");
@@ -63,6 +77,7 @@ static void RegisterSymbols(void) {
   nano_HeadersSymbol = Rf_install("headers");
   nano_IdSymbol = Rf_install("id");
   nano_ListenerSymbol = Rf_install("listener");
+  nano_LNSymbol = Rf_install("loadNamespace");
   nano_ProtocolSymbol = Rf_install("protocol");
   nano_RawSymbol = Rf_install("raw");
   nano_ResolveSymbol = Rf_install("resolve");
@@ -78,7 +93,6 @@ static void RegisterSymbols(void) {
 }
 
 static void PreserveObjects(void) {
-  R_PreserveObject(nano_precious = Rf_cons(R_NilValue, Rf_cons(R_NilValue, R_NilValue)));
   R_PreserveObject(nano_aioFormals = Rf_cons(nano_AioSymbol, R_NilValue));
   R_PreserveObject(nano_aioFuncs = Rf_allocVector(LISTSXP, 4));
   SETCAR(nano_aioFuncs, Rf_lang3(nano_DotcallSymbol, Rf_install("rnng_aio_result"), nano_DataSymbol));
@@ -93,6 +107,8 @@ static void PreserveObjects(void) {
   SET_STRING_ELT(nano_error, 0, Rf_mkChar("errorValue"));
   SET_STRING_ELT(nano_error, 1, Rf_mkChar("try-error"));
   R_PreserveObject(nano_klassString = Rf_cons(R_NilValue, R_NilValue));
+  R_PreserveObject(nano_onLoad = Rf_lcons(nano_LNSymbol, Rf_cons(Rf_mkString("later"), R_NilValue)));
+  R_PreserveObject(nano_precious = Rf_cons(R_NilValue, Rf_cons(R_NilValue, R_NilValue)));
   R_PreserveObject(nano_recvAio = Rf_mkString("recvAio"));
   R_PreserveObject(nano_refHook = Rf_list2(R_NilValue, R_NilValue));
   R_PreserveObject(nano_success = Rf_ScalarInteger(0));
@@ -105,12 +121,13 @@ static void ReleaseObjects(void) {
   R_ReleaseObject(nano_success);
   R_ReleaseObject(nano_refHook);
   R_ReleaseObject(nano_recvAio);
+  R_ReleaseObject(nano_precious);
+  R_ReleaseObject(nano_onLoad);
   R_ReleaseObject(nano_klassString);
   R_ReleaseObject(nano_error);
   R_ReleaseObject(nano_aioNFuncs);
   R_ReleaseObject(nano_aioFuncs);
   R_ReleaseObject(nano_aioFormals);
-  R_ReleaseObject(nano_precious);
 }
 
 static const R_CallMethodDef callMethods[] = {
@@ -195,6 +212,7 @@ static const R_ExternalMethodDef externalMethods[] = {
 void attribute_visible R_init_nanonext(DllInfo* dll) {
   RegisterSymbols();
   PreserveObjects();
+  eln2 = eln2dummy;
   R_registerRoutines(dll, NULL, callMethods, NULL, externalMethods);
   R_useDynamicSymbols(dll, FALSE);
   R_forceSymbols(dll, TRUE);

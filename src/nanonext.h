@@ -177,6 +177,8 @@ typedef struct nano_buf_s {
 } nano_buf;
 
 void later2(void (*)(void *), void *);
+extern void (*eln2)(void (*)(void *), void *, double, int);
+void eln2dummy(void (*)(void *), void *, double, int);
 
 SEXP nano_PreserveObject(SEXP);
 void nano_ReleaseObject(SEXP);
@@ -278,6 +280,7 @@ extern SEXP nano_DotcallSymbol;
 extern SEXP nano_HeadersSymbol;
 extern SEXP nano_IdSymbol;
 extern SEXP nano_ListenerSymbol;
+extern SEXP nano_LNSymbol;
 extern SEXP nano_ProtocolSymbol;
 extern SEXP nano_RawSymbol;
 extern SEXP nano_ResolveSymbol;
@@ -296,11 +299,11 @@ extern SEXP nano_aioFuncs;
 extern SEXP nano_aioNFuncs;
 extern SEXP nano_error;
 extern SEXP nano_klassString;
+extern SEXP nano_onLoad;
+extern SEXP nano_precious;
 extern SEXP nano_recvAio;
 extern SEXP nano_refHook;
 extern SEXP nano_success;
 extern SEXP nano_unresolved;
-
-extern SEXP nano_precious;
 
 #endif

@@ -9,10 +9,10 @@ pipe_notify(socket, cv, cv2 = NULL, add = FALSE, remove = FALSE, flag = FALSE)
 \arguments{
 \item{socket}{a Socket.}
 
-\item{cv}{a 'conditionVariable' to signal.}
+\item{cv}{a \sQuote{conditionVariable} to signal.}
 
 \item{cv2}{[default NULL] optionally, if specified, a second
-'conditionVariable' to signal. Note that this cv is signalled
+\sQuote{conditionVariable} to signal. Note that this cv is signalled
 sequentially after the first condition variable.}
 
 \item{add}{[default FALSE] logical value whether to signal when a pipe is
@@ -22,9 +22,9 @@ added.}
 removed.}
 
 \item{flag}{[default FALSE] logical value whether to also set a flag in the
-'conditionVariable'. This can help distinguish between different types of
-signal, and causes any subsequent \code{\link{wait}} to return FALSE
-instead of TRUE. If a signal from the \pkg{tools} package, e.g.
+\sQuote{conditionVariable}. This can help distinguish between different
+types of signal, and causes any subsequent \code{\link{wait}} to return
+FALSE instead of TRUE. If a signal from the \pkg{tools} package, e.g.
 \code{tools::SIGINT}, or an equivalent integer value is supplied, this
 sets a flag and additionally raises this signal upon the flag being set.}
 }
@@ -32,8 +32,8 @@ sets a flag and additionally raises this signal upon the flag being set.}
 Invisibly, zero on success (will otherwise error).
 }
 \description{
-Signals a 'conditionVariable' whenever pipes (individual connections) are
-    added or removed at a socket.
+Signals a \sQuote{conditionVariable} whenever pipes (individual connections)
+    are added or removed at a socket.
 }
 \details{
 For add: this event occurs after the pipe is fully added to the

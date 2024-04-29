@@ -1287,6 +1287,10 @@ SEXP rnng_set_promise_context(SEXP x, SEXP ctx) {
   if (R_ExternalPtrTag(aio) != nano_AioSymbol)
     return x;
 
+  if (eln2 == eln2dummy) {
+    Rf_eval(nano_onLoad, R_GlobalEnv);
+    eln2 = (void (*)(void (*)(void *), void *, double, int)) R_GetCCallable("later", "execLaterNative2");
+  }
   nano_aio *raio = (nano_aio *) R_ExternalPtrAddr(aio);
   if (raio->type == REQAIO) {
     nano_aio *saio = (nano_aio *) raio->next;

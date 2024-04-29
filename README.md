@@ -77,16 +77,13 @@ Web utilities:
 
 ### Installation
 
-Install the latest released version:
+Install the latest release from CRAN:
 
 ``` r
-# Either [1] fast channel from R-multiverse:
-install.packages("nanonext", repos = "https://r-multiverse.r-universe.dev")
-# Or [2] slow channel from CRAN:
 install.packages("nanonext")
 ```
 
-Or development build from R-universe:
+Or the development version from R-universe:
 
 ``` r
 install.packages("nanonext", repos = "https://shikokuchuo.r-universe.dev")
@@ -209,7 +206,7 @@ and ‘libmbedtls’ v3.5.2 will be automatically compiled from the package
 sources during installation.
 
 For previous R versions, pre-compiled ‘libnng’ v1.8.0 and ‘libmbedtls’
-v3.6.0 libraries are downloaded and used for installation instead.
+v3.5.2 libraries are downloaded and used for installation instead.
 
 ### Acknowledgements and Links
 

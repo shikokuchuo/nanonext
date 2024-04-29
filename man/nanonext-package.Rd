@@ -8,13 +8,13 @@
 \title{nanonext: NNG (Nanomsg Next Gen) Lightweight Messaging Library}
 \description{
 R binding for NNG (Nanomsg Next Gen), a successor to ZeroMQ. NNG is a socket
-    library implementing 'Scalability Protocols', a reliable,
+    library implementing \sQuote{Scalability Protocols}, a reliable,
     high-performance standard for common communications patterns including
     publish/subscribe, request/reply and service discovery, over in-process,
     IPC, TCP, WebSocket and secure TLS transports. As its own threaded
     concurrency framework, provides a toolkit for asynchronous programming
-    and distributed computing, with intuitive 'aio' objects which resolve
-    automatically upon completion of asynchronous operations, and
+    and distributed computing, with intuitive \sQuote{aio} objects which
+    resolve automatically upon completion of asynchronous operations, and
     synchronisation primitives allowing R to wait upon events signalled by
     concurrent threads.
 }
@@ -30,9 +30,9 @@ R binding for NNG (Nanomsg Next Gen), a successor to ZeroMQ. NNG is a socket
     such as \code{send()} or \code{recv()}.
 
     The primary object in the object-oriented interface is the nano object.
-    Use \code{\link{nano}} to create a nano object which encapsulates a Socket
-    and Dialer/Listener. Methods such as \code{$send()} or \code{$recv()} can
-    then be accessed directly from the object.
+    Use \code{\link{nano}} to create a nano object which encapsulates a
+    Socket and Dialer/Listener. Methods such as \code{$send()} or
+    \code{$recv()} can then be accessed directly from the object.
 }
 
 \section{Documentation}{
@@ -57,18 +57,18 @@ R binding for NNG (Nanomsg Next Gen), a successor to ZeroMQ. NNG is a socket
 
 
     NNG presents a socket view of networking. A socket implements precisely
-    one protocol, such as 'bus', etc.
+    one protocol, such as \sQuote{bus}, etc.
 
     Each socket can be used to send and receive messages (if the protocol
     supports it, and implements the appropriate protocol semantics). For
-    example, the 'sub' protocol automatically filters incoming messages to
-    discard topics that have not been subscribed.
+    example, the \sQuote{sub} protocol automatically filters incoming
+    messages to discard topics that have not been subscribed.
 
     NNG sockets are message-oriented, and messages are either delivered
     wholly, or not at all. Partial delivery is not possible. Furthermore, NNG
     does not provide any other delivery or ordering guarantees: messages may
-    be dropped or reordered (some protocols, such as 'req' may offer stronger
-    guarantees by performing their own retry and validation schemes).
+    be dropped or reordered (some protocols, such as \sQuote{req} may offer
+    stronger guarantees by performing their own retry and validation schemes).
 
     Each socket can have zero, one, or many endpoints, which are either
     listeners or dialers (a given socket may use listeners, dialers, or

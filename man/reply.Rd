@@ -20,19 +20,20 @@ reply(
 \item{execute}{a function which takes the received (converted) data as its
 first argument. Can be an anonymous function of the form
 \code{function(x) do(x)}. Additional arguments can also be passed in
-through '...'.}
+through \sQuote{...}.}
 
 \item{recv_mode}{[default 'serial'] character value or integer equivalent -
-one of 'serial' (1L), 'character' (2L), 'complex' (3L), 'double' (4L),
-'integer' (5L), 'logical' (6L), 'numeric' (7L), 'raw' (8L), or 'string'
-(9L). The default 'serial' means a serialised R object; for the other
-modes, received bytes are converted into the respective mode. 'string' is
-a faster option for length one character vectors.}
+one of \sQuote{serial} (1L), \sQuote{character} (2L), \sQuote{complex}
+(3L), \sQuote{double} (4L), \sQuote{integer} (5L), \sQuote{logical} (6L),
+\sQuote{numeric} (7L), \sQuote{raw} (8L), or \sQuote{string} (9L). The
+default \sQuote{serial} means a serialised R object; for the other
+modes, received bytes are converted into the respective mode.
+\sQuote{string} is a faster option for length one character vectors.}
 
 \item{send_mode}{[default 'serial'] character value or integer equivalent -
-one of 'serial' (1L) to send serialised R objects, 'raw' (2L) to send
-atomic vectors of any type as a raw byte vector, or 'next' (3L) - see
-'Send Modes' section below.}
+one of \sQuote{serial} (1L) to send serialised R objects, \sQuote{raw}
+(2L) to send atomic vectors of any type as a raw byte vector, or
+\sQuote{next} (3L) - see \sQuote{Send Modes} section below.}
 
 \item{timeout}{[default NULL] integer value in milliseconds or NULL, which
 applies a socket-specific default, usually the same as no timeout. Note
@@ -65,20 +66,20 @@ Receive will block while awaiting a message to arrive and is usually
 \section{Send Modes}{
 
 
-    The default mode 'serial' sends serialised R objects to ensure perfect
-    reproducibility within R. When receiving, the corresponding mode 'serial'
-    should be used.
+    The default mode \sQuote{serial} sends serialised R objects to ensure
+    perfect reproducibility within R. When receiving, the corresponding mode
+    \sQuote{serial} should be used.
 
-    Mode 'raw' sends atomic vectors of any type as a raw byte vector, and
-    must be used when interfacing with external applications or raw system
-    sockets, where R serialization is not in use. When receiving, the mode
-    corresponding to the vector sent should be used.
+    Mode \sQuote{raw} sends atomic vectors of any type as a raw byte vector,
+    and must be used when interfacing with external applications or raw
+    system sockets, where R serialization is not in use. When receiving, the
+    mode corresponding to the vector sent should be used.
 
-    Mode 'next' sends serialised R objects, with native extensions enabled by
-    \code{\link{next_config}}. This configures custom serialization and
-    unserialization functions for external pointer reference objects. When
-    receiving, mode 'serial' should be used as 'next' sends are fully
-    compatible.
+    Mode \sQuote{next} sends serialised R objects, with native extensions
+    enabled by \code{\link{next_config}}. This configures custom
+    serialization and unserialization functions for reference objects. When
+    receiving, mode \sQuote{serial} should be used as \sQuote{next} sends are
+    fully compatible.
 }
 
 \examples{

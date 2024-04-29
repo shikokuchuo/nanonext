@@ -12,11 +12,12 @@ unlock(socket)
 \arguments{
 \item{socket}{a Socket.}
 
-\item{cv}{(optional) a 'conditionVariable'. If supplied, the socket is locked
-only whilst the condition variable is an odd value. This is designed to
-allow an initial connection, as well as subsequent re-connections after a
-connection has ended, if the conditon variable is also registered with
-\code{\link{pipe_notify}} for both add and remove pipe events.}
+\item{cv}{(optional) a \sQuote{conditionVariable}. If supplied, the socket is
+locked only whilst the condition variable is an odd value. This is
+designed to allow an initial connection, as well as subsequent
+re-connections after a connection has ended, if the conditon variable is
+also registered with \code{\link{pipe_notify}} for both add and remove
+pipe events.}
 }
 \value{
 Invisibly, zero on success (will otherwise error).

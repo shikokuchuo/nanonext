@@ -7,26 +7,29 @@
 cv \%~>\% cv2
 }
 \arguments{
-\item{cv}{a 'conditionVariable' object, from which to forward the signal.}
+\item{cv}{a \sQuote{conditionVariable} object, from which to forward the
+signal.}
 
-\item{cv2}{a 'conditionVariable' object, to which the signal is forwarded.}
+\item{cv2}{a \sQuote{conditionVariable} object, to which the signal is
+forwarded.}
 }
 \value{
-Invisibly, 'cv2'.
+Invisibly, \sQuote{cv2}.
 }
 \description{
-Forwards signals from one 'conditionVariable' to another.
+Forwards signals from one \sQuote{conditionVariable} to another.
 }
 \details{
-The condition value of 'cv' is initially reset to zero when this
-    operator returns. Only one forwarder can be active on a 'cv' at any given
-    time, and assigning a new forwarding target cancels any currently
-    existing forwarding.
+The condition value of \sQuote{cv} is initially reset to zero when
+    this operator returns. Only one forwarder can be active on a \sQuote{cv}
+    at any given time, and assigning a new forwarding target cancels any
+    currently existing forwarding.
 
-    Changes in the condition value of 'cv' are forwarded to 'cv2', but only
-    on each occassion 'cv' is signalled. This means that waiting on 'cv'
-    will cause a temporary divergence between the actual condition value of
-    'cv' and that recorded at 'cv2', until the next time 'cv' is signalled.
+    Changes in the condition value of \sQuote{cv} are forwarded to
+    \sQuote{cv2}, but only on each occassion \sQuote{cv} is signalled. This
+    means that waiting on \sQuote{cv} will cause a temporary divergence
+    between the actual condition value of \sQuote{cv} and that recorded at
+    \sQuote{cv2}, until the next time \sQuote{cv} is signalled.
 }
 \examples{
 cva <- cv(); cvb <- cv(); cv1 <- cv(); cv2 <- cv()

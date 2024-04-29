@@ -27,18 +27,18 @@
 #' @param tls [default NULL] for secure tls+tcp:// or wss:// connections only,
 #'     provide a TLS configuration object created by \code{\link{tls_config}}.
 #' @param autostart [default TRUE] whether to start the dialer (by default
-#'     asynchronously). Set to NA to start synchronously - this is less resilient
-#'     if a connection is not immediately possible, but avoids subtle errors
-#'     from attempting to use the socket before an asynchronous dial has completed.
-#'     Set to FALSE if setting configuration options on the dialer as it is not
-#'     generally possible to change these once started.
+#'     asynchronously). Set to NA to start synchronously - this is less
+#'     resilient if a connection is not immediately possible, but avoids subtle
+#'     errors from attempting to use the socket before an asynchronous dial has
+#'     completed. Set to FALSE if setting configuration options on the dialer as
+#'     it is not generally possible to change these once started.
 #' @param error [default FALSE] behaviour on error: if FALSE, returns an integer
 #'     exit code accompanied by a warning, or, if TRUE, generates an error and
 #'     halts execution.
 #'
 #' @return Invisibly, an integer exit code (zero on success). A new Dialer
-#'     (object of class 'nanoDialer' and 'nano') is created and bound to the
-#'     Socket if successful.
+#'     (object of class \sQuote{nanoDialer} and \sQuote{nano}) is created and
+#'     bound to the Socket if successful.
 #'
 #' @details To view all Dialers bound to a socket use \code{$dialer} on the
 #'     socket, which returns a list of Dialer objects. To access any individual
@@ -100,12 +100,12 @@ dial <- function(socket, url = "inproc://nanonext", tls = NULL, autostart = TRUE
 #'     possible to change these once started.
 #'
 #' @return Invisibly, an integer exit code (zero on success). A new Listener
-#'     (object of class 'nanoListener' and 'nano') is created and bound to the
-#'     Socket if successful.
+#'     (object of class \sQuote{nanoListener} and \sQuote{nano}) is created and
+#'     bound to the Socket if successful.
 #'
 #' @details To view all Listeners bound to a socket use \code{$listener} on the
-#'     socket, which returns a list of Listener objects. To access any individual
-#'     Listener (e.g. to set options on it), index into the list e.g.
+#'     socket, which returns a list of Listener objects. To access any
+#'     individual Listener (e.g. to set options on it), index into the list e.g.
 #'     \code{$listener[[1]]} to return the first Listener.
 #'
 #'     A listener is an external pointer to a listener object, which accepts

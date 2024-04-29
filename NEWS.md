@@ -1,10 +1,11 @@
-# nanonext 0.13.6.9016 (development)
+# nanonext 0.13.6.9017 (development)
 
 #### New Features
 
 * Integrates with the `later` package to provide the foundation for truly event-driven (non-polling) promises (thanks @jcheng5 for the initial prototype in #28), where side-effects are enacted asynchronously upon aio completion.
   + `request()` and `request_signal()` modified internally to support conversion of 'recvAio' to event-driven promises.
   + adds dependency on the `later` package to ensure asynchronous R code is always run on the main R thread.
+  + `later` is lazily loaded the first time a promise is used, and does not impact performance otherwise.
 
 #### Updates
 

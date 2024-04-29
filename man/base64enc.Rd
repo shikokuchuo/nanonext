@@ -20,10 +20,10 @@ and then unserialize back to the original object.}
 }
 \value{
 For \strong{base64enc}: A character string or raw vector depending on
-    the value of 'convert'.
+    the value of \sQuote{convert}.
 
     For \strong{base64dec}: A character string, raw vector, or other object
-    depending on the value of 'convert'.
+    depending on the value of \sQuote{convert}.
 }
 \description{
 Encodes / decodes a character string, raw vector or other object to base64
@@ -31,12 +31,12 @@ Encodes / decodes a character string, raw vector or other object to base64
 }
 \details{
 For encoding: a character string or raw vector (with no attributes)
-    is encoded 'as is', whilst all other objects are first serialized (using
-    R serialisation version 3, big-endian representation).
+    is encoded \emph{as is}, whilst all other objects are first serialized
+    (using R serialisation version 3, big-endian representation).
 
-    For decoding: the value of 'convert' should be set to TRUE, FALSE or NA
-    to be the analogue of the above 3 cases in order to return the original
-    object.
+    For decoding: the value of \sQuote{convert} should be set to TRUE, FALSE
+    or NA to be the analogue of the above 3 cases in order to return the
+    original object.
 }
 \examples{
 base64enc("hello world!")

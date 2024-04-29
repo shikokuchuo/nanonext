@@ -9,13 +9,13 @@ next_config(refhook = list(), class = "", vec = FALSE, mark = FALSE)
 \arguments{
 \item{refhook}{\strong{either} a list or pairlist of two functions: the
 signature for the first must accept a reference object inheriting from
-'class' (or a list of such objects) and return a raw vector, and the
-second must accept a raw vector and return reference objects (or a list
-of such objects), \cr \strong{or else} NULL to reset.}
+\sQuote{class} (or a list of such objects) and return a raw vector, and
+the second must accept a raw vector and return reference objects (or a
+list of such objects), \cr \strong{or else} NULL to reset.}
 
 \item{class}{[default ""] a character string representing the class of object
-that these serialization function will be applied to, e.g. 'ArrowTabular'
-or 'torch_tensor'.}
+that these serialization function will be applied to, e.g.
+\sQuote{ArrowTabular} or \sQuote{torch_tensor}.}
 
 \item{vec}{[default FALSE] the serialization functions accept and return
 reference object individually e.g. \code{arrow::write_to_raw} and
@@ -27,16 +27,18 @@ vectorized and accept and return a list of reference objects, e.g.
 mark serialized data with a special bit.}
 }
 \value{
-A pairlist comprising the currently-registered 'refhook' functions.
+A pairlist comprising the currently-registered \sQuote{refhook}
+    functions.
 }
 \description{
-Configures send mode 'next' by registering functions for custom serialization
-    and unserialization of non-system reference objects, allowing these
-    to be sent and received between different R sessions.
+Configures send mode \sQuote{next} by registering functions for custom
+    serialization and unserialization of non-system reference objects,
+    allowing these to be sent and received between different R sessions.
 }
 \details{
 Calling this function without any arguments returns the pairlist of
-    currently-registered 'refhook' functions (and resets 'mark' to FALSE).
+    currently-registered \sQuote{refhook} functions (and resets \sQuote{mark}
+    to FALSE).
 }
 \examples{
 g <- next_config(refhook = list(function(x) serialize(x, NULL), unserialize))

@@ -18,8 +18,8 @@ A character string.
 A fast implementation that combines two character values into a single string.
 }
 \details{
-If either 'a' or 'b' is a vector of length greater than 1, only the
-    first element of each is concatenated.
+If either \sQuote{a} or \sQuote{b} is a vector of length greater
+    than 1, only the first element of each is concatenated.
 }
 \examples{
 strcat("hello ", "world!")

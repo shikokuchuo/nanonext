@@ -18,12 +18,13 @@
 
 #' Open Socket
 #'
-#' Open a Socket implementing 'protocol', and optionally dial (establish an
-#'     outgoing connection) or listen (accept an incoming connection) at an
+#' Open a Socket implementing \sQuote{protocol}, and optionally dial (establish
+#'     an outgoing connection) or listen (accept an incoming connection) at an
 #'     address.
 #'
-#' @param protocol [default 'bus'] choose protocol - 'bus', 'pair', 'push',
-#'     'pull', 'pub', 'sub', 'req', 'rep', 'surveyor', or 'respondent' - see
+#' @param protocol [default 'bus'] choose protocol - \sQuote{bus}, \sQuote{pair},
+#'     \sQuote{push}, \sQuote{pull}, \sQuote{pub}, \sQuote{sub}, \sQuote{req},
+#'     \sQuote{rep}, \sQuote{surveyor}, or \sQuote{respondent} - see
 #'     \link{protocols}.
 #' @param dial (optional) a URL to dial, specifying the transport and address as
 #'     a character string e.g. 'inproc://anyvalue' or 'tcp://127.0.0.1:5555'
@@ -42,7 +43,7 @@
 #'     documentation).
 #' @inheritParams dial
 #'
-#' @return A Socket (object of class 'nanoSocket' and 'nano').
+#' @return A Socket (object of class \sQuote{nanoSocket} and \sQuote{nano}).
 #'
 #' @details NNG presents a socket view of networking. The sockets are
 #'     constructed using protocol-specific functions, as a given socket

@@ -23,11 +23,11 @@ transport and address as a character string e.g. 'inproc://anyvalue' or
 provide a TLS configuration object created by \code{\link{tls_config}}.}
 
 \item{autostart}{[default TRUE] whether to start the dialer (by default
-asynchronously). Set to NA to start synchronously - this is less resilient
-if a connection is not immediately possible, but avoids subtle errors
-from attempting to use the socket before an asynchronous dial has completed.
-Set to FALSE if setting configuration options on the dialer as it is not
-generally possible to change these once started.}
+asynchronously). Set to NA to start synchronously - this is less
+resilient if a connection is not immediately possible, but avoids subtle
+errors from attempting to use the socket before an asynchronous dial has
+completed. Set to FALSE if setting configuration options on the dialer as
+it is not generally possible to change these once started.}
 
 \item{error}{[default FALSE] behaviour on error: if FALSE, returns an integer
 exit code accompanied by a warning, or, if TRUE, generates an error and
@@ -35,8 +35,8 @@ halts execution.}
 }
 \value{
 Invisibly, an integer exit code (zero on success). A new Dialer
-    (object of class 'nanoDialer' and 'nano') is created and bound to the
-    Socket if successful.
+    (object of class \sQuote{nanoDialer} and \sQuote{nano}) is created and
+    bound to the Socket if successful.
 }
 \description{
 Creates a new Dialer and binds it to a Socket.

@@ -10,7 +10,7 @@ context(socket)
 \item{socket}{a Socket.}
 }
 \value{
-A Context (object of class 'nanoContext' and 'nano').
+A Context (object of class \sQuote{nanoContext} and \sQuote{nano}).
 }
 \description{
 Open a new Context to be used with a Socket. The purpose of a Context is to

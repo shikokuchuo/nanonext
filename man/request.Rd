@@ -27,47 +27,48 @@ request_signal(
 \arguments{
 \item{context}{a Context.}
 
-\item{data}{an object (if send_mode = 'raw', a vector).}
+\item{data}{an object (if send_mode = \sQuote{raw}, a vector).}
 
 \item{send_mode}{[default 'serial'] character value or integer equivalent -
-one of 'serial' (1L) to send serialised R objects, 'raw' (2L) to send
-atomic vectors of any type as a raw byte vector, or 'next' (3L) - see
-'Send Modes' section below.}
+one of \sQuote{serial} (1L) to send serialised R objects, \sQuote{raw}
+(2L) to send atomic vectors of any type as a raw byte vector, or
+\sQuote{next} (3L) - see \sQuote{Send Modes} section below.}
 
 \item{recv_mode}{[default 'serial'] character value or integer equivalent -
-one of 'serial' (1L), 'character' (2L), 'complex' (3L), 'double' (4L),
-'integer' (5L), 'logical' (6L), 'numeric' (7L), 'raw' (8L), or 'string'
-(9L). The default 'serial' means a serialised R object; for the other
-modes, received bytes are converted into the respective mode. 'string' is
-a faster option for length one character vectors.}
+one of \sQuote{serial} (1L), \sQuote{character} (2L), \sQuote{complex}
+(3L), \sQuote{double} (4L), \sQuote{integer} (5L), \sQuote{logical} (6L),
+\sQuote{numeric} (7L), \sQuote{raw} (8L), or \sQuote{string} (9L). The
+default \sQuote{serial} means a serialised R object; for the other
+modes, received bytes are converted into the respective mode.
+\sQuote{string} is a faster option for length one character vectors.}
 
 \item{timeout}{[default NULL] integer value in milliseconds or NULL, which
 applies a socket-specific default, usually the same as no timeout.}
 
-\item{cv}{\strong{For the signalling version}: a 'conditionVariable' to
-signal when the async receive is complete.}
+\item{cv}{\strong{For the signalling version}: a \sQuote{conditionVariable}
+to signal when the async receive is complete.}
 }
 \value{
-A 'recvAio' (object of class 'recvAio') (invisibly).
+A \sQuote{recvAio} (object of class \sQuote{recvAio}) (invisibly).
 }
 \description{
 Implements a caller/client for the req node of the req/rep protocol. Sends
     data to the rep node (executor/server) and returns an Aio, which can be
     called for the value when required.
 
-A signalling version of the function takes a 'conditionVariable' as an
+A signalling version of the function takes a \sQuote{conditionVariable} as an
     additional argument and signals it when the async receive is complete.
 }
 \details{
 Sending the request and receiving the result are both performed
-    async, hence the function will return immediately with a 'recvAio'
+    async, hence the function will return immediately with a \sQuote{recvAio}
     object. Access the return value at \code{$data}.
 
     This is designed so that the process on the server can run concurrently
     without blocking the client.
 
-    Optionally use \code{\link{call_aio}} on the 'recvAio' to call (and wait
-    for) the result.
+    Optionally use \code{\link{call_aio}} on the \sQuote{recvAio} to call
+    (and wait for) the result.
 
     If an error occured in the server process, a nul byte \code{00} will be
     received. This allows an error to be easily distinguished from a NULL
@@ -76,31 +77,31 @@ Sending the request and receiving the result are both performed
 
     It is recommended to use a new context for each request to ensure
     consistent state tracking. For safety, the context used for the request
-    is closed when all references to the returned 'recvAio' are removed and
-    the object is garbage collected.
+    is closed when all references to the returned \sQuote{recvAio} are
+    removed and the object is garbage collected.
 
 \strong{For the signalling version}: when the receive is complete,
-    the supplied 'conditionVariable' is signalled by incrementing its value
-    by 1. This happens asynchronously and independently of the R execution
-    thread.
+    the supplied \sQuote{conditionVariable} is signalled by incrementing its
+    value by 1. This happens asynchronously and independently of the R
+    execution thread.
 }
 \section{Send Modes}{
 
 
-    The default mode 'serial' sends serialised R objects to ensure perfect
-    reproducibility within R. When receiving, the corresponding mode 'serial'
-    should be used.
+    The default mode \sQuote{serial} sends serialised R objects to ensure
+    perfect reproducibility within R. When receiving, the corresponding mode
+    \sQuote{serial} should be used.
 
-    Mode 'raw' sends atomic vectors of any type as a raw byte vector, and
-    must be used when interfacing with external applications or raw system
-    sockets, where R serialization is not in use. When receiving, the mode
-    corresponding to the vector sent should be used.
+    Mode \sQuote{raw} sends atomic vectors of any type as a raw byte vector,
+    and must be used when interfacing with external applications or raw
+    system sockets, where R serialization is not in use. When receiving, the
+    mode corresponding to the vector sent should be used.
 
-    Mode 'next' sends serialised R objects, with native extensions enabled by
-    \code{\link{next_config}}. This configures custom serialization and
-    unserialization functions for external pointer reference objects. When
-    receiving, mode 'serial' should be used as 'next' sends are fully
-    compatible.
+    Mode \sQuote{next} sends serialised R objects, with native extensions
+    enabled by \code{\link{next_config}}. This configures custom
+    serialization and unserialization functions for reference objects. When
+    receiving, mode \sQuote{serial} should be used as \sQuote{next} sends are
+    fully compatible.
 }
 
 \examples{

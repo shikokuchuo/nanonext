@@ -28,13 +28,13 @@ cv_reset(cv)
 cv_signal(cv)
 }
 \arguments{
-\item{cv}{a 'conditionVariable' object.}
+\item{cv}{a \sQuote{conditionVariable} object.}
 
 \item{msec}{maximum time in milliseconds to wait for the condition variable
 to be signalled.}
 }
 \value{
-For \strong{cv}: a 'conditionVariable' object.
+For \strong{cv}: a \sQuote{conditionVariable} object.
 
     For \strong{wait}: (invisibly) logical TRUE, or else FALSE if a flag has
     been set.
@@ -65,7 +65,7 @@ For \strong{cv}: a 'conditionVariable' object.
 \code{cv_signal} signals a condition variable.
 }
 \details{
-Pass the 'conditionVariable' to the signalling forms of the
+Pass the \sQuote{conditionVariable} to the signalling forms of the
     asynchronous receive functions: \code{\link{recv_aio_signal}} or
     \code{\link{request_signal}}. Alternatively, to be notified of a pipe
     event, pass it to \code{\link{pipe_notify}}.
@@ -77,14 +77,14 @@ Pass the 'conditionVariable' to the signalling forms of the
     This will cause the R execution thread waiting on the condition variable
     using \code{wait} or \code{until} to wake and continue.
 
-    For argument 'msec', non-integer values will be coerced to integer.
-    Non-numeric input will be ignored and return immediately.
+    For argument \sQuote{msec}, non-integer values will be coerced to
+    integer. Non-numeric input will be ignored and return immediately.
 }
 \section{Condition}{
 
 
-    The condition internal to this 'conditionVariable' maintains a state
-    (value). Each signal increments the value by 1. Each time
+    The condition internal to this \sQuote{conditionVariable} maintains a
+    state (value). Each signal increments the value by 1. Each time
     \code{wait} or \code{until} returns (apart from due to timeout), the
     value is decremented by 1.
 

@@ -13,8 +13,8 @@ random(n = 1L, convert = TRUE)
 to return the hex representation of the bytes as a character string.}
 }
 \value{
-A length 'n' raw vector, or length one vector of '2n' random
-    characters, depending on the value of 'convert' supplied.
+A length \sQuote{n} raw vector, or length one vector of \sQuote{2n}
+    random characters, depending on the value of \sQuote{convert} supplied.
 }
 \description{
 Strictly not for use in statistical analysis. Non-reproducible and with
@@ -28,8 +28,8 @@ Strictly not for use in statistical analysis. Non-reproducible and with
     including at least one strong entropy source.
 }
 \details{
-If 'n' is non-integer, it will be coerced to integer; if a vector,
-    only the first element will be used.
+If \sQuote{n} is non-integer, it will be coerced to integer; if a
+    vector, only the first element will be used.
 }
 \note{
 Results obtained are independent of and do not alter the state of R's

@@ -10,7 +10,8 @@ call_aio(aio)
 call_aio_(aio)
 }
 \arguments{
-\item{aio}{an Aio (object of class 'sendAio', 'recvAio' or 'ncurlAio').}
+\item{aio}{an Aio (object of class \sQuote{sendAio}, \sQuote{recvAio} or
+\sQuote{ncurlAio}).}
 }
 \value{
 The passed object (invisibly).
@@ -23,31 +24,34 @@ The passed object (invisibly).
     interactive use.
 }
 \details{
-For a 'recvAio', the received value may be retrieved at \code{$data}.
+For a \sQuote{recvAio}, the received value may be retrieved at
+    \code{$data}.
 
-    For a 'sendAio', the send result may be retrieved at \code{$result}. This
-    will be zero on success, or else an integer error code.
+    For a \sQuote{sendAio}, the send result may be retrieved at
+    \code{$result}. This will be zero on success, or else an integer error
+    code.
 
-    To access the values directly, use for example on a 'recvAio' \code{x}:
-    \code{call_aio(x)$data}.
+    To access the values directly, use for example on a \sQuote{recvAio}
+    \code{x}: \code{call_aio(x)$data}.
 
-    For a 'recvAio', if an error occurred in unserialization or conversion of
-    the message data to the specified mode, a raw vector will be returned
-    instead to allow recovery (accompanied by a warning).
+    For a \sQuote{recvAio}, if an error occurred in unserialization or
+    conversion of the message data to the specified mode, a raw vector will
+    be returned instead to allow recovery (accompanied by a warning).
 
     Once the value has been successfully retrieved, the Aio is deallocated
     and only the value is stored in the Aio object.
 
-    Note this function operates silently and does not error even if 'aio' is
-    not an active Aio, always returning invisibly the passed object.
+    Note this function operates silently and does not error even if
+    \sQuote{aio} is not an active Aio, always returning invisibly the passed
+    object.
 }
 \section{Alternatively}{
 
 
-    Aio values may be accessed directly at \code{$result} for a 'sendAio',
-    and \code{$data} for a 'recvAio'. If the Aio operation is yet to complete,
-    an 'unresolved' logical NA will be returned. Once complete, the resolved
-    value will be returned instead.
+    Aio values may be accessed directly at \code{$result} for a
+    \sQuote{sendAio}, and \code{$data} for a \sQuote{recvAio}. If the Aio
+    operation is yet to complete, an \sQuote{unresolved} logical NA will be
+    returned. Once complete, the resolved value will be returned instead.
 
     \code{\link{unresolved}} may also be used, which returns TRUE only if an
     Aio or Aio value has yet to resolve and FALSE otherwise. This is suitable

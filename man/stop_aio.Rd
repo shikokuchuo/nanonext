@@ -7,7 +7,8 @@
 stop_aio(aio)
 }
 \arguments{
-\item{aio}{an Aio (object of class 'sendAio', 'recvAio' or 'ncurlAio').}
+\item{aio}{an Aio (object of class \sQuote{sendAio}, \sQuote{recvAio} or
+\sQuote{ncurlAio}).}
 }
 \value{
 Invisible NULL.
@@ -16,12 +17,12 @@ Invisible NULL.
 Stop an asynchronous Aio operation.
 }
 \details{
-Stops the asynchronous I/O operation associated with 'aio' by
+Stops the asynchronous I/O operation associated with \sQuote{aio} by
     aborting, and then waits for it to complete or to be completely aborted,
-    and for the callback associated with the 'aio' to have completed
-    executing. If successful, the 'aio' will resolve to an 'errorValue' 20
-    (Operation canceled).
+    and for the callback associated with the \sQuote{aio} to have completed
+    executing. If successful, the \sQuote{aio} will resolve to an
+    \sQuote{errorValue} 20 (Operation canceled).
 
-    Note this function operates silently and does not error even if 'aio' is
-    not an active Aio, always returning invisible NULL.
+    Note this function operates silently and does not error even if
+    \sQuote{aio} is not an active Aio, always returning invisible NULL.
 }

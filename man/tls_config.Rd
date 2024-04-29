@@ -36,17 +36,17 @@ supplied, then no authentication is performed and this argument has no
 effect.}
 }
 \value{
-A 'tlsConfig' object.
+A \sQuote{tlsConfig} object.
 }
 \description{
 Create a TLS configuration object to be used for secure connections. Specify
-    'client' to create a client configuration or 'server' to create a server
-    configuration.
+    \sQuote{client} to create a client configuration or \sQuote{server} to
+    create a server configuration.
 }
 \details{
-Specify one of 'client' or 'server' only, or neither (in which case
-    an empty client configuration is created), as a configuration can only be
-    of one type.
+Specify one of \sQuote{client} or \sQuote{server} only, or neither
+    (in which case an empty client configuration is created), as a
+    configuration can only be of one type.
 
     For creating client configurations for public internet usage, root CA
     ceritficates may usually be found at
