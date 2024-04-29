@@ -1647,3 +1647,10 @@ SEXP rnng_next_config(SEXP refhook, SEXP klass, SEXP list, SEXP mark) {
   return nano_refHook;
 
 }
+
+SEXP rnng_fini(void) {
+
+  nng_fini();
+  return R_NilValue;
+
+}

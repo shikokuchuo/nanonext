@@ -101,4 +101,5 @@
 
 .onUnload <- function(libpath) library.dynam.unload("nanonext", libpath)
 
+.fini <- function() .Call(rnng_fini)
 .run_now <- function() later::run_now()
