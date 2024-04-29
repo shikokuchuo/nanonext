@@ -109,11 +109,10 @@ req <- socket("req", listen = "tcp://127.0.0.1:6546")
 rep <- socket("rep", dial = "tcp://127.0.0.1:6546")
 
 # works if req and rep are running in parallel in different processes
-reply(.context(rep), execute = function(x) x + 1, timeout = 50)
-aio <- request(.context(req), data = 2022)
-aio$data
+# reply(.context(rep), execute = function(x) x + 1, timeout = 50)
+# aio <- request(.context(req), data = 2022)
+# aio$data
 
-stop_aio(aio)
 close(req)
 close(rep)
 
