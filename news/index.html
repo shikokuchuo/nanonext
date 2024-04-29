@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">nanonext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.13.6.9015</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.13.6.9016</span>
       </span>
     </div>
 
@@ -57,9 +57,9 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.13.6.9015" id="nanonext-01369015-development">nanonext 0.13.6.9015 (development)<a class="anchor" aria-label="anchor" href="#nanonext-01369015-development"></a></h2>
+<h2 class="page-header" data-toc-text="0.13.6.9016" id="nanonext-01369016-development">nanonext 0.13.6.9016 (development)<a class="anchor" aria-label="anchor" href="#nanonext-01369016-development"></a></h2>
 <div class="section level5">
-<h5 id="new-features-0-13-6-9015">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-13-6-9015"></a></h5>
+<h5 id="new-features-0-13-6-9016">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-13-6-9016"></a></h5>
 <ul><li>Integrates with the <code>later</code> package to provide the foundation for truly event-driven (non-polling) promises (thanks <a href="https://github.com/jcheng5" class="external-link">@jcheng5</a> for the initial prototype in <a href="https://github.com/shikokuchuo/nanonext/issues/28" class="external-link">#28</a>), where side-effects are enacted asynchronously upon aio completion.
 <ul><li>
 <code><a href="../reference/request.html">request()</a></code> and <code><a href="../reference/request.html">request_signal()</a></code> modified internally to support conversion of ‘recvAio’ to event-driven promises.</li>
@@ -67,49 +67,36 @@
 </ul></li>
 </ul></div>
 <div class="section level5">
-<h5 id="updates-0-13-6-9015">Updates<a class="anchor" aria-label="anchor" href="#updates-0-13-6-9015"></a></h5>
+<h5 id="updates-0-13-6-9016">Updates<a class="anchor" aria-label="anchor" href="#updates-0-13-6-9016"></a></h5>
 <ul><li>
 <code><a href="../reference/stop_aio.html">stop_aio()</a></code> now causes the ‘aio’ to resolve to an ‘errorValue’ of 20 (Operation canceled) if successfully stopped.</li>
 <li>
 <code><a href="../reference/nng_error.html">nng_error()</a></code> now returns the error code combined with the message as a character string.</li>
 <li>Integer file descriptors are no longer appended to ‘nanoSocket’ attributes.</li>
 <li>Adds ‘xz’ to SystemRequirements (as was the case previously but not explicitly specified) (thanks <a href="https://github.com/gaborcsardi" class="external-link">@gaborcsardi</a>).</li>
+<li>Re-aligns bundled ‘libmbedtls’ to v3.5.2 and optimises bundle size.</li>
 <li>Updates minimum ‘libnng’ version requirement to v1.6.0.</li>
 <li>Upgrades bundled ‘libnng’ to v1.8.0.</li>
 </ul></div>
 </div>
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.13.6" id="nanonext-0136">nanonext 0.13.6<a class="anchor" aria-label="anchor" href="#nanonext-0136"></a></h2>
+<h2 class="page-header" data-toc-text="0.13.5.2" id="nanonext-01352">nanonext 0.13.5.2<small>2024-04-06</small><a class="anchor" aria-label="anchor" href="#nanonext-01352"></a></h2>
 <div class="section level5">
-<h5 id="updates-0-13-6">Updates<a class="anchor" aria-label="anchor" href="#updates-0-13-6"></a></h5>
+<h5 id="updates-0-13-5-2">Updates<a class="anchor" aria-label="anchor" href="#updates-0-13-5-2"></a></h5>
 <ul><li>Safer and more efficient memory reads for ‘next’ serialization corrects for CRAN UBSAN-clang check errors.</li>
-<li>Upgrades bundled ‘libmbedtls’ to v3.6.0 LTS.</li>
 </ul></div>
 </div>
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.13.5" id="nanonext-0135">nanonext 0.13.5<a class="anchor" aria-label="anchor" href="#nanonext-0135"></a></h2>
+<h2 class="page-header" data-toc-text="0.13.5.1" id="nanonext-01351">nanonext 0.13.5.1<small>2024-04-05</small><a class="anchor" aria-label="anchor" href="#nanonext-01351"></a></h2>
 <div class="section level5">
-<h5 id="updates-0-13-5">Updates<a class="anchor" aria-label="anchor" href="#updates-0-13-5"></a></h5>
-<ul><li>Removes SHA-2 cryptographic hash functions (please use the streaming implementation in the secretbase package).</li>
-</ul></div>
-</div>
-    <div class="section level2">
-<h2 class="page-header" data-toc-text="0.13.4" id="nanonext-0134">nanonext 0.13.4<a class="anchor" aria-label="anchor" href="#nanonext-0134"></a></h2>
-<div class="section level5">
-<h5 id="new-features-0-13-4">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-13-4"></a></h5>
-<ul><li>An integer file descriptor is appended to ‘nanoSockets’ as the attribute ‘fd’ - see updated documentation for <code><a href="../reference/socket.html">socket()</a></code>.</li>
-</ul></div>
-</div>
-    <div class="section level2">
-<h2 class="page-header" data-toc-text="0.13.3" id="nanonext-0133">nanonext 0.13.3<a class="anchor" aria-label="anchor" href="#nanonext-0133"></a></h2>
-<div class="section level5">
-<h5 id="new-features-0-13-3">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-13-3"></a></h5>
+<h5 id="new-features-0-13-5-1">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-13-5-1"></a></h5>
 <ul><li>
 <code><a href="../reference/next_config.html">next_config()</a></code> gains argument ‘class’ and ‘vec’, enabling custom serialization for all reference object types supported by R serialization.</li>
+<li>An integer file descriptor is appended to ‘nanoSockets’ as the attribute ‘fd’ - see updated documentation for <code><a href="../reference/socket.html">socket()</a></code>.</li>
 </ul></div>
 <div class="section level5">
-<h5 id="updates-0-13-3">Updates<a class="anchor" aria-label="anchor" href="#updates-0-13-3"></a></h5>
-<ul><li>Upgrades bundled ‘libnng’ to v1.7.3.</li>
+<h5 id="updates-0-13-5-1">Updates<a class="anchor" aria-label="anchor" href="#updates-0-13-5-1"></a></h5>
+<ul><li>Removes SHA-2 cryptographic hash functions (please use the streaming implementation in the secretbase package).</li>
 </ul></div>
 </div>
     <div class="section level2">
