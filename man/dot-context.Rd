@@ -23,9 +23,3 @@ External pointers created by this function are unclassed, hence
     \code{\link{reap}} instead). Otherwise they function identically to a
     Context when passed to all messaging functions.
 }
-\examples{
-s <- socket("req", listen = "inproc://nanonext")
-r <- request(.context(s), "request data")
-close(s)
-
-}

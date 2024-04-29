@@ -76,11 +76,6 @@ context <- function(socket) .Call(rnng_ctx_open, socket)
 #'
 #' @return An external pointer.
 #'
-#' @examples
-#' s <- socket("req", listen = "inproc://nanonext")
-#' r <- request(.context(s), "request data")
-#' close(s)
-#'
 #' @export
 #'
 .context <- function(socket) .Call(rnng_ctx_create, socket)
