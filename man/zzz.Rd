@@ -7,13 +7,14 @@
 zzz()
 }
 \description{
-Do not use. Only present for cleaning up after running examples and tests.
+Only present for cleaning up after running examples and tests. Do not attempt
+    to run the examples.
 }
 \examples{
 rm(list = ls())
 gc()
 Sys.sleep(1L)
-nanonext:::zzz()
+.Call(nanonext:::rnng_fini)
 
 }
 \keyword{internal}

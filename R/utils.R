@@ -324,14 +324,15 @@ next_config <- function(refhook = list(), class = "", vec = FALSE, mark = FALSE)
 
 #' Internal Package Function
 #'
-#' Do not use. Only present for cleaning up after running examples and tests.
+#' Only present for cleaning up after running examples and tests. Do not attempt
+#'     to run the examples.
 #'
 #' @examples
 #' rm(list = ls())
 #' gc()
 #' Sys.sleep(1L)
-#' nanonext:::zzz()
+#' .Call(nanonext:::rnng_fini)
 #'
 #' @keywords internal
 #'
-zzz <- function() if (interactive()) later::run_now() else .Call(rnng_fini)
+zzz <- function() {}

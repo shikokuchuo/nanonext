@@ -101,6 +101,8 @@ messenger <- function(url, auth = NULL) {
         cat(sprintf("%*s > %s\n", nchar(data), "", format.POSIXct(Sys.time())), file = stdout())
   }
 
+  if (!interactive()) later::run_now()
+
 }
 
 # nocov end
