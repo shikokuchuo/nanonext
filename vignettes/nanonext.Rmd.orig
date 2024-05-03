@@ -15,8 +15,6 @@ knitr::opts_chunk$set(
 )
 ```
 
-<a href="https://shikokuchuo.net/nanonext/" alt="nanonext"><img src="../man/figures/logo.png" alt="nanonext logo" align="right" width="120" /></a>
-
 ### Table of Contents
 
 1. [Cross-language Exchange](#cross-language-exchange)
