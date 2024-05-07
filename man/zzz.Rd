@@ -11,10 +11,12 @@ Only present for cleaning up after running examples and tests. Do not attempt
     to run the examples.
 }
 \examples{
-rm(list = ls())
-gc()
-Sys.sleep(1L)
-.Call(nanonext:::rnng_fini)
+if (Sys.info()[["sysname"]] == "Linux") {
+  rm(list = ls())
+  gc()
+  Sys.sleep(1L)
+  .Call(nanonext:::rnng_fini)
+}
 
 }
 \keyword{internal}

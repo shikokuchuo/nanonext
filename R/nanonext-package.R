@@ -98,10 +98,3 @@
 #' @useDynLib nanonext, .registration = TRUE
 #'
 "_PACKAGE"
-
-# nocov start
-# tested implicitly
-
-.onUnload <- function(libpath) library.dynam.unload("nanonext", libpath)
-
-# nocov end

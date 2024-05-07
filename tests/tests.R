@@ -555,7 +555,9 @@ nanotestw(dial(s, url = "tls+tcp://.", tls = tls, error = FALSE) > 0)
 nanotestw(listen(s, url = "tls+tcp://.", tls = tls, error = FALSE) > 0)
 nanotestz(close(s1))
 nanotestz(close(s))
-rm(list = ls())
-gc()
-Sys.sleep(1L)
-.Call(nanonext:::rnng_fini)
+if (Sys.info()[["sysname"]] == "Linux") {
+  rm(list = ls())
+  gc()
+  Sys.sleep(1L)
+  .Call(nanonext:::rnng_fini)
+}
