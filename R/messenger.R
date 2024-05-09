@@ -111,5 +111,5 @@ md5_object <- function(x) {
   file <- tempfile()
   on.exit(unlink(file))
   saveRDS(x, file)
-  charToRaw(md5sum(file))
+  charToRaw(tools::md5sum(file))
 }
