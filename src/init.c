@@ -116,6 +116,7 @@ static void PreserveObjects(void) {
   Rf_classgets(nano_unresolved, Rf_mkString("unresolvedValue"));
 }
 
+// # nocov start
 static void ReleaseObjects(void) {
   R_ReleaseObject(nano_unresolved);
   R_ReleaseObject(nano_success);
@@ -129,6 +130,7 @@ static void ReleaseObjects(void) {
   R_ReleaseObject(nano_aioFuncs);
   R_ReleaseObject(nano_aioFormals);
 }
+// # nocov end
 
 static const R_CallMethodDef callMethods[] = {
   {"rnng_aio_call", (DL_FUNC) &rnng_aio_call, 1},
@@ -219,6 +221,8 @@ void attribute_visible R_init_nanonext(DllInfo* dll) {
   R_forceSymbols(dll, TRUE);
 }
 
+// # nocov start
 void attribute_visible R_unload_nanonext(DllInfo *info) {
   ReleaseObjects();
 }
+// # nocov end
