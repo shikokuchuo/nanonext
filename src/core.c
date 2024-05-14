@@ -673,9 +673,8 @@ SEXP rnng_ctx_open(SEXP socket) {
   nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(socket);
   nng_ctx *ctx = R_Calloc(1, nng_ctx);
   SEXP context;
-  int xc;
 
-  xc = nng_ctx_open(ctx, *sock);
+  const int xc = nng_ctx_open(ctx, *sock);
   if (xc) {
     R_Free(ctx);
     ERROR_OUT(xc);
@@ -703,9 +702,8 @@ SEXP rnng_ctx_create(SEXP socket) {
   nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(socket);
   nng_ctx *ctx = R_Calloc(1, nng_ctx);
   SEXP context;
-  int xc;
 
-  xc = nng_ctx_open(ctx, *sock);
+  const int xc = nng_ctx_open(ctx, *sock);
   if (xc) {
     R_Free(ctx);
     ERROR_OUT(xc);
@@ -723,8 +721,8 @@ SEXP rnng_ctx_close(SEXP context) {
   if (R_ExternalPtrTag(context) != nano_ContextSymbol)
     Rf_error("'context' is not a valid Context");
   nng_ctx *ctx = (nng_ctx *) R_ExternalPtrAddr(context);
-  const int xc = nng_ctx_close(*ctx);
 
+  const int xc = nng_ctx_close(*ctx);
   if (xc)
     ERROR_RET(xc);
 
