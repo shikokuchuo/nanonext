@@ -1072,16 +1072,13 @@ SEXP rnng_ncurl_session(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP
   nng_http_conn *conn;
   conn = nng_aio_get_output(haio->aio, 0);
 
-  PROTECT(sess = R_MakeExternalPtr(conn, nano_StatusSymbol, R_NilValue));
+  PROTECT(sess = R_MakeExternalPtr(conn, nano_StatusSymbol, (response != R_NilValue && TYPEOF(response) == STRSXP) ? response : R_NilValue));
   R_RegisterCFinalizerEx(sess, session_finalizer, TRUE);
   Rf_classgets(sess, Rf_mkString("ncurlSession"));
 
   PROTECT(aio = R_MakeExternalPtr(haio, nano_AioSymbol, R_NilValue));
   R_RegisterCFinalizerEx(aio, haio_finalizer, TRUE);
   Rf_setAttrib(sess, nano_AioSymbol, aio);
-
-  if (response != R_NilValue && TYPEOF(response) == STRSXP)
-    Rf_setAttrib(sess, nano_ResponseSymbol, response);
 
   UNPROTECT(2);
   return sess;
@@ -1131,7 +1128,7 @@ SEXP rnng_ncurl_transact(SEXP session) {
   const uint16_t code = nng_http_res_get_status(handle->res);
   SET_VECTOR_ELT(out, 0, Rf_ScalarInteger(code));
 
-  response = Rf_getAttrib(session, nano_ResponseSymbol);
+  response = R_ExternalPtrProtected(session);
   if (response != R_NilValue) {
     const R_xlen_t rlen = XLENGTH(response);
     rvec = Rf_allocVector(VECSXP, rlen);
@@ -1170,9 +1167,9 @@ SEXP rnng_ncurl_session_close(SEXP session) {
   nng_http_conn *sp = (nng_http_conn *) R_ExternalPtrAddr(session);
   nng_http_conn_close(sp);
   R_SetExternalPtrTag(session, R_NilValue);
+  R_SetExternalPtrProtected(session, R_NilValue);
   R_ClearExternalPtr(session);
   Rf_setAttrib(session, nano_AioSymbol, R_NilValue);
-  Rf_setAttrib(session, nano_ResponseSymbol, R_NilValue);
 
   return nano_success;
 
@@ -1287,15 +1284,16 @@ SEXP rnng_set_promise_context(SEXP x, SEXP ctx) {
   if (R_ExternalPtrTag(aio) != nano_AioSymbol)
     return x;
 
+  nano_aio *raio = (nano_aio *) R_ExternalPtrAddr(aio);
+  if (raio->type != REQAIO)
+    return x;
+
   if (eln2 == eln2dummy) {
     Rf_eval(nano_onLoad, R_GlobalEnv);
     eln2 = (void (*)(void (*)(void *), void *, double, int)) R_GetCCallable("later", "execLaterNative2");
   }
-  nano_aio *raio = (nano_aio *) R_ExternalPtrAddr(aio);
-  if (raio->type == REQAIO) {
-    nano_aio *saio = (nano_aio *) raio->next;
-    saio->data = nano_PreserveObject(ctx);
-  }
+  nano_aio *saio = (nano_aio *) raio->next;
+  saio->data = nano_PreserveObject(ctx);
 
   return x;
 

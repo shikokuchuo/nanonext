@@ -134,8 +134,8 @@ SEXP rnng_protocol_open(SEXP protocol, SEXP raw) {
 
   NANO_CLASS2(socket, "nanoSocket", "nano");
   Rf_setAttrib(socket, nano_IdSymbol, Rf_ScalarInteger(nng_socket_id(*sock)));
-  Rf_setAttrib(socket, nano_StateSymbol, Rf_mkString("opened"));
   Rf_setAttrib(socket, nano_ProtocolSymbol, Rf_mkString(pname));
+  Rf_setAttrib(socket, nano_StateSymbol, Rf_mkString("opened"));
 
   UNPROTECT(1);
   return socket;
