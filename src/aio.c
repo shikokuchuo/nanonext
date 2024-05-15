@@ -216,7 +216,8 @@ static void raio_invoke_cb(void *arg) {
   PROTECT(context);
   data = Rf_findVarInFrame(context, nano_DataSymbol);
   if (data == R_UnboundValue) {
-    UNPROTECT(1); return;
+    UNPROTECT(1);
+    return;
   }
   PROTECT(call = Rf_lcons(nano_ResolveSymbol, Rf_cons(data, R_NilValue)));
   Rf_eval(call, ctx);
@@ -941,7 +942,7 @@ SEXP rnng_aio_http(SEXP env, SEXP response, SEXP type) {
 
   if (relo) {
     if (chk_resp) {
-      const R_xlen_t rlen = Rf_xlength(response);
+      const R_xlen_t rlen = XLENGTH(response);
       PROTECT(response = Rf_xlengthgets(response, rlen + 1));
       SET_STRING_ELT(response, rlen, Rf_mkChar("Location"));
     } else {

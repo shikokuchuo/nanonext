@@ -1,5 +1,7 @@
 # nanonext 1.0.0.9000 (development)
 
+* Internal efficiency enhancements.
+
 # nanonext 1.0.0
 
 #### New Features
