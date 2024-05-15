@@ -202,7 +202,6 @@ void socket_finalizer(SEXP);
 SEXP rnng_aio_call(SEXP);
 SEXP rnng_aio_get_msg(SEXP);
 SEXP rnng_aio_get_msg2(SEXP);
-SEXP rnng_aio_get_msg3(SEXP);
 SEXP rnng_aio_http(SEXP, SEXP, SEXP);
 SEXP rnng_aio_result(SEXP);
 SEXP rnng_aio_stop(SEXP);

@@ -444,7 +444,7 @@ SEXP rnng_aio_get_msg(SEXP env) {
 
 }
 
-SEXP rnng_aio_get_msg_impl(SEXP env, const int req) {
+SEXP rnng_aio_get_msg2(SEXP env) {
 
   const SEXP exist = Rf_findVarInFrame(env, nano_ValueSymbol);
   if (exist != R_UnboundValue)
@@ -456,7 +456,7 @@ SEXP rnng_aio_get_msg_impl(SEXP env, const int req) {
 
   nano_aio *raio = (nano_aio *) R_ExternalPtrAddr(aio);
   nano_cv *ncv;
-  if (req) {
+  if (raio->type == REQAIO) {
     nano_aio *saio = (nano_aio *) raio->next;
     ncv = (nano_cv *) saio->next;
   } else {
@@ -495,14 +495,6 @@ SEXP rnng_aio_get_msg_impl(SEXP env, const int req) {
   UNPROTECT(1);
   return out;
 
-}
-
-SEXP rnng_aio_get_msg2(SEXP env) {
-  return rnng_aio_get_msg_impl(env, 0);
-}
-
-SEXP rnng_aio_get_msg3(SEXP env) {
-  return rnng_aio_get_msg_impl(env, 1);
 }
 
 SEXP rnng_aio_call(SEXP aio) {
@@ -1238,7 +1230,7 @@ SEXP rnng_request_impl(const SEXP con, const SEXP data, const SEXP sendmode,
 
   PROTECT(fun = Rf_allocSExp(CLOSXP));
   SET_FORMALS(fun, nano_aioFormals);
-  SET_BODY(fun, signal ? CADDDR(nano_aioFuncs) : CADR(nano_aioFuncs));
+  SET_BODY(fun, signal ? CADDR(nano_aioFuncs) : CADR(nano_aioFuncs));
   SET_CLOENV(fun, clo);
   R_MakeActiveBinding(nano_DataSymbol, fun, env);
 

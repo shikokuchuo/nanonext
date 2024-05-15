@@ -94,11 +94,10 @@ static void RegisterSymbols(void) {
 
 static void PreserveObjects(void) {
   R_PreserveObject(nano_aioFormals = Rf_cons(nano_AioSymbol, R_NilValue));
-  R_PreserveObject(nano_aioFuncs = Rf_allocVector(LISTSXP, 4));
+  R_PreserveObject(nano_aioFuncs = Rf_allocVector(LISTSXP, 3));
   SETCAR(nano_aioFuncs, Rf_lang3(nano_DotcallSymbol, Rf_install("rnng_aio_result"), nano_DataSymbol));
   SETCADR(nano_aioFuncs, Rf_lang3(nano_DotcallSymbol, Rf_install("rnng_aio_get_msg"), nano_DataSymbol));
   SETCADDR(nano_aioFuncs, Rf_lang3(nano_DotcallSymbol, Rf_install("rnng_aio_get_msg2"), nano_DataSymbol));
-  SETCADDDR(nano_aioFuncs, Rf_lang3(nano_DotcallSymbol, Rf_install("rnng_aio_get_msg3"), nano_DataSymbol));
   R_PreserveObject(nano_aioNFuncs = Rf_allocVector(LISTSXP, 3));
   SETCAR(nano_aioNFuncs, Rf_lang5(nano_DotcallSymbol, Rf_install("rnng_aio_http"), nano_DataSymbol, nano_ResponseSymbol, Rf_ScalarLogical(0)));
   SETCADR(nano_aioNFuncs, Rf_lang5(nano_DotcallSymbol, Rf_install("rnng_aio_http"), nano_DataSymbol, nano_ResponseSymbol, Rf_ScalarLogical(1)));
@@ -136,7 +135,6 @@ static const R_CallMethodDef callMethods[] = {
   {"rnng_aio_call", (DL_FUNC) &rnng_aio_call, 1},
   {"rnng_aio_get_msg", (DL_FUNC) &rnng_aio_get_msg, 1},
   {"rnng_aio_get_msg2", (DL_FUNC) &rnng_aio_get_msg2, 1},
-  {"rnng_aio_get_msg3", (DL_FUNC) &rnng_aio_get_msg3, 1},
   {"rnng_aio_http", (DL_FUNC) &rnng_aio_http, 3},
   {"rnng_aio_result", (DL_FUNC) &rnng_aio_result, 1},
   {"rnng_aio_stop", (DL_FUNC) &rnng_aio_stop, 1},
