@@ -525,6 +525,57 @@ SEXP rnng_aio_call(SEXP aio) {
 
 }
 
+SEXP rnng_aio_collect_impl(SEXP x, SEXP (*const func)(SEXP)) {
+
+  SEXP out;
+  SEXPTYPE typ = TYPEOF(x);
+  if (typ == ENVSXP) {
+    out = Rf_findVarInFrame(func(x), nano_ValueSymbol);
+    if (out == R_UnboundValue) goto exitlevel1;
+
+  } else if (typ == VECSXP) {
+    SEXP env;
+    R_xlen_t xlen = Rf_xlength(x);
+    PROTECT(out = Rf_allocVector(VECSXP, xlen));
+
+    for (R_xlen_t i = 0; i < xlen; i++) {
+      env = func(VECTOR_ELT(x, i));
+      if (TYPEOF(env) != ENVSXP) goto exitlevel2;
+      env = Rf_findVarInFrame(env, nano_ValueSymbol);
+      if (env == R_UnboundValue) goto exitlevel2;
+      SET_VECTOR_ELT(out, i, env);
+    }
+
+    out = Rf_namesgets(out, Rf_getAttrib(x, R_NamesSymbol));
+    UNPROTECT(1);
+
+  } else {
+    goto exitlevel1;
+
+  }
+
+  return out;
+
+  exitlevel2:
+  UNPROTECT(1);
+  exitlevel1:
+  Rf_error("object is not an Aio or list of Aios");
+  return R_NilValue;
+
+}
+
+SEXP rnng_aio_collect(SEXP x) {
+
+  return rnng_aio_collect_impl(x, rnng_aio_call);
+
+}
+
+SEXP rnng_aio_collect_safe(SEXP x) {
+
+  return rnng_aio_collect_impl(x, rnng_wait_thread_create);
+
+}
+
 SEXP rnng_aio_stop(SEXP aio) {
 
   if (TYPEOF(aio) != ENVSXP)

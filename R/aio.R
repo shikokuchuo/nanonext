@@ -234,6 +234,31 @@ call_aio <- function(aio) invisible(.Call(rnng_aio_call, aio))
 #'
 call_aio_ <- function(aio) invisible(.Call(rnng_wait_thread_create, aio))
 
+#' Collect the Value of an Aio or List of Aios
+#'
+#' \code{collect_aio} retrieves the value of a single, or list of, asynchronous
+#'     Aio operations, waiting for their completion if still in progress.
+#'
+#' @param x an Aio or list of Aios (objects of class \sQuote{sendAio},
+#'     \sQuote{recvAio} or \sQuote{ncurlAio}).
+#'
+#' @return Depending on the type of \sQuote{x} supplied, either an object or a
+#'     list of objects (the same length as \sQuote{x}, preserving names).
+#'
+#' @export
+#'
+collect_aio <- function(x) .Call(rnng_aio_collect, x)
+
+#' Collect the Value of a List of Aios
+#'
+#' \code{collect_aio_} is a variant that allows user interrupts, suitable for
+#'     interactive use.
+#'
+#' @rdname collect_aio
+#' @export
+#'
+collect_aio_ <- function(x) .Call(rnng_aio_collect_safe, x)
+
 #' Stop Asynchronous Aio Operation
 #'
 #' Stop an asynchronous Aio operation.
