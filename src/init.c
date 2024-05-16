@@ -133,8 +133,8 @@ static void ReleaseObjects(void) {
 
 static const R_CallMethodDef callMethods[] = {
   {"rnng_aio_call", (DL_FUNC) &rnng_aio_call, 1},
-  {"rnng_aio_collect", (DL_FUNC) &rnng_aio_collect, 1},
-  {"rnng_aio_collect_safe", (DL_FUNC) &rnng_aio_collect_safe, 1},
+  {"rnng_aio_data", (DL_FUNC) &rnng_aio_data, 1},
+  {"rnng_aio_data_safe", (DL_FUNC) &rnng_aio_data_safe, 1},
   {"rnng_aio_get_msg", (DL_FUNC) &rnng_aio_get_msg, 1},
   {"rnng_aio_get_msg2", (DL_FUNC) &rnng_aio_get_msg2, 1},
   {"rnng_aio_http", (DL_FUNC) &rnng_aio_http, 3},

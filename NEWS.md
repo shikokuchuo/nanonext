@@ -1,6 +1,6 @@
-# nanonext 1.0.0.9001 (development)
+# nanonext 1.0.0.9002 (development)
 
-* Adds `collect_aio()` and `collect_aio_()` for retrieving the value of an Aio or list of Aios.
+* Adds `aio_data()` and `aio_data_()` for waiting for and retrieving the data value of an Aio or list of Aios.
 * Internal efficiency enhancements.
 
 # nanonext 1.0.0

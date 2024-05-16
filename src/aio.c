@@ -525,7 +525,7 @@ SEXP rnng_aio_call(SEXP aio) {
 
 }
 
-SEXP rnng_aio_collect_impl(SEXP x, SEXP (*const func)(SEXP)) {
+SEXP rnng_aio_data_impl(SEXP x, SEXP (*const func)(SEXP)) {
 
   SEXP out;
   SEXPTYPE typ = TYPEOF(x);
@@ -564,15 +564,15 @@ SEXP rnng_aio_collect_impl(SEXP x, SEXP (*const func)(SEXP)) {
 
 }
 
-SEXP rnng_aio_collect(SEXP x) {
+SEXP rnng_aio_data(SEXP x) {
 
-  return rnng_aio_collect_impl(x, rnng_aio_call);
+  return rnng_aio_data_impl(x, rnng_aio_call);
 
 }
 
-SEXP rnng_aio_collect_safe(SEXP x) {
+SEXP rnng_aio_data_safe(SEXP x) {
 
-  return rnng_aio_collect_impl(x, rnng_wait_thread_create);
+  return rnng_aio_data_impl(x, rnng_wait_thread_create);
 
 }
 
