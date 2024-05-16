@@ -1,6 +1,6 @@
 # nanonext 1.0.0.9002 (development)
 
-* Adds `aio_data()` and `aio_data_()` for waiting for and retrieving the data value of an Aio or list of Aios.
+* Adds `aio_data()` and `aio_data_()` to wait for and retrieve the data of an Aio or list of Aios.
 * Internal efficiency enhancements.
 
 # nanonext 1.0.0

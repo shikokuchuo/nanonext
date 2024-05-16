@@ -18,8 +18,8 @@ Depending on the type of \sQuote{x} supplied, either an object or a
     list of objects (the same length as \sQuote{x}, preserving names).
 }
 \description{
-\code{aio_data} retrieves the data value of an Aio, or list of Aios, waiting
-    for resolution if still in progress.
+\code{aio_data} retrieves the data of an Aio, or list of Aios, waiting for
+    resolution if still in progress.
 
 \code{aio_data_} is a variant that allows user interrupts, suitable for
     interactive use.

@@ -236,8 +236,8 @@ call_aio_ <- function(aio) invisible(.Call(rnng_wait_thread_create, aio))
 
 #' Retrieve Data of an Aio or List of Aios
 #'
-#' \code{aio_data} retrieves the data value of an Aio, or list of Aios, waiting
-#'     for resolution if still in progress.
+#' \code{aio_data} retrieves the data of an Aio, or list of Aios, waiting for
+#'     resolution if still in progress.
 #'
 #' @param x an Aio or list of Aios (objects of class \sQuote{sendAio},
 #'     \sQuote{recvAio} or \sQuote{ncurlAio}).
