@@ -304,6 +304,7 @@ extern SEXP nano_klassString;
 extern SEXP nano_onLoad;
 extern SEXP nano_precious;
 extern SEXP nano_recvAio;
+extern SEXP nano_reqAio;
 extern SEXP nano_refHook;
 extern SEXP nano_success;
 extern SEXP nano_unresolved;

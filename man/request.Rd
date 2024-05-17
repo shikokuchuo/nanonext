@@ -49,7 +49,8 @@ applies a socket-specific default, usually the same as no timeout.}
 to signal when the async receive is complete.}
 }
 \value{
-A \sQuote{recvAio} (object of class \sQuote{recvAio}) (invisibly).
+A \sQuote{recvAio} (object of class \sQuote{mirai} and
+    \sQuote{recvAio}) (invisibly).
 }
 \description{
 Implements a caller/client for the req node of the req/rep protocol. Sends

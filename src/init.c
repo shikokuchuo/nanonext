@@ -50,6 +50,7 @@ SEXP nano_klassString;
 SEXP nano_onLoad;
 SEXP nano_precious;
 SEXP nano_recvAio;
+SEXP nano_reqAio;
 SEXP nano_refHook;
 SEXP nano_success;
 SEXP nano_unresolved;
@@ -109,6 +110,9 @@ static void PreserveObjects(void) {
   R_PreserveObject(nano_onLoad = Rf_lcons(nano_LNSymbol, Rf_cons(Rf_mkString("later"), R_NilValue)));
   R_PreserveObject(nano_precious = Rf_cons(R_NilValue, Rf_cons(R_NilValue, R_NilValue)));
   R_PreserveObject(nano_recvAio = Rf_mkString("recvAio"));
+  R_PreserveObject(nano_reqAio = Rf_allocVector(STRSXP, 2));
+  SET_STRING_ELT(nano_reqAio, 0, Rf_mkChar("mirai"));
+  SET_STRING_ELT(nano_reqAio, 1, Rf_mkChar("recvAio"));
   R_PreserveObject(nano_refHook = Rf_list2(R_NilValue, R_NilValue));
   R_PreserveObject(nano_success = Rf_ScalarInteger(0));
   R_PreserveObject(nano_unresolved = Rf_shallow_duplicate(Rf_ScalarLogical(NA_LOGICAL)));
@@ -120,6 +124,7 @@ static void ReleaseObjects(void) {
   R_ReleaseObject(nano_unresolved);
   R_ReleaseObject(nano_success);
   R_ReleaseObject(nano_refHook);
+  R_ReleaseObject(nano_reqAio);
   R_ReleaseObject(nano_recvAio);
   R_ReleaseObject(nano_precious);
   R_ReleaseObject(nano_onLoad);

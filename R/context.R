@@ -180,7 +180,8 @@ reply <- function(context,
 #' @param timeout [default NULL] integer value in milliseconds or NULL, which
 #'     applies a socket-specific default, usually the same as no timeout.
 #'
-#' @return A \sQuote{recvAio} (object of class \sQuote{recvAio}) (invisibly).
+#' @return A \sQuote{recvAio} (object of class \sQuote{mirai} and
+#'     \sQuote{recvAio}) (invisibly).
 #'
 #' @details Sending the request and receiving the result are both performed
 #'     async, hence the function will return immediately with a \sQuote{recvAio}
