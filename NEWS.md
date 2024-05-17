@@ -1,4 +1,4 @@
-# nanonext 1.0.0.9005 (development)
+# nanonext 1.0.0.9006 (development)
 
 #### New Features
 
@@ -7,6 +7,7 @@
 
 #### Updates
 
+* `status_code()` now returns the status code combined with the explanation as a character string.
 * Internal efficiency enhancements.
 
 # nanonext 1.0.0

@@ -530,8 +530,9 @@ SEXP rnng_stream_close(SEXP stream) {
 
 SEXP rnng_status_code(SEXP x) {
 
+  const int status = Rf_asInteger(x);
   char *code;
-  switch (Rf_asInteger(x)) {
+  switch (status) {
   case 100: code = "Continue"; break;
   case 101: code = "Switching Protocols"; break;
   case 102: code = "Processing"; break;
@@ -597,8 +598,10 @@ SEXP rnng_status_code(SEXP x) {
   case 511: code = "Network Authentication Required"; break;
   default: code = "Non-standard Response"; break;
   }
+  char out[strlen(code) + 7];
+  snprintf(out, sizeof(out), "%d | %s", status, code);
 
-  return Rf_mkString(code);
+  return Rf_mkString(out);
 
 }
 

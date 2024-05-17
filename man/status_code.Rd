@@ -10,7 +10,8 @@ status_code(x)
 \item{x}{numeric HTTP status code to translate.}
 }
 \value{
-A character vector.
+A character vector comprising the status code and explanation
+    separated by \sQuote{ | }.
 }
 \description{
 Provides an explanation for HTTP response status codes (in the range 100 to

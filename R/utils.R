@@ -251,7 +251,8 @@ is_nul_byte <- function(x) .Call(rnng_is_nul_byte, x)
 #'
 #' @param x numeric HTTP status code to translate.
 #'
-#' @return A character vector.
+#' @return A character vector comprising the status code and explanation
+#'     separated by \sQuote{ | }.
 #'
 #' @examples
 #' status_code(200)
