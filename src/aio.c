@@ -261,6 +261,17 @@ static void request_complete_signal(void *arg) {
 
 }
 
+static void haio_complete(void *arg) {
+
+  nano_aio *haio = (nano_aio *) arg;
+  const int res = nng_aio_result(haio->aio);
+  haio->result = res - !res;
+
+  if (haio->data != NULL)
+    later2(raio_invoke_cb, haio->data);
+
+}
+
 static void iraio_complete(void *arg) {
 
   nano_aio *iaio = (nano_aio *) arg;
@@ -357,8 +368,10 @@ static void haio_finalizer(SEXP xptr) {
 
   if (R_ExternalPtrAddr(xptr) == NULL) return;
   nano_aio *xp = (nano_aio *) R_ExternalPtrAddr(xptr);
-  nano_handle *handle = (nano_handle *) xp->data;
+  nano_handle *handle = (nano_handle *) xp->next;
   nng_aio_free(xp->aio);
+  if (xp->data != NULL)
+    nano_ReleaseObject((SEXP) xp->data);
   if (handle->cfg != NULL)
     nng_tls_config_free(handle->cfg);
   nng_http_res_free(handle->res);
@@ -844,8 +857,9 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP dat
   SEXP aio;
 
   haio->type = HTTP_AIO;
-  haio->data = handle;
   haio->mode = *NANO_INTEGER(convert);
+  haio->next = handle;
+  haio->data = NULL;
   handle->cfg = NULL;
 
   if ((xc = nng_url_parse(&handle->url, httr)))
@@ -877,7 +891,7 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP dat
   if ((xc = nng_http_res_alloc(&handle->res)))
     goto exitlevel4;
 
-  if ((xc = nng_aio_alloc(&haio->aio, iraio_complete, haio)))
+  if ((xc = nng_aio_alloc(&haio->aio, haio_complete, haio)))
     goto exitlevel5;
 
   if (!strcmp(handle->url->u_scheme, "https")) {
@@ -977,7 +991,7 @@ SEXP rnng_aio_http(SEXP env, SEXP response, SEXP type) {
   void *dat;
   size_t sz;
   SEXP out, vec, rvec;
-  nano_handle *handle = (nano_handle *) haio->data;
+  nano_handle *handle = (nano_handle *) haio->next;
 
   int chk_resp = response != R_NilValue && TYPEOF(response) == STRSXP;
   const uint16_t code = nng_http_res_get_status(handle->res), relo = code >= 300 && code < 400;
@@ -1048,8 +1062,9 @@ SEXP rnng_ncurl_session(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP
   SEXP sess, aio;
 
   haio->type = HTTP_AIO;
-  haio->data = handle;
   haio->mode = *NANO_INTEGER(convert);
+  haio->next = handle;
+  haio->data = NULL;
   handle->cfg = NULL;
 
   if ((xc = nng_url_parse(&handle->url, httr)))
@@ -1081,7 +1096,7 @@ SEXP rnng_ncurl_session(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP
   if ((xc = nng_http_res_alloc(&handle->res)))
     goto exitlevel4;
 
-  if ((xc = nng_aio_alloc(&haio->aio, iraio_complete, haio)))
+  if ((xc = nng_aio_alloc(&haio->aio, haio_complete, haio)))
     goto exitlevel5;
 
   if (!strcmp(handle->url->u_scheme, "https")) {
@@ -1155,7 +1170,7 @@ SEXP rnng_ncurl_transact(SEXP session) {
   nng_http_conn *conn = (nng_http_conn *) R_ExternalPtrAddr(session);
   SEXP aio = Rf_getAttrib(session, nano_AioSymbol);
   nano_aio *haio = (nano_aio *) R_ExternalPtrAddr(aio);
-  nano_handle *handle = (nano_handle *) haio->data;
+  nano_handle *handle = (nano_handle *) haio->next;
 
   nng_http_conn_transact(conn, handle->req, handle->res, haio->aio);
   nng_aio_wait(haio->aio);
@@ -1329,15 +1344,20 @@ SEXP rnng_set_promise_context(SEXP x, SEXP ctx) {
     return x;
 
   nano_aio *raio = (nano_aio *) R_ExternalPtrAddr(aio);
-  if (raio->type != REQAIO)
-    return x;
 
   if (eln2 == eln2dummy) {
     Rf_eval(nano_onLoad, R_GlobalEnv);
     eln2 = (void (*)(void (*)(void *), void *, double, int)) R_GetCCallable("later", "execLaterNative2");
   }
-  nano_aio *saio = (nano_aio *) raio->next;
-  saio->data = nano_PreserveObject(ctx);
+
+  switch (raio->type) {
+  case REQAIO:
+    ((nano_aio *) raio->next)->data = nano_PreserveObject(ctx); break;
+  case HTTP_AIO:
+    raio->data = nano_PreserveObject(ctx); break;
+  default:
+    break;
+  }
 
   return x;
 

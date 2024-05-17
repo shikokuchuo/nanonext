@@ -3,6 +3,7 @@
 #### New Features
 
 * Adds `aio_data()` and `aio_data_()` to wait for and retrieve the data of an Aio or list of Aios.
+* `ncurl_aio()` modified internally to support conversion of 'ncurlAio' to event-driven promises.
 
 #### Updates
 
