@@ -1,4 +1,4 @@
-# nanonext 1.0.0.9003 (development)
+# nanonext 1.0.0.9004 (development)
 
 #### New Features
 
@@ -7,7 +7,6 @@
 
 #### Updates
 
-* Name of single argument to `call_aio()`, `call_aio_()`, `stop_aio()`, `unresolved()` changed from 'aio' to 'x',
 * Internal efficiency enhancements.
 
 # nanonext 1.0.0
