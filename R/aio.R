@@ -236,8 +236,9 @@ call_aio_ <- function(aio) invisible(.Call(rnng_wait_thread_create, aio))
 
 #' Retrieve Data of an Aio or List of Aios
 #'
-#' \code{aio_data} retrieves the data of an Aio, or list of Aios, waiting for
-#'     resolution if still in progress.
+#' \code{aio_data} retrieves the \code{$data} element of a 'recvAio' or
+#'     \code{$result} of a 'sendAio', or list of Aios, waiting for resolution if
+#'     still in progress.
 #'
 #' @param x an Aio or list of Aios (objects of class \sQuote{sendAio},
 #'     \sQuote{recvAio} or \sQuote{ncurlAio}).
@@ -247,6 +248,22 @@ call_aio_ <- function(aio) invisible(.Call(rnng_wait_thread_create, aio))
 #'
 #' @details This function will wait for the asynchronous operation(s) to
 #'     complete if still in progress (blocking).
+#'
+#'     \code{x[]} is syntactical sugar for, and equivalent to,
+#'     \code{aio_data_(x)}.
+#'
+#' @examples
+#' s1 <- socket("pair", listen = "inproc://nanonext")
+#' s2 <- socket("pair", dial = "inproc://nanonext")
+#'
+#' res <- send_aio(s1, data.frame(a = 1, b = 2), timeout = 100)
+#' aio_data(res)
+#'
+#' msg <- recv_aio(s2, timeout = 100)
+#' msg[]
+#'
+#' close(s1)
+#' close(s2)
 #'
 #' @export
 #'

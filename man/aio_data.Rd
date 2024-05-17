@@ -18,8 +18,9 @@ Depending on the type of \sQuote{x} supplied, either an object or a
     list of objects (the same length as \sQuote{x}, preserving names).
 }
 \description{
-\code{aio_data} retrieves the data of an Aio, or list of Aios, waiting for
-    resolution if still in progress.
+\code{aio_data} retrieves the \code{$data} element of a 'recvAio' or
+    \code{$result} of a 'sendAio', or list of Aios, waiting for resolution if
+    still in progress.
 
 \code{aio_data_} is a variant that allows user interrupts, suitable for
     interactive use.
@@ -27,4 +28,21 @@ Depending on the type of \sQuote{x} supplied, either an object or a
 \details{
 This function will wait for the asynchronous operation(s) to
     complete if still in progress (blocking).
+
+    \code{x[]} is syntactical sugar for, and equivalent to,
+    \code{aio_data_(x)}.
+}
+\examples{
+s1 <- socket("pair", listen = "inproc://nanonext")
+s2 <- socket("pair", dial = "inproc://nanonext")
+
+res <- send_aio(s1, data.frame(a = 1, b = 2), timeout = 100)
+aio_data(res)
+
+msg <- recv_aio(s2, timeout = 100)
+msg[]
+
+close(s1)
+close(s2)
+
 }
