@@ -167,7 +167,7 @@ recv_aio_signal <- function(con,
 #' \code{call_aio} retrieves the value of an asynchronous Aio operation, waiting
 #'     for the operation to complete if still in progress.
 #'
-#' @param aio an Aio (object of class \sQuote{sendAio}, \sQuote{recvAio} or
+#' @param x an Aio (object of class \sQuote{sendAio}, \sQuote{recvAio} or
 #'     \sQuote{ncurlAio}).
 #'
 #' @return The passed object (invisibly).
@@ -222,7 +222,7 @@ recv_aio_signal <- function(con,
 #'
 #' @export
 #'
-call_aio <- function(aio) invisible(.Call(rnng_aio_call, aio))
+call_aio <- function(x) invisible(.Call(rnng_aio_call, x))
 
 #' Call the Value of an Asynchronous Aio Operation
 #'
@@ -232,7 +232,7 @@ call_aio <- function(aio) invisible(.Call(rnng_aio_call, aio))
 #' @rdname call_aio
 #' @export
 #'
-call_aio_ <- function(aio) invisible(.Call(rnng_wait_thread_create, aio))
+call_aio_ <- function(x) invisible(.Call(rnng_wait_thread_create, x))
 
 #' Retrieve Data of an Aio or List of Aios
 #'
@@ -281,14 +281,14 @@ aio_data_ <- function(x) .Call(rnng_aio_data_safe, x)
 #'
 #' @export
 #'
-stop_aio <- function(aio) invisible(.Call(rnng_aio_stop, aio))
+stop_aio <- function(x) invisible(.Call(rnng_aio_stop, x))
 
 #' Query if an Aio is Unresolved
 #'
 #' Query whether an Aio or Aio value remains unresolved. Unlike
 #'     \code{\link{call_aio}}, this function does not wait for completion.
 #'
-#' @param aio an Aio (object of class \sQuote{sendAio} or \sQuote{recvAio}), or
+#' @param x an Aio (object of class \sQuote{sendAio} or \sQuote{recvAio}), or
 #'     Aio value stored in \code{$result} or \code{$data} as the case may be.
 #'
 #' @return Logical TRUE if \sQuote{aio} is an unresolved Aio or Aio value, or
@@ -316,7 +316,7 @@ stop_aio <- function(aio) invisible(.Call(rnng_aio_stop, aio))
 #'
 #' @export
 #'
-unresolved <- function(aio) .Call(rnng_unresolved, aio)
+unresolved <- function(x) .Call(rnng_unresolved, x)
 
 #' Technical Utility: Query if an Aio is Unresolved
 #'
@@ -326,7 +326,7 @@ unresolved <- function(aio) .Call(rnng_unresolved, aio)
 #'     altering its state in any way i.e. not attempting to retrieve the result
 #'     or message.
 #'
-#' @param aio an Aio (object of class \sQuote{sendAio} or \sQuote{recvAio}).
+#' @param x an Aio (object of class \sQuote{sendAio} or \sQuote{recvAio}).
 #'
 #' @return Logical TRUE if \sQuote{aio} is an unresolved Aio, or FALSE otherwise.
 #'
@@ -336,4 +336,4 @@ unresolved <- function(aio) .Call(rnng_unresolved, aio)
 #'
 #' @export
 #'
-.unresolved <- function(aio) .Call(rnng_unresolved2, aio)
+.unresolved <- function(x) .Call(rnng_unresolved2, x)

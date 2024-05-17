@@ -1,6 +1,12 @@
-# nanonext 1.0.0.9002 (development)
+# nanonext 1.0.0.9003 (development)
+
+#### New Features
 
 * Adds `aio_data()` and `aio_data_()` to wait for and retrieve the data of an Aio or list of Aios.
+
+#### Updates
+
+* Name of single argument to `call_aio()`, `call_aio_()`, `stop_aio()`, `unresolved()` changed from 'aio' to 'x',
 * Internal efficiency enhancements.
 
 # nanonext 1.0.0

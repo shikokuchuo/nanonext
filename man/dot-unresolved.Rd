@@ -4,10 +4,10 @@
 \alias{.unresolved}
 \title{Technical Utility: Query if an Aio is Unresolved}
 \usage{
-.unresolved(aio)
+.unresolved(x)
 }
 \arguments{
-\item{aio}{an Aio (object of class \sQuote{sendAio} or \sQuote{recvAio}).}
+\item{x}{an Aio (object of class \sQuote{sendAio} or \sQuote{recvAio}).}
 }
 \value{
 Logical TRUE if \sQuote{aio} is an unresolved Aio, or FALSE otherwise.
