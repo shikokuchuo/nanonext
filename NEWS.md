@@ -4,7 +4,6 @@
 
 * Adds `aio_data()` and `aio_data_()` to wait for and retrieve the data of an Aio or list of Aios.
 * `ncurl_aio()` modified internally to support conversion of 'ncurlAio' to event-driven promises.
-* New `[` operator for 'recvAio' and 'sendAio' provides syntactical sugar by allowing `x[]`, which returns `aio_data_(x)`.
 
 #### Updates
 

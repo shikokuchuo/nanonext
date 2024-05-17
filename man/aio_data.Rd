@@ -40,7 +40,7 @@ res <- send_aio(s1, data.frame(a = 1, b = 2), timeout = 100)
 aio_data(res)
 
 msg <- recv_aio(s2, timeout = 100)
-msg[]
+aio_data_(res)
 
 close(s1)
 close(s2)

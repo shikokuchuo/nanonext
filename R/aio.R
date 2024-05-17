@@ -260,7 +260,7 @@ call_aio_ <- function(aio) invisible(.Call(rnng_wait_thread_create, aio))
 #' aio_data(res)
 #'
 #' msg <- recv_aio(s2, timeout = 100)
-#' msg[]
+#' aio_data_(res)
 #'
 #' close(s1)
 #' close(s2)
