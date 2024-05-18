@@ -586,8 +586,6 @@ SEXP rnng_aio_data_impl(SEXP x, SEXP (*const func)(SEXP)) {
   SEXP out;
   switch (TYPEOF(x)) {
   case ENVSXP:
-    out = Rf_findVarInFrame(x, nano_ValueSymbol);
-    if (out != R_UnboundValue) break;
     out = Rf_findVarInFrame(func(x), nano_ValueSymbol);
     if (out != R_UnboundValue) break;
   default:
