@@ -234,23 +234,50 @@ call_aio <- function(aio) invisible(.Call(rnng_aio_call, aio))
 #'
 call_aio_ <- function(aio) invisible(.Call(rnng_wait_thread_create, aio))
 
-#' Retrieve Data of an Aio or List of Aios
+#' Collect the Data of a List of Aios
 #'
-#' \code{aio_data} retrieves the \code{$data} element of a 'recvAio' or
-#'     \code{$result} of a 'sendAio', or list of Aios, waiting for resolution if
-#'     still in progress.
+#' \code{aio_collect} collects the data of a list of Aios in a list, waiting for
+#'     resolution if still in progress.
 #'
-#' @param x an Aio or list of Aios (objects of class \sQuote{sendAio},
-#'     \sQuote{recvAio} or \sQuote{ncurlAio}).
+#' @param x a list of Aios (objects of class \sQuote{sendAio}, \sQuote{recvAio}
+#'     or \sQuote{ncurlAio}).
 #'
-#' @return Depending on the type of \sQuote{x} supplied, either an object or a
-#'     list of objects (the same length as \sQuote{x}, preserving names).
+#' @return A list of objects (the same length as \sQuote{x}, preserving names).
 #'
 #' @details This function will wait for the asynchronous operation(s) to
 #'     complete if still in progress (blocking).
 #'
-#'     \code{x[]} is syntactical sugar for, and equivalent to,
-#'     \code{aio_data_(x)}.
+#' @seealso \code{\link{aio_data}} for retrieving the data of a single Aio.
+#'
+#' @export
+#'
+aio_collect <- function(x) .Call(rnng_aio_collect, x)
+
+#' Collect the Data of a List of Aios
+#'
+#' \code{aio_collect_} is a variant that allows user interrupts, suitable for
+#'     interactive use.
+#'
+#' @rdname aio_collect
+#' @export
+#'
+aio_collect_ <- function(x) .Call(rnng_aio_collect_safe, x)
+
+#' Retrieve Aio Data
+#'
+#' \code{aio_data} retrieves the \code{$data} element of a 'recvAio' or
+#'     \code{$result} of a 'sendAio', waiting for resolution if still in
+#'     progress.
+#'
+#' @param x an Aio (object of class \sQuote{sendAio}, \sQuote{recvAio} or
+#'     \sQuote{ncurlAio}).
+#'
+#' @return An object.
+#'
+#' @details This function will wait for the asynchronous operation(s) to
+#'     complete if still in progress (blocking).
+#'
+#' @seealso \code{\link{aio_collect}} for retrieving the data of a list of Aios.
 #'
 #' @examples
 #' s1 <- socket("pair", listen = "inproc://nanonext")
@@ -269,7 +296,7 @@ call_aio_ <- function(aio) invisible(.Call(rnng_wait_thread_create, aio))
 #'
 aio_data <- function(x) .Call(rnng_aio_data, x)
 
-#' Retrieve Data of an Aio or List of Aios
+#' Retrieve Aio Data
 #'
 #' \code{aio_data_} is a variant that allows user interrupts, suitable for
 #'     interactive use.

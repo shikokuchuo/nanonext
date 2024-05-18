@@ -200,6 +200,8 @@ void listener_finalizer(SEXP);
 void socket_finalizer(SEXP);
 
 SEXP rnng_aio_call(SEXP);
+SEXP rnng_aio_collect(SEXP);
+SEXP rnng_aio_collect_safe(SEXP);
 SEXP rnng_aio_data(SEXP);
 SEXP rnng_aio_data_safe(SEXP);
 SEXP rnng_aio_get_msg(SEXP);

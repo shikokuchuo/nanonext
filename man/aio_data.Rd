@@ -3,24 +3,23 @@
 \name{aio_data}
 \alias{aio_data}
 \alias{aio_data_}
-\title{Retrieve Data of an Aio or List of Aios}
+\title{Retrieve Aio Data}
 \usage{
 aio_data(x)
 
 aio_data_(x)
 }
 \arguments{
-\item{x}{an Aio or list of Aios (objects of class \sQuote{sendAio},
-\sQuote{recvAio} or \sQuote{ncurlAio}).}
+\item{x}{an Aio (object of class \sQuote{sendAio}, \sQuote{recvAio} or
+\sQuote{ncurlAio}).}
 }
 \value{
-Depending on the type of \sQuote{x} supplied, either an object or a
-    list of objects (the same length as \sQuote{x}, preserving names).
+An object.
 }
 \description{
 \code{aio_data} retrieves the \code{$data} element of a 'recvAio' or
-    \code{$result} of a 'sendAio', or list of Aios, waiting for resolution if
-    still in progress.
+    \code{$result} of a 'sendAio', waiting for resolution if still in
+    progress.
 
 \code{aio_data_} is a variant that allows user interrupts, suitable for
     interactive use.
@@ -28,9 +27,6 @@ Depending on the type of \sQuote{x} supplied, either an object or a
 \details{
 This function will wait for the asynchronous operation(s) to
     complete if still in progress (blocking).
-
-    \code{x[]} is syntactical sugar for, and equivalent to,
-    \code{aio_data_(x)}.
 }
 \examples{
 s1 <- socket("pair", listen = "inproc://nanonext")
@@ -45,4 +41,7 @@ aio_data_(res)
 close(s1)
 close(s2)
 
+}
+\seealso{
+\code{\link{aio_collect}} for retrieving the data of a list of Aios.
 }
