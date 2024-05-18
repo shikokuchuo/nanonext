@@ -583,33 +583,6 @@ SEXP rnng_aio_collect_safe(SEXP x) {
 
 }
 
-SEXP rnng_aio_data_impl(SEXP x, SEXP (*const func)(SEXP)) {
-
-  SEXP out;
-  switch (TYPEOF(x)) {
-  case ENVSXP:
-    out = Rf_findVarInFrame(func(x), nano_ValueSymbol);
-    if (out != R_UnboundValue) break;
-  default:
-    Rf_error("object is not an Aio or list of Aios");
-  }
-
-  return out;
-
-}
-
-SEXP rnng_aio_data(SEXP x) {
-
-  return rnng_aio_data_impl(x, rnng_aio_call);
-
-}
-
-SEXP rnng_aio_data_safe(SEXP x) {
-
-  return rnng_aio_data_impl(x, rnng_wait_thread_create);
-
-}
-
 SEXP rnng_aio_stop(SEXP aio) {
 
   if (TYPEOF(aio) != ENVSXP)
