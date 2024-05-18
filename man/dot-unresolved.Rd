@@ -24,3 +24,4 @@ Query whether an Aio remains unresolved. This is an experimental technical
     returned by a signalling function, in which case \code{\link{unresolved}}
     must be used in all cases.
 }
+\keyword{internal}
