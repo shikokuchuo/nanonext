@@ -542,12 +542,14 @@ SEXP rnng_aio_call(SEXP aio) {
 SEXP rnng_aio_collect_impl(SEXP x, SEXP (*const func)(SEXP)) {
 
   SEXP out;
-  switch (TYPEOF(x)) {
-  case ENVSXP:
+  SEXPTYPE typ = TYPEOF(x);
+  if (typ == ENVSXP) {
+
     out = Rf_findVarInFrame(func(x), nano_ValueSymbol);
-    if (out == R_UnboundValue) break;
-    goto resume;
-  case VECSXP: ;
+    if (out == R_UnboundValue) goto exit;
+
+  } else if (typ == VECSXP) {
+
     SEXP env;
     const R_xlen_t xlen = Rf_xlength(x);
     PROTECT(out = Rf_allocVector(VECSXP, xlen));
@@ -560,13 +562,14 @@ SEXP rnng_aio_collect_impl(SEXP x, SEXP (*const func)(SEXP)) {
     }
     out = Rf_namesgets(out, Rf_getAttrib(x, R_NamesSymbol));
     UNPROTECT(1);
-    goto resume;
+
+  } else {
+
+    exit:
+    Rf_error("object is not an Aio or list of Aios");
+
   }
 
-  exit:
-  Rf_error("object is not an Aio or list of Aios");
-
-  resume:
   return out;
 
 }
