@@ -541,31 +541,33 @@ SEXP rnng_aio_call(SEXP aio) {
 
 SEXP rnng_aio_collect_impl(SEXP x, SEXP (*const func)(SEXP)) {
 
-  if (TYPEOF(x) != VECSXP)
-    goto exitlevel1;
-
-  SEXP out, env;
-  const R_xlen_t xlen = Rf_xlength(x);
-  PROTECT(out = Rf_allocVector(VECSXP, xlen));
-
-  for (R_xlen_t i = 0; i < xlen; i++) {
-    env = func(VECTOR_ELT(x, i));
-    if (TYPEOF(env) != ENVSXP) goto exitlevel2;
-    env = Rf_findVarInFrame(env, nano_ValueSymbol);
-    if (env == R_UnboundValue) goto exitlevel2;
-    SET_VECTOR_ELT(out, i, env);
+  SEXP out;
+  switch (TYPEOF(x)) {
+  case ENVSXP:
+    out = Rf_findVarInFrame(func(x), nano_ValueSymbol);
+    if (out == R_UnboundValue) break;
+    goto resume;
+  case VECSXP: ;
+    SEXP env;
+    const R_xlen_t xlen = Rf_xlength(x);
+    PROTECT(out = Rf_allocVector(VECSXP, xlen));
+    for (R_xlen_t i = 0; i < xlen; i++) {
+      env = func(VECTOR_ELT(x, i));
+      if (TYPEOF(env) != ENVSXP) { UNPROTECT(1); goto exit; }
+      env = Rf_findVarInFrame(env, nano_ValueSymbol);
+      if (env == R_UnboundValue) { UNPROTECT(1); goto exit; }
+      SET_VECTOR_ELT(out, i, env);
+    }
+    out = Rf_namesgets(out, Rf_getAttrib(x, R_NamesSymbol));
+    UNPROTECT(1);
+    goto resume;
   }
 
-  out = Rf_namesgets(out, Rf_getAttrib(x, R_NamesSymbol));
-  UNPROTECT(1);
+  exit:
+  Rf_error("object is not an Aio or list of Aios");
 
+  resume:
   return out;
-
-  exitlevel2:
-  UNPROTECT(1);
-  exitlevel1:
-  Rf_error("object is not a list of Aios");
-  return R_NilValue;
 
 }
 

@@ -3,21 +3,22 @@
 \name{aio_collect}
 \alias{aio_collect}
 \alias{aio_collect_}
-\title{Collect the Data of a List of Aios}
+\title{Collect Data of an Aio or List of Aios}
 \usage{
 aio_collect(x)
 
 aio_collect_(x)
 }
 \arguments{
-\item{x}{a list of Aios (objects of class \sQuote{sendAio}, \sQuote{recvAio}
-or \sQuote{ncurlAio}).}
+\item{x}{an Aio or list of Aios (objects of class \sQuote{sendAio},
+\sQuote{recvAio} or \sQuote{ncurlAio}).}
 }
 \value{
-A list of objects (the same length as \sQuote{x}, preserving names).
+Depending on the type of \sQuote{x} supplied, an object or list of
+    objects (the same length as \sQuote{x}, preserving names).
 }
 \description{
-\code{aio_collect} collects the data of a list of Aios in a list, waiting for
+\code{aio_collect} collects the data of an Aio or list of Aios, waiting for
     resolution if still in progress.
 
 \code{aio_collect_} is a variant that allows user interrupts, suitable for
@@ -27,6 +28,17 @@ A list of objects (the same length as \sQuote{x}, preserving names).
 This function will wait for the asynchronous operation(s) to
     complete if still in progress (blocking).
 }
-\seealso{
-\code{\link{aio_data}} for retrieving the data of a single Aio.
+\examples{
+s1 <- socket("pair", listen = "inproc://nanonext")
+s2 <- socket("pair", dial = "inproc://nanonext")
+
+res <- send_aio(s1, data.frame(a = 1, b = 2), timeout = 100)
+aio_collect(res)
+
+msg <- recv_aio(s2, timeout = 100)
+aio_collect_(res)
+
+close(s1)
+close(s2)
+
 }
