@@ -262,6 +262,23 @@ static void request_complete_signal(void *arg) {
 
 }
 
+static void haio_invoke_cb(void *arg) {
+
+  SEXP call, context, status, ctx = TAG((SEXP) arg);
+  context = Rf_findVarInFrame(ctx, nano_ContextSymbol);
+  if (context == R_UnboundValue)
+    return;
+  PROTECT(context);
+  status = Rf_findVarInFrame(context, nano_StatusSymbol);
+  if (status == R_UnboundValue) {
+    UNPROTECT(1);
+    return;
+  }
+  PROTECT(call = Rf_lcons(nano_ResolveSymbol, Rf_cons(status, R_NilValue)));
+  Rf_eval(call, ctx);
+  UNPROTECT(2);
+}
+
 static void haio_complete(void *arg) {
 
   nano_aio *haio = (nano_aio *) arg;
@@ -269,7 +286,7 @@ static void haio_complete(void *arg) {
   haio->result = res - !res;
 
   if (haio->data != NULL)
-    later2(raio_invoke_cb, haio->data);
+    later2(haio_invoke_cb, haio->data);
 
 }
 
