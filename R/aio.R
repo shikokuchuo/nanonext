@@ -236,7 +236,7 @@ call_aio_ <- function(aio) invisible(.Call(rnng_wait_thread_create, aio))
 
 #' Collect Data of an Aio or List of Aios
 #'
-#' \code{aio_collect} collects the data of an Aio or list of Aios, waiting for
+#' \code{collect_aio} collects the data of an Aio or list of Aios, waiting for
 #'     resolution if still in progress.
 #'
 #' @param x an Aio or list of Aios (objects of class \sQuote{sendAio},
@@ -253,27 +253,27 @@ call_aio_ <- function(aio) invisible(.Call(rnng_wait_thread_create, aio))
 #' s2 <- socket("pair", dial = "inproc://nanonext")
 #'
 #' res <- send_aio(s1, data.frame(a = 1, b = 2), timeout = 100)
-#' aio_collect(res)
+#' collect_aio(res)
 #'
 #' msg <- recv_aio(s2, timeout = 100)
-#' aio_collect_(res)
+#' collect_aio_(res)
 #'
 #' close(s1)
 #' close(s2)
 #'
 #' @export
 #'
-aio_collect <- function(x) .Call(rnng_aio_collect, x)
+collect_aio <- function(x) .Call(rnng_aio_collect, x)
 
 #' Collect Data of an Aio or List of Aios
 #'
-#' \code{aio_collect_} is a variant that allows user interrupts, suitable for
+#' \code{collect_aio_} is a variant that allows user interrupts, suitable for
 #'     interactive use.
 #'
-#' @rdname aio_collect
+#' @rdname collect_aio
 #' @export
 #'
-aio_collect_ <- function(x) .Call(rnng_aio_collect_safe, x)
+collect_aio_ <- function(x) .Call(rnng_aio_collect_safe, x)
 
 #' Stop Asynchronous Aio Operation
 #'
