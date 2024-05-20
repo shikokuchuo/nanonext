@@ -25,9 +25,6 @@
     <loc>https://shikokuchuo.net/nanonext/news/index.html</loc>
   </url>
   <url>
-    <loc>https://shikokuchuo.net/nanonext/reference/aio_collect.html</loc>
-  </url>
-  <url>
     <loc>https://shikokuchuo.net/nanonext/reference/base64enc.html</loc>
   </url>
   <url>
@@ -35,6 +32,9 @@
   </url>
   <url>
     <loc>https://shikokuchuo.net/nanonext/reference/close.html</loc>
+  </url>
+  <url>
+    <loc>https://shikokuchuo.net/nanonext/reference/collect_aio.html</loc>
   </url>
   <url>
     <loc>https://shikokuchuo.net/nanonext/reference/context.html</loc>
