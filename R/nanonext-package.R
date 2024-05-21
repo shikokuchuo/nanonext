@@ -94,6 +94,7 @@
 #'
 #' @importFrom stats start
 #' @importFrom utils .DollarNames
+#' @importFrom later later
 #' @useDynLib nanonext, .registration = TRUE
 #'
 "_PACKAGE"
