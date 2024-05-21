@@ -1,4 +1,4 @@
-# nanonext 1.0.0.9010 (development)
+# nanonext 1.0.0.9011 (development)
 
 #### New Features
 
@@ -8,6 +8,7 @@
 #### Updates
 
 * `status_code()` now returns the status code combined with the explanation as a character string.
+* Bundled 'libnng' version rolled back to v1.7.2 due to identified regressions.
 
 # nanonext 1.0.0
 

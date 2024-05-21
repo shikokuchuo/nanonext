@@ -176,7 +176,7 @@ vignette("nanonext", package = "nanonext")
 
 Installation from source requires ‘libnng’ \>= v1.6.0 and ‘libmbedtls’
 \>= 2.5.0 (suitable installations are automatically detected), or else
-‘cmake’ to compile ‘libnng’ v1.8.0 and ‘libmbedtls’ v3.5.2 included
+‘cmake’ to compile ‘libnng’ v1.7.2 and ‘libmbedtls’ v3.5.2 included
 within the package sources.
 
 **It is recommended for optimal performance and stability to let the
@@ -199,11 +199,11 @@ OpenCSW - refer to the ‘cmake’ website for the latest source file.*
 
 #### Windows
 
-For R \>= 4.2 using the ‘Rtools42’ or newer toolchains, ‘libnng’ v1.8.0
+For R \>= 4.2 using the ‘Rtools42’ or newer toolchains, ‘libnng’ v1.7.2
 and ‘libmbedtls’ v3.5.2 will be automatically compiled from the package
 sources during installation.
 
-For previous R versions, pre-compiled ‘libnng’ v1.8.0 and ‘libmbedtls’
+For previous R versions, pre-compiled ‘libnng’ v1.7.2 and ‘libmbedtls’
 v3.5.2 libraries are downloaded and used for installation instead.
 
 ### Acknowledgements and Links
