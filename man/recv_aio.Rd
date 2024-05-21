@@ -2,7 +2,6 @@
 % Please edit documentation in R/aio.R
 \name{recv_aio}
 \alias{recv_aio}
-\alias{recv_aio_signal}
 \title{Receive Async}
 \usage{
 recv_aio(
@@ -10,15 +9,7 @@ recv_aio(
   mode = c("serial", "character", "complex", "double", "integer", "logical", "numeric",
     "raw", "string"),
   timeout = NULL,
-  n = 65536L
-)
-
-recv_aio_signal(
-  con,
-  cv,
-  mode = c("serial", "character", "complex", "double", "integer", "logical", "numeric",
-    "raw", "string"),
-  timeout = NULL,
+  cv = NULL,
   n = 65536L
 )
 }
@@ -37,21 +28,18 @@ a faster option for length one character vectors. For Streams,
 \item{timeout}{[default NULL] integer value in milliseconds or NULL, which
 applies a socket-specific default, usually the same as no timeout.}
 
+\item{cv}{(optional) a \sQuote{conditionVariable} to signal when the async
+receive is complete.}
+
 \item{n}{[default 65536L] applicable to Streams only, the maximum number of
 bytes to receive. Can be an over-estimate, but note that a buffer of this
 size is reserved.}
-
-\item{cv}{\strong{For the signalling version}: a \sQuote{conditionVariable}
-to signal when the async receive is complete.}
 }
 \value{
 A \sQuote{recvAio} (object of class \sQuote{recvAio}) (invisibly).
 }
 \description{
 Receive data asynchronously over a connection (Socket, Context or Stream).
-
-A signalling version of the function takes a \sQuote{conditionVariable} as an
-    additional argument and signals it when the async receive is complete.
 }
 \details{
 Async receive is always non-blocking and returns a \sQuote{recvAio}
@@ -74,12 +62,16 @@ Async receive is always non-blocking and returns a \sQuote{recvAio}
     If an error occurred in unserialization or conversion of the message data
     to the specified mode, a raw vector will be returned instead to allow
     recovery (accompanied by a warning).
-
-\strong{For the signalling version}: when the receive is complete,
-    the supplied \sQuote{conditionVariable} is signalled by incrementing its
-    value by 1. This happens asynchronously and independently of the R
-    execution thread.
 }
+\section{Signalling}{
+
+
+    By supplying a \sQuote{conditionVariable}, when the receive is complete,
+    the \sQuote{conditionVariable} is signalled by incrementing its value by
+    1. This happens asynchronously and independently of the R execution
+    thread.
+}
+
 \examples{
 s1 <- socket("pair", listen = "inproc://nanonext")
 s2 <- socket("pair", dial = "inproc://nanonext")

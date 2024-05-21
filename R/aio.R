@@ -66,6 +66,8 @@ send_aio <- function(con, data, mode = c("serial", "raw", "next"), timeout = NUL
 #'
 #' @inheritParams recv
 #' @inheritParams send_aio
+#' @param cv (optional) a \sQuote{conditionVariable} to signal when the async
+#'     receive is complete.
 #'
 #' @return A \sQuote{recvAio} (object of class \sQuote{recvAio}) (invisibly).
 #'
@@ -90,6 +92,13 @@ send_aio <- function(con, data, mode = c("serial", "raw", "next"), timeout = NUL
 #'     to the specified mode, a raw vector will be returned instead to allow
 #'     recovery (accompanied by a warning).
 #'
+#' @section Signalling:
+#'
+#'     By supplying a \sQuote{conditionVariable}, when the receive is complete,
+#'     the \sQuote{conditionVariable} is signalled by incrementing its value by
+#'     1. This happens asynchronously and independently of the R execution
+#'     thread.
+#'
 #' @examples
 #' s1 <- socket("pair", listen = "inproc://nanonext")
 #' s2 <- socket("pair", dial = "inproc://nanonext")
@@ -112,29 +121,6 @@ send_aio <- function(con, data, mode = c("serial", "raw", "next"), timeout = NUL
 #' close(s1)
 #' close(s2)
 #'
-#' @export
-#'
-recv_aio <- function(con,
-                     mode = c("serial", "character", "complex", "double",
-                              "integer", "logical", "numeric", "raw", "string"),
-                     timeout = NULL,
-                     n = 65536L)
-  data <- .Call(rnng_recv_aio, con, mode, timeout, n, environment())
-
-#' Receive Async and Signal a Condition
-#'
-#' A signalling version of the function takes a \sQuote{conditionVariable} as an
-#'     additional argument and signals it when the async receive is complete.
-#'
-#' @param cv \strong{For the signalling version}: a \sQuote{conditionVariable}
-#'     to signal when the async receive is complete.
-#'
-#' @details \strong{For the signalling version}: when the receive is complete,
-#'     the supplied \sQuote{conditionVariable} is signalled by incrementing its
-#'     value by 1. This happens asynchronously and independently of the R
-#'     execution thread.
-#'
-#' @examples
 #' # Signalling a condition variable
 #'
 #' s1 <- socket("pair", listen = "tcp://127.0.0.1:6546")
@@ -149,7 +135,23 @@ recv_aio <- function(con,
 #' res <- send_aio(s2, c(1.1, 2.2, 3.3), mode = "raw", timeout = 100)
 #' close(s2)
 #'
-#' @rdname recv_aio
+#' @export
+#'
+recv_aio <- function(con,
+                     mode = c("serial", "character", "complex", "double",
+                              "integer", "logical", "numeric", "raw", "string"),
+                     timeout = NULL,
+                     cv = NULL,
+                     n = 65536L)
+  data <- .Call(rnng_recv_aio, con, mode, timeout, cv, n, environment())
+
+#' Receive Async and Signal a Condition
+#'
+#' Deprecated function - use \code{recv_aio} instead.
+#'
+#' @inheritParams recv_aio
+#'
+#' @keywords internal
 #' @export
 #'
 recv_aio_signal <- function(con,
@@ -158,7 +160,7 @@ recv_aio_signal <- function(con,
                                      "integer", "logical", "numeric", "raw", "string"),
                             timeout = NULL,
                             n = 65536L)
-  data <- .Call(rnng_recv_aio_signal, con, cv, mode, timeout, n, environment())
+  data <- .Call(rnng_recv_aio, con, mode, timeout, cv, n, environment())
 
 # Core aio functions -----------------------------------------------------------
 

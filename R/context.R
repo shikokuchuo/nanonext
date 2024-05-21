@@ -176,6 +176,7 @@ reply <- function(context,
 #'
 #' @inheritParams reply
 #' @inheritParams recv
+#' @inheritParams recv_aio
 #' @param data an object (if send_mode = \sQuote{raw}, a vector).
 #' @param timeout [default NULL] integer value in milliseconds or NULL, which
 #'     applies a socket-specific default, usually the same as no timeout.
@@ -204,6 +205,7 @@ reply <- function(context,
 #'     removed and the object is garbage collected.
 #'
 #' @inheritSection send Send Modes
+#' @inheritSection recv_aio Signalling
 #'
 #' @examples
 #' # works if req and rep are running in parallel in different processes
@@ -218,29 +220,6 @@ reply <- function(context,
 #' # close(req)
 #' # close(rep)
 #'
-#' @export
-#'
-request <- function(context,
-                    data,
-                    send_mode = c("serial", "raw", "next"),
-                    recv_mode = c("serial", "character", "complex", "double",
-                                  "integer", "logical", "numeric", "raw", "string"),
-                    timeout = NULL)
-  data <- .Call(rnng_request, context, data, send_mode, recv_mode, timeout, environment())
-
-#' Request and Signal a Condition Variable (RPC Client for Req/Rep Protocol)
-#'
-#' A signalling version of the function takes a \sQuote{conditionVariable} as an
-#'     additional argument and signals it when the async receive is complete.
-#'
-#' @inheritParams recv_aio_signal
-#'
-#' @details \strong{For the signalling version}: when the receive is complete,
-#'     the supplied \sQuote{conditionVariable} is signalled by incrementing its
-#'     value by 1. This happens asynchronously and independently of the R
-#'     execution thread.
-#'
-#' @examples
 #' # Signalling a condition variable
 #'
 #' # req <- socket("req", listen = "tcp://127.0.0.1:6546")
@@ -256,7 +235,24 @@ request <- function(context,
 #' # reply(ctxp, execute = function(x) x + 1)
 #' # close(rep)
 #'
-#' @rdname request
+#' @export
+#'
+request <- function(context,
+                    data,
+                    send_mode = c("serial", "raw", "next"),
+                    recv_mode = c("serial", "character", "complex", "double",
+                                  "integer", "logical", "numeric", "raw", "string"),
+                    timeout = NULL,
+                    cv = NULL)
+  data <- .Call(rnng_request, context, data, send_mode, recv_mode, timeout, cv, environment())
+
+#' Request and Signal a Condition Variable (RPC Client for Req/Rep Protocol)
+#'
+#' Deprecated function - use \code{request} instead.
+#'
+#' @inheritParams request
+#'
+#' @keywords internal
 #' @export
 #'
 request_signal <- function(context,
@@ -266,7 +262,7 @@ request_signal <- function(context,
                            recv_mode = c("serial", "character", "complex", "double",
                                          "integer", "logical", "numeric", "raw", "string"),
                            timeout = NULL)
-  data <- .Call(rnng_request_signal, context, data, cv, send_mode, recv_mode, timeout, environment())
+  data <- .Call(rnng_request, context, data, send_mode, recv_mode, timeout, cv, environment())
 
 #' Set Promise Context
 #'

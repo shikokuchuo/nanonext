@@ -1,4 +1,4 @@
-# nanonext 1.0.0.9010 (development)
+# nanonext 1.0.0.9012 (development)
 
 #### New Features
 
@@ -7,6 +7,7 @@
 
 #### Updates
 
+* `recv_aio()` and `request()` add argument 'cv' allowing optional signalling of a condition variable. The separate functions `recv_aio_signal()` and `request_signal()` are deprecated.
 * `status_code()` now returns the status code combined with the explanation as a character string.
 
 # nanonext 1.0.0
