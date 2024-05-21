@@ -30,7 +30,7 @@ cv_signal signals a condition variable."><meta property="og:image" content="http
     
     <a class="navbar-brand me-2" href="../index.html">nanonext</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0.9010</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0.9012</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -141,8 +141,8 @@ to be signalled.</p></dd>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>Pass the ‘conditionVariable’ to the signalling forms of the
-    asynchronous receive functions: <code><a href="recv_aio.html">recv_aio_signal</a></code> or
-    <code><a href="request.html">request_signal</a></code>. Alternatively, to be notified of a pipe
+    asynchronous receive functions: <code><a href="recv_aio_signal.html">recv_aio_signal</a></code> or
+    <code><a href="request_signal.html">request_signal</a></code>. Alternatively, to be notified of a pipe
     event, pass it to <code><a href="pipe_notify.html">pipe_notify</a></code>.</p>
 <p>Completion of the receive or pipe event, which happens asynchronously and
     independently of the main R thread, will signal the condition variable by

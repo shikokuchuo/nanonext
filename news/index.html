@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">nanonext</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0.9010</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0.9012</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -54,16 +54,18 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.0.0.9010" id="nanonext-1009010-development">nanonext 1.0.0.9010 (development)<a class="anchor" aria-label="anchor" href="#nanonext-1009010-development"></a></h2>
+<h2 class="pkg-version" data-toc-text="1.0.0.9012" id="nanonext-1009012-development">nanonext 1.0.0.9012 (development)<a class="anchor" aria-label="anchor" href="#nanonext-1009012-development"></a></h2>
 <div class="section level5">
-<h5 id="new-features-1-0-0-9010">New Features<a class="anchor" aria-label="anchor" href="#new-features-1-0-0-9010"></a></h5>
+<h5 id="new-features-1-0-0-9012">New Features<a class="anchor" aria-label="anchor" href="#new-features-1-0-0-9012"></a></h5>
 <ul><li>Adds <code><a href="../reference/collect_aio.html">collect_aio()</a></code> and <code><a href="../reference/collect_aio.html">collect_aio()</a></code> to wait for and collect the data of an Aio or list of Aios.</li>
 <li>
 <code><a href="../reference/ncurl_aio.html">ncurl_aio()</a></code> modified internally to support conversion of ‘ncurlAio’ to event-driven promises.</li>
 </ul></div>
 <div class="section level5">
-<h5 id="updates-1-0-0-9010">Updates<a class="anchor" aria-label="anchor" href="#updates-1-0-0-9010"></a></h5>
+<h5 id="updates-1-0-0-9012">Updates<a class="anchor" aria-label="anchor" href="#updates-1-0-0-9012"></a></h5>
 <ul><li>
+<code><a href="../reference/recv_aio.html">recv_aio()</a></code> and <code><a href="../reference/request.html">request()</a></code> add argument ‘cv’ allowing optional signalling of a condition variable. The separate functions <code><a href="../reference/recv_aio_signal.html">recv_aio_signal()</a></code> and <code><a href="../reference/request_signal.html">request_signal()</a></code> are deprecated.</li>
+<li>
 <code><a href="../reference/status_code.html">status_code()</a></code> now returns the status code combined with the explanation as a character string.</li>
 </ul></div>
 </div>
@@ -73,7 +75,7 @@
 <h5 id="new-features-1-0-0">New Features<a class="anchor" aria-label="anchor" href="#new-features-1-0-0"></a></h5>
 <ul><li>Integrates with the <code>later</code> package to provide the foundation for truly event-driven (non-polling) promises (thanks <a href="https://github.com/jcheng5" class="external-link">@jcheng5</a> for the initial prototype in <a href="https://github.com/shikokuchuo/nanonext/issues/28" class="external-link">#28</a>), where side-effects are enacted asynchronously upon aio completion.
 <ul><li>
-<code><a href="../reference/request.html">request()</a></code> and <code><a href="../reference/request.html">request_signal()</a></code> modified internally to support conversion of ‘recvAio’ to event-driven promises.</li>
+<code><a href="../reference/request.html">request()</a></code> and <code><a href="../reference/request_signal.html">request_signal()</a></code> modified internally to support conversion of ‘recvAio’ to event-driven promises.</li>
 <li>
 <code>later</code> dependency ensures asynchronous R code is always run on the main R thread.</li>
 <li>
@@ -359,7 +361,7 @@
 </ul></div>
 <div class="section level5">
 <h5 id="updates-0-8-3">Updates<a class="anchor" aria-label="anchor" href="#updates-0-8-3"></a></h5>
-<ul><li>Removes ‘verify’ argument of <code><a href="../reference/context.html">context()</a></code> (changed to ‘…’ for compatibility) as <code><a href="../reference/request.html">request()</a></code> and <code><a href="../reference/request.html">request_signal()</a></code> have been rendered safe internally for use with timeouts.</li>
+<ul><li>Removes ‘verify’ argument of <code><a href="../reference/context.html">context()</a></code> (changed to ‘…’ for compatibility) as <code><a href="../reference/request.html">request()</a></code> and <code><a href="../reference/request_signal.html">request_signal()</a></code> have been rendered safe internally for use with timeouts.</li>
 <li>The name of the single argument to <code><a href="../reference/msleep.html">msleep()</a></code> has been changed to ‘time’ from ‘msec’.</li>
 <li>Functions <code><a href="../reference/pipe_notify.html">pipe_notify()</a></code>, <code><a href="../reference/lock.html">lock()</a></code> and <code><a href="../reference/lock.html">unlock()</a></code> now error if unsuccessful rather than returning with a warning.</li>
 <li>For compiling bundled ‘libmbedtls’ and ‘libnng’ libraries from source, R’s configured C compiler is now chosen over the system default where this is different.</li>
@@ -377,7 +379,7 @@
 <div class="section level5">
 <h5 id="updates-0-8-2">Updates<a class="anchor" aria-label="anchor" href="#updates-0-8-2"></a></h5>
 <ul><li>
-<code><a href="../reference/context.html">context()</a></code> gains the argument ‘verify’ with a default of TRUE. This adds additional protection to notably the <code><a href="../reference/request.html">request()</a></code> and <code><a href="../reference/request.html">request_signal()</a></code> functions when using timeouts, as these require a connection to be present.</li>
+<code><a href="../reference/context.html">context()</a></code> gains the argument ‘verify’ with a default of TRUE. This adds additional protection to notably the <code><a href="../reference/request.html">request()</a></code> and <code><a href="../reference/request_signal.html">request_signal()</a></code> functions when using timeouts, as these require a connection to be present.</li>
 <li>Sending and hashing of language objects and symbols is now possible after fixes to serialisation.</li>
 <li>
 <code><a href="../reference/cv.html">until()</a></code> now works as intended.</li>
@@ -391,7 +393,7 @@
 <h5 id="new-features-0-8-1">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-8-1"></a></h5>
 <ul><li>Implements synchronisation primitives from the NNG library. Condition variables allow the R execution thread to wait until it is signalled by an incoming message or pipe event.
 <ul><li>adds core functions <code><a href="../reference/cv.html">cv()</a></code>, <code><a href="../reference/cv.html">wait()</a></code>, <code><a href="../reference/cv.html">until()</a></code>, <code><a href="../reference/cv.html">cv_value()</a></code>, and <code><a href="../reference/cv.html">cv_reset()</a></code>.</li>
-<li>adds signalling receive functions <code><a href="../reference/recv_aio.html">recv_aio_signal()</a></code> and <code><a href="../reference/request.html">request_signal()</a></code>.</li>
+<li>adds signalling receive functions <code><a href="../reference/recv_aio_signal.html">recv_aio_signal()</a></code> and <code><a href="../reference/request_signal.html">request_signal()</a></code>.</li>
 <li>
 <code><a href="../reference/pipe_notify.html">pipe_notify()</a></code> signals up to 2 condition variables whenever pipes are added or removed at a socket.</li>
 </ul></li>
