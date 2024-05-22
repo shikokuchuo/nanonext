@@ -43,7 +43,8 @@ SEXP nano_UrlSymbol;
 SEXP nano_ValueSymbol;
 
 SEXP nano_aioFormals;
-SEXP nano_aioFuncs;
+SEXP nano_aioFuncMsg;
+SEXP nano_aioFuncRes;
 SEXP nano_aioNFuncs;
 SEXP nano_error;
 SEXP nano_klassString;
@@ -95,10 +96,8 @@ static void RegisterSymbols(void) {
 
 static void PreserveObjects(void) {
   R_PreserveObject(nano_aioFormals = Rf_cons(nano_AioSymbol, R_NilValue));
-  R_PreserveObject(nano_aioFuncs = Rf_allocVector(LISTSXP, 3));
-  SETCAR(nano_aioFuncs, Rf_lang3(nano_DotcallSymbol, Rf_install("rnng_aio_result"), nano_DataSymbol));
-  SETCADR(nano_aioFuncs, Rf_lang3(nano_DotcallSymbol, Rf_install("rnng_aio_get_msg"), nano_DataSymbol));
-  SETCADDR(nano_aioFuncs, Rf_lang3(nano_DotcallSymbol, Rf_install("rnng_aio_get_msg2"), nano_DataSymbol));
+  R_PreserveObject(nano_aioFuncMsg = Rf_lang3(nano_DotcallSymbol, Rf_install("rnng_aio_get_msg"), nano_DataSymbol));
+  R_PreserveObject(nano_aioFuncRes = Rf_lang3(nano_DotcallSymbol, Rf_install("rnng_aio_result"), nano_DataSymbol));
   R_PreserveObject(nano_aioNFuncs = Rf_allocVector(LISTSXP, 3));
   SETCAR(nano_aioNFuncs, Rf_lang5(nano_DotcallSymbol, Rf_install("rnng_aio_http"), nano_DataSymbol, nano_ResponseSymbol, Rf_ScalarLogical(0)));
   SETCADR(nano_aioNFuncs, Rf_lang5(nano_DotcallSymbol, Rf_install("rnng_aio_http"), nano_DataSymbol, nano_ResponseSymbol, Rf_ScalarLogical(1)));
@@ -131,7 +130,8 @@ static void ReleaseObjects(void) {
   R_ReleaseObject(nano_klassString);
   R_ReleaseObject(nano_error);
   R_ReleaseObject(nano_aioNFuncs);
-  R_ReleaseObject(nano_aioFuncs);
+  R_ReleaseObject(nano_aioFuncRes);
+  R_ReleaseObject(nano_aioFuncMsg);
   R_ReleaseObject(nano_aioFormals);
 }
 // # nocov end
@@ -141,7 +141,6 @@ static const R_CallMethodDef callMethods[] = {
   {"rnng_aio_collect", (DL_FUNC) &rnng_aio_collect, 1},
   {"rnng_aio_collect_safe", (DL_FUNC) &rnng_aio_collect_safe, 1},
   {"rnng_aio_get_msg", (DL_FUNC) &rnng_aio_get_msg, 1},
-  {"rnng_aio_get_msg2", (DL_FUNC) &rnng_aio_get_msg2, 1},
   {"rnng_aio_http", (DL_FUNC) &rnng_aio_http, 3},
   {"rnng_aio_result", (DL_FUNC) &rnng_aio_result, 1},
   {"rnng_aio_stop", (DL_FUNC) &rnng_aio_stop, 1},
@@ -202,7 +201,6 @@ static const R_CallMethodDef callMethods[] = {
   {"rnng_subscribe", (DL_FUNC) &rnng_subscribe, 3},
   {"rnng_tls_config", (DL_FUNC) &rnng_tls_config, 4},
   {"rnng_unresolved", (DL_FUNC) &rnng_unresolved, 1},
-  {"rnng_unresolved2", (DL_FUNC) &rnng_unresolved2, 1},
   {"rnng_url_parse", (DL_FUNC) &rnng_url_parse, 1},
   {"rnng_version", (DL_FUNC) &rnng_version, 0},
   {"rnng_wait_thread_create", (DL_FUNC) &rnng_wait_thread_create, 1},

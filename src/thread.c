@@ -278,15 +278,15 @@ SEXP rnng_wait_thread_create(SEXP aio) {
   }
 
   switch (aiop->type) {
-  case RECVAIO:
-  case REQAIO:
-  case IOV_RECVAIO:
-  case HTTP_AIO:
-    Rf_findVarInFrame(aio, nano_DataSymbol);
-    break;
   case SENDAIO:
   case IOV_SENDAIO:
-    Rf_findVarInFrame(aio, nano_ResultSymbol);
+    rnng_aio_result(aio);
+    break;
+  case HTTP_AIO:
+    Rf_findVarInFrame(aio, nano_StatusSymbol);
+    break;
+  default:
+    rnng_aio_get_msg(aio);
     break;
   }
 

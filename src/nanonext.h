@@ -67,12 +67,15 @@ typedef struct nano_stream_s {
 } nano_stream;
 
 typedef enum nano_aio_typ {
-  SENDAIO,
-  RECVAIO,
-  REQAIO,
-  IOV_SENDAIO,
-  IOV_RECVAIO,
-  HTTP_AIO
+  SENDAIO = 0,
+  RECVAIO = 1,
+  REQAIO = 2,
+  IOV_SENDAIO = 3,
+  IOV_RECVAIO = 4,
+  HTTP_AIO = 5,
+  RECVAIOS = 6,
+  REQAIOS = 7,
+  IOV_RECVAIOS = 8
 } nano_aio_typ;
 
 typedef struct nano_aio_s {
@@ -203,7 +206,6 @@ SEXP rnng_aio_call(SEXP);
 SEXP rnng_aio_collect(SEXP);
 SEXP rnng_aio_collect_safe(SEXP);
 SEXP rnng_aio_get_msg(SEXP);
-SEXP rnng_aio_get_msg2(SEXP);
 SEXP rnng_aio_http(SEXP, SEXP, SEXP);
 SEXP rnng_aio_result(SEXP);
 SEXP rnng_aio_stop(SEXP);
@@ -265,7 +267,6 @@ SEXP rnng_strerror(SEXP);
 SEXP rnng_subscribe(SEXP, SEXP, SEXP);
 SEXP rnng_tls_config(SEXP, SEXP, SEXP, SEXP);
 SEXP rnng_unresolved(SEXP);
-SEXP rnng_unresolved2(SEXP);
 SEXP rnng_url_parse(SEXP);
 SEXP rnng_version(void);
 SEXP rnng_wait_thread_create(SEXP);
@@ -295,7 +296,8 @@ extern SEXP nano_UrlSymbol;
 extern SEXP nano_ValueSymbol;
 
 extern SEXP nano_aioFormals;
-extern SEXP nano_aioFuncs;
+extern SEXP nano_aioFuncMsg;
+extern SEXP nano_aioFuncRes;
 extern SEXP nano_aioNFuncs;
 extern SEXP nano_error;
 extern SEXP nano_klassString;

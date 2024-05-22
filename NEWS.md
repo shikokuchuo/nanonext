@@ -1,14 +1,15 @@
-# nanonext 1.0.0.9013 (development)
+# nanonext 1.0.0.9014 (development)
 
 #### New Features
 
-* Adds `collect_aio()` and `collect_aio()` to wait for and collect the data of an Aio or list of Aios.
+* Adds `collect_aio()` and `collect_aio_()` to wait for and collect the data of an Aio or list of Aios.
 * `ncurl_aio()` modified internally to support conversion of 'ncurlAio' to event-driven promises.
 
 #### Updates
 
 * `recv_aio()` and `request()` add argument 'cv' allowing optional signalling of a condition variable. The separate functions `recv_aio_signal()` and `request_signal()` are deprecated.
 * `status_code()` now returns the status code combined with the explanation as a character string.
+* Performance enhancements for `unresolved()`, `call_aio()` and `call_aio_()`.
 
 # nanonext 1.0.0
 

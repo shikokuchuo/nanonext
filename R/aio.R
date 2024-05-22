@@ -332,23 +332,3 @@ stop_aio <- function(aio) invisible(.Call(rnng_aio_stop, aio))
 #' @export
 #'
 unresolved <- function(aio) .Call(rnng_unresolved, aio)
-
-#' Technical Utility: Query if an Aio is Unresolved
-#'
-#' Query whether an Aio remains unresolved. This is an experimental technical
-#'     utility version of \code{\link{unresolved}} not intended for ordinary
-#'     use. Provides a method of querying the busy status of an Aio without
-#'     altering its state in any way i.e. not attempting to retrieve the result
-#'     or message.
-#'
-#' @param x an Aio (object of class \sQuote{sendAio} or \sQuote{recvAio}).
-#'
-#' @return Logical TRUE if \sQuote{aio} is an unresolved Aio, or FALSE otherwise.
-#'
-#' @details \code{.unresolved()} is not intended to be used for \sQuote{recvAio}
-#'     returned by a signalling function, in which case \code{\link{unresolved}}
-#'     must be used in all cases.
-#'
-#' @export
-#'
-.unresolved <- function(x) .Call(rnng_unresolved2, x)
