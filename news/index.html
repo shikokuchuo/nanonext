@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">nanonext</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0.9013</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0.9014</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -54,19 +54,20 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.0.0.9013" id="nanonext-1009013-development">nanonext 1.0.0.9013 (development)<a class="anchor" aria-label="anchor" href="#nanonext-1009013-development"></a></h2>
+<h2 class="pkg-version" data-toc-text="1.0.0.9014" id="nanonext-1009014-development">nanonext 1.0.0.9014 (development)<a class="anchor" aria-label="anchor" href="#nanonext-1009014-development"></a></h2>
 <div class="section level5">
-<h5 id="new-features-1-0-0-9013">New Features<a class="anchor" aria-label="anchor" href="#new-features-1-0-0-9013"></a></h5>
-<ul><li>Adds <code><a href="../reference/collect_aio.html">collect_aio()</a></code> and <code><a href="../reference/collect_aio.html">collect_aio()</a></code> to wait for and collect the data of an Aio or list of Aios.</li>
+<h5 id="new-features-1-0-0-9014">New Features<a class="anchor" aria-label="anchor" href="#new-features-1-0-0-9014"></a></h5>
+<ul><li>Adds <code><a href="../reference/collect_aio.html">collect_aio()</a></code> and <code><a href="../reference/collect_aio.html">collect_aio_()</a></code> to wait for and collect the data of an Aio or list of Aios.</li>
 <li>
 <code><a href="../reference/ncurl_aio.html">ncurl_aio()</a></code> modified internally to support conversion of ‘ncurlAio’ to event-driven promises.</li>
 </ul></div>
 <div class="section level5">
-<h5 id="updates-1-0-0-9013">Updates<a class="anchor" aria-label="anchor" href="#updates-1-0-0-9013"></a></h5>
+<h5 id="updates-1-0-0-9014">Updates<a class="anchor" aria-label="anchor" href="#updates-1-0-0-9014"></a></h5>
 <ul><li>
 <code><a href="../reference/recv_aio.html">recv_aio()</a></code> and <code><a href="../reference/request.html">request()</a></code> add argument ‘cv’ allowing optional signalling of a condition variable. The separate functions <code><a href="../reference/recv_aio_signal.html">recv_aio_signal()</a></code> and <code><a href="../reference/request_signal.html">request_signal()</a></code> are deprecated.</li>
 <li>
 <code><a href="../reference/status_code.html">status_code()</a></code> now returns the status code combined with the explanation as a character string.</li>
+<li>Performance enhancements for <code><a href="../reference/unresolved.html">unresolved()</a></code>, <code><a href="../reference/call_aio.html">call_aio()</a></code> and <code><a href="../reference/call_aio.html">call_aio_()</a></code>.</li>
 </ul></div>
 </div>
     <div class="section level2">
