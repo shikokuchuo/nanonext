@@ -349,6 +349,6 @@ unresolved <- function(aio) .Call(rnng_unresolved, aio)
 #'     returned by a signalling function, in which case \code{\link{unresolved}}
 #'     must be used in all cases.
 #'
-#' @keywords internal
+#' @export
 #'
 .unresolved <- function(x) .Call(rnng_unresolved2, x)
