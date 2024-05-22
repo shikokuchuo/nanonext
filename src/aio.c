@@ -1300,9 +1300,12 @@ SEXP rnng_set_promise_context(SEXP x, SEXP ctx) {
 
   switch (raio->type) {
   case REQAIO:
-    ((nano_aio *) raio->next)->data = nano_PreserveObject(ctx); break;
+  case REQAIOS:
+    ((nano_aio *) raio->next)->data = nano_PreserveObject(ctx);
+    break;
   case HTTP_AIO:
-    raio->data = nano_PreserveObject(ctx); break;
+    raio->data = nano_PreserveObject(ctx);
+    break;
   default:
     break;
   }
