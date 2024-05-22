@@ -215,11 +215,10 @@ static void raio_invoke_cb(void *arg) {
   if (context == R_UnboundValue)
     return;
   PROTECT(context);
-  data = Rf_findVarInFrame(context, nano_DataSymbol);
-  if (data == R_UnboundValue) {
-    UNPROTECT(1);
+  data = Rf_findVarInFrame(context, nano_AioSymbol);
+  if (R_ExternalPtrTag(data) != nano_AioSymbol)
     return;
-  }
+  data = rnng_aio_get_msg(context);
   PROTECT(call = Rf_lcons(nano_ResolveSymbol, Rf_cons(data, R_NilValue)));
   Rf_eval(call, ctx);
   UNPROTECT(2);
