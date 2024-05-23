@@ -99,9 +99,9 @@ static void PreserveObjects(void) {
   R_PreserveObject(nano_aioFuncMsg = Rf_lang3(nano_DotcallSymbol, Rf_install("rnng_aio_get_msg"), nano_DataSymbol));
   R_PreserveObject(nano_aioFuncRes = Rf_lang3(nano_DotcallSymbol, Rf_install("rnng_aio_result"), nano_DataSymbol));
   R_PreserveObject(nano_aioNFuncs = Rf_allocVector(LISTSXP, 3));
-  SETCAR(nano_aioNFuncs, Rf_lang5(nano_DotcallSymbol, Rf_install("rnng_aio_http"), nano_DataSymbol, nano_ResponseSymbol, Rf_ScalarLogical(0)));
-  SETCADR(nano_aioNFuncs, Rf_lang5(nano_DotcallSymbol, Rf_install("rnng_aio_http"), nano_DataSymbol, nano_ResponseSymbol, Rf_ScalarLogical(1)));
-  SETCADDR(nano_aioNFuncs, Rf_lang5(nano_DotcallSymbol, Rf_install("rnng_aio_http"), nano_DataSymbol, nano_ResponseSymbol, Rf_ScalarLogical(NA_LOGICAL)));
+  SETCAR(nano_aioNFuncs, Rf_lang4(nano_DotcallSymbol, Rf_install("rnng_aio_http"), nano_DataSymbol, Rf_ScalarLogical(0)));
+  SETCADR(nano_aioNFuncs, Rf_lang4(nano_DotcallSymbol, Rf_install("rnng_aio_http"), nano_DataSymbol, Rf_ScalarLogical(1)));
+  SETCADDR(nano_aioNFuncs, Rf_lang4(nano_DotcallSymbol, Rf_install("rnng_aio_http"), nano_DataSymbol, Rf_ScalarLogical(NA_LOGICAL)));
   R_PreserveObject(nano_error = Rf_allocVector(STRSXP, 2));
   SET_STRING_ELT(nano_error, 0, Rf_mkChar("errorValue"));
   SET_STRING_ELT(nano_error, 1, Rf_mkChar("try-error"));
@@ -141,7 +141,7 @@ static const R_CallMethodDef callMethods[] = {
   {"rnng_aio_collect", (DL_FUNC) &rnng_aio_collect, 1},
   {"rnng_aio_collect_safe", (DL_FUNC) &rnng_aio_collect_safe, 1},
   {"rnng_aio_get_msg", (DL_FUNC) &rnng_aio_get_msg, 1},
-  {"rnng_aio_http", (DL_FUNC) &rnng_aio_http, 3},
+  {"rnng_aio_http", (DL_FUNC) &rnng_aio_http, 2},
   {"rnng_aio_result", (DL_FUNC) &rnng_aio_result, 1},
   {"rnng_aio_stop", (DL_FUNC) &rnng_aio_stop, 1},
   {"rnng_clock", (DL_FUNC) &rnng_clock, 0},
@@ -171,7 +171,7 @@ static const R_CallMethodDef callMethods[] = {
   {"rnng_listener_start", (DL_FUNC) &rnng_listener_start, 1},
   {"rnng_messenger", (DL_FUNC) &rnng_messenger, 1},
   {"rnng_ncurl", (DL_FUNC) &rnng_ncurl, 9},
-  {"rnng_ncurl_aio", (DL_FUNC) &rnng_ncurl_aio, 8},
+  {"rnng_ncurl_aio", (DL_FUNC) &rnng_ncurl_aio, 9},
   {"rnng_ncurl_session", (DL_FUNC) &rnng_ncurl_session, 8},
   {"rnng_ncurl_session_close", (DL_FUNC) &rnng_ncurl_session_close, 1},
   {"rnng_ncurl_transact", (DL_FUNC) &rnng_ncurl_transact, 1},

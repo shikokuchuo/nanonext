@@ -128,7 +128,7 @@ ncurl_aio <- function(url,
                       response = NULL,
                       timeout = NULL,
                       tls = NULL)
-    data <- .Call(rnng_ncurl_aio, url, convert, method, headers, data, timeout, tls, environment())
+    data <- .Call(rnng_ncurl_aio, url, convert, method, headers, data, response, timeout, tls, environment())
 
 #' ncurl Session
 #'
