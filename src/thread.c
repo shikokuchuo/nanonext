@@ -283,7 +283,7 @@ SEXP rnng_wait_thread_create(SEXP aio) {
     rnng_aio_result(aio);
     break;
   case HTTP_AIO:
-    rnng_aio_http(aio, Rf_ScalarLogical(NA_LOGICAL));
+    rnng_aio_http_status(aio);
     break;
   default:
     rnng_aio_get_msg(aio);

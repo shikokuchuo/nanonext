@@ -516,7 +516,7 @@ SEXP rnng_aio_call(SEXP aio) {
     rnng_aio_result(aio);
     break;
   case HTTP_AIO:
-    rnng_aio_http(aio, Rf_ScalarLogical(NA_LOGICAL));
+    rnng_aio_http_status(aio);
     break;
   default:
     rnng_aio_get_msg(aio);
@@ -607,7 +607,7 @@ SEXP rnng_unresolved(SEXP x) {
       value = rnng_aio_result(x);
       break;
     case HTTP_AIO:
-      value = rnng_aio_http(x, Rf_ScalarLogical(NA_LOGICAL));
+      value = rnng_aio_http_status(x);
       break;
     default:
       value = rnng_aio_get_msg(x);
@@ -934,9 +934,8 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP dat
 
 }
 
-SEXP rnng_aio_http(SEXP env, SEXP type) {
+static SEXP rnng_aio_http_impl(SEXP env, const int typ) {
 
-  const int typ = *NANO_INTEGER(type);
   SEXP exist;
   switch (typ) {
   case 0: exist = Rf_findVarInFrame(env, nano_ResultSymbol); break;
@@ -1013,6 +1012,18 @@ SEXP rnng_aio_http(SEXP env, SEXP type) {
   }
   return out;
 
+}
+
+SEXP rnng_aio_http_status(SEXP env) {
+  return rnng_aio_http_impl(env, 0);
+}
+
+SEXP rnng_aio_http_headers(SEXP env) {
+  return rnng_aio_http_impl(env, 1);
+}
+
+SEXP rnng_aio_http_data(SEXP env) {
+  return rnng_aio_http_impl(env, 2);
 }
 
 // ncurl session ---------------------------------------------------------------
