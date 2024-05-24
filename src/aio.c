@@ -211,8 +211,6 @@ static void raio_complete_signal(void *arg) {
 static void raio_invoke_cb(void *arg) {
 
   SEXP call, context, data, ctx = TAG((SEXP) arg);
-  if (TYPEOF(ctx) != ENVSXP)
-    return;
   PROTECT(context = Rf_findVarInFrame(ctx, nano_ContextSymbol));
   data = rnng_aio_get_msg(context);
   PROTECT(call = Rf_lcons(nano_ResolveSymbol, Rf_cons(data, R_NilValue)));
@@ -260,8 +258,6 @@ static void request_complete_signal(void *arg) {
 static void haio_invoke_cb(void *arg) {
 
   SEXP call, context, status, ctx = TAG((SEXP) arg);
-  if (TYPEOF(ctx) != ENVSXP)
-    return;
   PROTECT(context = Rf_findVarInFrame(ctx, nano_ContextSymbol));
   status = rnng_aio_http_status(context);
   PROTECT(call = Rf_lcons(nano_ResolveSymbol, Rf_cons(status, R_NilValue)));
@@ -1326,6 +1322,7 @@ SEXP rnng_set_promise_context(SEXP x, SEXP ctx) {
     break;
   }
 
+  Rf_defineVar(ctx, nano_ContextSymbol, x);
   return x;
 
 }
