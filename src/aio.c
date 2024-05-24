@@ -211,8 +211,10 @@ static void raio_complete_signal(void *arg) {
 static void raio_invoke_cb(void *arg) {
 
   SEXP call, context, data, ctx = TAG((SEXP) arg);
+  if (TYPEOF(ctx) != ENVSXP)
+    return;
   context = Rf_findVarInFrame(ctx, nano_ContextSymbol);
-  if (context == R_UnboundValue)
+  if (TYPEOF(context) != ENVSXP)
     return;
   PROTECT(context);
   data = Rf_findVarInFrame(context, nano_AioSymbol);
@@ -266,8 +268,10 @@ static void request_complete_signal(void *arg) {
 static void haio_invoke_cb(void *arg) {
 
   SEXP call, context, status, ctx = TAG((SEXP) arg);
+  if (TYPEOF(ctx) != ENVSXP)
+    return;
   context = Rf_findVarInFrame(ctx, nano_ContextSymbol);
-  if (context == R_UnboundValue)
+  if (TYPEOF(context) != ENVSXP)
     return;
   PROTECT(context);
   status = Rf_findVarInFrame(context, nano_StatusSymbol);
