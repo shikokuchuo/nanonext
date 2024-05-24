@@ -445,8 +445,10 @@ SEXP rnng_aio_get_msg(SEXP env) {
   nano_aio *raio = (nano_aio *) R_ExternalPtrAddr(aio);
 
   int res;
-  if (raio->type < 6) {
-
+  switch (raio->type) {
+  case RECVAIO:
+  case REQAIO:
+  case IOV_RECVAIO:
     if (nng_aio_busy(raio->aio))
       return nano_unresolved;
 
@@ -454,8 +456,10 @@ SEXP rnng_aio_get_msg(SEXP env) {
     if (res > 0)
       return mk_error_aio(res, env);
 
-  } else {
-
+    break;
+  case RECVAIOS:
+  case REQAIOS:
+  case IOV_RECVAIOS: ;
     nano_cv *ncv;
     if (raio->type == REQAIOS) {
       nano_aio *saio = (nano_aio *) raio->next;
@@ -475,6 +479,9 @@ SEXP rnng_aio_get_msg(SEXP env) {
     if (res > 0)
       return mk_error_aio(res, env);
 
+    break;
+  default:
+    break;
   }
 
   SEXP out;
@@ -511,15 +518,20 @@ SEXP rnng_aio_call(SEXP aio) {
   nano_aio *aiop = (nano_aio *) R_ExternalPtrAddr(coreaio);
   nng_aio_wait(aiop->aio);
   switch (aiop->type) {
+  case RECVAIO:
+  case REQAIO:
+  case IOV_RECVAIO:
+  case RECVAIOS:
+  case REQAIOS:
+  case IOV_RECVAIOS:
+    rnng_aio_get_msg(aio);
+    break;
   case SENDAIO:
   case IOV_SENDAIO:
     rnng_aio_result(aio);
     break;
   case HTTP_AIO:
     rnng_aio_http_status(aio);
-    break;
-  default:
-    rnng_aio_get_msg(aio);
     break;
   }
 

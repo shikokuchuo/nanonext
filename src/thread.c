@@ -278,15 +278,20 @@ SEXP rnng_wait_thread_create(SEXP aio) {
   }
 
   switch (aiop->type) {
+  case RECVAIO:
+  case REQAIO:
+  case IOV_RECVAIO:
+  case RECVAIOS:
+  case REQAIOS:
+  case IOV_RECVAIOS:
+    rnng_aio_get_msg(aio);
+    break;
   case SENDAIO:
   case IOV_SENDAIO:
     rnng_aio_result(aio);
     break;
   case HTTP_AIO:
     rnng_aio_http_status(aio);
-    break;
-  default:
-    rnng_aio_get_msg(aio);
     break;
   }
 
