@@ -213,15 +213,7 @@ static void raio_invoke_cb(void *arg) {
   SEXP call, context, data, ctx = TAG((SEXP) arg);
   if (TYPEOF(ctx) != ENVSXP)
     return;
-  context = Rf_findVarInFrame(ctx, nano_ContextSymbol);
-  if (TYPEOF(context) != ENVSXP)
-    return;
-  PROTECT(context);
-  data = Rf_findVarInFrame(context, nano_AioSymbol);
-  if (R_ExternalPtrTag(data) != nano_AioSymbol) {
-    UNPROTECT(1);
-    return;
-  }
+  PROTECT(context = Rf_findVarInFrame(ctx, nano_ContextSymbol));
   data = rnng_aio_get_msg(context);
   PROTECT(call = Rf_lcons(nano_ResolveSymbol, Rf_cons(data, R_NilValue)));
   Rf_eval(call, ctx);
@@ -270,15 +262,8 @@ static void haio_invoke_cb(void *arg) {
   SEXP call, context, status, ctx = TAG((SEXP) arg);
   if (TYPEOF(ctx) != ENVSXP)
     return;
-  context = Rf_findVarInFrame(ctx, nano_ContextSymbol);
-  if (TYPEOF(context) != ENVSXP)
-    return;
-  PROTECT(context);
-  status = Rf_findVarInFrame(context, nano_StatusSymbol);
-  if (status == R_UnboundValue) {
-    UNPROTECT(1);
-    return;
-  }
+  PROTECT(context = Rf_findVarInFrame(ctx, nano_ContextSymbol));
+  status = rnng_aio_http_status(context);
   PROTECT(call = Rf_lcons(nano_ResolveSymbol, Rf_cons(status, R_NilValue)));
   Rf_eval(call, ctx);
   UNPROTECT(2);
