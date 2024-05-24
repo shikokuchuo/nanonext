@@ -1322,7 +1322,6 @@ SEXP rnng_set_promise_context(SEXP x, SEXP ctx) {
     break;
   }
 
-  Rf_defineVar(ctx, nano_ContextSymbol, x);
   return x;
 
 }
