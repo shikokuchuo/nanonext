@@ -223,87 +223,98 @@ static void rnng_wait_thread(void *args) {
 
 }
 
-SEXP rnng_wait_thread_create(SEXP aio) {
+SEXP rnng_wait_thread_create(SEXP x) {
 
-  if (TYPEOF(aio) != ENVSXP)
-    return aio;
+  const SEXPTYPE typ = TYPEOF(x);
+  if (typ == ENVSXP) {
 
-  const SEXP coreaio = Rf_findVarInFrame(aio, nano_AioSymbol);
-  if (R_ExternalPtrTag(coreaio) != nano_AioSymbol)
-    return aio;
+    const SEXP coreaio = Rf_findVarInFrame(x, nano_AioSymbol);
+    if (R_ExternalPtrTag(coreaio) != nano_AioSymbol)
+      return x;
 
-  PROTECT(coreaio);
-  nano_aio *aiop = (nano_aio *) R_ExternalPtrAddr(coreaio);
+    PROTECT(coreaio);
+    nano_aio *aiop = (nano_aio *) R_ExternalPtrAddr(coreaio);
 
-  nano_thread_aio *taio = R_Calloc(1, nano_thread_aio);
-  nano_cv *ncv = R_Calloc(1, nano_cv);
-  taio->aio = aiop->aio;
-  taio->cv = ncv;
-  nng_mtx *mtx;
-  nng_cv *cv;
+    nano_thread_aio *taio = R_Calloc(1, nano_thread_aio);
+    nano_cv *ncv = R_Calloc(1, nano_cv);
+    taio->aio = aiop->aio;
+    taio->cv = ncv;
+    nng_mtx *mtx;
+    nng_cv *cv;
 
-  int xc, signalled;
+    int xc, signalled;
 
-  if ((xc = nng_mtx_alloc(&mtx)))
-    goto exitlevel1;
+    if ((xc = nng_mtx_alloc(&mtx)))
+      goto exitlevel1;
 
-  if ((xc = nng_cv_alloc(&cv, mtx)))
-    goto exitlevel2;
+    if ((xc = nng_cv_alloc(&cv, mtx)))
+      goto exitlevel2;
 
-  ncv->mtx = mtx;
-  ncv->cv = cv;
+    ncv->mtx = mtx;
+    ncv->cv = cv;
 
-  nng_thread_create(&taio->thr, rnng_wait_thread, taio);
+    nng_thread_create(&taio->thr, rnng_wait_thread, taio);
 
-  SEXP xptr = R_MakeExternalPtr(taio, R_NilValue, R_NilValue);
-  R_SetExternalPtrProtected(coreaio, xptr);
-  R_RegisterCFinalizerEx(xptr, thread_aio_finalizer, TRUE);
-  UNPROTECT(1);
+    SEXP xptr = R_MakeExternalPtr(taio, R_NilValue, R_NilValue);
+    R_SetExternalPtrProtected(coreaio, xptr);
+    R_RegisterCFinalizerEx(xptr, thread_aio_finalizer, TRUE);
+    UNPROTECT(1);
 
-  nng_time time = nng_clock();
+    nng_time time = nng_clock();
 
-  while (1) {
-    time = time + 400;
-    signalled = 1;
-    nng_mtx_lock(mtx);
-    while (ncv->condition == 0) {
-      if (nng_cv_until(cv, time) == NNG_ETIMEDOUT) {
-        signalled = 0;
-        break;
+    while (1) {
+      time = time + 400;
+      signalled = 1;
+      nng_mtx_lock(mtx);
+      while (ncv->condition == 0) {
+        if (nng_cv_until(cv, time) == NNG_ETIMEDOUT) {
+          signalled = 0;
+          break;
+        }
       }
+      nng_mtx_unlock(mtx);
+      if (signalled) break;
+      R_CheckUserInterrupt();
     }
-    nng_mtx_unlock(mtx);
-    if (signalled) break;
-    R_CheckUserInterrupt();
+
+    switch (aiop->type) {
+    case RECVAIO:
+    case REQAIO:
+    case IOV_RECVAIO:
+    case RECVAIOS:
+    case REQAIOS:
+    case IOV_RECVAIOS:
+      rnng_aio_get_msg(x);
+      break;
+    case SENDAIO:
+    case IOV_SENDAIO:
+      rnng_aio_result(x);
+      break;
+    case HTTP_AIO:
+      rnng_aio_http_status(x);
+      break;
+    }
+
+    return x;
+
+    exitlevel2:
+    nng_mtx_free(ncv->mtx);
+    exitlevel1:
+    R_Free(ncv);
+    R_Free(taio);
+    UNPROTECT(1);
+    ERROR_OUT(xc);
+
+  } else if (typ == VECSXP) {
+
+    const R_xlen_t xlen = Rf_xlength(x);
+    for (R_xlen_t i = 0; i < xlen; i++) {
+      rnng_wait_thread_create(VECTOR_ELT(x, i));
+    }
+
   }
 
-  switch (aiop->type) {
-  case RECVAIO:
-  case REQAIO:
-  case IOV_RECVAIO:
-  case RECVAIOS:
-  case REQAIOS:
-  case IOV_RECVAIOS:
-    rnng_aio_get_msg(aio);
-    break;
-  case SENDAIO:
-  case IOV_SENDAIO:
-    rnng_aio_result(aio);
-    break;
-  case HTTP_AIO:
-    rnng_aio_http_status(aio);
-    break;
-  }
-
-  return aio;
-
-  exitlevel2:
-  nng_mtx_free(ncv->mtx);
-  exitlevel1:
-  R_Free(ncv);
-  R_Free(taio);
-  UNPROTECT(1);
-  ERROR_OUT(xc);
+  return x;
 
 }
 

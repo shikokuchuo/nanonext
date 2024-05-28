@@ -789,8 +789,9 @@ SEXP rnng_dial(SEXP socket, SEXP url, SEXP tls, SEXP autostart, SEXP error) {
   attr = Rf_getAttrib(socket, nano_DialerSymbol);
   R_xlen_t xlen = Rf_xlength(attr);
   PROTECT(newattr = Rf_allocVector(VECSXP, xlen + 1));
-  for (R_xlen_t i = 0; i < xlen; i++)
+  for (R_xlen_t i = 0; i < xlen; i++) {
     SET_VECTOR_ELT(newattr, i, VECTOR_ELT(attr, i));
+  }
   SET_VECTOR_ELT(newattr, xlen, dialer);
   Rf_setAttrib(socket, nano_DialerSymbol, newattr);
 
@@ -859,8 +860,9 @@ SEXP rnng_listen(SEXP socket, SEXP url, SEXP tls, SEXP autostart, SEXP error) {
   attr = Rf_getAttrib(socket, nano_ListenerSymbol);
   R_xlen_t xlen = Rf_xlength(attr);
   PROTECT(newattr = Rf_allocVector(VECSXP, xlen + 1));
-  for (R_xlen_t i = 0; i < xlen; i++)
+  for (R_xlen_t i = 0; i < xlen; i++) {
     SET_VECTOR_ELT(newattr, i, VECTOR_ELT(attr, i));
+  }
   SET_VECTOR_ELT(newattr, xlen, listener);
   Rf_setAttrib(socket, nano_ListenerSymbol, newattr);
 

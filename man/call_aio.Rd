@@ -11,14 +11,15 @@ call_aio_(aio)
 }
 \arguments{
 \item{aio}{an Aio (object of class \sQuote{sendAio}, \sQuote{recvAio} or
-\sQuote{ncurlAio}).}
+\sQuote{ncurlAio}), or a list of Aios.}
 }
 \value{
 The passed object (invisibly).
 }
 \description{
 \code{call_aio} retrieves the value of an asynchronous Aio operation, waiting
-    for the operation to complete if still in progress.
+    for the operation to complete if still in progress. If passed a list of
+    Aios, waits for all asynchronous operations to complete before returning.
 
 \code{call_aio_} is a variant that allows user interrupts, suitable for
     interactive use.
@@ -38,12 +39,9 @@ For a \sQuote{recvAio}, the received value may be retrieved at
     conversion of the message data to the specified mode, a raw vector will
     be returned instead to allow recovery (accompanied by a warning).
 
-    Once the value has been successfully retrieved, the Aio is deallocated
-    and only the value is stored in the Aio object.
-
-    Note this function operates silently and does not error even if
-    \sQuote{aio} is not an active Aio, always returning invisibly the passed
-    object.
+    Note: this function operates silently and does not error even if
+    \sQuote{aio} is not an active Aio or list of Aios, always returning
+    invisibly the passed object.
 }
 \section{Alternatively}{
 

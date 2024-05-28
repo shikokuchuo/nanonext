@@ -491,43 +491,52 @@ SEXP rnng_aio_get_msg(SEXP env) {
 
 }
 
-SEXP rnng_aio_call(SEXP aio) {
+SEXP rnng_aio_call(SEXP x) {
 
-  if (TYPEOF(aio) != ENVSXP)
-    return aio;
+  const SEXPTYPE typ = TYPEOF(x);
+  if (typ == ENVSXP) {
 
-  const SEXP coreaio = Rf_findVarInFrame(aio, nano_AioSymbol);
-  if (R_ExternalPtrTag(coreaio) != nano_AioSymbol)
-    return aio;
+    const SEXP coreaio = Rf_findVarInFrame(x, nano_AioSymbol);
+    if (R_ExternalPtrTag(coreaio) != nano_AioSymbol)
+      return x;
 
-  nano_aio *aiop = (nano_aio *) R_ExternalPtrAddr(coreaio);
-  nng_aio_wait(aiop->aio);
-  switch (aiop->type) {
-  case RECVAIO:
-  case REQAIO:
-  case IOV_RECVAIO:
-  case RECVAIOS:
-  case REQAIOS:
-  case IOV_RECVAIOS:
-    rnng_aio_get_msg(aio);
-    break;
-  case SENDAIO:
-  case IOV_SENDAIO:
-    rnng_aio_result(aio);
-    break;
-  case HTTP_AIO:
-    rnng_aio_http_status(aio);
-    break;
+    nano_aio *aiop = (nano_aio *) R_ExternalPtrAddr(coreaio);
+    nng_aio_wait(aiop->aio);
+    switch (aiop->type) {
+    case RECVAIO:
+    case REQAIO:
+    case IOV_RECVAIO:
+    case RECVAIOS:
+    case REQAIOS:
+    case IOV_RECVAIOS:
+      rnng_aio_get_msg(x);
+      break;
+    case SENDAIO:
+    case IOV_SENDAIO:
+      rnng_aio_result(x);
+      break;
+    case HTTP_AIO:
+      rnng_aio_http_status(x);
+      break;
+    }
+
+  } else if (typ == VECSXP) {
+
+    const R_xlen_t xlen = Rf_xlength(x);
+    for (R_xlen_t i = 0; i < xlen; i++) {
+      rnng_aio_call(VECTOR_ELT(x, i));
+    }
+
   }
 
-  return aio;
+  return x;
 
 }
 
 SEXP rnng_aio_collect_impl(SEXP x, SEXP (*const func)(SEXP)) {
 
   SEXP out;
-  SEXPTYPE typ = TYPEOF(x);
+  const SEXPTYPE typ = TYPEOF(x);
   if (typ == ENVSXP) {
 
     out = Rf_findVarInFrame(func(x), nano_ValueSymbol);
