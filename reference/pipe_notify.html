@@ -12,7 +12,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">nanonext</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0.9018</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0.9019</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -73,7 +73,8 @@
 
 
 <dt>cv</dt>
-<dd><p>a ‘conditionVariable’ to signal.</p></dd>
+<dd><p>a ‘conditionVariable’ to signal, or NULL to cancel a
+previously set signal.</p></dd>
 
 
 <dt>cv2</dt>
@@ -83,13 +84,13 @@ sequentially after the first condition variable.</p></dd>
 
 
 <dt>add</dt>
-<dd><p>[default FALSE] logical value whether to signal when a pipe is
-added.</p></dd>
+<dd><p>[default FALSE] logical value whether to signal (or cancel signal)
+when a pipe is added.</p></dd>
 
 
 <dt>remove</dt>
-<dd><p>[default FALSE] logical value whether to signal when a pipe is
-removed.</p></dd>
+<dd><p>[default FALSE] logical value whether to signal (or cancel
+signal) when a pipe is removed.</p></dd>
 
 
 <dt>flag</dt>
@@ -134,11 +135,21 @@ sets a flag and additionally raises this signal upon the flag being set.</p></dd
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
 <span class="r-in"><span><span class="fu"><a href="cv.html">cv_value</a></span><span class="op">(</span><span class="va">cv2</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
-<span class="r-in"><span><span class="fu"><a href="close.html">close</a></span><span class="op">(</span><span class="va">s1</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="reap.html">reap</a></span><span class="op">(</span><span class="va">s1</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
 <span class="r-in"><span><span class="fu"><a href="cv.html">cv_value</a></span><span class="op">(</span><span class="va">cv</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2</span>
 <span class="r-in"><span><span class="fu"><a href="cv.html">cv_value</a></span><span class="op">(</span><span class="va">cv2</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">pipe_notify</span><span class="op">(</span><span class="va">s</span>, <span class="cn">NULL</span>, add <span class="op">=</span> <span class="cn">TRUE</span>, remove <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">s1</span> <span class="op">&lt;-</span> <span class="fu"><a href="socket.html">socket</a></span><span class="op">(</span>dial <span class="op">=</span> <span class="st">"inproc://nanopipe"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="cv.html">cv_value</a></span><span class="op">(</span><span class="va">cv</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2</span>
+<span class="r-in"><span><span class="fu"><a href="cv.html">cv_value</a></span><span class="op">(</span><span class="va">cv2</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2</span>
+<span class="r-in"><span><span class="fu"><a href="reap.html">reap</a></span><span class="op">(</span><span class="va">s1</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="op">(</span><span class="fu"><a href="cv.html">wait</a></span><span class="op">(</span><span class="va">cv</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE</span>
