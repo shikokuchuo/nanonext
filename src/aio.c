@@ -531,7 +531,7 @@ SEXP rnng_aio_call(SEXP x) {
 
 }
 
-SEXP rnng_aio_collect_impl(SEXP x, SEXP (*const func)(SEXP)) {
+static SEXP rnng_aio_collect_impl(SEXP x, SEXP (*const func)(SEXP)) {
 
   SEXP out;
 
@@ -597,7 +597,7 @@ SEXP rnng_aio_stop(SEXP x) {
 
 }
 
-SEXP rnng_unresolved(SEXP x) {
+static int rnng_unresolved_impl(SEXP x) {
 
   int xc;
   switch (TYPEOF(x)) {
@@ -618,7 +618,7 @@ SEXP rnng_unresolved(SEXP x) {
       break;
     default:
       value = rnng_aio_get_msg(x);
-      break;
+    break;
     }
     xc = value == nano_unresolved;
     break;
@@ -629,7 +629,32 @@ SEXP rnng_unresolved(SEXP x) {
     xc = 0;
   }
 
-  return Rf_ScalarLogical(xc);
+  return xc;
+
+}
+
+SEXP rnng_unresolved(SEXP x) {
+
+  SEXP out;
+  switch (TYPEOF(x)) {
+  case ENVSXP:
+  case LGLSXP:
+    out = Rf_ScalarLogical(rnng_unresolved_impl(x));
+    break;
+  case VECSXP: ;
+    const R_xlen_t xlen = Rf_xlength(x);
+    PROTECT(out = Rf_allocVector(LGLSXP, xlen));
+    for (R_xlen_t i = 0; i < xlen; i++) {
+      LOGICAL(out)[i] = rnng_unresolved_impl(VECTOR_ELT(x, i));
+    }
+    UNPROTECT(1);
+    break;
+  default:
+    out = Rf_ScalarLogical(0);
+    break;
+  }
+
+  return out;
 
 }
 

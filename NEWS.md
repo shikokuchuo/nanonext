@@ -1,9 +1,9 @@
-# nanonext 1.0.0.9017 (development)
+# nanonext 1.0.0.9018 (development)
 
 #### New Features
 
 * Adds `collect_aio()` and `collect_aio_()` to wait for and collect the data of an Aio or list of Aios.
-* `call_aio()` and `call_aio()_` now accept a list of Aios.
+* Vecotrizes `unresolved()`, `call_aio()`,  `call_aio()_` and `stop_aio()`, which now accept a list of Aios.
 * `ncurl_aio()` modified internally to support conversion of 'ncurlAio' to event-driven promises.
 
 #### Updates
