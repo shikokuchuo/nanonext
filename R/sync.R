@@ -165,14 +165,15 @@ cv_signal <- function(cv) invisible(.Call(rnng_cv_signal, cv))
 #'     are added or removed at a socket.
 #'
 #' @param socket a Socket.
-#' @param cv a \sQuote{conditionVariable} to signal.
+#' @param cv a \sQuote{conditionVariable} to signal, or NULL to cancel a
+#'     previously set signal.
 #' @param cv2 [default NULL] optionally, if specified, a second
 #'     \sQuote{conditionVariable} to signal. Note that this cv is signalled
 #'     sequentially after the first condition variable.
-#' @param add [default FALSE] logical value whether to signal when a pipe is
-#'     added.
-#' @param remove [default FALSE] logical value whether to signal when a pipe is
-#'     removed.
+#' @param add [default FALSE] logical value whether to signal (or cancel signal)
+#'     when a pipe is added.
+#' @param remove [default FALSE] logical value whether to signal (or cancel
+#'     signal) when a pipe is removed.
 #' @param flag [default FALSE] logical value whether to also set a flag in the
 #'     \sQuote{conditionVariable}. This can help distinguish between different
 #'     types of signal, and causes any subsequent \code{\link{wait}} to return
@@ -202,9 +203,15 @@ cv_signal <- function(cv) invisible(.Call(rnng_cv_signal, cv))
 #' s1 <- socket(dial = "inproc://nanopipe")
 #' cv_value(cv)
 #' cv_value(cv2)
-#' close(s1)
+#' reap(s1)
 #' cv_value(cv)
 #' cv_value(cv2)
+#'
+#' pipe_notify(s, NULL, add = TRUE, remove = TRUE)
+#' s1 <- socket(dial = "inproc://nanopipe")
+#' cv_value(cv)
+#' cv_value(cv2)
+#' reap(s1)
 #'
 #' (wait(cv))
 #' (wait(cv2))

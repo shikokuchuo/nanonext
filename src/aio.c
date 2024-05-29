@@ -635,7 +635,6 @@ static int rnng_unresolved_impl(SEXP x) {
 
 SEXP rnng_unresolved(SEXP x) {
 
-  SEXP out;
   switch (TYPEOF(x)) {
   case ENVSXP:
   case LGLSXP:
@@ -1585,12 +1584,27 @@ SEXP rnng_pipe_notify(SEXP socket, SEXP cv, SEXP cv2, SEXP add, SEXP remove, SEX
   if (R_ExternalPtrTag(socket) != nano_SocketSymbol)
     Rf_error("'socket' is not a valid Socket");
 
-  if (R_ExternalPtrTag(cv) != nano_CvSymbol)
-    Rf_error("'cv' is not a valid Condition Variable");
+  int xc;
+  nng_socket *sock;
 
-  nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(socket);
+  if (cv == R_NilValue) {
+
+    sock = (nng_socket *) R_ExternalPtrAddr(socket);
+    if (*NANO_INTEGER(add) && (xc = nng_pipe_notify(*sock, NNG_PIPE_EV_ADD_POST, NULL, NULL)))
+      ERROR_OUT(xc);
+
+    if (*NANO_INTEGER(remove) && (xc = nng_pipe_notify(*sock, NNG_PIPE_EV_REM_POST, NULL, NULL)))
+      ERROR_OUT(xc);
+
+    return nano_success;
+
+  } else if (R_ExternalPtrTag(cv) != nano_CvSymbol) {
+    Rf_error("'cv' is not a valid Condition Variable");
+  }
+
+  sock = (nng_socket *) R_ExternalPtrAddr(socket);
   nano_cv *cvp = (nano_cv *) R_ExternalPtrAddr(cv);
-  int xc, flg = *NANO_INTEGER(flag);
+  const int flg = *NANO_INTEGER(flag);
 
   if (cv2 != R_NilValue) {
 

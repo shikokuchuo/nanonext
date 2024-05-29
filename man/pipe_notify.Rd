@@ -9,17 +9,18 @@ pipe_notify(socket, cv, cv2 = NULL, add = FALSE, remove = FALSE, flag = FALSE)
 \arguments{
 \item{socket}{a Socket.}
 
-\item{cv}{a \sQuote{conditionVariable} to signal.}
+\item{cv}{a \sQuote{conditionVariable} to signal, or NULL to cancel a
+previously set signal.}
 
 \item{cv2}{[default NULL] optionally, if specified, a second
 \sQuote{conditionVariable} to signal. Note that this cv is signalled
 sequentially after the first condition variable.}
 
-\item{add}{[default FALSE] logical value whether to signal when a pipe is
-added.}
+\item{add}{[default FALSE] logical value whether to signal (or cancel signal)
+when a pipe is added.}
 
-\item{remove}{[default FALSE] logical value whether to signal when a pipe is
-removed.}
+\item{remove}{[default FALSE] logical value whether to signal (or cancel
+signal) when a pipe is removed.}
 
 \item{flag}{[default FALSE] logical value whether to also set a flag in the
 \sQuote{conditionVariable}. This can help distinguish between different
@@ -56,9 +57,15 @@ cv_value(cv2)
 s1 <- socket(dial = "inproc://nanopipe")
 cv_value(cv)
 cv_value(cv2)
-close(s1)
+reap(s1)
 cv_value(cv)
 cv_value(cv2)
+
+pipe_notify(s, NULL, add = TRUE, remove = TRUE)
+s1 <- socket(dial = "inproc://nanopipe")
+cv_value(cv)
+cv_value(cv2)
+reap(s1)
 
 (wait(cv))
 (wait(cv2))
