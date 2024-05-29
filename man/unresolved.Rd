@@ -7,15 +7,16 @@
 unresolved(aio)
 }
 \arguments{
-\item{aio}{an Aio (object of class \sQuote{sendAio} or \sQuote{recvAio}), or
-Aio value stored in \code{$result} or \code{$data} as the case may be.}
+\item{aio}{an Aio or list of Aios (objects of class \sQuote{sendAio},
+\sQuote{recvAio} or \sQuote{ncurlAio}), or Aio value stored at
+\code{$result} or \code{$data} etc.}
 }
 \value{
-Logical TRUE if \sQuote{aio} is an unresolved Aio or Aio value, or
-    FALSE otherwise.
+Logical TRUE if \sQuote{aio} is an unresolved Aio or Aio value or the
+    list of Aios contains at least one unresolved Aio, or FALSE otherwise.
 }
 \description{
-Query whether an Aio or Aio value remains unresolved. Unlike
+Query whether an Aio, Aio value or list of Aios remains unresolved. Unlike
     \code{\link{call_aio}}, this function does not wait for completion.
 }
 \details{

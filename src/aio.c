@@ -639,22 +639,16 @@ SEXP rnng_unresolved(SEXP x) {
   switch (TYPEOF(x)) {
   case ENVSXP:
   case LGLSXP:
-    out = Rf_ScalarLogical(rnng_unresolved_impl(x));
-    break;
+    return Rf_ScalarLogical(rnng_unresolved_impl(x));
   case VECSXP: ;
     const R_xlen_t xlen = Rf_xlength(x);
-    PROTECT(out = Rf_allocVector(LGLSXP, xlen));
     for (R_xlen_t i = 0; i < xlen; i++) {
-      LOGICAL(out)[i] = rnng_unresolved_impl(VECTOR_ELT(x, i));
+      if (rnng_unresolved_impl(VECTOR_ELT(x, i)))
+        return Rf_ScalarLogical(1);
     }
-    UNPROTECT(1);
-    break;
-  default:
-    out = Rf_ScalarLogical(0);
-    break;
   }
 
-  return out;
+  return Rf_ScalarLogical(0);
 
 }
 

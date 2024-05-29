@@ -298,14 +298,15 @@ stop_aio <- function(aio) invisible(.Call(rnng_aio_stop, aio))
 
 #' Query if an Aio is Unresolved
 #'
-#' Query whether an Aio or Aio value remains unresolved. Unlike
+#' Query whether an Aio, Aio value or list of Aios remains unresolved. Unlike
 #'     \code{\link{call_aio}}, this function does not wait for completion.
 #'
-#' @param aio an Aio (object of class \sQuote{sendAio} or \sQuote{recvAio}), or
-#'     Aio value stored in \code{$result} or \code{$data} as the case may be.
+#' @param aio an Aio or list of Aios (objects of class \sQuote{sendAio},
+#'     \sQuote{recvAio} or \sQuote{ncurlAio}), or Aio value stored at
+#'     \code{$result} or \code{$data} etc.
 #'
-#' @return Logical TRUE if \sQuote{aio} is an unresolved Aio or Aio value, or
-#'     FALSE otherwise.
+#' @return Logical TRUE if \sQuote{aio} is an unresolved Aio or Aio value or the
+#'     list of Aios contains at least one unresolved Aio, or FALSE otherwise.
 #'
 #' @details Suitable for use in control flow statements such as \code{while} or
 #'     \code{if}.
