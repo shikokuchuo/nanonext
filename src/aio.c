@@ -493,9 +493,8 @@ SEXP rnng_aio_get_msg(SEXP env) {
 
 SEXP rnng_aio_call(SEXP x) {
 
-  const SEXPTYPE typ = TYPEOF(x);
-  if (typ == ENVSXP) {
-
+  switch (TYPEOF(x)) {
+  case ENVSXP: ;
     const SEXP coreaio = Rf_findVarInFrame(x, nano_AioSymbol);
     if (R_ExternalPtrTag(coreaio) != nano_AioSymbol)
       return x;
@@ -519,14 +518,13 @@ SEXP rnng_aio_call(SEXP x) {
       rnng_aio_http_status(x);
       break;
     }
-
-  } else if (typ == VECSXP) {
-
+    break;
+  case VECSXP: ;
     const R_xlen_t xlen = Rf_xlength(x);
     for (R_xlen_t i = 0; i < xlen; i++) {
       rnng_aio_call(VECTOR_ELT(x, i));
     }
-
+    break;
   }
 
   return x;
@@ -536,34 +534,32 @@ SEXP rnng_aio_call(SEXP x) {
 SEXP rnng_aio_collect_impl(SEXP x, SEXP (*const func)(SEXP)) {
 
   SEXP out;
-  const SEXPTYPE typ = TYPEOF(x);
-  if (typ == ENVSXP) {
 
+  switch (TYPEOF(x)) {
+  case ENVSXP: ;
     out = Rf_findVarInFrame(func(x), nano_ValueSymbol);
-    if (out == R_UnboundValue) goto exit;
-
-  } else if (typ == VECSXP) {
-
+    if (out == R_UnboundValue) break;
+    goto resume;
+  case VECSXP: ;
     SEXP env;
     const R_xlen_t xlen = Rf_xlength(x);
     PROTECT(out = Rf_allocVector(VECSXP, xlen));
     for (R_xlen_t i = 0; i < xlen; i++) {
       env = func(VECTOR_ELT(x, i));
-      if (TYPEOF(env) != ENVSXP) { UNPROTECT(1); goto exit; }
+      if (TYPEOF(env) != ENVSXP) goto exit;
       env = Rf_findVarInFrame(env, nano_ValueSymbol);
-      if (env == R_UnboundValue) { UNPROTECT(1); goto exit; }
+      if (env == R_UnboundValue) goto exit;
       SET_VECTOR_ELT(out, i, env);
     }
     out = Rf_namesgets(out, Rf_getAttrib(x, R_NamesSymbol));
     UNPROTECT(1);
-
-  } else {
-
-    exit:
-    Rf_error("object is not an Aio or list of Aios");
-
+    goto resume;
   }
 
+  exit:
+  Rf_error("object is not an Aio or list of Aios");
+
+  resume:
   return out;
 
 }
@@ -580,17 +576,22 @@ SEXP rnng_aio_collect_safe(SEXP x) {
 
 }
 
-SEXP rnng_aio_stop(SEXP aio) {
+SEXP rnng_aio_stop(SEXP x) {
 
-  if (TYPEOF(aio) != ENVSXP)
-    return R_NilValue;
-
-  const SEXP coreaio = Rf_findVarInFrame(aio, nano_AioSymbol);
-  if (R_ExternalPtrTag(coreaio) != nano_AioSymbol)
-    return R_NilValue;
-
-  nano_aio *aiop = (nano_aio *) R_ExternalPtrAddr(coreaio);
-  nng_aio_stop(aiop->aio);
+  switch (TYPEOF(x)) {
+  case ENVSXP: ;
+    const SEXP coreaio = Rf_findVarInFrame(x, nano_AioSymbol);
+    if (R_ExternalPtrTag(coreaio) != nano_AioSymbol) break;
+    nano_aio *aiop = (nano_aio *) R_ExternalPtrAddr(coreaio);
+    nng_aio_stop(aiop->aio);
+    break;
+  case VECSXP: ;
+    const R_xlen_t xlen = Rf_xlength(x);
+    for (R_xlen_t i = 0; i < xlen; i++) {
+      rnng_aio_stop(VECTOR_ELT(x, i));
+    }
+    break;
+  }
 
   return R_NilValue;
 

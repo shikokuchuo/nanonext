@@ -525,6 +525,7 @@ nanotesterr(collect_aio_("a"), "object is not an Aio or list of Aios")
 nanotesterr(collect_aio_(list("a")), "object is not an Aio or list of Aios")
 nanotesterr(collect_aio(list(fakesock)), "object is not an Aio or list of Aios")
 nanotestn(stop_aio("a"))
+nanotestn(stop_aio(list("a")))
 nanotest(is.environment(set_promise_context(new.env(), new.env())))
 
 nanotest(base64enc("test") == "dGVzdA==")

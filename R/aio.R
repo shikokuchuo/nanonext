@@ -167,8 +167,8 @@ recv_aio_signal <- function(con,
 #' Call the Value of an Asynchronous Aio Operation
 #'
 #' \code{call_aio} retrieves the value of an asynchronous Aio operation, waiting
-#'     for the operation to complete if still in progress. If passed a list of
-#'     Aios, waits for all asynchronous operations to complete before returning.
+#'     for the operation to complete if still in progress. For a list of Aios,
+#'     waits for all asynchronous operations to complete before returning.
 #'
 #' @param aio an Aio (object of class \sQuote{sendAio}, \sQuote{recvAio} or
 #'     \sQuote{ncurlAio}), or a list of Aios.
@@ -277,7 +277,7 @@ collect_aio_ <- function(x) .Call(rnng_aio_collect_safe, x)
 
 #' Stop Asynchronous Aio Operation
 #'
-#' Stop an asynchronous Aio operation.
+#' Stop an asynchronous Aio operation, or a list of Aio operations.
 #'
 #' @inheritParams call_aio
 #'

@@ -18,8 +18,8 @@ The passed object (invisibly).
 }
 \description{
 \code{call_aio} retrieves the value of an asynchronous Aio operation, waiting
-    for the operation to complete if still in progress. If passed a list of
-    Aios, waits for all asynchronous operations to complete before returning.
+    for the operation to complete if still in progress. For a list of Aios,
+    waits for all asynchronous operations to complete before returning.
 
 \code{call_aio_} is a variant that allows user interrupts, suitable for
     interactive use.

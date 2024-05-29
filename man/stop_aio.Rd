@@ -14,7 +14,7 @@ stop_aio(aio)
 Invisible NULL.
 }
 \description{
-Stop an asynchronous Aio operation.
+Stop an asynchronous Aio operation, or a list of Aio operations.
 }
 \details{
 Stops the asynchronous I/O operation associated with \sQuote{aio} by
