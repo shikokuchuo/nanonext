@@ -1,4 +1,4 @@
-# nanonext 1.0.0.9019 (development)
+# nanonext 1.0.0.9020 (development)
 
 #### New Features
 
@@ -13,6 +13,7 @@
 * `strcat()` is deprecated as considered non-core - it is recommended to replace usage with `sprintf()`.
 * `status_code()` now returns the status code combined with the explanation as a character string.
 * Performance enhancements for `unresolved()`, `call_aio()` and `call_aio_()`.
+* Updates bundled 'libnng' v1.8.0 with latest patches.
 
 # nanonext 1.0.0
 
