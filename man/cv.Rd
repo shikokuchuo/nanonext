@@ -108,8 +108,10 @@ Pass the \sQuote{conditionVariable} to the signalling forms of the
 \examples{
 cv <- cv()
 
-# wait(cv) # uncommenting will block until the cv is signalled
-# wait_(cv) # block until the cv is signalled or interrupted
+\dontrun{
+wait(cv) # would block until the cv is signalled
+wait_(cv) # would block until the cv is signalled or interrupted
+}
 
 until(cv, 10L)
 until_(cv, 10L)

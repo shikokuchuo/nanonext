@@ -16,6 +16,7 @@ A character string.
 }
 \description{
 A fast implementation that combines two character values into a single string.
+    This function is deprecated and will be removed in a future version.
 }
 \details{
 If either \sQuote{a} or \sQuote{b} is a vector of length greater
@@ -25,3 +26,4 @@ If either \sQuote{a} or \sQuote{b} is a vector of length greater
 strcat("hello ", "world!")
 
 }
+\keyword{internal}

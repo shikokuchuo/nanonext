@@ -265,6 +265,7 @@ status_code <- function(x) .Call(rnng_status_code, x)
 #' Concatenate Strings
 #'
 #' A fast implementation that combines two character values into a single string.
+#'     This function is deprecated and will be removed in a future version.
 #'
 #' @param a character value.
 #' @param b character value.
@@ -277,6 +278,7 @@ status_code <- function(x) .Call(rnng_status_code, x)
 #' @examples
 #' strcat("hello ", "world!")
 #'
+#' @keywords internal
 #' @export
 #'
 strcat <- function(a, b) .Call(rnng_strcat, a, b)

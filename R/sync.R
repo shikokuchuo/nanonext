@@ -85,8 +85,10 @@ cv <- function() .Call(rnng_cv_alloc)
 #' @param cv a \sQuote{conditionVariable} object.
 #'
 #' @examples
-#' # wait(cv) # uncommenting will block until the cv is signalled
-#' # wait_(cv) # block until the cv is signalled or interrupted
+#' \dontrun{
+#' wait(cv) # would block until the cv is signalled
+#' wait_(cv) # would block until the cv is signalled or interrupted
+#' }
 #'
 #' @rdname cv
 #' @export

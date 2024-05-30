@@ -10,6 +10,7 @@
 #### Updates
 
 * `recv_aio()` and `request()` add argument 'cv' allowing optional signalling of a condition variable. The separate functions `recv_aio_signal()` and `request_signal()` are deprecated.
+* `strcat()` is deprecated as considered non-core - it is recommended to replace usage with `sprintf()`.
 * `status_code()` now returns the status code combined with the explanation as a character string.
 * Performance enhancements for `unresolved()`, `call_aio()` and `call_aio_()`.
 
