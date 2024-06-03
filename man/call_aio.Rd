@@ -5,13 +5,13 @@
 \alias{call_aio_}
 \title{Call the Value of an Asynchronous Aio Operation}
 \usage{
-call_aio(aio)
+call_aio(x)
 
-call_aio_(aio)
+call_aio_(x)
 }
 \arguments{
-\item{aio}{an Aio (object of class \sQuote{sendAio}, \sQuote{recvAio} or
-\sQuote{ncurlAio}), or a list of Aios.}
+\item{x}{an Aio or list of Aios (objects of class \sQuote{sendAio},
+\sQuote{recvAio} or \sQuote{ncurlAio}).}
 }
 \value{
 The passed object (invisibly).

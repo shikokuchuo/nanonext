@@ -4,11 +4,11 @@
 \alias{stop_aio}
 \title{Stop Asynchronous Aio Operation}
 \usage{
-stop_aio(aio)
+stop_aio(x)
 }
 \arguments{
-\item{aio}{an Aio (object of class \sQuote{sendAio}, \sQuote{recvAio} or
-\sQuote{ncurlAio}), or a list of Aios.}
+\item{x}{an Aio or list of Aios (objects of class \sQuote{sendAio},
+\sQuote{recvAio} or \sQuote{ncurlAio}).}
 }
 \value{
 Invisible NULL.

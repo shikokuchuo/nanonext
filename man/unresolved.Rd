@@ -4,10 +4,10 @@
 \alias{unresolved}
 \title{Query if an Aio is Unresolved}
 \usage{
-unresolved(aio)
+unresolved(x)
 }
 \arguments{
-\item{aio}{an Aio or list of Aios (objects of class \sQuote{sendAio},
+\item{x}{an Aio or list of Aios (objects of class \sQuote{sendAio},
 \sQuote{recvAio} or \sQuote{ncurlAio}), or Aio value stored at
 \code{$result} or \code{$data} etc.}
 }
