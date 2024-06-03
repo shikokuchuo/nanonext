@@ -125,7 +125,7 @@ send_aio <- function(con, data, mode = c("serial", "raw", "next"), timeout = NUL
 #'
 #' s1 <- socket("pair", listen = "tcp://127.0.0.1:6546")
 #' cv <- cv()
-#' msg <- recv_aio_signal(s1, timeout = 100, cv = cv)
+#' msg <- recv_aio(s1, timeout = 100, cv = cv)
 #' until(cv, 10L)
 #' msg$data
 #' close(s1)
@@ -143,23 +143,6 @@ recv_aio <- function(con,
                      timeout = NULL,
                      cv = NULL,
                      n = 65536L)
-  data <- .Call(rnng_recv_aio, con, mode, timeout, cv, n, environment())
-
-#' Receive Async and Signal a Condition
-#'
-#' Deprecated function - use \code{recv_aio} instead.
-#'
-#' @inheritParams recv_aio
-#'
-#' @keywords internal
-#' @export
-#'
-recv_aio_signal <- function(con,
-                            cv,
-                            mode = c("serial", "character", "complex", "double",
-                                     "integer", "logical", "numeric", "raw", "string"),
-                            timeout = NULL,
-                            n = 65536L)
   data <- .Call(rnng_recv_aio, con, mode, timeout, cv, n, environment())
 
 # Core aio functions -----------------------------------------------------------

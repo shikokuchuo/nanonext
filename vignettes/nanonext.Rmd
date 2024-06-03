@@ -278,7 +278,7 @@ pipe_notify(sock, cv = cv, add = FALSE, remove = TRUE, flag = TRUE)
 send(sock2, "this message will wake waiting thread") # in real usage happens concurrently with wait()
 #> [1] 0
 
-r <- recv_aio_signal(sock, cv = cv) # same cv passed to signalling form of recv_aio()
+r <- recv_aio(sock, cv = cv) # same cv passed to recv_aio()
 
 # wakes as soon as the asynchronous receive completes
 wait(cv) || stop("peer disconnected")

@@ -116,7 +116,7 @@ close(rep)
 req <- socket("req", listen = "tcp://127.0.0.1:6546")
 ctxq <- context(req)
 cv <- cv()
-aio <- request_signal(ctxq, data = 2022, cv = cv)
+aio <- request(ctxq, data = 2022, cv = cv)
 until(cv, 10L)
 close(req)
 

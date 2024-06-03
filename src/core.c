@@ -1576,29 +1576,6 @@ SEXP rnng_stats_get(SEXP object, SEXP stat) {
 
 }
 
-// strcat ----------------------------------------------------------------------
-
-SEXP rnng_strcat(SEXP a, SEXP b) {
-
-  SEXP out;
-  const char *ap = CHAR(STRING_ELT(a, 0));
-  const char *bp = CHAR(STRING_ELT(b, 0));
-  const size_t alen = strlen(ap);
-  const size_t blen = strlen(bp);
-
-  char *buf = nng_alloc(alen + blen);
-  memcpy(buf, ap, alen);
-  memcpy(buf + alen, bp, blen);
-
-  PROTECT(out = Rf_allocVector(STRSXP, 1));
-  SET_STRING_ELT(out, 0, Rf_mkCharLenCE(buf, (int) (alen + blen), CE_NATIVE));
-  nng_free(buf, alen + blen);
-
-  UNPROTECT(1);
-  return out;
-
-}
-
 // next mode selector ----------------------------------------------------------
 
 SEXP rnng_next_config(SEXP refhook, SEXP klass, SEXP list, SEXP mark) {

@@ -262,27 +262,6 @@ is_nul_byte <- function(x) .Call(rnng_is_nul_byte, x)
 #'
 status_code <- function(x) .Call(rnng_status_code, x)
 
-#' Concatenate Strings
-#'
-#' A fast implementation that combines two character values into a single string.
-#'     This function is deprecated and will be removed in a future version.
-#'
-#' @param a character value.
-#' @param b character value.
-#'
-#' @return A character string.
-#'
-#' @details If either \sQuote{a} or \sQuote{b} is a vector of length greater
-#'     than 1, only the first element of each is concatenated.
-#'
-#' @examples
-#' strcat("hello ", "world!")
-#'
-#' @keywords internal
-#' @export
-#'
-strcat <- function(a, b) .Call(rnng_strcat, a, b)
-
 #' Configure Next Mode
 #'
 #' Configures send mode \sQuote{next} by registering functions for custom

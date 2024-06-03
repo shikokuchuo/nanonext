@@ -7,8 +7,7 @@
 set_promise_context(x, ctx)
 }
 \arguments{
-\item{x}{a 'recvAio' object returned by \code{\link{request}} or
-\code{\link{request_signal}}.}
+\item{x}{a 'recvAio' object returned by \code{\link{request}}.}
 
 \item{ctx}{the context environment.}
 }

@@ -1,3 +1,9 @@
+# nanonext 1.1.0.9000 (development)
+
+#### Updates
+
+* Deprecated functions `strcat()`, `recv_aio_signal()` and `request_signal()` are removed.
+
 # nanonext 1.1.0
 
 #### New Features

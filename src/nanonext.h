@@ -264,7 +264,6 @@ SEXP rnng_status_code(SEXP);
 SEXP rnng_stream_close(SEXP);
 SEXP rnng_stream_dial(SEXP, SEXP, SEXP);
 SEXP rnng_stream_listen(SEXP, SEXP, SEXP);
-SEXP rnng_strcat(SEXP, SEXP);
 SEXP rnng_strerror(SEXP);
 SEXP rnng_subscribe(SEXP, SEXP, SEXP);
 SEXP rnng_tls_config(SEXP, SEXP, SEXP, SEXP);

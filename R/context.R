@@ -227,7 +227,7 @@ reply <- function(context,
 #' req <- socket("req", listen = "tcp://127.0.0.1:6546")
 #' ctxq <- context(req)
 #' cv <- cv()
-#' aio <- request_signal(ctxq, data = 2022, cv = cv)
+#' aio <- request(ctxq, data = 2022, cv = cv)
 #' until(cv, 10L)
 #' close(req)
 #'
@@ -250,31 +250,12 @@ request <- function(context,
                     cv = NULL)
   data <- .Call(rnng_request, context, data, send_mode, recv_mode, timeout, cv, environment())
 
-#' Request and Signal a Condition Variable (RPC Client for Req/Rep Protocol)
-#'
-#' Deprecated function - use \code{request} instead.
-#'
-#' @inheritParams request
-#'
-#' @keywords internal
-#' @export
-#'
-request_signal <- function(context,
-                           data,
-                           cv,
-                           send_mode = c("serial", "raw", "next"),
-                           recv_mode = c("serial", "character", "complex", "double",
-                                         "integer", "logical", "numeric", "raw", "string"),
-                           timeout = NULL)
-  data <- .Call(rnng_request, context, data, send_mode, recv_mode, timeout, cv, environment())
-
 #' Set Promise Context
 #'
 #' If called from an appropriate context, creates an event-driven promise that
 #'     will resolve asynchronously when the request is complete.
 #'
-#' @param x a 'recvAio' object returned by \code{\link{request}} or
-#'     \code{\link{request_signal}}.
+#' @param x a 'recvAio' object returned by \code{\link{request}}.
 #' @param ctx the context environment.
 #'
 #' @details The object passed as \sQuote{x} is returned regardless of whether

@@ -65,10 +65,9 @@ For \strong{cv}: a \sQuote{conditionVariable} object.
 \code{cv_signal} signals a condition variable.
 }
 \details{
-Pass the \sQuote{conditionVariable} to the signalling forms of the
-    asynchronous receive functions: \code{\link{recv_aio_signal}} or
-    \code{\link{request_signal}}. Alternatively, to be notified of a pipe
-    event, pass it to \code{\link{pipe_notify}}.
+Pass the \sQuote{conditionVariable} to the asynchronous receive
+    functions \code{\link{recv_aio}} or \code{\link{request}}. Alternatively,
+    to be notified of a pipe event, pass it to \code{\link{pipe_notify}}.
 
     Completion of the receive or pipe event, which happens asynchronously and
     independently of the main R thread, will signal the condition variable by
