@@ -203,6 +203,7 @@ static const R_CallMethodDef callMethods[] = {
   {"rnng_subscribe", (DL_FUNC) &rnng_subscribe, 3},
   {"rnng_tls_config", (DL_FUNC) &rnng_tls_config, 4},
   {"rnng_unresolved", (DL_FUNC) &rnng_unresolved, 1},
+  {"rnng_unresolved2", (DL_FUNC) &rnng_unresolved2, 1},
   {"rnng_url_parse", (DL_FUNC) &rnng_url_parse, 1},
   {"rnng_version", (DL_FUNC) &rnng_version, 0},
   {"rnng_wait_thread_create", (DL_FUNC) &rnng_wait_thread_create, 1},

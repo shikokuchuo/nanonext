@@ -269,6 +269,7 @@ SEXP rnng_strerror(SEXP);
 SEXP rnng_subscribe(SEXP, SEXP, SEXP);
 SEXP rnng_tls_config(SEXP, SEXP, SEXP, SEXP);
 SEXP rnng_unresolved(SEXP);
+SEXP rnng_unresolved2(SEXP);
 SEXP rnng_url_parse(SEXP);
 SEXP rnng_version(void);
 SEXP rnng_wait_thread_create(SEXP);

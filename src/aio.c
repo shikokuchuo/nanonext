@@ -651,6 +651,38 @@ SEXP rnng_unresolved(SEXP x) {
 
 }
 
+static int rnng_unresolved2_impl(SEXP x) {
+
+  if (TYPEOF(x) == ENVSXP) {
+    const SEXP coreaio = Rf_findVarInFrame(x, nano_AioSymbol);
+    if (R_ExternalPtrTag(coreaio) != nano_AioSymbol)
+      return 0;
+    nano_aio *aiop = (nano_aio *) R_ExternalPtrAddr(coreaio);
+    return nng_aio_busy(aiop->aio);
+  }
+
+  return 0;
+
+}
+
+SEXP rnng_unresolved2(SEXP x) {
+
+  switch (TYPEOF(x)) {
+  case ENVSXP:
+    return Rf_ScalarLogical(rnng_unresolved2_impl(x));
+  case VECSXP: ;
+    int xc = 0;
+    const R_xlen_t xlen = Rf_xlength(x);
+    for (R_xlen_t i = 0; i < xlen; i++) {
+      xc += rnng_unresolved2_impl(VECTOR_ELT(x, i));
+    }
+    return Rf_ScalarInteger(xc);
+  }
+
+  return Rf_ScalarLogical(0);
+
+}
+
 // send recv aio functions -----------------------------------------------------
 
 SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
