@@ -137,8 +137,11 @@ The values may also be called explicitly using `call_aio()`. This will wait for 
 # will wait for completion then return the resolved Aio
 call_aio(msg)
 
-# to access the resolved value directly (waiting if required)
+# to access the resolved value (waiting if required):
 call_aio(msg)$data
+
+# or directly:
+collect_aio(msg)
 
 close(s1)
 close(s2)
@@ -184,11 +187,7 @@ When the result of the server calculation is required, the `recvAio` may be call
 The return value from the server request is then retrieved and stored in the Aio as `$data`.
 
 ```{r rpcclient3}
-call_aio(aio)
-
-aio
-aio$data |> str()
-
+call_aio(aio)$data |> str()
 ```
 
 As `call_aio()` is blocking and will wait for completion, an alternative is to query `aio$data` directly. This will return an 'unresolved' logical NA value if the calculation is yet to complete.

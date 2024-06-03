@@ -36,7 +36,7 @@ res <- send_aio(s1, data.frame(a = 1, b = 2), timeout = 100)
 collect_aio(res)
 
 msg <- recv_aio(s2, timeout = 100)
-collect_aio_(res)
+collect_aio_(msg)
 
 close(s1)
 close(s2)
