@@ -35,7 +35,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">nanonext</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0.9022</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -222,8 +222,12 @@ Aio, both before and after. This means there is no need to actually wait
 <code class="sourceCode R"><span><span class="co"># will wait for completion then return the resolved Aio</span></span>
 <span><span class="fu"><a href="../reference/call_aio.html">call_aio</a></span><span class="op">(</span><span class="va">msg</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># to access the resolved value directly (waiting if required)</span></span>
+<span><span class="co"># to access the resolved value (waiting if required):</span></span>
 <span><span class="fu"><a href="../reference/call_aio.html">call_aio</a></span><span class="op">(</span><span class="va">msg</span><span class="op">)</span><span class="op">$</span><span class="va">data</span></span>
+<span><span class="co">#&gt; [1] "resolved"</span></span>
+<span></span>
+<span><span class="co"># or directly:</span></span>
+<span><span class="fu"><a href="../reference/collect_aio.html">collect_aio</a></span><span class="op">(</span><span class="va">msg</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "resolved"</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/close.html">close</a></span><span class="op">(</span><span class="va">s1</span><span class="op">)</span></span>
@@ -263,12 +267,8 @@ server processing the request.</p>
 <p>The return value from the server request is then retrieved and stored
 in the Aio as <code>$data</code>.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/call_aio.html">call_aio</a></span><span class="op">(</span><span class="va">aio</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">aio</span></span>
-<span><span class="co">#&gt; &lt; recvAio | $data &gt;</span></span>
-<span><span class="va">aio</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] 1.365 -0.842 -0.816 1.367 -0.813 ...</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/call_aio.html">call_aio</a></span><span class="op">(</span><span class="va">aio</span><span class="op">)</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt;  num [1:100000000] 0.257 -0.413 0.946 0.545 0.071 ...</span></span></code></pre></div>
 <p>As <code><a href="../reference/call_aio.html">call_aio()</a></code> is blocking and will wait for completion,
 an alternative is to query <code>aio$data</code> directly. This will
 return an ‘unresolved’ logical NA value if the calculation is yet to
@@ -419,7 +419,7 @@ not a mixture of the two.</p>
 <code class="sourceCode R"><span><span class="va">cert</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/write_cert.html">write_cert</a></span><span class="op">(</span>cn <span class="op">=</span> <span class="st">"127.0.0.1"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">cert</span><span class="op">)</span></span>
 <span><span class="co">#&gt; List of 2</span></span>
-<span><span class="co">#&gt;  $ server: chr [1:2] "-----BEGIN CERTIFICATE-----\nMIIFOTCCAyGgAwIBAgIBATANBgkqhkiG9w0BAQsFADA0MRIwEAYDVQQDDAkxMjcu\nMC4wLjExETAPBgNV"| __truncated__ "-----BEGIN RSA PRIVATE KEY-----\nMIIJKAIBAAKCAgEAuMCkX3Rdm9ssjzAfpLbDndtuwvwceenNXQNO9R2/v99teHdn\nTsjeYb+gNNpP"| __truncated__</span></span>
+<span><span class="co">#&gt;  $ server: chr [1:2] "-----BEGIN CERTIFICATE-----\nMIIFOTCCAyGgAwIBAgIBATANBgkqhkiG9w0BAQsFADA0MRIwEAYDVQQDDAkxMjcu\nMC4wLjExETAPBgNV"| __truncated__ "-----BEGIN RSA PRIVATE KEY-----\nMIIJKgIBAAKCAgEA3CPAXY45HOTzvo4z+U15qFP3jvrcATlNio/qO4HU4L0E82k+\nQ2P1aDuWUg7h"| __truncated__</span></span>
 <span><span class="co">#&gt;  $ client: chr [1:2] "-----BEGIN CERTIFICATE-----\nMIIFOTCCAyGgAwIBAgIBATANBgkqhkiG9w0BAQsFADA0MRIwEAYDVQQDDAkxMjcu\nMC4wLjExETAPBgNV"| __truncated__ ""</span></span>
 <span></span>
 <span><span class="va">ser</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tls_config.html">tls_config</a></span><span class="op">(</span>server <span class="op">=</span> <span class="va">cert</span><span class="op">$</span><span class="va">server</span><span class="op">)</span></span>
@@ -572,7 +572,7 @@ asynchronously, returning immediately with an ‘ncurlAio’.</p>
 <span><span class="co">#&gt; NULL</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $data</span></span>
-<span><span class="co">#&gt; [1] "{\n  \"args\": {},\n  \"headers\": {\n    \"x-forwarded-proto\": \"https\",\n    \"x-forwarded-port\": \"443\",\n    \"host\": \"postman-echo.com\",\n    \"x-amzn-trace-id\": \"Root=1-6634af61-2a7256825245680a005b73e7\"\n  },\n  \"url\": \"https://postman-echo.com/get\"\n}"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "{\n  \"args\": {},\n  \"headers\": {\n    \"x-forwarded-proto\": \"https\",\n    \"x-forwarded-port\": \"443\",\n    \"host\": \"postman-echo.com\",\n    \"x-amzn-trace-id\": \"Root=1-665dccb1-6374c8162c8a5951767e475b\"\n  },\n  \"url\": \"https://postman-echo.com/get\"\n}"</span></span></code></pre></div>
 <p>For advanced use, supports additional HTTP methods such as POST or
 PUT.</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
@@ -586,10 +586,10 @@ PUT.</p>
 <span></span>
 <span><span class="fu"><a href="../reference/call_aio.html">call_aio</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span><span class="op">$</span><span class="va">headers</span></span>
 <span><span class="co">#&gt; $date</span></span>
-<span><span class="co">#&gt; [1] "Fri, 03 May 2024 09:33:21 GMT"</span></span>
+<span><span class="co">#&gt; [1] "Mon, 03 Jun 2024 14:01:21 GMT"</span></span>
 <span></span>
 <span><span class="va">res</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt; [1] "{\n  \"args\": {},\n  \"data\": {\n    \"key\": \"value\"\n  },\n  \"files\": {},\n  \"form\": {},\n  \"headers\": {\n    \"x-forwarded-proto\": \"https\",\n    \"x-forwarded-port\": \"443\",\n    \"host\": \"postman-echo.com\",\n    \"x-amzn-trace-id\": \"Root=1-6634af61-7f19837d47b179ea131ef4e9\",\n    \"content-length\": \"16\",\n    \"content-type\": \"application/json\",\n    \"authorization\": \"Bearer APIKEY\"\n  },\n  \"json\": {\n    \"key\": \"value\"\n  },\n  \"url\": \"https://postman-echo.com/post\"\n}"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "{\n  \"args\": {},\n  \"data\": {\n    \"key\": \"value\"\n  },\n  \"files\": {},\n  \"form\": {},\n  \"headers\": {\n    \"x-forwarded-proto\": \"https\",\n    \"x-forwarded-port\": \"443\",\n    \"host\": \"postman-echo.com\",\n    \"x-amzn-trace-id\": \"Root=1-665dccb1-74cd2d7d4fe4282876bfb176\",\n    \"content-length\": \"16\",\n    \"content-type\": \"application/json\",\n    \"authorization\": \"Bearer APIKEY\"\n  },\n  \"json\": {\n    \"key\": \"value\"\n  },\n  \"url\": \"https://postman-echo.com/post\"\n}"</span></span></code></pre></div>
 <p>In this respect, it may be used as a performant and lightweight
 method for making REST API requests.</p>
 <p><code><a href="../reference/ncurl_session.html">ncurl_session()</a></code> creates a re-usable open connection and
@@ -614,7 +614,7 @@ which can operate directly on such data etc.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $headers</span></span>
 <span><span class="co">#&gt; $headers$Date</span></span>
-<span><span class="co">#&gt; [1] "Fri, 03 May 2024 09:33:22 GMT"</span></span>
+<span><span class="co">#&gt; [1] "Mon, 03 Jun 2024 14:01:22 GMT"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $headers$`Content-Type`</span></span>
 <span><span class="co">#&gt; [1] "application/json; charset=utf-8"</span></span>
@@ -625,7 +625,7 @@ which can operate directly on such data etc.</p>
 <span><span class="co">#&gt;  [40] 6f 72 77 61 72 64 65 64 2d 70 72 6f 74 6f 22 3a 20 22 68 74 74 70 73 22 2c 0a 20 20 20 20 22 78 2d 66 6f 72 77 61 72</span></span>
 <span><span class="co">#&gt;  [79] 64 65 64 2d 70 6f 72 74 22 3a 20 22 34 34 33 22 2c 0a 20 20 20 20 22 68 6f 73 74 22 3a 20 22 70 6f 73 74 6d 61 6e 2d</span></span>
 <span><span class="co">#&gt; [118] 65 63 68 6f 2e 63 6f 6d 22 2c 0a 20 20 20 20 22 78 2d 61 6d 7a 6e 2d 74 72 61 63 65 2d 69 64 22 3a 20 22 52 6f 6f 74</span></span>
-<span><span class="co">#&gt; [157] 3d 31 2d 36 36 33 34 61 66 36 32 2d 37 38 31 63 34 34 38 66 35 30 37 65 61 62 64 65 33 31 35 61 66 35 37 35 22 2c 0a</span></span>
+<span><span class="co">#&gt; [157] 3d 31 2d 36 36 35 64 63 63 62 32 2d 31 39 34 62 62 66 39 35 30 64 30 32 64 65 36 33 36 30 32 38 66 32 34 31 22 2c 0a</span></span>
 <span><span class="co">#&gt; [196] 20 20 20 20 22 63 6f 6e 74 65 6e 74 2d 74 79 70 65 22 3a 20 22 61 70 70 6c 69 63 61 74 69 6f 6e 2f 6a 73 6f 6e 22 2c</span></span>
 <span><span class="co">#&gt; [235] 0a 20 20 20 20 22 61 75 74 68 6f 72 69 7a 61 74 69 6f 6e 22 3a 20 22 42 65 61 72 65 72 20 41 50 49 4b 45 59 22 0a 20</span></span>
 <span><span class="co">#&gt; [274] 20 7d 2c 0a 20 20 22 75 72 6c 22 3a 20 22 68 74 74 70 73 3a 2f 2f 70 6f 73 74 6d 61 6e 2d 65 63 68 6f 2e 63 6f 6d 2f</span></span>
