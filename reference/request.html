@@ -111,7 +111,9 @@ applies a socket-specific default, usually the same as no timeout.</p></dd>
 
 <dt>cv</dt>
 <dd><p>(optional) a ‘conditionVariable’ to signal when the async
-receive is complete.</p></dd>
+receive is complete, or NULL. If any other value is supplied, this will
+cause the pipe connection to be dropped when the async receive is
+complete.</p></dd>
 
 </dl></div>
     <div class="section level2">

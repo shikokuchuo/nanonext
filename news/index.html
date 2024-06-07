@@ -57,7 +57,9 @@
 <h2 class="pkg-version" data-toc-text="1.1.0.9000" id="nanonext-1109000-development">nanonext 1.1.0.9000 (development)<a class="anchor" aria-label="anchor" href="#nanonext-1109000-development"></a></h2>
 <div class="section level5">
 <h5 id="updates-1-1-0-9000">Updates<a class="anchor" aria-label="anchor" href="#updates-1-1-0-9000"></a></h5>
-<ul><li>Deprecated functions <code>strcat()</code>, <code>recv_aio_signal()</code> and <code>request_signal()</code> are removed.</li>
+<ul><li>
+<code><a href="../reference/request.html">request()</a></code> specifying argument ‘cv’ other than NULL or a ‘conditionVariable’ will cause the pipe connection to be dropped when the reply is (asynchronously) completed.</li>
+<li>Deprecated functions <code>strcat()</code>, <code>recv_aio_signal()</code> and <code>request_signal()</code> are removed.</li>
 </ul></div>
 </div>
     <div class="section level2">
