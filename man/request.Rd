@@ -36,7 +36,9 @@ modes, received bytes are converted into the respective mode.
 applies a socket-specific default, usually the same as no timeout.}
 
 \item{cv}{(optional) a \sQuote{conditionVariable} to signal when the async
-receive is complete.}
+receive is complete, or NULL. If any other value is supplied, this will
+cause the pipe connection to be dropped when the async receive is
+complete.}
 }
 \value{
 A \sQuote{recvAio} (object of class \sQuote{mirai} and

@@ -176,10 +176,13 @@ reply <- function(context,
 #'
 #' @inheritParams reply
 #' @inheritParams recv
-#' @inheritParams recv_aio
 #' @param data an object (if send_mode = \sQuote{raw}, a vector).
 #' @param timeout [default NULL] integer value in milliseconds or NULL, which
 #'     applies a socket-specific default, usually the same as no timeout.
+#' @param cv (optional) a \sQuote{conditionVariable} to signal when the async
+#'     receive is complete, or NULL. If any other value is supplied, this will
+#'     cause the pipe connection to be dropped when the async receive is
+#'     complete.
 #'
 #' @return A \sQuote{recvAio} (object of class \sQuote{mirai} and
 #'     \sQuote{recvAio}) (invisibly).

@@ -2,6 +2,7 @@
 
 #### Updates
 
+* `request()` specifying argument 'cv' other than NULL or a 'conditionVariable' will cause the pipe connection to be dropped when the reply is (asynchronously) completed. 
 * Deprecated functions `strcat()`, `recv_aio_signal()` and `request_signal()` are removed.
 
 # nanonext 1.1.0

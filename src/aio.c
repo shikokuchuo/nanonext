@@ -232,6 +232,24 @@ static void request_complete(void *arg) {
 
 }
 
+static void request_complete_dropcon(void *arg) {
+
+  nano_aio *raio = (nano_aio *) arg;
+  nano_aio *saio = (nano_aio *) raio->next;
+  const int res = nng_aio_result(raio->aio);
+  if (res == 0) {
+    nng_msg *msg = nng_aio_get_msg(raio->aio);
+    raio->data = msg;
+    nng_pipe_close(nng_msg_get_pipe(msg));
+  }
+
+  raio->result = res - !res;
+
+  if (saio->data != NULL)
+    later2(raio_invoke_cb, saio->data);
+
+}
+
 static void request_complete_signal(void *arg) {
 
   nano_aio *raio = (nano_aio *) arg;
@@ -1281,7 +1299,14 @@ SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeou
 
   const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) Rf_asInteger(timeout);
   const int mod = nano_matcharg(recvmode);
-  const int signal = R_ExternalPtrTag(cvar) == nano_CvSymbol;
+  int signal, drop;
+  if (cvar == R_NilValue) {
+    signal = 0;
+    drop = 0;
+  } else {
+    signal = R_ExternalPtrTag(cvar) == nano_CvSymbol;
+    drop = 1 - signal;
+  }
   nng_ctx *ctx = (nng_ctx *) R_ExternalPtrAddr(con);
   nano_cv *ncv = signal ? (nano_cv *) R_ExternalPtrAddr(cvar) : NULL;
 
@@ -1321,7 +1346,7 @@ SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeou
   raio->mode = mod;
   raio->next = saio;
 
-  if ((xc = nng_aio_alloc(&raio->aio, signal ? request_complete_signal : request_complete, raio)))
+  if ((xc = nng_aio_alloc(&raio->aio, signal ? request_complete_signal : drop ? request_complete_dropcon : request_complete, raio)))
     goto exitlevel2;
 
   nng_aio_set_timeout(raio->aio, dur);
