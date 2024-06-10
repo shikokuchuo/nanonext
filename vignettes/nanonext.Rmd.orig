@@ -65,12 +65,16 @@ print(array)
 
 msg = array.tobytes()
 socket.send(msg)
+
+socket.close()
 ```
 
 Receive in R, specifying the receive mode as 'double':
 
 ```{r rnpy4}
 n$recv(mode = "double")
+
+n$close()
 ```
 
 [&laquo; Back to ToC](#table-of-contents)
@@ -163,6 +167,7 @@ m <- mirai::mirai({
   library(nanonext)
   rep <- socket("rep", listen = "tcp://127.0.0.1:6556")
   reply(context(rep), execute = rnorm, send_mode = "raw")
+  Sys.sleep(2) # linger period to flush system socket send
 })
 
 ```
@@ -175,7 +180,6 @@ req <- socket("req", dial = "tcp://127.0.0.1:6556")
 aio <- request(context(req), data = 1e8, recv_mode = "double")
 
 ```
-
 At this point, the client can run additional code concurrent with the server processing the request.
 
 ```{r rpcclient2}
@@ -527,6 +531,7 @@ opt(s$listener[[1]], "recv-size-max")
 
 start(s$listener[[1]])
 
+close(s)
 ```
 
 Similarly `stat()` has been implemented as the interface to NNG's statistics framework.
@@ -546,6 +551,7 @@ s1 <- socket(dial = "inproc://stat")
 # one now that the dialer has conneceted
 stat(s, "pipes")
 
+close(s)
 ```
 
 [&laquo; Back to ToC](#table-of-contents)

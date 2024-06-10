@@ -64,6 +64,8 @@ print(array)
 
 msg = array.tobytes()
 socket.send(msg)
+
+socket.close()
 ```
 
 Receive in R, specifying the receive mode as 'double':
@@ -72,6 +74,8 @@ Receive in R, specifying the receive mode as 'double':
 ``` r
 n$recv(mode = "double")
 #> [1] 1.1 2.2 3.3 4.4 5.5
+
+n$close()
 ```
 
 [&laquo; Back to ToC](#table-of-contents)
@@ -176,6 +180,7 @@ m <- mirai::mirai({
   library(nanonext)
   rep <- socket("rep", listen = "tcp://127.0.0.1:6556")
   reply(context(rep), execute = rnorm, send_mode = "raw")
+  Sys.sleep(2) # linger period to flush system socket send
 })
 ```
 
@@ -187,7 +192,6 @@ library(nanonext)
 req <- socket("req", dial = "tcp://127.0.0.1:6556")
 aio <- request(context(req), data = 1e8, recv_mode = "double")
 ```
-
 At this point, the client can run additional code concurrent with the server processing the request.
 
 
@@ -202,7 +206,7 @@ The return value from the server request is then retrieved and stored in the Aio
 
 ``` r
 call_aio(aio)$data |> str()
-#>  num [1:100000000] 0.257 -0.413 0.946 0.545 0.071 ...
+#>  num [1:100000000] 0.92 0.465 1.204 1.823 -0.731 ...
 ```
 
 As `call_aio()` is blocking and will wait for completion, an alternative is to query `aio$data` directly. This will return an 'unresolved' logical NA value if the calculation is yet to complete.
@@ -321,7 +325,7 @@ Additionally, the convenience function `write_cert()` can automatically generate
 cert <- write_cert(cn = "127.0.0.1")
 str(cert)
 #> List of 2
-#>  $ server: chr [1:2] "-----BEGIN CERTIFICATE-----\nMIIFOTCCAyGgAwIBAgIBATANBgkqhkiG9w0BAQsFADA0MRIwEAYDVQQDDAkxMjcu\nMC4wLjExETAPBgNV"| __truncated__ "-----BEGIN RSA PRIVATE KEY-----\nMIIJKgIBAAKCAgEA3CPAXY45HOTzvo4z+U15qFP3jvrcATlNio/qO4HU4L0E82k+\nQ2P1aDuWUg7h"| __truncated__
+#>  $ server: chr [1:2] "-----BEGIN CERTIFICATE-----\nMIIFOTCCAyGgAwIBAgIBATANBgkqhkiG9w0BAQsFADA0MRIwEAYDVQQDDAkxMjcu\nMC4wLjExETAPBgNV"| __truncated__ "-----BEGIN RSA PRIVATE KEY-----\nMIIJKAIBAAKCAgEAy6Ns47jxseuAK7o9waiEfsFK4KWZSbuEFxyrbzdxFtjzZll8\nkCnwsGqX7RHC"| __truncated__
 #>  $ client: chr [1:2] "-----BEGIN CERTIFICATE-----\nMIIFOTCCAyGgAwIBAgIBATANBgkqhkiG9w0BAQsFADA0MRIwEAYDVQQDDAkxMjcu\nMC4wLjExETAPBgNV"| __truncated__ ""
 
 ser <- tls_config(server = cert$server)
@@ -479,7 +483,7 @@ ncurl("https://postman-echo.com/get")
 #> NULL
 #> 
 #> $data
-#> [1] "{\n  \"args\": {},\n  \"headers\": {\n    \"x-forwarded-proto\": \"https\",\n    \"x-forwarded-port\": \"443\",\n    \"host\": \"postman-echo.com\",\n    \"x-amzn-trace-id\": \"Root=1-665dccb1-6374c8162c8a5951767e475b\"\n  },\n  \"url\": \"https://postman-echo.com/get\"\n}"
+#> [1] "{\n  \"args\": {},\n  \"headers\": {\n    \"x-forwarded-proto\": \"https\",\n    \"x-forwarded-port\": \"443\",\n    \"host\": \"postman-echo.com\",\n    \"x-amzn-trace-id\": \"Root=1-6666d478-77be648e30f5d9e858013ee9\"\n  },\n  \"url\": \"https://postman-echo.com/get\"\n}"
 ```
 
 For advanced use, supports additional HTTP methods such as POST or PUT.
@@ -496,10 +500,10 @@ res
 
 call_aio(res)$headers
 #> $date
-#> [1] "Mon, 03 Jun 2024 14:01:21 GMT"
+#> [1] "Mon, 10 Jun 2024 10:24:57 GMT"
 
 res$data
-#> [1] "{\n  \"args\": {},\n  \"data\": {\n    \"key\": \"value\"\n  },\n  \"files\": {},\n  \"form\": {},\n  \"headers\": {\n    \"x-forwarded-proto\": \"https\",\n    \"x-forwarded-port\": \"443\",\n    \"host\": \"postman-echo.com\",\n    \"x-amzn-trace-id\": \"Root=1-665dccb1-74cd2d7d4fe4282876bfb176\",\n    \"content-length\": \"16\",\n    \"content-type\": \"application/json\",\n    \"authorization\": \"Bearer APIKEY\"\n  },\n  \"json\": {\n    \"key\": \"value\"\n  },\n  \"url\": \"https://postman-echo.com/post\"\n}"
+#> [1] "{\n  \"args\": {},\n  \"data\": {\n    \"key\": \"value\"\n  },\n  \"files\": {},\n  \"form\": {},\n  \"headers\": {\n    \"x-forwarded-proto\": \"https\",\n    \"x-forwarded-port\": \"443\",\n    \"host\": \"postman-echo.com\",\n    \"x-amzn-trace-id\": \"Root=1-6666d478-5bfdbd6979cca57457d79abf\",\n    \"content-length\": \"16\",\n    \"content-type\": \"application/json\",\n    \"authorization\": \"Bearer APIKEY\"\n  },\n  \"json\": {\n    \"key\": \"value\"\n  },\n  \"url\": \"https://postman-echo.com/post\"\n}"
 ```
 
 In this respect, it may be used as a performant and lightweight method for making REST API requests.
@@ -523,7 +527,7 @@ transact(sess)
 #> 
 #> $headers
 #> $headers$Date
-#> [1] "Mon, 03 Jun 2024 14:01:22 GMT"
+#> [1] "Mon, 10 Jun 2024 10:24:57 GMT"
 #> 
 #> $headers$`Content-Type`
 #> [1] "application/json; charset=utf-8"
@@ -534,7 +538,7 @@ transact(sess)
 #>  [40] 6f 72 77 61 72 64 65 64 2d 70 72 6f 74 6f 22 3a 20 22 68 74 74 70 73 22 2c 0a 20 20 20 20 22 78 2d 66 6f 72 77 61 72
 #>  [79] 64 65 64 2d 70 6f 72 74 22 3a 20 22 34 34 33 22 2c 0a 20 20 20 20 22 68 6f 73 74 22 3a 20 22 70 6f 73 74 6d 61 6e 2d
 #> [118] 65 63 68 6f 2e 63 6f 6d 22 2c 0a 20 20 20 20 22 78 2d 61 6d 7a 6e 2d 74 72 61 63 65 2d 69 64 22 3a 20 22 52 6f 6f 74
-#> [157] 3d 31 2d 36 36 35 64 63 63 62 32 2d 31 39 34 62 62 66 39 35 30 64 30 32 64 65 36 33 36 30 32 38 66 32 34 31 22 2c 0a
+#> [157] 3d 31 2d 36 36 36 36 64 34 37 39 2d 32 64 39 37 38 63 33 37 36 31 37 63 61 32 61 61 37 63 32 65 30 30 62 34 22 2c 0a
 #> [196] 20 20 20 20 22 63 6f 6e 74 65 6e 74 2d 74 79 70 65 22 3a 20 22 61 70 70 6c 69 63 61 74 69 6f 6e 2f 6a 73 6f 6e 22 2c
 #> [235] 0a 20 20 20 20 22 61 75 74 68 6f 72 69 7a 61 74 69 6f 6e 22 3a 20 22 42 65 61 72 65 72 20 41 50 49 4b 45 59 22 0a 20
 #> [274] 20 7d 2c 0a 20 20 22 75 72 6c 22 3a 20 22 68 74 74 70 73 3a 2f 2f 70 6f 73 74 6d 61 6e 2d 65 63 68 6f 2e 63 6f 6d 2f
@@ -626,6 +630,8 @@ opt(s$listener[[1]], "recv-size-max")
 #> [1] 8192
 
 start(s$listener[[1]])
+
+close(s)
 ```
 
 Similarly `stat()` has been implemented as the interface to NNG's statistics framework.
@@ -647,6 +653,8 @@ s1 <- socket(dial = "inproc://stat")
 # one now that the dialer has conneceted
 stat(s, "pipes")
 #> [1] 1
+
+close(s)
 ```
 
 [&laquo; Back to ToC](#table-of-contents)
