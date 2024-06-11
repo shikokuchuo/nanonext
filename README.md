@@ -73,20 +73,6 @@ Web utilities:
   secure websockets client / generic low-level socket interface
 - `messenger()` - console-based instant messaging with authentication
 
-### Installation
-
-Install the latest release from CRAN:
-
-``` r
-install.packages("nanonext")
-```
-
-Or the development version from R-universe:
-
-``` r
-install.packages("nanonext", repos = "https://shikokuchuo.r-universe.dev")
-```
-
 ### Quick Start
 
 `nanonext` offers 2 equivalent interfaces: a functional interface, and
@@ -170,6 +156,20 @@ This may be accessed within R by:
 vignette("nanonext", package = "nanonext")
 ```
 
+### Installation
+
+Install the latest release from CRAN:
+
+``` r
+install.packages("nanonext")
+```
+
+Or the development version from R-universe:
+
+``` r
+install.packages("nanonext", repos = "https://shikokuchuo.r-universe.dev")
+```
+
 ### Building from Source
 
 #### Linux / Mac / Solaris
@@ -236,10 +236,11 @@ Links:
 
 ◈ nanonext R package: <https://shikokuchuo.net/nanonext/>
 
-nanonext is listed in CRAN Task Views:<br /> - High Performance
-Computing:
-<https://cran.r-project.org/view=HighPerformanceComputing><br /> - Web
-Technologies: <https://cran.r-project.org/view=WebTechnologies>
+nanonext is listed in CRAN Task Views:
+
+- High Performance Computing:
+  <https://cran.r-project.org/view=HighPerformanceComputing>
+- Web Technologies: <https://cran.r-project.org/view=WebTechnologies>
 
 NNG: <https://nng.nanomsg.org/><br /> Mbed TLS:
 <https://www.trustedfirmware.org/projects/mbed-tls/>
