@@ -273,7 +273,7 @@ server processing the request.</p>
 in the Aio as <code>$data</code>.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/call_aio.html">call_aio</a></span><span class="op">(</span><span class="va">aio</span><span class="op">)</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] 0.92 0.465 1.204 1.823 -0.731 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] -0.3059 -0.2953 0.0876 1.7023 0.1703 ...</span></span></code></pre></div>
 <p>As <code><a href="../reference/call_aio.html">call_aio()</a></code> is blocking and will wait for completion,
 an alternative is to query <code>aio$data</code> directly. This will
 return an ‘unresolved’ logical NA value if the calculation is yet to
@@ -424,7 +424,7 @@ not a mixture of the two.</p>
 <code class="sourceCode R"><span><span class="va">cert</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/write_cert.html">write_cert</a></span><span class="op">(</span>cn <span class="op">=</span> <span class="st">"127.0.0.1"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">cert</span><span class="op">)</span></span>
 <span><span class="co">#&gt; List of 2</span></span>
-<span><span class="co">#&gt;  $ server: chr [1:2] "-----BEGIN CERTIFICATE-----\nMIIFOTCCAyGgAwIBAgIBATANBgkqhkiG9w0BAQsFADA0MRIwEAYDVQQDDAkxMjcu\nMC4wLjExETAPBgNV"| __truncated__ "-----BEGIN RSA PRIVATE KEY-----\nMIIJKAIBAAKCAgEAy6Ns47jxseuAK7o9waiEfsFK4KWZSbuEFxyrbzdxFtjzZll8\nkCnwsGqX7RHC"| __truncated__</span></span>
+<span><span class="co">#&gt;  $ server: chr [1:2] "-----BEGIN CERTIFICATE-----\nMIIFOTCCAyGgAwIBAgIBATANBgkqhkiG9w0BAQsFADA0MRIwEAYDVQQDDAkxMjcu\nMC4wLjExETAPBgNV"| __truncated__ "-----BEGIN RSA PRIVATE KEY-----\nMIIJKQIBAAKCAgEAsxMEhD9g5SB4efro+UU0eQ6fahMYkyVDh57ZAqHRp6AQlEKb\nNvGUpwRvTzg5"| __truncated__</span></span>
 <span><span class="co">#&gt;  $ client: chr [1:2] "-----BEGIN CERTIFICATE-----\nMIIFOTCCAyGgAwIBAgIBATANBgkqhkiG9w0BAQsFADA0MRIwEAYDVQQDDAkxMjcu\nMC4wLjExETAPBgNV"| __truncated__ ""</span></span>
 <span></span>
 <span><span class="va">ser</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tls_config.html">tls_config</a></span><span class="op">(</span>server <span class="op">=</span> <span class="va">cert</span><span class="op">$</span><span class="va">server</span><span class="op">)</span></span>
@@ -577,7 +577,7 @@ asynchronously, returning immediately with an ‘ncurlAio’.</p>
 <span><span class="co">#&gt; NULL</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $data</span></span>
-<span><span class="co">#&gt; [1] "{\n  \"args\": {},\n  \"headers\": {\n    \"x-forwarded-proto\": \"https\",\n    \"x-forwarded-port\": \"443\",\n    \"host\": \"postman-echo.com\",\n    \"x-amzn-trace-id\": \"Root=1-6666d478-77be648e30f5d9e858013ee9\"\n  },\n  \"url\": \"https://postman-echo.com/get\"\n}"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "{\n  \"args\": {},\n  \"headers\": {\n    \"host\": \"postman-echo.com\",\n    \"x-forwarded-proto\": \"http\",\n    \"x-request-start\": \"t=1718110009.390\",\n    \"connection\": \"close\",\n    \"x-forwarded-port\": \"443\",\n    \"x-amzn-trace-id\": \"Root=1-66684739-5cd547205706a98b0d2f4768\"\n  },\n  \"url\": \"http://postman-echo.com/get\"\n}"</span></span></code></pre></div>
 <p>For advanced use, supports additional HTTP methods such as POST or
 PUT.</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
@@ -591,10 +591,10 @@ PUT.</p>
 <span></span>
 <span><span class="fu"><a href="../reference/call_aio.html">call_aio</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span><span class="op">$</span><span class="va">headers</span></span>
 <span><span class="co">#&gt; $date</span></span>
-<span><span class="co">#&gt; [1] "Mon, 10 Jun 2024 10:24:57 GMT"</span></span>
+<span><span class="co">#&gt; [1] "Tue, 11 Jun 2024 12:46:50 GMT"</span></span>
 <span></span>
 <span><span class="va">res</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt; [1] "{\n  \"args\": {},\n  \"data\": {\n    \"key\": \"value\"\n  },\n  \"files\": {},\n  \"form\": {},\n  \"headers\": {\n    \"x-forwarded-proto\": \"https\",\n    \"x-forwarded-port\": \"443\",\n    \"host\": \"postman-echo.com\",\n    \"x-amzn-trace-id\": \"Root=1-6666d478-5bfdbd6979cca57457d79abf\",\n    \"content-length\": \"16\",\n    \"content-type\": \"application/json\",\n    \"authorization\": \"Bearer APIKEY\"\n  },\n  \"json\": {\n    \"key\": \"value\"\n  },\n  \"url\": \"https://postman-echo.com/post\"\n}"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "{\n  \"args\": {},\n  \"data\": {\n    \"key\": \"value\"\n  },\n  \"files\": {},\n  \"form\": {},\n  \"headers\": {\n    \"host\": \"postman-echo.com\",\n    \"x-forwarded-proto\": \"http\",\n    \"x-request-start\": \"t=1718110010.104\",\n    \"connection\": \"close\",\n    \"content-length\": \"16\",\n    \"x-forwarded-port\": \"443\",\n    \"x-amzn-trace-id\": \"Root=1-66684739-7b357da82c076c507c656d00\",\n    \"content-type\": \"application/json\",\n    \"authorization\": \"Bearer APIKEY\"\n  },\n  \"json\": {\n    \"key\": \"value\"\n  },\n  \"url\": \"http://postman-echo.com/post\"\n}"</span></span></code></pre></div>
 <p>In this respect, it may be used as a performant and lightweight
 method for making REST API requests.</p>
 <p><code><a href="../reference/ncurl_session.html">ncurl_session()</a></code> creates a re-usable open connection and
@@ -619,30 +619,23 @@ which can operate directly on such data etc.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $headers</span></span>
 <span><span class="co">#&gt; $headers$Date</span></span>
-<span><span class="co">#&gt; [1] "Mon, 10 Jun 2024 10:24:57 GMT"</span></span>
+<span><span class="co">#&gt; [1] "Tue, 11 Jun 2024 12:46:50 GMT"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $headers$`Content-Type`</span></span>
 <span><span class="co">#&gt; [1] "application/json; charset=utf-8"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $data</span></span>
-<span><span class="co">#&gt;   [1] 7b 0a 20 20 22 61 72 67 73 22 3a 20 7b 7d 2c 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 78 2d 66</span></span>
-<span><span class="co">#&gt;  [40] 6f 72 77 61 72 64 65 64 2d 70 72 6f 74 6f 22 3a 20 22 68 74 74 70 73 22 2c 0a 20 20 20 20 22 78 2d 66 6f 72 77 61 72</span></span>
-<span><span class="co">#&gt;  [79] 64 65 64 2d 70 6f 72 74 22 3a 20 22 34 34 33 22 2c 0a 20 20 20 20 22 68 6f 73 74 22 3a 20 22 70 6f 73 74 6d 61 6e 2d</span></span>
-<span><span class="co">#&gt; [118] 65 63 68 6f 2e 63 6f 6d 22 2c 0a 20 20 20 20 22 78 2d 61 6d 7a 6e 2d 74 72 61 63 65 2d 69 64 22 3a 20 22 52 6f 6f 74</span></span>
-<span><span class="co">#&gt; [157] 3d 31 2d 36 36 36 36 64 34 37 39 2d 32 64 39 37 38 63 33 37 36 31 37 63 61 32 61 61 37 63 32 65 30 30 62 34 22 2c 0a</span></span>
-<span><span class="co">#&gt; [196] 20 20 20 20 22 63 6f 6e 74 65 6e 74 2d 74 79 70 65 22 3a 20 22 61 70 70 6c 69 63 61 74 69 6f 6e 2f 6a 73 6f 6e 22 2c</span></span>
-<span><span class="co">#&gt; [235] 0a 20 20 20 20 22 61 75 74 68 6f 72 69 7a 61 74 69 6f 6e 22 3a 20 22 42 65 61 72 65 72 20 41 50 49 4b 45 59 22 0a 20</span></span>
-<span><span class="co">#&gt; [274] 20 7d 2c 0a 20 20 22 75 72 6c 22 3a 20 22 68 74 74 70 73 3a 2f 2f 70 6f 73 74 6d 61 6e 2d 65 63 68 6f 2e 63 6f 6d 2f</span></span>
-<span><span class="co">#&gt; [313] 67 65 74 22 0a 7d</span></span></code></pre></div>
-<p>Optimised functions for base64 encoding and decoding from the ‘Mbed
-TLS’ library are also exposed as convenience utilities:</p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/base64enc.html">base64enc</a></span><span class="op">(</span><span class="st">"hello world!"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "aGVsbG8gd29ybGQh"</span></span>
-<span></span>
-<span><span class="fu"><a href="../reference/base64enc.html">base64dec</a></span><span class="op">(</span><span class="fu"><a href="../reference/base64enc.html">base64enc</a></span><span class="op">(</span><span class="st">"hello world!"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "hello world!"</span></span></code></pre></div>
+<span><span class="co">#&gt;   [1] 7b 0a 20 20 22 61 72 67 73 22 3a 20 7b 7d 2c 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 68 6f 73</span></span>
+<span><span class="co">#&gt;  [40] 74 22 3a 20 22 70 6f 73 74 6d 61 6e 2d 65 63 68 6f 2e 63 6f 6d 22 2c 0a 20 20 20 20 22 78 2d 66 6f 72 77 61 72 64 65</span></span>
+<span><span class="co">#&gt;  [79] 64 2d 70 72 6f 74 6f 22 3a 20 22 68 74 74 70 22 2c 0a 20 20 20 20 22 78 2d 72 65 71 75 65 73 74 2d 73 74 61 72 74 22</span></span>
+<span><span class="co">#&gt; [118] 3a 20 22 74 3d 31 37 31 38 31 31 30 30 31 30 2e 35 38 35 22 2c 0a 20 20 20 20 22 63 6f 6e 6e 65 63 74 69 6f 6e 22 3a</span></span>
+<span><span class="co">#&gt; [157] 20 22 63 6c 6f 73 65 22 2c 0a 20 20 20 20 22 78 2d 66 6f 72 77 61 72 64 65 64 2d 70 6f 72 74 22 3a 20 22 34 34 33 22</span></span>
+<span><span class="co">#&gt; [196] 2c 0a 20 20 20 20 22 78 2d 61 6d 7a 6e 2d 74 72 61 63 65 2d 69 64 22 3a 20 22 52 6f 6f 74 3d 31 2d 36 36 36 38 34 37</span></span>
+<span><span class="co">#&gt; [235] 33 61 2d 36 62 31 61 65 37 36 36 36 30 61 36 39 62 61 35 30 64 30 64 32 30 38 34 22 2c 0a 20 20 20 20 22 63 6f 6e 74</span></span>
+<span><span class="co">#&gt; [274] 65 6e 74 2d 74 79 70 65 22 3a 20 22 61 70 70 6c 69 63 61 74 69 6f 6e 2f 6a 73 6f 6e 22 2c 0a 20 20 20 20 22 61 75 74</span></span>
+<span><span class="co">#&gt; [313] 68 6f 72 69 7a 61 74 69 6f 6e 22 3a 20 22 42 65 61 72 65 72 20 41 50 49 4b 45 59 22 0a 20 20 7d 2c 0a 20 20 22 75 72</span></span>
+<span><span class="co">#&gt; [352] 6c 22 3a 20 22 68 74 74 70 3a 2f 2f 70 6f 73 74 6d 61 6e 2d 65 63 68 6f 2e 63 6f 6d 2f 67 65 74 22 0a 7d</span></span></code></pre></div>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
 <div class="section level3">
@@ -655,7 +648,7 @@ arbitrary non-NNG endpoints.</p>
 websocket servers. The argument <code>textframes = TRUE</code> can be
 specified where the websocket server uses text rather than binary
 frames.</p>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># connecting to an echo service</span></span>
 <span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/stream.html">stream</a></span><span class="op">(</span>dial <span class="op">=</span> <span class="st">"wss://echo.websocket.events/"</span>, textframes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="va">s</span></span>
@@ -668,7 +661,7 @@ asynchronous counterparts <code><a href="../reference/send_aio.html">send_aio()<
 <code><a href="../reference/recv_aio.html">recv_aio()</a></code> can be used on Streams in the same way as
 Sockets. This affords a great deal of flexibility in ingesting and
 processing streaming data.</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">s</span> <span class="op">|&gt;</span> <span class="fu"><a href="../reference/recv.html">recv</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "echo.websocket.events sponsored by Lob.com"</span></span>
 <span></span>
@@ -704,7 +697,7 @@ options on a Socket, Context, Stream, Listener or Dialer.</p>
 <p>Once a dialer or listener has started, it is not generally possible
 to change its configuration. In this case, the dialer or listener should
 be created specifying ‘autostart = FALSE’.</p>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/socket.html">socket</a></span><span class="op">(</span>listen <span class="op">=</span> <span class="st">"inproc://options"</span>, autostart <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># no maximum message size</span></span>
@@ -726,7 +719,7 @@ to NNG’s statistics framework.</p>
 statistics such as the total number of connection attempts, the current
 number of connections etc.</p>
 <p>See the function documentation page for available statistics.</p>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/socket.html">socket</a></span><span class="op">(</span>listen <span class="op">=</span> <span class="st">"inproc://stat"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># no active connections (pipes)</span></span>
