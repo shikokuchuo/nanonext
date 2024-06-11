@@ -12,6 +12,7 @@ status](https://shikokuchuo.r-universe.dev/badges/nanonext?color=3f72af)](https:
 [![R-CMD-check](https://github.com/shikokuchuo/nanonext/workflows/R-CMD-check/badge.svg)](https://github.com/shikokuchuo/nanonext/actions)
 [![codecov](https://codecov.io/gh/shikokuchuo/nanonext/graph/badge.svg)](https://app.codecov.io/gh/shikokuchuo/nanonext)
 [![DOI](https://zenodo.org/badge/451104675.svg)](https://zenodo.org/badge/latestdoi/451104675)
+[![diffify](https://diffify.com/diffify-badge.svg)](https://diffify.com/R/nanonext)
 <!-- badges: end -->
 
 R binding for NNG (Nanomsg Next Gen), a successor to ZeroMQ. NNG is a
