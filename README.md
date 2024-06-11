@@ -70,7 +70,6 @@ Web utilities:
   (async) http(s) client
 - [stream](https://shikokuchuo.net/nanonext/articles/nanonext.html#stream-websocket-client) -
   secure websockets client / generic low-level socket interface
-- `base64enc()` / `base64dec()`
 - `messenger()` - console-based instant messaging with authentication
 
 ### Installation

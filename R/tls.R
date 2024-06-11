@@ -76,7 +76,8 @@ tls_config <- function(client = NULL, server = NULL, pass = NULL, auth = is.null
 #' Base64 Encode / Decode
 #'
 #' Encodes / decodes a character string, raw vector or other object to base64
-#'     encoding.
+#'     encoding. DEPRECATED - these functions will be removed in a future
+#'     release.
 #'
 #' @param x an object.
 #' @param convert For \strong{base64enc}: [default TRUE] logical TRUE to encode
@@ -109,11 +110,13 @@ tls_config <- function(client = NULL, server = NULL, pass = NULL, auth = is.null
 #' base64enc(data.frame())
 #' base64dec(base64enc(data.frame()), convert = NA)
 #'
+#' @keywords internal
 #' @export
 #'
 base64enc <- function(x, convert = TRUE) .Call(rnng_base64enc, x, convert)
 
 #' @rdname base64enc
+#' @keywords internal
 #' @export
 #'
 base64dec <- function(x, convert = TRUE) .Call(rnng_base64dec, x, convert)

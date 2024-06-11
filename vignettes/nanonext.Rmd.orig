@@ -461,15 +461,6 @@ transact(sess)
 
 ```
 
-Optimised functions for base64 encoding and decoding from the 'Mbed TLS' library are also exposed as convenience utilities:
-
-```{r b64}
-base64enc("hello world!")
-
-base64dec(base64enc("hello world!"))
-
-```
-
 [&laquo; Back to ToC](#table-of-contents)
 
 ### stream: Websocket Client

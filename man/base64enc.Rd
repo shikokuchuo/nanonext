@@ -27,7 +27,8 @@ For \strong{base64enc}: A character string or raw vector depending on
 }
 \description{
 Encodes / decodes a character string, raw vector or other object to base64
-    encoding.
+    encoding. DEPRECATED - these functions will be removed in a future
+    release.
 }
 \details{
 For encoding: a character string or raw vector (with no attributes)
@@ -49,3 +50,4 @@ base64enc(data.frame())
 base64dec(base64enc(data.frame()), convert = NA)
 
 }
+\keyword{internal}
