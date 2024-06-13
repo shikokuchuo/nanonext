@@ -306,3 +306,7 @@ unlock <- function(socket) invisible(.Call(rnng_socket_unlock, socket))
 #' @export
 #'
 `%~>%` <- function(cv, cv2) invisible(.Call(rnng_signal_thread_create, cv, cv2))
+
+#' @export
+#'
+dispatcher <- function(url) .Call(rnng_dispatcher, url)

@@ -205,14 +205,15 @@ static void thread_duo_finalizer(SEXP xptr) {
   if (NANO_PTR(xptr) == NULL) return;
   nano_thread_duo *xp = (nano_thread_duo *) NANO_PTR(xptr);
   nano_cv *ncv = xp->cv;
-  nng_mtx *mtx = ncv->mtx;
-  nng_cv *cv = ncv->cv;
+  if (ncv != NULL) {
+    nng_mtx *mtx = ncv->mtx;
+    nng_cv *cv = ncv->cv;
 
-  nng_mtx_lock(mtx);
-  ncv->condition = -1;
-  nng_cv_wake(cv);
-  nng_mtx_unlock(mtx);
-
+    nng_mtx_lock(mtx);
+    ncv->condition = -1;
+    nng_cv_wake(cv);
+    nng_mtx_unlock(mtx);
+  }
   nng_thread_destroy(xp->thr);
   R_Free(xp);
 
@@ -416,5 +417,83 @@ SEXP rnng_signal_thread_create(SEXP cv, SEXP cv2) {
   R_RegisterCFinalizerEx(xptr, thread_duo_finalizer, TRUE);
 
   return cv2;
+
+}
+
+
+static void rnng_dispatch_thread(void *args) {
+
+  nano_cv *ncv = (nano_cv *) args;
+  nng_mtx *mtx = ncv->mtx;
+  nng_cv *cv = ncv->cv;
+
+  const int n = ncv->condition;
+  ncv->condition = 0;
+
+  char *url[n];
+  nng_socket sock[n];
+  nng_dialer dial[n];
+  int xc;
+  unsigned char *buf[n];
+  size_t sz[n];
+
+  for (int i = 0; i < n; i++) {
+    url[i] = "inproc://nanonext";
+    nng_bus0_open(&sock[i]);
+    nng_dial(sock[i], url[i], &dial[i], 0);
+  }
+
+  while (1) {
+    nng_mtx_lock(mtx);
+    while (ncv->condition == 0)
+      nng_cv_wait(cv);
+    if (ncv->condition < 0) {
+      nng_mtx_unlock(mtx);
+      break;
+    }
+    ncv->condition--;
+    nng_mtx_unlock(mtx);
+
+    for (int i = 0; i < n; i++) {
+      xc = nng_recv(sock[i], &buf[i], &sz[i], NNG_FLAG_ALLOC + NNG_FLAG_NONBLOCK);
+      if (xc) {
+        Rprintf("recv_error\n");
+      } else {
+        Rprintf("%s", (char *) buf[i]);
+        nng_free(buf[i], sz[i]);
+        sz[i] = 0;
+      }
+    }
+
+  }
+
+  Rprintf("Dispatcher thread halted\n");
+
+}
+
+
+SEXP rnng_dispatcher(SEXP url) {
+
+  SEXP cv, xptr;
+  const int n = Rf_xlength(url);
+  nano_cv *ncv = R_Calloc(1, nano_cv);
+  ncv->condition = n;
+  nng_mtx_alloc(&ncv->mtx);
+  nng_cv_alloc(&ncv->cv, ncv->mtx);
+
+  nano_thread_duo *duo = R_Calloc(1, nano_thread_duo);
+  duo->cv = ncv;
+
+  nng_thread_create(&duo->thr, rnng_dispatch_thread, ncv);
+
+  PROTECT(cv = R_MakeExternalPtr(ncv, nano_CvSymbol, R_NilValue));
+  R_RegisterCFinalizerEx(cv, cv_finalizer, TRUE);
+
+  xptr = R_MakeExternalPtr(duo, R_NilValue, R_NilValue);
+  R_SetExternalPtrProtected(cv, xptr);
+  R_RegisterCFinalizerEx(xptr, thread_duo_finalizer, TRUE);
+
+  UNPROTECT(1);
+  return cv;
 
 }
