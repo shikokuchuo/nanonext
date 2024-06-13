@@ -420,7 +420,6 @@ SEXP rnng_signal_thread_create(SEXP cv, SEXP cv2) {
 
 }
 
-
 static void rnng_dispatch_thread(void *args) {
 
   nano_cv *ncv = (nano_cv *) args;
@@ -430,18 +429,26 @@ static void rnng_dispatch_thread(void *args) {
   const int n = ncv->condition;
   ncv->condition = 0;
 
+  nng_socket hsock;
+  nng_dialer hdial;
+  nng_bus0_open(&hsock);
+  nng_dial(hsock, "inproc://nanonext", &hdial, 0);
+
   char *url[n];
   nng_socket sock[n];
   nng_dialer dial[n];
-  int xc;
-  unsigned char *buf[n];
-  size_t sz[n];
 
   for (int i = 0; i < n; i++) {
-    url[i] = "inproc://nanonext";
+    char u[30];
+    snprintf(u, 30, "inproc://nano%d", i);
+    url[i] = u;
     nng_bus0_open(&sock[i]);
     nng_dial(sock[i], url[i], &dial[i], 0);
   }
+
+  int xc;
+  unsigned char *hbuf, *buf[n];
+  size_t hsz, sz[n];
 
   while (1) {
     nng_mtx_lock(mtx);
@@ -454,6 +461,14 @@ static void rnng_dispatch_thread(void *args) {
     ncv->condition--;
     nng_mtx_unlock(mtx);
 
+    xc = nng_recv(hsock, &hbuf, &hsz, NNG_FLAG_ALLOC + NNG_FLAG_NONBLOCK);
+    if (xc) {
+      Rprintf("recv_error\n");
+    } else {
+      Rprintf("%s", (char *) hbuf);
+      nng_free(hbuf, hsz);
+    }
+
     for (int i = 0; i < n; i++) {
       xc = nng_recv(sock[i], &buf[i], &sz[i], NNG_FLAG_ALLOC + NNG_FLAG_NONBLOCK);
       if (xc) {
@@ -461,7 +476,6 @@ static void rnng_dispatch_thread(void *args) {
       } else {
         Rprintf("%s", (char *) buf[i]);
         nng_free(buf[i], sz[i]);
-        sz[i] = 0;
       }
     }
 
