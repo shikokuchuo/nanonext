@@ -67,7 +67,7 @@ static void raio_complete(void *arg) {
 
 }
 
-static void raio_complete_signal(void *arg) {
+void raio_complete_signal(void *arg) {
 
   nano_aio *raio = (nano_aio *) arg;
   nano_cv *ncv = (nano_cv *) raio->next;

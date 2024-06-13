@@ -446,11 +446,22 @@ static void rnng_dispatch_thread(void *args) {
     nng_dial(sock[i], url[i], &dial[i], 0);
   }
 
-  int xc;
+  int xc, res = 1;
   unsigned char *hbuf, *buf[n];
   size_t hsz, sz[n];
+  nano_aio haio;
+  haio.type = RECVAIOS;
+  haio.next = ncv;
+
+  if (nng_aio_alloc(&haio.aio, raio_complete_signal, &haio))
+    goto exitlevel1;
 
   while (1) {
+
+    if (res) {
+      nng_recv_aio(hsock, haio.aio);
+    }
+
     nng_mtx_lock(mtx);
     while (ncv->condition == 0)
       nng_cv_wait(cv);
@@ -459,14 +470,16 @@ static void rnng_dispatch_thread(void *args) {
       break;
     }
     ncv->condition--;
+    res = haio.result;
+    haio.result = 0;
     nng_mtx_unlock(mtx);
 
-    xc = nng_recv(hsock, &hbuf, &hsz, NNG_FLAG_ALLOC + NNG_FLAG_NONBLOCK);
-    if (xc) {
-      Rprintf("recv_error\n");
-    } else {
+    if (res < 0) {
+      nng_msg *msg = (nng_msg *) haio.data;
+      hbuf = nng_msg_body(msg);
+      hsz = nng_msg_len(msg);
       Rprintf("%s", (char *) hbuf);
-      nng_free(hbuf, hsz);
+      nng_msg_free(haio.data);
     }
 
     for (int i = 0; i < n; i++) {
@@ -481,6 +494,7 @@ static void rnng_dispatch_thread(void *args) {
 
   }
 
+  exitlevel1:
   Rprintf("Dispatcher thread halted\n");
 
 }
