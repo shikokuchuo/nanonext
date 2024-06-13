@@ -510,7 +510,7 @@ SEXP rnng_dispatcher(SEXP cv, SEXP host, SEXP url) {
 
   nano_cv *ncv = (nano_cv *) R_ExternalPtrAddr(cv);
 
-  SEXP xptr;
+  SEXP xptr, sock, list;
   const int n = Rf_xlength(url);
   ncv->condition = n;
   nng_mtx_alloc(&ncv->mtx);
@@ -519,6 +519,10 @@ SEXP rnng_dispatcher(SEXP cv, SEXP host, SEXP url) {
   nano_thread_disp *disp = R_Calloc(1, nano_thread_disp);
   disp->cv = ncv;
   disp->host = CHAR(STRING_ELT(host, 0));
+  nng_socket *hsock = R_Calloc(1, nng_socket);
+  nng_listener *hlist = R_Calloc(1, nng_listener);
+  nng_bus0_open(hsock);
+  nng_listen(*hsock, disp->host, hlist, 0);
 
   nng_thread_create(&disp->thr, rnng_dispatch_thread, disp);
 
@@ -526,6 +530,13 @@ SEXP rnng_dispatcher(SEXP cv, SEXP host, SEXP url) {
   R_SetExternalPtrProtected(cv, xptr);
   R_RegisterCFinalizerEx(xptr, thread_duo_finalizer, TRUE);
 
-  return Rf_ScalarInteger(n);
+  PROTECT(list = R_MakeExternalPtr(hlist, nano_ListenerSymbol, R_NilValue));
+  R_RegisterCFinalizerEx(list, listener_finalizer, TRUE);
+
+  PROTECT(sock = R_MakeExternalPtr(hsock, nano_SocketSymbol, list));
+  R_RegisterCFinalizerEx(sock, socket_finalizer, TRUE);
+
+  UNPROTECT(2);
+  return sock;
 
 }
