@@ -212,6 +212,13 @@ typedef struct nano_thread_duo_s {
   nano_cv *cv2;
 } nano_thread_duo;
 
+typedef struct nano_thread_disp_s {
+  nng_thread *thr;
+  nano_cv *cv;
+  const char *host;
+  const char *url;
+} nano_thread_disp;
+
 typedef struct nano_buf_s {
   unsigned char *buf;
   size_t len;
@@ -275,7 +282,7 @@ SEXP rnng_cv_wait_safe(SEXP);
 SEXP rnng_dial(SEXP, SEXP, SEXP, SEXP, SEXP);
 SEXP rnng_dialer_close(SEXP);
 SEXP rnng_dialer_start(SEXP, SEXP);
-SEXP rnng_dispatcher(SEXP, SEXP);
+SEXP rnng_dispatcher(SEXP, SEXP, SEXP);
 SEXP rnng_fini(void);
 SEXP rnng_get_opt(SEXP, SEXP);
 SEXP rnng_is_error_value(SEXP);

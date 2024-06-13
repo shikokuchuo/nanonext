@@ -422,7 +422,9 @@ SEXP rnng_signal_thread_create(SEXP cv, SEXP cv2) {
 
 static void rnng_dispatch_thread(void *args) {
 
-  nano_cv *ncv = (nano_cv *) args;
+  nano_thread_disp *disp = (nano_thread_disp *) args;
+
+  nano_cv *ncv = disp->cv;
   nng_mtx *mtx = ncv->mtx;
   nng_cv *cv = ncv->cv;
 
@@ -432,18 +434,18 @@ static void rnng_dispatch_thread(void *args) {
   nng_socket hsock;
   nng_dialer hdial;
   nng_bus0_open(&hsock);
-  nng_dial(hsock, "inproc://nanonext", &hdial, 0);
+  nng_dial(hsock, disp->host , &hdial, 0);
 
   char *url[n];
   nng_socket sock[n];
-  nng_dialer dial[n];
+  nng_listener list[n];
 
   for (int i = 0; i < n; i++) {
     char u[30];
     snprintf(u, 30, "inproc://nano%d", i);
     url[i] = u;
     nng_bus0_open(&sock[i]);
-    nng_dial(sock[i], url[i], &dial[i], 0);
+    nng_listen(sock[i], url[i], &list[i], 0);
   }
 
   int xc, res = 1;
@@ -458,9 +460,8 @@ static void rnng_dispatch_thread(void *args) {
 
   while (1) {
 
-    if (res) {
+    if (res)
       nng_recv_aio(hsock, haio.aio);
-    }
 
     nng_mtx_lock(mtx);
     while (ncv->condition == 0)
@@ -495,12 +496,14 @@ static void rnng_dispatch_thread(void *args) {
   }
 
   exitlevel1:
+  for (int i = 0; i < n; i++)
+    nng_close(sock[i]);
   Rprintf("Dispatcher thread halted\n");
 
 }
 
 
-SEXP rnng_dispatcher(SEXP cv, SEXP url) {
+SEXP rnng_dispatcher(SEXP cv, SEXP host, SEXP url) {
 
   if (R_ExternalPtrTag(cv) != nano_CvSymbol)
     Rf_error("'cv' is not a valid Condition Variable");
@@ -513,12 +516,13 @@ SEXP rnng_dispatcher(SEXP cv, SEXP url) {
   nng_mtx_alloc(&ncv->mtx);
   nng_cv_alloc(&ncv->cv, ncv->mtx);
 
-  nano_thread_duo *duo = R_Calloc(1, nano_thread_duo);
-  duo->cv = ncv;
+  nano_thread_disp *disp = R_Calloc(1, nano_thread_disp);
+  disp->cv = ncv;
+  disp->host = CHAR(STRING_ELT(host, 0));
 
-  nng_thread_create(&duo->thr, rnng_dispatch_thread, ncv);
+  nng_thread_create(&disp->thr, rnng_dispatch_thread, disp);
 
-  xptr = R_MakeExternalPtr(duo, R_NilValue, R_NilValue);
+  xptr = R_MakeExternalPtr(disp, R_NilValue, R_NilValue);
   R_SetExternalPtrProtected(cv, xptr);
   R_RegisterCFinalizerEx(xptr, thread_duo_finalizer, TRUE);
 
