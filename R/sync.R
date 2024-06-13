@@ -309,5 +309,5 @@ unlock <- function(socket) invisible(.Call(rnng_socket_unlock, socket))
 
 #' @export
 #'
-dispatcher <- function(cv, host = "inproc://nanonext", url = c("inproc://nano1", "inproc://nano2"))
-  .Call(rnng_dispatcher, cv, host, url)
+dispatcher <- function(cv, n = 2L, host = "inproc://nanonext", url = "ws://127.0.0.1:5555")
+  .Call(rnng_dispatcher, cv, n, host, url)

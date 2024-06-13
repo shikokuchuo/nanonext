@@ -433,7 +433,7 @@ static void rnng_dispatch_thread(void *args) {
 
   nng_socket hsock;
   nng_dialer hdial;
-  nng_bus0_open(&hsock);
+  nng_rep0_open(&hsock);
   nng_dial(hsock, disp->host , &hdial, 0);
 
   char *url[n];
@@ -442,9 +442,9 @@ static void rnng_dispatch_thread(void *args) {
 
   for (int i = 0; i < n; i++) {
     char u[30];
-    snprintf(u, 30, "inproc://nano%d", i);
+    snprintf(u, strlen(disp->url) + 10, "%s/%d", disp->url, i);
     url[i] = u;
-    nng_bus0_open(&sock[i]);
+    nng_req0_open(&sock[i]);
     nng_listen(sock[i], url[i], &list[i], 0);
   }
 
@@ -479,11 +479,12 @@ static void rnng_dispatch_thread(void *args) {
       nng_msg *msg = (nng_msg *) haio.data;
       hbuf = nng_msg_body(msg);
       hsz = nng_msg_len(msg);
-      Rprintf("%s", (char *) hbuf);
+      nng_send(hsock, hbuf, hsz, 0);
       nng_msg_free(haio.data);
     }
 
     for (int i = 0; i < n; i++) {
+      nng_send(sock[i], "a", 2, NNG_FLAG_NONBLOCK);
       xc = nng_recv(sock[i], &buf[i], &sz[i], NNG_FLAG_ALLOC + NNG_FLAG_NONBLOCK);
       if (xc) {
         Rprintf("recv_error\n");
@@ -498,12 +499,13 @@ static void rnng_dispatch_thread(void *args) {
   exitlevel1:
   for (int i = 0; i < n; i++)
     nng_close(sock[i]);
+  nng_close(hsock);
   Rprintf("Dispatcher thread halted\n");
 
 }
 
 
-SEXP rnng_dispatcher(SEXP cv, SEXP host, SEXP url) {
+SEXP rnng_dispatcher(SEXP cv, SEXP n, SEXP host, SEXP url) {
 
   if (R_ExternalPtrTag(cv) != nano_CvSymbol)
     Rf_error("'cv' is not a valid Condition Variable");
@@ -511,17 +513,18 @@ SEXP rnng_dispatcher(SEXP cv, SEXP host, SEXP url) {
   nano_cv *ncv = (nano_cv *) R_ExternalPtrAddr(cv);
 
   SEXP xptr, sock, list;
-  const int n = Rf_xlength(url);
-  ncv->condition = n;
+  ncv->condition = Rf_asInteger(n);
   nng_mtx_alloc(&ncv->mtx);
   nng_cv_alloc(&ncv->cv, ncv->mtx);
 
   nano_thread_disp *disp = R_Calloc(1, nano_thread_disp);
   disp->cv = ncv;
   disp->host = CHAR(STRING_ELT(host, 0));
+  disp->url = CHAR(STRING_ELT(url, 0));
   nng_socket *hsock = R_Calloc(1, nng_socket);
   nng_listener *hlist = R_Calloc(1, nng_listener);
-  nng_bus0_open(hsock);
+  nng_req0_open(hsock);
+  nng_socket_set_ms(*hsock, "req:resend-time", 0);
   nng_listen(*hsock, disp->host, hlist, 0);
 
   nng_thread_create(&disp->thr, rnng_dispatch_thread, disp);
