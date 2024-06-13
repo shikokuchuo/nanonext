@@ -486,11 +486,15 @@ static void rnng_dispatch_thread(void *args) {
 }
 
 
-SEXP rnng_dispatcher(SEXP url) {
+SEXP rnng_dispatcher(SEXP cv, SEXP url) {
 
-  SEXP cv, xptr;
+  if (R_ExternalPtrTag(cv) != nano_CvSymbol)
+    Rf_error("'cv' is not a valid Condition Variable");
+
+  nano_cv *ncv = (nano_cv *) R_ExternalPtrAddr(cv);
+
+  SEXP xptr;
   const int n = Rf_xlength(url);
-  nano_cv *ncv = R_Calloc(1, nano_cv);
   ncv->condition = n;
   nng_mtx_alloc(&ncv->mtx);
   nng_cv_alloc(&ncv->cv, ncv->mtx);
@@ -500,14 +504,10 @@ SEXP rnng_dispatcher(SEXP url) {
 
   nng_thread_create(&duo->thr, rnng_dispatch_thread, ncv);
 
-  PROTECT(cv = R_MakeExternalPtr(ncv, nano_CvSymbol, R_NilValue));
-  R_RegisterCFinalizerEx(cv, cv_finalizer, TRUE);
-
   xptr = R_MakeExternalPtr(duo, R_NilValue, R_NilValue);
   R_SetExternalPtrProtected(cv, xptr);
   R_RegisterCFinalizerEx(xptr, thread_duo_finalizer, TRUE);
 
-  UNPROTECT(1);
-  return cv;
+  return Rf_ScalarInteger(n);
 
 }

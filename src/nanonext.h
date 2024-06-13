@@ -275,7 +275,7 @@ SEXP rnng_cv_wait_safe(SEXP);
 SEXP rnng_dial(SEXP, SEXP, SEXP, SEXP, SEXP);
 SEXP rnng_dialer_close(SEXP);
 SEXP rnng_dialer_start(SEXP, SEXP);
-SEXP rnng_dispatcher(SEXP);
+SEXP rnng_dispatcher(SEXP, SEXP);
 SEXP rnng_fini(void);
 SEXP rnng_get_opt(SEXP, SEXP);
 SEXP rnng_is_error_value(SEXP);
