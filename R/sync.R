@@ -307,7 +307,21 @@ unlock <- function(socket) invisible(.Call(rnng_socket_unlock, socket))
 #'
 `%~>%` <- function(cv, cv2) invisible(.Call(rnng_signal_thread_create, cv, cv2))
 
+#' Dispatcher Socket
+#'
+#' Creates a Dispatcher socket, which is a special type of \sQuote{req} socket,
+#'     with FIFO scheduling using a threaded implementation.
+#'
+#' @param cv a \sQuote{conditionVariable} object.
+#' @param n number of connected rep nodes.
+#' @param host \sQuote{inproc://} url connecting the host to the thread.
+#' @param url the root URL at which to listen for rep nodes to connect to. The
+#'     actual URLs created append \sQuote{/1}, \sQuote{/2}, ..., \sQuote{/n} to
+#'     this value.
+#'
+#' @return A \sQuote{req} Socket. The thread is attached to \sQuote{cv}.
+#'
 #' @export
 #'
-dispatcher_socket <- function(cv, n = 2L, host = "inproc://nanonext", url = "ws://127.0.0.1:5555")
+dispatcher_socket <- function(cv, n, host, url)
   .Call(rnng_dispatcher, cv, n, host, url)
