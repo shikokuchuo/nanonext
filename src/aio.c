@@ -33,16 +33,6 @@ static SEXP mk_error_aio(const int xc, SEXP env) {
 
 // aio completion callbacks ----------------------------------------------------
 
-static void saio_complete(void *arg) {
-
-  nano_aio *saio = (nano_aio *) arg;
-  const int res = nng_aio_result(saio->aio);
-  if (res)
-    nng_msg_free(nng_aio_get_msg(saio->aio));
-  saio->result = res - !res;
-
-}
-
 static void isaio_complete(void *arg) {
 
   nano_aio *iaio = (nano_aio *) arg;
