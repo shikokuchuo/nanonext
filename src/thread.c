@@ -453,14 +453,19 @@ static void rnng_dispatch_thread(void *args) {
     url[i] = u;
     nng_req0_open(&sock[i]);
     nng_listen(sock[i], url[i], &list[i], 0);
-    haio[i].next = ncv;
-    haio[i].result = 0;
     raio[i].next = ncv;
     raio[i].result = 0;
+    if (nng_aio_alloc(&raio[i].aio, raio_complete_signal, &raio[i]))
+      goto exitlevel1;
     busy[i] = 0;
-    nng_ctx_open(&rctx[i], hsock);
+    saio[i].result = 0;
+    if (nng_aio_alloc(&saio[i].aio, saio_complete, &saio[i]))
+      goto exitlevel1;
+    haio[i].next = ncv;
+    haio[i].result = 0;
     if (nng_aio_alloc(&haio[i].aio, raio_complete_signal, &haio[i]))
       goto exitlevel1;
+    nng_ctx_open(&rctx[i], hsock);
     nng_ctx_recv(rctx[i], haio[i].aio);
     //Rprintf("allocated\n");
   }
@@ -488,6 +493,7 @@ static void rnng_dispatch_thread(void *args) {
         nng_mtx_unlock(mtx);
         if (xc) {
           raio[i].result = 0;
+          saio[i].result = 0;
           //Rprintf("received reply %d\n", i);
           if (xc < 0) {
             nng_ctx_sendmsg(rctx[i], (nng_msg *) raio[i].data, 0);
@@ -495,19 +501,15 @@ static void rnng_dispatch_thread(void *args) {
             //Rprintf("received error %d\n", i);
             nng_msg_alloc(&msg, 0);
             nng_msg_append(msg, (unsigned char *) &xc, sizeof(int));
-            nng_ctx_sendmsg(rctx[i], msg, 0);
-            nng_msg_free(msg);
+            xc = nng_ctx_sendmsg(rctx[i], msg, 0);
+            if (xc)
+              nng_msg_free(msg);
           }
           nng_ctx_close(ctx[i]);
           nng_ctx_close(rctx[i]);
-          nng_aio_free(haio[i].aio);
-          nng_aio_free(raio[i].aio);
-          nng_aio_free(saio[i].aio);
           busy[i] = 0;
           //Rprintf("processed reply %d\n", i);
           nng_ctx_open(&rctx[i], hsock);
-          if (nng_aio_alloc(&haio[i].aio, raio_complete_signal, &haio[i]))
-            goto exitlevel1;
           nng_ctx_recv(rctx[i], haio[i].aio);
           //Rprintf("allocated %d\n", i);
           break;
@@ -524,25 +526,19 @@ static void rnng_dispatch_thread(void *args) {
             busy[i] = 1;
             //Rprintf("prep for send %d\n", i);
             nng_ctx_open(&ctx[i], sock[i]);
-            if (nng_aio_alloc(&saio[i].aio, saio_complete, &saio[i]))
-              goto exitlevel1;
             nng_aio_set_msg(saio[i].aio, haio[i].data);
             nng_ctx_send(ctx[i], saio[i].aio);
-            if (nng_aio_alloc(&raio[i].aio, raio_complete_signal, &raio[i]))
-              goto exitlevel1;
             nng_ctx_recv(ctx[i], raio[i].aio);
             //Rprintf("sent %d\n", i);
           } else {
             nng_msg_alloc(&msg, 0);
             nng_msg_append(msg, (unsigned char *) &xc, sizeof(int));
-            nng_ctx_sendmsg(rctx[i], msg, 0);
-            nng_msg_free(msg);
-            nng_aio_free(haio[i].aio);
+            xc = nng_ctx_sendmsg(rctx[i], msg, 0);
+            if (xc)
+              nng_msg_free(msg);
             nng_ctx_close(rctx[i]);
             //Rprintf("send error resetting %d\n", i);
             nng_ctx_open(&rctx[i], hsock);
-            if (nng_aio_alloc(&haio[i].aio, raio_complete_signal, &haio[i]))
-              goto exitlevel1;
             nng_ctx_recv(rctx[i], haio[i].aio);
             //Rprintf("allocated %d\n", i);
           }
