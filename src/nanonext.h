@@ -103,8 +103,11 @@ typedef struct nano_cv_s {
 #include <signal.h>
 #endif
 
-#ifdef NANONEXT_TIME
+#ifdef NANONEXT_IO
 #include <time.h>
+#include <unistd.h>
+#include <stdarg.h>
+#include <stdio.h>
 #endif
 
 #ifdef NANONEXT_TLS

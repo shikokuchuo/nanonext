@@ -18,7 +18,7 @@
 
 #define NANONEXT_PROTOCOLS
 #define NANONEXT_SUPPLEMENTALS
-#define NANONEXT_TIME
+#define NANONEXT_IO
 #include "nanonext.h"
 
 // internals -------------------------------------------------------------------
@@ -48,6 +48,20 @@ static void thread_finalizer(SEXP xptr) {
 
 }
 
+static void nano_printf(int err, const char *fmt, ...) {
+
+  char buf[NANONEXT_INIT_BUFSIZE];
+  va_list arg_ptr;
+
+  va_start(arg_ptr, fmt);
+  int bytes = vsnprintf(buf, NANONEXT_INIT_BUFSIZE, fmt, arg_ptr);
+  va_end(arg_ptr);
+
+  ssize_t out = write(err ? STDERR_FILENO : STDOUT_FILENO, buf, (size_t) bytes);
+  memset(&out, 0, sizeof(ssize_t));
+
+}
+
 static void rnng_messenger_thread(void *args) {
 
   SEXP plist = (SEXP) args;
@@ -66,42 +80,47 @@ static void rnng_messenger_thread(void *args) {
     tms = localtime(&now);
 
     if (xc) {
-      REprintf("| messenger session ended: %d-%02d-%02d %02d:%02d:%02d\n",
-               tms->tm_year + 1900, tms->tm_mon + 1, tms->tm_mday,
-               tms->tm_hour, tms->tm_min, tms->tm_sec);
+      nano_printf(1,
+                  "| messenger session ended: %d-%02d-%02d %02d:%02d:%02d\n",
+                  tms->tm_year + 1900, tms->tm_mon + 1, tms->tm_mday,
+                  tms->tm_hour, tms->tm_min, tms->tm_sec);
       break;
     }
 
     if (!strncmp((char *) buf, ":", 1)) {
       if (!strncmp((char *) buf, ":c ", 3)) {
-        REprintf("| <- peer connected: %d-%02d-%02d %02d:%02d:%02d\n",
-                 tms->tm_year + 1900, tms->tm_mon + 1, tms->tm_mday,
-                 tms->tm_hour, tms->tm_min, tms->tm_sec);
+        nano_printf(1,
+                    "| <- peer connected: %d-%02d-%02d %02d:%02d:%02d\n",
+                    tms->tm_year + 1900, tms->tm_mon + 1, tms->tm_mday,
+                    tms->tm_hour, tms->tm_min, tms->tm_sec);
         nng_free(buf, sz);
         nano_buf enc;
         nano_encode(&enc, key);
         xc = nng_send(*sock, enc.buf, enc.cur, NNG_FLAG_NONBLOCK);
         if (xc) {
-          REprintf("| messenger session ended: %d-%02d-%02d %02d:%02d:%02d\n",
-                   tms->tm_year + 1900, tms->tm_mon + 1, tms->tm_mday,
-                   tms->tm_hour, tms->tm_min, tms->tm_sec);
+          nano_printf(1,
+                      "| messenger session ended: %d-%02d-%02d %02d:%02d:%02d\n",
+                      tms->tm_year + 1900, tms->tm_mon + 1, tms->tm_mday,
+                      tms->tm_hour, tms->tm_min, tms->tm_sec);
           break;
         }
         continue;
       }
       if (!strncmp((char *) buf, ":d ", 3)) {
-        REprintf("| -> peer disconnected: %d-%02d-%02d %02d:%02d:%02d\n",
-                 tms->tm_year + 1900, tms->tm_mon + 1, tms->tm_mday,
-                 tms->tm_hour, tms->tm_min, tms->tm_sec);
+        nano_printf(1,
+                    "| -> peer disconnected: %d-%02d-%02d %02d:%02d:%02d\n",
+                    tms->tm_year + 1900, tms->tm_mon + 1, tms->tm_mday,
+                    tms->tm_hour, tms->tm_min, tms->tm_sec);
         nng_free(buf, sz);
         continue;
       }
     }
 
-    Rprintf("%s\n%*s< %d-%02d-%02d %02d:%02d:%02d\n",
-            (char *) buf, (int) sz, "",
-            tms->tm_year + 1900, tms->tm_mon + 1, tms->tm_mday,
-            tms->tm_hour, tms->tm_min, tms->tm_sec);
+    nano_printf(0,
+                "%s\n%*s< %d-%02d-%02d %02d:%02d:%02d\n",
+                (char *) buf, (int) sz, "",
+                tms->tm_year + 1900, tms->tm_mon + 1, tms->tm_mday,
+                tms->tm_hour, tms->tm_min, tms->tm_sec);
     nng_free(buf, sz);
 
   }
