@@ -214,8 +214,6 @@ SEXP rnng_aio_http_headers(SEXP);
 SEXP rnng_aio_http_status(SEXP);
 SEXP rnng_aio_result(SEXP);
 SEXP rnng_aio_stop(SEXP);
-SEXP rnng_base64dec(SEXP, SEXP);
-SEXP rnng_base64enc(SEXP, SEXP);
 SEXP rnng_clock(void);
 SEXP rnng_close(SEXP);
 SEXP rnng_ctx_close(SEXP);

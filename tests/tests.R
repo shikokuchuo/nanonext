@@ -531,15 +531,6 @@ nanotestn(stop_aio("a"))
 nanotestn(stop_aio(list("a")))
 nanotest(is.environment(set_promise_context(new.env(), new.env())))
 
-nanotest(base64enc("test") == "dGVzdA==")
-nanotest(base64dec(base64enc("test")) == "test")
-nanotest(is.character(base64enc(c("vector", "test"))))
-nanotest(is.raw(base64enc(data.frame(), convert = FALSE)))
-nanotest(is.raw(base64dec(base64enc(as.raw(c(1L, 2L)), convert = FALSE), convert = FALSE)))
-nanotest(is.integer(base64dec(base64enc(c(1L, 2L)), convert = NA)))
-nanotesterr(base64dec("__"), "not valid base64")
-nanotesterr(base64dec(404), "not valid base64")
-
 pem <- "-----BEGIN CERTIFICATE----- -----END CERTIFICATE-----"
 test_tls <- function(pem) {
   file <- tempfile()

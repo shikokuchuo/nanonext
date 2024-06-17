@@ -71,56 +71,6 @@
 tls_config <- function(client = NULL, server = NULL, pass = NULL, auth = is.null(server))
   .Call(rnng_tls_config, client, server, pass, auth)
 
-# nanonext - Base64 Encoding Decoding ------------------------------------------
-
-#' Base64 Encode / Decode
-#'
-#' Encodes / decodes a character string, raw vector or other object to base64
-#'     encoding. DEPRECATED - these functions will be removed in a future
-#'     release.
-#'
-#' @param x an object.
-#' @param convert For \strong{base64enc}: [default TRUE] logical TRUE to encode
-#'     to a character string or FALSE to a raw vector.\cr
-#'     For \strong{base64dec}: [default TRUE] logical TRUE to convert back to a
-#'     character string, FALSE to convert back to a raw vector or NA to decode
-#'     and then unserialize back to the original object.
-#'
-#' @return For \strong{base64enc}: A character string or raw vector depending on
-#'     the value of \sQuote{convert}.
-#'
-#'     For \strong{base64dec}: A character string, raw vector, or other object
-#'     depending on the value of \sQuote{convert}.
-#'
-#' @details For encoding: a character string or raw vector (with no attributes)
-#'     is encoded \emph{as is}, whilst all other objects are first serialized
-#'     (using R serialisation version 3, big-endian representation).
-#'
-#'     For decoding: the value of \sQuote{convert} should be set to TRUE, FALSE
-#'     or NA to be the analogue of the above 3 cases in order to return the
-#'     original object.
-#'
-#' @examples
-#' base64enc("hello world!")
-#' base64dec(base64enc("hello world!"))
-#'
-#' base64enc(as.raw(c(1L, 2L, 4L)), convert = FALSE)
-#' base64dec(base64enc(as.raw(c(1L, 2L, 4L))), convert = FALSE)
-#'
-#' base64enc(data.frame())
-#' base64dec(base64enc(data.frame()), convert = NA)
-#'
-#' @keywords internal
-#' @export
-#'
-base64enc <- function(x, convert = TRUE) .Call(rnng_base64enc, x, convert)
-
-#' @rdname base64enc
-#' @keywords internal
-#' @export
-#'
-base64dec <- function(x, convert = TRUE) .Call(rnng_base64dec, x, convert)
-
 # nanonext - Key Gen and Certificates ------------------------------------------
 
 #' Generate Self-Signed Certificate and Key

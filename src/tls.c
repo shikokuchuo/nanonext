@@ -38,31 +38,6 @@ SEXP rnng_version(void) {
 
 // Statics ---------------------------------------------------------------------
 
-static nano_buf nano_any_buf(const SEXP x) {
-
-  nano_buf buf;
-
-  switch (TYPEOF(x)) {
-  case STRSXP:
-    if (XLENGTH(x) == 1 && ATTRIB(x) == R_NilValue) {
-      const char *s = CHAR(STRING_ELT(x, 0));
-      NANO_INIT(&buf, (unsigned char *) s, strlen(s));
-      return buf;
-    }
-    break;
-  case RAWSXP:
-    if (ATTRIB(x) == R_NilValue) {
-      NANO_INIT(&buf, (unsigned char *) DATAPTR_RO(x), XLENGTH(x));
-      return buf;
-    }
-  }
-
-  nano_serialize_xdr(&buf, x);
-
-  return buf;
-
-}
-
 static SEXP nano_hash_char(unsigned char *buf, const size_t sz) {
 
   SEXP out;
@@ -76,85 +51,6 @@ static SEXP nano_hash_char(unsigned char *buf, const size_t sz) {
   SET_STRING_ELT(out, 0, Rf_mkCharLenCE(cbuf, (int) (sz + sz), CE_NATIVE));
 
   UNPROTECT(1);
-  return out;
-
-}
-
-// Base64 encoding decoding ----------------------------------------------------
-
-SEXP rnng_base64enc(SEXP x, SEXP convert) {
-
-  SEXP out;
-  int xc;
-  size_t olen;
-
-  nano_buf hash = nano_any_buf(x);
-  xc = mbedtls_base64_encode(NULL, 0, &olen, hash.buf, hash.cur);
-  unsigned char *buf = R_Calloc(olen, unsigned char);
-  xc = mbedtls_base64_encode(buf, olen, &olen, hash.buf, hash.cur);
-  NANO_FREE(hash);
-  if (xc) {
-    R_Free(buf);
-    Rf_error("write buffer insufficient");
-  }
-
-  if (*NANO_INTEGER(convert)) {
-    out = rawToChar(buf, olen);
-  } else {
-    out = Rf_allocVector(RAWSXP, olen);
-    memcpy(DATAPTR(out), buf, olen);
-  }
-
-  R_Free(buf);
-
-  return out;
-
-}
-
-SEXP rnng_base64dec(SEXP x, SEXP convert) {
-
-  SEXP out;
-  int xc;
-  size_t inlen, olen;
-  unsigned char *inbuf;
-
-  switch (TYPEOF(x)) {
-  case STRSXP:
-    inbuf = (unsigned char *) CHAR(STRING_ELT(x, 0));
-    inlen = XLENGTH(STRING_ELT(x, 0));
-    break;
-  case RAWSXP:
-    inbuf = RAW(x);
-    inlen = XLENGTH(x);
-    break;
-  default:
-    Rf_error("input is not valid base64");
-  }
-
-  xc = mbedtls_base64_decode(NULL, 0, &olen, inbuf, inlen);
-  if (xc == MBEDTLS_ERR_BASE64_INVALID_CHARACTER)
-    Rf_error("input is not valid base64");
-  unsigned char *buf = R_Calloc(olen, unsigned char);
-  xc = mbedtls_base64_decode(buf, olen, &olen, inbuf, inlen);
-  if (xc) {
-    R_Free(buf);
-    Rf_error("write buffer insufficient");
-  }
-
-  switch (*NANO_INTEGER(convert)) {
-  case 0:
-    out = Rf_allocVector(RAWSXP, olen);
-    memcpy(DATAPTR(out), buf, olen);
-    break;
-  case 1:
-    out = rawToChar(buf, olen);
-    break;
-  default:
-    out = nano_unserialize(buf, olen);
-  }
-
-  R_Free(buf);
-
   return out;
 
 }
