@@ -65,8 +65,7 @@ static SEXP eval_safe (void *call) {
 
 static void rl_reset(void *data, Rboolean jump) {
   (void) data;
-  if (jump)
-    SET_TAG(nano_refHook, R_NilValue);
+  if (jump) SET_TAG(nano_refHook, R_NilValue);
 }
 
 static void nano_write_bytes(R_outpstream_t stream, void *src, int len) {
@@ -93,9 +92,7 @@ static void nano_write_bytes(R_outpstream_t stream, void *src, int len) {
 static void nano_read_bytes(R_inpstream_t stream, void *dst, int len) {
 
   nano_buf *buf = (nano_buf *) stream->data;
-  if (buf->cur + len > buf->len)
-    Rf_error("unserialization error");
-
+  if (buf->cur + len > buf->len) Rf_error("unserialization error");
   memcpy(dst, buf->buf + buf->cur, len);
   buf->cur += len;
 
@@ -104,9 +101,7 @@ static void nano_read_bytes(R_inpstream_t stream, void *dst, int len) {
 static int nano_read_char(R_inpstream_t stream) {
 
   nano_buf *buf = (nano_buf *) stream->data;
-  if (buf->cur >= buf->len)
-    Rf_error("unserialization error");
-
+  if (buf->cur >= buf->len) Rf_error("unserialization error");
   return buf->buf[buf->cur++];
 
 }
@@ -183,7 +178,6 @@ static SEXP nano_inHook(SEXP x, SEXP fun) {
 static SEXP nano_outHook(SEXP x, SEXP fun) {
 
   const long i = atol(CHAR(*(SEXP *) DATAPTR_RO(x))) - 1;
-
   return VECTOR_ELT(fun, i);
 
 }
