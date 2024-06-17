@@ -59,9 +59,8 @@
 <h5 id="updates-1-1-0-9000">Updates<a class="anchor" aria-label="anchor" href="#updates-1-1-0-9000"></a></h5>
 <ul><li>
 <code><a href="../reference/request.html">request()</a></code> specifying argument ‘cv’ other than NULL or a ‘conditionVariable’ will cause the pipe connection to be dropped when the reply is (asynchronously) completed.</li>
-<li>Deprecated functions <code>strcat()</code>, <code>recv_aio_signal()</code> and <code>request_signal()</code> are removed.</li>
-<li>
-<code><a href="../reference/base64enc.html">base64enc()</a></code> and <code><a href="../reference/base64enc.html">base64dec()</a></code> are deprecated in favour of those in the {secretbase} package.</li>
+<li>Removes deprecated functions <code>strcat()</code>, <code>recv_aio_signal()</code> and <code>request_signal()</code>.</li>
+<li>Removes <code>base64enc()</code> and <code>base64dec()</code> in favour of those in the {secretbase} package.</li>
 </ul></div>
 </div>
     <div class="section level2">
@@ -305,7 +304,7 @@
 <div class="section level5">
 <h5 id="new-features-0-9-2">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-9-2"></a></h5>
 <ul><li>
-<code><a href="../reference/base64enc.html">base64dec()</a></code> argument ‘convert’ now accepts NA as an input, which unserializes back to the original object.</li>
+<code>base64dec()</code> argument ‘convert’ now accepts NA as an input, which unserializes back to the original object.</li>
 </ul></div>
 <div class="section level5">
 <h5 id="updates-0-9-2">Updates<a class="anchor" aria-label="anchor" href="#updates-0-9-2"></a></h5>
@@ -345,7 +344,7 @@
 <ul><li>
 <code><a href="../reference/tls_config.html">tls_config()</a></code> now accepts a relative path if filenames are supplied for the ‘client’ or ‘server’ arguments.</li>
 <li>‘tlsConfig’ objects no longer have a ‘source’ attribute.</li>
-<li>Fix cases where <code><a href="../reference/base64enc.html">base64enc()</a></code> failed for objects exceeding a certain size.</li>
+<li>Fix cases where <code>base64enc()</code> failed for objects exceeding a certain size.</li>
 <li>
 <code><a href="../reference/stream.html">stream()</a></code> has been updated internally for additional robustness.</li>
 <li>Updates bundled ‘libmbedtls’ v3.4.0 source configuration for threading support.</li>
@@ -525,7 +524,7 @@
 </ul><p><em>Other changes:</em></p>
 <ul><li>Integer <code><a href="../reference/send.html">send()</a></code>/<code><a href="../reference/recv.html">recv()</a></code> arguments for ‘mode’ implemented in 0.5.3 are now documented and considered part of the API. This is a performance feature that skips matching the character argument value.</li>
 <li>Fixes bug introduced in 0.6.0 where Aios returning ‘errorValues’ are not cached with the class, returning only integer values when accessed subsequently.</li>
-<li>Fixes potential crash when <code><a href="../reference/base64enc.html">base64dec()</a></code> encounters invalid input data. Error messages have been revised to be more accurate.</li>
+<li>Fixes potential crash when <code>base64dec()</code> encounters invalid input data. Error messages have been revised to be more accurate.</li>
 <li>Fixes the <code>$</code> method for ‘recvAio’ objects for when the object has been stopped using <code><a href="../reference/stop_aio.html">stop_aio()</a></code>.</li>
 <li>Using the <code>$listen()</code> or <code>$dial()</code> methods of a nano object specifying ‘autostart = FALSE’ now attaches the <code>$listener_start()</code> or <code>$dialer_start()</code> method for the most recently added listener/dialer.</li>
 <li>
@@ -539,7 +538,7 @@
 <h2 class="pkg-version" data-toc-text="0.6.0" id="nanonext-060">nanonext 0.6.0<a class="anchor" aria-label="anchor" href="#nanonext-060"></a></h2><p class="text-muted">CRAN release: 2022-10-09</p>
 <div class="section level5">
 <h5 id="new-features-0-6-0">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-6-0"></a></h5>
-<ul><li>Implements <code><a href="../reference/base64enc.html">base64enc()</a></code> and <code><a href="../reference/base64enc.html">base64dec()</a></code> base64 encoding and decoding using the ‘Mbed TLS’ library.</li>
+<ul><li>Implements <code>base64enc()</code> and <code>base64dec()</code> base64 encoding and decoding using the ‘Mbed TLS’ library.</li>
 <li>
 <code>sha224()</code>, <code>sha256()</code>, <code>sha384()</code> and <code>sha512()</code> functions gain an argument ‘convert’ to control whether to return a raw vector or character string.</li>
 <li>
