@@ -247,6 +247,7 @@ nanotesti(next_config(nxt), nxt)
 nanotesti(next_config(as.pairlist(c("a", "b", "c"))), nxt)
 nanotest(is.list(next_config(NULL, mark = TRUE)))
 nanotestn(unlist(next_config()))
+nanotesterr(next_config(NULL, class = 1L), "must be a character string")
 
 nanotestaio(cs <- request(req$context, "test", send_mode = "next", cv = cv, timeout = 500))
 nanotestaio(set_promise_context(cs, environment()))
