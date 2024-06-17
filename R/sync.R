@@ -324,4 +324,4 @@ unlock <- function(socket) invisible(.Call(rnng_socket_unlock, socket))
 #' @export
 #'
 dispatcher_socket <- function(cv, n, host, url)
-  .Call(rnng_dispatcher, cv, n, host, url)
+  .Call(rnng_dispatcher_socket, cv, n, host, url)

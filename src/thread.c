@@ -467,7 +467,7 @@ static void rnng_dispatch_thread(void *args) {
       goto exitlevel1;
     nng_ctx_open(&rctx[i], hsock);
     nng_ctx_recv(rctx[i], haio[i].aio);
-    //Rprintf("allocated\n");
+    // nano_printf(1, "allocated\n");
   }
 
   int xc;
@@ -494,11 +494,11 @@ static void rnng_dispatch_thread(void *args) {
         if (xc) {
           raio[i].result = 0;
           saio[i].result = 0;
-          //Rprintf("received reply %d\n", i);
+          // nano_printf(1, "received reply %d\n", i);
           if (xc < 0) {
             nng_ctx_sendmsg(rctx[i], (nng_msg *) raio[i].data, 0);
           } else {
-            //Rprintf("received error %d\n", i);
+            // nano_printf(1, "received error %d\n", i);
             nng_msg_alloc(&msg, 0);
             nng_msg_append(msg, (unsigned char *) &xc, sizeof(int));
             xc = nng_ctx_sendmsg(rctx[i], msg, 0);
@@ -508,10 +508,10 @@ static void rnng_dispatch_thread(void *args) {
           nng_ctx_close(ctx[i]);
           nng_ctx_close(rctx[i]);
           busy[i] = 0;
-          //Rprintf("processed reply %d\n", i);
+          // nano_printf(1, "processed reply %d\n", i);
           nng_ctx_open(&rctx[i], hsock);
           nng_ctx_recv(rctx[i], haio[i].aio);
-          //Rprintf("allocated %d\n", i);
+          // nano_printf(1, "allocated %d\n", i);
           break;
         }
       }
@@ -524,12 +524,12 @@ static void rnng_dispatch_thread(void *args) {
           haio[i].result = 0;
           if (xc < 0) {
             busy[i] = 1;
-            //Rprintf("prep for send %d\n", i);
+            // nano_printf(1, "prep for send %d\n", i);
             nng_ctx_open(&ctx[i], sock[i]);
             nng_aio_set_msg(saio[i].aio, haio[i].data);
             nng_ctx_send(ctx[i], saio[i].aio);
             nng_ctx_recv(ctx[i], raio[i].aio);
-            //Rprintf("sent %d\n", i);
+            // nano_printf(1, "sent %d\n", i);
           } else {
             nng_msg_alloc(&msg, 0);
             nng_msg_append(msg, (unsigned char *) &xc, sizeof(int));
@@ -537,10 +537,10 @@ static void rnng_dispatch_thread(void *args) {
             if (xc)
               nng_msg_free(msg);
             nng_ctx_close(rctx[i]);
-            //Rprintf("send error resetting %d\n", i);
+            // nano_printf(1, "send error resetting %d\n", i);
             nng_ctx_open(&rctx[i], hsock);
             nng_ctx_recv(rctx[i], haio[i].aio);
-            //Rprintf("allocated %d\n", i);
+            // nano_printf(1, "allocated %d\n", i);
           }
           break;
         }
@@ -554,12 +554,11 @@ static void rnng_dispatch_thread(void *args) {
   for (int i = 0; i < n; i++)
     nng_close(sock[i]);
   nng_close(hsock);
-  //Rprintf("Dispatcher thread halted\n");
+  // nano_printf(1, "Dispatcher thread halted\n");
 
 }
 
-
-SEXP rnng_dispatcher(SEXP cv, SEXP n, SEXP host, SEXP url) {
+SEXP rnng_dispatcher_socket(SEXP cv, SEXP n, SEXP host, SEXP url) {
 
   if (R_ExternalPtrTag(cv) != nano_CvSymbol)
     Rf_error("'cv' is not a valid Condition Variable");
