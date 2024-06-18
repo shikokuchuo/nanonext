@@ -42,7 +42,6 @@ SEXP nano_TlsSymbol;
 SEXP nano_UrlSymbol;
 SEXP nano_ValueSymbol;
 
-SEXP nano_aioFormals;
 SEXP nano_aioFuncMsg;
 SEXP nano_aioFuncRes;
 SEXP nano_aioNFuncs;
@@ -95,7 +94,6 @@ static void RegisterSymbols(void) {
 }
 
 static void PreserveObjects(void) {
-  R_PreserveObject(nano_aioFormals = Rf_cons(nano_AioSymbol, R_NilValue));
   R_PreserveObject(nano_aioFuncMsg = Rf_lang3(nano_DotcallSymbol, Rf_install("rnng_aio_get_msg"), nano_DataSymbol));
   R_PreserveObject(nano_aioFuncRes = Rf_lang3(nano_DotcallSymbol, Rf_install("rnng_aio_result"), nano_DataSymbol));
   R_PreserveObject(nano_aioNFuncs = Rf_allocVector(LISTSXP, 3));
@@ -132,7 +130,6 @@ static void ReleaseObjects(void) {
   R_ReleaseObject(nano_aioNFuncs);
   R_ReleaseObject(nano_aioFuncRes);
   R_ReleaseObject(nano_aioFuncMsg);
-  R_ReleaseObject(nano_aioFormals);
 }
 // # nocov end
 

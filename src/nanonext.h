@@ -299,7 +299,6 @@ extern SEXP nano_TlsSymbol;
 extern SEXP nano_UrlSymbol;
 extern SEXP nano_ValueSymbol;
 
-extern SEXP nano_aioFormals;
 extern SEXP nano_aioFuncMsg;
 extern SEXP nano_aioFuncRes;
 extern SEXP nano_aioNFuncs;
