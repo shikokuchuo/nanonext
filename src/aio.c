@@ -278,7 +278,9 @@ static void request_complete_signal(void *arg) {
 static void haio_invoke_cb(void *arg) {
 
   SEXP call, context, status, ctx = TAG((SEXP) arg);
-  PROTECT(context = Rf_findVarInFrame(ctx, nano_ContextSymbol));
+  context = Rf_findVarInFrame(ctx, nano_ContextSymbol);
+  if (context == R_UnboundValue) return;
+  PROTECT(context);
   status = rnng_aio_http_status(context);
   PROTECT(call = Rf_lcons(nano_ResolveSymbol, Rf_cons(status, R_NilValue)));
   Rf_eval(call, ctx);
