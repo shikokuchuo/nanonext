@@ -144,7 +144,7 @@ SEXP rawToChar(const unsigned char *buf, const size_t sz) {
 
 static SEXP nano_inHook(SEXP x, SEXP fun) {
 
-  if (!Rf_inherits(x, CHAR(*(SEXP *) DATAPTR_RO(fun))))
+  if (!Rf_inherits(x, CHAR(fun)))
     return R_NilValue;
 
   SEXP newlist, list, newnames, names, out;
@@ -1588,7 +1588,7 @@ SEXP rnng_next_config(SEXP refhook, SEXP klass, SEXP list, SEXP mark) {
 
     SETCAR(nano_refHook, plist ? CAR(refhook) : VECTOR_ELT(refhook, 0));
     SETCADR(nano_refHook, plist ? CADR(refhook) : VECTOR_ELT(refhook, 1));
-    SETCAR(nano_klassString, klass);
+    SETCAR(nano_klassString, STRING_ELT(klass, 0));
 
     registered = *NANO_INTEGER(list) ? 1 : 2;
 
