@@ -21,6 +21,20 @@
 #define NANONEXT_SIGNALS
 #include "nanonext.h"
 
+// R backports -----------------------------------------------------------------
+
+#if R_VERSION < R_Version(4, 5, 0)
+
+static inline SEXP R_mkClosure(SEXP formals, SEXP body, SEXP env) {
+  SEXP fun = Rf_allocSExp(CLOSXP);
+  SET_FORMALS(fun, formals);
+  SET_BODY(fun, body);
+  SET_CLOENV(fun, env);
+  return fun;
+}
+
+#endif
+
 // internals -------------------------------------------------------------------
 
 typedef struct nano_cv_duo_s {
@@ -786,10 +800,7 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
   Rf_classgets(env, Rf_mkString("sendAio"));
   Rf_defineVar(nano_AioSymbol, aio, env);
 
-  PROTECT(fun = Rf_allocSExp(CLOSXP));
-  SET_FORMALS(fun, nano_aioFormals);
-  SET_BODY(fun, nano_aioFuncRes);
-  SET_CLOENV(fun, clo);
+  PROTECT(fun = R_mkClosure(nano_aioFormals, nano_aioFuncRes, clo));
   R_MakeActiveBinding(nano_ResultSymbol, fun, env);
 
   UNPROTECT(3);
@@ -870,10 +881,7 @@ SEXP rnng_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP cvar, SEXP bytes, SEX
   Rf_classgets(env, nano_recvAio);
   Rf_defineVar(nano_AioSymbol, aio, env);
 
-  PROTECT(fun = Rf_allocSExp(CLOSXP));
-  SET_FORMALS(fun, nano_aioFormals);
-  SET_BODY(fun, nano_aioFuncMsg);
-  SET_CLOENV(fun, clo);
+  PROTECT(fun = R_mkClosure(nano_aioFormals, nano_aioFuncMsg, clo));
   R_MakeActiveBinding(nano_DataSymbol, fun, env);
 
   UNPROTECT(3);
@@ -979,10 +987,7 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP dat
 
   int i = 0;
   for (SEXP fnlist = nano_aioNFuncs; fnlist != R_NilValue; fnlist = CDR(fnlist)) {
-    PROTECT(fun = Rf_allocSExp(CLOSXP));
-    SET_FORMALS(fun, nano_aioFormals);
-    SET_BODY(fun, CAR(fnlist));
-    SET_CLOENV(fun, clo);
+    PROTECT(fun = R_mkClosure(nano_aioFormals, CAR(fnlist), clo));
     switch (++i) {
     case 1: R_MakeActiveBinding(nano_StatusSymbol, fun, env);
     case 2: R_MakeActiveBinding(nano_HeadersSymbol, fun, env);
@@ -1364,10 +1369,7 @@ SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeou
   Rf_classgets(env, nano_reqAio);
   Rf_defineVar(nano_AioSymbol, aio, env);
 
-  PROTECT(fun = Rf_allocSExp(CLOSXP));
-  SET_FORMALS(fun, nano_aioFormals);
-  SET_BODY(fun, nano_aioFuncMsg);
-  SET_CLOENV(fun, clo);
+  PROTECT(fun = R_mkClosure(nano_aioFormals, nano_aioFuncMsg, clo));
   R_MakeActiveBinding(nano_DataSymbol, fun, env);
 
   UNPROTECT(3);

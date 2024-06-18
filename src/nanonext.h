@@ -151,6 +151,7 @@ typedef struct nano_cv_s {
 #define STRICT_R_HEADERS
 #include <R.h>
 #include <Rinternals.h>
+#include <Rversion.h>
 #include <R_ext/Visibility.h>
 
 #define ERROR_OUT(xc) Rf_error("%d | %s", xc, nng_strerror(xc))
