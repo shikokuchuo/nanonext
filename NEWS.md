@@ -1,4 +1,8 @@
-# nanonext 1.1.0.9000 (development)
+# nanonext 1.1.0.9001 (development)
+
+#### New Features
+
+* New `[` method for `recvAio`, `sendAio` and `ncurlAio` objects equivalent to `collect_aio_()`, which waits for and collects the data of an Aio `x` using `x[]`.
 
 #### Updates
 

@@ -424,11 +424,19 @@ print.tlsConfig <- function(x, ...) {
 
 #' @export
 #'
+`[.recvAio` <- function(x, i) collect_aio_(x)
+
+#' @export
+#'
 `$<-.recvAio` <- function(x, name, value) x
 
 #' @export
 #'
 `[[<-.recvAio` <- function(x, i, value) x
+
+#' @export
+#'
+`[.sendAio` <- function(x, i) collect_aio_(x)
 
 #' @export
 #'
