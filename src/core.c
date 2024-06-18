@@ -144,7 +144,7 @@ SEXP rawToChar(const unsigned char *buf, const size_t sz) {
 
 static SEXP nano_inHook(SEXP x, SEXP fun) {
 
-  if (!Rf_inherits(x, CHAR(STRING_ELT(fun, 0))))
+  if (!Rf_inherits(x, CHAR(*(SEXP *) DATAPTR_RO(fun))))
     return R_NilValue;
 
   SEXP newlist, list, newnames, names, out;
