@@ -11,6 +11,7 @@ nanotestp <- function(x) invisible(is.character(capture.output(print(x))) || sto
 nanotestxp <- function(x) invisible(typeof(x) == "externalptr" || stop("is not of type 'externalptr' as expected"))
 nanotesterr <- function(x, e = "")
   invisible(grepl(e, tryCatch(x, error = identity)[["message"]], fixed = TRUE) || stop("expected error message '", e, "' not generated"))
+later <- requireNamespace("later", quietly = TRUE)
 
 nng_version()
 nanotestnano(n <- nano("req", listen = "inproc://nanonext", autostart = FALSE))
@@ -250,7 +251,7 @@ nanotestn(unlist(next_config()))
 nanotesterr(next_config(NULL, class = 1L), "must be a character string")
 
 nanotestaio(cs <- request(req$context, "test", send_mode = "next", cv = cv, timeout = 500))
-# nanotestaio(set_promise_context(cs, environment()))
+if (later) nanotestaio(set_promise_context(cs, environment()))
 nanotestnn(cs$data)
 nanotest(typeof(ctxn <- .context(rep)) == "externalptr")
 nanotestaio(cr <- recv_aio(ctxn, cv = cv, timeout = 500))
@@ -531,7 +532,7 @@ nanotesterr(collect_aio_(list("a")), "object is not an Aio or list of Aios")
 nanotesterr(collect_aio(list(fakesock)), "object is not an Aio or list of Aios")
 nanotestn(stop_aio("a"))
 nanotestn(stop_aio(list("a")))
-# nanotest(is.environment(set_promise_context(new.env(), new.env())))
+if (later) nanotest(is.environment(set_promise_context(new.env(), new.env())))
 
 pem <- "-----BEGIN CERTIFICATE----- -----END CERTIFICATE-----"
 test_tls <- function(pem) {
