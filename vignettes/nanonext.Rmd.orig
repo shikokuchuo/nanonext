@@ -1,6 +1,5 @@
 ---
 title: "nanonext - NNG Lightweight Messaging Library"
-output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{nanonext - NNG Lightweight Messaging Library}
   %\VignetteEngine{knitr::knitr}
