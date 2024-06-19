@@ -328,7 +328,7 @@ SEXP rnng_wait_thread_create(SEXP x) {
 
     const R_xlen_t xlen = Rf_xlength(x);
     for (R_xlen_t i = 0; i < xlen; i++) {
-      rnng_wait_thread_create(VECTOR_ELT(x, i));
+      rnng_wait_thread_create(R_VECTOR(x)[i]);
     }
 
   }

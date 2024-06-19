@@ -558,7 +558,7 @@ SEXP rnng_aio_call(SEXP x) {
   case VECSXP: ;
     const R_xlen_t xlen = Rf_xlength(x);
     for (R_xlen_t i = 0; i < xlen; i++) {
-      rnng_aio_call(VECTOR_ELT(x, i));
+      rnng_aio_call(R_VECTOR(x)[i]);
     }
     break;
   }
@@ -581,7 +581,7 @@ static SEXP rnng_aio_collect_impl(SEXP x, SEXP (*const func)(SEXP)) {
     const R_xlen_t xlen = Rf_xlength(x);
     PROTECT(out = Rf_allocVector(VECSXP, xlen));
     for (R_xlen_t i = 0; i < xlen; i++) {
-      env = func(VECTOR_ELT(x, i));
+      env = func(R_VECTOR(x)[i]);
       if (TYPEOF(env) != ENVSXP) goto exit;
       env = Rf_findVarInFrame(env, nano_ValueSymbol);
       if (env == R_UnboundValue) goto exit;
@@ -624,7 +624,7 @@ SEXP rnng_aio_stop(SEXP x) {
   case VECSXP: ;
     const R_xlen_t xlen = Rf_xlength(x);
     for (R_xlen_t i = 0; i < xlen; i++) {
-      rnng_aio_stop(VECTOR_ELT(x, i));
+      rnng_aio_stop(R_VECTOR(x)[i]);
     }
     break;
   }
@@ -678,7 +678,7 @@ SEXP rnng_unresolved(SEXP x) {
   case VECSXP: ;
     const R_xlen_t xlen = Rf_xlength(x);
     for (R_xlen_t i = 0; i < xlen; i++) {
-      if (rnng_unresolved_impl(VECTOR_ELT(x, i)))
+      if (rnng_unresolved_impl(R_VECTOR(x)[i]))
         return Rf_ScalarLogical(1);
     }
   }
@@ -710,7 +710,7 @@ SEXP rnng_unresolved2(SEXP x) {
     int xc = 0;
     const R_xlen_t xlen = Rf_xlength(x);
     for (R_xlen_t i = 0; i < xlen; i++) {
-      xc += rnng_unresolved2_impl(VECTOR_ELT(x, i));
+      xc += rnng_unresolved2_impl(R_VECTOR(x)[i]);
     }
     return Rf_ScalarInteger(xc);
   }

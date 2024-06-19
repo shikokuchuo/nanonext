@@ -161,7 +161,7 @@ static SEXP nano_inHook(SEXP x, SEXP fun) {
   PROTECT(newlist = Rf_allocVector(VECSXP, xlen + 1));
   PROTECT(newnames = Rf_allocVector(STRSXP, xlen + 1));
   for (R_xlen_t i = 0; i < xlen; i++) {
-    SET_VECTOR_ELT(newlist, i, VECTOR_ELT(list, i));
+    SET_VECTOR_ELT(newlist, i, R_VECTOR(list)[i]);
     SET_STRING_ELT(newnames, i, STRING_ELT(names, i));
   }
   SET_VECTOR_ELT(newlist, xlen, x);
@@ -178,7 +178,7 @@ static SEXP nano_inHook(SEXP x, SEXP fun) {
 static SEXP nano_outHook(SEXP x, SEXP fun) {
 
   const long i = atol(CHAR(*(SEXP *) DATAPTR_RO(x))) - 1;
-  return VECTOR_ELT(fun, i);
+  return R_VECTOR(fun)[i];
 
 }
 
@@ -269,7 +269,7 @@ void nano_serialize_next(nano_buf *buf, const SEXP object) {
       buf->cur += sizeof(R_xlen_t);
 
       for (R_xlen_t i = 0; i < llen; i++) {
-        PROTECT(call = Rf_lcons(func, Rf_cons(VECTOR_ELT(refList, i), R_NilValue)));
+        PROTECT(call = Rf_lcons(func, Rf_cons(R_VECTOR(refList)[i], R_NilValue)));
         PROTECT(out = R_UnwindProtect(eval_safe, call, rl_reset, NULL, NULL));
         if (TYPEOF(out) == RAWSXP) {
           R_xlen_t xlen = XLENGTH(out);
@@ -1571,8 +1571,8 @@ SEXP rnng_next_config(SEXP refhook, SEXP klass, SEXP list, SEXP mark) {
   case VECSXP:
     if (Rf_xlength(refhook) != 2)
       return nano_refHook;
-    typ1 = TYPEOF(VECTOR_ELT(refhook, 0));
-    typ2 = TYPEOF(VECTOR_ELT(refhook, 1));
+    typ1 = TYPEOF(R_VECTOR(refhook)[0]);
+    typ2 = TYPEOF(R_VECTOR(refhook)[1]);
     plist = 0;
     break;
   case NILSXP:
@@ -1586,8 +1586,8 @@ SEXP rnng_next_config(SEXP refhook, SEXP klass, SEXP list, SEXP mark) {
   if ((typ1 == CLOSXP || typ1 == SPECIALSXP || typ1 == BUILTINSXP) &&
       (typ2 == CLOSXP || typ2 == SPECIALSXP || typ2 == BUILTINSXP)) {
 
-    SETCAR(nano_refHook, plist ? CAR(refhook) : VECTOR_ELT(refhook, 0));
-    SETCADR(nano_refHook, plist ? CADR(refhook) : VECTOR_ELT(refhook, 1));
+    SETCAR(nano_refHook, plist ? CAR(refhook) : R_VECTOR(refhook)[0]);
+    SETCADR(nano_refHook, plist ? CADR(refhook) : R_VECTOR(refhook)[1]);
     SETCAR(nano_klassString, STRING_ELT(klass, 0));
 
     registered = *NANO_INTEGER(list) ? 1 : 2;

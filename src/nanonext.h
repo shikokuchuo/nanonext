@@ -154,6 +154,8 @@ typedef struct nano_cv_s {
 #include <Rversion.h>
 #include <R_ext/Visibility.h>
 
+#define R_VECTOR(x) ((const SEXP *) DATAPTR_RO(x))
+
 #define ERROR_OUT(xc) Rf_error("%d | %s", xc, nng_strerror(xc))
 #define ERROR_RET(xc) { Rf_warning("%d | %s", xc, nng_strerror(xc)); return mk_error(xc); }
 #define NANONEXT_INIT_BUFSIZE 8192
