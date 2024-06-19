@@ -9,7 +9,6 @@
 * `request()` specifying argument 'cv' other than NULL or a 'conditionVariable' will cause the pipe connection to be dropped when the reply is (asynchronously) completed. 
 * Removes deprecated functions `strcat()`, `recv_aio_signal()` and `request_signal()`.
 * Removes `base64enc()` and `base64dec()` in favour of those in the {secretbase} package.
-* Later is moved to a 'suggests' dependency (required only for promises).
 
 # nanonext 1.1.0
 
