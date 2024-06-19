@@ -92,6 +92,8 @@ collect_aio_ is a variant that allows user interrupts, suitable for
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>This function will wait for the asynchronous operation(s) to
     complete if still in progress (blocking).</p>
+<p>Using <code>x[]</code> on an Aio <code>x</code> is equivalent to the
+    user-interruptible <code>collect_aio_(x)</code>.</p>
     </div>
 
     <div class="section level2">
@@ -105,6 +107,10 @@ collect_aio_ is a variant that allows user interrupts, suitable for
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">msg</span> <span class="op">&lt;-</span> <span class="fu"><a href="recv_aio.html">recv_aio</a></span><span class="op">(</span><span class="va">s2</span>, timeout <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">collect_aio_</span><span class="op">(</span><span class="va">msg</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   a b</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 1 2</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">msg</span><span class="op">[</span><span class="op">]</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   a b</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1 1 2</span>
 <span class="r-in"><span></span></span>
