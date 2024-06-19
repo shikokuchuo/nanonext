@@ -27,6 +27,9 @@ Depending on the type of \sQuote{x} supplied, an object or list of
 \details{
 This function will wait for the asynchronous operation(s) to
     complete if still in progress (blocking).
+
+    Using \code{x[]} on an Aio \code{x} is equivalent to the
+    user-interruptible \code{collect_aio_(x)}.
 }
 \examples{
 s1 <- socket("pair", listen = "inproc://nanonext")
@@ -37,6 +40,8 @@ collect_aio(res)
 
 msg <- recv_aio(s2, timeout = 100)
 collect_aio_(msg)
+
+msg[]
 
 close(s1)
 close(s2)

@@ -2,7 +2,7 @@
 
 #### New Features
 
-* New `[` method for `recvAio`, `sendAio` and `ncurlAio` objects equivalent to `collect_aio_()`, which waits for and collects the data of an Aio `x` using `x[]`.
+* The method `x[]` for an Aio `x` is a new equivalent to `collect_aio_(x)`, which waits for and collects the data.
 
 #### Updates
 

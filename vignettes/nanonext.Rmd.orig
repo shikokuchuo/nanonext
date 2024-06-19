@@ -147,6 +147,9 @@ call_aio(msg)$data
 # or directly:
 collect_aio(msg)
 
+# or user-interruptible:
+msg[]
+
 close(s1)
 close(s2)
 
