@@ -1397,7 +1397,7 @@ SEXP rnng_set_promise_context(SEXP x, SEXP ctx) {
   nano_aio *raio = (nano_aio *) R_ExternalPtrAddr(aio);
 
   if (eln2 == eln2dummy) {
-    Rf_eval(nano_onLoad, R_GlobalEnv);
+    Rf_eval(nano_loadLater, R_GlobalEnv);
     eln2 = (void (*)(void (*)(void *), void *, double, int)) R_GetCCallable("later", "execLaterNative2");
   }
 
