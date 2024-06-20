@@ -108,6 +108,18 @@ ncurl <- function(url,
 #'     save as a file).
 #'     }
 #'
+#' @section Promises:
+#'
+#'     \sQuote{ncurlAio} may be used anywhere that accepts a \sQuote{promise}
+#'     from the \CRANpkg{promises} package through the included
+#'     \code{as.promise} method.
+#'
+#'     The promises created are completely event-driven and non-polling.
+#'
+#'     If a status code of 200 (OK) is returned then the promise is resolved
+#'     with the reponse body, otherwise it is rejected with a translation of the
+#'     status code or \sQuote{errorValue} as the case may be.
+#'
 #' @seealso \code{\link{ncurl_session}} for persistent connections.
 #' @examples
 #' nc <- ncurl_aio("https://www.r-project.org/",
@@ -117,6 +129,17 @@ ncurl <- function(url,
 #' nc$status
 #' nc$headers
 #' nc$data
+#'
+#' if (interactive() && requireNamespace("promises", quietly = TRUE)) {
+#' library(promises)
+#'
+#' p <- as.promise(ncurl_aio("https://www.cam.ac.uk/"))
+#' print(p)
+#'
+#' p2 <- ncurl_aio("https://postman-echo.com/get") %...>% identity()
+#' p2$then(cat)
+#' is.promise(p2)
+#' }
 #'
 #' @export
 #'
@@ -189,3 +212,59 @@ transact <- function(session) .Call(rnng_ncurl_transact, session)
 #' @export
 #'
 close.ncurlSession <- function(con, ...) invisible(.Call(rnng_ncurl_session_close, con))
+
+#' Make ncurl Promise
+#'
+#' Creates a \sQuote{promise} from an \sQuote{ncurlAio} object.
+#'
+#' @param x an object of class \sQuote{ncurlAio}.
+#'
+#' @return A \sQuote{promise} object.
+#'
+#' @details This function is an S3 method for the generic \code{as.promise} for
+#'     class \sQuote{ncurlAio}.
+#'
+#'     Requires the \CRANpkg{promises} package.
+#'
+#'     Allows an \sQuote{ncurlAio} to be used with the promise pipe
+#'     \code{\%...>\%}, which schedules a function to run upon resolution of the
+#'     Aio.
+#'
+#' @exportS3Method promises::as.promise
+#'
+as.promise.ncurlAio <- function(x) {
+
+  promise <- .subset2(x, "promise")
+
+  if (is.null(promise)) {
+
+    if (unresolved(x)) {
+      promise <- promises::then(
+        promises::promise(
+          function(resolve, reject)
+            context <- set_promise_context(x, environment())
+        ),
+        onFulfilled = function(value)
+          if (value != 200L)
+            stop(if (value < 100) nng_error(value) else status_code(value)) else
+              .subset2(x, "value")
+      )
+    } else {
+      value <- .subset2(x, "result")
+      promise <- if (value != 200L)
+        promises::promise_reject(if (value < 100) nng_error(value) else status_code(value)) else
+          promises::promise_resolve(.subset2(x, "value"))
+    }
+
+    assign("promise", promise, x)
+
+  }
+
+  promise
+
+}
+
+#' @exportS3Method promises::is.promising
+#'
+is.promising.ncurlAio <- function(x) TRUE
+
