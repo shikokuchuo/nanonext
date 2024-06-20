@@ -305,7 +305,6 @@ extern SEXP nano_aioFuncRes;
 extern SEXP nano_aioNFuncs;
 extern SEXP nano_error;
 extern SEXP nano_klassString;
-extern SEXP nano_loadLater;
 extern SEXP nano_precious;
 extern SEXP nano_recvAio;
 extern SEXP nano_reqAio;
