@@ -1399,7 +1399,7 @@ SEXP rnng_set_promise_context(SEXP x, SEXP ctx) {
   if (eln2 == eln2dummy) {
     SEXP str, call;
     PROTECT(str = Rf_mkString("later"));
-    PROTECT(call = Rf_lang4(Rf_install("library.dynam"), str, str, R_NilValue));
+    PROTECT(call = Rf_lcons(Rf_install("requireNamespace"), Rf_cons(str, R_NilValue)));
     Rf_eval(call, R_GlobalEnv);
     UNPROTECT(2);
     eln2 = (void (*)(void (*)(void *), void *, double, int)) R_GetCCallable("later", "execLaterNative2");
