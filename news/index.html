@@ -58,16 +58,18 @@
 <div class="section level5">
 <h5 id="new-features-1-1-0-9004">New Features<a class="anchor" aria-label="anchor" href="#new-features-1-1-0-9004"></a></h5>
 <ul><li>Adds ‘ncurlAio’ method for <code><a href="https://rstudio.github.io/promises/reference/is.promise.html" class="external-link">promises::as.promise()</a></code> and <code><a href="https://rstudio.github.io/promises/reference/is.promise.html" class="external-link">promises::is.promising()</a></code> to enable ‘ncurlAio’ promises.</li>
-<li>Adds method <code>x[]</code> for an Aio <code>x</code> as a new equivalent to <code>collect_aio_(x)</code>, which waits for and collects the data.</li>
+<li>Adds <code>x[]</code> as a new method for an Aio <code>x</code> equivalent to <code>collect_aio_(x)</code>, which waits for and collects the data.</li>
 </ul></div>
 <div class="section level5">
 <h5 id="updates-1-1-0-9004">Updates<a class="anchor" aria-label="anchor" href="#updates-1-1-0-9004"></a></h5>
 <ul><li>
 <code><a href="../reference/request.html">request()</a></code> specifying argument ‘cv’ other than NULL or a ‘conditionVariable’ will cause the pipe connection to be dropped when the reply is (asynchronously) completed.</li>
 <li>Removes deprecated functions <code>strcat()</code>, <code>recv_aio_signal()</code> and <code>request_signal()</code>.</li>
-<li>Removes <code>base64enc()</code> and <code>base64dec()</code> in favour of those in the {secretbase} package.</li>
+<li>Drops <code>base64enc()</code> and <code>base64dec()</code> in favour of those from the {secretbase} package.</li>
 <li>
-<code>later</code> is now a ‘suggests’ dependency (only required if using promises).</li>
+<code>later</code> is now relaxed to a soft ‘suggests’ dependency (only required if using promises).</li>
+<li>
+<code>promises</code> is added as a soft ‘enhances’ dependency.</li>
 </ul></div>
 </div>
     <div class="section level2">
