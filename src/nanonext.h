@@ -192,7 +192,6 @@ void eln2dummy(void (*)(void *), void *, double, int);
 SEXP nano_PreserveObject(SEXP);
 void nano_ReleaseObject(SEXP);
 SEXP mk_error(const int);
-SEXP mk_error_ncurl(const int);
 nano_buf nano_char_buf(const SEXP);
 SEXP nano_decode(unsigned char *, const size_t, const int);
 void nano_encode(nano_buf *, const SEXP);
@@ -309,6 +308,7 @@ extern SEXP nano_precious;
 extern SEXP nano_recvAio;
 extern SEXP nano_reqAio;
 extern SEXP nano_refHook;
+extern SEXP nano_sendAio;
 extern SEXP nano_success;
 extern SEXP nano_unresolved;
 

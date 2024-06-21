@@ -23,21 +23,17 @@
 
 // internals -------------------------------------------------------------------
 
-SEXP mk_error_ncurl(const int xc) {
+static SEXP mk_error_ncurl(const int xc) {
 
-  SEXP env;
-  PROTECT(env = Rf_allocSExp(ENVSXP));
-  NANO_CLASS2(env, "ncurlAio", "recvAio");
-  SEXP err = PROTECT(Rf_ScalarInteger(xc));
+  const char *names[] = {"status", "headers", "data", ""};
+  SEXP out = PROTECT(Rf_mkNamed(VECSXP, names));
+  SEXP err = Rf_ScalarInteger(xc);
   Rf_classgets(err, nano_error);
-  Rf_defineVar(nano_ResultSymbol, err, env);
-  Rf_defineVar(nano_StatusSymbol, err, env);
-  Rf_defineVar(nano_ProtocolSymbol, err, env);
-  Rf_defineVar(nano_HeadersSymbol, err, env);
-  Rf_defineVar(nano_ValueSymbol, err, env);
-  Rf_defineVar(nano_DataSymbol, err, env);
-  UNPROTECT(2);
-  return env;
+  SET_VECTOR_ELT(out, 0, err);
+  SET_VECTOR_ELT(out, 1, err);
+  SET_VECTOR_ELT(out, 2, err);
+  UNPROTECT(1);
+  return out;
 
 }
 

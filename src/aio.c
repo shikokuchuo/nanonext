@@ -50,19 +50,6 @@ typedef struct nano_handle_s {
   nng_tls_config *cfg;
 } nano_handle;
 
-static SEXP mk_error_data(const int xc) {
-
-  const char *names[] = {xc < 0 ? "result" : "data", "value", ""};
-  SEXP out = PROTECT(Rf_mkNamed(VECSXP, names));
-  SEXP err = Rf_ScalarInteger(abs(xc));
-  Rf_classgets(err, nano_error);
-  SET_VECTOR_ELT(out, 0, err);
-  SET_VECTOR_ELT(out, 1, err);
-  UNPROTECT(1);
-  return out;
-
-}
-
 static SEXP mk_error_aio(const int xc, SEXP env) {
 
   SEXP err = PROTECT(Rf_ScalarInteger(xc));
@@ -71,6 +58,20 @@ static SEXP mk_error_aio(const int xc, SEXP env) {
   Rf_defineVar(nano_AioSymbol, R_NilValue, env);
   UNPROTECT(1);
   return err;
+
+}
+
+static SEXP mk_error_data(const int xc) {
+
+  SEXP env, err;
+  PROTECT(env = Rf_allocSExp(ENVSXP));
+  Rf_classgets(env, xc < 0 ? nano_sendAio : nano_recvAio);
+  PROTECT(err = Rf_ScalarInteger(abs(xc)));
+  Rf_classgets(err, nano_error);
+  Rf_defineVar(nano_ValueSymbol, err, env);
+  Rf_defineVar(xc < 0 ? nano_ResultSymbol : nano_DataSymbol, err, env);
+  UNPROTECT(2);
+  return env;
 
 }
 
@@ -84,6 +85,24 @@ static SEXP mk_error_haio(const int xc, SEXP env) {
   Rf_defineVar(nano_AioSymbol, R_NilValue, env);
   UNPROTECT(1);
   return err;
+
+}
+
+static SEXP mk_error_ncurl(const int xc) {
+
+  SEXP env, err;
+  PROTECT(env = Rf_allocSExp(ENVSXP));
+  NANO_CLASS2(env, "ncurlAio", "recvAio");
+  PROTECT(err = Rf_ScalarInteger(xc));
+  Rf_classgets(err, nano_error);
+  Rf_defineVar(nano_ResultSymbol, err, env);
+  Rf_defineVar(nano_StatusSymbol, err, env);
+  Rf_defineVar(nano_ProtocolSymbol, err, env);
+  Rf_defineVar(nano_HeadersSymbol, err, env);
+  Rf_defineVar(nano_ValueSymbol, err, env);
+  Rf_defineVar(nano_DataSymbol, err, env);
+  UNPROTECT(2);
+  return env;
 
 }
 
@@ -797,7 +816,7 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
 
   SEXP env, fun;
   PROTECT(env = Rf_allocSExp(ENVSXP));
-  Rf_classgets(env, Rf_mkString("sendAio"));
+  Rf_classgets(env, nano_sendAio);
   Rf_defineVar(nano_AioSymbol, aio, env);
 
   PROTECT(fun = R_mkClosure(R_NilValue, nano_aioFuncRes, clo));

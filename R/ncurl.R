@@ -266,4 +266,3 @@ as.promise.ncurlAio <- function(x) {
 #' @exportS3Method promises::is.promising
 #'
 is.promising.ncurlAio <- function(x) TRUE
-
