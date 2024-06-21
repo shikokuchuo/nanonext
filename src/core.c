@@ -24,15 +24,6 @@
 static uint8_t special_bit = 0;
 static uint8_t registered = 0;
 
-typedef union nano_opt_u {
-  char *str;
-  bool b;
-  nng_duration d;
-  int i;
-  size_t s;
-  uint64_t u;
-} nano_opt;
-
 SEXP nano_PreserveObject(SEXP x) {
 
   SEXP node = Rf_cons(nano_precious, CDR(nano_precious));

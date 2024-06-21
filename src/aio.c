@@ -16,7 +16,6 @@
 
 // nanonext - C level - Async Functions ----------------------------------------
 
-#define NANONEXT_HTTP
 #define NANONEXT_SUPPLEMENTALS
 #define NANONEXT_SIGNALS
 #include "nanonext.h"
@@ -36,19 +35,6 @@ static inline SEXP R_mkClosure(SEXP formals, SEXP body, SEXP env) {
 #endif
 
 // internals -------------------------------------------------------------------
-
-typedef struct nano_cv_duo_s {
-  nano_cv *cv;
-  nano_cv *cv2;
-} nano_cv_duo;
-
-typedef struct nano_handle_s {
-  nng_url *url;
-  nng_http_client *cli;
-  nng_http_req *req;
-  nng_http_res *res;
-  nng_tls_config *cfg;
-} nano_handle;
 
 static SEXP mk_error_aio(const int xc, SEXP env) {
 
@@ -88,7 +74,7 @@ static SEXP mk_error_haio(const int xc, SEXP env) {
 
 }
 
-static SEXP mk_error_ncurl(const int xc) {
+static SEXP mk_error_ncurlaio(const int xc) {
 
   SEXP env, err;
   PROTECT(env = Rf_allocSExp(ENVSXP));
@@ -1033,7 +1019,7 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP dat
   exitlevel1:
   R_Free(handle);
   R_Free(haio);
-  return mk_error_ncurl(xc);
+  return mk_error_ncurlaio(xc);
 
 }
 
@@ -1259,7 +1245,7 @@ SEXP rnng_ncurl_transact(SEXP session) {
   nng_http_conn_transact(conn, handle->req, handle->res, haio->aio);
   nng_aio_wait(haio->aio);
   if (haio->result > 0)
-    return mk_error_ncurl(haio->result);
+    return mk_error_ncurlaio(haio->result);
 
   SEXP out, vec, rvec, response;
   void *dat;

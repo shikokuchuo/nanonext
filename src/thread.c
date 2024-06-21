@@ -21,20 +21,6 @@
 #define NANONEXT_IO
 #include "nanonext.h"
 
-// internals -------------------------------------------------------------------
-
-typedef struct nano_thread_aio_s {
-  nng_thread *thr;
-  nano_cv *cv;
-  nng_aio *aio;
-} nano_thread_aio;
-
-typedef struct nano_thread_duo_s {
-  nng_thread *thr;
-  nano_cv *cv;
-  nano_cv *cv2;
-} nano_thread_duo;
-
 // messenger -------------------------------------------------------------------
 
 // # nocov start

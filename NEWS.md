@@ -3,14 +3,15 @@
 #### New Features
 
 * Adds 'ncurlAio' method for `promises::as.promise()` and `promises::is.promising()` to enable 'ncurlAio' promises.
-* Adds method `x[]` for an Aio `x` as a new equivalent to `collect_aio_(x)`, which waits for and collects the data.
+* Adds `x[]` as a new method for an Aio `x` equivalent to `collect_aio_(x)`, which waits for and collects the data.
 
 #### Updates
 
 * `request()` specifying argument 'cv' other than NULL or a 'conditionVariable' will cause the pipe connection to be dropped when the reply is (asynchronously) completed. 
 * Removes deprecated functions `strcat()`, `recv_aio_signal()` and `request_signal()`.
-* Removes `base64enc()` and `base64dec()` in favour of those in the {secretbase} package.
-* `later` is now a 'suggests' dependency (only required if using promises).
+* Drops `base64enc()` and `base64dec()` in favour of those from the {secretbase} package.
+* `later` is now relaxed to a soft 'suggests' dependency (only required if using promises).
+* `promises` is added as a soft 'enhances' dependency.
 
 # nanonext 1.1.0
 

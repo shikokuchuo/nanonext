@@ -17,7 +17,6 @@
 // nanonext - C level - Utilities ----------------------------------------------
 
 #define NANONEXT_PROTOCOLS
-#define NANONEXT_HTTP
 #define NANONEXT_SUPPLEMENTALS
 #include "nanonext.h"
 
@@ -678,8 +677,8 @@ SEXP rnng_tls_config(SEXP client, SEXP server, SEXP pass, SEXP auth) {
   return xp;
 
   exitlevel2:
-    nng_tls_config_free(cfg);
+  nng_tls_config_free(cfg);
   exitlevel1:
-    ERROR_OUT(xc);
+  ERROR_OUT(xc);
 
 }

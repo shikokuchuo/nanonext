@@ -34,13 +34,19 @@
 #include <nng/protocol/survey0/respond.h>
 #endif
 
-#ifdef NANONEXT_HTTP
-#include <nng/supplemental/http/http.h>
-#endif
-
 #ifdef NANONEXT_SUPPLEMENTALS
+#include <nng/supplemental/http/http.h>
 #include <nng/supplemental/tls/tls.h>
 #include <nng/supplemental/util/platform.h>
+
+typedef union nano_opt_u {
+  char *str;
+  bool b;
+  nng_duration d;
+  int i;
+  size_t s;
+  uint64_t u;
+} nano_opt;
 
 typedef struct nano_listener_s {
   nng_listener list;
@@ -87,12 +93,37 @@ typedef struct nano_aio_s {
   void *next;
 } nano_aio;
 
+typedef struct nano_handle_s {
+  nng_url *url;
+  nng_http_client *cli;
+  nng_http_req *req;
+  nng_http_res *res;
+  nng_tls_config *cfg;
+} nano_handle;
+
 typedef struct nano_cv_s {
   int condition;
   int flag;
   nng_mtx *mtx;
   nng_cv *cv;
 } nano_cv;
+
+typedef struct nano_cv_duo_s {
+  nano_cv *cv;
+  nano_cv *cv2;
+} nano_cv_duo;
+
+typedef struct nano_thread_aio_s {
+  nng_thread *thr;
+  nano_cv *cv;
+  nng_aio *aio;
+} nano_thread_aio;
+
+typedef struct nano_thread_duo_s {
+  nng_thread *thr;
+  nano_cv *cv;
+  nano_cv *cv2;
+} nano_thread_duo;
 
 #endif
 
