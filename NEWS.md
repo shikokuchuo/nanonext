@@ -1,8 +1,9 @@
-# nanonext 1.1.0.9003 (development)
+# nanonext 1.1.0.9004 (development)
 
 #### New Features
 
-* The method `x[]` for an Aio `x` is a new equivalent to `collect_aio_(x)`, which waits for and collects the data.
+* Adds 'ncurlAio' method for `promises::as.promise()` and `promises::is.promising()` to enable 'ncurlAio' promises.
+* Adds method `x[]` for an Aio `x` as a new equivalent to `collect_aio_(x)`, which waits for and collects the data.
 
 #### Updates
 

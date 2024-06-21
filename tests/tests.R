@@ -562,6 +562,12 @@ nanotestw(dial(s, url = "tls+tcp://.", tls = tls, error = FALSE) > 0)
 nanotestw(listen(s, url = "tls+tcp://.", tls = tls, error = FALSE) > 0)
 nanotestz(close(s1))
 nanotestz(close(s))
+if (requireNamespace("promises", quietly = TRUE)) {
+  nanotestaio(n <- ncurl_aio("https://postman-echo.com/get"))
+  nanotest(tryCatch(promises::is.promise(promises::then(n, cat)), error = function(e) TRUE))
+  nanotest(promises::is.promise(promises::as.promise(call_aio(n))))
+  later::run_now()
+}
 if (Sys.info()[["sysname"]] == "Linux") {
   rm(list = ls())
   gc()

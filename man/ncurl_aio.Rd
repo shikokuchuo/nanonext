@@ -61,6 +61,20 @@ An 'ncurlAio' (object of class 'ncurlAio' and 'recvAio') (invisibly).
 \description{
 nano cURL - a minimalist http(s) client - async edition.
 }
+\section{Promises}{
+
+
+    \sQuote{ncurlAio} may be used anywhere that accepts a \sQuote{promise}
+    from the \CRANpkg{promises} package through the included
+    \code{as.promise} method.
+
+    The promises created are completely event-driven and non-polling.
+
+    If a status code of 200 (OK) is returned then the promise is resolved
+    with the reponse body, otherwise it is rejected with a translation of the
+    status code or \sQuote{errorValue} as the case may be.
+}
+
 \examples{
 nc <- ncurl_aio("https://www.r-project.org/",
                 response = c("date", "server"),
@@ -69,6 +83,16 @@ call_aio(nc)
 nc$status
 nc$headers
 nc$data
+
+if (interactive() && requireNamespace("promises", quietly = TRUE)) {
+
+p <- as.promise(nc)
+print(p)
+
+p2 <- ncurl_aio("https://postman-echo.com/get") \%...>\% cat
+is.promise(p2)
+
+}
 
 }
 \seealso{
