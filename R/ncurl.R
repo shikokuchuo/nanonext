@@ -131,14 +131,13 @@ ncurl <- function(url,
 #' nc$data
 #'
 #' if (interactive() && requireNamespace("promises", quietly = TRUE)) {
-#' library(promises)
 #'
-#' p <- as.promise(ncurl_aio("https://www.cam.ac.uk/"))
+#' p <- as.promise(nc)
 #' print(p)
 #'
-#' p2 <- ncurl_aio("https://postman-echo.com/get") %...>% identity()
-#' p2$then(cat)
+#' p2 <- ncurl_aio("https://postman-echo.com/get") %...>% cat
 #' is.promise(p2)
+#'
 #' }
 #'
 #' @export
@@ -224,7 +223,7 @@ close.ncurlSession <- function(con, ...) invisible(.Call(rnng_ncurl_session_clos
 #' @details This function is an S3 method for the generic \code{as.promise} for
 #'     class \sQuote{ncurlAio}.
 #'
-#'     Requires the \CRANpkg{promises} package.
+#'     Requires the \pkg{promises} package.
 #'
 #'     Allows an \sQuote{ncurlAio} to be used with the promise pipe
 #'     \code{\%...>\%}, which schedules a function to run upon resolution of the
