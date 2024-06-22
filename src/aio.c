@@ -1489,7 +1489,7 @@ SEXP rnng_cv_until(SEXP cvar, SEXP msec) {
   nng_time time = nng_clock();
   switch (TYPEOF(msec)) {
   case INTSXP:
-    time = time + (nng_time) INTEGER(msec)[0];
+    time = time + (nng_time) NANO_INTEGER(msec);
     break;
   case REALSXP:
     time = time + (nng_time) Rf_asInteger(msec);

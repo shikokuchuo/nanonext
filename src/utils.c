@@ -99,7 +99,6 @@ SEXP rnng_sleep(SEXP msec) {
   int time;
   switch (TYPEOF(msec)) {
   case INTSXP:
-  case LGLSXP:
     time = NANO_INTEGER(msec);
     if (time > 0) nng_msleep((nng_duration) time);
     break;

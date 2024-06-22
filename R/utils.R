@@ -79,8 +79,8 @@ mclock <- function() .Call(rnng_clock)
 #' @return Invisible NULL.
 #'
 #' @details Non-integer values for \sQuote{time} are coerced to integer.
-#'     Negative / NA / non-numeric values are ignored, causing the function to
-#'     return immediately.
+#'     Negative, logical and other non-numeric values are ignored, causing the
+#'     function to return immediately.
 #'
 #'     Note that unlike \code{\link{Sys.sleep}}, this function is not
 #'     user-interruptible by sending SIGINT e.g. with ctrl + c.
