@@ -67,6 +67,8 @@
 <li>Removes deprecated functions <code>strcat()</code>, <code>recv_aio_signal()</code> and <code>request_signal()</code>.</li>
 <li>Drops <code>base64enc()</code> and <code>base64dec()</code> in favour of those from the {secretbase} package.</li>
 <li>
+<code><a href="../reference/msleep.html">msleep()</a></code> now ignores negative values rather than taking the absolute value.</li>
+<li>
 <code>later</code> is now relaxed to a soft ‘suggests’ dependency (only required if using promises).</li>
 <li>
 <code>promises</code> is added as a soft ‘enhances’ dependency.</li>
