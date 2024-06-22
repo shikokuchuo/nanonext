@@ -565,7 +565,7 @@ nanotestz(close(s))
 if (requireNamespace("promises", quietly = TRUE)) {
   nanotestaio(n <- ncurl_aio("https://postman-echo.com/get"))
   nanotest(tryCatch(promises::is.promise(promises::then(n, cat)), error = function(e) TRUE))
-  nanotest(promises::is.promising(n))
+  nanotest(promises::is.promising(call_aio(n)))
   nanotest(promises::is.promise(promises::as.promise(call_aio(ncurl_aio("https://postman-echo.com/get")))))
   later::run_now()
 }
