@@ -61,7 +61,7 @@ SEXP rnng_write_cert(SEXP cn, SEXP valid, SEXP inter) {
 
   const char *common = CHAR(STRING_ELT(cn, 0));
   const char *not_after = CHAR(STRING_ELT(valid, 0)); /* validity period not after */
-  const int interactive = *NANO_INTEGER(inter);
+  const int interactive = NANO_INTEGER(inter);
   mbedtls_entropy_context entropy;
   mbedtls_ctr_drbg_context ctr_drbg;
   mbedtls_pk_context key;

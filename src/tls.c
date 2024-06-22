@@ -63,7 +63,7 @@ SEXP rnng_random(SEXP n, SEXP convert) {
   switch (TYPEOF(n)) {
   case INTSXP:
   case LGLSXP:
-    sz = INTEGER(n)[0];
+    sz = NANO_INTEGER(n);
     if (sz >= 0 && sz <= 1024) break;
   case REALSXP:
     sz = Rf_asInteger(n);
@@ -92,7 +92,7 @@ SEXP rnng_random(SEXP n, SEXP convert) {
   if (xc)
     Rf_error("error generating random bytes");
 
-  if (*NANO_INTEGER(convert)) {
+  if (NANO_INTEGER(convert)) {
     out = nano_hash_char(buf, sz);
   } else {
     out = Rf_allocVector(RAWSXP, sz);

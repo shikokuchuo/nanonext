@@ -708,7 +708,7 @@ SEXP rnng_dial(SEXP socket, SEXP url, SEXP tls, SEXP autostart, SEXP error) {
     Rf_error("'tls' is not a valid TLS Configuration");
 
   nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(socket);
-  const int start = *NANO_INTEGER(autostart);
+  const int start = NANO_INTEGER(autostart);
   const char *ur = CHAR(STRING_ELT(url, 0));
   nano_dialer *dp = R_Calloc(1, nano_dialer);
   SEXP dialer, attr, newattr;
@@ -768,7 +768,7 @@ SEXP rnng_dial(SEXP socket, SEXP url, SEXP tls, SEXP autostart, SEXP error) {
     nng_tls_config_free(dp->tls);
   exitlevel1:
     R_Free(dp);
-  if (*NANO_INTEGER(error)) ERROR_OUT(xc);
+  if (NANO_INTEGER(error)) ERROR_OUT(xc);
   ERROR_RET(xc);
 
 }
@@ -784,7 +784,7 @@ SEXP rnng_listen(SEXP socket, SEXP url, SEXP tls, SEXP autostart, SEXP error) {
     Rf_error("'tls' is not a valid TLS Configuration");
 
   nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(socket);
-  const int start = *NANO_INTEGER(autostart);
+  const int start = NANO_INTEGER(autostart);
   const char *ur = CHAR(STRING_ELT(url, 0));
   nano_listener *lp = R_Calloc(1, nano_listener);
   SEXP listener, attr, newattr;
@@ -839,7 +839,7 @@ SEXP rnng_listen(SEXP socket, SEXP url, SEXP tls, SEXP autostart, SEXP error) {
     nng_tls_config_free(lp->tls);
   exitlevel1:
     R_Free(lp);
-  if (*NANO_INTEGER(error)) ERROR_OUT(xc);
+  if (NANO_INTEGER(error)) ERROR_OUT(xc);
   ERROR_RET(xc);
 
 }
@@ -849,7 +849,7 @@ SEXP rnng_dialer_start(SEXP dialer, SEXP async) {
   if (TAG(dialer) != nano_DialerSymbol)
     Rf_error("'dialer' is not a valid Dialer");
   nng_dialer *dial = (nng_dialer *) R_ExternalPtrAddr(dialer);
-  const int flags = (*NANO_INTEGER(async) == 1) * NNG_FLAG_NONBLOCK;
+  const int flags = (NANO_INTEGER(async) == 1) * NNG_FLAG_NONBLOCK;
   const int xc = nng_dialer_start(*dial, flags);
   if (xc)
     ERROR_RET(xc);
@@ -923,7 +923,7 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
 
     if (flags <= 0) {
 
-      xc = nng_send(*sock, buf.buf, buf.cur, flags ? NNG_FLAG_NONBLOCK : (*NANO_INTEGER(block) != 1) * NNG_FLAG_NONBLOCK);
+      xc = nng_send(*sock, buf.buf, buf.cur, flags ? NNG_FLAG_NONBLOCK : (NANO_INTEGER(block) != 1) * NNG_FLAG_NONBLOCK);
       NANO_FREE(buf);
 
     } else {
@@ -971,7 +971,7 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
         goto exitlevel1;
 
       if ((xc = nng_msg_append(msgp, buf.buf, buf.cur)) ||
-          (xc = nng_ctx_sendmsg(*ctxp, msgp, flags ? NNG_FLAG_NONBLOCK : (*NANO_INTEGER(block) != 1) * NNG_FLAG_NONBLOCK))) {
+          (xc = nng_ctx_sendmsg(*ctxp, msgp, flags ? NNG_FLAG_NONBLOCK : (NANO_INTEGER(block) != 1) * NNG_FLAG_NONBLOCK))) {
         nng_msg_free(msgp);
         goto exitlevel1;
       }
@@ -1022,7 +1022,7 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
       goto exitlevel1;
     }
 
-    nng_aio_set_timeout(aiop, flags ? flags : (*NANO_INTEGER(block) != 0) * NNG_DURATION_DEFAULT);
+    nng_aio_set_timeout(aiop, flags ? flags : (NANO_INTEGER(block) != 0) * NNG_DURATION_DEFAULT);
     nng_stream_send(sp, aiop);
     NANO_FREE(buf);
     nng_aio_wait(aiop);
@@ -1060,7 +1060,7 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP bytes) {
 
     if (flags <= 0) {
 
-      xc = nng_recv(*sock, &buf, &sz, NNG_FLAG_ALLOC + (flags < 0 || *NANO_INTEGER(block) != 1) * NNG_FLAG_NONBLOCK);
+      xc = nng_recv(*sock, &buf, &sz, NNG_FLAG_ALLOC + (flags < 0 || NANO_INTEGER(block) != 1) * NNG_FLAG_NONBLOCK);
       if (xc)
         goto exitlevel1;
 
@@ -1095,7 +1095,7 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP bytes) {
 
     if (flags <= 0) {
 
-      xc = nng_ctx_recvmsg(*ctxp, &msgp, (flags < 0 || *NANO_INTEGER(block) != 1) * NNG_FLAG_NONBLOCK);
+      xc = nng_ctx_recvmsg(*ctxp, &msgp, (flags < 0 || NANO_INTEGER(block) != 1) * NNG_FLAG_NONBLOCK);
       if (xc)
         goto exitlevel1;
 
@@ -1148,7 +1148,7 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP bytes) {
       goto exitlevel2;
     }
 
-    nng_aio_set_timeout(aiop, flags ? flags : (*NANO_INTEGER(block) != 0) * NNG_DURATION_DEFAULT);
+    nng_aio_set_timeout(aiop, flags ? flags : (NANO_INTEGER(block) != 0) * NNG_DURATION_DEFAULT);
     nng_stream_recv(*sp, aiop);
 
     nng_aio_wait(aiop);
@@ -1206,7 +1206,7 @@ SEXP rnng_set_opt(SEXP object, SEXP opt, SEXP value) {
       xc = nng_socket_set_uint64(*sock, op, (uint64_t) val);
       break;
     case LGLSXP:
-      xc = nng_socket_set_bool(*sock, op, (bool) *NANO_INTEGER(value));
+      xc = nng_socket_set_bool(*sock, op, (bool) NANO_INTEGER(value));
       break;
     default:
       Rf_error("type of 'value' not supported");
@@ -1234,7 +1234,7 @@ SEXP rnng_set_opt(SEXP object, SEXP opt, SEXP value) {
       xc = nng_ctx_set_uint64(*ctx, op, (uint64_t) val);
       break;
     case LGLSXP:
-      xc = nng_ctx_set_bool(*ctx, op, (bool) *NANO_INTEGER(value));
+      xc = nng_ctx_set_bool(*ctx, op, (bool) NANO_INTEGER(value));
       break;
     default:
       Rf_error("type of 'value' not supported");
@@ -1262,7 +1262,7 @@ SEXP rnng_set_opt(SEXP object, SEXP opt, SEXP value) {
       xc = nng_stream_set_uint64(*st, op, (uint64_t) val);
       break;
     case LGLSXP:
-      xc = nng_stream_set_bool(*st, op, (bool) *NANO_INTEGER(value));
+      xc = nng_stream_set_bool(*st, op, (bool) NANO_INTEGER(value));
       break;
     default:
       Rf_error("type of 'value' not supported");
@@ -1290,7 +1290,7 @@ SEXP rnng_set_opt(SEXP object, SEXP opt, SEXP value) {
       xc = nng_listener_set_uint64(*list, op, (uint64_t) val);
       break;
     case LGLSXP:
-      xc = nng_listener_set_bool(*list, op, (bool) *NANO_INTEGER(value));
+      xc = nng_listener_set_bool(*list, op, (bool) NANO_INTEGER(value));
       break;
     default:
       Rf_error("type of 'value' not supported");
@@ -1318,7 +1318,7 @@ SEXP rnng_set_opt(SEXP object, SEXP opt, SEXP value) {
       xc = nng_dialer_set_uint64(*dial, op, (uint64_t) val);
       break;
     case LGLSXP:
-      xc = nng_dialer_set_bool(*dial, op, (bool) *NANO_INTEGER(value));
+      xc = nng_dialer_set_bool(*dial, op, (bool) NANO_INTEGER(value));
       break;
     default:
       Rf_error("type of 'value' not supported");
@@ -1337,7 +1337,7 @@ SEXP rnng_set_opt(SEXP object, SEXP opt, SEXP value) {
 
 SEXP rnng_subscribe(SEXP object, SEXP value, SEXP sub) {
 
-  const char *op = *NANO_INTEGER(sub) ? "sub:subscribe" : "sub:unsubscribe";
+  const char *op = NANO_INTEGER(sub) ? "sub:subscribe" : "sub:unsubscribe";
   nano_buf buf;
   int xc;
 
@@ -1547,7 +1547,7 @@ SEXP rnng_next_config(SEXP refhook, SEXP klass, SEXP list, SEXP mark) {
   if (TYPEOF(klass) != STRSXP)
     Rf_error("'class' must be a character string");
 
-  special_bit = (uint8_t) *NANO_INTEGER(mark);
+  special_bit = (uint8_t) NANO_INTEGER(mark);
   SEXPTYPE typ1, typ2;
   int plist;
 
@@ -1581,7 +1581,7 @@ SEXP rnng_next_config(SEXP refhook, SEXP klass, SEXP list, SEXP mark) {
     SETCADR(nano_refHook, plist ? CADR(refhook) : R_VECTOR(refhook)[1]);
     SETCAR(nano_klassString, STRING_ELT(klass, 0));
 
-    registered = *NANO_INTEGER(list) ? 1 : 2;
+    registered = NANO_INTEGER(list) ? 1 : 2;
 
   }
 
