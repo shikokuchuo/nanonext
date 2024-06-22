@@ -903,7 +903,7 @@ SEXP rnng_listener_close(SEXP listener) {
 
 SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
 
-  const int flags = block == R_NilValue ? NNG_DURATION_DEFAULT : TYPEOF(block) == LGLSXP ? 0 : Rf_asInteger(block);
+  const int flags = block == R_NilValue ? NNG_DURATION_DEFAULT : TYPEOF(block) == LGLSXP ? 0 : R_Integer(block);
   nano_buf buf;
   int xc;
 
@@ -1046,7 +1046,7 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
 
 SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP bytes) {
 
-  const int flags = block == R_NilValue ? NNG_DURATION_DEFAULT : TYPEOF(block) == LGLSXP ? 0 : Rf_asInteger(block);
+  const int flags = block == R_NilValue ? NNG_DURATION_DEFAULT : TYPEOF(block) == LGLSXP ? 0 : R_Integer(block);
   int mod, xc;
   unsigned char *buf;
   size_t sz;
@@ -1131,7 +1131,7 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP bytes) {
   } else if (ptrtag == nano_StreamSymbol) {
 
     mod = nano_matchargs(mode);
-    const size_t xlen = (size_t) Rf_asInteger(bytes);
+    const size_t xlen = (size_t) R_Integer(bytes);
     nng_stream **sp = (nng_stream **) R_ExternalPtrAddr(con);
     nng_iov iov;
     nng_aio *aiop;
@@ -1196,7 +1196,7 @@ SEXP rnng_set_opt(SEXP object, SEXP opt, SEXP value) {
       break;
     case REALSXP:
     case INTSXP:
-      val = Rf_asInteger(value);
+      val = R_Integer(value);
       xc = nng_socket_set_ms(*sock, op, (nng_duration) val);
       if (xc == 0) break;
       xc = nng_socket_set_size(*sock, op, (size_t) val);
@@ -1224,7 +1224,7 @@ SEXP rnng_set_opt(SEXP object, SEXP opt, SEXP value) {
       break;
     case REALSXP:
     case INTSXP:
-      val = Rf_asInteger(value);
+      val = R_Integer(value);
       xc = nng_ctx_set_ms(*ctx, op, (nng_duration) val);
       if (xc == 0) break;
       xc = nng_ctx_set_size(*ctx, op, (size_t) val);
@@ -1252,7 +1252,7 @@ SEXP rnng_set_opt(SEXP object, SEXP opt, SEXP value) {
       break;
     case REALSXP:
     case INTSXP:
-      val = Rf_asInteger(value);
+      val = R_Integer(value);
       xc = nng_stream_set_ms(*st, op, (nng_duration) val);
       if (xc == 0) break;
       xc = nng_stream_set_size(*st, op, (size_t) val);
@@ -1280,7 +1280,7 @@ SEXP rnng_set_opt(SEXP object, SEXP opt, SEXP value) {
       break;
     case REALSXP:
     case INTSXP:
-      val = Rf_asInteger(value);
+      val = R_Integer(value);
       xc = nng_listener_set_ms(*list, op, (nng_duration) val);
       if (xc == 0) break;
       xc = nng_listener_set_size(*list, op, (size_t) val);
@@ -1308,7 +1308,7 @@ SEXP rnng_set_opt(SEXP object, SEXP opt, SEXP value) {
       break;
     case REALSXP:
     case INTSXP:
-      val = Rf_asInteger(value);
+      val = R_Integer(value);
       xc = nng_dialer_set_ms(*dial, op, (nng_duration) val);
       if (xc == 0) break;
       xc = nng_dialer_set_size(*dial, op, (size_t) val);

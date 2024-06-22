@@ -34,6 +34,19 @@ static inline SEXP R_mkClosure(SEXP formals, SEXP body, SEXP env) {
 
 #endif
 
+inline int R_Integer(SEXP x) {
+  int out;
+  switch (TYPEOF(x)) {
+  case INTSXP:
+  case LGLSXP:
+    out = *(int *) DATAPTR_RO(x);
+    break;
+  default:
+    out = Rf_asInteger(x);
+  }
+  return out;
+}
+
 // internals -------------------------------------------------------------------
 
 static SEXP mk_error_aio(const int xc, SEXP env) {
@@ -728,7 +741,7 @@ SEXP rnng_unresolved2(SEXP x) {
 
 SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
 
-  const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) Rf_asInteger(timeout);
+  const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) R_Integer(timeout);
   nano_aio *saio;
   SEXP aio;
   nano_buf buf;
@@ -824,7 +837,7 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
 
 SEXP rnng_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP cvar, SEXP bytes, SEXP clo) {
 
-  const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) Rf_asInteger(timeout);
+  const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) R_Integer(timeout);
   const int signal = TAG(cvar) == nano_CvSymbol;
   nano_cv *ncv = signal ? (nano_cv *) R_ExternalPtrAddr(cvar) : NULL;
   nano_aio *raio;
@@ -853,7 +866,7 @@ SEXP rnng_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP cvar, SEXP bytes, SEX
   } else if (ptrtag == nano_StreamSymbol) {
 
     mod = nano_matchargs(mode);
-    const size_t xlen = (size_t) Rf_asInteger(bytes);
+    const size_t xlen = (size_t) R_Integer(bytes);
     nng_stream **sp = (nng_stream **) R_ExternalPtrAddr(con);
     nng_iov iov;
 
@@ -909,7 +922,7 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP dat
 
   const char *httr = CHAR(STRING_ELT(http, 0));
   const char *mthd = method != R_NilValue ? CHAR(STRING_ELT(method, 0)) : NULL;
-  const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) Rf_asInteger(timeout);
+  const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) R_Integer(timeout);
   if (tls != R_NilValue && TAG(tls) != nano_TlsSymbol)
     Rf_error("'tls' is not a valid TLS Configuration");
   nano_aio *haio = R_Calloc(1, nano_aio);
@@ -1122,7 +1135,7 @@ SEXP rnng_ncurl_session(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP
 
   const char *httr = CHAR(STRING_ELT(http, 0));
   const char *mthd = method != R_NilValue ? CHAR(STRING_ELT(method, 0)) : NULL;
-  const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) Rf_asInteger(timeout);
+  const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) R_Integer(timeout);
   if (tls != R_NilValue && TAG(tls) != nano_TlsSymbol)
     Rf_error("'tls' is not a valid TLS Configuration");
 
@@ -1311,7 +1324,7 @@ SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeou
   if (TAG(con) != nano_ContextSymbol)
     Rf_error("'con' is not a valid Context");
 
-  const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) Rf_asInteger(timeout);
+  const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) R_Integer(timeout);
   const int mod = nano_matcharg(recvmode);
   int signal, drop;
   if (cvar == R_NilValue) {
@@ -1563,7 +1576,7 @@ SEXP rnng_cv_until_safe(SEXP cvar, SEXP msec) {
   nng_time time, period, now;
   switch (TYPEOF(msec)) {
   case INTSXP:
-    period = (nng_time) INTEGER(msec)[0];
+    period = (nng_time) NANO_INTEGER(msec);
     break;
   case REALSXP:
     period = (nng_time) Rf_asInteger(msec);

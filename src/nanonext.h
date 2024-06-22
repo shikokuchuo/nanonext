@@ -220,6 +220,7 @@ void later2(void (*)(void *), void *);
 extern void (*eln2)(void (*)(void *), void *, double, int);
 void eln2dummy(void (*)(void *), void *, double, int);
 
+int R_Integer(SEXP);
 SEXP nano_PreserveObject(SEXP);
 void nano_ReleaseObject(SEXP);
 SEXP mk_error(const int);
