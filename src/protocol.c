@@ -144,7 +144,7 @@ SEXP rnng_protocol_open(SEXP protocol, SEXP raw) {
 
 SEXP rnng_close(SEXP socket) {
 
-  if (R_ExternalPtrTag(socket) != nano_SocketSymbol)
+  if (TAG(socket) != nano_SocketSymbol)
     Rf_error("'socket' is not a valid Socket");
   nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(socket);
   const int xc = nng_close(*sock);
@@ -159,7 +159,7 @@ SEXP rnng_close(SEXP socket) {
 SEXP rnng_reap(SEXP con) {
 
   int xc;
-  const SEXP ptrtag = R_ExternalPtrTag(con);
+  const SEXP ptrtag = TAG(con);
 
   if (ptrtag == nano_ContextSymbol) {
     xc = nng_ctx_close(*(nng_ctx *) R_ExternalPtrAddr(con));
