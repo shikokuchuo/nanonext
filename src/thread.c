@@ -28,8 +28,8 @@
 
 static void thread_finalizer(SEXP xptr) {
 
-  if (R_ExternalPtrAddr(xptr) == NULL) return;
-  nng_thread *xp = (nng_thread *) R_ExternalPtrAddr(xptr);
+  if (NANO_PTR(xptr) == NULL) return;
+  nng_thread *xp = (nng_thread *) NANO_PTR(xptr);
   nng_thread_destroy(xp);
 
 }
@@ -53,7 +53,7 @@ static void rnng_messenger_thread(void *args) {
   SEXP plist = (SEXP) args;
   SEXP socket = CADR(plist);
   SEXP key = CADDR(plist);
-  nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(socket);
+  nng_socket *sock = (nng_socket *) NANO_PTR(socket);
   unsigned char *buf;
   size_t sz;
   time_t now;
@@ -167,7 +167,7 @@ SEXP rnng_messenger_thread_create(SEXP args) {
   nng_thread_create(&thr, rnng_messenger_thread, args);
 
   SEXP xptr = R_MakeExternalPtr(thr, R_NilValue, R_NilValue);
-  R_SetExternalPtrProtected(socket, xptr);
+  NANO_SET_PROT(socket, xptr);
   R_RegisterCFinalizerEx(xptr, thread_finalizer, TRUE);
 
   return socket;
@@ -180,8 +180,8 @@ SEXP rnng_messenger_thread_create(SEXP args) {
 
 static void thread_aio_finalizer(SEXP xptr) {
 
-  if (R_ExternalPtrAddr(xptr) == NULL) return;
-  nano_thread_aio *xp = (nano_thread_aio *) R_ExternalPtrAddr(xptr);
+  if (NANO_PTR(xptr) == NULL) return;
+  nano_thread_aio *xp = (nano_thread_aio *) NANO_PTR(xptr);
   nano_cv *ncv = xp->cv;
   nng_mtx *mtx = ncv->mtx;
   nng_cv *cv = ncv->cv;
@@ -196,8 +196,8 @@ static void thread_aio_finalizer(SEXP xptr) {
 
 static void thread_duo_finalizer(SEXP xptr) {
 
-  if (R_ExternalPtrAddr(xptr) == NULL) return;
-  nano_thread_duo *xp = (nano_thread_duo *) R_ExternalPtrAddr(xptr);
+  if (NANO_PTR(xptr) == NULL) return;
+  nano_thread_duo *xp = (nano_thread_duo *) NANO_PTR(xptr);
   nano_cv *ncv = xp->cv;
   nng_mtx *mtx = ncv->mtx;
   nng_cv *cv = ncv->cv;
@@ -234,11 +234,11 @@ SEXP rnng_wait_thread_create(SEXP x) {
   if (typ == ENVSXP) {
 
     const SEXP coreaio = Rf_findVarInFrame(x, nano_AioSymbol);
-    if (TAG(coreaio) != nano_AioSymbol)
+    if (NANO_TAG(coreaio) != nano_AioSymbol)
       return x;
 
     PROTECT(coreaio);
-    nano_aio *aiop = (nano_aio *) R_ExternalPtrAddr(coreaio);
+    nano_aio *aiop = (nano_aio *) NANO_PTR(coreaio);
 
     nano_thread_aio *taio = R_Calloc(1, nano_thread_aio);
     nano_cv *ncv = R_Calloc(1, nano_cv);
@@ -261,7 +261,7 @@ SEXP rnng_wait_thread_create(SEXP x) {
     nng_thread_create(&taio->thr, rnng_wait_thread, taio);
 
     SEXP xptr = R_MakeExternalPtr(taio, R_NilValue, R_NilValue);
-    R_SetExternalPtrProtected(coreaio, xptr);
+    NANO_SET_PROT(coreaio, xptr);
     R_RegisterCFinalizerEx(xptr, thread_aio_finalizer, TRUE);
     UNPROTECT(1);
 
@@ -372,10 +372,10 @@ static void rnng_signal_thread(void *args) {
 
 SEXP rnng_signal_thread_create(SEXP cv, SEXP cv2) {
 
-  if (TAG(cv) != nano_CvSymbol)
+  if (NANO_TAG(cv) != nano_CvSymbol)
     Rf_error("'cv' is not a valid Condition Variable");
 
-  if (TAG(cv2) != nano_CvSymbol)
+  if (NANO_TAG(cv2) != nano_CvSymbol)
     Rf_error("'cv2' is not a valid Condition Variable");
 
   SEXP existing = Rf_getAttrib(cv, R_MissingArg);
@@ -384,8 +384,8 @@ SEXP rnng_signal_thread_create(SEXP cv, SEXP cv2) {
     R_ClearExternalPtr(existing);
   }
 
-  nano_cv *ncv = (nano_cv *) R_ExternalPtrAddr(cv);
-  nano_cv *ncv2 = (nano_cv *) R_ExternalPtrAddr(cv2);
+  nano_cv *ncv = (nano_cv *) NANO_PTR(cv);
+  nano_cv *ncv2 = (nano_cv *) NANO_PTR(cv2);
   nano_thread_duo *duo = R_Calloc(1, nano_thread_duo);
   duo->cv = ncv;
   duo->cv2 = ncv2;

@@ -50,8 +50,8 @@ nano_buf nano_char_buf(const SEXP data) {
 
 static void stream_finalizer(SEXP xptr) {
 
-  if (R_ExternalPtrAddr(xptr) == NULL) return;
-  nano_stream *xp = (nano_stream *) R_ExternalPtrAddr(xptr);
+  if (NANO_PTR(xptr) == NULL) return;
+  nano_stream *xp = (nano_stream *) NANO_PTR(xptr);
   nng_stream_close(xp->stream);
   nng_stream_free(xp->stream);
   if (xp->mode == NANO_STREAM_LISTENER) {
@@ -69,8 +69,8 @@ static void stream_finalizer(SEXP xptr) {
 
 static void tls_finalizer(SEXP xptr) {
 
-  if (R_ExternalPtrAddr(xptr) == NULL) return;
-  nng_tls_config *xp = (nng_tls_config *) R_ExternalPtrAddr(xptr);
+  if (NANO_PTR(xptr) == NULL) return;
+  nng_tls_config *xp = (nng_tls_config *) NANO_PTR(xptr);
   nng_tls_config_free(xp);
 
 }
@@ -162,7 +162,7 @@ SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP follow, SEXP method, SEXP headers,
   const char *addr = CHAR(STRING_ELT(http, 0));
   const char *mthd = method != R_NilValue ? CHAR(STRING_ELT(method, 0)) : NULL;
   const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) nano_integer(timeout);
-  if (tls != R_NilValue && TAG(tls) != nano_TlsSymbol)
+  if (tls != R_NilValue && NANO_TAG(tls) != nano_TlsSymbol)
     Rf_error("'tls' is not a valid TLS Configuration");
   int chk_resp = response != R_NilValue && TYPEOF(response) == STRSXP;
 
@@ -222,7 +222,7 @@ SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP follow, SEXP method, SEXP headers,
         goto exitlevel7;
     } else {
 
-      cfg = (nng_tls_config *) R_ExternalPtrAddr(tls);
+      cfg = (nng_tls_config *) NANO_PTR(tls);
       nng_tls_config_hold(cfg);
 
       if ((xc = nng_tls_config_server_name(cfg, url->u_hostname)) ||
@@ -337,7 +337,7 @@ SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP follow, SEXP method, SEXP headers,
 SEXP rnng_stream_dial(SEXP url, SEXP textframes, SEXP tls) {
 
   const char *add = CHAR(STRING_ELT(url, 0));
-  if (tls != R_NilValue && TAG(tls) != nano_TlsSymbol)
+  if (tls != R_NilValue && NANO_TAG(tls) != nano_TlsSymbol)
     Rf_error("'tls' is not a valid TLS Configuration");
   nano_stream *nst = R_Calloc(1, nano_stream);
   nst->mode = NANO_STREAM_DIALER;
@@ -374,7 +374,7 @@ SEXP rnng_stream_dial(SEXP url, SEXP textframes, SEXP tls) {
         goto exitlevel4;
     } else {
 
-      nst->tls = (nng_tls_config *) R_ExternalPtrAddr(tls);
+      nst->tls = (nng_tls_config *) NANO_PTR(tls);
       nng_tls_config_hold(nst->tls);
 
       if ((xc = nng_tls_config_server_name(nst->tls, up->u_hostname)) ||
@@ -426,7 +426,7 @@ SEXP rnng_stream_dial(SEXP url, SEXP textframes, SEXP tls) {
 SEXP rnng_stream_listen(SEXP url, SEXP textframes, SEXP tls) {
 
   const char *add = CHAR(STRING_ELT(url, 0));
-  if (tls != R_NilValue && TAG(tls) != nano_TlsSymbol)
+  if (tls != R_NilValue && NANO_TAG(tls) != nano_TlsSymbol)
     Rf_error("'tls' is not a valid TLS Configuration");
   nano_stream *nst = R_Calloc(1, nano_stream);
   nst->mode = NANO_STREAM_LISTENER;
@@ -462,7 +462,7 @@ SEXP rnng_stream_listen(SEXP url, SEXP textframes, SEXP tls) {
         goto exitlevel4;
     } else {
 
-      nst->tls = (nng_tls_config *) R_ExternalPtrAddr(tls);
+      nst->tls = (nng_tls_config *) NANO_PTR(tls);
       nng_tls_config_hold(nst->tls);
 
       if ((xc = nng_tls_config_server_name(nst->tls, up->u_hostname)) ||
@@ -516,11 +516,11 @@ SEXP rnng_stream_listen(SEXP url, SEXP textframes, SEXP tls) {
 
 SEXP rnng_stream_close(SEXP stream) {
 
-  if (TAG(stream) != nano_StreamSymbol)
+  if (NANO_TAG(stream) != nano_StreamSymbol)
     Rf_error("'stream' is not a valid or active Stream");
 
   stream_finalizer(stream);
-  SET_TAG(stream, R_NilValue);
+  NANO_SET_TAG(stream, R_NilValue);
   R_ClearExternalPtr(stream);
   Rf_setAttrib(stream, nano_StateSymbol, Rf_mkString("closed"));
 

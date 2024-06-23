@@ -185,6 +185,11 @@ typedef struct nano_thread_duo_s {
 #include <Rversion.h>
 #include <R_ext/Visibility.h>
 
+#define NANO_TAG(x) TAG(x)
+#define NANO_PTR(x) (void *) CAR(x)
+#define NANO_PROT(x) CDR(x)
+#define NANO_SET_TAG(x, v) SET_TAG(x, v)
+#define NANO_SET_PROT(x, v) SETCDR(x, v)
 #define NANO_DATAPTR(x) (void *) DATAPTR_RO(x)
 #define NANO_VECTOR(x) ((const SEXP *) DATAPTR_RO(x))
 #define NANO_INTEGER(x) *(int *) DATAPTR_RO(x)

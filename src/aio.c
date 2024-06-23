@@ -359,8 +359,8 @@ static void iraio_complete_signal(void *arg) {
 
 static void saio_finalizer(SEXP xptr) {
 
-  if (R_ExternalPtrAddr(xptr) == NULL) return;
-  nano_aio *xp = (nano_aio *) R_ExternalPtrAddr(xptr);
+  if (NANO_PTR(xptr) == NULL) return;
+  nano_aio *xp = (nano_aio *) NANO_PTR(xptr);
   nng_aio_free(xp->aio);
   R_Free(xp);
 
@@ -368,8 +368,8 @@ static void saio_finalizer(SEXP xptr) {
 
 static void raio_finalizer(SEXP xptr) {
 
-  if (R_ExternalPtrAddr(xptr) == NULL) return;
-  nano_aio *xp = (nano_aio *) R_ExternalPtrAddr(xptr);
+  if (NANO_PTR(xptr) == NULL) return;
+  nano_aio *xp = (nano_aio *) NANO_PTR(xptr);
   nng_aio_free(xp->aio);
   if (xp->data != NULL)
     nng_msg_free((nng_msg *) xp->data);
@@ -379,8 +379,8 @@ static void raio_finalizer(SEXP xptr) {
 
 static void request_finalizer(SEXP xptr) {
 
-  if (R_ExternalPtrAddr(xptr) == NULL) return;
-  nano_aio *xp = (nano_aio *) R_ExternalPtrAddr(xptr);
+  if (NANO_PTR(xptr) == NULL) return;
+  nano_aio *xp = (nano_aio *) NANO_PTR(xptr);
   nano_aio *saio = (nano_aio *) xp->next;
   nng_aio_free(saio->aio);
   nng_aio_free(xp->aio);
@@ -395,8 +395,8 @@ static void request_finalizer(SEXP xptr) {
 
 static void cv_finalizer(SEXP xptr) {
 
-  if (R_ExternalPtrAddr(xptr) == NULL) return;
-  nano_cv *xp = (nano_cv *) R_ExternalPtrAddr(xptr);
+  if (NANO_PTR(xptr) == NULL) return;
+  nano_cv *xp = (nano_cv *) NANO_PTR(xptr);
   nng_cv_free(xp->cv);
   nng_mtx_free(xp->mtx);
   R_Free(xp);
@@ -405,16 +405,16 @@ static void cv_finalizer(SEXP xptr) {
 
 static void cv_duo_finalizer(SEXP xptr) {
 
-  if (R_ExternalPtrAddr(xptr) == NULL) return;
-  nano_cv_duo *xp = (nano_cv_duo *) R_ExternalPtrAddr(xptr);
+  if (NANO_PTR(xptr) == NULL) return;
+  nano_cv_duo *xp = (nano_cv_duo *) NANO_PTR(xptr);
   R_Free(xp);
 
 }
 
 static void iaio_finalizer(SEXP xptr) {
 
-  if (R_ExternalPtrAddr(xptr) == NULL) return;
-  nano_aio *xp = (nano_aio *) R_ExternalPtrAddr(xptr);
+  if (NANO_PTR(xptr) == NULL) return;
+  nano_aio *xp = (nano_aio *) NANO_PTR(xptr);
   nng_aio_free(xp->aio);
   if (xp->data != NULL)
     R_Free(xp->data);
@@ -424,8 +424,8 @@ static void iaio_finalizer(SEXP xptr) {
 
 static void haio_finalizer(SEXP xptr) {
 
-  if (R_ExternalPtrAddr(xptr) == NULL) return;
-  nano_aio *xp = (nano_aio *) R_ExternalPtrAddr(xptr);
+  if (NANO_PTR(xptr) == NULL) return;
+  nano_aio *xp = (nano_aio *) NANO_PTR(xptr);
   nano_handle *handle = (nano_handle *) xp->next;
   nng_aio_free(xp->aio);
   if (xp->data != NULL)
@@ -443,8 +443,8 @@ static void haio_finalizer(SEXP xptr) {
 
 static void session_finalizer(SEXP xptr) {
 
-  if (R_ExternalPtrAddr(xptr) == NULL) return;
-  nng_http_conn *xp = (nng_http_conn *) R_ExternalPtrAddr(xptr);
+  if (NANO_PTR(xptr) == NULL) return;
+  nng_http_conn *xp = (nng_http_conn *) NANO_PTR(xptr);
   nng_http_conn_close(xp);
 
 }
@@ -459,7 +459,7 @@ SEXP rnng_aio_result(SEXP env) {
 
   const SEXP aio = Rf_findVarInFrame(env, nano_AioSymbol);
 
-  nano_aio *saio = (nano_aio *) R_ExternalPtrAddr(aio);
+  nano_aio *saio = (nano_aio *) NANO_PTR(aio);
 
   if (nng_aio_busy(saio->aio))
     return nano_unresolved;
@@ -481,7 +481,7 @@ SEXP rnng_aio_get_msg(SEXP env) {
 
   const SEXP aio = Rf_findVarInFrame(env, nano_AioSymbol);
 
-  nano_aio *raio = (nano_aio *) R_ExternalPtrAddr(aio);
+  nano_aio *raio = (nano_aio *) NANO_PTR(aio);
 
   int res;
   switch (raio->type) {
@@ -550,10 +550,10 @@ SEXP rnng_aio_call(SEXP x) {
   switch (TYPEOF(x)) {
   case ENVSXP: ;
     const SEXP coreaio = Rf_findVarInFrame(x, nano_AioSymbol);
-    if (TAG(coreaio) != nano_AioSymbol)
+    if (NANO_TAG(coreaio) != nano_AioSymbol)
       return x;
 
-    nano_aio *aiop = (nano_aio *) R_ExternalPtrAddr(coreaio);
+    nano_aio *aiop = (nano_aio *) NANO_PTR(coreaio);
     nng_aio_wait(aiop->aio);
     switch (aiop->type) {
     case RECVAIO:
@@ -635,8 +635,8 @@ SEXP rnng_aio_stop(SEXP x) {
   switch (TYPEOF(x)) {
   case ENVSXP: ;
     const SEXP coreaio = Rf_findVarInFrame(x, nano_AioSymbol);
-    if (TAG(coreaio) != nano_AioSymbol) break;
-    nano_aio *aiop = (nano_aio *) R_ExternalPtrAddr(coreaio);
+    if (NANO_TAG(coreaio) != nano_AioSymbol) break;
+    nano_aio *aiop = (nano_aio *) NANO_PTR(coreaio);
     nng_aio_stop(aiop->aio);
     break;
   case VECSXP: ;
@@ -657,11 +657,11 @@ static int rnng_unresolved_impl(SEXP x) {
   switch (TYPEOF(x)) {
   case ENVSXP: ;
     const SEXP coreaio = Rf_findVarInFrame(x, nano_AioSymbol);
-    if (TAG(coreaio) != nano_AioSymbol) {
+    if (NANO_TAG(coreaio) != nano_AioSymbol) {
       xc = 0; break;
     }
     SEXP value;
-    nano_aio *aio = (nano_aio *) R_ExternalPtrAddr(coreaio);
+    nano_aio *aio = (nano_aio *) NANO_PTR(coreaio);
     switch (aio->type) {
     case SENDAIO:
     case IOV_SENDAIO:
@@ -709,9 +709,9 @@ static int rnng_unresolved2_impl(SEXP x) {
 
   if (TYPEOF(x) == ENVSXP) {
     const SEXP coreaio = Rf_findVarInFrame(x, nano_AioSymbol);
-    if (TAG(coreaio) != nano_AioSymbol)
+    if (NANO_TAG(coreaio) != nano_AioSymbol)
       return 0;
-    nano_aio *aiop = (nano_aio *) R_ExternalPtrAddr(coreaio);
+    nano_aio *aiop = (nano_aio *) NANO_PTR(coreaio);
     return nng_aio_busy(aiop->aio);
   }
 
@@ -747,7 +747,7 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
   nano_buf buf;
   int sock, xc;
 
-  const SEXP ptrtag = TAG(con);
+  const SEXP ptrtag = NANO_TAG(con);
   if ((sock = ptrtag == nano_SocketSymbol) || ptrtag == nano_ContextSymbol) {
 
     switch (nano_encodes(mode)) {
@@ -774,8 +774,8 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
 
     nng_aio_set_msg(saio->aio, msg);
     nng_aio_set_timeout(saio->aio, dur);
-    sock ? nng_send_aio(*(nng_socket *) R_ExternalPtrAddr(con), saio->aio) :
-           nng_ctx_send(*(nng_ctx *) R_ExternalPtrAddr(con), saio->aio);
+    sock ? nng_send_aio(*(nng_socket *) NANO_PTR(con), saio->aio) :
+           nng_ctx_send(*(nng_ctx *) NANO_PTR(con), saio->aio);
     NANO_FREE(buf);
 
     PROTECT(aio = R_MakeExternalPtr(saio, nano_AioSymbol, R_NilValue));
@@ -785,7 +785,7 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
 
     nano_encode(&buf, data);
 
-    nano_stream *nst = (nano_stream *) R_ExternalPtrAddr(con);
+    nano_stream *nst = (nano_stream *) NANO_PTR(con);
     nng_stream *sp = nst->stream;
     nng_iov iov;
 
@@ -838,13 +838,13 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
 SEXP rnng_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP cvar, SEXP bytes, SEXP clo) {
 
   const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) nano_integer(timeout);
-  const int signal = TAG(cvar) == nano_CvSymbol;
-  nano_cv *ncv = signal ? (nano_cv *) R_ExternalPtrAddr(cvar) : NULL;
+  const int signal = NANO_TAG(cvar) == nano_CvSymbol;
+  nano_cv *ncv = signal ? (nano_cv *) NANO_PTR(cvar) : NULL;
   nano_aio *raio;
   SEXP aio;
   int mod, sock, xc;
 
-  const SEXP ptrtag = TAG(con);
+  const SEXP ptrtag = NANO_TAG(con);
   if ((sock = ptrtag == nano_SocketSymbol) || ptrtag == nano_ContextSymbol) {
 
     mod = nano_matcharg(mode);
@@ -857,8 +857,8 @@ SEXP rnng_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP cvar, SEXP bytes, SEX
       goto exitlevel1;
 
     nng_aio_set_timeout(raio->aio, dur);
-    sock ? nng_recv_aio(*(nng_socket *) R_ExternalPtrAddr(con), raio->aio) :
-      nng_ctx_recv(*(nng_ctx *) R_ExternalPtrAddr(con), raio->aio);
+    sock ? nng_recv_aio(*(nng_socket *) NANO_PTR(con), raio->aio) :
+      nng_ctx_recv(*(nng_ctx *) NANO_PTR(con), raio->aio);
 
     PROTECT(aio = R_MakeExternalPtr(raio, nano_AioSymbol, R_NilValue));
     R_RegisterCFinalizerEx(aio, raio_finalizer, TRUE);
@@ -867,7 +867,7 @@ SEXP rnng_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP cvar, SEXP bytes, SEX
 
     mod = nano_matchargs(mode);
     const size_t xlen = (size_t) nano_integer(bytes);
-    nng_stream **sp = (nng_stream **) R_ExternalPtrAddr(con);
+    nng_stream **sp = (nng_stream **) NANO_PTR(con);
     nng_iov iov;
 
     raio = R_Calloc(1, nano_aio);
@@ -923,7 +923,7 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP dat
   const char *httr = CHAR(STRING_ELT(http, 0));
   const char *mthd = method != R_NilValue ? CHAR(STRING_ELT(method, 0)) : NULL;
   const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) nano_integer(timeout);
-  if (tls != R_NilValue && TAG(tls) != nano_TlsSymbol)
+  if (tls != R_NilValue && NANO_TAG(tls) != nano_TlsSymbol)
     Rf_error("'tls' is not a valid TLS Configuration");
   nano_aio *haio = R_Calloc(1, nano_aio);
   nano_handle *handle = R_Calloc(1, nano_handle);
@@ -981,7 +981,7 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP dat
 
     } else {
 
-      handle->cfg = (nng_tls_config *) R_ExternalPtrAddr(tls);
+      handle->cfg = (nng_tls_config *) NANO_PTR(tls);
       nng_tls_config_hold(handle->cfg);
 
       if ((xc = nng_tls_config_server_name(handle->cfg, handle->url->u_hostname)) ||
@@ -1049,7 +1049,7 @@ static SEXP rnng_aio_http_impl(SEXP env, const int typ) {
 
   const SEXP aio = Rf_findVarInFrame(env, nano_AioSymbol);
 
-  nano_aio *haio = (nano_aio *) R_ExternalPtrAddr(aio);
+  nano_aio *haio = (nano_aio *) NANO_PTR(aio);
 
   if (nng_aio_busy(haio->aio))
     return nano_unresolved;
@@ -1136,7 +1136,7 @@ SEXP rnng_ncurl_session(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP
   const char *httr = CHAR(STRING_ELT(http, 0));
   const char *mthd = method != R_NilValue ? CHAR(STRING_ELT(method, 0)) : NULL;
   const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) nano_integer(timeout);
-  if (tls != R_NilValue && TAG(tls) != nano_TlsSymbol)
+  if (tls != R_NilValue && NANO_TAG(tls) != nano_TlsSymbol)
     Rf_error("'tls' is not a valid TLS Configuration");
 
   nano_aio *haio = R_Calloc(1, nano_aio);
@@ -1195,7 +1195,7 @@ SEXP rnng_ncurl_session(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP
 
     } else {
 
-      handle->cfg = (nng_tls_config *) R_ExternalPtrAddr(tls);
+      handle->cfg = (nng_tls_config *) NANO_PTR(tls);
       nng_tls_config_hold(handle->cfg);
 
       if ((xc = nng_tls_config_server_name(handle->cfg, handle->url->u_hostname)) ||
@@ -1247,12 +1247,12 @@ SEXP rnng_ncurl_session(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP
 
 SEXP rnng_ncurl_transact(SEXP session) {
 
-  if (TAG(session) != nano_StatusSymbol)
+  if (NANO_TAG(session) != nano_StatusSymbol)
     Rf_error("'session' is not a valid or active ncurlSession");
 
-  nng_http_conn *conn = (nng_http_conn *) R_ExternalPtrAddr(session);
+  nng_http_conn *conn = (nng_http_conn *) NANO_PTR(session);
   SEXP aio = Rf_getAttrib(session, nano_AioSymbol);
-  nano_aio *haio = (nano_aio *) R_ExternalPtrAddr(aio);
+  nano_aio *haio = (nano_aio *) NANO_PTR(aio);
   nano_handle *handle = (nano_handle *) haio->next;
 
   nng_http_conn_transact(conn, handle->req, handle->res, haio->aio);
@@ -1270,7 +1270,7 @@ SEXP rnng_ncurl_transact(SEXP session) {
   const uint16_t code = nng_http_res_get_status(handle->res);
   SET_VECTOR_ELT(out, 0, Rf_ScalarInteger(code));
 
-  response = R_ExternalPtrProtected(session);
+  response = NANO_PROT(session);
   if (response != R_NilValue) {
     const R_xlen_t rlen = XLENGTH(response);
     rvec = Rf_allocVector(VECSXP, rlen);
@@ -1303,13 +1303,13 @@ SEXP rnng_ncurl_transact(SEXP session) {
 
 SEXP rnng_ncurl_session_close(SEXP session) {
 
-  if (TAG(session) != nano_StatusSymbol)
+  if (NANO_TAG(session) != nano_StatusSymbol)
     Rf_error("'session' is not a valid or active ncurlSession");
 
-  nng_http_conn *sp = (nng_http_conn *) R_ExternalPtrAddr(session);
+  nng_http_conn *sp = (nng_http_conn *) NANO_PTR(session);
   nng_http_conn_close(sp);
-  SET_TAG(session, R_NilValue);
-  R_SetExternalPtrProtected(session, R_NilValue);
+  NANO_SET_TAG(session, R_NilValue);
+  NANO_SET_PROT(session, R_NilValue);
   R_ClearExternalPtr(session);
   Rf_setAttrib(session, nano_AioSymbol, R_NilValue);
 
@@ -1321,7 +1321,7 @@ SEXP rnng_ncurl_session_close(SEXP session) {
 
 SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeout, SEXP cvar, SEXP clo) {
 
-  if (TAG(con) != nano_ContextSymbol)
+  if (NANO_TAG(con) != nano_ContextSymbol)
     Rf_error("'con' is not a valid Context");
 
   const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) nano_integer(timeout);
@@ -1331,11 +1331,11 @@ SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeou
     signal = 0;
     drop = 0;
   } else {
-    signal = TAG(cvar) == nano_CvSymbol;
+    signal = NANO_TAG(cvar) == nano_CvSymbol;
     drop = 1 - signal;
   }
-  nng_ctx *ctx = (nng_ctx *) R_ExternalPtrAddr(con);
-  nano_cv *ncv = signal ? (nano_cv *) R_ExternalPtrAddr(cvar) : NULL;
+  nng_ctx *ctx = (nng_ctx *) NANO_PTR(con);
+  nano_cv *ncv = signal ? (nano_cv *) NANO_PTR(cvar) : NULL;
 
   SEXP aio, env, fun;
   nano_buf buf;
@@ -1409,10 +1409,10 @@ SEXP rnng_set_promise_context(SEXP x, SEXP ctx) {
     return x;
 
   SEXP aio = Rf_findVarInFrame(x, nano_AioSymbol);
-  if (TAG(aio) != nano_AioSymbol)
+  if (NANO_TAG(aio) != nano_AioSymbol)
     return x;
 
-  nano_aio *raio = (nano_aio *) R_ExternalPtrAddr(aio);
+  nano_aio *raio = (nano_aio *) NANO_PTR(aio);
 
   if (eln2 == eln2dummy) {
     SEXP str, call;
@@ -1470,10 +1470,10 @@ SEXP rnng_cv_alloc(void) {
 
 SEXP rnng_cv_wait(SEXP cvar) {
 
-  if (TAG(cvar) != nano_CvSymbol)
+  if (NANO_TAG(cvar) != nano_CvSymbol)
     Rf_error("'cv' is not a valid Condition Variable");
 
-  nano_cv *ncv = (nano_cv *) R_ExternalPtrAddr(cvar);
+  nano_cv *ncv = (nano_cv *) NANO_PTR(cvar);
   nng_cv *cv = ncv->cv;
   nng_mtx *mtx = ncv->mtx;
   int flag;
@@ -1491,10 +1491,10 @@ SEXP rnng_cv_wait(SEXP cvar) {
 
 SEXP rnng_cv_until(SEXP cvar, SEXP msec) {
 
-  if (TAG(cvar) != nano_CvSymbol)
+  if (NANO_TAG(cvar) != nano_CvSymbol)
     Rf_error("'cv' is not a valid Condition Variable");
 
-  nano_cv *ncv = (nano_cv *) R_ExternalPtrAddr(cvar);
+  nano_cv *ncv = (nano_cv *) NANO_PTR(cvar);
   nng_cv *cv = ncv->cv;
   nng_mtx *mtx = ncv->mtx;
 
@@ -1530,10 +1530,10 @@ SEXP rnng_cv_until(SEXP cvar, SEXP msec) {
 
 SEXP rnng_cv_wait_safe(SEXP cvar) {
 
-  if (TAG(cvar) != nano_CvSymbol)
+  if (NANO_TAG(cvar) != nano_CvSymbol)
     Rf_error("'cv' is not a valid Condition Variable");
 
-  nano_cv *ncv = (nano_cv *) R_ExternalPtrAddr(cvar);
+  nano_cv *ncv = (nano_cv *) NANO_PTR(cvar);
   nng_cv *cv = ncv->cv;
   nng_mtx *mtx = ncv->mtx;
   int signalled;
@@ -1565,10 +1565,10 @@ SEXP rnng_cv_wait_safe(SEXP cvar) {
 
 SEXP rnng_cv_until_safe(SEXP cvar, SEXP msec) {
 
-  if (TAG(cvar) != nano_CvSymbol)
+  if (NANO_TAG(cvar) != nano_CvSymbol)
     Rf_error("'cv' is not a valid Condition Variable");
 
-  nano_cv *ncv = (nano_cv *) R_ExternalPtrAddr(cvar);
+  nano_cv *ncv = (nano_cv *) NANO_PTR(cvar);
   nng_cv *cv = ncv->cv;
   nng_mtx *mtx = ncv->mtx;
   int signalled;
@@ -1614,10 +1614,10 @@ SEXP rnng_cv_until_safe(SEXP cvar, SEXP msec) {
 
 SEXP rnng_cv_reset(SEXP cvar) {
 
-  if (TAG(cvar) != nano_CvSymbol)
+  if (NANO_TAG(cvar) != nano_CvSymbol)
     Rf_error("'cv' is not a valid Condition Variable");
 
-  nano_cv *ncv = (nano_cv *) R_ExternalPtrAddr(cvar);
+  nano_cv *ncv = (nano_cv *) NANO_PTR(cvar);
   nng_mtx *mtx = ncv->mtx;
 
   nng_mtx_lock(mtx);
@@ -1631,9 +1631,9 @@ SEXP rnng_cv_reset(SEXP cvar) {
 
 SEXP rnng_cv_value(SEXP cvar) {
 
-  if (TAG(cvar) != nano_CvSymbol)
+  if (NANO_TAG(cvar) != nano_CvSymbol)
     Rf_error("'cv' is not a valid Condition Variable");
-  nano_cv *ncv = (nano_cv *) R_ExternalPtrAddr(cvar);
+  nano_cv *ncv = (nano_cv *) NANO_PTR(cvar);
   nng_mtx *mtx = ncv->mtx;
   int cond;
   nng_mtx_lock(mtx);
@@ -1646,10 +1646,10 @@ SEXP rnng_cv_value(SEXP cvar) {
 
 SEXP rnng_cv_signal(SEXP cvar) {
 
-  if (TAG(cvar) != nano_CvSymbol)
+  if (NANO_TAG(cvar) != nano_CvSymbol)
     Rf_error("'cv' is not a valid Condition Variable");
 
-  nano_cv *ncv = (nano_cv *) R_ExternalPtrAddr(cvar);
+  nano_cv *ncv = (nano_cv *) NANO_PTR(cvar);
   nng_cv *cv = ncv->cv;
   nng_mtx *mtx = ncv->mtx;
 
@@ -1666,7 +1666,7 @@ SEXP rnng_cv_signal(SEXP cvar) {
 
 SEXP rnng_pipe_notify(SEXP socket, SEXP cv, SEXP cv2, SEXP add, SEXP remove, SEXP flag) {
 
-  if (TAG(socket) != nano_SocketSymbol)
+  if (NANO_TAG(socket) != nano_SocketSymbol)
     Rf_error("'socket' is not a valid Socket");
 
   int xc;
@@ -1674,7 +1674,7 @@ SEXP rnng_pipe_notify(SEXP socket, SEXP cv, SEXP cv2, SEXP add, SEXP remove, SEX
 
   if (cv == R_NilValue) {
 
-    sock = (nng_socket *) R_ExternalPtrAddr(socket);
+    sock = (nng_socket *) NANO_PTR(socket);
     if (NANO_INTEGER(add) && (xc = nng_pipe_notify(*sock, NNG_PIPE_EV_ADD_POST, NULL, NULL)))
       ERROR_OUT(xc);
 
@@ -1683,12 +1683,12 @@ SEXP rnng_pipe_notify(SEXP socket, SEXP cv, SEXP cv2, SEXP add, SEXP remove, SEX
 
     return nano_success;
 
-  } else if (TAG(cv) != nano_CvSymbol) {
+  } else if (NANO_TAG(cv) != nano_CvSymbol) {
     Rf_error("'cv' is not a valid Condition Variable");
   }
 
-  sock = (nng_socket *) R_ExternalPtrAddr(socket);
-  nano_cv *cvp = (nano_cv *) R_ExternalPtrAddr(cv);
+  sock = (nng_socket *) NANO_PTR(socket);
+  nano_cv *cvp = (nano_cv *) NANO_PTR(cv);
   const int flg = NANO_INTEGER(flag);
 
   if (cv2 != R_NilValue) {
@@ -1699,7 +1699,7 @@ SEXP rnng_pipe_notify(SEXP socket, SEXP cv, SEXP cv2, SEXP add, SEXP remove, SEX
     cvp->flag = flg < 0 ? 1 : flg;
     nano_cv_duo *duo = R_Calloc(1, nano_cv_duo);
     duo->cv = cvp;
-    duo->cv2 = (nano_cv *) R_ExternalPtrAddr(cv2);
+    duo->cv2 = (nano_cv *) NANO_PTR(cv2);
 
     if (NANO_INTEGER(add) && (xc = nng_pipe_notify(*sock, NNG_PIPE_EV_ADD_POST, pipe_cb_signal_duo, duo)))
       ERROR_OUT(xc);
@@ -1708,7 +1708,7 @@ SEXP rnng_pipe_notify(SEXP socket, SEXP cv, SEXP cv2, SEXP add, SEXP remove, SEX
       ERROR_OUT(xc);
 
     SEXP xptr = R_MakeExternalPtr(duo, R_NilValue, R_NilValue);
-    R_SetExternalPtrProtected(cv, xptr);
+    NANO_SET_PROT(cv, xptr);
     R_RegisterCFinalizerEx(xptr, cv_duo_finalizer, TRUE);
 
   } else {
@@ -1729,15 +1729,15 @@ SEXP rnng_pipe_notify(SEXP socket, SEXP cv, SEXP cv2, SEXP add, SEXP remove, SEX
 
 SEXP rnng_socket_lock(SEXP socket, SEXP cv) {
 
-  if (TAG(socket) != nano_SocketSymbol)
+  if (NANO_TAG(socket) != nano_SocketSymbol)
     Rf_error("'socket' is not a valid Socket");
-  nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(socket);
+  nng_socket *sock = (nng_socket *) NANO_PTR(socket);
 
   int xc;
   if (cv != R_NilValue) {
-    if (TAG(cv) != nano_CvSymbol)
+    if (NANO_TAG(cv) != nano_CvSymbol)
       Rf_error("'cv' is not a valid Condition Variable");
-    nano_cv *ncv = (nano_cv *) R_ExternalPtrAddr(cv);
+    nano_cv *ncv = (nano_cv *) NANO_PTR(cv);
     xc = nng_pipe_notify(*sock, NNG_PIPE_EV_ADD_PRE, pipe_cb_dropcon, ncv);
   } else {
     xc = nng_pipe_notify(*sock, NNG_PIPE_EV_ADD_PRE, pipe_cb_dropcon, NULL);
@@ -1752,10 +1752,10 @@ SEXP rnng_socket_lock(SEXP socket, SEXP cv) {
 
 SEXP rnng_socket_unlock(SEXP socket) {
 
-  if (TAG(socket) != nano_SocketSymbol)
+  if (NANO_TAG(socket) != nano_SocketSymbol)
     Rf_error("'socket' is not a valid Socket");
 
-  nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(socket);
+  nng_socket *sock = (nng_socket *) NANO_PTR(socket);
 
   const int xc = nng_pipe_notify(*sock, NNG_PIPE_EV_ADD_PRE, NULL, NULL);
   if (xc)

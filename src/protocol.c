@@ -23,8 +23,8 @@
 
 void socket_finalizer(SEXP xptr) {
 
-  if (R_ExternalPtrAddr(xptr) == NULL) return;
-  nng_socket *xp = (nng_socket *) R_ExternalPtrAddr(xptr);
+  if (NANO_PTR(xptr) == NULL) return;
+  nng_socket *xp = (nng_socket *) NANO_PTR(xptr);
   nng_close(*xp);
   R_Free(xp);
 
@@ -144,9 +144,9 @@ SEXP rnng_protocol_open(SEXP protocol, SEXP raw) {
 
 SEXP rnng_close(SEXP socket) {
 
-  if (TAG(socket) != nano_SocketSymbol)
+  if (NANO_TAG(socket) != nano_SocketSymbol)
     Rf_error("'socket' is not a valid Socket");
-  nng_socket *sock = (nng_socket *) R_ExternalPtrAddr(socket);
+  nng_socket *sock = (nng_socket *) NANO_PTR(socket);
   const int xc = nng_close(*sock);
   if (xc)
     ERROR_RET(xc);
@@ -159,19 +159,19 @@ SEXP rnng_close(SEXP socket) {
 SEXP rnng_reap(SEXP con) {
 
   int xc;
-  const SEXP ptrtag = TAG(con);
+  const SEXP ptrtag = NANO_TAG(con);
 
   if (ptrtag == nano_ContextSymbol) {
-    xc = nng_ctx_close(*(nng_ctx *) R_ExternalPtrAddr(con));
+    xc = nng_ctx_close(*(nng_ctx *) NANO_PTR(con));
 
   } else if (ptrtag == nano_SocketSymbol) {
-    xc = nng_close(*(nng_socket *) R_ExternalPtrAddr(con));
+    xc = nng_close(*(nng_socket *) NANO_PTR(con));
 
   } else if (ptrtag == nano_ListenerSymbol) {
-    xc = nng_listener_close(*(nng_listener *) R_ExternalPtrAddr(con));
+    xc = nng_listener_close(*(nng_listener *) NANO_PTR(con));
 
   } else if (ptrtag == nano_DialerSymbol) {
-    xc = nng_dialer_close(*(nng_dialer *) R_ExternalPtrAddr(con));
+    xc = nng_dialer_close(*(nng_dialer *) NANO_PTR(con));
 
   } else {
     xc = 3;
