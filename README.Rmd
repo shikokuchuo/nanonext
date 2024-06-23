@@ -17,8 +17,8 @@ knitr::opts_chunk$set(
 
 <!-- badges: start -->
 [![CRAN status](https://www.r-pkg.org/badges/version/nanonext?color=112d4e)](https://CRAN.R-project.org/package=nanonext)
+[![R-multiverse status](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fcommunity.r-multiverse.org%2Fapi%2Fpackages%2Fnanonext&query=%24.Version&label=r-multiverse)](https://community.r-multiverse.org/nanonext)
 [![R-universe status](https://shikokuchuo.r-universe.dev/badges/nanonext?color=3f72af)](https://shikokuchuo.r-universe.dev/nanonext)
-[![diffify](https://diffify.com/diffify-badge.svg)](https://diffify.com/R/nanonext)
 [![R-CMD-check](https://github.com/shikokuchuo/nanonext/workflows/R-CMD-check/badge.svg)](https://github.com/shikokuchuo/nanonext/actions)
 [![codecov](https://codecov.io/gh/shikokuchuo/nanonext/graph/badge.svg)](https://app.codecov.io/gh/shikokuchuo/nanonext)
 [![DOI](https://zenodo.org/badge/451104675.svg)](https://zenodo.org/badge/latestdoi/451104675)
@@ -129,13 +129,13 @@ vignette("nanonext", package = "nanonext")
 
 ### Installation
 
-Install the latest release from CRAN:
+Install the latest release from CRAN or R-multiverse:
 
 ```{r cran, eval=FALSE}
 install.packages("nanonext")
 ```
 
-Or the development version from R-universe:
+The current development version is available from R-universe:
 
 ```{r universe, eval=FALSE}
 install.packages("nanonext", repos = "https://shikokuchuo.r-universe.dev")
