@@ -96,7 +96,7 @@ SEXP rnng_random(SEXP n, SEXP convert) {
     out = nano_hash_char(buf, sz);
   } else {
     out = Rf_allocVector(RAWSXP, sz);
-    memcpy(DATAPTR(out), buf, sz);
+    memcpy(NANO_DATAPTR(out), buf, sz);
   }
 
   return out;

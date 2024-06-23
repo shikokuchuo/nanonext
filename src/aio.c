@@ -34,12 +34,12 @@ static inline SEXP R_mkClosure(SEXP formals, SEXP body, SEXP env) {
 
 #endif
 
-inline int R_Integer(SEXP x) {
+inline int nano_integer(SEXP x) {
   int out;
   switch (TYPEOF(x)) {
   case INTSXP:
   case LGLSXP:
-    out = *(int *) DATAPTR_RO(x);
+    out = NANO_INTEGER(x);
     break;
   default:
     out = Rf_asInteger(x);
@@ -576,7 +576,7 @@ SEXP rnng_aio_call(SEXP x) {
   case VECSXP: ;
     const R_xlen_t xlen = Rf_xlength(x);
     for (R_xlen_t i = 0; i < xlen; i++) {
-      rnng_aio_call(R_VECTOR(x)[i]);
+      rnng_aio_call(NANO_VECTOR(x)[i]);
     }
     break;
   }
@@ -599,7 +599,7 @@ static SEXP rnng_aio_collect_impl(SEXP x, SEXP (*const func)(SEXP)) {
     const R_xlen_t xlen = Rf_xlength(x);
     PROTECT(out = Rf_allocVector(VECSXP, xlen));
     for (R_xlen_t i = 0; i < xlen; i++) {
-      env = func(R_VECTOR(x)[i]);
+      env = func(NANO_VECTOR(x)[i]);
       if (TYPEOF(env) != ENVSXP) goto exit;
       env = Rf_findVarInFrame(env, nano_ValueSymbol);
       if (env == R_UnboundValue) goto exit;
@@ -642,7 +642,7 @@ SEXP rnng_aio_stop(SEXP x) {
   case VECSXP: ;
     const R_xlen_t xlen = Rf_xlength(x);
     for (R_xlen_t i = 0; i < xlen; i++) {
-      rnng_aio_stop(R_VECTOR(x)[i]);
+      rnng_aio_stop(NANO_VECTOR(x)[i]);
     }
     break;
   }
@@ -696,7 +696,7 @@ SEXP rnng_unresolved(SEXP x) {
   case VECSXP: ;
     const R_xlen_t xlen = Rf_xlength(x);
     for (R_xlen_t i = 0; i < xlen; i++) {
-      if (rnng_unresolved_impl(R_VECTOR(x)[i]))
+      if (rnng_unresolved_impl(NANO_VECTOR(x)[i]))
         return Rf_ScalarLogical(1);
     }
   }
@@ -728,7 +728,7 @@ SEXP rnng_unresolved2(SEXP x) {
     int xc = 0;
     const R_xlen_t xlen = Rf_xlength(x);
     for (R_xlen_t i = 0; i < xlen; i++) {
-      xc += rnng_unresolved2_impl(R_VECTOR(x)[i]);
+      xc += rnng_unresolved2_impl(NANO_VECTOR(x)[i]);
     }
     return Rf_ScalarInteger(xc);
   }
@@ -741,7 +741,7 @@ SEXP rnng_unresolved2(SEXP x) {
 
 SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
 
-  const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) R_Integer(timeout);
+  const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) nano_integer(timeout);
   nano_aio *saio;
   SEXP aio;
   nano_buf buf;
@@ -837,7 +837,7 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
 
 SEXP rnng_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP cvar, SEXP bytes, SEXP clo) {
 
-  const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) R_Integer(timeout);
+  const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) nano_integer(timeout);
   const int signal = TAG(cvar) == nano_CvSymbol;
   nano_cv *ncv = signal ? (nano_cv *) R_ExternalPtrAddr(cvar) : NULL;
   nano_aio *raio;
@@ -866,7 +866,7 @@ SEXP rnng_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP cvar, SEXP bytes, SEX
   } else if (ptrtag == nano_StreamSymbol) {
 
     mod = nano_matchargs(mode);
-    const size_t xlen = (size_t) R_Integer(bytes);
+    const size_t xlen = (size_t) nano_integer(bytes);
     nng_stream **sp = (nng_stream **) R_ExternalPtrAddr(con);
     nng_iov iov;
 
@@ -922,7 +922,7 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP dat
 
   const char *httr = CHAR(STRING_ELT(http, 0));
   const char *mthd = method != R_NilValue ? CHAR(STRING_ELT(method, 0)) : NULL;
-  const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) R_Integer(timeout);
+  const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) nano_integer(timeout);
   if (tls != R_NilValue && TAG(tls) != nano_TlsSymbol)
     Rf_error("'tls' is not a valid TLS Configuration");
   nano_aio *haio = R_Calloc(1, nano_aio);
@@ -1101,7 +1101,7 @@ static SEXP rnng_aio_http_impl(SEXP env, const int typ) {
   } else {
     vec = Rf_allocVector(RAWSXP, sz);
     if (dat != NULL)
-      memcpy(DATAPTR(vec), dat, sz);
+      memcpy(NANO_DATAPTR(vec), dat, sz);
   }
   Rf_defineVar(nano_ValueSymbol, vec, env);
 
@@ -1135,7 +1135,7 @@ SEXP rnng_ncurl_session(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP
 
   const char *httr = CHAR(STRING_ELT(http, 0));
   const char *mthd = method != R_NilValue ? CHAR(STRING_ELT(method, 0)) : NULL;
-  const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) R_Integer(timeout);
+  const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) nano_integer(timeout);
   if (tls != R_NilValue && TAG(tls) != nano_TlsSymbol)
     Rf_error("'tls' is not a valid TLS Configuration");
 
@@ -1292,7 +1292,7 @@ SEXP rnng_ncurl_transact(SEXP session) {
   } else {
     vec = Rf_allocVector(RAWSXP, sz);
     if (dat != NULL)
-      memcpy(DATAPTR(vec), dat, sz);
+      memcpy(NANO_DATAPTR(vec), dat, sz);
   }
   SET_VECTOR_ELT(out, 2, vec);
 
@@ -1324,7 +1324,7 @@ SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeou
   if (TAG(con) != nano_ContextSymbol)
     Rf_error("'con' is not a valid Context");
 
-  const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) R_Integer(timeout);
+  const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) nano_integer(timeout);
   const int mod = nano_matcharg(recvmode);
   int signal, drop;
   if (cvar == R_NilValue) {

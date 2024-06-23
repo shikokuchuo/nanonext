@@ -185,7 +185,10 @@ typedef struct nano_thread_duo_s {
 #include <Rversion.h>
 #include <R_ext/Visibility.h>
 
-#define R_VECTOR(x) ((const SEXP *) DATAPTR_RO(x))
+#define NANO_DATAPTR(x) (void *) DATAPTR_RO(x)
+#define NANO_VECTOR(x) ((const SEXP *) DATAPTR_RO(x))
+#define NANO_INTEGER(x) *(int *) DATAPTR_RO(x)
+#define NANO_ERROR(x) { Rf_error(x); return R_NilValue; }
 
 #define ERROR_OUT(xc) Rf_error("%d | %s", xc, nng_strerror(xc))
 #define ERROR_RET(xc) { Rf_warning("%d | %s", xc, nng_strerror(xc)); return mk_error(xc); }
@@ -203,8 +206,6 @@ typedef struct nano_thread_duo_s {
   (x)->len = 0;                                                \
   (x)->cur = sz
 #define NANO_FREE(x) if (x.len) R_Free(x.buf)
-#define NANO_INTEGER(x) *(int *) DATAPTR_RO(x)
-#define NANO_ERROR(x) { Rf_error(x); return R_NilValue; }
 #define NANO_CLASS2(x, cls1, cls2)                             \
   SEXP klass = Rf_allocVector(STRSXP, 2);                      \
   Rf_classgets(x, klass);                                      \
@@ -220,7 +221,7 @@ void later2(void (*)(void *), void *);
 extern void (*eln2)(void (*)(void *), void *, double, int);
 void eln2dummy(void (*)(void *), void *, double, int);
 
-int R_Integer(SEXP);
+int nano_integer(SEXP);
 SEXP nano_PreserveObject(SEXP);
 void nano_ReleaseObject(SEXP);
 SEXP mk_error(const int);

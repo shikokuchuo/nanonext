@@ -79,7 +79,7 @@ static void tls_finalizer(SEXP xptr) {
 
 SEXP rnng_strerror(SEXP error) {
 
-  const int xc = R_Integer(error);
+  const int xc = nano_integer(error);
   char nano_errbuf[NANONEXT_ERR_STRLEN];
   snprintf(nano_errbuf, NANONEXT_ERR_STRLEN, "%d | %s", xc, nng_strerror(xc));
 
@@ -161,7 +161,7 @@ SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP follow, SEXP method, SEXP headers,
 
   const char *addr = CHAR(STRING_ELT(http, 0));
   const char *mthd = method != R_NilValue ? CHAR(STRING_ELT(method, 0)) : NULL;
-  const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) R_Integer(timeout);
+  const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) nano_integer(timeout);
   if (tls != R_NilValue && TAG(tls) != nano_TlsSymbol)
     Rf_error("'tls' is not a valid TLS Configuration");
   int chk_resp = response != R_NilValue && TYPEOF(response) == STRSXP;
@@ -302,7 +302,7 @@ SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP follow, SEXP method, SEXP headers,
   } else {
     vec = Rf_allocVector(RAWSXP, sz);
     if (dat != NULL)
-      memcpy(DATAPTR(vec), dat, sz);
+      memcpy(NANO_DATAPTR(vec), dat, sz);
   }
   SET_VECTOR_ELT(out, 2, vec);
 
@@ -532,7 +532,7 @@ SEXP rnng_stream_close(SEXP stream) {
 
 SEXP rnng_status_code(SEXP x) {
 
-  const int status = R_Integer(x);
+  const int status = nano_integer(x);
   char *code;
   switch (status) {
   case 100: code = "Continue"; break;
