@@ -560,13 +560,13 @@ static void rnng_dispatch_thread(void *args) {
 
 SEXP rnng_dispatcher_socket(SEXP cv, SEXP n, SEXP host, SEXP url) {
 
-  if (R_ExternalPtrTag(cv) != nano_CvSymbol)
+  if (NANO_TAG(cv) != nano_CvSymbol)
     Rf_error("'cv' is not a valid Condition Variable");
 
-  nano_cv *ncv = (nano_cv *) R_ExternalPtrAddr(cv);
+  nano_cv *ncv = (nano_cv *) NANO_PTR(cv);
 
   SEXP xptr, sock, list;
-  ncv->condition = Rf_asInteger(n);
+  ncv->condition = nano_integer(n);
   nng_mtx_alloc(&ncv->mtx);
   nng_cv_alloc(&ncv->cv, ncv->mtx);
 
@@ -583,7 +583,7 @@ SEXP rnng_dispatcher_socket(SEXP cv, SEXP n, SEXP host, SEXP url) {
   nng_thread_create(&disp->thr, rnng_dispatch_thread, disp);
 
   xptr = R_MakeExternalPtr(disp, R_NilValue, R_NilValue);
-  R_SetExternalPtrProtected(cv, xptr);
+  NANO_SET_PROT(cv, xptr);
   R_RegisterCFinalizerEx(xptr, thread_duo_finalizer, TRUE);
 
   PROTECT(list = R_MakeExternalPtr(hlist, nano_ListenerSymbol, R_NilValue));
