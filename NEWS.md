@@ -1,5 +1,9 @@
 # nanonext 1.1.1.9000 (development)
 
+#### New Features
+
+`.Thread()` provides an epxerimental interface for threaded execution of C functions (see function documentation for further details).
+
 # nanonext 1.1.1
 
 #### New Features

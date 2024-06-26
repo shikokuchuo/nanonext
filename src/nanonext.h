@@ -139,6 +139,7 @@ typedef struct nano_thread_duo_s {
 #include <unistd.h>
 #include <stdarg.h>
 #include <stdio.h>
+
 #endif
 
 #ifdef NANONEXT_TLS
@@ -222,6 +223,41 @@ typedef struct nano_buf_s {
   size_t cur;
 } nano_buf;
 
+
+typedef struct CallInfo {
+  char *name;
+  DL_FUNC fun;
+  int numArgs;
+} CallInfo;
+
+typedef struct RegNatSym {
+  NativeSymbolType type;
+  CallInfo *symbol;
+  DllInfo *dll;
+} RegNatSym;
+
+typedef SEXP (*fun0) (void);
+typedef SEXP (*fun1) (SEXP);
+typedef SEXP (*fun2) (SEXP, SEXP);
+typedef SEXP (*fun3) (SEXP, SEXP, SEXP);
+typedef SEXP (*fun4) (SEXP, SEXP, SEXP, SEXP);
+typedef SEXP (*fun5) (SEXP, SEXP, SEXP, SEXP, SEXP);
+typedef SEXP (*fun6) (SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
+typedef SEXP (*fun7) (SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
+typedef SEXP (*fun8) (SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
+typedef SEXP (*fun9) (SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
+typedef SEXP (*fun10) (SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP,  \
+              SEXP);
+typedef SEXP (*fun11) (SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP,  \
+              SEXP, SEXP);
+typedef SEXP (*fun12) (SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP,  \
+              SEXP, SEXP, SEXP);
+typedef SEXP (*fun13) (SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP,  \
+              SEXP, SEXP, SEXP, SEXP);
+typedef SEXP (*fun14) (SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP,  \
+              SEXP, SEXP, SEXP, SEXP, SEXP);
+typedef SEXP (*fun15) (SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP,  \
+              SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 void later2(void (*)(void *), void *);
 extern void (*eln2)(void (*)(void *), void *, double, int);
 void eln2dummy(void (*)(void *), void *, double, int);
@@ -307,6 +343,7 @@ SEXP rnng_stream_dial(SEXP, SEXP, SEXP);
 SEXP rnng_stream_listen(SEXP, SEXP, SEXP);
 SEXP rnng_strerror(SEXP);
 SEXP rnng_subscribe(SEXP, SEXP, SEXP);
+SEXP rnng_thread_func(SEXP, SEXP, SEXP);
 SEXP rnng_tls_config(SEXP, SEXP, SEXP, SEXP);
 SEXP rnng_unresolved(SEXP);
 SEXP rnng_unresolved2(SEXP);

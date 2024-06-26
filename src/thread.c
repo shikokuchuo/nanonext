@@ -26,11 +26,29 @@
 // # nocov start
 // tested interactively
 
+typedef struct exec_struct_s {
+  SEXP args;
+  nano_cv *cv;
+  DL_FUNC func;
+  int nargs;
+} exec_struct;
+
 static void thread_finalizer(SEXP xptr) {
 
   if (NANO_PTR(xptr) == NULL) return;
   nng_thread *xp = (nng_thread *) NANO_PTR(xptr);
   nng_thread_destroy(xp);
+
+}
+
+static void exec_thread_finalizer(SEXP xptr) {
+
+  if (NANO_PTR(xptr) == NULL) return;
+  nng_thread *xp = (nng_thread *) NANO_PTR(xptr);
+  nng_thread_destroy(xp);
+  SEXP sptr = NANO_PROT(xptr);
+  exec_struct *es = (exec_struct *) NANO_PTR(sptr);
+  R_Free(es);
 
 }
 
@@ -414,3 +432,96 @@ SEXP rnng_signal_thread_create(SEXP cv, SEXP cv2) {
   return cv2;
 
 }
+
+// # nocov start
+// experimental function excluded
+
+static void rnng_thread(void *args) {
+
+  exec_struct *es = (exec_struct *) args;
+  const SEXP *a = NANO_VECTOR(es->args);
+  DL_FUNC func = es->func;
+
+  switch(es->nargs) {
+  case 0:
+    (void) ((fun0) func)(); break;
+  case 1:
+    (void) ((fun1) func)(a[0]); break;
+  case 2: ;
+    (void) ((fun2) func)(a[0], a[1]); break;
+  case 3: ;
+    (void) ((fun3) func)(a[0], a[1], a[2]); break;
+  case 4: ;
+    (void) ((fun4) func)(a[0], a[1], a[2], a[3]); break;
+  case 5: ;
+    (void) ((fun5) func)(a[0], a[1], a[2], a[3], a[4]); break;
+  case 6: ;
+    (void) ((fun6) func)(a[0], a[1], a[2], a[3], a[4], a[5]); break;
+  case 7: ;
+    (void) ((fun7) func)(a[0], a[1], a[2], a[3], a[4], a[5], a[6]); break;
+  case 8: ;
+    (void) ((fun8) func)(a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7]); break;
+  case 9: ;
+    (void) ((fun9) func)(a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7], a[8]); break;
+  case 10: ;
+    (void) ((fun10) func)(a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7], a[8], a[9]); break;
+  case 11: ;
+    (void) ((fun11) func)(a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7], a[8], a[9], a[10]); break;
+  case 12: ;
+    (void) ((fun12) func)(a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7], a[8], a[9], a[10], a[11]); break;
+  case 13: ;
+    (void) ((fun13) func)(a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7], a[8], a[9], a[10], a[11], a[12]); break;
+  case 14: ;
+    (void) ((fun14) func)(a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7], a[8], a[9], a[10], a[11], a[12], a[13]); break;
+  case 15: ;
+    (void) ((fun15) func)(a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7], a[8], a[9], a[10], a[11], a[12], a[13], a[14]); break;
+  default:
+    nano_printf(1, "functions with more than 10 arguments are not yet supported");
+  }
+
+  if (es->cv != NULL) {
+
+    nano_cv *ncv = es->cv;
+    nng_cv *cv = ncv->cv;
+    nng_mtx *mtx = ncv->mtx;
+
+    nng_mtx_lock(mtx);
+    ncv->condition++;
+    nng_cv_wake(cv);
+    nng_mtx_unlock(mtx);
+
+  }
+
+}
+
+SEXP rnng_thread_func(SEXP sym, SEXP arg, SEXP cv) {
+
+  if (TYPEOF(sym) != VECSXP || !Rf_inherits(sym, "NativeSymbolInfo"))
+    Rf_error("'symbol' must be of class 'NativeSymbolInfo'");
+
+  RegNatSym *rns = (RegNatSym *) NANO_PTR(NANO_VECTOR(sym)[1]);
+
+  exec_struct *es = R_Calloc(1, exec_struct);
+  es->args = arg;
+  es->cv = NANO_TAG(cv) == nano_CvSymbol ? (nano_cv *) NANO_PTR(cv) : NULL;
+  es->func = rns->symbol->fun;
+  es->nargs = rns->symbol->numArgs;
+
+  nng_thread *thr;
+  const int xc = nng_thread_create(&thr, rnng_thread, es);
+  if (xc) {
+    R_Free(es);
+    ERROR_OUT(xc);
+  }
+
+  SEXP xptr, sptr;
+  PROTECT(sptr = R_MakeExternalPtr(es, R_NilValue, R_NilValue));
+  PROTECT(xptr = R_MakeExternalPtr(thr, R_NilValue, sptr));
+  R_RegisterCFinalizerEx(xptr, exec_thread_finalizer, TRUE);
+
+  UNPROTECT(2);
+  return xptr;
+
+}
+
+// # nocov end
