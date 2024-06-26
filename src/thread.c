@@ -164,7 +164,9 @@ SEXP rnng_messenger_thread_create(SEXP args) {
   SEXP socket = CADR(args);
   nng_thread *thr;
 
-  nng_thread_create(&thr, rnng_messenger_thread, args);
+  const int xc = nng_thread_create(&thr, rnng_messenger_thread, args);
+  if (xc)
+    ERROR_OUT(xc);
 
   SEXP xptr = R_MakeExternalPtr(thr, R_NilValue, R_NilValue);
   NANO_SET_PROT(socket, xptr);
@@ -255,10 +257,11 @@ SEXP rnng_wait_thread_create(SEXP x) {
     if ((xc = nng_cv_alloc(&cv, mtx)))
       goto exitlevel2;
 
+    if ((xc = nng_thread_create(&taio->thr, rnng_wait_thread, taio)))
+      goto exitlevel3;
+
     ncv->mtx = mtx;
     ncv->cv = cv;
-
-    nng_thread_create(&taio->thr, rnng_wait_thread, taio);
 
     SEXP xptr = R_MakeExternalPtr(taio, R_NilValue, R_NilValue);
     NANO_SET_PROT(coreaio, xptr);
@@ -302,8 +305,10 @@ SEXP rnng_wait_thread_create(SEXP x) {
 
     return x;
 
+    exitlevel3:
+    nng_cv_free(cv);
     exitlevel2:
-    nng_mtx_free(ncv->mtx);
+    nng_mtx_free(mtx);
     exitlevel1:
     R_Free(ncv);
     R_Free(taio);
@@ -395,7 +400,12 @@ SEXP rnng_signal_thread_create(SEXP cv, SEXP cv2) {
   ncv->condition = 0;
   nng_mtx_unlock(dmtx);
 
-  nng_thread_create(&duo->thr, rnng_signal_thread, duo);
+  const int xc = nng_thread_create(&duo->thr, rnng_signal_thread, duo);
+  if (xc) {
+    R_Free(duo);
+    Rf_setAttrib(cv, R_MissingArg, R_NilValue);
+    ERROR_OUT(xc);
+  }
 
   SEXP xptr = R_MakeExternalPtr(duo, R_NilValue, R_NilValue);
   Rf_setAttrib(cv, R_MissingArg, xptr);
