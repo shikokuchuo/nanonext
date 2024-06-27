@@ -382,7 +382,7 @@ void nano_encode(nano_buf *enc, const SEXP object) {
     const char *s;
     R_xlen_t xlen = XLENGTH(object);
     if (xlen == 1) {
-      s = CHAR(STRING_ELT(object, 0));
+      s = NANO_STRING(object);
       NANO_INIT(enc, (unsigned char *) s, strlen(s) + 1);
       break;
     }
@@ -423,7 +423,7 @@ void nano_encode(nano_buf *enc, const SEXP object) {
 int nano_encodes(const SEXP mode) {
 
   if (TYPEOF(mode) != INTSXP) {
-    const char *mod = CHAR(STRING_ELT(mode, 0));
+    const char *mod = NANO_STRING(mode);
     size_t slen = strlen(mod);
     switch (slen) {
     case 1:
@@ -447,7 +447,7 @@ int nano_encodes(const SEXP mode) {
 int nano_matcharg(const SEXP mode) {
 
   if (TYPEOF(mode) != INTSXP) {
-    const char *mod = CHAR(STRING_ELT(mode, 0));
+    const char *mod = NANO_STRING(mode);
     size_t slen = strlen(mod);
     switch (slen) {
     case 1:
@@ -482,7 +482,7 @@ int nano_matcharg(const SEXP mode) {
 int nano_matchargs(const SEXP mode) {
 
   if (TYPEOF(mode) != INTSXP) {
-    const char *mod = XLENGTH(mode) == 9 ? CHAR(STRING_ELT(mode, 1)) : CHAR(STRING_ELT(mode, 0));
+    const char *mod = CHAR(STRING_ELT(mode, XLENGTH(mode) == 9));
     size_t slen = strlen(mod);
     switch (slen) {
     case 1:
@@ -709,7 +709,7 @@ SEXP rnng_dial(SEXP socket, SEXP url, SEXP tls, SEXP autostart, SEXP error) {
 
   nng_socket *sock = (nng_socket *) NANO_PTR(socket);
   const int start = NANO_INTEGER(autostart);
-  const char *ur = CHAR(STRING_ELT(url, 0));
+  const char *ur = NANO_STRING(url);
   nano_dialer *dp = R_Calloc(1, nano_dialer);
   SEXP dialer, attr, newattr;
   nng_url *up;
@@ -785,7 +785,7 @@ SEXP rnng_listen(SEXP socket, SEXP url, SEXP tls, SEXP autostart, SEXP error) {
 
   nng_socket *sock = (nng_socket *) NANO_PTR(socket);
   const int start = NANO_INTEGER(autostart);
-  const char *ur = CHAR(STRING_ELT(url, 0));
+  const char *ur = NANO_STRING(url);
   nano_listener *lp = R_Calloc(1, nano_listener);
   SEXP listener, attr, newattr;
   nng_url *up;
@@ -1179,7 +1179,7 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP bytes) {
 
 SEXP rnng_set_opt(SEXP object, SEXP opt, SEXP value) {
 
-  const char *op = CHAR(STRING_ELT(opt, 0));
+  const char *op = NANO_STRING(opt);
   const int typ = TYPEOF(value);
   int xc, val;
 
@@ -1192,7 +1192,7 @@ SEXP rnng_set_opt(SEXP object, SEXP opt, SEXP value) {
       xc = nng_socket_set(*sock, op, NULL, 0);
       break;
     case STRSXP:
-      xc = nng_socket_set_string(*sock, op, CHAR(STRING_ELT(value, 0)));
+      xc = nng_socket_set_string(*sock, op, NANO_STRING(value));
       break;
     case REALSXP:
     case INTSXP:
@@ -1220,7 +1220,7 @@ SEXP rnng_set_opt(SEXP object, SEXP opt, SEXP value) {
       xc = nng_ctx_set(*ctx, op, NULL, 0);
       break;
     case STRSXP:
-      xc = nng_ctx_set_string(*ctx, op, CHAR(STRING_ELT(value, 0)));
+      xc = nng_ctx_set_string(*ctx, op, NANO_STRING(value));
       break;
     case REALSXP:
     case INTSXP:
@@ -1248,7 +1248,7 @@ SEXP rnng_set_opt(SEXP object, SEXP opt, SEXP value) {
       xc = nng_stream_set(*st, op, NULL, 0);
       break;
     case STRSXP:
-      xc = nng_stream_set_string(*st, op, CHAR(STRING_ELT(value, 0)));
+      xc = nng_stream_set_string(*st, op, NANO_STRING(value));
       break;
     case REALSXP:
     case INTSXP:
@@ -1276,7 +1276,7 @@ SEXP rnng_set_opt(SEXP object, SEXP opt, SEXP value) {
       xc = nng_listener_set(*list, op, NULL, 0);
       break;
     case STRSXP:
-      xc = nng_listener_set_string(*list, op, CHAR(STRING_ELT(value, 0)));
+      xc = nng_listener_set_string(*list, op, NANO_STRING(value));
       break;
     case REALSXP:
     case INTSXP:
@@ -1304,7 +1304,7 @@ SEXP rnng_set_opt(SEXP object, SEXP opt, SEXP value) {
       xc = nng_dialer_set(*dial, op, NULL, 0);
       break;
     case STRSXP:
-      xc = nng_dialer_set_string(*dial, op, CHAR(STRING_ELT(value, 0)));
+      xc = nng_dialer_set_string(*dial, op, NANO_STRING(value));
       break;
     case REALSXP:
     case INTSXP:
@@ -1367,7 +1367,7 @@ SEXP rnng_subscribe(SEXP object, SEXP value, SEXP sub) {
 
 SEXP rnng_get_opt(SEXP object, SEXP opt) {
 
-  const char *op = CHAR(STRING_ELT(opt, 0));
+  const char *op = NANO_STRING(opt);
   SEXP out;
   int xc, typ;
   nano_opt optval;
@@ -1499,7 +1499,7 @@ SEXP rnng_get_opt(SEXP object, SEXP opt) {
 
 SEXP rnng_stats_get(SEXP object, SEXP stat) {
 
-  const char *statname = CHAR(STRING_ELT(stat, 0));
+  const char *statname = NANO_STRING(stat);
   SEXP out;
   int xc;
   nng_stat *nst, *sst;

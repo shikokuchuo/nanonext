@@ -39,7 +39,7 @@ static SEXP mk_error_ncurl(const int xc) {
 nano_buf nano_char_buf(const SEXP data) {
 
   nano_buf buf;
-  const char *s = CHAR(STRING_ELT(data, 0));
+  const char *s = NANO_STRING(data);
   NANO_INIT(&buf, (unsigned char *) s, strlen(s));
 
   return buf;
@@ -114,7 +114,7 @@ SEXP rnng_sleep(SEXP msec) {
 
 SEXP rnng_url_parse(SEXP url) {
 
-  const char *up = CHAR(STRING_ELT(url, 0));
+  const char *up = NANO_STRING(url);
   nng_url *urlp;
 
   const int xc = nng_url_parse(&urlp, up);
@@ -159,8 +159,8 @@ SEXP rnng_is_error_value(SEXP x) {
 SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP follow, SEXP method, SEXP headers,
                 SEXP data, SEXP response, SEXP timeout, SEXP tls) {
 
-  const char *addr = CHAR(STRING_ELT(http, 0));
-  const char *mthd = method != R_NilValue ? CHAR(STRING_ELT(method, 0)) : NULL;
+  const char *addr = NANO_STRING(http);
+  const char *mthd = method != R_NilValue ? NANO_STRING(method) : NULL;
   const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) nano_integer(timeout);
   if (tls != R_NilValue && NANO_TAG(tls) != nano_TlsSymbol)
     Rf_error("'tls' is not a valid TLS Configuration");
@@ -336,7 +336,7 @@ SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP follow, SEXP method, SEXP headers,
 
 SEXP rnng_stream_dial(SEXP url, SEXP textframes, SEXP tls) {
 
-  const char *add = CHAR(STRING_ELT(url, 0));
+  const char *add = NANO_STRING(url);
   if (tls != R_NilValue && NANO_TAG(tls) != nano_TlsSymbol)
     Rf_error("'tls' is not a valid TLS Configuration");
   nano_stream *nst = R_Calloc(1, nano_stream);
@@ -425,7 +425,7 @@ SEXP rnng_stream_dial(SEXP url, SEXP textframes, SEXP tls) {
 
 SEXP rnng_stream_listen(SEXP url, SEXP textframes, SEXP tls) {
 
-  const char *add = CHAR(STRING_ELT(url, 0));
+  const char *add = NANO_STRING(url);
   if (tls != R_NilValue && NANO_TAG(tls) != nano_TlsSymbol)
     Rf_error("'tls' is not a valid TLS Configuration");
   nano_stream *nst = R_Calloc(1, nano_stream);
@@ -619,7 +619,7 @@ SEXP rnng_tls_config(SEXP client, SEXP server, SEXP pass, SEXP auth) {
   SEXP xp;
 
   if ((usefile = Rf_xlength(client)) > 0) {
-    file = CHAR(STRING_ELT(client, 0));
+    file = NANO_STRING(client);
     if (usefile > 1)
       crl = CHAR(STRING_ELT(client, 1));
     if ((xc = nng_tls_config_alloc(&cfg, NNG_TLS_MODE_CLIENT)))
@@ -637,8 +637,8 @@ SEXP rnng_tls_config(SEXP client, SEXP server, SEXP pass, SEXP auth) {
     }
 
   } else if ((usefile = Rf_xlength(server)) > 0) {
-    file = CHAR(STRING_ELT(server, 0));
-    pss = pass != R_NilValue ? CHAR(STRING_ELT(pass, 0)) : NULL;
+    file = NANO_STRING(server);
+    pss = pass != R_NilValue ? NANO_STRING(pass) : NULL;
     if (usefile > 1)
       key = CHAR(STRING_ELT(server, 1));
     if ((xc = nng_tls_config_alloc(&cfg, NNG_TLS_MODE_SERVER)))
