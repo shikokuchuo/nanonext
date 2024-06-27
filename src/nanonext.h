@@ -193,6 +193,7 @@ typedef struct nano_thread_duo_s {
 #define NANO_SET_PROT(x, v) SETCDR(x, v)
 #define NANO_DATAPTR(x) (void *) DATAPTR_RO(x)
 #define NANO_VECTOR(x) ((const SEXP *) DATAPTR_RO(x))
+#define NANO_STRING(x) CHAR(*((const SEXP *) DATAPTR_RO(x)))
 #define NANO_INTEGER(x) *(int *) DATAPTR_RO(x)
 #define NANO_ERROR(x) { Rf_error(x); return R_NilValue; }
 
@@ -217,12 +218,12 @@ typedef struct nano_thread_duo_s {
   Rf_classgets(x, klass);                                      \
   SET_STRING_ELT(klass, 0, Rf_mkChar(cls1));                   \
   SET_STRING_ELT(klass, 1, Rf_mkChar(cls2))
+
 typedef struct nano_buf_s {
   unsigned char *buf;
   size_t len;
   size_t cur;
 } nano_buf;
-
 
 typedef struct CallInfo {
   char *name;
