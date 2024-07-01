@@ -168,7 +168,7 @@ static SEXP nano_inHook(SEXP x, SEXP fun) {
 
 static SEXP nano_outHook(SEXP x, SEXP fun) {
 
-  const long i = atol(CHAR(*(SEXP *) DATAPTR_RO(x))) - 1;
+  const long i = atol(NANO_STRING(x)) - 1;
   return NANO_VECTOR(fun)[i];
 
 }

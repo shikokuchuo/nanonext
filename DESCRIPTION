@@ -37,4 +37,4 @@ Suggests:
     later,
     markdown
 VignetteBuilder: knitr
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2
