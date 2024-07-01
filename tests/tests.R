@@ -479,6 +479,12 @@ nanotestz(close(s1))
 nanotestz(close(s2))
 nanotestz(close(s3))
 
+nanotestxp(cv <- cv())
+nanotestxp(t <- .Thread(nanonext:::rnng_sleep, 50L, cv = cv))
+nanotestz(v <- cv_value(cv))
+nanotestn(msleep(80L))
+nanotest(cv_value(cv) == v + 1L)
+
 nanotest(nanonext:::.DollarNames.ncurlAio(NULL, "sta") == "status")
 nanotest(nanonext:::.DollarNames.recvAio(NULL, "dat") == "data")
 nanotest(nanonext:::.DollarNames.sendAio(NULL, "r") == "result")
