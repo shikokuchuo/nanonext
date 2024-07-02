@@ -114,6 +114,21 @@
 #'       if send buffers are full), the operation will fail with a return value
 #'       of 5L ('timed out').
 #'
+#'     \item 'recv-fd' [type 'int']
+#'
+#'       This is the socket receive file descriptor. For supported protocols,
+#'       this will become readable when a message is available for receiving on
+#'       the socket. Attempts should not be made to read or write to the
+#'       returned file descriptor, but it is suitable for use with poll(),
+#'       select(), or WSAPoll() on Windows, and similar functions.
+#'
+#'     \item 'send-fd' [type 'int']
+#'
+#'       This is the socket send file descriptor. Attempts should not be made to
+#'       read or write to the returned file descriptor, but it is suitable for
+#'       use with poll(), select(), or WSAPoll() on Windows, and similar
+#'       functions.
+#'
 #'     \item 'socket-name' [type 'string']
 #'
 #'       This is the socket name. By default this is a string corresponding to
