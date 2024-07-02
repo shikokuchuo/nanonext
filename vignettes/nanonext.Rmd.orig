@@ -448,6 +448,20 @@ res$data
 
 In this respect, it may be used as a performant and lightweight method for making REST API requests.
 
+##### ncurl Promises
+
+`ncurl_aio()` may also be used anywhere that accepts a ‘promise’ from the promises package, including with Shiny ExtendedTask.
+
+If a status code of 200 (OK) is returned then the promise is resolved with the reponse body, otherwise it is rejected with a translation of the status code or ‘errorValue’ as the case may be.
+
+```{r ncurlprom}
+library(promises)
+
+p <- ncurl_aio("https://postman-echo.com/get") %...>% cat
+is.promise(p)
+```
+##### ncurl Session
+
 `ncurl_session()` creates a re-usable open connection and presents a much faster and more efficient solution for repeated polling of an API endpoint. `transact()` is then used to request data multiple times as required. This method allows a polling frequency that exceeds a server's new connection limits, where this is permitted.
 
 By specifying `convert = FALSE`, the received binary data is made available as a raw vector. This may be fed into 'json' parsers which can operate directly on such data etc.
