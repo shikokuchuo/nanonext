@@ -420,6 +420,12 @@ SEXP rnng_signal_thread_create(SEXP cv, SEXP cv2) {
 
 }
 
+static void nano_record_pipe(nng_pipe p, nng_pipe_ev ev, void *arg) {
+  int *x = (int *) arg;
+  ev == NNG_PIPE_EV_ADD_POST ? x[0]++ : x[0]--;
+  // nano_printf(1, "pipe ev %d\n", x[0]);
+}
+
 static void rnng_dispatch_thread(void *args) {
 
   nano_thread_disp *disp = (nano_thread_disp *) args;
@@ -445,7 +451,10 @@ static void rnng_dispatch_thread(void *args) {
   nano_aio haio[n];
   nano_aio raio[n];
   nng_listener list[n];
+  int active[n];
+  memset(active, 0, sizeof(active));
   int busy[n];
+  memset(busy, 0, sizeof(busy));
 
   for (int i = 0; i < n; i++) {
     char u[sz];
@@ -453,12 +462,13 @@ static void rnng_dispatch_thread(void *args) {
     url[i] = u;
     nng_req0_open(&sock[i]);
     nng_socket_set_ms(sock[i], "req:resend-time", 0);
+    nng_pipe_notify(sock[i], NNG_PIPE_EV_ADD_POST, nano_record_pipe, &active[i]);
+    nng_pipe_notify(sock[i], NNG_PIPE_EV_REM_POST, nano_record_pipe, &active[i]);
     nng_listen(sock[i], url[i], &list[i], 0);
     raio[i].next = ncv;
     raio[i].result = 0;
     if (nng_aio_alloc(&raio[i].aio, raio_complete_signal, &raio[i]))
       goto exitlevel1;
-    busy[i] = 0;
     saio[i].result = 0;
     if (nng_aio_alloc(&saio[i].aio, saio_complete, &saio[i]))
       goto exitlevel1;
@@ -525,8 +535,10 @@ static void rnng_dispatch_thread(void *args) {
           nng_ctx_close(rctx[i]);
           busy[i] = 0;
           // nano_printf(1, "processed reply %d\n", i);
-          nng_ctx_open(&rctx[i], hsock);
-          nng_ctx_recv(rctx[i], haio[i].aio);
+          if (active[i]) {
+            nng_ctx_open(&rctx[i], hsock);
+            nng_ctx_recv(rctx[i], haio[i].aio);
+          }
           // nano_printf(1, "allocated %d\n", i);
           break;
         }
