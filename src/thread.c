@@ -433,17 +433,18 @@ static void rnng_dispatch_thread(void *args) {
   nano_cv *ncv = disp->cv;
   nng_mtx *mtx = ncv->mtx;
   nng_cv *cv = ncv->cv;
-
   const int n = ncv->condition;
   ncv->condition = 0;
+
+  const char *durl = disp->url;
+  const size_t sz = strlen(durl) + 10;
 
   nng_socket hsock;
   nng_dialer hdial;
   nng_rep0_open(&hsock);
   nng_dial(hsock, disp->host, &hdial, 0);
 
-  const size_t sz = strlen(disp->url) + 10;
-  char *url[n];
+  char url[n][sz];
   nng_socket sock[n];
   nng_ctx ctx[n];
   nng_ctx rctx[n];
@@ -457,9 +458,7 @@ static void rnng_dispatch_thread(void *args) {
   memset(busy, 0, sizeof(busy));
 
   for (int i = 0; i < n; i++) {
-    char u[sz];
-    snprintf(u, sz, "%s/%d", disp->url, i + 1);
-    url[i] = u;
+    snprintf(url[i], sz, "%s/%d", durl, i + 1);
     nng_req0_open(&sock[i]);
     nng_socket_set_ms(sock[i], "req:resend-time", 0);
     nng_pipe_notify(sock[i], NNG_PIPE_EV_ADD_POST, nano_record_pipe, &active[i]);
