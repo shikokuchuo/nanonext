@@ -235,6 +235,28 @@ static void rnng_wait_thread(void *args) {
 
 }
 
+static void thread_disp_finalizer(SEXP xptr) {
+
+  if (NANO_PTR(xptr) == NULL) return;
+  nano_thread_disp *xp = (nano_thread_disp *) NANO_PTR(xptr);
+  nano_cv *ncv = xp->cv;
+  if (ncv != NULL) {
+    nng_mtx *mtx = ncv->mtx;
+    nng_cv *cv = ncv->cv;
+
+    nng_mtx_lock(mtx);
+    ncv->condition = -1;
+    nng_cv_wake(cv);
+    nng_mtx_unlock(mtx);
+  }
+  if (xp->tls != NULL) {
+    nng_tls_config_free(xp->tls);
+  }
+  nng_thread_destroy(xp->thr);
+  R_Free(xp);
+
+}
+
 SEXP rnng_wait_thread_create(SEXP x) {
 
   const SEXPTYPE typ = TYPEOF(x);
@@ -423,7 +445,7 @@ SEXP rnng_signal_thread_create(SEXP cv, SEXP cv2) {
 static void nano_record_pipe(nng_pipe p, nng_pipe_ev ev, void *arg) {
   int *x = (int *) arg;
   ev == NNG_PIPE_EV_ADD_POST ? x[0]++ : x[0]--;
-  nano_printf(1, "pipe ev %d\n", x[0]);
+  // nano_printf(1, "pipe ev %d\n", x[0]);
 }
 
 static void rnng_dispatch_thread(void *args) {
@@ -619,14 +641,11 @@ SEXP rnng_dispatcher_socket(SEXP cv, SEXP n, SEXP host, SEXP url, SEXP tls) {
   nano_thread_disp *disp = R_Calloc(1, nano_thread_disp);
   disp->cv = ncv;
   disp->tls = sec ? (nng_tls_config *) NANO_PTR(tls) : NULL;
+  if (sec) nng_tls_config_hold(disp->tls);
   disp->host = NANO_STRING(host);
   disp->url = NANO_STRING(url);
   nng_socket *hsock = R_Calloc(1, nng_socket);
   nano_listener *hl = R_Calloc(1, nano_listener);
-  if (sec) {
-    nng_tls_config_hold(disp->tls);
-    hl->tls = disp->tls;
-  }
   nng_req0_open(hsock);
   nng_socket_set_ms(*hsock, "req:resend-time", 0);
 
@@ -638,7 +657,7 @@ SEXP rnng_dispatcher_socket(SEXP cv, SEXP n, SEXP host, SEXP url, SEXP tls) {
 
   xptr = R_MakeExternalPtr(disp, R_NilValue, R_NilValue);
   NANO_SET_PROT(cv, xptr);
-  R_RegisterCFinalizerEx(xptr, thread_duo_finalizer, TRUE);
+  R_RegisterCFinalizerEx(xptr, thread_disp_finalizer, TRUE);
 
   PROTECT(list = R_MakeExternalPtr(hl, nano_ListenerSymbol, R_NilValue));
   R_RegisterCFinalizerEx(list, listener_finalizer, TRUE);
