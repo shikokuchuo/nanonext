@@ -318,10 +318,11 @@ unlock <- function(socket) invisible(.Call(rnng_socket_unlock, socket))
 #' @param url the root URL at which to listen for rep nodes to connect to. The
 #'     actual URLs created append \sQuote{/1}, \sQuote{/2}, ..., \sQuote{/n} to
 #'     this value.
+#' @inheritParams listen
 #'
 #' @return A \sQuote{req} Socket. The thread is attached to \sQuote{cv}.
 #'
 #' @export
 #'
-dispatcher_socket <- function(cv, n, host, url)
-  .Call(rnng_dispatcher_socket, cv, n, host, url)
+dispatcher_socket <- function(cv, n, host, url, tls = NULL)
+  .Call(rnng_dispatcher_socket, cv, n, host, url, tls)

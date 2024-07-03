@@ -215,6 +215,7 @@ typedef struct nano_thread_duo_s {
 typedef struct nano_thread_disp_s {
   nng_thread *thr;
   nano_cv *cv;
+  nng_tls_config *tls;
   const char *host;
   const char *url;
 } nano_thread_disp;
@@ -285,7 +286,7 @@ SEXP rnng_cv_wait_safe(SEXP);
 SEXP rnng_dial(SEXP, SEXP, SEXP, SEXP, SEXP);
 SEXP rnng_dialer_close(SEXP);
 SEXP rnng_dialer_start(SEXP, SEXP);
-SEXP rnng_dispatcher_socket(SEXP, SEXP, SEXP, SEXP);
+SEXP rnng_dispatcher_socket(SEXP, SEXP, SEXP, SEXP, SEXP);
 SEXP rnng_fini(void);
 SEXP rnng_get_opt(SEXP, SEXP);
 SEXP rnng_is_error_value(SEXP);

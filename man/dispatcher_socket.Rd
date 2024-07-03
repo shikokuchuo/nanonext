@@ -4,7 +4,7 @@
 \alias{dispatcher_socket}
 \title{Dispatcher Socket}
 \usage{
-dispatcher_socket(cv, n, host, url)
+dispatcher_socket(cv, n, host, url, tls = NULL)
 }
 \arguments{
 \item{cv}{a \sQuote{conditionVariable} object.}
@@ -16,6 +16,9 @@ dispatcher_socket(cv, n, host, url)
 \item{url}{the root URL at which to listen for rep nodes to connect to. The
 actual URLs created append \sQuote{/1}, \sQuote{/2}, ..., \sQuote{/n} to
 this value.}
+
+\item{tls}{[default NULL] for secure tls+tcp:// or wss:// connections only,
+provide a TLS configuration object created by \code{\link{tls_config}}.}
 }
 \value{
 A \sQuote{req} Socket. The thread is attached to \sQuote{cv}.

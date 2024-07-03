@@ -423,7 +423,7 @@ SEXP rnng_signal_thread_create(SEXP cv, SEXP cv2) {
 static void nano_record_pipe(nng_pipe p, nng_pipe_ev ev, void *arg) {
   int *x = (int *) arg;
   ev == NNG_PIPE_EV_ADD_POST ? x[0]++ : x[0]--;
-  // nano_printf(1, "pipe ev %d\n", x[0]);
+  nano_printf(1, "pipe ev %d\n", x[0]);
 }
 
 static void rnng_dispatch_thread(void *args) {
@@ -463,7 +463,22 @@ static void rnng_dispatch_thread(void *args) {
     nng_socket_set_ms(sock[i], "req:resend-time", 0);
     nng_pipe_notify(sock[i], NNG_PIPE_EV_ADD_POST, nano_record_pipe, &active[i]);
     nng_pipe_notify(sock[i], NNG_PIPE_EV_REM_POST, nano_record_pipe, &active[i]);
-    nng_listen(sock[i], url[i], &list[i], 0);
+    int xc;
+
+    if (disp->tls != NULL) {
+      nng_url *up;
+      if ((xc = nng_listener_create(&list[i], sock[i], url[i])))
+        goto exitlevel1;
+      if ((xc = nng_url_parse(&up, url[i])))
+        goto exitlevel1;
+      if ((xc = nng_tls_config_server_name(disp->tls, up->u_hostname)) ||
+          (xc = nng_listener_set_ptr(list[i], NNG_OPT_TLS_CONFIG, disp->tls)))
+        goto exitlevel1;
+      nng_url_free(up);
+      nng_listener_start(list[i], 0);
+    } else {
+      nng_listen(sock[i], url[i], &list[i], 0);
+    }
     raio[i].next = ncv;
     raio[i].result = 0;
     if (nng_aio_alloc(&raio[i].aio, raio_complete_signal, &raio[i]))
@@ -585,27 +600,39 @@ static void rnng_dispatch_thread(void *args) {
 
 }
 
-SEXP rnng_dispatcher_socket(SEXP cv, SEXP n, SEXP host, SEXP url) {
+SEXP rnng_dispatcher_socket(SEXP cv, SEXP n, SEXP host, SEXP url, SEXP tls) {
 
   if (NANO_TAG(cv) != nano_CvSymbol)
     Rf_error("'cv' is not a valid Condition Variable");
 
+  const int sec = tls != R_NilValue;
+
+  if (sec && NANO_TAG(tls) != nano_TlsSymbol)
+    Rf_error("'tls' is not a valid TLS Configuration");
+
   nano_cv *ncv = (nano_cv *) NANO_PTR(cv);
 
+  int xc;
   SEXP xptr, sock, list;
   ncv->condition = nano_integer(n);
-  nng_mtx_alloc(&ncv->mtx);
-  nng_cv_alloc(&ncv->cv, ncv->mtx);
 
   nano_thread_disp *disp = R_Calloc(1, nano_thread_disp);
   disp->cv = ncv;
-  disp->host = CHAR(STRING_ELT(host, 0));
-  disp->url = CHAR(STRING_ELT(url, 0));
+  disp->tls = sec ? (nng_tls_config *) NANO_PTR(tls) : NULL;
+  disp->host = NANO_STRING(host);
+  disp->url = NANO_STRING(url);
   nng_socket *hsock = R_Calloc(1, nng_socket);
-  nng_listener *hlist = R_Calloc(1, nng_listener);
+  nano_listener *hl = R_Calloc(1, nano_listener);
+  if (sec) {
+    nng_tls_config_hold(disp->tls);
+    hl->tls = disp->tls;
+  }
   nng_req0_open(hsock);
   nng_socket_set_ms(*hsock, "req:resend-time", 0);
-  nng_listen(*hsock, disp->host, hlist, 0);
+
+  xc = nng_listen(*hsock, disp->host, &hl->list, 0);
+  if (xc)
+    goto exitlevel1;
 
   nng_thread_create(&disp->thr, rnng_dispatch_thread, disp);
 
@@ -613,7 +640,7 @@ SEXP rnng_dispatcher_socket(SEXP cv, SEXP n, SEXP host, SEXP url) {
   NANO_SET_PROT(cv, xptr);
   R_RegisterCFinalizerEx(xptr, thread_duo_finalizer, TRUE);
 
-  PROTECT(list = R_MakeExternalPtr(hlist, nano_ListenerSymbol, R_NilValue));
+  PROTECT(list = R_MakeExternalPtr(hl, nano_ListenerSymbol, R_NilValue));
   R_RegisterCFinalizerEx(list, listener_finalizer, TRUE);
 
   PROTECT(sock = R_MakeExternalPtr(hsock, nano_SocketSymbol, list));
@@ -621,5 +648,11 @@ SEXP rnng_dispatcher_socket(SEXP cv, SEXP n, SEXP host, SEXP url) {
 
   UNPROTECT(2);
   return sock;
+
+  exitlevel1:
+  R_Free(hl);
+  R_Free(hsock);
+  R_Free(disp);
+  ERROR_OUT(xc);
 
 }
