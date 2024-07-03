@@ -1,5 +1,9 @@
 # nanonext 1.1.1.9000 (development)
 
+#### Updates
+
+* Updates bundled 'libnng' v1.8.0 configuration to prioritise usage of arc4random on supported platforms (e.g. Linux with glibc >= 2.36).
+
 # nanonext 1.1.1
 
 #### New Features
