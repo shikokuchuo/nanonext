@@ -132,6 +132,7 @@ ncurl <- function(url,
 #'
 #' if (interactive() && requireNamespace("promises", quietly = TRUE)) {
 #'
+#' library(promises)
 #' p <- as.promise(nc)
 #' print(p)
 #'
