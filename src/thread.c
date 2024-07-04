@@ -442,12 +442,6 @@ SEXP rnng_signal_thread_create(SEXP cv, SEXP cv2) {
 
 }
 
-static void nano_record_pipe(nng_pipe p, nng_pipe_ev ev, void *arg) {
-  int *x = (int *) arg;
-  ev == NNG_PIPE_EV_ADD_POST ? x[0]++ : x[0]--;
-  // nano_printf(1, "pipe ev %d\n", x[0]);
-}
-
 static void rnng_dispatch_thread(void *args) {
 
   nano_thread_disp *disp = (nano_thread_disp *) args;
@@ -461,7 +455,7 @@ static void rnng_dispatch_thread(void *args) {
   const char *durl = disp->url;
   const size_t sz = strlen(durl) + 10;
 
-  int xc;
+  int xc, act = 1;
   nng_socket hsock;
   nng_dialer hdial;
   char url[n][sz];
@@ -486,9 +480,7 @@ static void rnng_dispatch_thread(void *args) {
   for (int i = 0; i < n; i++) {
     snprintf(url[i], sz, "%s/%d", durl, i + 1);
     if (nng_req0_open(&sock[i]) ||
-        nng_socket_set_ms(sock[i], "req:resend-time", 0) ||
-        nng_pipe_notify(sock[i], NNG_PIPE_EV_ADD_POST, nano_record_pipe, &active[i]) ||
-        nng_pipe_notify(sock[i], NNG_PIPE_EV_REM_POST, nano_record_pipe, &active[i]))
+        nng_socket_set_ms(sock[i], "req:resend-time", 0))
       goto exitlevel2;
 
     if (disp->tls != NULL) {
@@ -568,16 +560,18 @@ static void rnng_dispatch_thread(void *args) {
             xc = nng_ctx_sendmsg(rctx[i], msg, 0);
             if (xc)
               nng_msg_free(msg);
+            act = 0;
           }
           nng_ctx_close(ctx[i]);
           nng_ctx_close(rctx[i]);
           busy[i] = 0;
           // nano_printf(1, "processed reply %d\n", i);
-          if (active[i]) {
+          if (act) {
             nng_ctx_open(&rctx[i], hsock);
             nng_ctx_recv(rctx[i], haio[i].aio);
+            // nano_printf(1, "allocated %d\n", i);
           }
-          // nano_printf(1, "allocated %d\n", i);
+          act = 1;
           break;
         }
       }
