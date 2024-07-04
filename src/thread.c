@@ -355,6 +355,16 @@ SEXP rnng_wait_thread_create(SEXP x) {
 
 }
 
+static void nano_record_pipe(nng_pipe p, nng_pipe_ev ev, void *arg) {
+  const int incr = ev == NNG_PIPE_EV_ADD_POST;
+  nano_cv *ncv = (nano_cv *) arg;
+  nng_mtx *mtx = ncv->mtx;
+  nng_mtx_lock(mtx);
+  incr ? ncv->flag++ : ncv->flag--;
+  nng_mtx_unlock(mtx);
+  // nano_printf(1, "pipe ev %d\n", x[0]);
+}
+
 static void rnng_signal_thread(void *args) {
 
   nano_thread_duo *duo = (nano_thread_duo *) args;
@@ -480,7 +490,9 @@ static void rnng_dispatch_thread(void *args) {
   for (int i = 0; i < n; i++) {
     snprintf(url[i], sz, "%s/%d", durl, i + 1);
     if (nng_req0_open(&sock[i]) ||
-        nng_socket_set_ms(sock[i], "req:resend-time", 0))
+        nng_socket_set_ms(sock[i], "req:resend-time", 0) ||
+        nng_pipe_notify(sock[i], NNG_PIPE_EV_ADD_POST, nano_record_pipe, ncv) ||
+        nng_pipe_notify(sock[i], NNG_PIPE_EV_REM_POST, nano_record_pipe, ncv))
       goto exitlevel2;
 
     if (disp->tls != NULL) {
@@ -674,5 +686,20 @@ SEXP rnng_dispatcher_socket(SEXP cv, SEXP n, SEXP host, SEXP url, SEXP tls) {
   R_Free(hsock);
   R_Free(disp);
   ERROR_OUT(xc);
+
+}
+
+SEXP rnng_cv_flag(SEXP cvar) {
+
+  if (NANO_TAG(cvar) != nano_CvSymbol)
+    Rf_error("'cv' is not a valid Condition Variable");
+  nano_cv *ncv = (nano_cv *) NANO_PTR(cvar);
+  nng_mtx *mtx = ncv->mtx;
+  int flag;
+  nng_mtx_lock(mtx);
+  flag = ncv->flag;
+  nng_mtx_unlock(mtx);
+
+  return Rf_ScalarInteger(flag);
 
 }

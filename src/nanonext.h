@@ -276,6 +276,7 @@ SEXP rnng_ctx_close(SEXP);
 SEXP rnng_ctx_create(SEXP);
 SEXP rnng_ctx_open(SEXP);
 SEXP rnng_cv_alloc(void);
+SEXP rnng_cv_flag(SEXP);
 SEXP rnng_cv_reset(SEXP);
 SEXP rnng_cv_signal(SEXP);
 SEXP rnng_cv_until(SEXP, SEXP);

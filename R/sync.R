@@ -322,7 +322,21 @@ unlock <- function(socket) invisible(.Call(rnng_socket_unlock, socket))
 #'
 #' @return A \sQuote{req} Socket. The thread is attached to \sQuote{cv}.
 #'
+#' @keywords internal
 #' @export
 #'
 dispatcher_socket <- function(cv, n, host, url, tls = NULL)
   .Call(rnng_dispatcher_socket, cv, n, host, url, tls)
+
+#' Condition Variable Flag Value
+#'
+#' Query the flag value of a conditionVariable.
+#'
+#' @param cv a \sQuote{conditionVariable} object.
+#'
+#' @return An integer.
+#'
+#' @keywords internal
+#' @export
+#'
+cv_flag <- function(cv) .Call(rnng_cv_flag, cv)
