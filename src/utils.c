@@ -22,7 +22,7 @@
 
 // internals -------------------------------------------------------------------
 
-static SEXP mk_error_ncurl(const int xc) {
+SEXP mk_error_ncurl(const int xc) {
 
   const char *names[] = {"status", "headers", "data", ""};
   SEXP out = PROTECT(Rf_mkNamed(VECSXP, names));

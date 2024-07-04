@@ -232,6 +232,7 @@ int nano_integer(SEXP);
 SEXP nano_PreserveObject(SEXP);
 void nano_ReleaseObject(SEXP);
 SEXP mk_error(const int);
+SEXP mk_error_ncurl(const int);
 nano_buf nano_char_buf(const SEXP);
 SEXP nano_decode(unsigned char *, const size_t, const int);
 void nano_encode(nano_buf *, const SEXP);

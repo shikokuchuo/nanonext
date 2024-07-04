@@ -1258,7 +1258,7 @@ SEXP rnng_ncurl_transact(SEXP session) {
   nng_http_conn_transact(conn, handle->req, handle->res, haio->aio);
   nng_aio_wait(haio->aio);
   if (haio->result > 0)
-    return mk_error_ncurlaio(haio->result);
+    return mk_error_ncurl(haio->result);
 
   SEXP out, vec, rvec, response;
   void *dat;
