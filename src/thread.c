@@ -461,11 +461,9 @@ static void rnng_dispatch_thread(void *args) {
   const char *durl = disp->url;
   const size_t sz = strlen(durl) + 10;
 
+  int xc;
   nng_socket hsock;
   nng_dialer hdial;
-  nng_rep0_open(&hsock);
-  nng_dial(hsock, disp->host, &hdial, 0);
-
   char url[n][sz];
   nng_socket sock[n];
   nng_ctx ctx[n];
@@ -478,46 +476,50 @@ static void rnng_dispatch_thread(void *args) {
   memset(active, 0, sizeof(active));
   int busy[n];
   memset(busy, 0, sizeof(busy));
+  nng_url *up;
+
+  if (nng_rep0_open(&hsock))
+    return;
+  if (nng_dial(hsock, disp->host, &hdial, 0))
+    goto exitlevel1;
 
   for (int i = 0; i < n; i++) {
     snprintf(url[i], sz, "%s/%d", durl, i + 1);
-    nng_req0_open(&sock[i]);
-    nng_socket_set_ms(sock[i], "req:resend-time", 0);
-    nng_pipe_notify(sock[i], NNG_PIPE_EV_ADD_POST, nano_record_pipe, &active[i]);
-    nng_pipe_notify(sock[i], NNG_PIPE_EV_REM_POST, nano_record_pipe, &active[i]);
-    int xc;
+    if (nng_req0_open(&sock[i]) ||
+        nng_socket_set_ms(sock[i], "req:resend-time", 0) ||
+        nng_pipe_notify(sock[i], NNG_PIPE_EV_ADD_POST, nano_record_pipe, &active[i]) ||
+        nng_pipe_notify(sock[i], NNG_PIPE_EV_REM_POST, nano_record_pipe, &active[i]))
+      goto exitlevel2;
 
     if (disp->tls != NULL) {
-      nng_url *up;
-      if ((xc = nng_listener_create(&list[i], sock[i], url[i])))
-        goto exitlevel1;
-      if ((xc = nng_url_parse(&up, url[i])))
-        goto exitlevel1;
-      if ((xc = nng_tls_config_server_name(disp->tls, up->u_hostname)) ||
-          (xc = nng_listener_set_ptr(list[i], NNG_OPT_TLS_CONFIG, disp->tls)))
-        goto exitlevel1;
+      if (nng_listener_create(&list[i], sock[i], url[i]) ||
+          nng_url_parse(&up, url[i]))
+        goto exitlevel2;
+      if (nng_tls_config_server_name(disp->tls, up->u_hostname) ||
+          nng_listener_set_ptr(list[i], NNG_OPT_TLS_CONFIG, disp->tls) ||
+          nng_listener_start(list[i], 0))
+        goto exitlevel3;
       nng_url_free(up);
-      nng_listener_start(list[i], 0);
     } else {
-      nng_listen(sock[i], url[i], &list[i], 0);
+      if (nng_listen(sock[i], url[i], &list[i], 0))
+        goto exitlevel2;
     }
     raio[i].next = ncv;
     raio[i].result = 0;
     if (nng_aio_alloc(&raio[i].aio, raio_complete_signal, &raio[i]))
-      goto exitlevel1;
+      goto exitlevel2;
     saio[i].result = 0;
     if (nng_aio_alloc(&saio[i].aio, saio_complete, &saio[i]))
-      goto exitlevel1;
+      goto exitlevel2;
     haio[i].next = ncv;
     haio[i].result = 0;
-    if (nng_aio_alloc(&haio[i].aio, raio_complete_signal, &haio[i]))
-      goto exitlevel1;
-    nng_ctx_open(&rctx[i], hsock);
+    if (nng_aio_alloc(&haio[i].aio, raio_complete_signal, &haio[i]) ||
+        nng_ctx_open(&rctx[i], hsock))
+      goto exitlevel2;
     nng_ctx_recv(rctx[i], haio[i].aio);
     // nano_printf(1, "allocated\n");
   }
 
-  int xc;
   nng_msg *msg;
 
   unsigned char errnt[] = {
@@ -614,9 +616,12 @@ static void rnng_dispatch_thread(void *args) {
 
   }
 
-  exitlevel1:
+  exitlevel3:
+  nng_url_free(up);
+  exitlevel2:
   for (int i = 0; i < n; i++)
     nng_close(sock[i]);
+  exitlevel1:
   nng_close(hsock);
   // nano_printf(1, "Dispatcher thread halted\n");
 
@@ -646,14 +651,14 @@ SEXP rnng_dispatcher_socket(SEXP cv, SEXP n, SEXP host, SEXP url, SEXP tls) {
   disp->url = NANO_STRING(url);
   nng_socket *hsock = R_Calloc(1, nng_socket);
   nano_listener *hl = R_Calloc(1, nano_listener);
-  nng_req0_open(hsock);
-  nng_socket_set_ms(*hsock, "req:resend-time", 0);
 
-  xc = nng_listen(*hsock, disp->host, &hl->list, 0);
-  if (xc)
+  if ((xc = nng_req0_open(hsock)))
     goto exitlevel1;
 
-  nng_thread_create(&disp->thr, rnng_dispatch_thread, disp);
+  if ((xc = nng_socket_set_ms(*hsock, "req:resend-time", 0)) ||
+      (xc = nng_listen(*hsock, disp->host, &hl->list, 0)) ||
+      (xc = nng_thread_create(&disp->thr, rnng_dispatch_thread, disp)))
+    goto exitlevel2;
 
   xptr = R_MakeExternalPtr(disp, R_NilValue, R_NilValue);
   NANO_SET_PROT(cv, xptr);
@@ -668,6 +673,8 @@ SEXP rnng_dispatcher_socket(SEXP cv, SEXP n, SEXP host, SEXP url, SEXP tls) {
   UNPROTECT(2);
   return sock;
 
+  exitlevel2:
+  nng_close(*hsock);
   exitlevel1:
   R_Free(hl);
   R_Free(hsock);
