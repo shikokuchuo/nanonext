@@ -454,12 +454,12 @@ print.tlsConfig <- function(x, ...) {
 #' @export
 #'
 .DollarNames.recvAio <- function(x, pattern = "")
-  grep(pattern, "data", value = TRUE, fixed = TRUE)
+  if (startsWith("data", pattern)) "data" else character()
 
 #' @export
 #'
 .DollarNames.sendAio <- function(x, pattern = "")
-  grep(pattern, "result", value = TRUE, fixed = TRUE)
+  if (startsWith("result", pattern)) "result" else character()
 
 #' @export
 #'
