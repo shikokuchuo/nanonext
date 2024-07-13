@@ -98,6 +98,7 @@ static SEXP nano_inHook(SEXP x, SEXP fun) {
 
   char idx[NANONEXT_LD_STRLEN];
   snprintf(idx, NANONEXT_LD_STRLEN, "%ld", (long) (xlen + 1));
+  Rprintf("Inhook %ld\n", (long) (xlen + 1));
   PROTECT(out = Rf_mkChar(idx));
 
   PROTECT(newlist = Rf_allocVector(VECSXP, xlen + 1));
@@ -120,6 +121,7 @@ static SEXP nano_inHook(SEXP x, SEXP fun) {
 static SEXP nano_outHook(SEXP x, SEXP fun) {
 
   const long i = atol(NANO_STRING(x)) - 1;
+  Rprintf("Outhook %ld\n", i + 1);
   return NANO_VECTOR(fun)[i];
 
 }
