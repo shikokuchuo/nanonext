@@ -1,5 +1,9 @@
 # nanonext 1.1.1.9001 (development)
 
+#### New Features
+
+* Adds the 'poly' protocol for one-to-many socket connections (NNG's pair v1 polyamorous mode).
+
 # nanonext 1.1.1
 
 #### New Features

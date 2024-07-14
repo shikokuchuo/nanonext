@@ -15,9 +15,9 @@ nano(
 }
 \arguments{
 \item{protocol}{[default 'bus'] choose protocol - \sQuote{bus}, \sQuote{pair},
-\sQuote{push}, \sQuote{pull}, \sQuote{pub}, \sQuote{sub}, \sQuote{req},
-\sQuote{rep}, \sQuote{surveyor}, or \sQuote{respondent} - see
-\link{protocols}.}
+\sQuote{poly}, \sQuote{push}, \sQuote{pull}, \sQuote{pub}, \sQuote{sub},
+\sQuote{req}, \sQuote{rep}, \sQuote{surveyor}, or \sQuote{respondent} -
+see \link{protocols}.}
 
 \item{dial}{(optional) a URL to dial, specifying the transport and address as
 a character string e.g. 'inproc://anyvalue' or 'tcp://127.0.0.1:5555'

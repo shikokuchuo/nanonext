@@ -23,9 +23,9 @@
 #'     address.
 #'
 #' @param protocol [default 'bus'] choose protocol - \sQuote{bus}, \sQuote{pair},
-#'     \sQuote{push}, \sQuote{pull}, \sQuote{pub}, \sQuote{sub}, \sQuote{req},
-#'     \sQuote{rep}, \sQuote{surveyor}, or \sQuote{respondent} - see
-#'     \link{protocols}.
+#'     \sQuote{poly}, \sQuote{push}, \sQuote{pull}, \sQuote{pub}, \sQuote{sub},
+#'     \sQuote{req}, \sQuote{rep}, \sQuote{surveyor}, or \sQuote{respondent} -
+#'     see \link{protocols}.
 #' @param dial (optional) a URL to dial, specifying the transport and address as
 #'     a character string e.g. 'inproc://anyvalue' or 'tcp://127.0.0.1:5555'
 #'     (see \link{transports}).
@@ -69,6 +69,7 @@
 #'     \itemize{
 #'     \item Bus (mesh networks) - protocol: 'bus'
 #'     \item Pair (two-way radio) - protocol: 'pair'
+#'     \item Poly (one-to-many) - protocol: 'poly'
 #'     \item Pipeline (one-way pipe) - protocol: 'push', 'pull'
 #'     \item Publisher/Subscriber (topics & broadcast) - protocol: 'pub', 'sub'
 #'     \item Request/Reply (RPC) - protocol: 'req', 'rep'
@@ -105,8 +106,8 @@
 #'
 #' @export
 #'
-socket <- function(protocol = c("bus", "pair", "push", "pull", "pub", "sub",
-                                "req", "rep", "surveyor", "respondent"),
+socket <- function(protocol = c("bus", "pair", "poly", "push", "pull", "pub",
+                                "sub", "req", "rep", "surveyor", "respondent"),
                    dial = NULL,
                    listen = NULL,
                    tls = NULL,

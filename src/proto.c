@@ -97,6 +97,12 @@ SEXP rnng_protocol_open(SEXP protocol, SEXP raw) {
         xc = rw ? nng_pair0_open_raw(sock) : nng_pair0_open(sock);
         break;
       }
+      if (!strncmp(pro, "poly", slen)) {
+        pname = "poly";
+        sock = R_Calloc(1, nng_socket);
+        xc = rw ? nng_pair1_open_raw(sock) : nng_pair1_open_poly(sock);
+        break;
+      }
       if (slen > 2) {
         if (!strncmp(pro, "push", slen)) {
           pname = "push";
@@ -131,7 +137,7 @@ SEXP rnng_protocol_open(SEXP protocol, SEXP raw) {
       break;
     }
   default:
-    NANO_ERROR("'protocol' should be one of bus, pair, push, pull, pub, sub, req, rep, surveyor, respondent");
+    NANO_ERROR("'protocol' should be one of bus, pair, poly, push, pull, pub, sub, req, rep, surveyor, respondent");
   }
 
   if (xc) {

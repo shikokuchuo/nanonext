@@ -34,13 +34,27 @@ Protocols implemented by \pkg{nanonext}.
 \section{Pair (two-way radio)}{
 
 
-    [protocol, pair] The pair protocol implements a peer-to-peer pattern,
-    where relationships between peers are one-to-one. Only one peer may be
-    connected to another peer at a time, but both may send and receive
-    messages freely.
+    [protocol, pair] This is NNG's pair v0. The pair protocol implements a
+    peer-to-peer pattern, where relationships between peers are one-to-one.
+    Only one peer may be connected to another peer at a time, but both may
+    send and receive messages freely.
 
     Normally, this pattern will block when attempting to send a message
     if no peer is able to receive the message.
+}
+
+\section{Poly (one-to-many)}{
+
+
+    [protocol, poly] This is NNG's pair v1 polyamorous mode. It allows a
+    socket to communicate with multiple directly-connected peers.
+
+    If no remote peer is specified by the sender, then the protocol will
+    select any available connected peer.
+
+    If the peer on the given pipe is not able to receive (or the pipe is no
+    longer available, such as if the peer has disconnected), then the message
+    will be discarded with no notification to the sender.
 }
 
 \section{Push/Pull (one-way pipeline)}{
