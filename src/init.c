@@ -16,7 +16,6 @@
 
 // nanonext - package level registrations --------------------------------------
 
-#define NANONEXT_SUPPLEMENTALS
 #include "nanonext.h"
 
 void (*eln2)(void (*)(void *), void *, double, int);
