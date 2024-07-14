@@ -19,6 +19,11 @@
 #define NANONEXT_SUPPLEMENTALS
 #include "nanonext.h"
 
+void (*eln2)(void (*)(void *), void *, double, int);
+
+uint8_t special_bit = 0;
+uint8_t registered = 0;
+
 SEXP nano_AioSymbol;
 SEXP nano_ContextSymbol;
 SEXP nano_CvSymbol;
@@ -53,19 +58,6 @@ SEXP nano_refHook;
 SEXP nano_sendAio;
 SEXP nano_success;
 SEXP nano_unresolved;
-
-void (*eln2)(void (*)(void *), void *, double, int);
-
-void later2(void (*fun)(void *), void *data) {
-  eln2(fun, data, 0, 0);
-}
-
-void eln2dummy(void (*fun)(void *), void *data, double secs, int loop) {
-  (void) fun;
-  (void) data;
-  (void) secs;
-  (void) loop;
-}
 
 static void RegisterSymbols(void) {
   nano_AioSymbol = Rf_install("aio");

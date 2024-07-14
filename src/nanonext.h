@@ -20,6 +20,8 @@
 #define NANONEXT_H
 
 #include <nng/nng.h>
+#include <nng/supplemental/util/platform.h>
+#include <nng/supplemental/tls/tls.h>
 
 #ifdef NANONEXT_PROTOCOLS
 #include <nng/protocol/bus0/bus.h>
@@ -34,64 +36,8 @@
 #include <nng/protocol/survey0/respond.h>
 #endif
 
-#ifdef NANONEXT_SUPPLEMENTALS
+#ifdef NANONEXT_HTTP
 #include <nng/supplemental/http/http.h>
-#include <nng/supplemental/tls/tls.h>
-#include <nng/supplemental/util/platform.h>
-
-typedef union nano_opt_u {
-  char *str;
-  bool b;
-  nng_duration d;
-  int i;
-  size_t s;
-  uint64_t u;
-} nano_opt;
-
-typedef struct nano_listener_s {
-  nng_listener list;
-  nng_tls_config *tls;
-} nano_listener;
-
-typedef struct nano_dialer_s {
-  nng_dialer dial;
-  nng_tls_config *tls;
-} nano_dialer;
-
-typedef struct nano_stream_s {
-  nng_stream *stream;
-  enum {
-    NANO_STREAM_DIALER,
-    NANO_STREAM_LISTENER
-  } mode;
-  int textframes;
-  union {
-    nng_stream_dialer *dial;
-    nng_stream_listener *list;
-  } endpoint;
-  nng_tls_config *tls;
-} nano_stream;
-
-typedef enum nano_aio_typ {
-  SENDAIO,
-  RECVAIO,
-  REQAIO,
-  IOV_SENDAIO,
-  IOV_RECVAIO,
-  HTTP_AIO,
-  RECVAIOS,
-  REQAIOS,
-  IOV_RECVAIOS
-} nano_aio_typ;
-
-typedef struct nano_aio_s {
-  nng_aio *aio;
-  nano_aio_typ type;
-  int mode;
-  int result;
-  void *data;
-  void *next;
-} nano_aio;
 
 typedef struct nano_handle_s {
   nng_url *url;
@@ -100,30 +46,6 @@ typedef struct nano_handle_s {
   nng_http_res *res;
   nng_tls_config *cfg;
 } nano_handle;
-
-typedef struct nano_cv_s {
-  int condition;
-  int flag;
-  nng_mtx *mtx;
-  nng_cv *cv;
-} nano_cv;
-
-typedef struct nano_cv_duo_s {
-  nano_cv *cv;
-  nano_cv *cv2;
-} nano_cv_duo;
-
-typedef struct nano_thread_aio_s {
-  nng_thread *thr;
-  nano_cv *cv;
-  nng_aio *aio;
-} nano_thread_aio;
-
-typedef struct nano_thread_duo_s {
-  nng_thread *thr;
-  nano_cv *cv;
-  nano_cv *cv2;
-} nano_thread_duo;
 
 #endif
 
@@ -142,26 +64,6 @@ typedef struct nano_thread_duo_s {
 #endif
 
 #ifdef NANONEXT_TLS
-#include <mbedtls/base64.h>
-#include <mbedtls/md.h>
-#include <mbedtls/sha256.h>
-#include <mbedtls/sha512.h>
-#include <mbedtls/version.h>
-
-#define SHA224_KEY_SIZE 28
-#define SHA256_KEY_SIZE 32
-#define SHA384_KEY_SIZE 48
-#define SHA512_KEY_SIZE 64
-
-#endif
-
-#ifdef NANONEXT_MBED
-#include <mbedtls/entropy.h>
-#include <mbedtls/ctr_drbg.h>
-#include <mbedtls/error.h>
-#endif
-
-#ifdef NANONEXT_KEYCERT
 #include <mbedtls/version.h>
 #if MBEDTLS_VERSION_MAJOR < 3
 #include <mbedtls/config.h>
@@ -218,35 +120,111 @@ typedef struct nano_thread_duo_s {
   SET_STRING_ELT(klass, 0, Rf_mkChar(cls1));                   \
   SET_STRING_ELT(klass, 1, Rf_mkChar(cls2))
 
+typedef union nano_opt_u {
+  char *str;
+  bool b;
+  nng_duration d;
+  int i;
+  size_t s;
+  uint64_t u;
+} nano_opt;
+
+typedef struct nano_listener_s {
+  nng_listener list;
+  nng_tls_config *tls;
+} nano_listener;
+
+typedef struct nano_dialer_s {
+  nng_dialer dial;
+  nng_tls_config *tls;
+} nano_dialer;
+
+typedef struct nano_stream_s {
+  nng_stream *stream;
+  enum {
+    NANO_STREAM_DIALER,
+    NANO_STREAM_LISTENER
+  } mode;
+  int textframes;
+  union {
+    nng_stream_dialer *dial;
+    nng_stream_listener *list;
+  } endpoint;
+  nng_tls_config *tls;
+} nano_stream;
+
+typedef enum nano_aio_typ {
+  SENDAIO,
+  RECVAIO,
+  REQAIO,
+  IOV_SENDAIO,
+  IOV_RECVAIO,
+  HTTP_AIO,
+  RECVAIOS,
+  REQAIOS,
+  IOV_RECVAIOS
+} nano_aio_typ;
+
+typedef struct nano_aio_s {
+  nng_aio *aio;
+  nano_aio_typ type;
+  int mode;
+  int result;
+  void *data;
+  void *next;
+} nano_aio;
+
+typedef struct nano_cv_s {
+  int condition;
+  int flag;
+  nng_mtx *mtx;
+  nng_cv *cv;
+} nano_cv;
+
+typedef struct nano_cv_duo_s {
+  nano_cv *cv;
+  nano_cv *cv2;
+} nano_cv_duo;
+
+typedef struct nano_thread_aio_s {
+  nng_thread *thr;
+  nano_cv *cv;
+  nng_aio *aio;
+} nano_thread_aio;
+
+typedef struct nano_thread_duo_s {
+  nng_thread *thr;
+  nano_cv *cv;
+  nano_cv *cv2;
+} nano_thread_duo;
+
 typedef struct nano_buf_s {
   unsigned char *buf;
   size_t len;
   size_t cur;
 } nano_buf;
 
+void dialer_finalizer(SEXP);
+void listener_finalizer(SEXP);
+void socket_finalizer(SEXP);
+SEXP R_mkClosure(SEXP, SEXP, SEXP);
 void later2(void (*)(void *), void *);
 extern void (*eln2)(void (*)(void *), void *, double, int);
 void eln2dummy(void (*)(void *), void *, double, int);
-
 int nano_integer(SEXP);
-SEXP nano_PreserveObject(SEXP);
-void nano_ReleaseObject(SEXP);
 SEXP mk_error(const int);
-SEXP mk_error_ncurl(const int);
-nano_buf nano_char_buf(const SEXP);
+SEXP mk_error_data(const int);
+SEXP rawToChar(const unsigned char *, const size_t);
+void nano_serialize(nano_buf *, const SEXP);
+void nano_serialize_next(nano_buf *, const SEXP);
+SEXP nano_unserialize(unsigned char *, const size_t);
 SEXP nano_decode(unsigned char *, const size_t, const int);
 void nano_encode(nano_buf *, const SEXP);
 int nano_encodes(const SEXP);
 int nano_matcharg(const SEXP);
 int nano_matchargs(const SEXP);
-void nano_serialize(nano_buf *, const SEXP);
-void nano_serialize_next(nano_buf *, const SEXP);
-void nano_serialize_xdr(nano_buf *, const SEXP);
-SEXP nano_unserialize(unsigned char *, const size_t);
-SEXP rawToChar(const unsigned char *, const size_t);
-void dialer_finalizer(SEXP);
-void listener_finalizer(SEXP);
-void socket_finalizer(SEXP);
+SEXP nano_PreserveObject(SEXP);
+void nano_ReleaseObject(SEXP);
 
 SEXP rnng_aio_call(SEXP);
 SEXP rnng_aio_collect(SEXP);
@@ -317,6 +295,9 @@ SEXP rnng_url_parse(SEXP);
 SEXP rnng_version(void);
 SEXP rnng_wait_thread_create(SEXP);
 SEXP rnng_write_cert(SEXP, SEXP, SEXP);
+
+extern uint8_t registered;
+extern uint8_t special_bit;
 
 extern SEXP nano_AioSymbol;
 extern SEXP nano_ContextSymbol;
