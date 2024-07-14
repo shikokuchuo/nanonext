@@ -45,6 +45,7 @@ Implemented scalability protocols:
 
 - Bus (mesh networks)
 - Pair (two-way radio)
+- Poly (one-to-many)
 - Push/Pull (one-way pipeline)
 - [Publisher/Subscriber](https://shikokuchuo.net/nanonext/articles/nanonext.html#publisher-subscriber-model)
   (topics & broadcast)
@@ -221,7 +222,7 @@ We would like to acknowledge in particular:
   Landau](https://github.com/wlandau/)’s roles in making this possible.
 - [Joe Cheng](https://github.com/jcheng5/) for prototyping the
   integration of `nanonext` with `later` to support the next generation
-  of completely event-driven promises in `mirai`.
+  of completely event-driven promises.
 - [R Core](https://www.r-project.org/contributors.html) for various
   auxiliary functions for serialisation and raw / character conversion,
   which have been adopted by the package.
