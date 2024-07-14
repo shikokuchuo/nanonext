@@ -53,7 +53,7 @@
 #'     Normally, this pattern will block when attempting to send a message
 #'     if no peer is able to receive the message.
 #'
-#' @section Poly (one-to-many):
+#' @section Poly (one-to-one of many):
 #'
 #'     [protocol, poly] This is NNG's pair v1 polyamorous mode. It allows a
 #'     socket to communicate with multiple directly-connected peers.

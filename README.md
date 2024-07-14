@@ -45,7 +45,7 @@ Implemented scalability protocols:
 
 - Bus (mesh networks)
 - Pair (two-way radio)
-- Poly (one-to-many)
+- Poly (one-to-one of many)
 - Push/Pull (one-way pipeline)
 - [Publisher/Subscriber](https://shikokuchuo.net/nanonext/articles/nanonext.html#publisher-subscriber-model)
   (topics & broadcast)

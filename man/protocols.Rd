@@ -43,7 +43,7 @@ Protocols implemented by \pkg{nanonext}.
     if no peer is able to receive the message.
 }
 
-\section{Poly (one-to-many)}{
+\section{Poly (one-to-one of many)}{
 
 
     [protocol, poly] This is NNG's pair v1 polyamorous mode. It allows a

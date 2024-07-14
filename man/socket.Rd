@@ -76,7 +76,7 @@ NNG presents a socket view of networking. The sockets are
     \itemize{
     \item Bus (mesh networks) - protocol: 'bus'
     \item Pair (two-way radio) - protocol: 'pair'
-    \item Poly (one-to-many) - protocol: 'poly'
+    \item Poly (one-to-one of many) - protocol: 'poly'
     \item Pipeline (one-way pipe) - protocol: 'push', 'pull'
     \item Publisher/Subscriber (topics & broadcast) - protocol: 'pub', 'sub'
     \item Request/Reply (RPC) - protocol: 'req', 'rep'
