@@ -163,7 +163,7 @@ static const R_CallMethodDef callMethods[] = {
   {"rnng_ncurl_transact", (DL_FUNC) &rnng_ncurl_transact, 1},
   {"rnng_next_config", (DL_FUNC) &rnng_next_config, 4},
   {"rnng_pipe_notify", (DL_FUNC) &rnng_pipe_notify, 6},
-  {"rnng_protocol_open", (DL_FUNC) &rnng_protocol_open, 2},
+  {"rnng_protocol_open", (DL_FUNC) &rnng_protocol_open, 6},
   {"rnng_random", (DL_FUNC) &rnng_random, 2},
   {"rnng_reap", (DL_FUNC) &rnng_reap, 1},
   {"rnng_recv", (DL_FUNC) &rnng_recv, 4},

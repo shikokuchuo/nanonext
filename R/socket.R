@@ -112,14 +112,8 @@ socket <- function(protocol = c("bus", "pair", "poly", "push", "pull", "pub",
                    listen = NULL,
                    tls = NULL,
                    autostart = TRUE,
-                   raw = FALSE) {
-
-  sock <- .Call(rnng_protocol_open, protocol, raw)
-  if (length(dial)) .Call(rnng_dial, sock, dial, tls, autostart, TRUE)
-  if (length(listen)) .Call(rnng_listen, sock, listen, tls, autostart, TRUE)
-  sock
-
-}
+                   raw = FALSE)
+  .Call(rnng_protocol_open, protocol, dial, listen, tls, autostart, raw)
 
 #' Close Connection
 #'

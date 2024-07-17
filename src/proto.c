@@ -42,7 +42,7 @@ static void stream_finalizer(SEXP xptr) {
 
 // sockets ---------------------------------------------------------------------
 
-SEXP rnng_protocol_open(SEXP protocol, SEXP raw) {
+SEXP rnng_protocol_open(SEXP protocol, SEXP dial, SEXP listen, SEXP tls, SEXP autostart, SEXP raw) {
 
   const char *pro = NANO_STRING(protocol);
   const int rw = NANO_INTEGER(raw);
@@ -152,6 +152,12 @@ SEXP rnng_protocol_open(SEXP protocol, SEXP raw) {
   Rf_setAttrib(socket, nano_IdSymbol, Rf_ScalarInteger(nng_socket_id(*sock)));
   Rf_setAttrib(socket, nano_ProtocolSymbol, Rf_mkString(pname));
   Rf_setAttrib(socket, nano_StateSymbol, Rf_mkString("opened"));
+
+  if (dial != R_NilValue)
+    rnng_dial(socket, dial, tls, autostart, Rf_ScalarLogical(1));
+
+  if (listen != R_NilValue)
+    rnng_listen(socket, listen, tls, autostart, Rf_ScalarLogical(1));
 
   UNPROTECT(1);
   return socket;
