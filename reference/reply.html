@@ -11,7 +11,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">nanonext</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1.9002</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1.9003</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -57,7 +57,7 @@
 <span>  <span class="va">execute</span>,</span>
 <span>  recv_mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"serial"</span>, <span class="st">"character"</span>, <span class="st">"complex"</span>, <span class="st">"double"</span>, <span class="st">"integer"</span>, <span class="st">"logical"</span>,</span>
 <span>    <span class="st">"numeric"</span>, <span class="st">"raw"</span><span class="op">)</span>,</span>
-<span>  send_mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"serial"</span>, <span class="st">"raw"</span>, <span class="st">"next"</span><span class="op">)</span>,</span>
+<span>  send_mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"serial"</span>, <span class="st">"raw"</span><span class="op">)</span>,</span>
 <span>  timeout <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -90,9 +90,8 @@ modes, received bytes are converted into the respective mode.
 
 <dt id="arg-send-mode">send_mode<a class="anchor" aria-label="anchor" href="#arg-send-mode"></a></dt>
 <dd><p>[default 'serial'] character value or integer equivalent -
-one of ‘serial’ (1L) to send serialised R objects, ‘raw’
-(2L) to send atomic vectors of any type as a raw byte vector, or
-‘next’ (3L) - see ‘Send Modes’ section below.</p></dd>
+either ‘serial’ (1L) to send serialised R objects, or ‘raw’
+(2L) to send atomic vectors of any type as a raw byte vector.</p></dd>
 
 
 <dt id="arg-timeout">timeout<a class="anchor" aria-label="anchor" href="#arg-timeout"></a></dt>
@@ -130,16 +129,13 @@ become unavailable since sending the request).</p></dd>
 
 <p>The default mode ‘serial’ sends serialised R objects to ensure
     perfect reproducibility within R. When receiving, the corresponding mode
-    ‘serial’ should be used.</p>
+    ‘serial’ should be used. Custom serialization and unserialization
+    functions for reference objects may be enabled by the function
+    <code><a href="next_config.html">next_config</a></code>.</p>
 <p>Mode ‘raw’ sends atomic vectors of any type as a raw byte vector,
     and must be used when interfacing with external applications or raw
     system sockets, where R serialization is not in use. When receiving, the
     mode corresponding to the vector sent should be used.</p>
-<p>Mode ‘next’ sends serialised R objects, with native extensions
-    enabled by <code><a href="next_config.html">next_config</a></code>. This configures custom
-    serialization and unserialization functions for reference objects. When
-    receiving, mode ‘serial’ should be used as ‘next’ sends are
-    fully compatible.</p>
     </div>
 
     <div class="section level2">
