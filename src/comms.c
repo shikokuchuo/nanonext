@@ -318,7 +318,7 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
     case 2:
       nano_encode(&buf, data); break;
     default:
-      nano_serialize_next(&buf, data); break;
+      nano_serialize(&buf, data); break;
     }
 
     nng_socket *sock = (nng_socket *) NANO_PTR(con);
@@ -361,7 +361,7 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
     case 2:
       nano_encode(&buf, data); break;
     default:
-      nano_serialize_next(&buf, data); break;
+      nano_serialize(&buf, data); break;
     }
 
     nng_ctx *ctxp = (nng_ctx *) NANO_PTR(con);

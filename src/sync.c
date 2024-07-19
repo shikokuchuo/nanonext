@@ -462,7 +462,7 @@ SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeou
   case 2:
     nano_encode(&buf, data); break;
   default:
-    nano_serialize_next(&buf, data); break;
+    nano_serialize(&buf, data); break;
   }
 
   saio = R_Calloc(1, nano_aio);

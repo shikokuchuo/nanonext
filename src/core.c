@@ -239,31 +239,6 @@ void nano_serialize(nano_buf *buf, const SEXP object) {
 
   NANO_ALLOC(buf, NANONEXT_INIT_BUFSIZE);
 
-  struct R_outpstream_st output_stream;
-
-  R_InitOutPStream(
-    &output_stream,
-    (R_pstream_data_t) buf,
-#ifdef WORDS_BIGENDIAN
-    R_pstream_xdr_format,
-#else
-    R_pstream_binary_format,
-#endif
-    NANONEXT_SERIAL_VER,
-    NULL,
-    nano_write_bytes,
-    NULL,
-    R_NilValue
-  );
-
-  R_Serialize(object, &output_stream);
-
-}
-
-void nano_serialize_next(nano_buf *buf, const SEXP object) {
-
-  NANO_ALLOC(buf, NANONEXT_INIT_BUFSIZE);
-
   if (registered | special_bit) {
     buf->buf[0] = 0x7;
     buf->buf[1] = registered;
@@ -570,12 +545,11 @@ int nano_encodes(const SEXP mode) {
     case 3:
       if (!strncmp(mod, "raw", slen)) return 2;
     case 4:
-      if (!strncmp(mod, "next", slen)) return 3;
     case 5:
     case 6:
       if (!strncmp(mod, "serial", slen)) return 1;
     default:
-      Rf_error("'mode' should be one of serial, raw, next");
+      Rf_error("'mode' should be either serial or raw");
     }
   }
 

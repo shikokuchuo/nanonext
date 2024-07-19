@@ -4,18 +4,17 @@
 \alias{send_aio}
 \title{Send Async}
 \usage{
-send_aio(con, data, mode = c("serial", "raw", "next"), timeout = NULL)
+send_aio(con, data, mode = c("serial", "raw"), timeout = NULL)
 }
 \arguments{
 \item{con}{a Socket, Context or Stream.}
 
 \item{data}{an object (a vector, if mode = \sQuote{raw}).}
 
-\item{mode}{[default 'serial'] character value or integer equivalent - one of
-\sQuote{serial} (1L) to send serialised R objects, \sQuote{raw} (2L) to
-send atomic vectors of any type as a raw byte vector, or \sQuote{next}
-(3L) - see \sQuote{Send Modes} section below. For Streams, \sQuote{raw}
-is the only option and this argument is ignored.}
+\item{mode}{[default 'serial'] character value or integer equivalent - either
+\sQuote{serial} (1L) to send serialised R objects, or \sQuote{raw} (2L)
+to send atomic vectors of any type as a raw byte vector. For Streams,
+\sQuote{raw} is the only option and this argument is ignored.}
 
 \item{timeout}{[default NULL] integer value in milliseconds or NULL, which
 applies a socket-specific default, usually the same as no timeout.}
@@ -45,18 +44,14 @@ Async send is always non-blocking and returns a \sQuote{sendAio}
 
     The default mode \sQuote{serial} sends serialised R objects to ensure
     perfect reproducibility within R. When receiving, the corresponding mode
-    \sQuote{serial} should be used.
+    \sQuote{serial} should be used. Custom serialization and unserialization
+    functions for reference objects may be enabled by the function
+    \code{\link{next_config}}.
 
     Mode \sQuote{raw} sends atomic vectors of any type as a raw byte vector,
     and must be used when interfacing with external applications or raw
     system sockets, where R serialization is not in use. When receiving, the
     mode corresponding to the vector sent should be used.
-
-    Mode \sQuote{next} sends serialised R objects, with native extensions
-    enabled by \code{\link{next_config}}. This configures custom
-    serialization and unserialization functions for reference objects. When
-    receiving, mode \sQuote{serial} should be used as \sQuote{next} sends are
-    fully compatible.
 }
 
 \examples{

@@ -217,7 +217,6 @@ SEXP mk_error(const int);
 SEXP mk_error_data(const int);
 SEXP rawToChar(const unsigned char *, const size_t);
 void nano_serialize(nano_buf *, const SEXP);
-void nano_serialize_next(nano_buf *, const SEXP);
 SEXP nano_unserialize(unsigned char *, const size_t);
 SEXP nano_decode(unsigned char *, const size_t, const int);
 void nano_encode(nano_buf *, const SEXP);

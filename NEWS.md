@@ -1,8 +1,12 @@
-# nanonext 1.1.1.9002 (development)
+# nanonext 1.1.1.9003 (development)
 
 #### New Features
 
 * Adds the 'poly' protocol for one-to-one of many socket connections (NNG's pair v1 polyamorous mode).
+
+#### Updates
+
+* Send mode 'next' is folded into the default 'serial', with custom serialization functions applying automatically if they have been registered.
 
 # nanonext 1.1.1
 

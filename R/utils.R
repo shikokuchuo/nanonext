@@ -262,11 +262,11 @@ is_nul_byte <- function(x) .Call(rnng_is_nul_byte, x)
 #'
 status_code <- function(x) .Call(rnng_status_code, x)
 
-#' Configure Next Mode
+#' Configure Custom Serialization
 #'
-#' Configures send mode \sQuote{next} by registering functions for custom
-#'     serialization and unserialization of non-system reference objects,
-#'     allowing these to be sent and received between different R sessions.
+#' Registers functions for custom serialization and unserialization of
+#'     non-system reference objects, allowing these to be sent and received
+#'     between different R sessions.
 #'
 #' @param refhook \strong{either} a list or pairlist of two functions: the
 #'     signature for the first must accept a reference object inheriting from

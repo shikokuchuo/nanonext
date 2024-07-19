@@ -57,7 +57,7 @@
 #'
 #' @export
 #'
-send_aio <- function(con, data, mode = c("serial", "raw", "next"), timeout = NULL)
+send_aio <- function(con, data, mode = c("serial", "raw"), timeout = NULL)
   data <- .Call(rnng_send_aio, con, data, mode, timeout, environment())
 
 #' Receive Async

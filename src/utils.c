@@ -462,7 +462,7 @@ SEXP rnng_stats_get(SEXP object, SEXP stat) {
 
 }
 
-// next mode selector ----------------------------------------------------------
+// serialization config --------------------------------------------------------
 
 SEXP rnng_next_config(SEXP refhook, SEXP klass, SEXP list, SEXP mark) {
 

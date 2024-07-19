@@ -98,9 +98,8 @@ close.nanoContext <- function(con, ...) invisible(.Call(rnng_ctx_close, con))
 #'     \code{function(x) do(x)}. Additional arguments can also be passed in
 #'     through \sQuote{...}.
 #' @param send_mode [default 'serial'] character value or integer equivalent -
-#'     one of \sQuote{serial} (1L) to send serialised R objects, \sQuote{raw}
-#'     (2L) to send atomic vectors of any type as a raw byte vector, or
-#'     \sQuote{next} (3L) - see \sQuote{Send Modes} section below.
+#'     either \sQuote{serial} (1L) to send serialised R objects, or \sQuote{raw}
+#'     (2L) to send atomic vectors of any type as a raw byte vector.
 #' @param recv_mode [default 'serial'] character value or integer equivalent -
 #'     one of \sQuote{serial} (1L), \sQuote{character} (2L), \sQuote{complex}
 #'     (3L), \sQuote{double} (4L), \sQuote{integer} (5L), \sQuote{logical} (6L),
@@ -154,7 +153,7 @@ reply <- function(context,
                   execute,
                   recv_mode = c("serial", "character", "complex", "double",
                                 "integer", "logical", "numeric", "raw"),
-                  send_mode = c("serial", "raw", "next"),
+                  send_mode = c("serial", "raw"),
                   timeout = NULL,
                   ...) {
 
@@ -246,7 +245,7 @@ reply <- function(context,
 #'
 request <- function(context,
                     data,
-                    send_mode = c("serial", "raw", "next"),
+                    send_mode = c("serial", "raw"),
                     recv_mode = c("serial", "character", "complex", "double",
                                   "integer", "logical", "numeric", "raw", "string"),
                     timeout = NULL,

@@ -448,7 +448,7 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
     case 2:
       nano_encode(&buf, data); break;
     default:
-      nano_serialize_next(&buf, data); break;
+      nano_serialize(&buf, data); break;
     }
 
     nng_msg *msg;

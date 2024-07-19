@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{next_config}
 \alias{next_config}
-\title{Configure Next Mode}
+\title{Configure Custom Serialization}
 \usage{
 next_config(refhook = list(), class = "", vec = FALSE, mark = FALSE)
 }
@@ -31,9 +31,9 @@ A pairlist comprising the currently-registered \sQuote{refhook}
     functions.
 }
 \description{
-Configures send mode \sQuote{next} by registering functions for custom
-    serialization and unserialization of non-system reference objects,
-    allowing these to be sent and received between different R sessions.
+Registers functions for custom serialization and unserialization of
+    non-system reference objects, allowing these to be sent and received
+    between different R sessions.
 }
 \details{
 Calling this function without any arguments returns the pairlist of
