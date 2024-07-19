@@ -310,7 +310,8 @@ unlock <- function(socket) invisible(.Call(rnng_socket_unlock, socket))
 #' Dispatcher Socket
 #'
 #' Creates a Dispatcher socket, which is a special type of \sQuote{req} socket,
-#'     with FIFO scheduling using a threaded implementation.
+#'     with FIFO scheduling using a threaded implementation (for internal use
+#'     only).
 #'
 #' @param cv a \sQuote{conditionVariable} object.
 #' @param n number of connected rep nodes.
@@ -330,7 +331,7 @@ dispatcher_socket <- function(cv, n, host, url, tls = NULL)
 
 #' Condition Variable Flag Value
 #'
-#' Query the flag value of a conditionVariable.
+#' Query the flag value of a conditionVariable (for internal use only).
 #'
 #' @param cv a \sQuote{conditionVariable} object.
 #'

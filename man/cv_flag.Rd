@@ -13,6 +13,6 @@ cv_flag(cv)
 An integer.
 }
 \description{
-Query the flag value of a conditionVariable.
+Query the flag value of a conditionVariable (for internal use only).
 }
 \keyword{internal}

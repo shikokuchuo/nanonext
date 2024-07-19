@@ -25,6 +25,7 @@ A \sQuote{req} Socket. The thread is attached to \sQuote{cv}.
 }
 \description{
 Creates a Dispatcher socket, which is a special type of \sQuote{req} socket,
-    with FIFO scheduling using a threaded implementation.
+    with FIFO scheduling using a threaded implementation (for internal use
+    only).
 }
 \keyword{internal}
