@@ -187,8 +187,11 @@ SEXP rnng_socket_get_pipes(SEXP socket, SEXP number) {
   SEXP pipe, out;
 
   for (int i = 0; i < n; i++) {
-    if ((xc = nng_aio_alloc(&aio[i], NULL, NULL)))
-      goto exitlevel1;
+    if ((xc = nng_aio_alloc(&aio[i], NULL, NULL))) {
+      for (int k = 0; k < i; k++)
+        nng_aio_free(aio[k]);
+      ERROR_OUT(xc);
+    }
     nng_recv_aio(*sock, aio[i]);
   }
 
@@ -196,11 +199,16 @@ SEXP rnng_socket_get_pipes(SEXP socket, SEXP number) {
 
   for (int i = 0; i < n; i++) {
     nng_aio_wait(aio[i]);
-    if ((xc = nng_aio_result(aio[i])))
-      goto exitlevel1;
+    if ((xc = nng_aio_result(aio[i]))) {
+      for (int k = i; k < n; k++)
+        nng_aio_free(aio[k]);
+      ERROR_OUT(xc);
+    }
     msg = nng_aio_get_msg(aio[i]);
     p = R_Calloc(1, nng_pipe);
     *p = nng_msg_get_pipe(msg);
+    nng_aio_free(aio[i]);
+    nng_msg_free(msg);
     PROTECT(pipe = R_MakeExternalPtr(p, nano_PipeSymbol, R_NilValue));
     NANO_CLASS2(pipe, "nanoPipe", "nano");
     Rf_setAttrib(pipe, nano_IdSymbol, Rf_ScalarInteger(nng_pipe_id(*p)));
@@ -211,9 +219,6 @@ SEXP rnng_socket_get_pipes(SEXP socket, SEXP number) {
   }
 
   return out;
-
-  exitlevel1:
-  ERROR_OUT(xc);
 
 }
 
