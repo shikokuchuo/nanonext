@@ -513,11 +513,12 @@ SEXP rnng_next_config(SEXP refhook, SEXP klass, SEXP list, SEXP mark) {
 
 // specials --------------------------------------------------------------------
 
-void rnng_advance_rng_state(void) {
+SEXP rnng_advance_rng_state(void) {
 
   GetRNGstate();
   (void) exp_rand();
   PutRNGstate();
+  return R_NilValue;
 
 }
 

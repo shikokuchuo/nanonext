@@ -7,7 +7,7 @@
 .rng_adv()
 }
 \value{
-An empty list.
+NULL.
 }
 \description{
 Internal package function.

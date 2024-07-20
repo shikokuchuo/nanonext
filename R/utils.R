@@ -308,7 +308,7 @@ next_config <- function(refhook = list(), class = "", vec = FALSE, mark = FALSE)
 #'
 #' Internal package function.
 #'
-#' @return An empty list.
+#' @return NULL.
 #'
 #' @examples
 #' .Random.seed
@@ -318,7 +318,7 @@ next_config <- function(refhook = list(), class = "", vec = FALSE, mark = FALSE)
 #' @keywords internal
 #' @export
 #'
-.rng_adv <- function() .C(rnng_advance_rng_state)
+.rng_adv <- function() .Call(rnng_advance_rng_state)
 
 #' Internal Package Function
 #'
