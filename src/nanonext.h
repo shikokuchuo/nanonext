@@ -226,6 +226,7 @@ int nano_matchargs(const SEXP);
 SEXP nano_PreserveObject(SEXP);
 void nano_ReleaseObject(SEXP);
 
+void rnng_advance_rng_state(void);
 SEXP rnng_aio_call(SEXP);
 SEXP rnng_aio_collect(SEXP);
 SEXP rnng_aio_collect_safe(SEXP);

@@ -124,6 +124,11 @@ static void ReleaseObjects(void) {
 }
 // # nocov end
 
+static const R_CMethodDef cMethods[] = {
+  {"rnng_advance_rng_state", (DL_FUNC) &rnng_advance_rng_state, 0},
+  {NULL, NULL, 0}
+};
+
 static const R_CallMethodDef callMethods[] = {
   {"rnng_aio_call", (DL_FUNC) &rnng_aio_call, 1},
   {"rnng_aio_collect", (DL_FUNC) &rnng_aio_collect, 1},
@@ -207,7 +212,7 @@ void attribute_visible R_init_nanonext(DllInfo* dll) {
   RegisterSymbols();
   PreserveObjects();
   eln2 = eln2dummy;
-  R_registerRoutines(dll, NULL, callMethods, NULL, externalMethods);
+  R_registerRoutines(dll, cMethods, callMethods, NULL, externalMethods);
   R_useDynamicSymbols(dll, FALSE);
   R_forceSymbols(dll, TRUE);
 }

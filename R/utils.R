@@ -304,6 +304,22 @@ status_code <- function(x) .Call(rnng_status_code, x)
 next_config <- function(refhook = list(), class = "", vec = FALSE, mark = FALSE)
   .Call(rnng_next_config, refhook, class, vec, mark)
 
+#' Advances the RNG State
+#'
+#' Internal package function.
+#'
+#' @return An empty list.
+#'
+#' @examples
+#' .Random.seed
+#' invisible(.rng_adv())
+#' .Random.seed
+#'
+#' @keywords internal
+#' @export
+#'
+.rng_adv <- function() .C(rnng_advance_rng_state)
+
 #' Internal Package Function
 #'
 #' Only present for cleaning up after running examples and tests. Do not attempt
