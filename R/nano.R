@@ -329,6 +329,16 @@ print.nanoStream <- function(x, ...) {
 
 #' @export
 #'
+print.nanoPipe <- function(x, ...) {
+
+  cat(sprintf("< nanoPipe >\n - id: %s\n - socket: %d\n",
+              attr(x, "id"), attr(x, "socket")), file = stdout())
+  invisible(x)
+
+}
+
+#' @export
+#'
 print.recvAio <- function(x, ...) {
 
   cat("< recvAio | $data >\n", file = stdout())

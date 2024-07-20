@@ -1,7 +1,8 @@
-# nanonext 1.1.1.9003 (development)
+# nanonext 1.1.1.9004 (development)
 
 #### New Features
 
+* Adds `pipes()` for obtaining the underlying pipes for a socket. This affords more granular control of connections, with the ability to close individual pipes.
 * Adds the 'poly' protocol for one-to-one of many socket connections (NNG's pair v1 polyamorous mode).
 
 #### Updates

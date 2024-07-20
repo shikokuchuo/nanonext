@@ -8,6 +8,7 @@
 \alias{close.ncurlSession}
 \alias{close}
 \alias{close.nanoSocket}
+\alias{close.nanoPipe}
 \alias{close.nanoStream}
 \title{Close Connection}
 \usage{
@@ -21,10 +22,13 @@
 
 \method{close}{nanoSocket}(con, ...)
 
+\method{close}{nanoPipe}(con, ...)
+
 \method{close}{nanoStream}(con, ...)
 }
 \arguments{
-\item{con}{a Socket, Context, Dialer, Listener, Stream, or 'ncurlSession'.}
+\item{con}{a Socket, Context, Dialer, Listener, Stream, Pipe, or
+'ncurlSession'.}
 
 \item{...}{not used.}
 }
@@ -32,8 +36,8 @@
 Invisibly, an integer exit code (zero on success).
 }
 \description{
-Close Connection on a Socket, Context, Dialer, Listener, Stream, or ncurl
-    Session.
+Close Connection on a Socket, Context, Dialer, Listener, Stream, Pipe, or
+    ncurl Session.
 }
 \details{
 Closing an object explicitly frees its resources. An object can also
@@ -54,6 +58,10 @@ Closing an object explicitly frees its resources. An object can also
     Closing a Stream: if any send or receive operations are pending, they
     will be terminated and any new operations will fail after the connection
     is closed.
+
+    As Pipes are owned by the corresponding Socket, removing (and garbage
+    collecting) a Pipe does not close it or free its resources. A Pipe may,
+    however, be explicitly closed.
 }
 \seealso{
 \code{\link{reap}}

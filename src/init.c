@@ -32,6 +32,7 @@ SEXP nano_DotcallSymbol;
 SEXP nano_HeadersSymbol;
 SEXP nano_IdSymbol;
 SEXP nano_ListenerSymbol;
+SEXP nano_PipeSymbol;
 SEXP nano_ProtocolSymbol;
 SEXP nano_RawSymbol;
 SEXP nano_ResolveSymbol;
@@ -68,6 +69,7 @@ static void RegisterSymbols(void) {
   nano_HeadersSymbol = Rf_install("headers");
   nano_IdSymbol = Rf_install("id");
   nano_ListenerSymbol = Rf_install("listener");
+  nano_PipeSymbol = Rf_install("pipe");
   nano_ProtocolSymbol = Rf_install("protocol");
   nano_RawSymbol = Rf_install("raw");
   nano_ResolveSymbol = Rf_install("resolve");
@@ -162,6 +164,7 @@ static const R_CallMethodDef callMethods[] = {
   {"rnng_ncurl_session_close", (DL_FUNC) &rnng_ncurl_session_close, 1},
   {"rnng_ncurl_transact", (DL_FUNC) &rnng_ncurl_transact, 1},
   {"rnng_next_config", (DL_FUNC) &rnng_next_config, 4},
+  {"rnng_pipe_close", (DL_FUNC) &rnng_pipe_close, 1},
   {"rnng_pipe_notify", (DL_FUNC) &rnng_pipe_notify, 6},
   {"rnng_protocol_open", (DL_FUNC) &rnng_protocol_open, 6},
   {"rnng_random", (DL_FUNC) &rnng_random, 2},
@@ -175,6 +178,7 @@ static const R_CallMethodDef callMethods[] = {
   {"rnng_set_opt", (DL_FUNC) &rnng_set_opt, 3},
   {"rnng_signal_thread_create", (DL_FUNC) &rnng_signal_thread_create, 2},
   {"rnng_sleep", (DL_FUNC) &rnng_sleep, 1},
+  {"rnng_socket_get_pipes", (DL_FUNC) &rnng_socket_get_pipes, 2},
   {"rnng_socket_lock", (DL_FUNC) &rnng_socket_lock, 2},
   {"rnng_socket_unlock", (DL_FUNC) &rnng_socket_unlock, 1},
   {"rnng_stats_get", (DL_FUNC) &rnng_stats_get, 2},

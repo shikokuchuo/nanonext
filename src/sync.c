@@ -583,7 +583,7 @@ SEXP rnng_pipe_notify(SEXP socket, SEXP cv, SEXP cv2, SEXP add, SEXP remove, SEX
 
   if (cv2 != R_NilValue) {
 
-    if (TAG(cv2) != nano_CvSymbol)
+    if (NANO_TAG(cv2) != nano_CvSymbol)
       Rf_error("'cv2' is not a valid Condition Variable");
 
     cvp->flag = flg < 0 ? 1 : flg;
