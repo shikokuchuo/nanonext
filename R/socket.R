@@ -205,10 +205,10 @@ close.nanoPipe <- function(con, ...) invisible(.Call(rnng_pipe_close, con))
 
 #' Reap
 #'
-#' An alternative to \code{close} for Sockets, Contexts, Listeners and Dialers
-#'     avoiding S3 method dispatch.
+#' An alternative to \code{close} for Sockets, Contexts, Listeners, Dialers and
+#'     Pipes avoiding S3 method dispatch.
 #'
-#' @param con a Socket, Context, Listener or Dialer.
+#' @param con a Socket, Context, Listener, Dialer or Pipe.
 #'
 #' @return An integer exit code (zero on success).
 #'

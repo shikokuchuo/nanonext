@@ -7,14 +7,14 @@
 reap(con)
 }
 \arguments{
-\item{con}{a Socket, Context, Listener or Dialer.}
+\item{con}{a Socket, Context, Listener, Dialer or Pipe.}
 }
 \value{
 An integer exit code (zero on success).
 }
 \description{
-An alternative to \code{close} for Sockets, Contexts, Listeners and Dialers
-    avoiding S3 method dispatch.
+An alternative to \code{close} for Sockets, Contexts, Listeners, Dialers and
+    Pipes avoiding S3 method dispatch.
 }
 \details{
 May be used on unclassed external pointers e.g. those created by
