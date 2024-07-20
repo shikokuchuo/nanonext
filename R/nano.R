@@ -180,10 +180,10 @@ nano <- function(protocol = c("bus", "pair", "push", "pull", "pub", "sub",
                                  timeout = NULL)
     recv_aio(socket, mode = mode, timeout = timeout)
 
-  nano[["send"]] <- function(data, mode = c("serial", "raw", "next"), block = NULL)
+  nano[["send"]] <- function(data, mode = c("serial", "raw"), block = NULL)
     send(socket, data = data, mode = mode, block = block)
 
-  nano[["send_aio"]] <- function(data, mode = c("serial", "raw", "next"), timeout = NULL)
+  nano[["send_aio"]] <- function(data, mode = c("serial", "raw"), timeout = NULL)
     send_aio(socket, data = data, mode = mode, timeout = timeout)
 
   nano[["opt"]] <- function(name, value)
