@@ -174,15 +174,13 @@ listen <- function(socket, url = "inproc://nanonext", tls = NULL, autostart = TR
 NULL
 
 #' @rdname start
-#' @method start nanoListener
-#' @export
+#' @exportS3Method stats::start
 #'
 start.nanoListener <- function(x, ...)
   invisible(.Call(rnng_listener_start, x))
 
 #' @rdname start
-#' @method start nanoDialer
-#' @export
+#' @exportS3Method stats::start
 #'
 start.nanoDialer <- function(x, async = TRUE, ...)
   invisible(.Call(rnng_dialer_start, x, async))
