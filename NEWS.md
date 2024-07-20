@@ -8,6 +8,7 @@
 #### Updates
 
 * Send mode 'next' is folded into the default 'serial', with custom serialization functions applying automatically if they have been registered.
+* Removes hard dependency on `stats` and `utils` base packages.
 * Requires R >= 3.6.
 
 # nanonext 1.1.1

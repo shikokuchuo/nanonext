@@ -456,22 +456,22 @@ print.tlsConfig <- function(x, ...) {
 #'
 `[[<-.sendAio` <- function(x, i, value) x
 
-#' @export
+#' @exportS3Method utils::.DollarNames
 #'
 .DollarNames.nano <- function(x, pattern = "")
   grep(pattern, names(attributes(x)), value = TRUE, fixed = TRUE)
 
-#' @export
+#' @exportS3Method utils::.DollarNames
 #'
 .DollarNames.recvAio <- function(x, pattern = "")
   if (startsWith("data", pattern)) "data" else character()
 
-#' @export
+#' @exportS3Method utils::.DollarNames
 #'
 .DollarNames.sendAio <- function(x, pattern = "")
   if (startsWith("result", pattern)) "result" else character()
 
-#' @export
+#' @exportS3Method utils::.DollarNames
 #'
 .DollarNames.ncurlAio <- function(x, pattern = "")
   grep(pattern, c("status", "headers", "data"), value = TRUE, fixed = TRUE)
