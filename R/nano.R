@@ -331,8 +331,7 @@ print.nanoStream <- function(x, ...) {
 #'
 print.nanoPipe <- function(x, ...) {
 
-  cat(sprintf("< nanoPipe >\n - id: %s\n - socket: %d\n",
-              attr(x, "id"), attr(x, "socket")), file = stdout())
+  cat(sprintf("< nanoPipe >\n - id: %s\n", attr(x, "id")), file = stdout())
   invisible(x)
 
 }

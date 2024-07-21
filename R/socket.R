@@ -115,32 +115,32 @@ socket <- function(protocol = c("bus", "pair", "poly", "push", "pull", "pub",
                    raw = FALSE)
   .Call(rnng_protocol_open, protocol, dial, listen, tls, autostart, raw)
 
-#' Obtain Open Pipes from a Socket
+#' Collect the Pipe from an Aio
 #'
-#' This function blocks until it has received \sQuote{n} messages from the
-#'     supplied Socket. The Pipes used to receive those messages are returned in
-#'     a list. A Pipe is a low-level object and it is not normally necessary to
-#'     deal with them directly.
+#' This function blocks until it has received a message from the Aio. The Pipe
+#'     used to receive the message is returned and the message is still
+#'     available for retrieval by normal means. A Pipe is a low-level object and
+#'     it is not normally necessary to deal with them directly.
 #'
-#' @inheritParams context
-#' @param n integer number of Pipes to return.
+#' @param x a 'recvAio' object.
 #'
-#' @details As Pipes are owned by the corresponding Socket, removing (and
-#'     garbage collecting) a Pipe does not close it or free its resources. A
-#'     Pipe may, however, be explicitly closed.
+#' @details As Pipes are always owned by a Socket, removing (and garbage
+#'     collecting) a Pipe does not close it or free its resources. A Pipe may,
+#'     however, be explicitly closed.
 #'
-#' @return A list of Pipes (objects of class \sQuote{nanoPipe}).
+#' @return A Pipe (object of class \sQuote{nanoPipe}).
 #'
 #' @examples
 #' s <- socket("rep")
 #' listen(s)
 #' s1 <- socket("req")
 #' dial(s1)
+#' r <- recv_aio(s, timeout = 500)
 #'
 #' if (!send(s1, "")) {
-#'   p <- pipes(s, n = 1)
+#'   p <- tryCatch(collect_pipe(r), error = identity)
 #'   print(p)
-#'   lapply(p, close)
+#'   reap(p)
 #' }
 #'
 #' close(s)
@@ -148,7 +148,7 @@ socket <- function(protocol = c("bus", "pair", "poly", "push", "pull", "pub",
 #'
 #' @export
 #'
-pipes <- function(socket, n = 1L) .Call(rnng_socket_get_pipes, socket, n)
+collect_pipe <- function(x) .Call(rnng_aio_collect_pipe, x)
 
 #' Close Connection
 #'
