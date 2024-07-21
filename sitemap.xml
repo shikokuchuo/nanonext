@@ -11,6 +11,7 @@
 <url><loc>https://shikokuchuo.net/nanonext/reference/call_aio.html</loc></url>
 <url><loc>https://shikokuchuo.net/nanonext/reference/close.html</loc></url>
 <url><loc>https://shikokuchuo.net/nanonext/reference/collect_aio.html</loc></url>
+<url><loc>https://shikokuchuo.net/nanonext/reference/collect_pipe.html</loc></url>
 <url><loc>https://shikokuchuo.net/nanonext/reference/context.html</loc></url>
 <url><loc>https://shikokuchuo.net/nanonext/reference/cv.html</loc></url>
 <url><loc>https://shikokuchuo.net/nanonext/reference/dial.html</loc></url>
@@ -37,7 +38,6 @@
 <url><loc>https://shikokuchuo.net/nanonext/reference/opt.html</loc></url>
 <url><loc>https://shikokuchuo.net/nanonext/reference/parse_url.html</loc></url>
 <url><loc>https://shikokuchuo.net/nanonext/reference/pipe_notify.html</loc></url>
-<url><loc>https://shikokuchuo.net/nanonext/reference/pipes.html</loc></url>
 <url><loc>https://shikokuchuo.net/nanonext/reference/protocols.html</loc></url>
 <url><loc>https://shikokuchuo.net/nanonext/reference/random.html</loc></url>
 <url><loc>https://shikokuchuo.net/nanonext/reference/reap.html</loc></url>
