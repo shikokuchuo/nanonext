@@ -300,6 +300,8 @@ nanotestxp(rep$dialer[[1L]])
 nanotestz(close(ctx))
 nanotestw(close(ctx) == 7L)
 nanotestz(close(rep))
+nanotest(reap(p) == 12L)
+nanotestw(close(p) == 12L)
 
 nanotestnano(pub <- nano("pub", listen = "inproc://ps"))
 nanotestnano(sub <- nano("sub", dial = "inproc://ps", autostart = NA))
