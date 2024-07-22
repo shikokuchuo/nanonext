@@ -57,7 +57,7 @@ SEXP rnng_sleep(SEXP msec) {
 
 SEXP rnng_url_parse(SEXP url) {
 
-  const char *up = NANO_STRING(url);
+  const char *up = CHAR(STRING_ELT(url, 0));
   nng_url *urlp;
 
   const int xc = nng_url_parse(&urlp, up);
@@ -101,7 +101,7 @@ SEXP rnng_is_error_value(SEXP x) {
 
 SEXP rnng_set_opt(SEXP object, SEXP opt, SEXP value) {
 
-  const char *op = NANO_STRING(opt);
+  const char *op = CHAR(STRING_ELT(opt, 0));
   const int typ = TYPEOF(value);
   int xc, val;
 
@@ -289,7 +289,7 @@ SEXP rnng_subscribe(SEXP object, SEXP value, SEXP sub) {
 
 SEXP rnng_get_opt(SEXP object, SEXP opt) {
 
-  const char *op = NANO_STRING(opt);
+  const char *op = CHAR(STRING_ELT(opt, 0));
   SEXP out;
   int xc, typ;
   nano_opt optval;
@@ -421,7 +421,7 @@ SEXP rnng_get_opt(SEXP object, SEXP opt) {
 
 SEXP rnng_stats_get(SEXP object, SEXP stat) {
 
-  const char *statname = NANO_STRING(stat);
+  const char *statname = CHAR(STRING_ELT(stat, 0));
   SEXP out;
   int xc;
   nng_stat *nst, *sst;

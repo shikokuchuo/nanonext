@@ -114,7 +114,7 @@ static void rnng_messenger_thread(void *args) {
 
 SEXP rnng_messenger(SEXP url) {
 
-  const char *up = NANO_STRING(url);
+  const char *up = CHAR(STRING_ELT(url, 0));
   nng_socket *sock = R_Calloc(1, nng_socket);
   nano_listener *lp;
   nano_dialer *dp;

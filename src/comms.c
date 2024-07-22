@@ -111,7 +111,7 @@ SEXP rnng_dial(SEXP socket, SEXP url, SEXP tls, SEXP autostart, SEXP error) {
 
   nng_socket *sock = (nng_socket *) NANO_PTR(socket);
   const int start = NANO_INTEGER(autostart);
-  const char *ur = NANO_STRING(url);
+  const char *ur = CHAR(STRING_ELT(url, 0));
   nano_dialer *dp = R_Calloc(1, nano_dialer);
   SEXP dialer, attr, newattr;
   nng_url *up;
@@ -187,7 +187,7 @@ SEXP rnng_listen(SEXP socket, SEXP url, SEXP tls, SEXP autostart, SEXP error) {
 
   nng_socket *sock = (nng_socket *) NANO_PTR(socket);
   const int start = NANO_INTEGER(autostart);
-  const char *ur = NANO_STRING(url);
+  const char *ur = CHAR(STRING_ELT(url, 0));
   nano_listener *lp = R_Calloc(1, nano_listener);
   SEXP listener, attr, newattr;
   nng_url *up;

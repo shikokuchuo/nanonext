@@ -135,8 +135,8 @@ static void session_finalizer(SEXP xptr) {
 SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP follow, SEXP method, SEXP headers,
                 SEXP data, SEXP response, SEXP timeout, SEXP tls) {
 
-  const char *addr = NANO_STRING(http);
-  const char *mthd = method != R_NilValue ? NANO_STRING(method) : NULL;
+  const char *addr = CHAR(STRING_ELT(http, 0));
+  const char *mthd = method != R_NilValue ? CHAR(STRING_ELT(method, 0)) : NULL;
   const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) nano_integer(timeout);
   if (tls != R_NilValue && NANO_TAG(tls) != nano_TlsSymbol)
     Rf_error("'tls' is not a valid TLS Configuration");
@@ -313,8 +313,8 @@ SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP follow, SEXP method, SEXP headers,
 SEXP rnng_ncurl_aio(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP data,
                     SEXP response, SEXP timeout, SEXP tls, SEXP clo) {
 
-  const char *httr = NANO_STRING(http);
-  const char *mthd = method != R_NilValue ? NANO_STRING(method) : NULL;
+  const char *httr = CHAR(STRING_ELT(http, 0));
+  const char *mthd = method != R_NilValue ? CHAR(STRING_ELT(method, 0)) : NULL;
   const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) nano_integer(timeout);
   if (tls != R_NilValue && NANO_TAG(tls) != nano_TlsSymbol)
     Rf_error("'tls' is not a valid TLS Configuration");
@@ -526,8 +526,8 @@ SEXP rnng_aio_http_data(SEXP env) {
 SEXP rnng_ncurl_session(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP data,
                         SEXP response, SEXP timeout, SEXP tls) {
 
-  const char *httr = NANO_STRING(http);
-  const char *mthd = method != R_NilValue ? NANO_STRING(method) : NULL;
+  const char *httr = CHAR(STRING_ELT(http, 0));
+  const char *mthd = method != R_NilValue ? CHAR(STRING_ELT(method, 0)) : NULL;
   const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) nano_integer(timeout);
   if (tls != R_NilValue && NANO_TAG(tls) != nano_TlsSymbol)
     Rf_error("'tls' is not a valid TLS Configuration");

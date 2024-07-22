@@ -52,7 +52,7 @@ static void pipe_finalizer(SEXP xptr) {
 
 SEXP rnng_protocol_open(SEXP protocol, SEXP dial, SEXP listen, SEXP tls, SEXP autostart, SEXP raw) {
 
-  const char *pro = NANO_STRING(protocol);
+  const char *pro = CHAR(STRING_ELT(protocol, 0));
   const int rw = NANO_INTEGER(raw);
   size_t slen = strlen(pro);
 
@@ -283,7 +283,7 @@ SEXP rnng_pipe_close(SEXP pipe) {
 
 SEXP rnng_stream_dial(SEXP url, SEXP textframes, SEXP tls) {
 
-  const char *add = NANO_STRING(url);
+  const char *add = CHAR(STRING_ELT(url, 0));
   if (tls != R_NilValue && NANO_TAG(tls) != nano_TlsSymbol)
     Rf_error("'tls' is not a valid TLS Configuration");
   nano_stream *nst = R_Calloc(1, nano_stream);
@@ -372,7 +372,7 @@ SEXP rnng_stream_dial(SEXP url, SEXP textframes, SEXP tls) {
 
 SEXP rnng_stream_listen(SEXP url, SEXP textframes, SEXP tls) {
 
-  const char *add = NANO_STRING(url);
+  const char *add = CHAR(STRING_ELT(url, 0));
   if (tls != R_NilValue && NANO_TAG(tls) != nano_TlsSymbol)
     Rf_error("'tls' is not a valid TLS Configuration");
   nano_stream *nst = R_Calloc(1, nano_stream);
