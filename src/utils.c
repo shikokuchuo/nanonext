@@ -501,7 +501,7 @@ SEXP rnng_next_config(SEXP refhook, SEXP klass, SEXP list, SEXP mark) {
 
     SETCAR(nano_refHook, plist ? CAR(refhook) : NANO_VECTOR(refhook)[0]);
     SETCADR(nano_refHook, plist ? CADR(refhook) : NANO_VECTOR(refhook)[1]);
-    SETCAR(nano_klassString, STRING_ELT(klass, 0));
+    SETCAR(nano_klassString, *NANO_VECTOR(klass));
 
     registered = NANO_INTEGER(list) ? 1 : 2;
 

@@ -96,6 +96,7 @@ typedef struct nano_handle_s {
 #define NANO_DATAPTR(x) (void *) DATAPTR_RO(x)
 #define NANO_VECTOR(x) ((const SEXP *) DATAPTR_RO(x))
 #define NANO_STRING(x) CHAR(*((const SEXP *) DATAPTR_RO(x)))
+#define NANO_STR_N(x, n) CHAR(((const SEXP *) DATAPTR_RO(x))[n])
 #define NANO_INTEGER(x) *(int *) DATAPTR_RO(x)
 #define NANO_ERROR(x) { Rf_error(x); return R_NilValue; }
 

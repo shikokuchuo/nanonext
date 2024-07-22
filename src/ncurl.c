@@ -168,8 +168,8 @@ SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP follow, SEXP method, SEXP headers,
     if (TYPEOF(hnames) == STRSXP && XLENGTH(hnames) == hlen) {
       for (R_xlen_t i = 0; i < hlen; i++) {
         if ((xc = nng_http_req_set_header(req,
-                                          CHAR(STRING_ELT(hnames, i)),
-                                          CHAR(STRING_ELT(headers, i)))))
+                                          NANO_STR_N(hnames, i),
+                                          NANO_STR_N(headers, i))))
           goto exitlevel4;
       }
     }
@@ -262,7 +262,7 @@ SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP follow, SEXP method, SEXP headers,
     SET_VECTOR_ELT(out, 1, rvec);
     Rf_namesgets(rvec, response);
     for (R_xlen_t i = 0; i < rlen; i++) {
-      const char *r = nng_http_res_get_header(res, CHAR(STRING_ELT(response, i)));
+      const char *r = nng_http_res_get_header(res, NANO_STR_N(response, i));
       SET_VECTOR_ELT(rvec, i, r == NULL ? R_NilValue : Rf_mkString(r));
     }
   } else {
@@ -343,8 +343,8 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP dat
     if (TYPEOF(hnames) == STRSXP && XLENGTH(hnames) == hlen) {
       for (R_xlen_t i = 0; i < hlen; i++) {
         if ((xc = nng_http_req_set_header(handle->req,
-                                          CHAR(STRING_ELT(hnames, i)),
-                                          CHAR(STRING_ELT(headers, i)))))
+                                          NANO_STR_N(hnames, i),
+                                          NANO_STR_N(headers, i))))
           goto exitlevel4;
       }
     }
@@ -476,7 +476,7 @@ static SEXP rnng_aio_http_impl(SEXP env, const int typ) {
     PROTECT(rvec = Rf_allocVector(VECSXP, rlen));
     Rf_namesgets(rvec, response);
     for (R_xlen_t i = 0; i < rlen; i++) {
-      const char *r = nng_http_res_get_header(handle->res, CHAR(STRING_ELT(response, i)));
+      const char *r = nng_http_res_get_header(handle->res, NANO_STR_N(response, i));
       SET_VECTOR_ELT(rvec, i, r == NULL ? R_NilValue : Rf_mkString(r));
     }
     UNPROTECT(1);
@@ -557,8 +557,8 @@ SEXP rnng_ncurl_session(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP
     if (TYPEOF(hnames) == STRSXP && XLENGTH(hnames) == hlen) {
       for (R_xlen_t i = 0; i < hlen; i++) {
         if ((xc = nng_http_req_set_header(handle->req,
-                                          CHAR(STRING_ELT(hnames, i)),
-                                          CHAR(STRING_ELT(headers, i)))))
+                                          NANO_STR_N(hnames, i),
+                                          NANO_STR_N(headers, i))))
           goto exitlevel4;
       }
     }
@@ -670,7 +670,7 @@ SEXP rnng_ncurl_transact(SEXP session) {
     SET_VECTOR_ELT(out, 1, rvec);
     Rf_namesgets(rvec, response);
     for (R_xlen_t i = 0; i < rlen; i++) {
-      const char *r = nng_http_res_get_header(handle->res, CHAR(STRING_ELT(response, i)));
+      const char *r = nng_http_res_get_header(handle->res, NANO_STR_N(response, i));
       SET_VECTOR_ELT(rvec, i, r == NULL ? R_NilValue : Rf_mkString(r));
     }
   } else {

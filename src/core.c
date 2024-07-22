@@ -503,10 +503,10 @@ void nano_encode(nano_buf *enc, const SEXP object) {
     R_xlen_t i;
     size_t slen, outlen = 0;
     for (i = 0; i < xlen; i++)
-      outlen += strlen(CHAR(STRING_ELT(object, i))) + 1;
+      outlen += strlen(NANO_STR_N(object, i)) + 1;
     NANO_ALLOC(enc, outlen);
     for (i = 0; i < xlen; i++) {
-      s = CHAR(STRING_ELT(object, i));
+      s = NANO_STR_N(object, i);
       slen = strlen(s) + 1;
       memcpy(enc->buf + enc->cur, s, slen);
       enc->cur += slen;
@@ -595,7 +595,7 @@ int nano_matcharg(const SEXP mode) {
 int nano_matchargs(const SEXP mode) {
 
   if (TYPEOF(mode) != INTSXP) {
-    const char *mod = CHAR(STRING_ELT(mode, XLENGTH(mode) == 9));
+    const char *mod = NANO_STR_N(mode, XLENGTH(mode) == 9);
     size_t slen = strlen(mod);
     switch (slen) {
     case 1:
