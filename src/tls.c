@@ -293,8 +293,9 @@ SEXP rnng_tls_config(SEXP client, SEXP server, SEXP pass, SEXP auth) {
   const char *crl, *file, *key, *pss;
   SEXP xp;
 
-  if ((usefile = Rf_xlength(client)) > 0) {
-    file = NANO_STRING(client);
+  if (client != R_NilValue) {
+    file = CHAR(STRING_ELT(client, 0));
+    usefile = XLENGTH(client);
     if (usefile > 1)
       crl = NANO_STR_N(client, 1);
     if ((xc = nng_tls_config_alloc(&cfg, NNG_TLS_MODE_CLIENT)))
@@ -311,9 +312,10 @@ SEXP rnng_tls_config(SEXP client, SEXP server, SEXP pass, SEXP auth) {
         goto exitlevel2;
     }
 
-  } else if ((usefile = Rf_xlength(server)) > 0) {
-    file = NANO_STRING(server);
-    pss = pass != R_NilValue ? NANO_STRING(pass) : NULL;
+  } else if (server != R_NilValue) {
+    file = CHAR(STRING_ELT(server, 0));
+    usefile = XLENGTH(server);
+    pss = pass != R_NilValue ? CHAR(STRING_ELT(pass, 0)) : NULL;
     if (usefile > 1)
       key = NANO_STR_N(server, 1);
     if ((xc = nng_tls_config_alloc(&cfg, NNG_TLS_MODE_SERVER)))
