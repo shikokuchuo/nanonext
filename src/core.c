@@ -235,18 +235,20 @@ SEXP rawToChar(const unsigned char *buf, const size_t sz) {
 
 }
 
-void nano_serialize(nano_buf *buf, const SEXP object) {
+void nano_serialize(nano_buf *buf, const SEXP object, const SEXP hook) {
 
   NANO_ALLOC(buf, NANONEXT_INIT_BUFSIZE);
+  const int reg = hook != R_NilValue;
+  int vec;
 
-  if (registered | special_bit) {
+  if (reg || special_bit) {
+    vec = NANO_INTEGER(CADDDR(hook));
     buf->buf[0] = 0x7;
-    buf->buf[1] = registered;
+    buf->buf[1] = (uint8_t) vec;
     buf->buf[3] = special_bit;
     buf->cur += 12;
   }
 
-  const int reg = (int) registered;
   struct R_outpstream_st output_stream;
 
   R_InitOutPStream(
@@ -261,7 +263,7 @@ void nano_serialize(nano_buf *buf, const SEXP object) {
     NULL,
     nano_write_bytes,
     reg ? nano_inHook : NULL,
-    reg ? CAR(nano_klassString) : R_NilValue
+    reg ? CAR(hook) : R_NilValue
   );
 
   R_Serialize(object, &output_stream);
@@ -271,9 +273,9 @@ void nano_serialize(nano_buf *buf, const SEXP object) {
     memcpy(buf->buf + 4, &cursor, sizeof(uint64_t));
     SEXP call, out;
 
-    if (reg == 1) {
+    if (vec) {
 
-      PROTECT(call = Rf_lcons(CAR(nano_refHook), Rf_cons(TAG(nano_refHook), R_NilValue)));
+      PROTECT(call = Rf_lcons(CADR(hook), Rf_cons(TAG(nano_refHook), R_NilValue)));
       PROTECT(out = R_UnwindProtect(eval_safe, call, rl_reset, NULL, NULL));
       if (TYPEOF(out) == RAWSXP) {
         R_xlen_t xlen = XLENGTH(out);
@@ -289,7 +291,7 @@ void nano_serialize(nano_buf *buf, const SEXP object) {
     } else {
 
       SEXP refList = TAG(nano_refHook);
-      SEXP func = CAR(nano_refHook);
+      SEXP func = CADR(hook);
       R_xlen_t llen = Rf_xlength(refList);
       if (buf->cur + sizeof(R_xlen_t) > buf->len) {
         buf->len = buf->cur + NANONEXT_INIT_BUFSIZE;
@@ -323,7 +325,7 @@ void nano_serialize(nano_buf *buf, const SEXP object) {
 
 }
 
-SEXP nano_unserialize(unsigned char *buf, const size_t sz) {
+SEXP nano_unserialize(unsigned char *buf, const size_t sz, const SEXP hook) {
 
   uint64_t offset;
   size_t cur;
@@ -341,10 +343,10 @@ SEXP nano_unserialize(unsigned char *buf, const size_t sz) {
       memcpy(&offset, buf + 4, sizeof(uint64_t));
       if (offset) {
         SEXP raw, call;
-        if (buf[1] == 0x1) {
+        if (buf[1]) {
           PROTECT(raw = Rf_allocVector(RAWSXP, sz - offset));
           memcpy(NANO_DATAPTR(raw), buf + offset, sz - offset);
-          PROTECT(call = Rf_lcons(CADR(nano_refHook), Rf_cons(raw, R_NilValue)));
+          PROTECT(call = Rf_lcons(CADDR(hook), Rf_cons(raw, R_NilValue)));
           reflist = Rf_eval(call, R_GlobalEnv);
           SET_TAG(nano_refHook, reflist);
           UNPROTECT(2);
@@ -354,7 +356,7 @@ SEXP nano_unserialize(unsigned char *buf, const size_t sz) {
           cur = offset + sizeof(R_xlen_t);
           PROTECT(reflist = Rf_allocVector(VECSXP, llen));
           SEXP out;
-          SEXP func = CADR(nano_refHook);
+          SEXP func = CADDR(hook);
           for (R_xlen_t i = 0; i < llen; i++) {
             memcpy(&xlen, buf + cur, sizeof(R_xlen_t));
             cur += sizeof(R_xlen_t);
@@ -377,7 +379,7 @@ SEXP nano_unserialize(unsigned char *buf, const size_t sz) {
   }
 
   REprintf("received data could not be unserialized\n");
-  return nano_decode(buf, sz, 8);
+  return nano_decode(buf, sz, 8, R_NilValue);
 
   resume: ;
 
@@ -408,7 +410,7 @@ SEXP nano_unserialize(unsigned char *buf, const size_t sz) {
 
 }
 
-SEXP nano_decode(unsigned char *buf, const size_t sz, const int mod) {
+SEXP nano_decode(unsigned char *buf, const size_t sz, const int mod, const SEXP hook) {
 
   SEXP data;
   size_t size;
@@ -480,7 +482,7 @@ SEXP nano_decode(unsigned char *buf, const size_t sz, const int mod) {
     data = rawToChar(buf, sz);
     return data;
   default:
-    data = nano_unserialize(buf, sz);
+    data = nano_unserialize(buf, sz, hook);
   return data;
   }
 

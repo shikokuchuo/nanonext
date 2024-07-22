@@ -304,6 +304,38 @@ status_code <- function(x) .Call(rnng_status_code, x)
 next_config <- function(refhook = list(), class = "", vec = FALSE, mark = FALSE)
   .Call(rnng_next_config, refhook, class, vec, mark)
 
+#' Configure Custom Serialization
+#'
+#' Registers functions on a Socket for custom serialization and unserialization
+#'     of non-system reference objects, allowing these to be sent and received
+#'     between different R sessions. Registered functions apply to all send and
+#'     receive operations in mode \sQuote{serial} performed over the Socket,
+#'     including those using a Context.
+#'
+#' @inheritParams context
+#' @param class character string of the class of object custom serialization
+#'     functions are applied to, e.g. \sQuote{ArrowTabular} or
+#'     \sQuote{torch_tensor}, or else NULL to reset.
+#' @param sfunc a function that accepts a reference object inheriting from
+#'     \sQuote{class} (or a list of such objects) and returns a raw vector.
+#' @param ufunc a function that accepts a raw vector and returns a reference
+#'     object (or list of such objects).
+#' @param vec [default FALSE] whether or not the serialization functions are
+#'     vectorized and accept and return a list of reference objects, e.g.
+#'     \code{torch::torch_serialize} and \code{torch::torch_load}, or if FALSE
+#'     return reference object individually e.g. \code{arrow::write_to_raw} and
+#'     \code{arrow::read_ipc_stream}.
+#'
+#' @return A pairlist comprising the currently-registered configuration.
+#'
+#' @examples
+#' # serial_config()
+#'
+#' @export
+#'
+serial_config <- function(socket, class, sfunc, ufunc, vec = FALSE)
+  .Call(rnng_serial_config, socket, class, sfunc, ufunc, vec)
+
 #' Advances the RNG State
 #'
 #' Internal package function.

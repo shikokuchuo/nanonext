@@ -228,7 +228,7 @@ SEXP rnng_aio_get_msg(SEXP env) {
     sz = nng_msg_len(msg);
   }
 
-  PROTECT(out = nano_decode(buf, sz, raio->mode));
+  PROTECT(out = nano_decode(buf, sz, raio->mode, NANO_PROT(aio)));
   Rf_defineVar(nano_ValueSymbol, out, env);
   Rf_defineVar(nano_AioSymbol, R_NilValue, env);
 
@@ -444,11 +444,11 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
 
     switch (nano_encodes(mode)) {
     case 1:
-      nano_serialize(&buf, data); break;
+      nano_serialize(&buf, data, NANO_PROT(con)); break;
     case 2:
       nano_encode(&buf, data); break;
     default:
-      nano_serialize(&buf, data); break;
+      nano_serialize(&buf, data, NANO_PROT(con)); break;
     }
 
     nng_msg *msg;

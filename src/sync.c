@@ -458,11 +458,11 @@ SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeou
 
   switch (nano_encodes(sendmode)) {
   case 1:
-    nano_serialize(&buf, data); break;
+    nano_serialize(&buf, data, NANO_PROT(con)); break;
   case 2:
     nano_encode(&buf, data); break;
   default:
-    nano_serialize(&buf, data); break;
+    nano_serialize(&buf, data, NANO_PROT(con)); break;
   }
 
   saio = R_Calloc(1, nano_aio);
@@ -493,7 +493,7 @@ SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeou
   nng_ctx_recv(*ctx, raio->aio);
   NANO_FREE(buf);
 
-  PROTECT(aio = R_MakeExternalPtr(raio, nano_AioSymbol, R_NilValue));
+  PROTECT(aio = R_MakeExternalPtr(raio, nano_AioSymbol, NANO_PROT(con)));
   R_RegisterCFinalizerEx(aio, request_finalizer, TRUE);
 
   PROTECT(env = Rf_allocSExp(ENVSXP));

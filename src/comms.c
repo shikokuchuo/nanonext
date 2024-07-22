@@ -46,7 +46,7 @@ SEXP rnng_ctx_open(SEXP socket) {
     ERROR_OUT(xc);
   }
 
-  PROTECT(context = R_MakeExternalPtr(ctx, nano_ContextSymbol, R_NilValue));
+  PROTECT(context = R_MakeExternalPtr(ctx, nano_ContextSymbol, NANO_PROT(socket)));
   R_RegisterCFinalizerEx(context, context_finalizer, TRUE);
 
   NANO_CLASS2(context, "nanoContext", "nano");
@@ -75,7 +75,7 @@ SEXP rnng_ctx_create(SEXP socket) {
     ERROR_OUT(xc);
   }
 
-  PROTECT(context = R_MakeExternalPtr(ctx, nano_ContextSymbol, R_NilValue));
+  PROTECT(context = R_MakeExternalPtr(ctx, nano_ContextSymbol, NANO_PROT(socket)));
   R_RegisterCFinalizerEx(context, context_finalizer, TRUE);
   UNPROTECT(1);
   return context;
@@ -314,11 +314,11 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
 
     switch (nano_encodes(mode)) {
     case 1:
-      nano_serialize(&buf, data); break;
+      nano_serialize(&buf, data, NANO_PROT(con)); break;
     case 2:
       nano_encode(&buf, data); break;
     default:
-      nano_serialize(&buf, data); break;
+      nano_serialize(&buf, data, NANO_PROT(con)); break;
     }
 
     nng_socket *sock = (nng_socket *) NANO_PTR(con);
@@ -357,11 +357,11 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
 
     switch (nano_encodes(mode)) {
     case 1:
-      nano_serialize(&buf, data); break;
+      nano_serialize(&buf, data, NANO_PROT(con)); break;
     case 2:
       nano_encode(&buf, data); break;
     default:
-      nano_serialize(&buf, data); break;
+      nano_serialize(&buf, data, NANO_PROT(con)); break;
     }
 
     nng_ctx *ctxp = (nng_ctx *) NANO_PTR(con);
@@ -466,7 +466,7 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP bytes) {
       if (xc)
         goto exitlevel1;
 
-      res = nano_decode(buf, sz, mod);
+      res = nano_decode(buf, sz, mod, NANO_PROT(con));
       nng_free(buf, sz);
 
     } else {
@@ -485,7 +485,7 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP bytes) {
       nng_aio_free(aiop);
       buf = nng_msg_body(msgp);
       sz = nng_msg_len(msgp);
-      res = nano_decode(buf, sz, mod);
+      res = nano_decode(buf, sz, mod, NANO_PROT(con));
       nng_msg_free(msgp);
     }
 
@@ -503,7 +503,7 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP bytes) {
 
       buf = nng_msg_body(msgp);
       sz = nng_msg_len(msgp);
-      res = nano_decode(buf, sz, mod);
+      res = nano_decode(buf, sz, mod, NANO_PROT(con));
       nng_msg_free(msgp);
 
     } else {
@@ -525,7 +525,7 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP bytes) {
       nng_aio_free(aiop);
       buf = nng_msg_body(msgp);
       sz = nng_msg_len(msgp);
-      res = nano_decode(buf, sz, mod);
+      res = nano_decode(buf, sz, mod, NANO_PROT(con));
       nng_msg_free(msgp);
 
     }
@@ -561,7 +561,7 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP bytes) {
 
     sz = nng_aio_count(aiop);
     nng_aio_free(aiop);
-    res = nano_decode(buf, sz, mod);
+    res = nano_decode(buf, sz, mod, NANO_PROT(con));
     R_Free(buf);
 
   } else {

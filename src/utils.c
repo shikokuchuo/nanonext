@@ -511,6 +511,31 @@ SEXP rnng_next_config(SEXP refhook, SEXP klass, SEXP list, SEXP mark) {
 
 }
 
+SEXP rnng_serial_config(SEXP socket, SEXP klass, SEXP sfunc, SEXP ufunc, SEXP vec) {
+
+  if (NANO_TAG(socket) != nano_SocketSymbol)
+    Rf_error("'socket' is not a valid Socket");
+
+  if (klass == R_NilValue) {
+
+    NANO_SET_PROT(socket, R_NilValue);
+
+  } else {
+
+    SEXPTYPE typ1 = TYPEOF(sfunc);
+    SEXPTYPE typ2 = TYPEOF(ufunc);
+    if ((typ1 == CLOSXP || typ1 == SPECIALSXP || typ1 == BUILTINSXP) &&
+        (typ2 == CLOSXP || typ2 == SPECIALSXP || typ2 == BUILTINSXP)) {
+      SEXP newhook = nano_PreserveObject(Rf_list4(STRING_ELT(klass, 0), sfunc, ufunc, vec));
+      NANO_SET_PROT(socket, TAG(newhook));
+    }
+
+  }
+
+  return NANO_PROT(socket);
+
+}
+
 // specials --------------------------------------------------------------------
 
 SEXP rnng_advance_rng_state(void) {
