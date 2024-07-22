@@ -4,7 +4,7 @@
 \alias{serial_config}
 \title{Configure Custom Serialization}
 \usage{
-serial_config(socket, class, sfunc, ufunc, vec = FALSE)
+serial_config(socket, class, sfunc = NULL, ufunc = NULL, vec = FALSE)
 }
 \arguments{
 \item{socket}{a Socket.}

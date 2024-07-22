@@ -308,7 +308,7 @@ next_config <- function(refhook = list(), class = "", vec = FALSE, mark = FALSE)
 #'
 #' @export
 #'
-serial_config <- function(socket, class, sfunc, ufunc, vec = FALSE)
+serial_config <- function(socket, class, sfunc = NULL, ufunc = NULL, vec = FALSE)
   .Call(rnng_serial_config, socket, class, sfunc, ufunc, vec)
 
 #' Advances the RNG State
