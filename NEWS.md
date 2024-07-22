@@ -1,13 +1,15 @@
-# nanonext 1.1.1.9005 (development)
+# nanonext 1.1.1.9006 (development)
 
 #### New Features
 
+* Adds `serial_config()` for configuring individual sockets with custom serialization and unserialization functions for reference objects.
 * Adds `collect_pipe()` for obtaining the underlying pipe from a 'recvAio'. This affords more granular control of connections, with the ability to close individual pipes.
 * Adds the 'poly' protocol for one-to-one of many socket connections (NNG's pair v1 polyamorous mode).
 
 #### Updates
 
 * Send mode 'next' is folded into the default 'serial', with custom serialization functions applying automatically if they have been registered.
+* The session-wide `next_config()` is now deprecated and defunct, in favour of the new `serial_config()`.
 * Removes hard dependency on `stats` and `utils` base packages.
 * Requires R >= 3.6.
 

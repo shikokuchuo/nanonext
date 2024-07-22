@@ -466,48 +466,13 @@ SEXP rnng_stats_get(SEXP object, SEXP stat) {
 
 SEXP rnng_next_config(SEXP refhook, SEXP klass, SEXP list, SEXP mark) {
 
-  if (TYPEOF(klass) != STRSXP)
-    Rf_error("'class' must be a character string");
-
   special_bit = (uint8_t) NANO_INTEGER(mark);
-  SEXPTYPE typ1, typ2;
-  int plist;
+  (void) refhook;
+  (void) klass;
+  (void) list;
+  Rf_warning("'next_config()' is defunct, please use 'serial_config()' instead");
 
-  switch(TYPEOF(refhook)) {
-  case LISTSXP:
-    if (Rf_xlength(refhook) != 2)
-      return nano_refHook;
-    typ1 = TYPEOF(CAR(refhook));
-    typ2 = TYPEOF(CADR(refhook));
-    plist = 1;
-    break;
-  case VECSXP:
-    if (Rf_xlength(refhook) != 2)
-      return nano_refHook;
-    typ1 = TYPEOF(NANO_VECTOR(refhook)[0]);
-    typ2 = TYPEOF(NANO_VECTOR(refhook)[1]);
-    plist = 0;
-    break;
-  case NILSXP:
-    SETCAR(nano_refHook, R_NilValue);
-    SETCADR(nano_refHook, R_NilValue);
-    registered = 0;
-  default:
-    return nano_refHook;
-  }
-
-  if ((typ1 == CLOSXP || typ1 == SPECIALSXP || typ1 == BUILTINSXP) &&
-      (typ2 == CLOSXP || typ2 == SPECIALSXP || typ2 == BUILTINSXP)) {
-
-    SETCAR(nano_refHook, plist ? CAR(refhook) : NANO_VECTOR(refhook)[0]);
-    SETCADR(nano_refHook, plist ? CADR(refhook) : NANO_VECTOR(refhook)[1]);
-    SETCAR(nano_klassString, *NANO_VECTOR(klass));
-
-    registered = NANO_INTEGER(list) ? 1 : 2;
-
-  }
-
-  return nano_refHook;
+  return R_NilValue;
 
 }
 
