@@ -27,12 +27,15 @@
 #' @param follow [default FALSE] logical value whether to automatically follow
 #'     redirects (not applicable for async requests). If FALSE, the redirect
 #'     address is returned as response header 'Location'.
-#' @param method (optional) the HTTP method (defaults to 'GET' if not specified).
+#' @param method (optional) the HTTP method as a character string. Defaults to
+#'     'GET' if not specified, and could also be 'POST', 'PUT' etc.
 #' @param headers (optional) a named character vector specifying the HTTP
 #'     request headers, for example: \cr
 #'     \code{c(Authorization = "Bearer APIKEY", `Content-Type` = "text/plain")}
 #'     \cr A non-character or non-named vector will be ignored.
-#' @param data (optional) character request data to be submitted.
+#' @param data (optional) character string request data to be submitted. If a
+#'     vector, only the first element is taken, and non-character objects are
+#'     ignored.
 #' @param response (optional) a character vector specifying the response headers
 #'     to return e.g. \code{c("date", "server")}. These are case-insensitive and
 #'     will return NULL if not present. A non-character vector will be ignored.

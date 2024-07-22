@@ -22,14 +22,17 @@ ncurl_aio(
 the received raw bytes to a character vector. Set to FALSE if downloading
 non-text data.}
 
-\item{method}{(optional) the HTTP method (defaults to 'GET' if not specified).}
+\item{method}{(optional) the HTTP method as a character string. Defaults to
+'GET' if not specified, and could also be 'POST', 'PUT' etc.}
 
 \item{headers}{(optional) a named character vector specifying the HTTP
 request headers, for example: \cr
 \code{c(Authorization = "Bearer APIKEY", `Content-Type` = "text/plain")}
 \cr A non-character or non-named vector will be ignored.}
 
-\item{data}{(optional) character request data to be submitted.}
+\item{data}{(optional) character string request data to be submitted. If a
+vector, only the first element is taken, and non-character objects are
+ignored.}
 
 \item{response}{(optional) a character vector specifying the response headers
 to return e.g. \code{c("date", "server")}. These are case-insensitive and
