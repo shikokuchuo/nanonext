@@ -86,7 +86,7 @@ static SEXP rawOneString(unsigned char *bytes, R_xlen_t nbytes, R_xlen_t *np) {
 
 static SEXP nano_inHook(SEXP x, SEXP fun) {
 
-  if (!Rf_inherits(x, CHAR(fun)))
+  if (!Rf_inherits(x, NANO_STRING(fun)))
     return R_NilValue;
 
   SEXP newlist, list, newnames, names, out;

@@ -487,11 +487,14 @@ SEXP rnng_serial_config(SEXP socket, SEXP klass, SEXP sfunc, SEXP ufunc, SEXP ve
 
   } else {
 
+    if (TYPEOF(klass) != STRSXP)
+      Rf_error("'klass' must be a character string or NULL");
+
     SEXPTYPE typ1 = TYPEOF(sfunc);
     SEXPTYPE typ2 = TYPEOF(ufunc);
     if ((typ1 == CLOSXP || typ1 == SPECIALSXP || typ1 == BUILTINSXP) &&
         (typ2 == CLOSXP || typ2 == SPECIALSXP || typ2 == BUILTINSXP)) {
-      SEXP newhook = nano_PreserveObject(Rf_list4(STRING_ELT(klass, 0), sfunc, ufunc, vec));
+      SEXP newhook = nano_PreserveObject(Rf_list4(klass, sfunc, ufunc, vec));
       NANO_SET_PROT(socket, TAG(newhook));
     }
 

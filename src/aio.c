@@ -228,7 +228,7 @@ SEXP rnng_aio_get_msg(SEXP env) {
     sz = nng_msg_len(msg);
   }
 
-  PROTECT(out = nano_decode(buf, sz, raio->mode, NANO_PROT(aio)));
+  PROTECT(out = nano_decode(buf, sz, raio->mode, ATTRIB(aio)));
   Rf_defineVar(nano_ValueSymbol, out, env);
   Rf_defineVar(nano_AioSymbol, R_NilValue, env);
 

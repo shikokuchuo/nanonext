@@ -493,8 +493,9 @@ SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeou
   nng_ctx_recv(*ctx, raio->aio);
   NANO_FREE(buf);
 
-  PROTECT(aio = R_MakeExternalPtr(raio, nano_AioSymbol, NANO_PROT(con)));
+  PROTECT(aio = R_MakeExternalPtr(raio, nano_AioSymbol, R_NilValue));
   R_RegisterCFinalizerEx(aio, request_finalizer, TRUE);
+  SET_ATTRIB(aio, NANO_PROT(con));
 
   PROTECT(env = Rf_allocSExp(ENVSXP));
   Rf_classgets(env, nano_reqAio);
