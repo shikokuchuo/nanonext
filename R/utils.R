@@ -319,16 +319,16 @@ serial_config <- function(socket, class, sfunc = NULL, ufunc = NULL, vec = FALSE
 #'
 #' @param x logical value.
 #'
-#' @return Logical value 'x' supplied.
+#' @return The logical value 'x' supplied.
 #'
 #' @examples
-#' .mark(TRUE)
 #' .mark()
+#' .mark(FALSE)
 #'
 #' @keywords internal
 #' @export
 #'
-.mark <- function(x = FALSE) .Call(rnng_set_marker, x)
+.mark <- function(x = TRUE) .Call(rnng_set_marker, x)
 
 #' Advances the RNG State
 #'

@@ -4,20 +4,20 @@
 \alias{.mark}
 \title{Set Serialization Marker}
 \usage{
-.mark(x = FALSE)
+.mark(x = TRUE)
 }
 \arguments{
 \item{x}{logical value.}
 }
 \value{
-Logical value 'x' supplied.
+The logical value 'x' supplied.
 }
 \description{
 Internal package function.
 }
 \examples{
-.mark(TRUE)
 .mark()
+.mark(FALSE)
 
 }
 \keyword{internal}
