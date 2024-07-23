@@ -264,45 +264,71 @@ status_code <- function(x) .Call(rnng_status_code, x)
 
 #' Configure Custom Serialization
 #'
-#' Registers functions for custom serialization and unserialization of
-#'     non-system reference objects, allowing these to be sent and received
-#'     between different R sessions.
+#' This function is defunct. Please refer to \link{serial_config} instead.
 #'
-#' @param refhook \strong{either} a list or pairlist of two functions: the
-#'     signature for the first must accept a reference object inheriting from
-#'     \sQuote{class} (or a list of such objects) and return a raw vector, and
-#'     the second must accept a raw vector and return reference objects (or a
-#'     list of such objects), \cr \strong{or else} NULL to reset.
-#' @param class [default ""] a character string representing the class of object
-#'     that these serialization function will be applied to, e.g.
-#'     \sQuote{ArrowTabular} or \sQuote{torch_tensor}.
-#' @param vec [default FALSE] the serialization functions accept and return
-#'     reference object individually e.g. \code{arrow::write_to_raw} and
-#'     \code{arrow::read_ipc_stream}. If TRUE, the serialization functions are
-#'     vectorized and accept and return a list of reference objects, e.g.
-#'     \code{torch::torch_serialize} and \code{torch::torch_load}.
+#' @param refhook not used.
+#' @param class [default ""] not used.
+#' @param vec [default FALSE] not used.
 #' @param mark [default FALSE] (for advanced use only) logical value, whether to
 #'     mark serialized data with a special bit.
 #'
-#' @return A pairlist comprising the currently-registered \sQuote{refhook}
-#'     functions.
-#'
-#' @details Calling this function without any arguments returns the pairlist of
-#'     currently-registered \sQuote{refhook} functions (and resets \sQuote{mark}
-#'     to FALSE).
-#'
-#' @examples
-#' g <- next_config(refhook = list(function(x) serialize(x, NULL), unserialize))
-#' next_config()
-#' next_config(g, mark = TRUE)
-#'
-#' next_config(NULL)
-#' next_config()
+#' @return NULL.
 #'
 #' @export
 #'
 next_config <- function(refhook = list(), class = "", vec = FALSE, mark = FALSE)
   .Call(rnng_next_config, refhook, class, vec, mark)
+
+#' Configure Custom Serialization
+#'
+#' Registers functions on a Socket for custom serialization and unserialization
+#'     of non-system reference objects, allowing these to be sent and received
+#'     between different R sessions. Registered functions apply to all send and
+#'     receive operations in mode \sQuote{serial} performed over the Socket,
+#'     including those using a Context.
+#'
+#' @inheritParams context
+#' @param class character string of the class of object custom serialization
+#'     functions are applied to, e.g. \sQuote{ArrowTabular} or
+#'     \sQuote{torch_tensor}, or else NULL to reset.
+#' @param sfunc a function that accepts a reference object inheriting from
+#'     \sQuote{class} (or a list of such objects) and returns a raw vector.
+#' @param ufunc a function that accepts a raw vector and returns a reference
+#'     object (or list of such objects).
+#' @param vec [default FALSE] whether or not the serialization functions are
+#'     vectorized and accept and return a list of reference objects, e.g.
+#'     \code{torch::torch_serialize} and \code{torch::torch_load}, or if FALSE
+#'     return reference object individually e.g. \code{arrow::write_to_raw} and
+#'     \code{arrow::read_ipc_stream}.
+#'
+#' @return A pairlist comprising the currently-registered configuration.
+#'
+#' @examples
+#' s <- socket()
+#' serial_config(s, "test_cls", function(x) serialize(x, NULL), unserialize)
+#' close(s)
+#'
+#' @export
+#'
+serial_config <- function(socket, class, sfunc = NULL, ufunc = NULL, vec = FALSE)
+  .Call(rnng_serial_config, socket, class, sfunc, ufunc, vec)
+
+#' Set Serialization Marker
+#'
+#' Internal package function.
+#'
+#' @param x logical value.
+#'
+#' @return The logical value 'x' supplied.
+#'
+#' @examples
+#' .mark()
+#' .mark(FALSE)
+#'
+#' @keywords internal
+#' @export
+#'
+.mark <- function(x = TRUE) .Call(rnng_set_marker, x)
 
 #' Advances the RNG State
 #'
@@ -312,13 +338,13 @@ next_config <- function(refhook = list(), class = "", vec = FALSE, mark = FALSE)
 #'
 #' @examples
 #' .Random.seed
-#' invisible(.rng_adv())
+#' invisible(.advance())
 #' .Random.seed
 #'
 #' @keywords internal
 #' @export
 #'
-.rng_adv <- function() .Call(rnng_advance_rng_state)
+.advance <- function() .Call(rnng_advance_rng_state)
 
 #' Internal Package Function
 #'
