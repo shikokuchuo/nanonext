@@ -494,8 +494,7 @@ SEXP rnng_serial_config(SEXP socket, SEXP klass, SEXP sfunc, SEXP ufunc, SEXP ve
     SEXPTYPE typ2 = TYPEOF(ufunc);
     if ((typ1 == CLOSXP || typ1 == SPECIALSXP || typ1 == BUILTINSXP) &&
         (typ2 == CLOSXP || typ2 == SPECIALSXP || typ2 == BUILTINSXP)) {
-      SEXP newhook = nano_PreserveObject(Rf_list4(klass, sfunc, ufunc, vec));
-      NANO_SET_PROT(socket, TAG(newhook));
+      NANO_SET_PROT(socket, Rf_list4(klass, sfunc, ufunc, vec));
     }
 
   }
