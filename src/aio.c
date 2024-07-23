@@ -554,6 +554,7 @@ SEXP rnng_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP cvar, SEXP bytes, SEX
 
     PROTECT(aio = R_MakeExternalPtr(raio, nano_AioSymbol, R_NilValue));
     R_RegisterCFinalizerEx(aio, raio_finalizer, TRUE);
+    SET_ATTRIB(aio, NANO_PROT(con));
 
   } else if (ptrtag == nano_StreamSymbol) {
 
