@@ -242,7 +242,7 @@ void nano_serialize(nano_buf *buf, const SEXP object, const SEXP hook) {
   int vec;
 
   if (reg || special_bit) {
-    vec = NANO_INTEGER(CADDDR(hook));
+    vec = reg ? NANO_INTEGER(CADDDR(hook)) : 0;
     buf->buf[0] = 0x7;
     buf->buf[1] = (uint8_t) vec;
     buf->buf[3] = special_bit;
