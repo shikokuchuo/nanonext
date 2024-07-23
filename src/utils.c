@@ -504,6 +504,13 @@ SEXP rnng_serial_config(SEXP socket, SEXP klass, SEXP sfunc, SEXP ufunc, SEXP ve
 
 }
 
+SEXP rnng_set_marker(SEXP x) {
+
+  special_bit = NANO_INTEGER(x) ? 0x1 : 0x0;
+  return x;
+
+}
+
 // specials --------------------------------------------------------------------
 
 SEXP rnng_advance_rng_state(void) {

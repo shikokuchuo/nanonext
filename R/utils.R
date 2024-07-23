@@ -304,12 +304,31 @@ next_config <- function(refhook = list(), class = "", vec = FALSE, mark = FALSE)
 #' @return A pairlist comprising the currently-registered configuration.
 #'
 #' @examples
-#' # serial_config()
+#' s <- socket()
+#' serial_config(s, "test_cls", function(x) serialize(x, NULL), unserialize)
+#' close(s)
 #'
 #' @export
 #'
 serial_config <- function(socket, class, sfunc = NULL, ufunc = NULL, vec = FALSE)
   .Call(rnng_serial_config, socket, class, sfunc, ufunc, vec)
+
+#' Set Serialization Marker
+#'
+#' Internal package function.
+#'
+#' @param x logical value.
+#'
+#' @return Logical value 'x' supplied.
+#'
+#' @examples
+#' .mark(TRUE)
+#' .mark()
+#'
+#' @keywords internal
+#' @export
+#'
+.mark <- function(x = FALSE) .Call(rnng_set_marker, x)
 
 #' Advances the RNG State
 #'
@@ -319,13 +338,13 @@ serial_config <- function(socket, class, sfunc = NULL, ufunc = NULL, vec = FALSE
 #'
 #' @examples
 #' .Random.seed
-#' invisible(.rng_adv())
+#' invisible(.advance())
 #' .Random.seed
 #'
 #' @keywords internal
 #' @export
 #'
-.rng_adv <- function() .Call(rnng_advance_rng_state)
+.advance <- function() .Call(rnng_advance_rng_state)
 
 #' Internal Package Function
 #'

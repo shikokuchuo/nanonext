@@ -563,7 +563,7 @@ nanotestw(dial(s, url = "tls+tcp://.", tls = tls, error = FALSE) > 0)
 nanotestw(listen(s, url = "tls+tcp://.", tls = tls, error = FALSE) > 0)
 nanotestz(close(s1))
 nanotestz(close(s))
-nanotest(!identical(get0(".Random.seed"), {.rng_adv(); .Random.seed}))
+nanotest(!identical(get0(".Random.seed"), {.advance(); .Random.seed}))
 if (requireNamespace("promises", quietly = TRUE)) {
   nanotestaio(n <- ncurl_aio("https://postman-echo.com/get"))
   nanotest(tryCatch(promises::is.promise(promises::then(n, cat)), error = function(e) TRUE))

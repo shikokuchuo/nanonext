@@ -36,6 +36,8 @@ Registers functions on a Socket for custom serialization and unserialization
     including those using a Context.
 }
 \examples{
-# serial_config()
+s <- socket()
+serial_config(s, "test_cls", function(x) serialize(x, NULL), unserialize)
+close(s)
 
 }
