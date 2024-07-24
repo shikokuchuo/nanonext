@@ -134,9 +134,11 @@ SEXP rnng_set_opt(SEXP object, SEXP opt, SEXP value) {
       if (strncmp(op, "serial", 6))
         Rf_error("type of 'value' not supported");
       SEXPTYPE typ = TYPEOF(NANO_VECTOR(value)[0]);
-      if (typ != CHARSXP && typ != NILSXP)
-        Rf_error("Attempting to set invalid 'serial' configuration");
+      if (typ != CHARSXP && typ != NILSXP) {
+        xc = 3; break;
+      }
       NANO_SET_PROT(object, Rf_VectorToPairList(value));
+      xc = 0;
       break;
     default:
       Rf_error("type of 'value' not supported");
@@ -486,7 +488,7 @@ SEXP rnng_next_config(SEXP refhook, SEXP klass, SEXP list, SEXP mark) {
 
 SEXP rnng_serial_config(SEXP klass, SEXP sfunc, SEXP ufunc, SEXP vec) {
 
-  SEXP names, out;
+  SEXP out;
   SEXPTYPE typ1 = TYPEOF(sfunc);
   SEXPTYPE typ2 = TYPEOF(ufunc);
   if (!(typ1 == CLOSXP || typ1 == SPECIALSXP || typ1 == BUILTINSXP) ||

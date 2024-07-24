@@ -538,6 +538,14 @@ opt(s$listener[[1]], "recv-size-max")
 
 start(s$listener[[1]])
 
+```
+
+There is the special write-only option 'serial' for Sockets, which sets a serialization configuration returned by `serial_config()`. This registers custom functions to handle serialization and unserialization of reference objects, plugging into the 'refhook' system of native R serialization. This allows the transparent send and receive of such objects using mode 'serial' without the need for a separate 'marshalling' step. Once set, configurations apply to the Socket and all Contexts created from the Socket.
+
+```{r serial}
+serial <- serial_config("obj_class", function(x) serialize(x, NULL), unserialize)
+opt(s, "serial") <- serial
+
 close(s)
 ```
 
