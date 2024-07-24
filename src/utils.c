@@ -130,6 +130,11 @@ SEXP rnng_set_opt(SEXP object, SEXP opt, SEXP value) {
     case LGLSXP:
       xc = nng_socket_set_bool(*sock, op, (bool) NANO_INTEGER(value));
       break;
+    case VECSXP:
+      if (strncmp(op, "serial", 6))
+        Rf_error("type of 'value' not supported");
+      NANO_SET_PROT(object, Rf_VectorToPairList(value));
+      break;
     default:
       Rf_error("type of 'value' not supported");
     }
@@ -476,27 +481,23 @@ SEXP rnng_next_config(SEXP refhook, SEXP klass, SEXP list, SEXP mark) {
 
 }
 
-SEXP rnng_serial_config(SEXP socket, SEXP klass, SEXP sfunc, SEXP ufunc, SEXP vec) {
+SEXP rnng_serial_config(SEXP klass, SEXP sfunc, SEXP ufunc, SEXP vec) {
 
-  if (NANO_TAG(socket) != nano_SocketSymbol)
-    Rf_error("'socket' is not a valid Socket");
+  SEXP names, out;
+  SEXPTYPE typ1 = TYPEOF(sfunc);
+  SEXPTYPE typ2 = TYPEOF(ufunc);
+  if (!(typ1 == CLOSXP || typ1 == SPECIALSXP || typ1 == BUILTINSXP) ||
+      !(typ2 == CLOSXP || typ2 == SPECIALSXP || typ2 == BUILTINSXP))
+      Rf_error("'sfunc' and 'ufunc' must both be functions");
 
-  if (klass == R_NilValue) {
+  PROTECT(out = Rf_allocVector(VECSXP, 4));
+  SET_VECTOR_ELT(out, 0, STRING_ELT(klass, 0));
+  SET_VECTOR_ELT(out, 1, sfunc);
+  SET_VECTOR_ELT(out, 2, ufunc);
+  SET_VECTOR_ELT(out, 3, Rf_ScalarLogical(NANO_INTEGER(vec)));
+  UNPROTECT(1);
 
-    NANO_SET_PROT(socket, R_NilValue);
-
-  } else {
-
-    SEXPTYPE typ1 = TYPEOF(sfunc);
-    SEXPTYPE typ2 = TYPEOF(ufunc);
-    if ((typ1 == CLOSXP || typ1 == SPECIALSXP || typ1 == BUILTINSXP) &&
-        (typ2 == CLOSXP || typ2 == SPECIALSXP || typ2 == BUILTINSXP)) {
-      NANO_SET_PROT(socket, Rf_list4(STRING_ELT(klass, 0), sfunc, ufunc, vec));
-    }
-
-  }
-
-  return NANO_PROT(socket);
+  return out;
 
 }
 

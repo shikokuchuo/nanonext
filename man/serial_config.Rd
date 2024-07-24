@@ -4,11 +4,9 @@
 \alias{serial_config}
 \title{Configure Custom Serialization}
 \usage{
-serial_config(socket, class, sfunc = NULL, ufunc = NULL, vec = FALSE)
+serial_config(class, sfunc = NULL, ufunc = NULL, vec = FALSE)
 }
 \arguments{
-\item{socket}{a Socket.}
-
 \item{class}{character string of the class of object custom serialization
 functions are applied to, e.g. \sQuote{ArrowTabular} or
 \sQuote{torch_tensor}, or else NULL to reset.}
@@ -36,8 +34,6 @@ Registers functions on a Socket for custom serialization and unserialization
     including those using a Context.
 }
 \examples{
-s <- socket()
-serial_config(s, "test_cls", function(x) serialize(x, NULL), unserialize)
-close(s)
+serial_config("test_cls", function(x) serialize(x, NULL), unserialize)
 
 }

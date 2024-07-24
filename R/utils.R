@@ -287,7 +287,6 @@ next_config <- function(refhook = list(), class = "", vec = FALSE, mark = FALSE)
 #'     receive operations in mode \sQuote{serial} performed over the Socket,
 #'     including those using a Context.
 #'
-#' @inheritParams context
 #' @param class character string of the class of object custom serialization
 #'     functions are applied to, e.g. \sQuote{ArrowTabular} or
 #'     \sQuote{torch_tensor}, or else NULL to reset.
@@ -304,14 +303,12 @@ next_config <- function(refhook = list(), class = "", vec = FALSE, mark = FALSE)
 #' @return A pairlist comprising the currently-registered configuration.
 #'
 #' @examples
-#' s <- socket()
-#' serial_config(s, "test_cls", function(x) serialize(x, NULL), unserialize)
-#' close(s)
+#' serial_config("test_cls", function(x) serialize(x, NULL), unserialize)
 #'
 #' @export
 #'
-serial_config <- function(socket, class, sfunc = NULL, ufunc = NULL, vec = FALSE)
-  .Call(rnng_serial_config, socket, class, sfunc, ufunc, vec)
+serial_config <- function(class, sfunc = NULL, ufunc = NULL, vec = FALSE)
+  .Call(rnng_serial_config, class, sfunc, ufunc, vec)
 
 #' Set Serialization Marker
 #'
