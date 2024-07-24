@@ -43,6 +43,21 @@ Note: once a dialer or listener has started, it is not generally
     For an authoritative guide please refer to the online documentation for
     the NNG library at \url{https://nng.nanomsg.org/man/}.
 }
+\section{Serialization}{
+
+
+    Apart from the NNG options documented below, there is the following
+    special option:
+
+    \itemize{
+      \item 'serial' [type list]
+
+      For Sockets only. This accepts a configuration created by
+      \code{\link{serial_config}}. Note: this option is write-only and can be
+      set but not retrieved.
+    }
+}
+
 \section{Global Options}{
 
 

@@ -133,6 +133,9 @@ SEXP rnng_set_opt(SEXP object, SEXP opt, SEXP value) {
     case VECSXP:
       if (strncmp(op, "serial", 6))
         Rf_error("type of 'value' not supported");
+      SEXPTYPE typ = TYPEOF(NANO_VECTOR(value)[0]);
+      if (typ != CHARSXP && typ != NILSXP)
+        Rf_error("Attempting to set invalid 'serial' configuration");
       NANO_SET_PROT(object, Rf_VectorToPairList(value));
       break;
     default:

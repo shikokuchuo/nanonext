@@ -7,7 +7,7 @@
 survey_time(con, value = 1000L)
 }
 \arguments{
-\item{con}{a Socket or Context using the 'surveyor' protocol.}
+\item{con}{a Socket or Context using the \sQuote{surveyor} protocol.}
 
 \item{value}{[default 1000L] integer survey timeout in milliseconds.}
 }

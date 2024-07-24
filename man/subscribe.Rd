@@ -10,7 +10,7 @@ subscribe(con, topic = NULL)
 unsubscribe(con, topic = NULL)
 }
 \arguments{
-\item{con}{a Socket or Context using the 'sub' protocol.}
+\item{con}{a Socket or Context using the \sQuote{sub} protocol.}
 
 \item{topic}{[default NULL] an atomic type or NULL. The default NULL
 subscribes to all topics / unsubscribes from all topics (if all topics

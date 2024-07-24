@@ -46,6 +46,19 @@
 #'     For an authoritative guide please refer to the online documentation for
 #'     the NNG library at \url{https://nng.nanomsg.org/man/}.
 #'
+#' @section Serialization:
+#'
+#'     Apart from the NNG options documented below, there is the following
+#'     special option:
+#'
+#'     \itemize{
+#'       \item 'serial' [type list]
+#'
+#'       For Sockets only. This accepts a configuration created by
+#'       \code{\link{serial_config}}. Note: this option is write-only and can be
+#'       set but not retrieved.
+#'     }
+#'
 #' @section Global Options:
 #'
 #'     \itemize{
@@ -314,7 +327,7 @@ opt <- function(object, name)
 #'     pattern. Set a topic to subscribe to, or remove a topic from the
 #'     subscription list.
 #'
-#' @param con a Socket or Context using the 'sub' protocol.
+#' @param con a Socket or Context using the \sQuote{sub} protocol.
 #' @param topic [default NULL] an atomic type or NULL. The default NULL
 #'     subscribes to all topics / unsubscribes from all topics (if all topics
 #'     were previously subscribed).
@@ -372,7 +385,7 @@ unsubscribe <- function(con, topic = NULL)
 #'     subsequent surveys). Messages received by the surveyor after the timer
 #'     has ended are discarded.
 #'
-#' @param con a Socket or Context using the 'surveyor' protocol.
+#' @param con a Socket or Context using the \sQuote{surveyor} protocol.
 #' @param value [default 1000L] integer survey timeout in milliseconds.
 #'
 #' @return Invisibly, the passed Socket or Context.

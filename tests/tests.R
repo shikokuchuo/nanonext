@@ -262,6 +262,8 @@ nanotestz(send(rep, custom, block = 500))
 nanotest(is.list(recv(req$socket, mode = 1L, block = 500)))
 opt(req$socket, "serial") <- list()
 opt(rep, "serial") <- list()
+nanotesterr(opt(rep, "wrong") <- cfg, "not supported")
+nanotesterr(opt(rep, "serial") <- list("wrong"), "set invalid")
 nanotestw(is.null(next_config()))
 
 nanotestaio(cs <- request(req$context, "test", send_mode = "serial", cv = cv, timeout = 500))
