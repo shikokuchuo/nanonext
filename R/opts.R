@@ -55,8 +55,9 @@
 #'       \item 'serial' [type list]
 #'
 #'       For Sockets only. This accepts a configuration created by
-#'       \code{\link{serial_config}}. Note: this option is write-only and can be
-#'       set but not retrieved.
+#'       \code{\link{serial_config}}. Setting a new configuration replaces any
+#'       already set. To remove entirely, supply an empty list. Note: this
+#'       option is write-only and can be set but not retrieved.
 #'     }
 #'
 #' @section Global Options:

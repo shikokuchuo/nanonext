@@ -290,7 +290,7 @@ next_config <- function(refhook = list(), class = "", vec = FALSE, mark = FALSE)
 #'
 #' @param class character string of the class of object custom serialization
 #'     functions are applied to, e.g. \sQuote{ArrowTabular} or
-#'     \sQuote{torch_tensor}, or else NULL to reset.
+#'     \sQuote{torch_tensor}.
 #' @param sfunc a function that accepts a reference object inheriting from
 #'     \sQuote{class} (or a list of such objects) and returns a raw vector.
 #' @param ufunc a function that accepts a raw vector and returns a reference
@@ -311,11 +311,15 @@ next_config <- function(refhook = list(), class = "", vec = FALSE, mark = FALSE)
 #'
 #' s <- socket()
 #' opt(s, "serial") <- cfg
+#'
+#' # provide an empty list to remove registered functions
+#' opt(s, "serial") <- list()
+#'
 #' close(s)
 #'
 #' @export
 #'
-serial_config <- function(class, sfunc = NULL, ufunc = NULL, vec = FALSE)
+serial_config <- function(class, sfunc, ufunc, vec = FALSE)
   .Call(rnng_serial_config, class, sfunc, ufunc, vec)
 
 #' Set Serialization Marker

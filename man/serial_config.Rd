@@ -4,12 +4,12 @@
 \alias{serial_config}
 \title{Create Serialization Configuration}
 \usage{
-serial_config(class, sfunc = NULL, ufunc = NULL, vec = FALSE)
+serial_config(class, sfunc, ufunc, vec = FALSE)
 }
 \arguments{
 \item{class}{character string of the class of object custom serialization
 functions are applied to, e.g. \sQuote{ArrowTabular} or
-\sQuote{torch_tensor}, or else NULL to reset.}
+\sQuote{torch_tensor}.}
 
 \item{sfunc}{a function that accepts a reference object inheriting from
 \sQuote{class} (or a list of such objects) and returns a raw vector.}
@@ -42,6 +42,10 @@ cfg
 
 s <- socket()
 opt(s, "serial") <- cfg
+
+# provide an empty list to remove registered functions
+opt(s, "serial") <- list()
+
 close(s)
 
 }

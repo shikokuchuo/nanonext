@@ -489,19 +489,21 @@ SEXP rnng_next_config(SEXP refhook, SEXP klass, SEXP list, SEXP mark) {
 SEXP rnng_serial_config(SEXP klass, SEXP sfunc, SEXP ufunc, SEXP vec) {
 
   SEXP out;
+  PROTECT(out = Rf_allocVector(VECSXP, 4));
+
+  SET_VECTOR_ELT(out, 0, STRING_ELT(klass, 0));
+
   SEXPTYPE typ1 = TYPEOF(sfunc);
   SEXPTYPE typ2 = TYPEOF(ufunc);
   if (!(typ1 == CLOSXP || typ1 == SPECIALSXP || typ1 == BUILTINSXP) ||
       !(typ2 == CLOSXP || typ2 == SPECIALSXP || typ2 == BUILTINSXP))
-      Rf_error("'sfunc' and 'ufunc' must both be functions");
-
-  PROTECT(out = Rf_allocVector(VECSXP, 4));
-  SET_VECTOR_ELT(out, 0, STRING_ELT(klass, 0));
+    Rf_error("both 'sfunc' and 'ufunc' must be functions");
   SET_VECTOR_ELT(out, 1, sfunc);
   SET_VECTOR_ELT(out, 2, ufunc);
-  SET_VECTOR_ELT(out, 3, Rf_ScalarLogical(NANO_INTEGER(vec)));
-  UNPROTECT(1);
 
+  SET_VECTOR_ELT(out, 3, Rf_ScalarLogical(NANO_INTEGER(vec) ? 1 : 0));
+
+  UNPROTECT(1);
   return out;
 
 }
