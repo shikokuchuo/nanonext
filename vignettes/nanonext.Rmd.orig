@@ -25,7 +25,7 @@ knitr::opts_chunk$set(
 7. [Surveyor / Respondent Model](#surveyor-respondent-model)
 8. [ncurl: (Async) HTTP Client](#ncurl-async-http-client)
 9. [stream: Websocket Client](#stream-websocket-client)
-10. [Options and Statistics](#options-and-statistics)
+10. [Options, Serialization and Statistics](#options-serialization-and-statistics)
 
 ### Cross-language Exchange
 
@@ -517,7 +517,7 @@ close(s)
 
 [&laquo; Back to ToC](#table-of-contents)
 
-### Options and Statistics
+### Options, Serialization and Statistics
 
 Use `opt()` and `'opt<-'()` to get and set options on a Socket, Context, Stream, Listener or Dialer.
 
@@ -537,6 +537,14 @@ opt(s$listener[[1]], "recv-size-max") <- 8192L
 opt(s$listener[[1]], "recv-size-max")
 
 start(s$listener[[1]])
+
+```
+
+There is the special write-only option 'serial' for Sockets, which sets a serialization configuration returned by `serial_config()`. This registers custom functions to handle serialization and unserialization of reference objects, plugging into the 'refhook' system of native R serialization. This allows the transparent send and receive of such objects using mode 'serial' without the need for a separate 'marshalling' step. Once set, configurations apply to the Socket and all Contexts created from the Socket.
+
+```{r serial}
+serial <- serial_config("obj_class", function(x) serialize(x, NULL), unserialize)
+opt(s, "serial") <- serial
 
 close(s)
 ```

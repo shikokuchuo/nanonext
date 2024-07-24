@@ -247,20 +247,23 @@ nanotestaio(rek <- request(req$context, c(1+3i, 4+2i), send_mode = "serial", rec
 nanotestz(reply(ctx, execute = identity, recv_mode = 1L, send_mode = 1L, timeout = 500))
 nanotest(is.complex(call_aio(rek)[["data"]]))
 
-nanotest(is.pairlist(nxt <- serial_config(socket = req$socket, class = "custom", sfunc = function(x) raw(1L), ufunc = as.integer)))
-nanotest(length(nxt) == 4L)
-nanotest(is.pairlist(nxt <- serial_config(socket = rep, class = "custom", sfunc = function(x) raw(1L), ufunc = as.integer, vec = FALSE)))
-nanotest(is.function(nxt[[2L]]))
+cfg <- serial_config(class = "custom", sfunc = function(x) raw(1L), ufunc = as.integer, vec = FALSE)
+nanotest(is.list(cfg) && length(cfg) == 4L)
+nanotest(is.function(cfg[[2L]]))
+opt(req$socket, "serial") <- cfg
+opt(rep, "serial") <- cfg
 custom <- list(`class<-`(new.env(), "custom"), new.env())
 nanotestz(send(req$socket, custom, mode = "serial", block = 500))
 nanotest(is.integer(recv(rep, block = 500)[[1L]]))
-nanotest(is.pairlist(serial_config(req$socket, "custom", function(x) as.raw(length(x)), function(x) lapply(seq_len(as.integer(x)), new.env), vec = TRUE)))
-nanotest(is.pairlist(serial_config(rep, "custom", function(x) as.raw(length(x)), function(x) lapply(seq_len(as.integer(x)), new.env), vec = TRUE)))
+cfg <- serial_config("custom", function(x) as.raw(length(x)), function(x) lapply(seq_len(as.integer(x)), new.env), vec = TRUE)
+opt(req$socket, "serial") <- cfg
+opt(rep, "serial") <- cfg
 nanotestz(send(rep, custom, block = 500))
 nanotest(is.list(recv(req$socket, mode = 1L, block = 500)))
-nanotestn(serial_config(socket = req$socket, class = NULL))
-nanotestn(serial_config(socket = rep, class = NULL))
-nanotesterr(serial_config("socket", NULL), "not a valid Socket")
+opt(req$socket, "serial") <- list()
+opt(rep, "serial") <- list()
+nanotesterr(opt(rep, "wrong") <- cfg, "not supported")
+nanotesterr(opt(rep, "serial") <- list("wrong"), "Invalid argument")
 nanotestw(is.null(next_config()))
 
 nanotestaio(cs <- request(req$context, "test", send_mode = "serial", cv = cv, timeout = 500))
