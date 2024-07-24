@@ -262,7 +262,9 @@ nanotestz(send(rep, custom, block = 500))
 nanotest(is.list(recv(req$socket, mode = 1L, block = 500)))
 opt(req$socket, "serial") <- list()
 opt(rep, "serial") <- list()
+nanotesterr(serial_config("custom", "func1", "func2"), "must be functions")
 nanotesterr(opt(rep, "wrong") <- cfg, "not supported")
+nanotesterr(opt(rep, "serial") <- pairlist(a = 1L), "not supported")
 nanotesterr(opt(rep, "serial") <- list("wrong"), "Invalid argument")
 nanotestw(is.null(next_config()))
 
@@ -474,6 +476,7 @@ if (length(s)) {
   nanotesterr(recv(s, mode = "none", block = FALSE), "mode")
   nanotesterr(recv(s, mode = "c", block = FALSE), "mode")
   nanotesterr(opt(s, "none"), "supported")
+  nanotesterr(`opt<-`(s, "none", list()), "supported")
   nanotestp(s)
   nanotest(is.integer(close(s)))
 }
