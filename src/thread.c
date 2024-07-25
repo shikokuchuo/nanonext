@@ -261,7 +261,8 @@ SEXP rnng_wait_thread_create(SEXP x) {
     ncv->mtx = mtx;
     ncv->cv = cv;
 
-    SEXP xptr = R_MakeExternalPtr(taio, R_NilValue, R_NilValue);
+    SEXP xptr;
+    PROTECT(xptr = R_MakeExternalPtr(taio, R_NilValue, R_NilValue));
     R_RegisterCFinalizerEx(xptr, thread_aio_finalizer, TRUE);
 
     nng_time time = nng_clock();
@@ -280,6 +281,8 @@ SEXP rnng_wait_thread_create(SEXP x) {
       if (signalled) break;
       R_CheckUserInterrupt();
     }
+
+    UNPROTECT(1);
 
     switch (aiop->type) {
     case RECVAIO:
