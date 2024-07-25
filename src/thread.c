@@ -238,7 +238,6 @@ SEXP rnng_wait_thread_create(SEXP x) {
     if (NANO_TAG(coreaio) != nano_AioSymbol)
       return x;
 
-    PROTECT(coreaio);
     nano_aio *aiop = (nano_aio *) NANO_PTR(coreaio);
 
     nano_thread_aio *taio = R_Calloc(1, nano_thread_aio);
@@ -263,9 +262,7 @@ SEXP rnng_wait_thread_create(SEXP x) {
     ncv->cv = cv;
 
     SEXP xptr = R_MakeExternalPtr(taio, R_NilValue, R_NilValue);
-    NANO_SET_PROT(coreaio, xptr);
     R_RegisterCFinalizerEx(xptr, thread_aio_finalizer, TRUE);
-    UNPROTECT(1);
 
     nng_time time = nng_clock();
 
@@ -311,7 +308,6 @@ SEXP rnng_wait_thread_create(SEXP x) {
     exitlevel1:
     R_Free(ncv);
     R_Free(taio);
-    UNPROTECT(1);
     ERROR_OUT(xc);
 
   } else if (typ == VECSXP) {

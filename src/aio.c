@@ -228,7 +228,7 @@ SEXP rnng_aio_get_msg(SEXP env) {
     sz = nng_msg_len(msg);
   }
 
-  PROTECT(out = nano_decode(buf, sz, raio->mode, ATTRIB(aio)));
+  PROTECT(out = nano_decode(buf, sz, raio->mode, NANO_PROT(aio)));
   Rf_defineVar(nano_ValueSymbol, out, env);
   Rf_defineVar(nano_AioSymbol, R_NilValue, env);
 
@@ -584,7 +584,7 @@ SEXP rnng_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP cvar, SEXP bytes, SEX
 
     PROTECT(aio = R_MakeExternalPtr(raio, nano_AioSymbol, R_NilValue));
     R_RegisterCFinalizerEx(aio, raio_finalizer, TRUE);
-    SET_ATTRIB(aio, NANO_PROT(con));
+    NANO_SET_PROT(aio, NANO_PROT(con));
 
   } else if (ptrtag == nano_StreamSymbol) {
 
