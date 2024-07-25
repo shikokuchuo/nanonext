@@ -34,7 +34,6 @@ SEXP nano_IdSymbol;
 SEXP nano_ListenerSymbol;
 SEXP nano_PipeSymbol;
 SEXP nano_ProtocolSymbol;
-SEXP nano_RawSymbol;
 SEXP nano_ResolveSymbol;
 SEXP nano_ResponseSymbol;
 SEXP nano_ResultSymbol;
@@ -71,7 +70,6 @@ static void RegisterSymbols(void) {
   nano_ListenerSymbol = Rf_install("listener");
   nano_PipeSymbol = Rf_install("pipe");
   nano_ProtocolSymbol = Rf_install("protocol");
-  nano_RawSymbol = Rf_install("raw");
   nano_ResolveSymbol = Rf_install("resolve");
   nano_ResponseSymbol = Rf_install("response");
   nano_ResultSymbol = Rf_install("result");
