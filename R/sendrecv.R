@@ -91,7 +91,7 @@ send <- function(con, data, mode = c("serial", "raw"), block = NULL)
 #'
 #' Receive data over a connection (Socket, Context or Stream).
 #'
-#' @param con a Socket, Context or Stream.
+#' @inheritParams send
 #' @param mode [default 'serial'] character value or integer equivalent - one of
 #'     \sQuote{serial} (1L), \sQuote{character} (2L), \sQuote{complex} (3L),
 #'     \sQuote{double} (4L), \sQuote{integer} (5L), \sQuote{logical} (6L),
@@ -103,7 +103,6 @@ send <- function(con, data, mode = c("serial", "raw"), block = NULL)
 #' @param n [default 65536L] applicable to Streams only, the maximum number of
 #'     bytes to receive. Can be an over-estimate, but note that a buffer of this
 #'     size is reserved.
-#' @inheritParams send
 #'
 #' @return The received data in the \sQuote{mode} specified.
 #'

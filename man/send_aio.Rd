@@ -7,7 +7,7 @@
 send_aio(con, data, mode = c("serial", "raw"), timeout = NULL)
 }
 \arguments{
-\item{con}{a Socket, Context or Stream.}
+\item{con}{a Socket, Context, Stream or Pipe.}
 
 \item{data}{an object (a vector, if mode = \sQuote{raw}).}
 
@@ -23,7 +23,7 @@ applies a socket-specific default, usually the same as no timeout.}
 A \sQuote{sendAio} (object of class \sQuote{sendAio}) (invisibly).
 }
 \description{
-Send data asynchronously over a connection (Socket, Context or Stream).
+Send data asynchronously over a connection (Socket, Context, Stream or Pipe).
 }
 \details{
 Async send is always non-blocking and returns a \sQuote{sendAio}
