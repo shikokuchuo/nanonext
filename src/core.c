@@ -348,7 +348,6 @@ SEXP nano_unserialize(unsigned char *buf, const size_t sz, SEXP hook) {
           memcpy(NANO_DATAPTR(raw), buf + offset, sz - offset);
           PROTECT(call = Rf_lcons(CADDR(hook), Rf_cons(raw, R_NilValue)));
           reflist = Rf_eval(call, R_GlobalEnv);
-          SET_TAG(hook, reflist);
           UNPROTECT(2);
         } else {
           R_xlen_t llen, xlen;
@@ -368,9 +367,9 @@ SEXP nano_unserialize(unsigned char *buf, const size_t sz, SEXP hook) {
             SET_VECTOR_ELT(reflist, i, out);
             UNPROTECT(2);
           }
-          SET_TAG(hook, reflist);
           UNPROTECT(1);
         }
+        SET_TAG(hook, reflist);
       }
       cur = 12;
       goto resume;
