@@ -20,7 +20,6 @@
 
 void (*eln2)(void (*)(void *), void *, double, int);
 
-uint8_t registered = 0;
 uint8_t special_bit = 0;
 
 SEXP nano_AioSymbol;

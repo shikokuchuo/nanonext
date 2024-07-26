@@ -302,7 +302,6 @@ SEXP rnng_version(void);
 SEXP rnng_wait_thread_create(SEXP);
 SEXP rnng_write_cert(SEXP, SEXP, SEXP);
 
-extern uint8_t registered;
 extern uint8_t special_bit;
 
 extern SEXP nano_AioSymbol;
