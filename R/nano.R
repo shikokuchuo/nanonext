@@ -356,9 +356,9 @@ print.sendAio <- function(x, ...) {
 
 #' @export
 #'
-print.ncurlAio <- function(x, ...) {
+print.asyncUrl <- function(x, ...) {
 
-  cat("< ncurlAio | $status $headers $data >\n", file = stdout())
+  cat("< asyncUrl | $status $headers $data >\n", file = stdout())
   invisible(x)
 
 }
@@ -472,5 +472,5 @@ print.tlsConfig <- function(x, ...) {
 
 #' @exportS3Method utils::.DollarNames
 #'
-.DollarNames.ncurlAio <- function(x, pattern = "")
+.DollarNames.asyncUrl <- function(x, pattern = "")
   grep(pattern, c("status", "headers", "data"), value = TRUE, fixed = TRUE)

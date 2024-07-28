@@ -52,7 +52,7 @@ static SEXP mk_error_ncurlaio(const int xc) {
 
   SEXP env, err;
   PROTECT(env = Rf_allocSExp(ENVSXP));
-  NANO_CLASS2(env, "ncurlAio", "recvAio");
+  NANO_CLASS2(env, "asyncUrl", "recvAio");
   PROTECT(err = Rf_ScalarInteger(xc));
   Rf_classgets(err, nano_error);
   Rf_defineVar(nano_ResultSymbol, err, env);
@@ -392,7 +392,7 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP dat
 
   SEXP env, fun;
   PROTECT(env = Rf_allocSExp(ENVSXP));
-  NANO_CLASS2(env, "ncurlAio", "recvAio");
+  NANO_CLASS2(env, "asyncUrl", "recvAio");
   Rf_defineVar(nano_AioSymbol, aio, env);
   Rf_defineVar(nano_ResponseSymbol, response, env);
 

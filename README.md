@@ -69,8 +69,11 @@ Development of the TLS implementation was generously supported by the
 
 Web utilities:
 
-- [ncurl](https://shikokuchuo.net/nanonext/articles/nanonext.html#ncurl-async-http-client) -
-  (async) http(s) client
+- [ncurl](https://shikokuchuo.net/nanonext/articles/nanonext.html#ncurl-asyncurl-http-clients) -
+  minimalist http(s) client
+- [asyncurl](https://shikokuchuo.net/nanonext/articles/nanonext.html#ncurl-asyncurl-http-clients) -
+  async http(s) client, supporting event-driven promises and Shiny
+  ExtendedTask
 - [stream](https://shikokuchuo.net/nanonext/articles/nanonext.html#stream-websocket-client) -
   secure websockets client / generic low-level socket interface
 - `messenger()` - console-based instant messaging with authentication

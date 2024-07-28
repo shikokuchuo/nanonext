@@ -17,7 +17,7 @@ vignette: >
 5. [TLS Secure Connections](#tls-secure-connections)
 6. [Publisher / Subscriber Model](#publisher-subscriber-model)
 7. [Surveyor / Respondent Model](#surveyor-respondent-model)
-8. [ncurl: (Async) HTTP Client](#ncurl-async-http-client)
+8. [ncurl / asyncurl: HTTP Clients](#ncurl-asyncurl-http-clients)
 9. [stream: Websocket Client](#stream-websocket-client)
 10. [Options, Serialization and Statistics](#options-serialization-and-statistics)
 
@@ -209,7 +209,7 @@ The return value from the server request is then retrieved and stored in the Aio
 
 ``` r
 call_aio(aio)$data |> str()
-#>  num [1:100000000] 0.6728 -0.3481 0.0848 -0.8578 1.3597 ...
+#>  num [1:100000000] 0.815 -1.129 -1.017 0.751 1.49 ...
 ```
 
 As `call_aio()` is blocking and will wait for completion, an alternative is to query `aio$data` directly. This will return an 'unresolved' logical NA value if the calculation is yet to complete.
@@ -328,7 +328,7 @@ Additionally, the convenience function `write_cert()` can automatically generate
 cert <- write_cert(cn = "127.0.0.1")
 str(cert)
 #> List of 2
-#>  $ server: chr [1:2] "-----BEGIN CERTIFICATE-----\nMIIFOTCCAyGgAwIBAgIBATANBgkqhkiG9w0BAQsFADA0MRIwEAYDVQQDDAkxMjcu\nMC4wLjExETAPBgNV"| __truncated__ "-----BEGIN RSA PRIVATE KEY-----\nMIIJKAIBAAKCAgEApNpyb6e4sxAJSx1QOT2WdzehBe9KU6Bu5ZQdxI8NBvNMN6G5\nggqJfrjzuSDL"| __truncated__
+#>  $ server: chr [1:2] "-----BEGIN CERTIFICATE-----\nMIIFOTCCAyGgAwIBAgIBATANBgkqhkiG9w0BAQsFADA0MRIwEAYDVQQDDAkxMjcu\nMC4wLjExETAPBgNV"| __truncated__ "-----BEGIN RSA PRIVATE KEY-----\nMIIJJwIBAAKCAgEAzrPgj1uTVvNUfRVkd7F5coD0Lo1iIgEU/1trPUBzX4FG/eP9\nQ/LhdyrKLU/D"| __truncated__
 #>  $ client: chr [1:2] "-----BEGIN CERTIFICATE-----\nMIIFOTCCAyGgAwIBAgIBATANBgkqhkiG9w0BAQsFADA0MRIwEAYDVQQDDAkxMjcu\nMC4wLjExETAPBgNV"| __truncated__ ""
 
 ser <- tls_config(server = cert$server)
@@ -468,11 +468,11 @@ It can be seen that the final value resolves into a timeout, which is an integer
 
 [&laquo; Back to ToC](#table-of-contents)
 
-### ncurl: Async HTTP Client
+### ncurl / asyncUrl: HTTP Clients
 
 `ncurl()` is a minimalist http(s) client.
 
-`ncurl_aio()` is the async edition, performing requests asynchronously, returning immediately with an 'ncurlAio'.
+`asyncurl()` is the async edition, performing requests asynchronously, returning immediately with an 'asyncUrl'.
 
 For normal use, it takes just the URL. It can follow redirects.
 
@@ -486,34 +486,34 @@ ncurl("https://postman-echo.com/get")
 #> NULL
 #> 
 #> $data
-#> [1] "{\n  \"args\": {},\n  \"headers\": {\n    \"host\": \"postman-echo.com\",\n    \"x-request-start\": \"t=1721818842.737\",\n    \"x-forwarded-proto\": \"https\",\n    \"x-forwarded-port\": \"443\",\n    \"x-amzn-trace-id\": \"Root=1-66a0deda-0db8c42415e8c85d44cffba4\"\n  },\n  \"url\": \"https://postman-echo.com/get\"\n}"
+#> [1] "{\n  \"args\": {},\n  \"headers\": {\n    \"host\": \"postman-echo.com\",\n    \"x-request-start\": \"t=1722183349.859\",\n    \"x-forwarded-proto\": \"https\",\n    \"x-forwarded-port\": \"443\",\n    \"x-amzn-trace-id\": \"Root=1-66a66eb5-6202444f3cf044ae631cb405\"\n  },\n  \"url\": \"https://postman-echo.com/get\"\n}"
 ```
 
 For advanced use, supports additional HTTP methods such as POST or PUT.
 
 
 ``` r
-res <- ncurl_aio("https://postman-echo.com/post",
-                 method = "POST",
-                 headers = c(`Content-Type` = "application/json", Authorization = "Bearer APIKEY"),
-                 data = '{"key": "value"}',
-                 response = "date")
+res <- asyncurl("https://postman-echo.com/post",
+                method = "POST",
+                headers = c(`Content-Type` = "application/json", Authorization = "Bearer APIKEY"),
+                data = '{"key": "value"}',
+                response = "date")
 res
-#> < ncurlAio | $status $headers $data >
+#> < asyncUrl | $status $headers $data >
 
 call_aio(res)$headers
 #> $date
-#> [1] "Wed, 24 Jul 2024 11:00:43 GMT"
+#> [1] "Sun, 28 Jul 2024 16:15:50 GMT"
 
 res$data
-#> [1] "{\n  \"args\": {},\n  \"data\": {\n    \"key\": \"value\"\n  },\n  \"files\": {},\n  \"form\": {},\n  \"headers\": {\n    \"host\": \"postman-echo.com\",\n    \"x-request-start\": \"t=1721818843.323\",\n    \"content-length\": \"16\",\n    \"x-forwarded-proto\": \"https\",\n    \"x-forwarded-port\": \"443\",\n    \"x-amzn-trace-id\": \"Root=1-66a0dedb-12ff61117f32cbfc258ff9a1\",\n    \"content-type\": \"application/json\",\n    \"authorization\": \"Bearer APIKEY\"\n  },\n  \"json\": {\n    \"key\": \"value\"\n  },\n  \"url\": \"https://postman-echo.com/post\"\n}"
+#> [1] "{\n  \"args\": {},\n  \"data\": {\n    \"key\": \"value\"\n  },\n  \"files\": {},\n  \"form\": {},\n  \"headers\": {\n    \"host\": \"postman-echo.com\",\n    \"x-request-start\": \"t=1722183350.404\",\n    \"content-length\": \"16\",\n    \"x-forwarded-proto\": \"https\",\n    \"x-forwarded-port\": \"443\",\n    \"x-amzn-trace-id\": \"Root=1-66a66eb6-2370eaa055ec65ec5417a349\",\n    \"content-type\": \"application/json\",\n    \"authorization\": \"Bearer APIKEY\"\n  },\n  \"json\": {\n    \"key\": \"value\"\n  },\n  \"url\": \"https://postman-echo.com/post\"\n}"
 ```
 
 In this respect, it may be used as a performant and lightweight method for making REST API requests.
 
-##### ncurl Promises
+##### asyncUrl Promises
 
-`ncurl_aio()` may also be used anywhere that accepts a ‘promise’ from the promises package, including with Shiny ExtendedTask.
+`asyncurl()` may also be used anywhere that accepts a ‘promise’ from the promises package, including with Shiny ExtendedTask.
 
 If a status code of 200 (OK) is returned then the promise is resolved with the reponse body, otherwise it is rejected with a translation of the status code or ‘errorValue’ as the case may be.
 
@@ -521,7 +521,7 @@ If a status code of 200 (OK) is returned then the promise is resolved with the r
 ``` r
 library(promises)
 
-p <- ncurl_aio("https://postman-echo.com/get") %...>% cat
+p <- asyncurl("https://postman-echo.com/get") %...>% cat
 is.promise(p)
 #> [1] TRUE
 ```
@@ -546,23 +546,23 @@ transact(sess)
 #> 
 #> $headers
 #> $headers$Date
-#> [1] "Wed, 24 Jul 2024 11:00:43 GMT"
+#> [1] "Sun, 28 Jul 2024 16:15:50 GMT"
 #> 
 #> $headers$`Content-Type`
 #> [1] "application/json; charset=utf-8"
 #> 
 #> 
 #> $data
-#>   [1] 7b 0a 20 20 22 61 72 67 73 22 3a 20 7b 7d 2c 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 68 6f 73
-#>  [40] 74 22 3a 20 22 70 6f 73 74 6d 61 6e 2d 65 63 68 6f 2e 63 6f 6d 22 2c 0a 20 20 20 20 22 78 2d 72 65 71 75 65 73 74 2d
-#>  [79] 73 74 61 72 74 22 3a 20 22 74 3d 31 37 32 31 38 31 38 38 34 33 2e 37 35 38 22 2c 0a 20 20 20 20 22 78 2d 66 6f 72 77
-#> [118] 61 72 64 65 64 2d 70 72 6f 74 6f 22 3a 20 22 68 74 74 70 73 22 2c 0a 20 20 20 20 22 78 2d 66 6f 72 77 61 72 64 65 64
-#> [157] 2d 70 6f 72 74 22 3a 20 22 34 34 33 22 2c 0a 20 20 20 20 22 78 2d 61 6d 7a 6e 2d 74 72 61 63 65 2d 69 64 22 3a 20 22
-#> [196] 52 6f 6f 74 3d 31 2d 36 36 61 30 64 65 64 62 2d 35 36 34 30 35 37 31 66 36 37 39 34 63 62 39 33 37 64 33 63 66 32 39
-#> [235] 36 22 2c 0a 20 20 20 20 22 63 6f 6e 74 65 6e 74 2d 74 79 70 65 22 3a 20 22 61 70 70 6c 69 63 61 74 69 6f 6e 2f 6a 73
-#> [274] 6f 6e 22 2c 0a 20 20 20 20 22 61 75 74 68 6f 72 69 7a 61 74 69 6f 6e 22 3a 20 22 42 65 61 72 65 72 20 41 50 49 4b 45
-#> [313] 59 22 0a 20 20 7d 2c 0a 20 20 22 75 72 6c 22 3a 20 22 68 74 74 70 73 3a 2f 2f 70 6f 73 74 6d 61 6e 2d 65 63 68 6f 2e
-#> [352] 63 6f 6d 2f 67 65 74 22 0a 7d
+#>   [1] 7b 0a 20 20 22 61 72 67 73 22 3a 20 7b 7d 2c 0a 20 20 22 68 65 61 64 65 72 73 22 3a 20 7b 0a 20 20 20 20 22 68 6f
+#>  [39] 73 74 22 3a 20 22 70 6f 73 74 6d 61 6e 2d 65 63 68 6f 2e 63 6f 6d 22 2c 0a 20 20 20 20 22 78 2d 72 65 71 75 65 73
+#>  [77] 74 2d 73 74 61 72 74 22 3a 20 22 74 3d 31 37 32 32 31 38 33 33 35 30 2e 38 32 39 22 2c 0a 20 20 20 20 22 78 2d 66
+#> [115] 6f 72 77 61 72 64 65 64 2d 70 72 6f 74 6f 22 3a 20 22 68 74 74 70 73 22 2c 0a 20 20 20 20 22 78 2d 66 6f 72 77 61
+#> [153] 72 64 65 64 2d 70 6f 72 74 22 3a 20 22 34 34 33 22 2c 0a 20 20 20 20 22 78 2d 61 6d 7a 6e 2d 74 72 61 63 65 2d 69
+#> [191] 64 22 3a 20 22 52 6f 6f 74 3d 31 2d 36 36 61 36 36 65 62 36 2d 34 37 39 66 66 39 66 38 35 39 35 35 34 61 39 32 32
+#> [229] 35 33 35 64 65 37 39 22 2c 0a 20 20 20 20 22 63 6f 6e 74 65 6e 74 2d 74 79 70 65 22 3a 20 22 61 70 70 6c 69 63 61
+#> [267] 74 69 6f 6e 2f 6a 73 6f 6e 22 2c 0a 20 20 20 20 22 61 75 74 68 6f 72 69 7a 61 74 69 6f 6e 22 3a 20 22 42 65 61 72
+#> [305] 65 72 20 41 50 49 4b 45 59 22 0a 20 20 7d 2c 0a 20 20 22 75 72 6c 22 3a 20 22 68 74 74 70 73 3a 2f 2f 70 6f 73 74
+#> [343] 6d 61 6e 2d 65 63 68 6f 2e 63 6f 6d 2f 67 65 74 22 0a 7d
 ```
 
 [&laquo; Back to ToC](#table-of-contents)

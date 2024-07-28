@@ -90,13 +90,13 @@ ncurl <- function(url,
                   tls = NULL)
   .Call(rnng_ncurl, url, convert, follow, method, headers, data, response, timeout, tls)
 
-#' ncurl Async
+#' asyncUrl
 #'
-#' nano cURL - a minimalist http(s) client - async edition.
+#' asyncUrl - a minimalist async http(s) client.
 #'
 #' @inheritParams ncurl
 #'
-#' @return An 'ncurlAio' (object of class 'ncurlAio' and 'recvAio') (invisibly).
+#' @return An 'asyncUrl' (object of class 'asyncUrl' and 'recvAio') (invisibly).
 #'     The following elements may be accessed:
 #'     \itemize{
 #'     \item \code{$status} - integer HTTP repsonse status code (200 - OK).
@@ -113,7 +113,7 @@ ncurl <- function(url,
 #'
 #' @section Promises:
 #'
-#'     \sQuote{ncurlAio} may be used anywhere that accepts a \sQuote{promise}
+#'     \sQuote{asyncUrl} may be used anywhere that accepts a \sQuote{promise}
 #'     from the \CRANpkg{promises} package through the included
 #'     \code{as.promise} method.
 #'
@@ -125,28 +125,29 @@ ncurl <- function(url,
 #'
 #' @seealso \code{\link{ncurl_session}} for persistent connections.
 #' @examples
-#' nc <- ncurl_aio("https://www.r-project.org/",
-#'                 response = c("date", "server"),
-#'                 timeout = 2000L)
-#' call_aio(nc)
-#' nc$status
-#' nc$headers
-#' nc$data
+#' r <- asyncurl("https://www.r-project.org/",
+#'               response = c("date", "server"),
+#'               timeout = 2000L)
+#' call_aio(r)
+#' r$status
+#' r$headers
+#' r$data
 #'
 #' if (interactive() && requireNamespace("promises", quietly = TRUE)) {
 #'
 #' library(promises)
-#' p <- as.promise(nc)
+#' p <- as.promise(r)
 #' print(p)
 #'
-#' p2 <- ncurl_aio("https://postman-echo.com/get") %...>% cat
+#' p2 <- asyncurl("https://postman-echo.com/get") %...>% cat
 #' is.promise(p2)
 #'
 #' }
 #'
+#' @aliases ncurl_aio
 #' @export
 #'
-ncurl_aio <- function(url,
+asyncurl <- function(url,
                       convert = TRUE,
                       method = NULL,
                       headers = NULL,
@@ -155,6 +156,10 @@ ncurl_aio <- function(url,
                       timeout = NULL,
                       tls = NULL)
     data <- .Call(rnng_ncurl_aio, url, convert, method, headers, data, response, timeout, tls, environment())
+
+#' @export
+#'
+ncurl_aio <- asyncurl
 
 #' ncurl Session
 #'
@@ -216,26 +221,26 @@ transact <- function(session) .Call(rnng_ncurl_transact, session)
 #'
 close.ncurlSession <- function(con, ...) invisible(.Call(rnng_ncurl_session_close, con))
 
-#' Make ncurl Promise
+#' Make asyncUrl Promise
 #'
-#' Creates a \sQuote{promise} from an \sQuote{ncurlAio} object.
+#' Creates a \sQuote{promise} from an \sQuote{asyncUrl} object.
 #'
-#' @param x an object of class \sQuote{ncurlAio}.
+#' @param x an object of class \sQuote{asyncUrl}.
 #'
 #' @return A \sQuote{promise} object.
 #'
 #' @details This function is an S3 method for the generic \code{as.promise} for
-#'     class \sQuote{ncurlAio}.
+#'     class \sQuote{asyncUrl}.
 #'
 #'     Requires the \pkg{promises} package.
 #'
-#'     Allows an \sQuote{ncurlAio} to be used with the promise pipe
+#'     Allows an \sQuote{asyncUrl} to be used with the promise pipe
 #'     \code{\%...>\%}, which schedules a function to run upon resolution of the
 #'     Aio.
 #'
 #' @exportS3Method promises::as.promise
 #'
-as.promise.ncurlAio <- function(x) {
+as.promise.asyncUrl <- function(x) {
 
   promise <- .subset2(x, "promise")
 
@@ -269,4 +274,4 @@ as.promise.ncurlAio <- function(x) {
 
 #' @exportS3Method promises::is.promising
 #'
-is.promising.ncurlAio <- function(x) TRUE
+is.promising.asyncUrl <- function(x) TRUE

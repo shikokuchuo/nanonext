@@ -503,7 +503,7 @@ nanotestz(close(s1))
 nanotestz(close(s2))
 nanotestz(close(s3))
 
-nanotest(nanonext:::.DollarNames.ncurlAio(NULL, "sta") == "status")
+nanotest(nanonext:::.DollarNames.asyncUrl(NULL, "sta") == "status")
 nanotest(nanonext:::.DollarNames.recvAio(NULL, "dat") == "data")
 nanotest(nanonext:::.DollarNames.sendAio(NULL, "r") == "result")
 nanotest(length(nanonext:::.DollarNames.nano(NULL)) == 0L)

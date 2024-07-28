@@ -23,7 +23,7 @@ knitr::opts_chunk$set(
 5. [TLS Secure Connections](#tls-secure-connections)
 6. [Publisher / Subscriber Model](#publisher-subscriber-model)
 7. [Surveyor / Respondent Model](#surveyor-respondent-model)
-8. [ncurl: (Async) HTTP Client](#ncurl-async-http-client)
+8. [ncurl / asyncurl: HTTP Clients](#ncurl-asyncurl-http-clients)
 9. [stream: Websocket Client](#stream-websocket-client)
 10. [Options, Serialization and Statistics](#options-serialization-and-statistics)
 
@@ -417,11 +417,11 @@ It can be seen that the final value resolves into a timeout, which is an integer
 
 [&laquo; Back to ToC](#table-of-contents)
 
-### ncurl: Async HTTP Client
+### ncurl / asyncUrl: HTTP Clients
 
 `ncurl()` is a minimalist http(s) client.
 
-`ncurl_aio()` is the async edition, performing requests asynchronously, returning immediately with an 'ncurlAio'.
+`asyncurl()` is the async edition, performing requests asynchronously, returning immediately with an 'asyncUrl'.
 
 For normal use, it takes just the URL. It can follow redirects.
 
@@ -432,12 +432,12 @@ ncurl("https://postman-echo.com/get")
 
 For advanced use, supports additional HTTP methods such as POST or PUT.
 
-```{r ncurladv}
-res <- ncurl_aio("https://postman-echo.com/post",
-                 method = "POST",
-                 headers = c(`Content-Type` = "application/json", Authorization = "Bearer APIKEY"),
-                 data = '{"key": "value"}',
-                 response = "date")
+```{r ncurlasync}
+res <- asyncurl("https://postman-echo.com/post",
+                method = "POST",
+                headers = c(`Content-Type` = "application/json", Authorization = "Bearer APIKEY"),
+                data = '{"key": "value"}',
+                response = "date")
 res
 
 call_aio(res)$headers
@@ -448,16 +448,16 @@ res$data
 
 In this respect, it may be used as a performant and lightweight method for making REST API requests.
 
-##### ncurl Promises
+##### asyncUrl Promises
 
-`ncurl_aio()` may also be used anywhere that accepts a ‘promise’ from the promises package, including with Shiny ExtendedTask.
+`asyncurl()` may also be used anywhere that accepts a ‘promise’ from the promises package, including with Shiny ExtendedTask.
 
 If a status code of 200 (OK) is returned then the promise is resolved with the reponse body, otherwise it is rejected with a translation of the status code or ‘errorValue’ as the case may be.
 
-```{r ncurlprom}
+```{r asyncurlprom}
 library(promises)
 
-p <- ncurl_aio("https://postman-echo.com/get") %...>% cat
+p <- asyncurl("https://postman-echo.com/get") %...>% cat
 is.promise(p)
 ```
 ##### ncurl Session
