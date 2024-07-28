@@ -48,7 +48,7 @@ static SEXP mk_error_ncurl(const int xc) {
 
 }
 
-static SEXP mk_error_ncurlaio(const int xc) {
+static SEXP mk_error_asyncurl(const int xc) {
 
   SEXP env, err;
   PROTECT(env = Rf_allocSExp(ENVSXP));
@@ -308,10 +308,10 @@ SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP follow, SEXP method, SEXP headers,
 
 }
 
-// ncurl aio -------------------------------------------------------------------
+// asyncurl --------------------------------------------------------------------
 
-SEXP rnng_ncurl_aio(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP data,
-                    SEXP response, SEXP timeout, SEXP tls, SEXP clo) {
+SEXP rnng_asyncurl(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP data,
+                   SEXP response, SEXP timeout, SEXP tls, SEXP clo) {
 
   const char *httr = CHAR(STRING_ELT(http, 0));
   const char *mthd = method != R_NilValue ? CHAR(STRING_ELT(method, 0)) : NULL;
@@ -425,7 +425,7 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP dat
   exitlevel1:
   R_Free(handle);
   R_Free(haio);
-  return mk_error_ncurlaio(xc);
+  return mk_error_asyncurl(xc);
 
 }
 

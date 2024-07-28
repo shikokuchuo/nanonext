@@ -10,8 +10,8 @@ call_aio(x)
 call_aio_(x)
 }
 \arguments{
-\item{x}{an Aio or list of Aios (objects of class \sQuote{sendAio},
-\sQuote{recvAio} or \sQuote{ncurlAio}).}
+\item{x}{an Aio or list of Aios (objects of class \sQuote{sendAio} or
+\sQuote{recvAio}).}
 }
 \value{
 The passed object (invisibly).

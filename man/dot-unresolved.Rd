@@ -7,8 +7,8 @@
 .unresolved(x)
 }
 \arguments{
-\item{x}{an Aio or list of Aios (objects of class \sQuote{sendAio},
-\sQuote{recvAio} or \sQuote{ncurlAio}).}
+\item{x}{an Aio or list of Aios (objects of class \sQuote{sendAio} or
+\sQuote{recvAio}).}
 }
 \value{
 Logical TRUE if \sQuote{aio} is an unresolved Aio or else FALSE, or

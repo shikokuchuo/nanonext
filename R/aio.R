@@ -154,8 +154,8 @@ recv_aio <- function(con,
 #'     for the operation to complete if still in progress. For a list of Aios,
 #'     waits for all asynchronous operations to complete before returning.
 #'
-#' @param x an Aio or list of Aios (objects of class \sQuote{sendAio},
-#'     \sQuote{recvAio} or \sQuote{ncurlAio}).
+#' @param x an Aio or list of Aios (objects of class \sQuote{sendAio} or
+#'     \sQuote{recvAio}).
 #'
 #' @return The passed object (invisibly).
 #'
@@ -289,9 +289,9 @@ stop_aio <- function(x) invisible(.Call(rnng_aio_stop, x))
 #' Query whether an Aio, Aio value or list of Aios remains unresolved. Unlike
 #'     \code{\link{call_aio}}, this function does not wait for completion.
 #'
-#' @param x an Aio or list of Aios (objects of class \sQuote{sendAio},
-#'     \sQuote{recvAio} or \sQuote{ncurlAio}), or Aio value stored at
-#'     \code{$result} or \code{$data} etc.
+#' @param x an Aio or list of Aios (objects of class \sQuote{sendAio} or
+#'     \sQuote{recvAio}), or Aio value stored at \code{$result} or \code{$data}
+#'     etc.
 #'
 #' @return Logical TRUE if \sQuote{aio} is an unresolved Aio or Aio value or the
 #'     list of Aios contains at least one unresolved Aio, or FALSE otherwise.

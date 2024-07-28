@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU General Public License along with
 # nanonext. If not, see <https://www.gnu.org/licenses/>.
 
-# nanonext - ncurl - async http client -----------------------------------------
+# nanonext - ncurl + asyncurl - async http client ------------------------------
 
 #' ncurl
 #'
@@ -155,7 +155,7 @@ asyncurl <- function(url,
                       response = NULL,
                       timeout = NULL,
                       tls = NULL)
-    data <- .Call(rnng_ncurl_aio, url, convert, method, headers, data, response, timeout, tls, environment())
+    data <- .Call(rnng_asyncurl, url, convert, method, headers, data, response, timeout, tls, environment())
 
 #' @export
 #'

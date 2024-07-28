@@ -7,8 +7,8 @@
 stop_aio(x)
 }
 \arguments{
-\item{x}{an Aio or list of Aios (objects of class \sQuote{sendAio},
-\sQuote{recvAio} or \sQuote{ncurlAio}).}
+\item{x}{an Aio or list of Aios (objects of class \sQuote{sendAio} or
+\sQuote{recvAio}).}
 }
 \value{
 Invisible NULL.
