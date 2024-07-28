@@ -186,7 +186,6 @@ static void thread_aio_finalizer(SEXP xptr) {
   nano_cv *ncv = xp->cv;
   nng_mtx *mtx = ncv->mtx;
   nng_cv *cv = ncv->cv;
-  nng_aio_stop(xp->aio);
   nng_thread_destroy(xp->thr);
   nng_cv_free(cv);
   nng_mtx_free(mtx);
@@ -261,8 +260,8 @@ SEXP rnng_wait_thread_create(SEXP x) {
     ncv->mtx = mtx;
     ncv->cv = cv;
 
-    SEXP xptr;
-    PROTECT(xptr = R_MakeExternalPtr(taio, R_NilValue, R_NilValue));
+    SEXP xptr = R_MakeExternalPtr(taio, R_NilValue, R_NilValue);
+    SETCAR(nano_cache, xptr);
     R_RegisterCFinalizerEx(xptr, thread_aio_finalizer, TRUE);
 
     nng_time time = nng_clock();
@@ -300,7 +299,6 @@ SEXP rnng_wait_thread_create(SEXP x) {
       break;
     }
 
-    UNPROTECT(1);
     return x;
 
     exitlevel3:
