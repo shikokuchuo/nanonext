@@ -47,6 +47,7 @@ SEXP nano_ValueSymbol;
 SEXP nano_aioFuncMsg;
 SEXP nano_aioFuncRes;
 SEXP nano_aioNFuncs;
+SEXP nano_cache;
 SEXP nano_error;
 SEXP nano_klassString;
 SEXP nano_precious;
@@ -87,6 +88,7 @@ static void PreserveObjects(void) {
   SETCAR(nano_aioNFuncs, Rf_lang3(nano_DotcallSymbol, Rf_install("rnng_aio_http_status"), nano_DataSymbol));
   SETCADR(nano_aioNFuncs, Rf_lang3(nano_DotcallSymbol, Rf_install("rnng_aio_http_headers"), nano_DataSymbol));
   SETCADDR(nano_aioNFuncs, Rf_lang3(nano_DotcallSymbol, Rf_install("rnng_aio_http_data"), nano_DataSymbol));
+  R_PreserveObject(nano_cache = Rf_cons(R_NilValue, R_NilValue));
   R_PreserveObject(nano_error = Rf_allocVector(STRSXP, 2));
   SET_STRING_ELT(nano_error, 0, Rf_mkChar("errorValue"));
   SET_STRING_ELT(nano_error, 1, Rf_mkChar("try-error"));
@@ -112,6 +114,7 @@ static void ReleaseObjects(void) {
   R_ReleaseObject(nano_precious);
   R_ReleaseObject(nano_klassString);
   R_ReleaseObject(nano_error);
+  R_ReleaseObject(nano_cache);
   R_ReleaseObject(nano_aioNFuncs);
   R_ReleaseObject(nano_aioFuncRes);
   R_ReleaseObject(nano_aioFuncMsg);
