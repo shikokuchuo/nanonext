@@ -86,6 +86,6 @@ ncurl("https://postman-echo.com/post",
 
 }
 \seealso{
-\code{\link{ncurl_aio}} for asynchronous http requests;
+\code{\link{asyncurl}} for asynchronous http requests;
     \code{\link{ncurl_session}} for persistent connections.
 }

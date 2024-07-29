@@ -59,7 +59,7 @@
 #'     save as a file).
 #'     }
 #'
-#' @seealso \code{\link{ncurl_aio}} for asynchronous http requests;
+#' @seealso \code{\link{asyncurl}} for asynchronous http requests;
 #'     \code{\link{ncurl_session}} for persistent connections.
 #' @examples
 #' ncurl("https://postman-echo.com/get",
@@ -90,9 +90,9 @@ ncurl <- function(url,
                   tls = NULL)
   .Call(rnng_ncurl, url, convert, follow, method, headers, data, response, timeout, tls)
 
-#' asyncUrl
+#' asyncurl
 #'
-#' asyncUrl - a minimalist async http(s) client.
+#' asyncURL - a minimalist async http(s) client.
 #'
 #' @inheritParams ncurl
 #'
@@ -175,7 +175,7 @@ ncurl_aio <- asyncurl
 #' @return For \code{ncurl_session}: an 'ncurlSession' object if successful, or
 #'     else an 'errorValue'.
 #'
-#' @seealso \code{\link{ncurl_aio}} for asynchronous http requests.
+#' @seealso \code{\link{asyncurl}} for asynchronous http requests.
 #' @examples
 #' s <- ncurl_session("https://www.r-project.org/", response = "date", timeout = 2000L)
 #' s

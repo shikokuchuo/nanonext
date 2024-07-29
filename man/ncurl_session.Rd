@@ -82,5 +82,5 @@ if (!is_error_value(s)) close(s)
 
 }
 \seealso{
-\code{\link{ncurl_aio}} for asynchronous http requests.
+\code{\link{asyncurl}} for asynchronous http requests.
 }

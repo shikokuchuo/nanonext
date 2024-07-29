@@ -3,7 +3,7 @@
 \name{asyncurl}
 \alias{asyncurl}
 \alias{ncurl_aio}
-\title{asyncUrl}
+\title{asyncurl}
 \usage{
 asyncurl(
   url,
@@ -63,7 +63,7 @@ An 'asyncUrl' (object of class 'asyncUrl' and 'recvAio') (invisibly).
     }
 }
 \description{
-asyncUrl - a minimalist async http(s) client.
+asyncURL - a minimalist async http(s) client.
 }
 \section{Promises}{
 
