@@ -1,4 +1,4 @@
-# nanonext 1.1.1.9011 (development)
+# nanonext 1.1.1.9012 (development)
 
 #### New Features
 
@@ -7,6 +7,7 @@
 * Adds the 'poly' protocol for one-to-one of many socket connections (NNG's pair v1 polyamorous mode).
 * Adds `collect_pipe()` for obtaining the underlying Pipe from a 'recvAio'. This affords more granular control of connections, with the ability to close individual pipes.
 * `send_aio()` now accept a Pipe to direct messages to a specific peer for supported protocols such as 'poly'.
+* Adds `asyncurl()`, an asynchronous HTTP client - a straight rename of `ncurl_aio()` (retained as a compatibility alias for the time being). The function supports event-driven promises, and can be directly used in Shiny ExtendedTask.
 
 #### Updates
 
