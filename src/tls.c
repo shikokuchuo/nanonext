@@ -296,19 +296,18 @@ SEXP rnng_tls_config(SEXP client, SEXP server, SEXP pass, SEXP auth) {
   if (client != R_NilValue) {
     file = CHAR(STRING_ELT(client, 0));
     usefile = XLENGTH(client);
-    if (usefile > 1)
-      crl = NANO_STR_N(client, 1);
     if ((xc = nng_tls_config_alloc(&cfg, NNG_TLS_MODE_CLIENT)))
       goto exitlevel1;
     if ((xc = nng_tls_config_auth_mode(cfg, mod)))
       goto exitlevel2;
 
-    if (usefile == 1) {
-      file = R_ExpandFileName(file);
-      if ((xc = nng_tls_config_ca_file(cfg, file)))
+    if (usefile > 1) {
+      crl = NANO_STR_N(client, 1);
+      if ((xc = nng_tls_config_ca_chain(cfg, file, strncmp(crl, "", 1) ? crl : NULL)))
         goto exitlevel2;
     } else {
-      if ((xc = nng_tls_config_ca_chain(cfg, file, strncmp(crl, "", 1) ? crl : NULL)))
+      file = R_ExpandFileName(file);
+      if ((xc = nng_tls_config_ca_file(cfg, file)))
         goto exitlevel2;
     }
 
@@ -316,19 +315,18 @@ SEXP rnng_tls_config(SEXP client, SEXP server, SEXP pass, SEXP auth) {
     file = CHAR(STRING_ELT(server, 0));
     usefile = XLENGTH(server);
     pss = pass != R_NilValue ? CHAR(STRING_ELT(pass, 0)) : NULL;
-    if (usefile > 1)
-      key = NANO_STR_N(server, 1);
     if ((xc = nng_tls_config_alloc(&cfg, NNG_TLS_MODE_SERVER)))
       goto exitlevel1;
     if ((xc = nng_tls_config_auth_mode(cfg, mod)))
       goto exitlevel2;
 
-    if (usefile == 1) {
-      file = R_ExpandFileName(file);
-      if ((xc = nng_tls_config_cert_key_file(cfg, file, pss)))
+    if (usefile > 1) {
+      key = NANO_STR_N(server, 1);
+      if ((xc = nng_tls_config_own_cert(cfg, file, key, pss)))
         goto exitlevel2;
     } else {
-      if ((xc = nng_tls_config_own_cert(cfg, file, key, pss)))
+      file = R_ExpandFileName(file);
+      if ((xc = nng_tls_config_cert_key_file(cfg, file, pss)))
         goto exitlevel2;
     }
 
