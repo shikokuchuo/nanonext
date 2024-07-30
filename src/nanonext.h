@@ -329,7 +329,6 @@ extern SEXP nano_ValueSymbol;
 extern SEXP nano_aioFuncMsg;
 extern SEXP nano_aioFuncRes;
 extern SEXP nano_aioNFuncs;
-extern SEXP nano_cache;
 extern SEXP nano_error;
 extern SEXP nano_klassString;
 extern SEXP nano_precious;
