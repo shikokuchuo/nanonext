@@ -1,4 +1,4 @@
-# nanonext 1.1.1.9011 (development)
+# nanonext 1.1.1.9012 (development)
 
 #### New Features
 
@@ -12,6 +12,7 @@
 
 * Send mode 'next' is folded into the default 'serial', with custom serialization functions applying automatically if they have been registered.
 * The session-wide `next_config()` is now deprecated and defunct, in favour of the new `serial_config()`.
+* Fixes bug in the interruptible `call_aio_()` and `collect_aio_()` which could cause intermittent crashes under certain platform / compiler combinations.
 * Removes hard dependency on `stats` and `utils` base packages.
 * Requires R >= 3.6.
 

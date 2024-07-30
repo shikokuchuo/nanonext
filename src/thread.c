@@ -243,27 +243,24 @@ SEXP rnng_wait_thread_create(SEXP x) {
     nano_cv *ncv = R_Calloc(1, nano_cv);
     taio->aio = aiop->aio;
     taio->cv = ncv;
-    nng_mtx *mtx;
-    nng_cv *cv;
 
     int xc, signalled;
 
-    if ((xc = nng_mtx_alloc(&mtx)))
+    if ((xc = nng_mtx_alloc(&ncv->mtx)))
       goto exitlevel1;
 
-    if ((xc = nng_cv_alloc(&cv, mtx)))
+    if ((xc = nng_cv_alloc(&ncv->cv, ncv->mtx)))
       goto exitlevel2;
 
     if ((xc = nng_thread_create(&taio->thr, rnng_wait_thread, taio)))
       goto exitlevel3;
 
-    ncv->mtx = mtx;
-    ncv->cv = cv;
-
     SEXP xptr = R_MakeExternalPtr(taio, R_NilValue, R_NilValue);
     SETCAR(nano_cache, xptr);
     R_RegisterCFinalizerEx(xptr, thread_aio_finalizer, TRUE);
 
+    nng_mtx *mtx = ncv->mtx;
+    nng_cv *cv = ncv->cv;
     nng_time time = nng_clock();
 
     while (1) {
@@ -302,9 +299,9 @@ SEXP rnng_wait_thread_create(SEXP x) {
     return x;
 
     exitlevel3:
-    nng_cv_free(cv);
+    nng_cv_free(ncv->cv);
     exitlevel2:
-    nng_mtx_free(mtx);
+    nng_mtx_free(ncv->mtx);
     exitlevel1:
     R_Free(ncv);
     R_Free(taio);
