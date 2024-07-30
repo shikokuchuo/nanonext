@@ -572,9 +572,8 @@ SEXP rnng_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP cvar, SEXP bytes, SEX
     sock ? nng_recv_aio(*(nng_socket *) NANO_PTR(con), raio->aio) :
       nng_ctx_recv(*(nng_ctx *) NANO_PTR(con), raio->aio);
 
-    PROTECT(aio = R_MakeExternalPtr(raio, nano_AioSymbol, R_NilValue));
+    PROTECT(aio = R_MakeExternalPtr(raio, nano_AioSymbol, NANO_PROT(con)));
     R_RegisterCFinalizerEx(aio, raio_finalizer, TRUE);
-    NANO_SET_PROT(aio, NANO_PROT(con));
 
   } else if (ptrtag == nano_StreamSymbol) {
 
