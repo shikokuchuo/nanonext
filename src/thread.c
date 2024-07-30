@@ -263,7 +263,7 @@ SEXP rnng_wait_thread_create(SEXP x) {
       goto exitlevel3;
 
     SEXP xptr = R_MakeExternalPtr(taio, R_NilValue, R_NilValue);
-    SET_ATTRIB(coreaio, Rf_cons(xptr, ATTRIB(coreaio)));
+    R_MakeWeakRef(coreaio, xptr, R_NilValue, TRUE);
     R_RegisterCFinalizerEx(xptr, thread_aio_finalizer, TRUE);
     UNPROTECT(1);
 
