@@ -262,10 +262,11 @@ SEXP rnng_wait_thread_create(SEXP x) {
     if ((xc = nng_thread_create(&taio->thr, rnng_wait_thread, taio)))
       goto exitlevel3;
 
-    SEXP xptr = R_MakeExternalPtr(taio, R_NilValue, R_NilValue);
-    R_MakeWeakRef(coreaio, xptr, R_NilValue, TRUE);
+    SEXP xptr;
+    PROTECT(xptr = R_MakeExternalPtr(taio, R_NilValue, R_NilValue));
     R_RegisterCFinalizerEx(xptr, thread_aio_finalizer, TRUE);
-    UNPROTECT(1);
+    R_MakeWeakRef(coreaio, xptr, R_NilValue, TRUE);
+    UNPROTECT(2);
 
     nng_time time = nng_clock();
 
