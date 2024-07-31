@@ -143,16 +143,16 @@ typedef struct nano_dialer_s {
 
 typedef struct nano_stream_s {
   nng_stream *stream;
-  enum {
-    NANO_STREAM_DIALER,
-    NANO_STREAM_LISTENER
-  } mode;
-  int textframes;
   union {
     nng_stream_dialer *dial;
     nng_stream_listener *list;
   } endpoint;
   nng_tls_config *tls;
+  int textframes;
+  enum {
+    NANO_STREAM_DIALER,
+    NANO_STREAM_LISTENER
+  } mode;
 } nano_stream;
 
 typedef enum nano_aio_typ {
@@ -169,11 +169,11 @@ typedef enum nano_aio_typ {
 
 typedef struct nano_aio_s {
   nng_aio *aio;
-  nano_aio_typ type;
   int mode;
   int result;
   void *data;
   void *next;
+  nano_aio_typ type;
 } nano_aio;
 
 typedef struct nano_cv_s {
