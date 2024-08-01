@@ -169,10 +169,10 @@ typedef enum nano_aio_typ {
 
 typedef struct nano_aio_s {
   nng_aio *aio;
-  int mode;
-  int result;
   void *data;
   void *next;
+  int mode;
+  int result;
   nano_aio_typ type;
 } nano_aio;
 

@@ -90,7 +90,7 @@ static void request_complete_signal(void *arg) {
 
 static void sendaio_complete(void *arg) {
 
-  nng_aio *aio = (nng_aio *) arg;
+  nng_aio *aio = ((nano_aio *) arg)->aio;
   if (nng_aio_result(aio))
     nng_msg_free(nng_aio_get_msg(aio));
 
