@@ -117,10 +117,10 @@ socket <- function(protocol = c("bus", "pair", "poly", "push", "pull", "pub",
 
 #' Collect the Pipe from an Aio
 #'
-#' This function blocks until it has received a message from the Aio. The Pipe
-#'     used to receive the message is returned and the message is still
-#'     available for retrieval by normal means. A Pipe is a low-level object and
-#'     it is not normally necessary to deal with them directly.
+#' This function retrieves the Pipe used to receive a message from the Aio. It
+#'     will block if the Aio has yet to complete. The message is still available
+#'     for retrieval by the usual means. A Pipe is a low-level object and it is
+#'     not normally necessary to deal with them directly.
 #'
 #' @param x a 'recvAio' object.
 #'
@@ -131,10 +131,9 @@ socket <- function(protocol = c("bus", "pair", "poly", "push", "pull", "pub",
 #' @return A Pipe (object of class \sQuote{nanoPipe}).
 #'
 #' @examples
-#' s <- socket("rep")
-#' listen(s)
-#' s1 <- socket("req")
-#' dial(s1)
+#' s <- socket("rep", listen = "inproc://nanonext")
+#' s1 <- socket("req", dial = "inproc://nanonext")
+#'
 #' r <- recv_aio(s, timeout = 500)
 #'
 #' if (!send(s1, "")) {
