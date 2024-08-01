@@ -38,8 +38,11 @@ static void request_complete(void *arg) {
   nano_aio *raio = (nano_aio *) arg;
   nano_aio *saio = (nano_aio *) raio->next;
   const int res = nng_aio_result(raio->aio);
-  if (res == 0)
-    raio->data = nng_aio_get_msg(raio->aio);
+  if (res == 0) {
+    nng_msg *msg = nng_aio_get_msg(raio->aio);
+    raio->data = msg;
+    raio->id = ((uint32_t *) msg)[1];
+  }
   raio->result = res - !res;
 
   if (saio->data != NULL)
@@ -55,6 +58,7 @@ static void request_complete_dropcon(void *arg) {
   if (res == 0) {
     nng_msg *msg = nng_aio_get_msg(raio->aio);
     raio->data = msg;
+    raio->id = ((uint32_t *) msg)[1];
     nng_pipe_close(nng_msg_get_pipe(msg));
   }
 
@@ -74,8 +78,11 @@ static void request_complete_signal(void *arg) {
   nng_mtx *mtx = ncv->mtx;
 
   const int res = nng_aio_result(raio->aio);
-  if (res == 0)
-    raio->data = nng_aio_get_msg(raio->aio);
+  if (res == 0) {
+    nng_msg *msg = nng_aio_get_msg(raio->aio);
+    raio->data = msg;
+    raio->id = ((uint32_t *) msg)[1];
+  }
 
   nng_mtx_lock(mtx);
   raio->result = res - !res;
@@ -484,6 +491,7 @@ SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeou
   raio->type = signal ? REQAIOS : REQAIO;
   raio->mode = mod;
   raio->next = saio;
+  saio->id = nano_msg_id;
 
   if ((xc = nng_aio_alloc(&raio->aio, signal ? request_complete_signal : drop ? request_complete_dropcon : request_complete, raio)))
     goto exitlevel2;

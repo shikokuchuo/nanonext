@@ -333,6 +333,7 @@ void nano_serialize(nano_buf *buf, const SEXP object, SEXP hook) {
     buf->buf[0] = 0x7;
     buf->buf[1] = (uint8_t) vec;
     buf->buf[3] = special_bit;
+    ((uint32_t *) (buf->buf))[1] = ++nano_msg_id;
     buf->cur += 16;
   }
 

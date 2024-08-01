@@ -173,6 +173,7 @@ typedef struct nano_aio_s {
   void *next;
   int mode;
   int result;
+  uint32_t id;
   nano_aio_typ type;
 } nano_aio;
 
@@ -304,6 +305,7 @@ SEXP rnng_wait_thread_create(SEXP);
 SEXP rnng_write_cert(SEXP, SEXP, SEXP);
 
 extern uint8_t special_bit;
+extern uint32_t nano_msg_id;
 
 extern SEXP nano_AioSymbol;
 extern SEXP nano_ContextSymbol;
