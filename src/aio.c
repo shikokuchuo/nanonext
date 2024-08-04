@@ -287,7 +287,7 @@ static SEXP rnng_aio_collect_impl(SEXP x, SEXP (*const func)(SEXP)) {
     if (out == R_UnboundValue) break;
     goto resume;
   case VECSXP: ;
-    SEXP env;
+    SEXP env, names;
     const R_xlen_t xlen = Rf_xlength(x);
     PROTECT(out = Rf_allocVector(VECSXP, xlen));
     for (R_xlen_t i = 0; i < xlen; i++) {
@@ -297,7 +297,9 @@ static SEXP rnng_aio_collect_impl(SEXP x, SEXP (*const func)(SEXP)) {
       if (env == R_UnboundValue) goto exit;
       SET_VECTOR_ELT(out, i, env);
     }
-    out = Rf_namesgets(out, Rf_getAttrib(x, R_NamesSymbol));
+    names = Rf_getAttrib(x, R_NamesSymbol);
+    if (names != R_NilValue)
+      out = Rf_namesgets(out, names);
     UNPROTECT(1);
     goto resume;
   }
