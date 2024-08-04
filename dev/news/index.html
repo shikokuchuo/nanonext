@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">nanonext</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.1.1.9015</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.1.1.9016</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -40,9 +40,9 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.1.1.9015" id="nanonext-1119015-development">nanonext 1.1.1.9015 (development)<a class="anchor" aria-label="anchor" href="#nanonext-1119015-development"></a></h2>
+<h2 class="pkg-version" data-toc-text="1.1.1.9016" id="nanonext-1119016-development">nanonext 1.1.1.9016 (development)<a class="anchor" aria-label="anchor" href="#nanonext-1119016-development"></a></h2>
 <div class="section level5">
-<h5 id="new-features-1-1-1-9015">New Features<a class="anchor" aria-label="anchor" href="#new-features-1-1-1-9015"></a></h5>
+<h5 id="new-features-1-1-1-9016">New Features<a class="anchor" aria-label="anchor" href="#new-features-1-1-1-9016"></a></h5>
 <ul><li>Adds <code><a href="../reference/serial_config.html">serial_config()</a></code> to create configurations that can be set on Sockets to make use of custom serialization and unserialization functions for reference objects (plugs into the ‘refhook’ system of native R serialization).</li>
 <li>
 <code><a href="../reference/opt.html">'opt&lt;-'()</a></code> now accepts the special option ‘serial’ for Sockets, which takes a configuration returned from <code><a href="../reference/serial_config.html">serial_config()</a></code>.</li>
@@ -52,9 +52,11 @@
 <code><a href="../reference/send_aio.html">send_aio()</a></code> now accept a Pipe to direct messages to a specific peer for supported protocols such as ‘poly’.</li>
 </ul></div>
 <div class="section level5">
-<h5 id="updates-1-1-1-9015">Updates<a class="anchor" aria-label="anchor" href="#updates-1-1-1-9015"></a></h5>
+<h5 id="updates-1-1-1-9016">Updates<a class="anchor" aria-label="anchor" href="#updates-1-1-1-9016"></a></h5>
 <ul><li>Send mode ‘next’ is folded into the default ‘serial’, with custom serialization functions applying automatically if they have been registered.</li>
 <li>The session-wide <code><a href="../reference/next_config.html">next_config()</a></code> is now deprecated and defunct, in favour of the new <code><a href="../reference/serial_config.html">serial_config()</a></code>.</li>
+<li>
+<code><a href="../reference/collect_aio.html">collect_aio()</a></code> and <code><a href="../reference/collect_aio.html">collect_aio_()</a></code> no longer append empty names when acting on lists of Aios where there were none in the first place.</li>
 <li>Removes hard dependency on <code>stats</code> and <code>utils</code> base packages.</li>
 <li>Requires R &gt;= 3.6.</li>
 </ul></div>
