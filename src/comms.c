@@ -312,7 +312,14 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
   const SEXP ptrtag = NANO_TAG(con);
   if (ptrtag == nano_SocketSymbol) {
 
-    nano_encodes(mode) == 2 ? nano_encode(&buf, data) : nano_serialize(&buf, data, NANO_PROT(con));
+    switch (nano_encodes(mode)) {
+    case 1:
+      nano_serialize(&buf, data, NANO_PROT(con)); break;
+    case 2:
+      nano_encode(&buf, data); break;
+    default:
+      nano_serialize_old(&buf, data, NANO_PROT(con)); break;
+    }
     nng_socket *sock = (nng_socket *) NANO_PTR(con);
 
     if (flags <= 0) {
@@ -347,7 +354,14 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
 
   } else if (ptrtag == nano_ContextSymbol) {
 
-    nano_encodes(mode) == 2 ? nano_encode(&buf, data) : nano_serialize(&buf, data, NANO_PROT(con));
+    switch (nano_encodes(mode)) {
+    case 1:
+      nano_serialize(&buf, data, NANO_PROT(con)); break;
+    case 2:
+      nano_encode(&buf, data); break;
+    default:
+      nano_serialize_old(&buf, data, NANO_PROT(con)); break;
+    }
     nng_ctx *ctxp = (nng_ctx *) NANO_PTR(con);
     nng_msg *msgp;
 
