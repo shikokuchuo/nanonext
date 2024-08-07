@@ -530,7 +530,7 @@ SEXP rnng_set_promise_context(SEXP x, SEXP ctx) {
     SEXP str, call;
     PROTECT(str = Rf_mkString("later"));
     PROTECT(call = Rf_lang2(Rf_install("loadNamespace"), str));
-    Rf_eval(call, R_GlobalEnv);
+    Rf_eval(call, R_BaseEnv);
     UNPROTECT(2);
     eln2 = (void (*)(void (*)(void *), void *, double, int)) R_GetCCallable("later", "execLaterNative2");
   }
