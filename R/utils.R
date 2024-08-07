@@ -176,6 +176,8 @@ parse_url <- function(url) .Call(rnng_url_parse, url)
 #'     nanoSocket, nanoContext, nanoStream, nanoListener, nanoDialer, nanoPipe
 #'     or nano Object.
 #'
+#'     Is the object an ncurlSession (object of class \sQuote{ncurlSession}).
+#'
 #' @examples
 #' sock <- socket(listen = "inproc://isaio")
 #' r <- recv_aio(sock)

@@ -28,6 +28,8 @@ Is the object an Aio (inheriting from class \sQuote{sendAio} or
     Is the object an object inheriting from class \sQuote{nano} i.e. a
     nanoSocket, nanoContext, nanoStream, nanoListener, nanoDialer, nanoPipe
     or nano Object.
+
+    Is the object an ncurlSession (object of class \sQuote{ncurlSession}).
 }
 \examples{
 sock <- socket(listen = "inproc://isaio")

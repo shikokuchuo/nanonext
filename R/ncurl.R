@@ -174,8 +174,8 @@ ncurl_aio <- function(url,
 #' @examples
 #' s <- ncurl_session("https://www.r-project.org/", response = "date", timeout = 2000L)
 #' s
-#' if (!is_error_value(s)) transact(s)
-#' if (!is_error_value(s)) close(s)
+#' if (is_ncurl_session(s)) transact(s)
+#' if (is_ncurl_session(s)) close(s)
 #'
 #' @export
 #'
