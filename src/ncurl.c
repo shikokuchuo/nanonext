@@ -717,7 +717,7 @@ SEXP rnng_ncurl_session_close(SEXP session) {
   NANO_SET_TAG(session, R_NilValue);
   NANO_SET_PROT(session, R_NilValue);
   R_ClearExternalPtr(session);
-  Rf_setAttrib(session, R_MissingArg, R_MissingArg);
+  Rf_setAttrib(session, nano_StateSymbol, R_MissingArg);
 
   return nano_success;
 

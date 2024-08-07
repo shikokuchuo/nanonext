@@ -367,7 +367,7 @@ print.ncurlAio <- function(x, ...) {
 #'
 print.ncurlSession <- function(x, ...) {
 
-  cat(sprintf("< ncurlSession > - %s\n", if (is.null(attr(x, ""))) "transact() to return data" else "not active"), file = stdout())
+  cat(sprintf("< ncurlSession > - %s\n", if (is.null(attr(x, "state"))) "transact() to return data" else "not active"), file = stdout())
   invisible(x)
 
 }
