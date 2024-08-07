@@ -79,7 +79,7 @@ nano cURL - a minimalist http(s) client - async edition.
 }
 
 \examples{
-nc <- ncurl_aio("https://www.r-project.org/",
+nc <- ncurl_aio("https://postman-echo.com/get",
                 response = c("date", "server"),
                 timeout = 2000L)
 call_aio(nc)

@@ -125,7 +125,7 @@ ncurl <- function(url,
 #'
 #' @seealso \code{\link{ncurl_session}} for persistent connections.
 #' @examples
-#' nc <- ncurl_aio("https://www.r-project.org/",
+#' nc <- ncurl_aio("https://postman-echo.com/get",
 #'                 response = c("date", "server"),
 #'                 timeout = 2000L)
 #' call_aio(nc)
@@ -172,7 +172,9 @@ ncurl_aio <- function(url,
 #'
 #' @seealso \code{\link{ncurl_aio}} for asynchronous http requests.
 #' @examples
-#' s <- ncurl_session("https://www.r-project.org/", response = "date", timeout = 2000L)
+#' s <- ncurl_session("https://postman-echo.com/get",
+#'                    response = "date",
+#'                    timeout = 2000L)
 #' s
 #' if (is_ncurl_session(s)) transact(s)
 #' if (is_ncurl_session(s)) close(s)

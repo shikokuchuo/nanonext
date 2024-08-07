@@ -101,6 +101,14 @@ static void haio_complete(void *arg) {
 
 }
 
+static void session_complete(void *arg) {
+
+  nano_aio *haio = (nano_aio *) arg;
+  const int res = nng_aio_result(haio->aio);
+  haio->result = res - !res;
+
+}
+
 // finalisers ------------------------------------------------------------------
 
 static void haio_finalizer(SEXP xptr) {
@@ -125,8 +133,19 @@ static void haio_finalizer(SEXP xptr) {
 static void session_finalizer(SEXP xptr) {
 
   if (NANO_PTR(xptr) == NULL) return;
-  nng_http_conn *xp = (nng_http_conn *) NANO_PTR(xptr);
-  nng_http_conn_close(xp);
+  nano_aio *xp = (nano_aio *) NANO_PTR(xptr);
+  nano_handle *handle = (nano_handle *) xp->next;
+  nng_http_conn *conn = (nng_http_conn *) xp->data;
+  nng_http_conn_close(conn);
+  nng_aio_free(xp->aio);
+  if (handle->cfg != NULL)
+    nng_tls_config_free(handle->cfg);
+  nng_http_res_free(handle->res);
+  nng_http_req_free(handle->req);
+  nng_http_client_free(handle->cli);
+  nng_url_free(handle->url);
+  R_Free(handle);
+  R_Free(xp);
 
 }
 
@@ -535,7 +554,7 @@ SEXP rnng_ncurl_session(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP
   nano_aio *haio = R_Calloc(1, nano_aio);
   nano_handle *handle = R_Calloc(1, nano_handle);
   int xc;
-  SEXP sess, aio;
+  SEXP sess;
 
   haio->type = HTTP_AIO;
   haio->mode = NANO_INTEGER(convert);
@@ -572,7 +591,7 @@ SEXP rnng_ncurl_session(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP
   if ((xc = nng_http_res_alloc(&handle->res)))
     goto exitlevel4;
 
-  if ((xc = nng_aio_alloc(&haio->aio, haio_complete, haio)))
+  if ((xc = nng_aio_alloc(&haio->aio, session_complete, haio)))
     goto exitlevel5;
 
   if (!strcmp(handle->url->u_scheme, "https")) {
@@ -604,18 +623,14 @@ SEXP rnng_ncurl_session(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP
   if ((xc = haio->result) > 0)
     goto exitlevel7;
 
-  nng_http_conn *conn;
-  conn = nng_aio_get_output(haio->aio, 0);
+  nng_http_conn *conn = nng_aio_get_output(haio->aio, 0);
+  haio->data = conn;
 
-  PROTECT(sess = R_MakeExternalPtr(conn, nano_StatusSymbol, (response != R_NilValue && TYPEOF(response) == STRSXP) ? response : R_NilValue));
+  PROTECT(sess = R_MakeExternalPtr(haio, nano_StatusSymbol, (response != R_NilValue && TYPEOF(response) == STRSXP) ? response : R_NilValue));
   R_RegisterCFinalizerEx(sess, session_finalizer, TRUE);
   Rf_classgets(sess, Rf_mkString("ncurlSession"));
 
-  PROTECT(aio = R_MakeExternalPtr(haio, nano_AioSymbol, R_NilValue));
-  R_RegisterCFinalizerEx(aio, haio_finalizer, TRUE);
-  Rf_setAttrib(sess, nano_AioSymbol, aio);
-
-  UNPROTECT(2);
+  UNPROTECT(1);
   return sess;
 
   exitlevel7:
@@ -643,9 +658,8 @@ SEXP rnng_ncurl_transact(SEXP session) {
   if (NANO_TAG(session) != nano_StatusSymbol)
     Rf_error("'session' is not a valid or active ncurlSession");
 
-  nng_http_conn *conn = (nng_http_conn *) NANO_PTR(session);
-  SEXP aio = Rf_getAttrib(session, nano_AioSymbol);
-  nano_aio *haio = (nano_aio *) NANO_PTR(aio);
+  nano_aio *haio = (nano_aio *) NANO_PTR(session);
+  nng_http_conn *conn = (nng_http_conn *) haio->data;
   nano_handle *handle = (nano_handle *) haio->next;
 
   nng_http_conn_transact(conn, handle->req, handle->res, haio->aio);
@@ -699,12 +713,11 @@ SEXP rnng_ncurl_session_close(SEXP session) {
   if (NANO_TAG(session) != nano_StatusSymbol)
     Rf_error("'session' is not a valid or active ncurlSession");
 
-  nng_http_conn *sp = (nng_http_conn *) NANO_PTR(session);
-  nng_http_conn_close(sp);
+  session_finalizer(session);
   NANO_SET_TAG(session, R_NilValue);
   NANO_SET_PROT(session, R_NilValue);
   R_ClearExternalPtr(session);
-  Rf_setAttrib(session, nano_AioSymbol, R_NilValue);
+  Rf_setAttrib(session, R_MissingArg, R_MissingArg);
 
   return nano_success;
 

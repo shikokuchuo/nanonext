@@ -75,7 +75,9 @@ nano cURL - a minimalist http(s) client. A session encapsulates a connection,
     once over the connection.
 }
 \examples{
-s <- ncurl_session("https://www.r-project.org/", response = "date", timeout = 2000L)
+s <- ncurl_session("https://postman-echo.com/get",
+                   response = "date",
+                   timeout = 2000L)
 s
 if (is_ncurl_session(s)) transact(s)
 if (is_ncurl_session(s)) close(s)

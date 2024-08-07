@@ -155,7 +155,7 @@ collect_pipe <- function(x) .Call(rnng_aio_collect_pipe, x)
 #'     ncurl Session.
 #'
 #' @param con a Socket, Context, Dialer, Listener, Stream, Pipe, or
-#'     'ncurlSession'.
+#'     \sQuote{ncurlSession}.
 #' @param ... not used.
 #'
 #' @return Invisibly, an integer exit code (zero on success).
@@ -178,6 +178,10 @@ collect_pipe <- function(x) .Call(rnng_aio_collect_pipe, x)
 #'     Closing a Stream: if any send or receive operations are pending, they
 #'     will be terminated and any new operations will fail after the connection
 #'     is closed.
+#'
+#'     Closing an \sQuote{ncurlSession} closes any active http(s) connection and
+#'     frees all related resources. The session is no longer active and cannot
+#'     be re-used.
 #'
 #'     As Pipes are owned by the corresponding Socket, removing (and garbage
 #'     collecting) a Pipe does not close it or free its resources. A Pipe may,
