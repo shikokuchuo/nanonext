@@ -406,13 +406,13 @@ ncaio <- ncurl_aio("https://shikokuchuo.net/nanonext/reference/figures/logo.png"
 nanotest(is.raw(call_aio(ncaio)$data) || is_error_value(ncaio$data))
 nanotest(is_error_value(ncurl_aio("http")$data))
 sess <- ncurl_session("https://postman-echo.com/post", method = "POST", headers = c(`Content-Type` = "text/plain"), data = "test", response = c("date", "Server"), timeout = 3000L)
-nanotestnn(sess)
-nanotest(is_error_value(sess) || length(transact(sess)) == 3L)
-nanotest(is_error_value(sess) || close(sess) == 0L)
+nanotest(is_ncurl_session(sess) || is_error_value(sess))
+is_ncurl_session(sess) && nanotest(length(transact(sess)) == 3L)
+is_ncurl_session(sess) && nanotest(close(sess) == 0L)
 sess <- ncurl_session("https://postman-echo.com/post", convert = FALSE, method = "POST", headers = c(`Content-Type` = "text/plain"), timeout = 3000)
-nanotestnn(sess)
-nanotest(is_error_value(sess) || length(transact(sess)) == 3L)
-nanotest(is_error_value(sess) || close(sess) == 0L)
+nanotest(is_ncurl_session(sess) || is_error_value(sess))
+is_ncurl_session(sess) && nanotest(length(transact(sess)) == 3L)
+is_ncurl_session(sess) && nanotest(close(sess) == 0L)
 nanotesterr(transact(sess), "ncurlSession")
 nanotestw(is_error_value(ncurl_session("https://i")))
 nanotesterr(ncurl_aio("https://", tls = "wrong"), "valid TLS")
@@ -452,7 +452,7 @@ for (i in c(100:103, 200:208, 226, 300:308, 400:426, 428:431, 451, 500:511))
   nanotest(is.character(status_code(i)))
 
 s <- tryCatch(stream(dial = "wss://echo.websocket.events/", textframes = TRUE), error = function(e) NULL)
-if (length(s)) {
+is_nano(s) && {
   nanotestnn(recv(s, block = 500L))
   nanotest(is.character(opt(s, "ws:response-headers")))
   nanotesterr(opt(s, "ws:request-headers") <- "test\n", 24)
@@ -559,7 +559,7 @@ nanotesterr(collect_aio_(list("a")), "object is not an Aio or list of Aios")
 nanotesterr(collect_aio(list(fakesock)), "object is not an Aio or list of Aios")
 nanotestn(stop_aio("a"))
 nanotestn(stop_aio(list("a")))
-if (later) nanotest(is.environment(set_promise_context(new.env(), new.env())))
+later && nanotest(is.environment(set_promise_context(new.env(), new.env())))
 
 pem <- "-----BEGIN CERTIFICATE----- -----END CERTIFICATE-----"
 test_tls <- function(pem) {

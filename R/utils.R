@@ -201,6 +201,16 @@ is_aio <- function(x) inherits(x, c("recvAio", "sendAio"))
 #'
 is_nano <- function(x) inherits(x, c("nano", "nanoObject"))
 
+#' @examples
+#' s <- ncurl_session("https://www.r-project.org/")
+#' is_ncurl_session(s)
+#' if (is_ncurl_session(s)) close(s)
+#'
+#' @rdname is_aio
+#' @export
+#'
+is_ncurl_session <- function(x) inherits(x, "ncurlSession")
+
 #' Error Validators
 #'
 #' Validator functions for error value types created by \pkg{nanonext}.

@@ -3,11 +3,14 @@
 \name{is_aio}
 \alias{is_aio}
 \alias{is_nano}
+\alias{is_ncurl_session}
 \title{Validators}
 \usage{
 is_aio(x)
 
 is_nano(x)
+
+is_ncurl_session(x)
 }
 \arguments{
 \item{x}{an object.}
@@ -40,5 +43,9 @@ n <- nano()
 is_nano(n)
 close(s)
 n$close()
+
+s <- ncurl_session("https://www.r-project.org/")
+is_ncurl_session(s)
+if (is_ncurl_session(s)) close(s)
 
 }

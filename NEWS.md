@@ -1,10 +1,11 @@
-# nanonext 1.1.1.9017 (development)
+# nanonext 1.1.1.9018 (development)
 
 #### New Features
 
 * Adds `serial_config()` to create configurations that can be set on Sockets to make use of custom serialization and unserialization functions for reference objects (plugs into the 'refhook' system of native R serialization).
 * `'opt<-'()` now accepts the special option 'serial' for Sockets, which takes a configuration returned from `serial_config()`.
 * Adds the 'poly' protocol for one-to-one of many socket connections (NNG's pair v1 polyamorous mode).
+* Adds `is_ncurl_session()` as a validation function.
 * Adds `collect_pipe()` for obtaining the underlying Pipe from a 'recvAio'. This affords more granular control of connections, with the ability to close individual pipes.
 * `send_aio()` now accept a Pipe to direct messages to a specific peer for supported protocols such as 'poly'.
 
