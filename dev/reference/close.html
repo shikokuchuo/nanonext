@@ -104,9 +104,7 @@
 <p>Closing a Stream: if any send or receive operations are pending, they
     will be terminated and any new operations will fail after the connection
     is closed.</p>
-<p>Closing an ‘ncurlSession’ closes any active http(s) connection and
-    frees all related resources. The session is no longer active and cannot
-    be re-used.</p>
+<p>Closing an ‘ncurlSession’ closes the http(s) connection.</p>
 <p>As Pipes are owned by the corresponding Socket, removing (and garbage
     collecting) a Pipe does not close it or free its resources. A Pipe may,
     however, be explicitly closed.</p>

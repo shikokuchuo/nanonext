@@ -57,6 +57,8 @@
 <ul><li>Send mode ‘next’ is folded into the default ‘serial’, with custom serialization functions applying automatically if they have been registered.</li>
 <li>The session-wide <code><a href="../reference/next_config.html">next_config()</a></code> is now deprecated and defunct, in favour of the new <code><a href="../reference/serial_config.html">serial_config()</a></code>.</li>
 <li>
+<code><a href="../reference/ncurl_session.html">ncurl_session()</a></code> now returns ‘errorValue’ 7 (Object closed) when attempting to transact over a closed session or closing a closed session, rather than throwing an error.</li>
+<li>
 <code><a href="../reference/collect_aio.html">collect_aio()</a></code> and <code><a href="../reference/collect_aio.html">collect_aio_()</a></code> no longer append empty names when acting on lists of Aios where there were none in the first place.</li>
 <li>Removes hard dependency on <code>stats</code> and <code>utils</code> base packages.</li>
 <li>Requires R &gt;= 3.6.</li>
