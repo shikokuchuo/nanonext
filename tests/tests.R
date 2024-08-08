@@ -456,7 +456,7 @@ for (i in c(100:103, 200:208, 226, 300:308, 400:426, 428:431, 451, 500:511))
   nanotest(is.character(status_code(i)))
 
 s <- tryCatch(stream(dial = "wss://echo.websocket.events/", textframes = TRUE), error = function(e) NULL)
-if (is_nano(s)) {
+is_nano(s) && {
   nanotestnn(recv(s, block = 500L))
   nanotest(is.character(opt(s, "ws:response-headers")))
   nanotesterr(opt(s, "ws:request-headers") <- "test\n", 24)
