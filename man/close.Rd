@@ -59,9 +59,7 @@ Closing an object explicitly frees its resources. An object can also
     will be terminated and any new operations will fail after the connection
     is closed.
 
-    Closing an \sQuote{ncurlSession} closes any active http(s) connection and
-    frees all related resources. The session is no longer active and cannot
-    be re-used.
+    Closing an \sQuote{ncurlSession} closes the http(s) connection.
 
     As Pipes are owned by the corresponding Socket, removing (and garbage
     collecting) a Pipe does not close it or free its resources. A Pipe may,

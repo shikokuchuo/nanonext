@@ -135,8 +135,8 @@ static void session_finalizer(SEXP xptr) {
   if (NANO_PTR(xptr) == NULL) return;
   nano_aio *xp = (nano_aio *) NANO_PTR(xptr);
   nano_handle *handle = (nano_handle *) xp->next;
-  nng_http_conn *conn = (nng_http_conn *) xp->data;
-  nng_http_conn_close(conn);
+  if (xp->data != NULL)
+    nng_http_conn_close((nng_http_conn *) xp->data);
   nng_aio_free(xp->aio);
   if (handle->cfg != NULL)
     nng_tls_config_free(handle->cfg);
@@ -659,9 +659,12 @@ SEXP rnng_ncurl_transact(SEXP session) {
     Rf_error("'session' is not a valid or active ncurlSession");
 
   nano_aio *haio = (nano_aio *) NANO_PTR(session);
+
+  if (haio->data == NULL)
+    return mk_error_ncurl(7);
+
   nng_http_conn *conn = (nng_http_conn *) haio->data;
   nano_handle *handle = (nano_handle *) haio->next;
-
   nng_http_conn_transact(conn, handle->req, handle->res, haio->aio);
   nng_aio_wait(haio->aio);
   if (haio->result > 0)
@@ -713,10 +716,13 @@ SEXP rnng_ncurl_session_close(SEXP session) {
   if (NANO_TAG(session) != nano_StatusSymbol)
     Rf_error("'session' is not a valid or active ncurlSession");
 
-  session_finalizer(session);
-  NANO_SET_TAG(session, R_NilValue);
-  NANO_SET_PROT(session, R_NilValue);
-  R_ClearExternalPtr(session);
+  nano_aio *haio = (nano_aio *) NANO_PTR(session);
+
+  if (haio->data == NULL)
+    ERROR_RET(7);
+
+  nng_http_conn_close((nng_http_conn *) haio->data);
+  haio->data = NULL;
   Rf_setAttrib(session, nano_StateSymbol, R_MissingArg);
 
   return nano_success;
