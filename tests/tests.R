@@ -266,7 +266,6 @@ nanotesterr(serial_config("custom", "func1", "func2"), "must be functions")
 nanotesterr(opt(rep, "wrong") <- cfg, "not supported")
 nanotesterr(opt(rep, "serial") <- pairlist(a = 1L), "not supported")
 nanotesterr(opt(rep, "serial") <- list("wrong"), "Invalid argument")
-nanotestw(is.null(next_config()))
 
 nanotestaio(cs <- request(req$context, "test", send_mode = "serial", cv = cv, timeout = 500))
 if (later) nanotestaio(set_promise_context(cs, environment()))

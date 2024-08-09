@@ -1,5 +1,9 @@
 # nanonext 1.2.0.9000 (development)
 
+#### Updates
+
+* Deprecated and defunct function `next_config()` is removed.
+
 # nanonext 1.2.0
 
 #### New Features

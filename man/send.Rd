@@ -51,7 +51,7 @@ Send data over a connection (Socket, Context or Stream).
     perfect reproducibility within R. When receiving, the corresponding mode
     \sQuote{serial} should be used. Custom serialization and unserialization
     functions for reference objects may be enabled by the function
-    \code{\link{next_config}}.
+    \code{\link{serial_config}}.
 
     Mode \sQuote{raw} sends atomic vectors of any type as a raw byte vector,
     and must be used when interfacing with external applications or raw
