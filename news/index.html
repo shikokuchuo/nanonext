@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">nanonext</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1.9005</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -40,15 +40,26 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.1.1.9005" id="nanonext-1119005-development">nanonext 1.1.1.9005 (development)<a class="anchor" aria-label="anchor" href="#nanonext-1119005-development"></a></h2>
+<h2 class="pkg-version" data-toc-text="1.2.0" id="nanonext-120">nanonext 1.2.0<a class="anchor" aria-label="anchor" href="#nanonext-120"></a></h2>
 <div class="section level5">
-<h5 id="new-features-1-1-1-9005">New Features<a class="anchor" aria-label="anchor" href="#new-features-1-1-1-9005"></a></h5>
-<ul><li>Adds <code><a href="../reference/collect_pipe.html">collect_pipe()</a></code> for obtaining the underlying pipe from a ‘recvAio’. This affords more granular control of connections, with the ability to close individual pipes.</li>
+<h5 id="new-features-1-2-0">New Features<a class="anchor" aria-label="anchor" href="#new-features-1-2-0"></a></h5>
+<ul><li>Adds <code><a href="../reference/serial_config.html">serial_config()</a></code> to create configurations that can be set on Sockets to make use of custom serialization and unserialization functions for reference objects (plugs into the ‘refhook’ system of native R serialization).</li>
+<li>
+<code><a href="../reference/opt.html">'opt&lt;-'()</a></code> now accepts the special option ‘serial’ for Sockets, which takes a configuration returned from <code><a href="../reference/serial_config.html">serial_config()</a></code>.</li>
 <li>Adds the ‘poly’ protocol for one-to-one of many socket connections (NNG’s pair v1 polyamorous mode).</li>
+<li>Adds <code><a href="../reference/is_aio.html">is_ncurl_session()</a></code> as a validation function.</li>
+<li>Adds <code><a href="../reference/collect_pipe.html">collect_pipe()</a></code> for obtaining the underlying Pipe from a ‘recvAio’. This affords more granular control of connections, with the ability to close individual pipes.</li>
+<li>
+<code><a href="../reference/send_aio.html">send_aio()</a></code> now accept a Pipe to direct messages to a specific peer for supported protocols such as ‘poly’.</li>
 </ul></div>
 <div class="section level5">
-<h5 id="updates-1-1-1-9005">Updates<a class="anchor" aria-label="anchor" href="#updates-1-1-1-9005"></a></h5>
+<h5 id="updates-1-2-0">Updates<a class="anchor" aria-label="anchor" href="#updates-1-2-0"></a></h5>
 <ul><li>Send mode ‘next’ is folded into the default ‘serial’, with custom serialization functions applying automatically if they have been registered.</li>
+<li>The session-wide <code><a href="../reference/next_config.html">next_config()</a></code> is now deprecated and defunct, in favour of the new <code><a href="../reference/serial_config.html">serial_config()</a></code>.</li>
+<li>
+<code><a href="../reference/ncurl_session.html">ncurl_session()</a></code> now returns ‘errorValue’ 7 (Object closed) when attempting to transact over a closed session or closing a closed session, rather than throwing an error.</li>
+<li>
+<code><a href="../reference/collect_aio.html">collect_aio()</a></code> and <code><a href="../reference/collect_aio.html">collect_aio_()</a></code> no longer append empty names when acting on lists of Aios where there were none in the first place.</li>
 <li>Removes hard dependency on <code>stats</code> and <code>utils</code> base packages.</li>
 <li>Requires R &gt;= 3.6.</li>
 </ul></div>
