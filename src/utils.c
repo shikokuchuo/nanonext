@@ -474,6 +474,15 @@ SEXP rnng_stats_get(SEXP object, SEXP stat) {
 
 // serialization config --------------------------------------------------------
 
+SEXP rnng_next_config(SEXP refhook, SEXP klass, SEXP list, SEXP mark) {
+  special_bit = (uint8_t) NANO_INTEGER(mark);
+  (void) refhook;
+  (void) klass;
+  (void) list;
+  Rf_warning("'next_config()' is defunct, please use 'serial_config()' instead");
+  return R_NilValue;
+}
+
 SEXP rnng_serial_config(SEXP klass, SEXP sfunc, SEXP ufunc, SEXP vec) {
 
   SEXP out;

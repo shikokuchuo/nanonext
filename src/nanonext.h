@@ -263,6 +263,7 @@ SEXP rnng_listener_close(SEXP);
 SEXP rnng_listener_start(SEXP);
 SEXP rnng_messenger(SEXP);
 SEXP rnng_messenger_thread_create(SEXP);
+SEXP rnng_next_config(SEXP, SEXP, SEXP, SEXP);
 SEXP rnng_ncurl(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 SEXP rnng_ncurl_aio(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 SEXP rnng_ncurl_session(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
