@@ -269,7 +269,8 @@ void nano_serialize(nano_buf *buf, const SEXP object, SEXP hook) {
   R_Serialize(object, &output_stream);
 
   if (reg && TAG(hook) != R_NilValue) {
-    ((uint64_t *) (buf->buf))[1] = (uint64_t) buf->cur;
+    const uint64_t cursor = (uint64_t) buf->cur;
+    memcpy(buf->buf + 8, &cursor, sizeof(uint64_t));
     SEXP call, out;
 
     if (vec) {
@@ -339,7 +340,7 @@ SEXP nano_unserialize(unsigned char *buf, const size_t sz, SEXP hook) {
       cur = 0;
       goto resume;
     case 0x7: ;
-      offset = ((uint64_t *) (buf))[1];
+      memcpy(&offset, buf + 8, sizeof(uint64_t));
       if (offset) {
         SEXP raw, call;
         if (buf[1]) {
