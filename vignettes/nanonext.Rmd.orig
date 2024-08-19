@@ -2,7 +2,7 @@
 title: "nanonext - NNG Lightweight Messaging Library"
 vignette: >
   %\VignetteIndexEntry{nanonext - NNG Lightweight Messaging Library}
-  %\VignetteEngine{knitr::knitr}
+  %\VignetteEngine{litedown::vignette}
   %\VignetteEncoding{UTF-8}
 ---
 

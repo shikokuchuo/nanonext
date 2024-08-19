@@ -33,8 +33,7 @@ Depends:
 Enhances:
     promises
 Suggests: 
-    knitr,
     later,
-    markdown
-VignetteBuilder: knitr
+    litedown
+VignetteBuilder: litedown
 RoxygenNote: 7.3.2
