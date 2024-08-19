@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">nanonext</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.2.0.9000</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.2.1.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -40,9 +40,13 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.2.0.9000" id="nanonext-1209000-development">nanonext 1.2.0.9000 (development)<a class="anchor" aria-label="anchor" href="#nanonext-1209000-development"></a></h2>
+<h2 class="pkg-version" data-toc-text="1.2.1.9000" id="nanonext-1219000-development">nanonext 1.2.1.9000 (development)<a class="anchor" aria-label="anchor" href="#nanonext-1219000-development"></a></h2>
+<ul><li>Removes deprecated and defunct <code>next_config()</code>.</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="1.2.1" id="nanonext-121">nanonext 1.2.1<a class="anchor" aria-label="anchor" href="#nanonext-121"></a></h2><p class="text-muted">CRAN release: 2024-08-19</p>
 <div class="section level5">
-<h5 id="updates-1-2-0-9000">Updates<a class="anchor" aria-label="anchor" href="#updates-1-2-0-9000"></a></h5>
+<h5 id="updates-1-2-1">Updates<a class="anchor" aria-label="anchor" href="#updates-1-2-1"></a></h5>
 <ul><li>Re-optimizes custom serialization (whilst addressing CRAN clang-UBSAN checks).</li>
 </ul></div>
 </div>
@@ -62,7 +66,7 @@
 <div class="section level5">
 <h5 id="updates-1-2-0">Updates<a class="anchor" aria-label="anchor" href="#updates-1-2-0"></a></h5>
 <ul><li>Send mode ‘next’ is folded into the default ‘serial’, with custom serialization functions applying automatically if they have been registered.</li>
-<li>The session-wide <code><a href="../reference/next_config.html">next_config()</a></code> is now deprecated and defunct, in favour of the new <code><a href="../reference/serial_config.html">serial_config()</a></code>.</li>
+<li>The session-wide <code>next_config()</code> is now deprecated and defunct, in favour of the new <code><a href="../reference/serial_config.html">serial_config()</a></code>.</li>
 <li>
 <code><a href="../reference/ncurl_session.html">ncurl_session()</a></code> now returns ‘errorValue’ 7 (Object closed) when attempting to transact over a closed session or closing a closed session, rather than throwing an error.</li>
 <li>
@@ -154,7 +158,7 @@
 <div class="section level5">
 <h5 id="new-features-0-13-5-1">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-13-5-1"></a></h5>
 <ul><li>
-<code><a href="../reference/next_config.html">next_config()</a></code> gains argument ‘class’ and ‘vec’, enabling custom serialization for all reference object types supported by R serialization.</li>
+<code>next_config()</code> gains argument ‘class’ and ‘vec’, enabling custom serialization for all reference object types supported by R serialization.</li>
 <li>An integer file descriptor is appended to ‘nanoSockets’ as the attribute ‘fd’ - see updated documentation for <code><a href="../reference/socket.html">socket()</a></code>.</li>
 </ul></div>
 <div class="section level5">
@@ -203,7 +207,7 @@
 <li>
 <code><a href="../reference/random.html">random()</a></code> now explicitly limits argument ‘n’ to values between 0 and 1024.</li>
 <li>
-<code><a href="../reference/next_config.html">next_config()</a></code> now returns a pairlist (of the registered serialization functions) rather than a list (for efficiency).</li>
+<code>next_config()</code> now returns a pairlist (of the registered serialization functions) rather than a list (for efficiency).</li>
 <li>Using mode ‘next’, serialization functions with incorrect signatures are now simply ignored rather than raise errors.</li>
 <li>‘nanoStream’ objects simplified internally with updated attributes ‘mode’ and ‘state’.</li>
 <li>Deprecated function <code>.until()</code> is removed.</li>
@@ -224,7 +228,7 @@
 <div class="section level5">
 <h5 id="updates-0-11-0">Updates<a class="anchor" aria-label="anchor" href="#updates-0-11-0"></a></h5>
 <ul><li>
-<code><a href="../reference/next_config.html">next_config()</a></code> replaces <code>nextmode()</code> with the following improvements:
+<code>next_config()</code> replaces <code>nextmode()</code> with the following improvements:
 <ul><li>simplified ‘refhook’ argument takes a pair of serialization and unserialization functions as a list.</li>
 <li>registered ‘refhook’ functions apply to external pointer type objects only.</li>
 <li>no longer returns invisibly for easier confimation that the correct functions have been registered.</li>
