@@ -274,24 +274,6 @@ is_nul_byte <- function(x) .Call(rnng_is_nul_byte, x)
 #'
 status_code <- function(x) .Call(rnng_status_code, x)
 
-#' Configure Custom Serialization
-#'
-#' This function is defunct. Please refer to \link{serial_config} instead.
-#'
-#' @param refhook not used.
-#' @param class [default ""] not used.
-#' @param vec [default FALSE] not used.
-#' @param mark [default FALSE] (for advanced use only) logical value, whether to
-#'     mark serialized data with a special bit.
-#'
-#' @return NULL.
-#'
-#' @keywords internal
-#' @export
-#'
-next_config <- function(refhook = list(), class = "", vec = FALSE, mark = FALSE)
-  .Call(rnng_next_config, refhook, class, vec, mark)
-
 #' Create Serialization Configuration
 #'
 #' Returns a serialization configuration, which may be set on a Socket for

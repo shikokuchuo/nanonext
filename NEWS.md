@@ -1,3 +1,7 @@
+# nanonext 1.2.1.9000 (development)
+
+* Removes deprecated and defunct `next_config()`.
+
 # nanonext 1.2.1
 
 #### Updates
