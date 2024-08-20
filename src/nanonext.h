@@ -213,7 +213,7 @@ SEXP R_mkClosure(SEXP, SEXP, SEXP);
 void later2(void (*)(void *), void *);
 extern void (*eln2)(void (*)(void *), void *, double, int);
 void eln2dummy(void (*)(void *), void *, double, int);
-int nano_integer(SEXP);
+int nano_integer(const SEXP);
 SEXP mk_error(const int);
 SEXP mk_error_data(const int);
 SEXP rawToChar(const unsigned char *, const size_t);
@@ -224,7 +224,7 @@ void nano_encode(nano_buf *, const SEXP);
 int nano_encodes(const SEXP);
 int nano_matcharg(const SEXP);
 int nano_matchargs(const SEXP);
-SEXP nano_PreserveObject(SEXP);
+SEXP nano_PreserveObject(const SEXP);
 void nano_ReleaseObject(SEXP);
 
 SEXP rnng_advance_rng_state(void);

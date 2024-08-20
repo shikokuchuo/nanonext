@@ -180,17 +180,8 @@ void eln2dummy(void (*fun)(void *), void *data, double secs, int loop) {
   (void) loop;
 }
 
-inline int nano_integer(SEXP x) {
-  int out;
-  switch (TYPEOF(x)) {
-  case INTSXP:
-  case LGLSXP:
-    out = NANO_INTEGER(x);
-    break;
-  default:
-    out = Rf_asInteger(x);
-  }
-  return out;
+inline int nano_integer(const SEXP x) {
+  return (TYPEOF(x) == INTSXP || TYPEOF(x) == LGLSXP) ? NANO_INTEGER(x) : Rf_asInteger(x);
 }
 
 SEXP mk_error(const int xc) {
@@ -626,7 +617,7 @@ int nano_matchargs(const SEXP mode) {
 
 }
 
-SEXP nano_PreserveObject(SEXP x) {
+SEXP nano_PreserveObject(const SEXP x) {
 
   SEXP node = Rf_cons(nano_precious, CDR(nano_precious));
   SETCDR(nano_precious, node);
