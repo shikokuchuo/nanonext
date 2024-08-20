@@ -49,9 +49,7 @@ jobs:
           cache: false
           extra-packages: |
             any::rcmdcheck
-            any::testthat
-            any::knitr
-            any::markdown
+            any::litedown
           needs: check
 
       - uses: r-lib/actions/check-r-package@v2
