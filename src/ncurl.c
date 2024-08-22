@@ -80,7 +80,7 @@ static nano_buf nano_char_buf(const SEXP data) {
 
 static void haio_invoke_cb(void *arg) {
 
-  SEXP call, context, status, ctx = TAG((SEXP) arg);
+  SEXP call, context, status, prot = (SEXP) arg, ctx = TAG(prot);
   context = Rf_findVarInFrame(ctx, nano_ContextSymbol);
   if (context == R_UnboundValue) return;
   PROTECT(context);
@@ -88,6 +88,8 @@ static void haio_invoke_cb(void *arg) {
   PROTECT(call = Rf_lcons(nano_ResolveSymbol, Rf_cons(status, R_NilValue)));
   Rf_eval(call, ctx);
   UNPROTECT(2);
+  nano_ReleaseObject(prot);
+
 }
 
 static void haio_complete(void *arg) {
@@ -117,8 +119,6 @@ static void haio_finalizer(SEXP xptr) {
   nano_aio *xp = (nano_aio *) NANO_PTR(xptr);
   nano_handle *handle = (nano_handle *) xp->next;
   nng_aio_free(xp->aio);
-  if (xp->data != NULL)
-    nano_ReleaseObject((SEXP) xp->data);
   if (handle->cfg != NULL)
     nng_tls_config_free(handle->cfg);
   nng_http_res_free(handle->res);
