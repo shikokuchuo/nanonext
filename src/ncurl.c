@@ -82,7 +82,10 @@ static void haio_invoke_cb(void *arg) {
 
   SEXP call, context, status, prot = (SEXP) arg, ctx = TAG(prot);
   context = Rf_findVarInFrame(ctx, nano_ContextSymbol);
-  if (context == R_UnboundValue) return;
+  if (context == R_UnboundValue) {
+    nano_ReleaseObject(prot);
+    return;
+  }
   PROTECT(context);
   status = rnng_aio_http_status(context);
   PROTECT(call = Rf_lcons(nano_ResolveSymbol, Rf_cons(status, R_NilValue)));
