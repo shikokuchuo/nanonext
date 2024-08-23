@@ -121,6 +121,10 @@ typedef struct nano_handle_s {
   Rf_classgets(x, klass);                                      \
   SET_STRING_ELT(klass, 0, Rf_mkChar(cls1));                   \
   SET_STRING_ELT(klass, 1, Rf_mkChar(cls2))
+#define NANO_RELEASE_OBJECT(node)                              \
+  SET_TAG(node, R_NilValue);                                   \
+  SETCDR(CAR(node), CDR(node));                                \
+  SETCAR(CDR(node), CAR(node))
 
 typedef union nano_opt_u {
   char *str;
@@ -225,7 +229,6 @@ int nano_encodes(const SEXP);
 int nano_matcharg(const SEXP);
 int nano_matchargs(const SEXP);
 SEXP nano_PreserveObject(const SEXP);
-void nano_ReleaseObject(SEXP);
 
 SEXP rnng_advance_rng_state(void);
 SEXP rnng_aio_call(SEXP);

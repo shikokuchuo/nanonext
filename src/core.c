@@ -617,7 +617,7 @@ int nano_matchargs(const SEXP mode) {
 
 }
 
-SEXP nano_PreserveObject(const SEXP x) {
+inline SEXP nano_PreserveObject(const SEXP x) {
 
   SEXP node = Rf_cons(nano_precious, CDR(nano_precious));
   SETCDR(nano_precious, node);
@@ -625,12 +625,5 @@ SEXP nano_PreserveObject(const SEXP x) {
   SET_TAG(node, x);
 
   return node;
-
-}
-
-void nano_ReleaseObject(SEXP node) {
-
-  SETCDR(CAR(node), CDR(node));
-  SETCAR(CDR(node), CAR(node));
 
 }
