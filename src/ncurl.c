@@ -91,6 +91,7 @@ static void haio_invoke_cb(void *arg) {
   PROTECT(call = Rf_lcons(nano_ResolveSymbol, Rf_cons(status, R_NilValue)));
   Rf_eval(call, ctx);
   UNPROTECT(2);
+  // unreliable to release linked list node from later cb, just free the payload
   SET_TAG(node, R_NilValue);
 
 }
@@ -129,6 +130,9 @@ static void haio_finalizer(SEXP xptr) {
   nng_http_client_free(handle->cli);
   nng_url_free(handle->url);
   R_Free(handle);
+  // release linked list node if cb has already run
+  if (xp->data != NULL && TAG((SEXP) xp->data) == R_NilValue)
+    nano_ReleaseObject((SEXP) xp->data);
   R_Free(xp);
 
 }

@@ -34,6 +34,7 @@ static void raio_invoke_cb(void *arg) {
   PROTECT(call = Rf_lcons(nano_ResolveSymbol, Rf_cons(data, R_NilValue)));
   Rf_eval(call, ctx);
   UNPROTECT(2);
+  // unreliable to release linked list node from later cb, just free the payload
   SET_TAG(node, R_NilValue);
 }
 
@@ -204,6 +205,7 @@ static void request_finalizer(SEXP xptr) {
   nng_aio_free(xp->aio);
   if (xp->data != NULL)
     nng_msg_free((nng_msg *) xp->data);
+  // release linked list node if cb has already run
   if (saio->data != NULL && TAG((SEXP) saio->data) == R_NilValue)
     nano_ReleaseObject((SEXP) saio->data);
   R_Free(saio);
