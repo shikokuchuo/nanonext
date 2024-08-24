@@ -83,7 +83,7 @@ static void haio_invoke_cb(void *arg) {
   SEXP call, context, status, node = (SEXP) arg, ctx = TAG(node);
   context = Rf_findVarInFrame(ctx, nano_ContextSymbol);
   if (context == R_UnboundValue) {
-    NANO_RELEASE_OBJECT(node);
+    SET_TAG(node, R_NilValue);
     return;
   }
   PROTECT(context);
@@ -91,7 +91,7 @@ static void haio_invoke_cb(void *arg) {
   PROTECT(call = Rf_lcons(nano_ResolveSymbol, Rf_cons(status, R_NilValue)));
   Rf_eval(call, ctx);
   UNPROTECT(2);
-  NANO_RELEASE_OBJECT(node);
+  SET_TAG(node, R_NilValue);
 
 }
 

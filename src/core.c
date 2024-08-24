@@ -627,3 +627,10 @@ inline SEXP nano_PreserveObject(const SEXP x) {
   return node;
 
 }
+
+inline void nano_ReleaseObject(SEXP x) {
+
+  SETCDR(CAR(x), CDR(x));
+  SETCAR(CDR(x), CAR(x));
+
+}

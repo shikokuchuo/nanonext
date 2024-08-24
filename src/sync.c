@@ -26,7 +26,7 @@ static void raio_invoke_cb(void *arg) {
   SEXP call, context, data, node = (SEXP) arg, ctx = TAG(node);
   context = Rf_findVarInFrame(ctx, nano_ContextSymbol);
   if (context == R_UnboundValue) {
-    NANO_RELEASE_OBJECT(node);
+    SET_TAG(node, R_NilValue);
     return;
   }
   PROTECT(context);
@@ -34,7 +34,7 @@ static void raio_invoke_cb(void *arg) {
   PROTECT(call = Rf_lcons(nano_ResolveSymbol, Rf_cons(data, R_NilValue)));
   Rf_eval(call, ctx);
   UNPROTECT(2);
-  NANO_RELEASE_OBJECT(node);
+  SET_TAG(node, R_NilValue);
 }
 
 static void request_complete(void *arg) {
@@ -204,6 +204,8 @@ static void request_finalizer(SEXP xptr) {
   nng_aio_free(xp->aio);
   if (xp->data != NULL)
     nng_msg_free((nng_msg *) xp->data);
+  if (saio->data != NULL && TAG((SEXP) saio->data) == R_NilValue)
+    nano_ReleaseObject((SEXP) saio->data);
   R_Free(saio);
   R_Free(xp);
 
