@@ -1,4 +1,4 @@
-# nanonext 1.2.1.9005 (development)
+# nanonext 1.2.1.9006 (development)
 
 * Removes deprecated and defunct `next_config()`.
 
