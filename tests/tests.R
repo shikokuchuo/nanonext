@@ -454,7 +454,7 @@ nanotesterr(random(1025), "between 0 and 1024")
 nanotesterr(random(-1), "between 0 and 1024")
 nanotesterr(random("test"), "integer")
 nanotesterr(parse_url("tcp:/"), "argument")
-for (i in c(100:103, 200:208, 226, 300:308, 400:426, 428:431, 451, 500:511))
+for (i in c(100:103, 200:208, 226, 300:308, 400:426, 428:431, 451, 500:511, 600))
   nanotest(is.character(status_code(i)))
 
 s <- tryCatch(stream(dial = "wss://echo.websocket.events/", textframes = TRUE), error = function(e) NULL)

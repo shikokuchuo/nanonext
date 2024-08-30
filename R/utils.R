@@ -258,8 +258,8 @@ is_nul_byte <- function(x) .Call(rnng_is_nul_byte, x)
 #'
 #' Provides an explanation for HTTP response status codes (in the range 100 to
 #'     599). If the status code is not defined as per RFC 9110,
-#'     \sQuote{Non-standard Response} is returned, which may be a custom code
-#'     used by the server.
+#'     \sQuote{Unknown HTTP Status} is returned - this may be a custom code used
+#'     by the server.
 #'
 #' @param x numeric HTTP status code to translate.
 #'

@@ -806,7 +806,7 @@ SEXP rnng_status_code(SEXP x) {
   case 508: code = "Loop Detected"; break;
   case 510: code = "Not Extended"; break;
   case 511: code = "Network Authentication Required"; break;
-  default: code = "Non-standard Response"; break;
+  default: code = "Unknown HTTP Status"; break;
   }
   char out[strlen(code) + 7];
   snprintf(out, sizeof(out), "%d | %s", status, code);
