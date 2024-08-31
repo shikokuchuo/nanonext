@@ -21,23 +21,6 @@
 
 // aio completion callbacks ----------------------------------------------------
 
-static void raio_invoke_cb(void *arg) {
-
-  SEXP call, context, data, node = (SEXP) arg, ctx = TAG(node);
-  context = Rf_findVarInFrame(ctx, nano_ContextSymbol);
-  if (context == R_UnboundValue) {
-    SET_TAG(node, R_NilValue);
-    return;
-  }
-  PROTECT(context);
-  data = rnng_aio_get_msg(context);
-  PROTECT(call = Rf_lcons(nano_ResolveSymbol, Rf_cons(data, R_NilValue)));
-  Rf_eval(call, ctx);
-  UNPROTECT(2);
-  // unreliable to release linked list node from later cb, just free the payload
-  SET_TAG(node, R_NilValue);
-}
-
 static void request_complete(void *arg) {
 
   nano_aio *raio = (nano_aio *) arg;
@@ -536,10 +519,15 @@ SEXP rnng_set_promise_context(SEXP x, SEXP ctx) {
   switch (raio->type) {
   case REQAIO:
   case REQAIOS:
+  case RECVAIO:
+  case RECVAIOS:
+  case IOV_RECVAIO:
+  case IOV_RECVAIOS:
   case HTTP_AIO:
     raio->cb = nano_PreserveObject(ctx);
     break;
-  default:
+  case SENDAIO:
+  case IOV_SENDAIO:
     break;
   }
 

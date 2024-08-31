@@ -218,7 +218,7 @@ transact <- function(session) .Call(rnng_ncurl_transact, session)
 #'
 close.ncurlSession <- function(con, ...) invisible(.Call(rnng_ncurl_session_close, con))
 
-#' Make ncurl Promise
+#' Make ncurlAio Promise
 #'
 #' Creates a \sQuote{promise} from an \sQuote{ncurlAio} object.
 #'

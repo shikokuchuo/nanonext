@@ -2,7 +2,7 @@
 % Please edit documentation in R/ncurl.R
 \name{as.promise.ncurlAio}
 \alias{as.promise.ncurlAio}
-\title{Make ncurl Promise}
+\title{Make ncurlAio Promise}
 \usage{
 \method{as.promise}{ncurlAio}(x)
 }

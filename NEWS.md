@@ -1,4 +1,10 @@
-# nanonext 1.2.1.9006 (development)
+# nanonext 1.2.1.9007 (development)
+
+#### New Features
+
+* Adds 'recvAio' method for `promises::as.promise()` and `promises::is.promising()` to enable 'recvAio' promises.
+
+#### Updates
 
 * Removes deprecated and defunct `next_config()`.
 
