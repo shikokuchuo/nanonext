@@ -102,8 +102,8 @@ static void haio_complete(void *arg) {
   const int res = nng_aio_result(haio->aio);
   haio->result = res - !res;
 
-  if (haio->data != NULL)
-    later2(haio_invoke_cb, haio->data);
+  if (haio->cb != NULL)
+    later2(haio_invoke_cb, haio->cb);
 
 }
 
@@ -131,8 +131,8 @@ static void haio_finalizer(SEXP xptr) {
   nng_url_free(handle->url);
   R_Free(handle);
   // release linked list node if cb has already run
-  if (xp->data != NULL && TAG((SEXP) xp->data) == R_NilValue)
-    nano_ReleaseObject((SEXP) xp->data);
+  if (xp->cb != NULL && TAG((SEXP) xp->cb) == R_NilValue)
+    nano_ReleaseObject((SEXP) xp->cb);
   R_Free(xp);
 
 }
@@ -352,7 +352,7 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP dat
   haio->type = HTTP_AIO;
   haio->mode = (uint8_t) NANO_INTEGER(convert);
   haio->next = handle;
-  haio->data = NULL;
+  haio->cb = NULL;
   handle->cfg = NULL;
 
   if ((xc = nng_url_parse(&handle->url, httr)))

@@ -170,6 +170,7 @@ typedef enum nano_aio_typ {
 typedef struct nano_aio_s {
   nng_aio *aio;
   void *data;
+  void *cb;
   void *next;
   int result;
   uint8_t mode;
