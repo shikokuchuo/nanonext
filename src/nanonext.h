@@ -171,8 +171,8 @@ typedef struct nano_aio_s {
   nng_aio *aio;
   void *data;
   void *next;
-  int mode;
   int result;
+  uint8_t mode;
   nano_aio_typ type;
 } nano_aio;
 
@@ -219,7 +219,7 @@ SEXP mk_error_data(const int);
 SEXP rawToChar(const unsigned char *, const size_t);
 void nano_serialize(nano_buf *, const SEXP, SEXP);
 SEXP nano_unserialize(unsigned char *, const size_t, SEXP);
-SEXP nano_decode(unsigned char *, const size_t, const int, SEXP);
+SEXP nano_decode(unsigned char *, const size_t, const uint8_t, SEXP);
 void nano_encode(nano_buf *, const SEXP);
 int nano_encodes(const SEXP);
 int nano_matcharg(const SEXP);

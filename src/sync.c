@@ -481,7 +481,7 @@ SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeou
 
   raio = R_Calloc(1, nano_aio);
   raio->type = signal ? REQAIOS : REQAIO;
-  raio->mode = mod;
+  raio->mode = (uint8_t) mod;
   raio->next = saio;
 
   if ((xc = nng_aio_alloc(&raio->aio, signal ? request_complete_signal : drop ? request_complete_dropcon : request_complete, raio)))

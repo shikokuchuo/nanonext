@@ -399,7 +399,7 @@ SEXP nano_unserialize(unsigned char *buf, const size_t sz, SEXP hook) {
 
 }
 
-SEXP nano_decode(unsigned char *buf, const size_t sz, const int mod, SEXP hook) {
+SEXP nano_decode(unsigned char *buf, const size_t sz, const uint8_t mod, SEXP hook) {
 
   SEXP data;
   size_t size;

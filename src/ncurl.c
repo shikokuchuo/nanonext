@@ -350,7 +350,7 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP dat
   SEXP aio;
 
   haio->type = HTTP_AIO;
-  haio->mode = NANO_INTEGER(convert);
+  haio->mode = (uint8_t) NANO_INTEGER(convert);
   haio->next = handle;
   haio->data = NULL;
   handle->cfg = NULL;
@@ -564,7 +564,7 @@ SEXP rnng_ncurl_session(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP
   SEXP sess;
 
   haio->type = HTTP_AIO;
-  haio->mode = NANO_INTEGER(convert);
+  haio->mode = (uint8_t) NANO_INTEGER(convert);
   haio->next = handle;
   haio->data = NULL;
   handle->cfg = NULL;

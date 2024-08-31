@@ -565,7 +565,7 @@ SEXP rnng_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP cvar, SEXP bytes, SEX
     raio = R_Calloc(1, nano_aio);
     raio->next = ncv;
     raio->type = signal ? RECVAIOS : RECVAIO;
-    raio->mode = mod;
+    raio->mode = (uint8_t) mod;
 
     if ((xc = nng_aio_alloc(&raio->aio, signal ? raio_complete_signal : raio_complete, raio)))
       goto exitlevel1;
