@@ -62,6 +62,9 @@ static void raio_complete(void *arg) {
 
   raio->result = res - !res;
 
+  if (raio->cb != NULL)
+    later2(raio_invoke_cb, raio->cb);
+
 }
 
 static void raio_complete_signal(void *arg) {
@@ -81,6 +84,9 @@ static void raio_complete_signal(void *arg) {
   nng_cv_wake(cv);
   nng_mtx_unlock(mtx);
 
+  if (raio->cb != NULL)
+    later2(raio_invoke_cb, raio->cb);
+
 }
 
 static void iraio_complete(void *arg) {
@@ -88,6 +94,9 @@ static void iraio_complete(void *arg) {
   nano_aio *iaio = (nano_aio *) arg;
   const int res = nng_aio_result(iaio->aio);
   iaio->result = res - !res;
+
+  if (iaio->cb != NULL)
+    later2(raio_invoke_cb, iaio->cb);
 
 }
 
@@ -105,6 +114,9 @@ static void iraio_complete_signal(void *arg) {
   ncv->condition++;
   nng_cv_wake(cv);
   nng_mtx_unlock(mtx);
+
+  if (iaio->cb != NULL)
+    later2(raio_invoke_cb, iaio->cb);
 
 }
 
@@ -126,6 +138,9 @@ static void raio_finalizer(SEXP xptr) {
   nng_aio_free(xp->aio);
   if (xp->data != NULL)
     nng_msg_free((nng_msg *) xp->data);
+  // release linked list node if cb has already run
+  if (xp->cb != NULL && TAG((SEXP) xp->cb) == R_NilValue)
+    nano_ReleaseObject((SEXP) xp->cb);
   R_Free(xp);
 
 }
@@ -137,6 +152,9 @@ static void iaio_finalizer(SEXP xptr) {
   nng_aio_free(xp->aio);
   if (xp->data != NULL)
     R_Free(xp->data);
+  // release linked list node if cb has already run
+  if (xp->cb != NULL && TAG((SEXP) xp->cb) == R_NilValue)
+    nano_ReleaseObject((SEXP) xp->cb);
   R_Free(xp);
 
 }
@@ -565,7 +583,8 @@ SEXP rnng_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP cvar, SEXP bytes, SEX
     raio = R_Calloc(1, nano_aio);
     raio->next = ncv;
     raio->type = signal ? RECVAIOS : RECVAIO;
-    raio->mode = mod;
+    raio->mode = (uint8_t) mod;
+    raio->cb = NULL;
 
     if ((xc = nng_aio_alloc(&raio->aio, signal ? raio_complete_signal : raio_complete, raio)))
       goto exitlevel1;
@@ -587,7 +606,8 @@ SEXP rnng_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP cvar, SEXP bytes, SEX
     raio = R_Calloc(1, nano_aio);
     raio->next = ncv;
     raio->type = signal ? IOV_RECVAIOS : IOV_RECVAIO;
-    raio->mode = mod;
+    raio->mode = (uint8_t) mod;
+    raio->cb = NULL;
     raio->data = R_Calloc(xlen, unsigned char);
     iov.iov_len = xlen;
     iov.iov_buf = raio->data;

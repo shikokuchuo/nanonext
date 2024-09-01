@@ -102,8 +102,8 @@ static void haio_complete(void *arg) {
   const int res = nng_aio_result(haio->aio);
   haio->result = res - !res;
 
-  if (haio->data != NULL)
-    later2(haio_invoke_cb, haio->data);
+  if (haio->cb != NULL)
+    later2(haio_invoke_cb, haio->cb);
 
 }
 
@@ -131,8 +131,8 @@ static void haio_finalizer(SEXP xptr) {
   nng_url_free(handle->url);
   R_Free(handle);
   // release linked list node if cb has already run
-  if (xp->data != NULL && TAG((SEXP) xp->data) == R_NilValue)
-    nano_ReleaseObject((SEXP) xp->data);
+  if (xp->cb != NULL && TAG((SEXP) xp->cb) == R_NilValue)
+    nano_ReleaseObject((SEXP) xp->cb);
   R_Free(xp);
 
 }
@@ -350,9 +350,9 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP dat
   SEXP aio;
 
   haio->type = HTTP_AIO;
-  haio->mode = NANO_INTEGER(convert);
+  haio->mode = (uint8_t) NANO_INTEGER(convert);
   haio->next = handle;
-  haio->data = NULL;
+  haio->cb = NULL;
   handle->cfg = NULL;
 
   if ((xc = nng_url_parse(&handle->url, httr)))
@@ -564,7 +564,7 @@ SEXP rnng_ncurl_session(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP
   SEXP sess;
 
   haio->type = HTTP_AIO;
-  haio->mode = NANO_INTEGER(convert);
+  haio->mode = (uint8_t) NANO_INTEGER(convert);
   haio->next = handle;
   haio->data = NULL;
   handle->cfg = NULL;
@@ -733,84 +733,5 @@ SEXP rnng_ncurl_session_close(SEXP session) {
   Rf_setAttrib(session, nano_StateSymbol, R_MissingArg);
 
   return nano_success;
-
-}
-
-// HTTP utils ------------------------------------------------------------------
-
-SEXP rnng_status_code(SEXP x) {
-
-  const int status = nano_integer(x);
-  char *code;
-  switch (status) {
-  case 100: code = "Continue"; break;
-  case 101: code = "Switching Protocols"; break;
-  case 102: code = "Processing"; break;
-  case 103: code = "Early Hints"; break;
-  case 200: code = "OK"; break;
-  case 201: code = "Created"; break;
-  case 202: code = "Accepted"; break;
-  case 203: code = "Non-Authoritative Information"; break;
-  case 204: code = "No Content"; break;
-  case 205: code = "Reset Content"; break;
-  case 206: code = "Partial Content"; break;
-  case 207: code = "Multi-Status"; break;
-  case 208: code = "Already Reported"; break;
-  case 226: code = "IM Used"; break;
-  case 300: code = "Multiple Choices"; break;
-  case 301: code = "Moved Permanently"; break;
-  case 302: code = "Found"; break;
-  case 303: code = "See Other"; break;
-  case 304: code = "Not Modified"; break;
-  case 305: code = "Use Proxy"; break;
-  case 306: code = "Switch Proxy"; break;
-  case 307: code = "Temporary Redirect"; break;
-  case 308: code = "Permanent Redirect"; break;
-  case 400: code = "Bad Request"; break;
-  case 401: code = "Unauthorized"; break;
-  case 402: code = "Payment Required"; break;
-  case 403: code = "Forbidden"; break;
-  case 404: code = "Not Found"; break;
-  case 405: code = "Method Not Allowed"; break;
-  case 406: code = "Not Acceptable"; break;
-  case 407: code = "Proxy Authentication Required"; break;
-  case 408: code = "Request Timeout"; break;
-  case 409: code = "Conflict"; break;
-  case 410: code = "Gone"; break;
-  case 411: code = "Length Required"; break;
-  case 412: code = "Precondition Failed"; break;
-  case 413: code = "Payload Too Large"; break;
-  case 414: code = "URI Too Long"; break;
-  case 415: code = "Unsupported Media Type"; break;
-  case 416: code = "Range Not Satisfiable"; break;
-  case 417: code = "Expectation Failed"; break;
-  case 418: code = "I'm a teapot"; break;
-  case 421: code = "Misdirected Request"; break;
-  case 422: code = "Unprocessable Entity"; break;
-  case 423: code = "Locked"; break;
-  case 424: code = "Failed Dependency"; break;
-  case 425: code = "Too Early"; break;
-  case 426: code = "Upgrade Required"; break;
-  case 428: code = "Precondition Required"; break;
-  case 429: code = "Too Many Requests"; break;
-  case 431: code = "Request Header Fields Too Large"; break;
-  case 451: code = "Unavailable For Legal Reasons"; break;
-  case 500: code = "Internal Server Error"; break;
-  case 501: code = "Not Implemented"; break;
-  case 502: code = "Bad Gateway"; break;
-  case 503: code = "Service Unavailable"; break;
-  case 504: code = "Gateway Timeout"; break;
-  case 505: code = "HTTP Version Not Supported"; break;
-  case 506: code = "Variant Also Negotiates"; break;
-  case 507: code = "Insufficient Storage"; break;
-  case 508: code = "Loop Detected"; break;
-  case 510: code = "Not Extended"; break;
-  case 511: code = "Network Authentication Required"; break;
-  default: code = "Unknown HTTP Status"; break;
-  }
-  char out[strlen(code) + 7];
-  snprintf(out, sizeof(out), "%d | %s", status, code);
-
-  return Rf_mkString(out);
 
 }
