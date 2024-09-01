@@ -214,7 +214,6 @@ nanotestaio(r <- send_aio(if (is_nano(p)) p else rep, "", timeout = 500))
 nanotesterr(collect_pipe(r), "valid")
 nanotest(req$recv(mode = 8L, block = 500)[4L] == 1L)
 nanotest(!.mark(FALSE))
-if (later) nanotestaio(set_promise_context(r, environment()))
 
 nanotestnano(ctx <- context(rep))
 nanotestp(ctx)
@@ -276,7 +275,6 @@ nanotesterr(opt(rep, "serial") <- pairlist(a = 1L), "not supported")
 nanotesterr(opt(rep, "serial") <- list("wrong"), "Invalid argument")
 
 nanotestaio(cs <- request(req$context, "test", send_mode = "serial", cv = cv, timeout = 500))
-if (later) nanotestaio(set_promise_context(cs, environment()))
 nanotestnn(cs$data)
 nanotest(typeof(ctxn <- .context(rep)) == "externalptr")
 nanotestaio(cr <- recv_aio(ctxn, cv = cv, timeout = 500))
@@ -572,8 +570,6 @@ nanotesterr(collect_aio_(list("a")), "object is not an Aio or list of Aios")
 nanotesterr(collect_aio(list(fakesock)), "object is not an Aio or list of Aios")
 nanotestn(stop_aio("a"))
 nanotestn(stop_aio(list("a")))
-nanotest(is.environment(set_promise_context(new.env(), NULL)))
-nanotest(is.environment(set_promise_context(new.env(), new.env())))
 
 pem <- "-----BEGIN CERTIFICATE----- -----END CERTIFICATE-----"
 test_tls <- function(pem) {

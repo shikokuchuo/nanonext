@@ -251,22 +251,3 @@ request <- function(context,
                     timeout = NULL,
                     cv = NULL)
   data <- .Call(rnng_request, context, data, send_mode, recv_mode, timeout, cv, environment())
-
-#' Set Promise Context
-#'
-#' If called from an appropriate context, creates an event-driven promise that
-#'     will resolve asynchronously when the request is complete.
-#'
-#' @param x a 'recvAio' object returned by \code{\link{request}}.
-#' @param ctx the context environment.
-#'
-#' @details The object passed as \sQuote{x} is returned regardless of whether
-#'     the promise context was set successfully or not. If successful,
-#'     \sQuote{x} is modified in place with the promise context.
-#'
-#' @return The object \sQuote{x}.
-#'
-#' @keywords internal
-#' @export
-#'
-set_promise_context <- function(x, ctx) .Call(rnng_set_promise_context, x, ctx)

@@ -499,9 +499,9 @@ SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeou
 
 }
 
-SEXP rnng_set_promise_context(SEXP x, SEXP ctx) {
+SEXP rnng_create_promise(SEXP x, SEXP ctx) {
 
-  if (TYPEOF(x) != ENVSXP || TYPEOF(ctx) != ENVSXP)
+  if (TYPEOF(x) != ENVSXP)
     return x;
 
   SEXP aio = Rf_findVarInFrame(x, nano_AioSymbol);
