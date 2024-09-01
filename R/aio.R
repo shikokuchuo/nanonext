@@ -338,7 +338,7 @@ unresolved <- function(x) .Call(rnng_unresolved, x)
 #'     returned by a signalling function, in which case \code{\link{unresolved}}
 #'     must be used in all cases.
 #'
-#' @keywords internal
+#' @noRd
 #' @export
 #'
 .unresolved <- function(x) .Call(rnng_unresolved2, x)
@@ -372,7 +372,7 @@ as.promise.recvAio <- function(x) {
       promise <- promises::then(
         promises::promise(
           function(resolve, reject)
-            context <- set_promise_context(x, environment())
+            .promise(x, environment())
         ),
         onFulfilled = function(value)
           if (is_error_value(value)) stop(nng_error(value)) else value
@@ -396,3 +396,20 @@ as.promise.recvAio <- function(x) {
 #' @exportS3Method promises::is.promising
 #'
 is.promising.recvAio <- function(x) TRUE
+
+#' Create Promise
+#'
+#' Internal package function.
+#'
+#' @param x a \sQuote{recvAio} or \sQuote{ncurlAio} object.
+#' @param ctx the return value of \sQuote{environment()}.
+#'
+#' @details If successful, both \sQuote{x} and \sQuote{ctx} are preserved and
+#'     accessible from the promise callback.
+#'
+#' @return NULL.
+#'
+#' @noRd
+#' @export
+#'
+.promise <- function(x, ctx) .Call(rnng_create_promise, x, ctx)

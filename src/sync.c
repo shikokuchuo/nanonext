@@ -496,14 +496,14 @@ SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeou
 
 }
 
-SEXP rnng_set_promise_context(SEXP x, SEXP ctx) {
+SEXP rnng_create_promise(SEXP x, SEXP ctx) {
 
-  if (TYPEOF(x) != ENVSXP || TYPEOF(ctx) != ENVSXP)
-    return x;
+  if (TYPEOF(x) != ENVSXP)
+    return R_NilValue;
 
   SEXP aio = Rf_findVarInFrame(x, nano_AioSymbol);
   if (NANO_TAG(aio) != nano_AioSymbol)
-    return x;
+    return R_NilValue;
 
   nano_aio *raio = (nano_aio *) NANO_PTR(aio);
 
@@ -525,13 +525,14 @@ SEXP rnng_set_promise_context(SEXP x, SEXP ctx) {
   case IOV_RECVAIOS:
   case HTTP_AIO:
     raio->cb = nano_PreserveObject(ctx);
+    SET_TAG(ctx, x);
     break;
   case SENDAIO:
   case IOV_SENDAIO:
     break;
   }
 
-  return x;
+  return R_NilValue;
 
 }
 
