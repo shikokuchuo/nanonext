@@ -157,18 +157,6 @@ void socket_finalizer(SEXP xptr) {
 
 }
 
-#if R_VERSION < R_Version(4, 5, 0)
-
-inline SEXP R_mkClosure(SEXP formals, SEXP body, SEXP env) {
-  SEXP fun = Rf_allocSExp(CLOSXP);
-  SET_FORMALS(fun, formals);
-  SET_BODY(fun, body);
-  SET_CLOENV(fun, env);
-  return fun;
-}
-
-#endif
-
 void later2(void (*fun)(void *), void *data) {
   eln2(fun, data, 0, 0);
 }
