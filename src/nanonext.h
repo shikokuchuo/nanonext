@@ -93,6 +93,9 @@ typedef struct nano_handle_s {
 #define NANO_PROT(x) CDR(x)
 #define NANO_SET_TAG(x, v) SET_TAG(x, v)
 #define NANO_SET_PROT(x, v) SETCDR(x, v)
+#define NANO_SET_FORMALS(x, v) SETCAR(x, v)
+#define NANO_SET_BODY(x, v) SETCDR(x, v)
+#define NANO_SET_CLOENV(x, v) SET_TAG(x, v)
 #define NANO_DATAPTR(x) (void *) DATAPTR_RO(x)
 #define NANO_VECTOR(x) ((const SEXP *) DATAPTR_RO(x))
 #define NANO_STRING(x) CHAR(*((const SEXP *) DATAPTR_RO(x)))
@@ -210,7 +213,6 @@ typedef struct nano_buf_s {
 void dialer_finalizer(SEXP);
 void listener_finalizer(SEXP);
 void socket_finalizer(SEXP);
-SEXP R_mkClosure(SEXP, SEXP, SEXP);
 void later2(void (*)(void *), void *);
 extern void (*eln2)(void (*)(void *), void *, double, int);
 void eln2dummy(void (*)(void *), void *, double, int);
