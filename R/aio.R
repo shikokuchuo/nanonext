@@ -372,7 +372,7 @@ as.promise.recvAio <- function(x) {
       promise <- promises::then(
         promises::promise(
           function(resolve, reject)
-            context <- .promise(x, environment())
+            .promise(x, environment())
         ),
         onFulfilled = function(value)
           if (is_error_value(value)) stop(nng_error(value)) else value
@@ -407,7 +407,7 @@ is.promising.recvAio <- function(x) TRUE
 #' @details If successful, both \sQuote{x} and \sQuote{ctx} are preserved and
 #'     accessible from the promise callback.
 #'
-#' @return The object \sQuote{x}.
+#' @return NULL.
 #'
 #' @noRd
 #' @export
