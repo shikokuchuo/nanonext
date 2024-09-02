@@ -211,6 +211,7 @@ nanotestp(p <- tryCatch(collect_pipe(r), error = function(e) NULL))
 if (!is.null(p)) nanotest(is_nano(p))
 nanotest(.mark())
 nanotestaio(r <- send_aio(if (is_nano(p)) p else rep, "", timeout = 500))
+if (later) nanotestn(.promise(r, new.env()))
 nanotesterr(collect_pipe(r), "valid")
 nanotest(req$recv(mode = 8L, block = 500)[4L] == 1L)
 nanotest(!.mark(FALSE))
@@ -570,6 +571,8 @@ nanotesterr(collect_aio_(list("a")), "object is not an Aio or list of Aios")
 nanotesterr(collect_aio(list(fakesock)), "object is not an Aio or list of Aios")
 nanotestn(stop_aio("a"))
 nanotestn(stop_aio(list("a")))
+nanotestn(.promise(NULL, new.env()))
+nanotestn(.promise(new.env(), new.env()))
 
 pem <- "-----BEGIN CERTIFICATE----- -----END CERTIFICATE-----"
 test_tls <- function(pem) {
