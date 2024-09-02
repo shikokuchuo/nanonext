@@ -329,7 +329,7 @@ serial_config <- function(class, sfunc, ufunc, vec = FALSE)
 #' .mark()
 #' .mark(FALSE)
 #'
-#' @noRd
+#' @keywords internal
 #' @export
 #'
 .mark <- function(x = TRUE) .Call(rnng_set_marker, x)
@@ -345,7 +345,7 @@ serial_config <- function(class, sfunc, ufunc, vec = FALSE)
 #' invisible(.advance())
 #' .Random.seed
 #'
-#' @noRd
+#' @keywords internal
 #' @export
 #'
 .advance <- function() .Call(rnng_advance_rng_state)

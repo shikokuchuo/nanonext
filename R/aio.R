@@ -338,7 +338,7 @@ unresolved <- function(x) .Call(rnng_unresolved, x)
 #'     returned by a signalling function, in which case \code{\link{unresolved}}
 #'     must be used in all cases.
 #'
-#' @noRd
+#' @keywords internal
 #' @export
 #'
 .unresolved <- function(x) .Call(rnng_unresolved2, x)
@@ -409,7 +409,7 @@ is.promising.recvAio <- function(x) TRUE
 #'
 #' @return NULL.
 #'
-#' @noRd
+#' @keywords internal
 #' @export
 #'
 .promise <- function(x, ctx) .Call(rnng_create_promise, x, ctx)
