@@ -326,7 +326,7 @@ unlock <- function(socket) invisible(.Call(rnng_socket_unlock, socket))
 #' @keywords internal
 #' @export
 #'
-dispatcher_socket <- function(cv, n, host, url, tls = NULL)
+.dispatcher <- function(cv, n, host, url, tls = NULL)
   .Call(rnng_dispatcher_socket, cv, n, host, url, tls)
 
 #' Condition Variable Flag Value
@@ -340,4 +340,4 @@ dispatcher_socket <- function(cv, n, host, url, tls = NULL)
 #' @keywords internal
 #' @export
 #'
-cv_flag <- function(cv) .Call(rnng_cv_flag, cv)
+.cv_flag <- function(cv) .Call(rnng_cv_flag, cv)

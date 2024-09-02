@@ -669,13 +669,14 @@ SEXP rnng_dispatcher_socket(SEXP cv, SEXP n, SEXP host, SEXP url, SEXP tls) {
   NANO_SET_PROT(cv, xptr);
   R_RegisterCFinalizerEx(xptr, thread_disp_finalizer, TRUE);
 
-  PROTECT(list = R_MakeExternalPtr(hl, nano_ListenerSymbol, R_NilValue));
-  R_RegisterCFinalizerEx(list, listener_finalizer, TRUE);
-
-  PROTECT(sock = R_MakeExternalPtr(hsock, nano_SocketSymbol, list));
+  PROTECT(sock = R_MakeExternalPtr(hsock, nano_SocketSymbol, R_NilValue));
   R_RegisterCFinalizerEx(sock, socket_finalizer, TRUE);
 
-  UNPROTECT(2);
+  list = R_MakeExternalPtr(hl, nano_ListenerSymbol, R_NilValue);
+  Rf_setAttrib(sock, nano_ListenerSymbol, list);
+  R_RegisterCFinalizerEx(list, listener_finalizer, TRUE);
+
+  UNPROTECT(1);
   return sock;
 
   exitlevel2:
@@ -685,20 +686,5 @@ SEXP rnng_dispatcher_socket(SEXP cv, SEXP n, SEXP host, SEXP url, SEXP tls) {
   R_Free(hsock);
   R_Free(disp);
   ERROR_OUT(xc);
-
-}
-
-SEXP rnng_cv_flag(SEXP cvar) {
-
-  if (NANO_TAG(cvar) != nano_CvSymbol)
-    Rf_error("'cv' is not a valid Condition Variable");
-  nano_cv *ncv = (nano_cv *) NANO_PTR(cvar);
-  nng_mtx *mtx = ncv->mtx;
-  int flag;
-  nng_mtx_lock(mtx);
-  flag = ncv->flag;
-  nng_mtx_unlock(mtx);
-
-  return Rf_ScalarInteger(flag);
 
 }
