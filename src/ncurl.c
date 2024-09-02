@@ -80,13 +80,11 @@ static nano_buf nano_char_buf(const SEXP data) {
 
 static void haio_invoke_cb(void *arg) {
 
-  SEXP call, context, status, node = (SEXP) arg, ctx = TAG(node);
-  context = Rf_findVarInFrame(ctx, nano_ContextSymbol);
-  PROTECT(context);
-  status = rnng_aio_http_status(context);
+  SEXP call, status, node = (SEXP) arg, x = TAG(node);
+  status = rnng_aio_http_status(x);
   PROTECT(call = Rf_lcons(nano_ResolveSymbol, Rf_cons(status, R_NilValue)));
-  Rf_eval(call, ctx);
-  UNPROTECT(2);
+  Rf_eval(call, ENCLOS(x));
+  UNPROTECT(1);
   // unreliable to release linked list node from later cb, just free the payload
   SET_TAG(node, R_NilValue);
 

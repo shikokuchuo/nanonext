@@ -247,7 +247,7 @@ as.promise.ncurlAio <- function(x) {
       promise <- promises::then(
         promises::promise(
           function(resolve, reject)
-            context <- .promise(x, environment())
+            .promise(x, environment())
         ),
         onFulfilled = function(value)
           if (value != 200L)

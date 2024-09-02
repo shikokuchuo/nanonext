@@ -625,13 +625,11 @@ inline void nano_ReleaseObject(SEXP x) {
 
 void raio_invoke_cb(void *arg) {
 
-  SEXP call, context, data, node = (SEXP) arg, ctx = TAG(node);
-  context = Rf_findVarInFrame(ctx, nano_ContextSymbol);
-  PROTECT(context);
-  data = rnng_aio_get_msg(context);
+  SEXP call, data, node = (SEXP) arg, x = TAG(node);
+  data = rnng_aio_get_msg(x);
   PROTECT(call = Rf_lcons(nano_ResolveSymbol, Rf_cons(data, R_NilValue)));
-  Rf_eval(call, ctx);
-  UNPROTECT(2);
+  Rf_eval(call, ENCLOS(x));
+  UNPROTECT(1);
   // unreliable to release linked list node from later cb, just free the payload
   SET_TAG(node, R_NilValue);
 }

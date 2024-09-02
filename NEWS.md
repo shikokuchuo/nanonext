@@ -1,4 +1,4 @@
-# nanonext 1.2.1.9008 (development)
+# nanonext 1.2.1.9009 (development)
 
 #### New Features
 
@@ -7,6 +7,7 @@
 #### Updates
 
 * Removes deprecated and defunct `next_config()`.
+* Performance enhancements for `promises::as.promise()` methods.
 
 # nanonext 1.2.1
 
