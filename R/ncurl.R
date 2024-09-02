@@ -271,3 +271,46 @@ as.promise.ncurlAio <- function(x) {
 #' @exportS3Method promises::is.promising
 #'
 is.promising.ncurlAio <- function(x) TRUE
+
+#' Start REST Server
+#'
+#' Creates an instance of an HTTP REST server which evaluates R expressions sent
+#'     to it [EXPERIMENTAL]. As arbitrary R expressions are evaluated, this
+#'     should only be deployed on the local machine (using the 127.0.0.1
+#'     loopback address) in a trusted environment.
+#'
+#' @param url full http address including hostname, port and path at which to
+#'     host the server.
+#'
+#' @details Query the API with an HTTP client using the \sQuote{POST} method,
+#'     with the request data being the R expression as a text string. The
+#'     received response body will consist of the serialized evaluation result.
+#'     Unserialize to return an R object.
+#'
+#'     Use only in a new session. Use \sQuote{ctrl + \\} to forcibly quit
+#'     when finished as the function blocks with no means of interruption.
+#'
+#'     Currently still experimental as the server lacks error handling. Sending
+#'     an invalid R expression will cause the server to exit.
+#'
+#' @return This function never returns.
+#'
+#' @examples
+#' if (interactive()) {
+#'
+#' # run in a new session:
+#' # nanonext::server()
+#'
+#' res <- ncurl("http://127.0.0.1:5555/api/rest",
+#'              convert = FALSE,
+#'              method = "POST",
+#'              data = "Sys.time()")
+#'
+#' if (!is_error_value(res$data)) unserialize(res$data)
+#'
+#' }
+#'
+#' @export
+#'
+server <- function(url = "http://127.0.0.1:5555/api/rest")
+  .Call(rnng_rest_server, url)

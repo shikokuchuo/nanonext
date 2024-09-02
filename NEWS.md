@@ -4,6 +4,7 @@
 
 * Adds support for threaded dispatcher in `mirai`.
 * Adds 'recvAio' method for `promises::as.promise()` and `promises::is.promising()` to enable 'recvAio' promises.
+* Adds `server()`, an HTTP REST server for evaluation of R expressions (experimental).
 
 #### Updates
 

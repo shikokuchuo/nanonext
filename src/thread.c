@@ -25,7 +25,8 @@
 // # nocov start
 // tested interactively
 
-static void nano_printf(const int err, const char *fmt, ...) {
+void nano_printf(const int err, const char *fmt, ...) {
+
 
   char buf[NANONEXT_INIT_BUFSIZE];
   va_list arg_ptr;

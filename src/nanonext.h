@@ -294,6 +294,7 @@ int nano_matchargs(const SEXP);
 
 void pipe_cb_signal(nng_pipe, nng_pipe_ev, void *);
 void tls_finalizer(SEXP);
+void nano_printf(const int, const char *, ...);
 
 SEXP rnng_advance_rng_state(void);
 SEXP rnng_aio_call(SEXP);
@@ -347,6 +348,7 @@ SEXP rnng_reap(SEXP);
 SEXP rnng_recv(SEXP, SEXP, SEXP, SEXP);
 SEXP rnng_recv_aio(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 SEXP rnng_request(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
+SEXP rnng_rest_server(SEXP);
 SEXP rnng_send(SEXP, SEXP, SEXP, SEXP);
 SEXP rnng_send_aio(SEXP, SEXP, SEXP, SEXP, SEXP);
 SEXP rnng_serial_config(SEXP, SEXP, SEXP, SEXP);
