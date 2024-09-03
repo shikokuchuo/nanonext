@@ -20,14 +20,10 @@
 
 // internals -------------------------------------------------------------------
 
+SEXP nano_eval_res;
 
-static SEXP eval_safe (void *call) {
-  return Rf_eval((SEXP) call, R_GlobalEnv);
-}
-
-static void rl_reset(void *data, Rboolean jump) {
-  if (jump)
-    SET_TAG((SEXP) data, R_NilValue);
+static void eval_safe (void *call) {
+  nano_eval_res = Rf_eval((SEXP) call, R_GlobalEnv);
 }
 
 static void nano_write_bytes(R_outpstream_t stream, void *src, int len) {
@@ -250,22 +246,23 @@ void nano_serialize(nano_buf *buf, const SEXP object, SEXP hook) {
   if (reg && TAG(hook) != R_NilValue) {
     const uint64_t cursor = (uint64_t) buf->cur;
     memcpy(buf->buf + 4, &cursor, sizeof(uint64_t));
-    SEXP call, out;
+    SEXP call;
 
     if (vec) {
 
       PROTECT(call = Rf_lcons(CADR(hook), Rf_cons(TAG(hook), R_NilValue)));
-      PROTECT(out = R_UnwindProtect(eval_safe, call, rl_reset, hook, NULL));
-      if (TYPEOF(out) == RAWSXP) {
-        R_xlen_t xlen = XLENGTH(out);
+      nano_eval_res = R_NilValue;
+      R_ToplevelExec(eval_safe, (void *) call);
+      UNPROTECT(1);
+      if (TYPEOF(nano_eval_res) == RAWSXP) {
+        R_xlen_t xlen = XLENGTH(nano_eval_res);
         if (buf->cur + xlen > buf->len) {
           buf->len = buf->cur + xlen;
           buf->buf = R_Realloc(buf->buf, buf->len, unsigned char);
         }
-        memcpy(buf->buf + buf->cur, DATAPTR_RO(out), xlen);
+        memcpy(buf->buf + buf->cur, DATAPTR_RO(nano_eval_res), xlen);
         buf->cur += xlen;
       }
-      UNPROTECT(2);
 
     } else {
 
@@ -281,19 +278,20 @@ void nano_serialize(nano_buf *buf, const SEXP object, SEXP hook) {
 
       for (R_xlen_t i = 0; i < llen; i++) {
         PROTECT(call = Rf_lcons(func, Rf_cons(NANO_VECTOR(refList)[i], R_NilValue)));
-        PROTECT(out = R_UnwindProtect(eval_safe, call, rl_reset, hook, NULL));
-        if (TYPEOF(out) == RAWSXP) {
-          R_xlen_t xlen = XLENGTH(out);
+        nano_eval_res = R_NilValue;
+        R_ToplevelExec(eval_safe, (void *) call);
+        UNPROTECT(1);
+        if (TYPEOF(nano_eval_res) == RAWSXP) {
+          R_xlen_t xlen = XLENGTH(nano_eval_res);
           if (buf->cur + xlen + sizeof(R_xlen_t) > buf->len) {
             buf->len = buf->cur + xlen + sizeof(R_xlen_t);
             buf->buf = R_Realloc(buf->buf, buf->len, unsigned char);
           }
           memcpy(buf->buf + buf->cur, &xlen, sizeof(R_xlen_t));
           buf->cur += sizeof(R_xlen_t);
-          memcpy(buf->buf + buf->cur, DATAPTR_RO(out), xlen);
+          memcpy(buf->buf + buf->cur, DATAPTR_RO(nano_eval_res), xlen);
           buf->cur += xlen;
         }
-        UNPROTECT(2);
       }
 
     }
