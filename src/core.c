@@ -251,10 +251,8 @@ void nano_serialize(nano_buf *buf, const SEXP object, SEXP hook) {
     if (vec) {
 
       PROTECT(call = Rf_lcons(CADR(hook), Rf_cons(TAG(hook), R_NilValue)));
-      nano_eval_res = R_NilValue;
-      R_ToplevelExec(eval_safe, (void *) call);
-      UNPROTECT(1);
-      if (TYPEOF(nano_eval_res) == RAWSXP) {
+      if (R_ToplevelExec(eval_safe, (void *) call) &&
+          TYPEOF(nano_eval_res) == RAWSXP) {
         R_xlen_t xlen = XLENGTH(nano_eval_res);
         if (buf->cur + xlen > buf->len) {
           buf->len = buf->cur + xlen;
@@ -263,6 +261,7 @@ void nano_serialize(nano_buf *buf, const SEXP object, SEXP hook) {
         memcpy(buf->buf + buf->cur, DATAPTR_RO(nano_eval_res), xlen);
         buf->cur += xlen;
       }
+      UNPROTECT(1);
 
     } else {
 
@@ -278,10 +277,8 @@ void nano_serialize(nano_buf *buf, const SEXP object, SEXP hook) {
 
       for (R_xlen_t i = 0; i < llen; i++) {
         PROTECT(call = Rf_lcons(func, Rf_cons(NANO_VECTOR(refList)[i], R_NilValue)));
-        nano_eval_res = R_NilValue;
-        R_ToplevelExec(eval_safe, (void *) call);
-        UNPROTECT(1);
-        if (TYPEOF(nano_eval_res) == RAWSXP) {
+        if (R_ToplevelExec(eval_safe, (void *) call) &&
+            TYPEOF(nano_eval_res) == RAWSXP) {
           R_xlen_t xlen = XLENGTH(nano_eval_res);
           if (buf->cur + xlen + sizeof(R_xlen_t) > buf->len) {
             buf->len = buf->cur + xlen + sizeof(R_xlen_t);
@@ -292,6 +289,7 @@ void nano_serialize(nano_buf *buf, const SEXP object, SEXP hook) {
           memcpy(buf->buf + buf->cur, DATAPTR_RO(nano_eval_res), xlen);
           buf->cur += xlen;
         }
+        UNPROTECT(1);
       }
 
     }
