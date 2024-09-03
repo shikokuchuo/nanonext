@@ -48,7 +48,6 @@ SEXP nano_aioFuncMsg;
 SEXP nano_aioFuncRes;
 SEXP nano_aioNFuncs;
 SEXP nano_error;
-SEXP nano_klassString;
 SEXP nano_precious;
 SEXP nano_recvAio;
 SEXP nano_reqAio;
@@ -90,7 +89,6 @@ static void PreserveObjects(void) {
   R_PreserveObject(nano_error = Rf_allocVector(STRSXP, 2));
   SET_STRING_ELT(nano_error, 0, Rf_mkChar("errorValue"));
   SET_STRING_ELT(nano_error, 1, Rf_mkChar("try-error"));
-  R_PreserveObject(nano_klassString = Rf_cons(R_NilValue, R_NilValue));
   R_PreserveObject(nano_precious = Rf_cons(R_NilValue, Rf_cons(R_NilValue, R_NilValue)));
   R_PreserveObject(nano_recvAio = Rf_mkString("recvAio"));
   R_PreserveObject(nano_reqAio = Rf_allocVector(STRSXP, 2));
@@ -110,7 +108,6 @@ static void ReleaseObjects(void) {
   R_ReleaseObject(nano_reqAio);
   R_ReleaseObject(nano_recvAio);
   R_ReleaseObject(nano_precious);
-  R_ReleaseObject(nano_klassString);
   R_ReleaseObject(nano_error);
   R_ReleaseObject(nano_aioNFuncs);
   R_ReleaseObject(nano_aioFuncRes);

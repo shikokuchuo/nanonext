@@ -93,6 +93,7 @@ typedef struct nano_handle_s {
 #define NANO_PROT(x) CDR(x)
 #define NANO_FRAME(x) CAR(x)
 #define NANO_ENCLOS(x) CDR(x)
+#define NANO_SET_FRAME(x, v) SETCAR(x, v)
 #define NANO_SET_TAG(x, v) SET_TAG(x, v)
 #define NANO_SET_PROT(x, v) SETCDR(x, v)
 #define NANO_SET_ENCLOS(x, v) SETCDR(x, v)
@@ -231,9 +232,10 @@ SEXP nano_unserialize(unsigned char *, const size_t, SEXP);
 SEXP nano_decode(unsigned char *, const size_t, const uint8_t, SEXP);
 void nano_encode(nano_buf *, const SEXP);
 int nano_encodes(const SEXP);
-SEXP nano_findVarInFrame(const SEXP, const SEXP);
 int nano_matcharg(const SEXP);
 int nano_matchargs(const SEXP);
+void nano_defineVar(SEXP, SEXP, SEXP);
+SEXP nano_findVarInFrame(const SEXP, const SEXP);
 SEXP nano_PreserveObject(const SEXP);
 void nano_ReleaseObject(SEXP);
 void raio_invoke_cb(void *);
@@ -340,7 +342,6 @@ extern SEXP nano_aioFuncMsg;
 extern SEXP nano_aioFuncRes;
 extern SEXP nano_aioNFuncs;
 extern SEXP nano_error;
-extern SEXP nano_klassString;
 extern SEXP nano_precious;
 extern SEXP nano_recvAio;
 extern SEXP nano_reqAio;
