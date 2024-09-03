@@ -29,14 +29,14 @@ Query the API with an HTTP client using the \sQuote{POST} method,
     Use only in a new session. Use \sQuote{ctrl + \\} to forcibly quit
     when finished as the function blocks with no means of interruption.
 
-    Currently still experimental as the server lacks error handling. Sending
-    an invalid R expression will cause the server to quit.
+    If the expression could not be parsed or evaluated, the response will be
+    returned with a status code of 500 and a blank body.
 }
 \examples{
 if (interactive()) {
 
 # run server in a new session:
-# Rscript -e 'nanonext::server()'
+# Rscript -e 'nanonext::server("http://127.0.0.1:5555/api/rest")'
 
 # query using curl:
 # curl -X POST http://127.0.0.1:5555/api/rest -d 'format(Sys.time())'
@@ -45,6 +45,13 @@ ncurl(
   "http://127.0.0.1:5555/api/rest",
   method = "POST",
   data = "format(Sys.time())"
+)
+
+# error will return status of 500
+ncurl(
+  "http://127.0.0.1:5555/api/rest",
+  method = "POST",
+  data = "not_valid()"
 )
 
 res <- ncurl(

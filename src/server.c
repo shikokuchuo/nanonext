@@ -237,6 +237,12 @@ void rest_start(void *arg) {
 
 }
 
+SEXP nano_eval_res;
+
+void parse_eval_safe(void *data) {
+  nano_eval_res = R_ParseEvalString((const char *) data, R_GlobalEnv);
+}
+
 void inproc_server(const char* url) {
 
   nng_socket s;
@@ -246,22 +252,27 @@ void inproc_server(const char* url) {
   if ((xc = nng_rep0_open(&s)) || (xc = nng_listen(s, url, NULL, 0)))
     fatal("unable to set up inproc", xc);
 
+  nano_eval_res = R_BlankScalarString;
+
   for (;;) {
     if ((xc = nng_recvmsg(s, &msg, 0)))
       fatal("inproc recvmsg", xc);
 
     const char *body = nng_msg_body(msg);
     nano_buf buf;
-    SEXP res = R_ParseEvalString(body, R_GlobalEnv);
-    if (TYPEOF(res) == STRSXP) {
-      const char *string = NANO_STRING(res);
+
+    R_ToplevelExec(parse_eval_safe, (void *) body);
+
+    if (TYPEOF(nano_eval_res) == STRSXP) {
+      const char *string = NANO_STRING(nano_eval_res);
       buf.buf = (unsigned char *) string;
       buf.cur = strlen(string);
     } else {
-      nano_serialize(&buf, res, R_NilValue);
+      nano_serialize(&buf, nano_eval_res, R_NilValue);
     }
     nng_msg_clear(msg);
     nng_msg_append(msg, buf.buf, buf.cur);
+    nano_eval_res = R_BlankScalarString;
     if ((xc = nng_sendmsg(s, msg, 0)))
       fatal("inproc sendmsg", xc);
 
