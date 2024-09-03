@@ -83,7 +83,7 @@ static void haio_invoke_cb(void *arg) {
   SEXP call, status, node = (SEXP) arg, x = TAG(node);
   status = rnng_aio_http_status(x);
   PROTECT(call = Rf_lcons(nano_ResolveSymbol, Rf_cons(status, R_NilValue)));
-  Rf_eval(call, ENCLOS(x));
+  Rf_eval(call, NANO_ENCLOS(x));
   UNPROTECT(1);
   // unreliable to release linked list node from later cb, just free the payload
   SET_TAG(node, R_NilValue);

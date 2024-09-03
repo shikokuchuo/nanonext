@@ -91,6 +91,8 @@ typedef struct nano_handle_s {
 #define NANO_TAG(x) TAG(x)
 #define NANO_PTR(x) (void *) CAR(x)
 #define NANO_PROT(x) CDR(x)
+#define NANO_FRAME(x) CAR(x)
+#define NANO_ENCLOS(x) CDR(x)
 #define NANO_SET_TAG(x, v) SET_TAG(x, v)
 #define NANO_SET_PROT(x, v) SETCDR(x, v)
 #define NANO_SET_ENCLOS(x, v) SETCDR(x, v)

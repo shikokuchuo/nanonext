@@ -624,7 +624,7 @@ void raio_invoke_cb(void *arg) {
   SEXP call, data, node = (SEXP) arg, x = TAG(node);
   data = rnng_aio_get_msg(x);
   PROTECT(call = Rf_lcons(nano_ResolveSymbol, Rf_cons(data, R_NilValue)));
-  Rf_eval(call, ENCLOS(x));
+  Rf_eval(call, NANO_ENCLOS(x));
   UNPROTECT(1);
   // unreliable to release linked list node from later cb, just free the payload
   SET_TAG(node, R_NilValue);
@@ -632,7 +632,7 @@ void raio_invoke_cb(void *arg) {
 
 SEXP nano_findVarInFrame(SEXP rho, SEXP symbol) {
 
-  SEXP frame = CAR(rho); // FRAME
+  SEXP frame = NANO_FRAME(rho);
   while (frame != R_NilValue) {
     if (TAG(frame) == symbol)
       return CAR(frame); // BINDING_VALUE
