@@ -153,6 +153,29 @@ void socket_finalizer(SEXP xptr) {
 
 }
 
+#if R_VERSION < R_Version(4, 1, 0)
+
+inline SEXP R_NewEnv(SEXP parent, int hash, int size) {
+  (void) parent;
+  (void) hash;
+  (void) size;
+  return Rf_allocSExp(ENVSXP);
+}
+
+#endif
+
+#if R_VERSION < R_Version(4, 5, 0)
+
+inline SEXP R_mkClosure(SEXP formals, SEXP body, SEXP env) {
+  SEXP fun = Rf_allocSExp(CLOSXP);
+  SET_FORMALS(fun, formals);
+  SET_BODY(fun, body);
+  SET_CLOENV(fun, env);
+  return fun;
+}
+
+#endif
+
 void later2(void (*fun)(void *), void *data) {
   eln2(fun, data, 0, 0);
 }
@@ -179,7 +202,7 @@ SEXP mk_error(const int xc) {
 SEXP mk_error_data(const int xc) {
 
   SEXP env, err;
-  PROTECT(env = Rf_allocSExp(ENVSXP));
+  PROTECT(env = R_NewEnv(R_NilValue, 0, 0));
   Rf_classgets(env, xc < 0 ? nano_sendAio : nano_recvAio);
   PROTECT(err = Rf_ScalarInteger(abs(xc)));
   Rf_classgets(err, nano_error);
