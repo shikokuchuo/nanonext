@@ -226,6 +226,7 @@ SEXP nano_unserialize(unsigned char *, const size_t, SEXP);
 SEXP nano_decode(unsigned char *, const size_t, const uint8_t, SEXP);
 void nano_encode(nano_buf *, const SEXP);
 int nano_encodes(const SEXP);
+SEXP nano_findVarInFrame(const SEXP, const SEXP);
 int nano_matcharg(const SEXP);
 int nano_matchargs(const SEXP);
 SEXP nano_PreserveObject(const SEXP);

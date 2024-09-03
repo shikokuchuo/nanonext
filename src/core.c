@@ -629,3 +629,16 @@ void raio_invoke_cb(void *arg) {
   // unreliable to release linked list node from later cb, just free the payload
   SET_TAG(node, R_NilValue);
 }
+
+SEXP nano_findVarInFrame(SEXP rho, SEXP symbol) {
+
+  SEXP frame = CAR(rho); // FRAME
+  while (frame != R_NilValue) {
+    if (TAG(frame) == symbol)
+      return CAR(frame); // BINDING_VALUE
+    frame = CDR(frame);
+  }
+
+  return R_UnboundValue;
+
+}

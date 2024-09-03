@@ -234,7 +234,7 @@ SEXP rnng_wait_thread_create(SEXP x) {
   const SEXPTYPE typ = TYPEOF(x);
   if (typ == ENVSXP) {
 
-    const SEXP coreaio = Rf_findVarInFrame(x, nano_AioSymbol);
+    const SEXP coreaio = nano_findVarInFrame(x, nano_AioSymbol);
     if (NANO_TAG(coreaio) != nano_AioSymbol)
       return x;
 
