@@ -253,7 +253,13 @@ void inproc_server(const char* url) {
     const char *body = nng_msg_body(msg);
     nano_buf buf;
     SEXP res = R_ParseEvalString(body, R_GlobalEnv);
-    nano_serialize(&buf, res, R_NilValue);
+    if (TYPEOF(res) == STRSXP) {
+      const char *string = NANO_STRING(res);
+      buf.buf = (unsigned char *) string;
+      buf.cur = strlen(string);
+    } else {
+      nano_serialize(&buf, res, R_NilValue);
+    }
     nng_msg_clear(msg);
     nng_msg_append(msg, buf.buf, buf.cur);
     if ((xc = nng_sendmsg(s, msg, 0)))
