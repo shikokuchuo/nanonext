@@ -20,7 +20,7 @@
 
 // internals -------------------------------------------------------------------
 
-SEXP nano_eval_res;
+static SEXP nano_eval_res;
 
 static void eval_safe (void *call) {
   nano_eval_res = Rf_eval((SEXP) call, R_GlobalEnv);
