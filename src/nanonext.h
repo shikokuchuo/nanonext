@@ -242,7 +242,6 @@ void nano_encode(nano_buf *, const SEXP);
 int nano_encodes(const SEXP);
 int nano_matcharg(const SEXP);
 int nano_matchargs(const SEXP);
-SEXP FINDVARINFRAME(const SEXP, const SEXP);
 SEXP nano_PreserveObject(const SEXP);
 void nano_ReleaseObject(SEXP);
 void raio_invoke_cb(void *);
