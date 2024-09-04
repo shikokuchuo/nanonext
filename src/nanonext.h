@@ -103,9 +103,9 @@ typedef struct nano_handle_s {
 #define NANO_ERROR(x) { Rf_error(x); return R_NilValue; }
 
 #if R_VERSION < R_Version(4, 5, 0)
-#define FINDVARINFRAME(sym, rho) Rf_findVarInFrame(sym, rho)
+#define FINDVARINFRAME(env, sym) Rf_findVarInFrame(env, sym)
 #else
-#define FINDVARINFRAME(sym, rho) R_getVarEx(sym, rho, FALSE, R_UnboundValue)
+#define FINDVARINFRAME(env, sym) R_getVarEx(sym, env, FALSE, R_UnboundValue)
 #endif
 #define ERROR_OUT(xc) Rf_error("%d | %s", xc, nng_strerror(xc))
 #define ERROR_RET(xc) { Rf_warning("%d | %s", xc, nng_strerror(xc)); return mk_error(xc); }
