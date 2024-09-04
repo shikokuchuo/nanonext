@@ -25,7 +25,7 @@ static SEXP mk_error_aio(const int xc, SEXP env) {
   SEXP err = PROTECT(Rf_ScalarInteger(xc));
   Rf_classgets(err, nano_error);
   nano_defineVar(nano_ValueSymbol, err, env);
-  nano_defineVar(nano_AioSymbol, R_NilValue, env);
+  nano_removeVar(nano_AioSymbol, env);
   UNPROTECT(1);
   return err;
 
@@ -178,7 +178,7 @@ SEXP rnng_aio_result(SEXP env) {
     return mk_error_aio(saio->result, env);
 
   nano_defineVar(nano_ValueSymbol, nano_success, env);
-  nano_defineVar(nano_AioSymbol, R_NilValue, env);
+  nano_removeVar(nano_AioSymbol, env);
   return nano_success;
 
 }
@@ -248,7 +248,7 @@ SEXP rnng_aio_get_msg(SEXP env) {
 
   PROTECT(out = nano_decode(buf, sz, raio->mode, NANO_PROT(aio)));
   nano_defineVar(nano_ValueSymbol, out, env);
-  nano_defineVar(nano_AioSymbol, R_NilValue, env);
+  nano_removeVar(nano_AioSymbol, env);
 
   UNPROTECT(1);
   return out;

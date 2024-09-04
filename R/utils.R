@@ -179,7 +179,7 @@ parse_url <- function(url) .Call(rnng_url_parse, url)
 #'     Is the object an ncurlSession (object of class \sQuote{ncurlSession}).
 #'
 #' @examples
-#' sock <- socket(listen = "inproc://isaio")
+#' sock <- socket()
 #' r <- recv_aio(sock)
 #' s <- send_aio(sock, "test")
 #' is_aio(r)

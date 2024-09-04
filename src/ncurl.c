@@ -28,7 +28,7 @@ static SEXP mk_error_haio(const int xc, SEXP env) {
   nano_defineVar(nano_ResultSymbol, err, env);
   nano_defineVar(nano_ProtocolSymbol, err, env);
   nano_defineVar(nano_ValueSymbol, err, env);
-  nano_defineVar(nano_AioSymbol, R_NilValue, env);
+  nano_removeVar(nano_AioSymbol, env);
   UNPROTECT(1);
   return err;
 
@@ -518,7 +518,7 @@ static SEXP rnng_aio_http_impl(SEXP env, const int typ) {
   }
   nano_defineVar(nano_ValueSymbol, vec, env);
 
-  nano_defineVar(nano_AioSymbol, R_NilValue, env);
+  nano_removeVar(nano_AioSymbol, env);
 
   switch (typ) {
   case 0: out = nano_findVarInFrame(env, nano_ResultSymbol); break;

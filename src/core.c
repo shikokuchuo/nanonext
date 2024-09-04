@@ -176,18 +176,24 @@ inline SEXP R_mkClosure(SEXP formals, SEXP body, SEXP env) {
 
 #endif
 
+// for creating new bindings only
 void nano_defineVar(SEXP symbol, SEXP value, SEXP rho) {
+
+  NANO_SET_FRAME(rho, Rf_cons(value, NANO_FRAME(rho)));
+  SET_TAG(NANO_FRAME(rho), symbol);
+
+}
+
+void nano_removeVar(SEXP symbol, SEXP rho) {
 
   SEXP frame = NANO_FRAME(rho);
   while (frame != R_NilValue) {
     if (TAG(frame) == symbol) {
-      SETCAR(frame, value); // SET_BINDING_VALUE
+      SET_FRAME(frame, R_NilValue); // SET_BINDING_VALUE
       return;
     }
     frame = CDR(frame);
   }
-  NANO_SET_FRAME(rho, Rf_cons(value, NANO_FRAME(rho)));
-  SET_TAG(NANO_FRAME(rho), symbol);
 
 }
 
