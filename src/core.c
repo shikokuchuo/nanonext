@@ -176,27 +176,6 @@ inline SEXP R_mkClosure(SEXP formals, SEXP body, SEXP env) {
 
 #endif
 
-// for creating new bindings only
-void nano_defineVar(SEXP symbol, SEXP value, SEXP rho) {
-
-  NANO_SET_FRAME(rho, Rf_cons(value, NANO_FRAME(rho)));
-  SET_TAG(NANO_FRAME(rho), symbol);
-
-}
-
-void nano_removeVar(SEXP symbol, SEXP rho) {
-
-  SEXP frame = NANO_FRAME(rho);
-  while (frame != R_NilValue) {
-    if (TAG(frame) == symbol) {
-      SET_FRAME(frame, R_NilValue); // SET_BINDING_VALUE
-      return;
-    }
-    frame = CDR(frame);
-  }
-
-}
-
 SEXP nano_findVarInFrame(const SEXP rho, const SEXP symbol) {
 
   SEXP frame = NANO_FRAME(rho);
@@ -269,8 +248,8 @@ SEXP mk_error_data(const int xc) {
   Rf_classgets(env, xc < 0 ? nano_sendAio : nano_recvAio);
   PROTECT(err = Rf_ScalarInteger(abs(xc)));
   Rf_classgets(err, nano_error);
-  nano_defineVar(nano_ValueSymbol, err, env);
-  nano_defineVar(xc < 0 ? nano_ResultSymbol : nano_DataSymbol, err, env);
+  Rf_defineVar(nano_ValueSymbol, err, env);
+  Rf_defineVar(xc < 0 ? nano_ResultSymbol : nano_DataSymbol, err, env);
   UNPROTECT(2);
   return env;
 

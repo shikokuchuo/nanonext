@@ -25,10 +25,10 @@ static SEXP mk_error_haio(const int xc, SEXP env) {
 
   SEXP err = PROTECT(Rf_ScalarInteger(xc));
   Rf_classgets(err, nano_error);
-  nano_defineVar(nano_ResultSymbol, err, env);
-  nano_defineVar(nano_ProtocolSymbol, err, env);
-  nano_defineVar(nano_ValueSymbol, err, env);
-  nano_removeVar(nano_AioSymbol, env);
+  Rf_defineVar(nano_ResultSymbol, err, env);
+  Rf_defineVar(nano_ProtocolSymbol, err, env);
+  Rf_defineVar(nano_ValueSymbol, err, env);
+  Rf_defineVar(nano_AioSymbol, R_NilValue, env);
   UNPROTECT(1);
   return err;
 
@@ -55,12 +55,12 @@ static SEXP mk_error_ncurlaio(const int xc) {
   NANO_CLASS2(env, "ncurlAio", "recvAio");
   PROTECT(err = Rf_ScalarInteger(xc));
   Rf_classgets(err, nano_error);
-  nano_defineVar(nano_ResultSymbol, err, env);
-  nano_defineVar(nano_StatusSymbol, err, env);
-  nano_defineVar(nano_ProtocolSymbol, err, env);
-  nano_defineVar(nano_HeadersSymbol, err, env);
-  nano_defineVar(nano_ValueSymbol, err, env);
-  nano_defineVar(nano_DataSymbol, err, env);
+  Rf_defineVar(nano_ResultSymbol, err, env);
+  Rf_defineVar(nano_StatusSymbol, err, env);
+  Rf_defineVar(nano_ProtocolSymbol, err, env);
+  Rf_defineVar(nano_HeadersSymbol, err, env);
+  Rf_defineVar(nano_ValueSymbol, err, env);
+  Rf_defineVar(nano_DataSymbol, err, env);
   UNPROTECT(2);
   return env;
 
@@ -413,8 +413,8 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP dat
   SEXP env, fun;
   PROTECT(env = R_NewEnv(R_NilValue, 0, 0));
   NANO_CLASS2(env, "ncurlAio", "recvAio");
-  nano_defineVar(nano_AioSymbol, aio, env);
-  nano_defineVar(nano_ResponseSymbol, response, env);
+  Rf_defineVar(nano_AioSymbol, aio, env);
+  Rf_defineVar(nano_ResponseSymbol, response, env);
 
   int i = 0;
   for (SEXP fnlist = nano_aioNFuncs; fnlist != R_NilValue; fnlist = CDR(fnlist)) {
@@ -478,7 +478,7 @@ static SEXP rnng_aio_http_impl(SEXP env, const int typ) {
   PROTECT(response = nano_findVarInFrame(env, nano_ResponseSymbol));
   int chk_resp = response != R_NilValue && TYPEOF(response) == STRSXP;
   const uint16_t code = nng_http_res_get_status(handle->res), relo = code >= 300 && code < 400;
-  nano_defineVar(nano_ResultSymbol, Rf_ScalarInteger(code), env);
+  Rf_defineVar(nano_ResultSymbol, Rf_ScalarInteger(code), env);
 
   if (relo) {
     if (chk_resp) {
@@ -505,7 +505,7 @@ static SEXP rnng_aio_http_impl(SEXP env, const int typ) {
   }
   if (relo) UNPROTECT(1);
   UNPROTECT(1);
-  nano_defineVar(nano_ProtocolSymbol, rvec, env);
+  Rf_defineVar(nano_ProtocolSymbol, rvec, env);
 
   nng_http_res_get_data(handle->res, &dat, &sz);
 
@@ -516,9 +516,9 @@ static SEXP rnng_aio_http_impl(SEXP env, const int typ) {
     if (dat != NULL)
       memcpy(NANO_DATAPTR(vec), dat, sz);
   }
-  nano_defineVar(nano_ValueSymbol, vec, env);
+  Rf_defineVar(nano_ValueSymbol, vec, env);
 
-  nano_removeVar(nano_AioSymbol, env);
+  Rf_defineVar(nano_AioSymbol, R_NilValue, env);
 
   switch (typ) {
   case 0: out = nano_findVarInFrame(env, nano_ResultSymbol); break;
