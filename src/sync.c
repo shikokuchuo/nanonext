@@ -500,7 +500,7 @@ SEXP rnng_create_promise(SEXP x, SEXP ctx) {
   if (TYPEOF(x) != ENVSXP)
     return R_NilValue;
 
-  SEXP aio = nano_findVarInFrame(x, nano_AioSymbol);
+  SEXP aio = FINDVARINFRAME(x, nano_AioSymbol);
   if (NANO_TAG(aio) != nano_AioSymbol)
     return R_NilValue;
 

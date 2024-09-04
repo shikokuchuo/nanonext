@@ -223,7 +223,7 @@ SEXP rnng_aio_collect_pipe(SEXP aio) {
 
   if (TYPEOF(aio) != ENVSXP)
     goto exitlevel1;
-  const SEXP coreaio = nano_findVarInFrame(aio, nano_AioSymbol);
+  const SEXP coreaio = FINDVARINFRAME(aio, nano_AioSymbol);
   if (NANO_TAG(coreaio) != nano_AioSymbol)
     goto exitlevel1;
 

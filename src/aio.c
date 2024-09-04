@@ -163,11 +163,11 @@ static void iaio_finalizer(SEXP xptr) {
 
 SEXP rnng_aio_result(SEXP env) {
 
-  const SEXP exist = nano_findVarInFrame(env, nano_ValueSymbol);
+  const SEXP exist = FINDVARINFRAME(env, nano_ValueSymbol);
   if (exist != R_UnboundValue)
     return exist;
 
-  const SEXP aio = nano_findVarInFrame(env, nano_AioSymbol);
+  const SEXP aio = FINDVARINFRAME(env, nano_AioSymbol);
 
   nano_aio *saio = (nano_aio *) NANO_PTR(aio);
 
@@ -185,11 +185,11 @@ SEXP rnng_aio_result(SEXP env) {
 
 SEXP rnng_aio_get_msg(SEXP env) {
 
-  const SEXP exist = nano_findVarInFrame(env, nano_ValueSymbol);
+  const SEXP exist = FINDVARINFRAME(env, nano_ValueSymbol);
   if (exist != R_UnboundValue)
     return exist;
 
-  const SEXP aio = nano_findVarInFrame(env, nano_AioSymbol);
+  const SEXP aio = FINDVARINFRAME(env, nano_AioSymbol);
 
   nano_aio *raio = (nano_aio *) NANO_PTR(aio);
 
@@ -252,7 +252,7 @@ SEXP rnng_aio_call(SEXP x) {
 
   switch (TYPEOF(x)) {
   case ENVSXP: ;
-    const SEXP coreaio = nano_findVarInFrame(x, nano_AioSymbol);
+    const SEXP coreaio = FINDVARINFRAME(x, nano_AioSymbol);
     if (NANO_TAG(coreaio) != nano_AioSymbol)
       return x;
 
@@ -294,7 +294,7 @@ static SEXP rnng_aio_collect_impl(SEXP x, SEXP (*const func)(SEXP)) {
 
   switch (TYPEOF(x)) {
   case ENVSXP: ;
-    out = nano_findVarInFrame(func(x), nano_ValueSymbol);
+    out = FINDVARINFRAME(func(x), nano_ValueSymbol);
     if (out == R_UnboundValue) break;
     goto resume;
   case VECSXP: ;
@@ -304,7 +304,7 @@ static SEXP rnng_aio_collect_impl(SEXP x, SEXP (*const func)(SEXP)) {
     for (R_xlen_t i = 0; i < xlen; i++) {
       env = func(NANO_VECTOR(x)[i]);
       if (TYPEOF(env) != ENVSXP) goto exit;
-      env = nano_findVarInFrame(env, nano_ValueSymbol);
+      env = FINDVARINFRAME(env, nano_ValueSymbol);
       if (env == R_UnboundValue) goto exit;
       SET_VECTOR_ELT(out, i, env);
     }
@@ -339,7 +339,7 @@ SEXP rnng_aio_stop(SEXP x) {
 
   switch (TYPEOF(x)) {
   case ENVSXP: ;
-    const SEXP coreaio = nano_findVarInFrame(x, nano_AioSymbol);
+    const SEXP coreaio = FINDVARINFRAME(x, nano_AioSymbol);
     if (NANO_TAG(coreaio) != nano_AioSymbol) break;
     nano_aio *aiop = (nano_aio *) NANO_PTR(coreaio);
     nng_aio_stop(aiop->aio);
@@ -361,7 +361,7 @@ static int rnng_unresolved_impl(SEXP x) {
   int xc;
   switch (TYPEOF(x)) {
   case ENVSXP: ;
-    const SEXP coreaio = nano_findVarInFrame(x, nano_AioSymbol);
+    const SEXP coreaio = FINDVARINFRAME(x, nano_AioSymbol);
     if (NANO_TAG(coreaio) != nano_AioSymbol) {
       xc = 0; break;
     }
@@ -413,7 +413,7 @@ SEXP rnng_unresolved(SEXP x) {
 static int rnng_unresolved2_impl(SEXP x) {
 
   if (TYPEOF(x) == ENVSXP) {
-    const SEXP coreaio = nano_findVarInFrame(x, nano_AioSymbol);
+    const SEXP coreaio = FINDVARINFRAME(x, nano_AioSymbol);
     if (NANO_TAG(coreaio) != nano_AioSymbol)
       return 0;
     nano_aio *aiop = (nano_aio *) NANO_PTR(coreaio);

@@ -102,6 +102,11 @@ typedef struct nano_handle_s {
 #define NANO_INTEGER(x) *(int *) DATAPTR_RO(x)
 #define NANO_ERROR(x) { Rf_error(x); return R_NilValue; }
 
+#if R_VERSION < R_Version(4, 5, 0)
+#define FINDVARINFRAME(sym, rho) Rf_findVarInFrame(sym, rho)
+#else
+#define FINDVARINFRAME(sym, rho) R_getVarEx(sym, rho, FALSE, R_UnboundValue)
+#endif
 #define ERROR_OUT(xc) Rf_error("%d | %s", xc, nng_strerror(xc))
 #define ERROR_RET(xc) { Rf_warning("%d | %s", xc, nng_strerror(xc)); return mk_error(xc); }
 #define NANONEXT_INIT_BUFSIZE 8192
@@ -237,7 +242,7 @@ void nano_encode(nano_buf *, const SEXP);
 int nano_encodes(const SEXP);
 int nano_matcharg(const SEXP);
 int nano_matchargs(const SEXP);
-SEXP nano_findVarInFrame(const SEXP, const SEXP);
+SEXP FINDVARINFRAME(const SEXP, const SEXP);
 SEXP nano_PreserveObject(const SEXP);
 void nano_ReleaseObject(SEXP);
 void raio_invoke_cb(void *);
