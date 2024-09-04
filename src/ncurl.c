@@ -340,8 +340,8 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP dat
     Rf_error("'tls' is not a valid TLS Configuration");
   nano_aio *haio = R_Calloc(1, nano_aio);
   nano_handle *handle = R_Calloc(1, nano_handle);
+  SEXP aio, env, fun;
   int xc;
-  SEXP aio;
 
   haio->type = HTTP_AIO;
   haio->mode = (uint8_t) NANO_INTEGER(convert);
@@ -410,7 +410,6 @@ SEXP rnng_ncurl_aio(SEXP http, SEXP convert, SEXP method, SEXP headers, SEXP dat
   PROTECT(aio = R_MakeExternalPtr(haio, nano_AioSymbol, R_NilValue));
   R_RegisterCFinalizerEx(aio, haio_finalizer, TRUE);
 
-  SEXP env, fun;
   PROTECT(env = R_NewEnv(R_NilValue, 0, 0));
   NANO_CLASS2(env, "ncurlAio", "recvAio");
   Rf_defineVar(nano_AioSymbol, aio, env);

@@ -178,7 +178,7 @@ inline SEXP R_mkClosure(SEXP formals, SEXP body, SEXP env) {
 
 SEXP nano_findVarInFrame(const SEXP rho, const SEXP symbol) {
 
-  SEXP frame = NANO_FRAME(rho);
+  SEXP frame = CAR(rho);
   while (frame != R_NilValue) {
     if (TAG(frame) == symbol)
       return CAR(frame); // BINDING_VALUE

@@ -425,7 +425,7 @@ SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeou
     Rf_error("'con' is not a valid Context");
 
   const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) nano_integer(timeout);
-  const int mod = nano_matcharg(recvmode);
+  const uint8_t mod = (uint8_t) nano_matcharg(recvmode);
   int signal, drop;
   if (cvar == R_NilValue) {
     signal = 0;
@@ -445,7 +445,6 @@ SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeou
 
   nano_encodes(sendmode) == 2 ? nano_encode(&buf, data) : nano_serialize(&buf, data, NANO_PROT(con));
   saio = R_Calloc(1, nano_aio);
-  saio->data = NULL;
   saio->next = ncv;
 
   if ((xc = nng_msg_alloc(&msg, 0)))
@@ -462,7 +461,7 @@ SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeou
 
   raio = R_Calloc(1, nano_aio);
   raio->type = signal ? REQAIOS : REQAIO;
-  raio->mode = (uint8_t) mod;
+  raio->mode = mod;
   raio->cb = NULL;
   raio->next = saio;
 
