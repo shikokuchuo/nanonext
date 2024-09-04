@@ -38,12 +38,12 @@ static SEXP mk_error_ncurl(const int xc) {
 
   const char *names[] = {"status", "headers", "data", ""};
   SEXP out = PROTECT(Rf_mkNamed(VECSXP, names));
-  SEXP err = Rf_ScalarInteger(xc);
+  SEXP err = PROTECT(Rf_ScalarInteger(xc));
   Rf_classgets(err, nano_error);
   SET_VECTOR_ELT(out, 0, err);
   SET_VECTOR_ELT(out, 1, err);
   SET_VECTOR_ELT(out, 2, err);
-  UNPROTECT(1);
+  UNPROTECT(2);
   return out;
 
 }
