@@ -54,8 +54,7 @@ static void request_complete_dropcon(void *arg) {
 static void request_complete_signal(void *arg) {
 
   nano_aio *raio = (nano_aio *) arg;
-  nano_rsaio *saio = (nano_rsaio *) raio->next;
-  nano_cv *ncv = (nano_cv *) saio->next;
+  nano_cv *ncv = (nano_cv *) ((nano_rsaio *) raio->next)->next;
   nng_cv *cv = ncv->cv;
   nng_mtx *mtx = ncv->mtx;
 
@@ -76,7 +75,7 @@ static void request_complete_signal(void *arg) {
 
 static void sendaio_complete(void *arg) {
 
-  nng_aio *aio = (nng_aio *) arg;
+  nng_aio *aio = ((nano_rsaio *) arg)->aio;
   if (nng_aio_result(aio))
     nng_msg_free(nng_aio_get_msg(aio));
 
@@ -452,7 +451,7 @@ SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeou
     goto exitlevel1;
 
   if ((xc = nng_msg_append(msg, buf.buf, buf.cur)) ||
-      (xc = nng_aio_alloc(&saio->aio, sendaio_complete, &saio->aio))) {
+      (xc = nng_aio_alloc(&saio->aio, sendaio_complete, saio))) {
     nng_msg_free(msg);
     goto exitlevel1;
   }
