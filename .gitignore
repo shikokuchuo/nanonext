@@ -10,3 +10,5 @@ nanonext.Rcheck/
 docs
 install
 inst/doc
+compile_commands.json
+.cache
