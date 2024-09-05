@@ -54,7 +54,8 @@ static void request_complete_dropcon(void *arg) {
 static void request_complete_signal(void *arg) {
 
   nano_aio *raio = (nano_aio *) arg;
-  nano_cv *ncv = (nano_cv *) ((nano_rsaio *) raio->next)->next;
+  nano_rsaio *saio = (nano_rsaio *) raio->next;
+  nano_cv *ncv = (nano_cv *) saio->next;
   nng_cv *cv = ncv->cv;
   nng_mtx *mtx = ncv->mtx;
 
