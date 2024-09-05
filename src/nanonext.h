@@ -184,10 +184,10 @@ typedef struct nano_aio_s {
   nano_aio_typ type;
 } nano_aio;
 
-typedef struct nano_rsaio_s {
+typedef struct nano_saio_s {
   nng_aio *aio;
-  void *next;
-} nano_rsaio;
+  void *cb;
+} nano_saio;
 
 typedef struct nano_cv_s {
   int condition;

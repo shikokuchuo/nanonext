@@ -209,9 +209,7 @@ SEXP rnng_aio_get_msg(SEXP env) {
   case RECVAIOS:
   case REQAIOS:
   case IOV_RECVAIOS: ;
-    nano_cv *ncv = raio->type == REQAIOS ? (nano_cv *) ((nano_rsaio *) raio->next)->next :
-      (nano_cv *) raio->next;
-    nng_mtx *mtx = ncv->mtx;
+    nng_mtx *mtx = ((nano_cv *) raio->next)->mtx;
     nng_mtx_lock(mtx);
     res = raio->result;
     nng_mtx_unlock(mtx);
