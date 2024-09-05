@@ -498,7 +498,7 @@ SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeou
 
 }
 
-SEXP rnng_create_promise(SEXP x, SEXP ctx) {
+SEXP rnng_set_promise_context(SEXP x, SEXP ctx) {
 
   if (TYPEOF(x) != ENVSXP)
     return R_NilValue;

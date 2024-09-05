@@ -246,8 +246,7 @@ as.promise.ncurlAio <- function(x) {
     if (unresolved(x)) {
       promise <- promises::then(
         promises::promise(
-          function(resolve, reject)
-            .promise(x, environment())
+          function(resolve, reject) .keep(x, environment())
         ),
         onFulfilled = function(value)
           if (value != 200L)

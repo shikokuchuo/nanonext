@@ -371,8 +371,7 @@ as.promise.recvAio <- function(x) {
     if (unresolved(x)) {
       promise <- promises::then(
         promises::promise(
-          function(resolve, reject)
-            .promise(x, environment())
+          function(resolve, reject) .keep(x, environment())
         ),
         onFulfilled = function(value)
           if (is_error_value(value)) stop(nng_error(value)) else value
@@ -397,7 +396,7 @@ as.promise.recvAio <- function(x) {
 #'
 is.promising.recvAio <- function(x) TRUE
 
-#' Create Promise
+#' Keep Promise
 #'
 #' Internal package function.
 #'
@@ -412,4 +411,9 @@ is.promising.recvAio <- function(x) TRUE
 #' @keywords internal
 #' @export
 #'
-.promise <- function(x, ctx) .Call(rnng_create_promise, x, ctx)
+.keep <- function(x, ctx) .Call(rnng_set_promise_context, x, ctx)
+
+#' @rdname dot-keep
+#' @export
+#'
+set_promise_context <- .keep
