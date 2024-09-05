@@ -472,7 +472,7 @@ static void rnng_dispatch_thread(void *args) {
   nng_socket sock[n];
   nng_ctx ctx[n];
   nng_ctx rctx[n];
-  nano_aio saio[n];
+  nano_saio saio[n];
   nano_aio haio[n];
   nano_aio raio[n];
   nng_listener list[n];
@@ -512,8 +512,7 @@ static void rnng_dispatch_thread(void *args) {
     raio[i].result = 0;
     if (nng_aio_alloc(&raio[i].aio, raio_complete_signal, &raio[i]))
       goto exitlevel2;
-    saio[i].result = 0;
-    if (nng_aio_alloc(&saio[i].aio, saio_complete, &saio[i]))
+    if (nng_aio_alloc(&saio[i].aio, sendaio_complete, &saio[i]))
       goto exitlevel2;
     haio[i].next = ncv;
     haio[i].result = 0;
@@ -558,7 +557,6 @@ static void rnng_dispatch_thread(void *args) {
         nng_mtx_unlock(mtx);
         if (xc) {
           raio[i].result = 0;
-          saio[i].result = 0;
           // nano_printf(1, "received reply %d\n", i);
           if (xc < 0) {
             if ((xc = nng_ctx_sendmsg(rctx[i], (nng_msg *) raio[i].data, 0)))
@@ -582,8 +580,9 @@ static void rnng_dispatch_thread(void *args) {
             nng_ctx_open(&rctx[i], hsock);
             nng_ctx_recv(rctx[i], haio[i].aio);
             // nano_printf(1, "allocated %d\n", i);
+          } else {
+            act = 1;
           }
-          act = 1;
           break;
         }
       }

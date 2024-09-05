@@ -76,14 +76,6 @@ static void request_complete_signal(void *arg) {
 
 }
 
-static void sendaio_complete(void *arg) {
-
-  nng_aio *aio = ((nano_saio *) arg)->aio;
-  if (nng_aio_result(aio))
-    nng_msg_free(nng_aio_get_msg(aio));
-
-}
-
 static void pipe_cb_signal(nng_pipe p, nng_pipe_ev ev, void *arg) {
 
   int sig;

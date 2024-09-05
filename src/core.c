@@ -141,13 +141,11 @@ void raio_complete_signal(void *arg) {
 
 }
 
-void saio_complete(void *arg) {
+void sendaio_complete(void *arg) {
 
-  nano_aio *saio = (nano_aio *) arg;
-  const int res = nng_aio_result(saio->aio);
-  if (res)
-    nng_msg_free(nng_aio_get_msg(saio->aio));
-  saio->result = res - !res;
+  nng_aio *aio = ((nano_saio *) arg)->aio;
+  if (nng_aio_result(aio))
+    nng_msg_free(nng_aio_get_msg(aio));
 
 }
 
