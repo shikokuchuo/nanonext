@@ -102,11 +102,6 @@ typedef struct nano_handle_s {
 #define NANO_INTEGER(x) *(int *) DATAPTR_RO(x)
 #define NANO_ERROR(x) { Rf_error(x); return R_NilValue; }
 
-#if R_VERSION < R_Version(4, 5, 0)
-#define FINDVARINFRAME(env, sym) Rf_findVarInFrame(env, sym)
-#else
-#define FINDVARINFRAME(env, sym) R_getVarEx(sym, env, FALSE, R_UnboundValue)
-#endif
 #define ERROR_OUT(xc) Rf_error("%d | %s", xc, nng_strerror(xc))
 #define ERROR_RET(xc) { Rf_warning("%d | %s", xc, nng_strerror(xc)); return mk_error(xc); }
 #define NANONEXT_INIT_BUFSIZE 8192
@@ -225,12 +220,16 @@ SEXP R_NewEnv(SEXP, int, int);
 #if R_VERSION < R_Version(4, 5, 0)
 SEXP R_mkClosure(SEXP, SEXP, SEXP);
 #endif
+SEXP nano_findVarInFrame(const SEXP, const SEXP);
+SEXP nano_PreserveObject(const SEXP);
+void nano_ReleaseObject(SEXP);
 void dialer_finalizer(SEXP);
 void listener_finalizer(SEXP);
 void socket_finalizer(SEXP);
 void later2(void (*)(void *), void *);
 extern void (*eln2)(void (*)(void *), void *, double, int);
 void eln2dummy(void (*)(void *), void *, double, int);
+void raio_invoke_cb(void *);
 int nano_integer(const SEXP);
 SEXP mk_error(const int);
 SEXP mk_error_data(const int);
@@ -242,9 +241,6 @@ void nano_encode(nano_buf *, const SEXP);
 int nano_encodes(const SEXP);
 int nano_matcharg(const SEXP);
 int nano_matchargs(const SEXP);
-SEXP nano_PreserveObject(const SEXP);
-void nano_ReleaseObject(SEXP);
-void raio_invoke_cb(void *);
 
 SEXP rnng_advance_rng_state(void);
 SEXP rnng_aio_call(SEXP);
