@@ -81,8 +81,12 @@ typedef struct nano_handle_s {
 #include <errno.h>
 #endif
 
+#ifndef R_NO_REMAP
 #define R_NO_REMAP
+#endif
+#ifndef STRICT_R_HEADERS
 #define STRICT_R_HEADERS
+#endif
 #include <R.h>
 #include <Rinternals.h>
 #include <Rversion.h>
