@@ -218,6 +218,7 @@ typedef struct nano_thread_disp_s {
   nng_tls_config *tls;
   const char *host;
   const char *url;
+  int *active;
 } nano_thread_disp;
 
 typedef struct nano_buf_s {
@@ -306,6 +307,7 @@ SEXP rnng_pipe_close(SEXP);
 SEXP rnng_pipe_notify(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 SEXP rnng_protocol_open(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 SEXP rnng_random(SEXP, SEXP);
+SEXP rnng_read_active(SEXP);
 SEXP rnng_reap(SEXP);
 SEXP rnng_recv(SEXP, SEXP, SEXP, SEXP);
 SEXP rnng_recv_aio(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);

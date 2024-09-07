@@ -253,6 +253,7 @@ static void thread_disp_finalizer(SEXP xptr) {
     nng_tls_config_free(xp->tls);
   }
   nng_thread_destroy(xp->thr);
+  R_Free(xp->active);
   R_Free(xp);
 
 }
@@ -356,12 +357,9 @@ SEXP rnng_wait_thread_create(SEXP x) {
 }
 
 static void nano_record_pipe(nng_pipe p, nng_pipe_ev ev, void *arg) {
+  int *active = (int *) arg;
   const int incr = ev == NNG_PIPE_EV_ADD_POST;
-  nano_cv *ncv = (nano_cv *) arg;
-  nng_mtx *mtx = ncv->mtx;
-  nng_mtx_lock(mtx);
-  incr ? ncv->flag++ : ncv->flag--;
-  nng_mtx_unlock(mtx);
+  incr ? (*active)++ : (*active)--;
   // nano_printf(1, "pipe ev %d\n", x[0]);
 }
 
@@ -461,6 +459,7 @@ static void rnng_dispatch_thread(void *args) {
   nng_cv *cv = ncv->cv;
   const int n = ncv->condition;
   ncv->condition = 0;
+  int *active = disp->active;
 
   const char *durl = disp->url;
   const size_t sz = strlen(durl) + 10;
@@ -476,11 +475,12 @@ static void rnng_dispatch_thread(void *args) {
   nano_aio haio[n];
   nano_aio raio[n];
   nng_listener list[n];
-  int active[n];
-  memset(active, 0, sizeof(active));
+  int store[n];
+  memset(store, 1, sizeof(store));
   int busy[n];
   memset(busy, 0, sizeof(busy));
   nng_url *up;
+  int cur;
 
   if (nng_rep0_open(&hsock))
     return;
@@ -491,8 +491,8 @@ static void rnng_dispatch_thread(void *args) {
     snprintf(url[i], sz, "%s/%d", durl, i + 1);
     if (nng_req0_open(&sock[i]) ||
         nng_socket_set_ms(sock[i], "req:resend-time", 0) ||
-        nng_pipe_notify(sock[i], NNG_PIPE_EV_ADD_POST, nano_record_pipe, ncv) ||
-        nng_pipe_notify(sock[i], NNG_PIPE_EV_REM_POST, nano_record_pipe, ncv))
+        nng_pipe_notify(sock[i], NNG_PIPE_EV_ADD_POST, nano_record_pipe, &active[i]) ||
+        nng_pipe_notify(sock[i], NNG_PIPE_EV_REM_POST, nano_record_pipe, &active[i]))
       goto exitlevel2;
 
     if (disp->tls != NULL) {
@@ -551,6 +551,15 @@ static void rnng_dispatch_thread(void *args) {
 
     for (int i = 0; i < n; i++) {
 
+      nng_mtx_lock(mtx);
+      cur = active[i];
+      nng_mtx_unlock(mtx);
+      if (cur > store[i]) {
+        nng_ctx_open(&rctx[i], hsock);
+        nng_ctx_recv(rctx[i], haio[i].aio);
+      }
+      store[i] = cur;
+
       if (busy[i]) {
         nng_mtx_lock(mtx);
         xc = raio[i].result;
@@ -570,6 +579,7 @@ static void rnng_dispatch_thread(void *args) {
               nng_msg_append(msg, &xc, sizeof(int));
             if ((xc = nng_ctx_sendmsg(rctx[i], msg, 0)))
               nng_msg_free(msg);
+            store[i] = 0;
             act = 0;
           }
           nng_ctx_close(ctx[i]);
@@ -587,7 +597,7 @@ static void rnng_dispatch_thread(void *args) {
         }
       }
 
-      if (!busy[i]) {
+      if (cur && !busy[i]) {
         nng_mtx_lock(mtx);
         xc = haio[i].result;
         nng_mtx_unlock(mtx);
@@ -643,9 +653,9 @@ SEXP rnng_dispatcher_socket(SEXP cv, SEXP n, SEXP host, SEXP url, SEXP tls) {
 
   nano_cv *ncv = (nano_cv *) NANO_PTR(cv);
 
-  int xc;
-  SEXP xptr, sock, list;
-  ncv->condition = nano_integer(n);
+  int xc, nd = nano_integer(n);
+  SEXP xptr, sock, list, array;
+  ncv->condition = nd;
 
   nano_thread_disp *disp = R_Calloc(1, nano_thread_disp);
   disp->cv = ncv;
@@ -653,6 +663,8 @@ SEXP rnng_dispatcher_socket(SEXP cv, SEXP n, SEXP host, SEXP url, SEXP tls) {
   if (sec) nng_tls_config_hold(disp->tls);
   disp->host = NANO_STRING(host);
   disp->url = NANO_STRING(url);
+  int *active = R_Calloc(nd, int);
+  disp->active = active;
   nng_socket *hsock = R_Calloc(1, nng_socket);
   nano_listener *hl = R_Calloc(1, nano_listener);
 
@@ -675,6 +687,9 @@ SEXP rnng_dispatcher_socket(SEXP cv, SEXP n, SEXP host, SEXP url, SEXP tls) {
   Rf_setAttrib(sock, nano_ListenerSymbol, list);
   R_RegisterCFinalizerEx(list, listener_finalizer, TRUE);
 
+  array = R_MakeExternalPtr(active, nano_IdSymbol, n);
+  Rf_setAttrib(sock, nano_IdSymbol, array);
+
   UNPROTECT(1);
   return sock;
 
@@ -685,5 +700,20 @@ SEXP rnng_dispatcher_socket(SEXP cv, SEXP n, SEXP host, SEXP url, SEXP tls) {
   R_Free(hsock);
   R_Free(disp);
   ERROR_OUT(xc);
+
+}
+
+SEXP rnng_read_active(SEXP xptr) {
+
+  if (NANO_TAG(xptr) != nano_IdSymbol)
+    return R_NilValue;
+
+  const int n = nano_integer(NANO_PROT(xptr));
+  int *array = (int *) NANO_PTR(xptr);
+  SEXP out = Rf_allocVector(INTSXP, n);
+  for (int i = 0; i < n; i ++)
+    memcpy(NANO_DATAPTR(out), array, n * sizeof(int));
+
+  return out;
 
 }
