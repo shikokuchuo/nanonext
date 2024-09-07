@@ -221,6 +221,11 @@ typedef struct nano_thread_disp_s {
   int *active;
 } nano_thread_disp;
 
+typedef struct nano_signal_s {
+  nano_cv *cv;
+  int *active;
+} nano_signal;
+
 typedef struct nano_buf_s {
   unsigned char *buf;
   size_t len;

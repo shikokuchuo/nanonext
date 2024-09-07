@@ -357,9 +357,13 @@ SEXP rnng_wait_thread_create(SEXP x) {
 }
 
 static void nano_record_pipe(nng_pipe p, nng_pipe_ev ev, void *arg) {
-  int *active = (int *) arg;
+  nano_signal *signal = (nano_signal *) arg;
   const int incr = ev == NNG_PIPE_EV_ADD_POST;
-  incr ? (*active)++ : (*active)--;
+  nano_cv *ncv = signal->cv;
+  nng_mtx *mtx = ncv->mtx;
+  nng_mtx_lock(mtx);
+  incr ? (*signal->active)++ : (*signal->active)--;
+  nng_mtx_unlock(mtx);
   // nano_printf(1, "pipe ev %d\n", x[0]);
 }
 
@@ -480,6 +484,7 @@ static void rnng_dispatch_thread(void *args) {
   int busy[n];
   memset(busy, 0, sizeof(busy));
   nng_url *up;
+  nano_signal signal[n];
   int cur;
 
   if (nng_rep0_open(&hsock))
@@ -489,10 +494,12 @@ static void rnng_dispatch_thread(void *args) {
 
   for (int i = 0; i < n; i++) {
     snprintf(url[i], sz, "%s/%d", durl, i + 1);
+    signal[i].cv = ncv;
+    signal[i].active = &active[i];
     if (nng_req0_open(&sock[i]) ||
         nng_socket_set_ms(sock[i], "req:resend-time", 0) ||
-        nng_pipe_notify(sock[i], NNG_PIPE_EV_ADD_POST, nano_record_pipe, &active[i]) ||
-        nng_pipe_notify(sock[i], NNG_PIPE_EV_REM_POST, nano_record_pipe, &active[i]))
+        nng_pipe_notify(sock[i], NNG_PIPE_EV_ADD_POST, nano_record_pipe, &signal[i]) ||
+        nng_pipe_notify(sock[i], NNG_PIPE_EV_REM_POST, nano_record_pipe, &signal[i]))
       goto exitlevel2;
 
     if (disp->tls != NULL) {
