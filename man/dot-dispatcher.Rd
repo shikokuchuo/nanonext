@@ -21,7 +21,7 @@ this value.}
 provide a TLS configuration object created by \code{\link{tls_config}}.}
 }
 \value{
-A \sQuote{req} Socket. The thread is attached to \sQuote{cv}.
+A \sQuote{req} Socket. The thread is attached as an attribute.
 }
 \description{
 Creates a Dispatcher socket, which is a special type of \sQuote{req} socket,

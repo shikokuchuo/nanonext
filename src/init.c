@@ -133,7 +133,6 @@ static const R_CallMethodDef callMethods[] = {
   {"rnng_ctx_create", (DL_FUNC) &rnng_ctx_create, 1},
   {"rnng_ctx_open", (DL_FUNC) &rnng_ctx_open, 1},
   {"rnng_cv_alloc", (DL_FUNC) &rnng_cv_alloc, 0},
-  {"rnng_cv_flag", (DL_FUNC) &rnng_cv_flag, 1},
   {"rnng_cv_reset", (DL_FUNC) &rnng_cv_reset, 1},
   {"rnng_cv_signal", (DL_FUNC) &rnng_cv_signal, 1},
   {"rnng_cv_until", (DL_FUNC) &rnng_cv_until, 2},

@@ -401,22 +401,6 @@ SEXP rnng_cv_signal(SEXP cvar) {
 
 }
 
-SEXP rnng_cv_flag(SEXP cvar) {
-
-  if (NANO_TAG(cvar) != nano_CvSymbol)
-    Rf_error("'cv' is not a valid Condition Variable");
-
-  nano_cv *ncv = (nano_cv *) NANO_PTR(cvar);
-  nng_mtx *mtx = ncv->mtx;
-  int flag;
-  nng_mtx_lock(mtx);
-  flag = ncv->flag;
-  nng_mtx_unlock(mtx);
-
-  return Rf_ScalarInteger(flag);
-
-}
-
 // request ---------------------------------------------------------------------
 
 SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeout, SEXP cvar, SEXP clo) {

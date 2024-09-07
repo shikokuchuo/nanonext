@@ -321,7 +321,7 @@ unlock <- function(socket) invisible(.Call(rnng_socket_unlock, socket))
 #'     this value.
 #' @inheritParams listen
 #'
-#' @return A \sQuote{req} Socket. The thread is attached to \sQuote{cv}.
+#' @return A \sQuote{req} Socket. The thread is attached as an attribute.
 #'
 #' @keywords internal
 #' @export
@@ -329,15 +329,16 @@ unlock <- function(socket) invisible(.Call(rnng_socket_unlock, socket))
 .dispatcher <- function(cv, n, host, url, tls = NULL)
   .Call(rnng_dispatcher_socket, cv, n, host, url, tls)
 
-#' Condition Variable Flag Value
+#' Read Active Status
 #'
-#' Query the flag value of a conditionVariable (for internal use only).
+#' Reads the active status of threaded dispatcher sockets (for internal use
+#'     only).
 #'
-#' @param cv a \sQuote{conditionVariable} object.
+#' @param sock a dispatcher Socket.
 #'
-#' @return An integer.
+#' @return An vector of integer values.
 #'
 #' @keywords internal
 #' @export
 #'
-.cv_flag <- function(cv) .Call(rnng_cv_flag, cv)
+.active <- function(sock) .Call(rnng_read_active, sock)

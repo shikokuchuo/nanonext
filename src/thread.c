@@ -461,8 +461,7 @@ static void rnng_dispatch_thread(void *args) {
   nano_cv *ncv = disp->cv;
   nng_mtx *mtx = ncv->mtx;
   nng_cv *cv = ncv->cv;
-  const int n = ncv->condition;
-  ncv->condition = 0;
+  const int n = disp->n;
   int *active = disp->active;
 
   const char *durl = disp->url;
@@ -661,17 +660,16 @@ SEXP rnng_dispatcher_socket(SEXP cv, SEXP n, SEXP host, SEXP url, SEXP tls) {
   nano_cv *ncv = (nano_cv *) NANO_PTR(cv);
 
   int xc, nd = nano_integer(n);
-  SEXP xptr, sock, list, array;
-  ncv->condition = nd;
+  SEXP xptr, sock, list;
 
   nano_thread_disp *disp = R_Calloc(1, nano_thread_disp);
   disp->cv = ncv;
+  disp->n = nd;
   disp->tls = sec ? (nng_tls_config *) NANO_PTR(tls) : NULL;
   if (sec) nng_tls_config_hold(disp->tls);
   disp->host = NANO_STRING(host);
   disp->url = NANO_STRING(url);
-  int *active = R_Calloc(nd, int);
-  disp->active = active;
+  disp->active = R_Calloc(nd, int);
   nng_socket *hsock = R_Calloc(1, nng_socket);
   nano_listener *hl = R_Calloc(1, nano_listener);
 
@@ -683,19 +681,17 @@ SEXP rnng_dispatcher_socket(SEXP cv, SEXP n, SEXP host, SEXP url, SEXP tls) {
       (xc = nng_thread_create(&disp->thr, rnng_dispatch_thread, disp)))
     goto exitlevel2;
 
-  xptr = R_MakeExternalPtr(disp, R_NilValue, R_NilValue);
-  NANO_SET_PROT(cv, xptr);
-  R_RegisterCFinalizerEx(xptr, thread_disp_finalizer, TRUE);
-
   PROTECT(sock = R_MakeExternalPtr(hsock, nano_SocketSymbol, R_NilValue));
   R_RegisterCFinalizerEx(sock, socket_finalizer, TRUE);
+
+  xptr = R_MakeExternalPtr(disp, nano_SocketSymbol, R_NilValue);
+  Rf_setAttrib(sock, R_MissingArg, xptr);
+  R_RegisterCFinalizerEx(xptr, thread_disp_finalizer, TRUE);
 
   list = R_MakeExternalPtr(hl, nano_ListenerSymbol, R_NilValue);
   Rf_setAttrib(sock, nano_ListenerSymbol, list);
   R_RegisterCFinalizerEx(list, listener_finalizer, TRUE);
 
-  array = R_MakeExternalPtr(active, nano_IdSymbol, n);
-  Rf_setAttrib(sock, nano_IdSymbol, array);
 
   UNPROTECT(1);
   return sock;
@@ -705,21 +701,22 @@ SEXP rnng_dispatcher_socket(SEXP cv, SEXP n, SEXP host, SEXP url, SEXP tls) {
   exitlevel1:
   R_Free(hl);
   R_Free(hsock);
+  R_Free(disp->active);
   R_Free(disp);
   ERROR_OUT(xc);
 
 }
 
-SEXP rnng_read_active(SEXP xptr) {
+SEXP rnng_read_active(SEXP sock) {
 
-  if (NANO_TAG(xptr) != nano_IdSymbol)
+  SEXP xptr = Rf_getAttrib(sock, R_MissingArg);
+  if (NANO_TAG(xptr) != nano_SocketSymbol)
     return R_NilValue;
 
-  const int n = nano_integer(NANO_PROT(xptr));
-  int *array = (int *) NANO_PTR(xptr);
+  nano_thread_disp *disp = (nano_thread_disp *) NANO_PTR(xptr);
+  const int n = disp->n;
   SEXP out = Rf_allocVector(INTSXP, n);
-  for (int i = 0; i < n; i ++)
-    memcpy(NANO_DATAPTR(out), array, n * sizeof(int));
+  memcpy(NANO_DATAPTR(out), disp->active, n * sizeof(int));
 
   return out;
 
