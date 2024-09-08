@@ -246,6 +246,8 @@ int nano_encodes(const SEXP);
 int nano_matcharg(const SEXP);
 int nano_matchargs(const SEXP);
 
+void nano_printf(const int, const char *, ...);
+
 SEXP rnng_advance_rng_state(void);
 SEXP rnng_aio_call(SEXP);
 SEXP rnng_aio_collect(SEXP);
