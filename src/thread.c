@@ -470,7 +470,7 @@ static void rnng_dispatch_thread(void *args) {
   const char *durl = disp->url;
   const size_t sz = strlen(durl) + 10;
 
-  int xc, act = 1;
+  int xc, end = 0;
   nng_socket hsock;
   nng_dialer hdial;
   char url[n][sz];
@@ -487,7 +487,7 @@ static void rnng_dispatch_thread(void *args) {
   memset(busy, 0, sizeof(busy));
   nng_url *up;
   nano_signal signal[n];
-  int cur[n];
+  int active[n];
 
   nng_msg *msg;
   unsigned char *buf;
@@ -570,18 +570,16 @@ static void rnng_dispatch_thread(void *args) {
       goto exitlevel1;
     }
     ncv->condition--;
+    memcpy(active, online, n * sizeof(int));
     nng_mtx_unlock(mtx);
 
-    nng_mtx_lock(mtx);
-    memcpy(cur, online, n * sizeof(int));
-    nng_mtx_unlock(mtx);
     for (int i = 0; i < n; i++) {
-      if (cur[i] > store[i]) {
+      if (active[i] > store[i]) {
         nng_ctx_open(&rctx[i], hsock);
         nng_ctx_recv(rctx[i], haio[i].aio);
       }
     }
-    memcpy(store, cur, n * sizeof(int));
+    memcpy(store, active, n * sizeof(int));
 
     for (int i = 0; i < n; i++) {
 
@@ -598,7 +596,7 @@ static void rnng_dispatch_thread(void *args) {
               nng_msg_alloc(&msg, 0);
               if ((xc = nng_ctx_sendmsg(ctx[i], msg, 0)))
                 nng_msg_free(msg);
-              act = 0;
+              end = 1;
             }
             if ((xc = nng_ctx_sendmsg(rctx[i], (nng_msg *) raio[i].data, 0)))
               nng_msg_free((nng_msg *) raio[i].data);
@@ -611,24 +609,24 @@ static void rnng_dispatch_thread(void *args) {
               nng_msg_append(msg, &xc, sizeof(int));
             if ((xc = nng_ctx_sendmsg(rctx[i], msg, 0)))
               nng_msg_free(msg);
-            act = 0;
+            end = 1;
           }
           nng_ctx_close(ctx[i]);
           nng_ctx_close(rctx[i]);
           busy[i] = 0;
           // nano_printf(1, "processed reply %d\n", i);
-          if (act) {
+          if (end) {
+            end = 0;
+          } else {
             nng_ctx_open(&rctx[i], hsock);
             nng_ctx_recv(rctx[i], haio[i].aio);
             // nano_printf(1, "allocated %d\n", i);
-          } else {
-            act = 1;
           }
           break;
         }
       }
 
-      if (cur[i] && !busy[i]) {
+      if (active[i] && !busy[i]) {
         nng_mtx_lock(mtx);
         xc = haio[i].result;
         nng_mtx_unlock(mtx);
