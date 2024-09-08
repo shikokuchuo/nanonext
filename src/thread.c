@@ -20,7 +20,19 @@
 #define NANONEXT_IO
 #include "nanonext.h"
 
-void nano_printf(const int err, const char *fmt, ...) {
+void nano_REprintf(const char *fmt) {
+
+  ssize_t out = write(STDERR_FILENO, fmt, strlen(fmt));
+  memset(&out, 0, sizeof(ssize_t));
+
+}
+
+// messenger -------------------------------------------------------------------
+
+// # nocov start
+// tested interactively
+
+static void nano_printf(const int err, const char *fmt, ...) {
 
   char buf[NANONEXT_INIT_BUFSIZE];
   va_list arg_ptr;
@@ -33,11 +45,6 @@ void nano_printf(const int err, const char *fmt, ...) {
   memset(&out, 0, sizeof(ssize_t));
 
 }
-
-// messenger -------------------------------------------------------------------
-
-// # nocov start
-// tested interactively
 
 static void thread_finalizer(SEXP xptr) {
 
