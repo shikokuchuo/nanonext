@@ -540,24 +540,30 @@ static void rnng_dispatch_thread(void *args) {
       goto exitlevel2;
     haio[i].next = ncv;
     haio[i].result = 0;
-    if (nng_aio_alloc(&haio[i].aio, raio_complete_signal, &haio[i]) ||
-        nng_ctx_open(&rctx[i], hsock))
+    if (nng_aio_alloc(&haio[i].aio, raio_complete_signal, &haio[i]))
       goto exitlevel2;
-    nng_ctx_recv(rctx[i], haio[i].aio);
     // nano_printf(1, "allocated\n");
   }
 
   for (int i = 0; i < n; i++) {
-
     nng_mtx_lock(mtx);
     while (ncv->condition == 0)
       nng_cv_wait(cv);
     if (ncv->condition < 0) {
       nng_mtx_unlock(mtx);
-      goto exitlevel1;
+      goto exitlevel2;
     }
     ncv->condition--;
     nng_mtx_unlock(mtx);
+  }
+
+  if (nng_recvmsg(hsock, &msg, 0) ||
+      nng_sendmsg(hsock, msg, 0))
+    goto exitlevel2;
+
+  for (int i = 0; i < n; i++) {
+    nng_ctx_open(&rctx[i], hsock);
+    nng_ctx_recv(rctx[i], haio[i].aio);
   }
 
   while (1) {
@@ -567,7 +573,7 @@ static void rnng_dispatch_thread(void *args) {
       nng_cv_wait(cv);
     if (ncv->condition < 0) {
       nng_mtx_unlock(mtx);
-      goto exitlevel1;
+      goto exitlevel2;
     }
     ncv->condition--;
     memcpy(active, online, n * sizeof(int));
