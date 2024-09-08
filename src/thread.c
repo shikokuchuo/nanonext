@@ -20,20 +20,18 @@
 #define NANONEXT_IO
 #include "nanonext.h"
 
+void nano_REprintf(const char *fmt) {
+
+  if (write(STDERR_FILENO, fmt, strlen(fmt))) {} ;
+
+}
+
 // messenger -------------------------------------------------------------------
 
 // # nocov start
 // tested interactively
 
-static void thread_finalizer(SEXP xptr) {
-
-  if (NANO_PTR(xptr) == NULL) return;
-  nng_thread *xp = (nng_thread *) NANO_PTR(xptr);
-  nng_thread_destroy(xp);
-
-}
-
-static void nano_printf(int err, const char *fmt, ...) {
+static void nano_printf(const int err, const char *fmt, ...) {
 
   char buf[NANONEXT_INIT_BUFSIZE];
   va_list arg_ptr;
@@ -42,8 +40,15 @@ static void nano_printf(int err, const char *fmt, ...) {
   int bytes = vsnprintf(buf, NANONEXT_INIT_BUFSIZE, fmt, arg_ptr);
   va_end(arg_ptr);
 
-  ssize_t out = write(err ? STDERR_FILENO : STDOUT_FILENO, buf, (size_t) bytes);
-  memset(&out, 0, sizeof(ssize_t));
+  if (write(err ? STDERR_FILENO : STDOUT_FILENO, buf, (size_t) bytes)) {};
+
+}
+
+static void thread_finalizer(SEXP xptr) {
+
+  if (NANO_PTR(xptr) == NULL) return;
+  nng_thread *xp = (nng_thread *) NANO_PTR(xptr);
+  nng_thread_destroy(xp);
 
 }
 
