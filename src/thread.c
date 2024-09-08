@@ -253,7 +253,7 @@ static void thread_disp_finalizer(SEXP xptr) {
     nng_tls_config_free(xp->tls);
   }
   nng_thread_destroy(xp->thr);
-  R_Free(xp->active);
+  R_Free(xp->online);
   R_Free(xp);
 
 }
@@ -363,7 +363,7 @@ static void nano_record_pipe(nng_pipe p, nng_pipe_ev ev, void *arg) {
   nng_mtx *mtx = ncv->mtx;
   nng_cv *cv = ncv->cv;
   nng_mtx_lock(mtx);
-  incr ? (*signal->active)++ : (*signal->active)--;
+  incr ? (*signal->online)++ : (*signal->online)--;
   ncv->condition++;
   nng_cv_wake(cv);
   nng_mtx_unlock(mtx);
@@ -465,7 +465,7 @@ static void rnng_dispatch_thread(void *args) {
   nng_mtx *mtx = ncv->mtx;
   nng_cv *cv = ncv->cv;
   const int n = disp->n;
-  int *active = disp->active;
+  int *online = disp->online;
 
   const char *durl = disp->url;
   const size_t sz = strlen(durl) + 10;
@@ -512,7 +512,7 @@ static void rnng_dispatch_thread(void *args) {
   for (int i = 0; i < n; i++) {
     snprintf(url[i], sz, "%s/%d", durl, i + 1);
     signal[i].cv = ncv;
-    signal[i].active = &active[i];
+    signal[i].online = &online[i];
     if (nng_req0_open(&sock[i]) ||
         nng_socket_set_ms(sock[i], "req:resend-time", 0) ||
         nng_pipe_notify(sock[i], NNG_PIPE_EV_ADD_POST, nano_record_pipe, &signal[i]) ||
@@ -573,7 +573,7 @@ static void rnng_dispatch_thread(void *args) {
     nng_mtx_unlock(mtx);
 
     nng_mtx_lock(mtx);
-    memcpy(cur, active, n * sizeof(int));
+    memcpy(cur, online, n * sizeof(int));
     nng_mtx_unlock(mtx);
     for (int i = 0; i < n; i++) {
       if (cur[i] > store[i]) {
@@ -694,7 +694,7 @@ SEXP rnng_dispatcher_socket(SEXP cv, SEXP n, SEXP host, SEXP url, SEXP tls) {
   if (sec) nng_tls_config_hold(disp->tls);
   disp->host = NANO_STRING(host);
   disp->url = NANO_STRING(url);
-  disp->active = R_Calloc(nd, int);
+  disp->online = R_Calloc(nd, int);
   nng_socket *hsock = R_Calloc(1, nng_socket);
   nano_listener *hl = R_Calloc(1, nano_listener);
 
@@ -726,13 +726,13 @@ SEXP rnng_dispatcher_socket(SEXP cv, SEXP n, SEXP host, SEXP url, SEXP tls) {
   exitlevel1:
   R_Free(hl);
   R_Free(hsock);
-  R_Free(disp->active);
+  R_Free(disp->online);
   R_Free(disp);
   ERROR_OUT(xc);
 
 }
 
-SEXP rnng_read_active(SEXP sock) {
+SEXP rnng_read_online(SEXP sock) {
 
   SEXP xptr = Rf_getAttrib(sock, R_MissingArg);
   if (NANO_TAG(xptr) != nano_SocketSymbol)
@@ -741,7 +741,7 @@ SEXP rnng_read_active(SEXP sock) {
   nano_thread_disp *disp = (nano_thread_disp *) NANO_PTR(xptr);
   const int n = disp->n;
   SEXP out = Rf_allocVector(INTSXP, n);
-  memcpy(NANO_DATAPTR(out), disp->active, n * sizeof(int));
+  memcpy(NANO_DATAPTR(out), disp->online, n * sizeof(int));
 
   return out;
 

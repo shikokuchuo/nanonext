@@ -329,9 +329,9 @@ unlock <- function(socket) invisible(.Call(rnng_socket_unlock, socket))
 .dispatcher <- function(cv, n, host, url, tls = NULL)
   .Call(rnng_dispatcher_socket, cv, n, host, url, tls)
 
-#' Read Active Status
+#' Read Online Status
 #'
-#' Reads the active status of threaded dispatcher sockets (for internal use
+#' Reads the online status of threaded dispatcher sockets (for internal use
 #'     only).
 #'
 #' @param sock a dispatcher Socket.
@@ -341,4 +341,4 @@ unlock <- function(socket) invisible(.Call(rnng_socket_unlock, socket))
 #' @keywords internal
 #' @export
 #'
-.active <- function(sock) .Call(rnng_read_active, sock)
+.online <- function(sock) .Call(rnng_read_online, sock)
