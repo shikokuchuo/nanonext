@@ -361,8 +361,11 @@ static void nano_record_pipe(nng_pipe p, nng_pipe_ev ev, void *arg) {
   const int incr = ev == NNG_PIPE_EV_ADD_POST;
   nano_cv *ncv = signal->cv;
   nng_mtx *mtx = ncv->mtx;
+  nng_cv *cv = ncv->cv;
   nng_mtx_lock(mtx);
   incr ? (*signal->active)++ : (*signal->active)--;
+  ncv->condition++;
+  nng_cv_wake(cv);
   nng_mtx_unlock(mtx);
   // nano_printf(1, "pipe ev %d\n", x[0]);
 }
@@ -484,7 +487,7 @@ static void rnng_dispatch_thread(void *args) {
   memset(busy, 0, sizeof(busy));
   nng_url *up;
   nano_signal signal[n];
-  int cur;
+  int cur[n];
 
   nng_msg *msg;
   unsigned char *buf;
@@ -544,6 +547,19 @@ static void rnng_dispatch_thread(void *args) {
     // nano_printf(1, "allocated\n");
   }
 
+  for (int i = 0; i < n; i++) {
+
+    nng_mtx_lock(mtx);
+    while (ncv->condition == 0)
+      nng_cv_wait(cv);
+    if (ncv->condition < 0) {
+      nng_mtx_unlock(mtx);
+      goto exitlevel1;
+    }
+    ncv->condition--;
+    nng_mtx_unlock(mtx);
+  }
+
   while (1) {
 
     nng_mtx_lock(mtx);
@@ -556,16 +572,18 @@ static void rnng_dispatch_thread(void *args) {
     ncv->condition--;
     nng_mtx_unlock(mtx);
 
+    nng_mtx_lock(mtx);
+    memcpy(cur, active, n * sizeof(int));
+    nng_mtx_unlock(mtx);
     for (int i = 0; i < n; i++) {
-
-      nng_mtx_lock(mtx);
-      cur = active[i];
-      nng_mtx_unlock(mtx);
-      if (cur > store[i]) {
+      if (cur[i] > store[i]) {
         nng_ctx_open(&rctx[i], hsock);
         nng_ctx_recv(rctx[i], haio[i].aio);
       }
-      store[i] = cur;
+    }
+    memcpy(store, cur, n * sizeof(int));
+
+    for (int i = 0; i < n; i++) {
 
       if (busy[i]) {
         nng_mtx_lock(mtx);
@@ -611,7 +629,7 @@ static void rnng_dispatch_thread(void *args) {
         }
       }
 
-      if (cur && !busy[i]) {
+      if (cur[i] && !busy[i]) {
         nng_mtx_lock(mtx);
         xc = haio[i].result;
         nng_mtx_unlock(mtx);
