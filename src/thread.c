@@ -22,8 +22,7 @@
 
 void nano_REprintf(const char *fmt) {
 
-  ssize_t out = write(STDERR_FILENO, fmt, strlen(fmt));
-  memset(&out, 0, sizeof(ssize_t));
+  if (write(STDERR_FILENO, fmt, strlen(fmt))) {} ;
 
 }
 
@@ -41,8 +40,7 @@ static void nano_printf(const int err, const char *fmt, ...) {
   int bytes = vsnprintf(buf, NANONEXT_INIT_BUFSIZE, fmt, arg_ptr);
   va_end(arg_ptr);
 
-  ssize_t out = write(err ? STDERR_FILENO : STDOUT_FILENO, buf, (size_t) bytes);
-  memset(&out, 0, sizeof(ssize_t));
+  if (write(err ? STDERR_FILENO : STDOUT_FILENO, buf, (size_t) bytes)) {};
 
 }
 
