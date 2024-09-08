@@ -611,7 +611,6 @@ static void rnng_dispatch_thread(void *args) {
               nng_msg_append(msg, &xc, sizeof(int));
             if ((xc = nng_ctx_sendmsg(rctx[i], msg, 0)))
               nng_msg_free(msg);
-            store[i] = 0;
             act = 0;
           }
           nng_ctx_close(ctx[i]);
