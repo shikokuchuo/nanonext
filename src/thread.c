@@ -510,6 +510,7 @@ static void rnng_dispatch_thread(void *args) {
   if (nng_dial(hsock, disp->host, &hdial, 0))
     goto exitlevel1;
 
+  nng_url_parse(&up, durl);
   for (int i = 0; i < n; i++) {
     snprintf(url[i], sz, "%s/%d", durl, i + 1);
     signal[i].cv = ncv;
@@ -521,14 +522,12 @@ static void rnng_dispatch_thread(void *args) {
       goto exitlevel2;
 
     if (disp->tls != NULL) {
-      if (nng_listener_create(&list[i], sock[i], url[i]) ||
-          nng_url_parse(&up, url[i]))
+      if (nng_listener_create(&list[i], sock[i], url[i]))
         goto exitlevel2;
       if (nng_tls_config_server_name(disp->tls, up->u_hostname) ||
           nng_listener_set_ptr(list[i], NNG_OPT_TLS_CONFIG, disp->tls) ||
           nng_listener_start(list[i], 0))
         goto exitlevel3;
-      nng_url_free(up);
     } else {
       if (nng_listen(sock[i], url[i], &list[i], 0))
         goto exitlevel2;
@@ -544,6 +543,7 @@ static void rnng_dispatch_thread(void *args) {
     if (nng_aio_alloc(&haio[i].aio, raio_complete_signal, &haio[i]))
       goto exitlevel2;
   }
+  nng_url_free(up);
 
   for (int i = 0; i < n; i++) {
     nng_mtx_lock(mtx);
