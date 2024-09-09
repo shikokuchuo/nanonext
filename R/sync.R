@@ -326,7 +326,7 @@ unlock <- function(socket) invisible(.Call(rnng_socket_unlock, socket))
 #' @keywords internal
 #' @export
 #'
-.dispatcher <- function(cv, n, host, url, tls = NULL)
+.dispatcher <- function(cv, n, host, url, tls = quote(expr =))
   .Call(rnng_dispatcher_socket, cv, n, host, url, tls)
 
 #' Read Online Status

@@ -4,7 +4,7 @@
 \alias{.dispatcher}
 \title{Dispatcher Socket}
 \usage{
-.dispatcher(cv, n, host, url, tls = NULL)
+.dispatcher(cv, n, host, url, tls = quote(expr = ))
 }
 \arguments{
 \item{cv}{a \sQuote{conditionVariable} object.}

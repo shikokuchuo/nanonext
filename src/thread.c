@@ -367,7 +367,7 @@ static void nano_record_pipe(nng_pipe p, nng_pipe_ev ev, void *arg) {
   ncv->condition++;
   nng_cv_wake(cv);
   nng_mtx_unlock(mtx);
-  // nano_printf(1, "pipe ev %d\n", x[0]);
+  // nano_printf(1, "pipe ev %d\n", incr);
 }
 
 static void rnng_signal_thread(void *args) {
@@ -470,7 +470,8 @@ static void rnng_dispatch_thread(void *args) {
   const char *durl = disp->url;
   const size_t sz = strlen(durl) + 10;
 
-  int xc, end = 0;
+  int xc, end = 0, auth = ncv->flag;
+  ncv->flag = 0;
   nng_socket hsock;
   nng_dialer hdial;
   char url[n][sz];
@@ -542,7 +543,6 @@ static void rnng_dispatch_thread(void *args) {
     haio[i].result = 0;
     if (nng_aio_alloc(&haio[i].aio, raio_complete_signal, &haio[i]))
       goto exitlevel2;
-    // nano_printf(1, "allocated\n");
   }
 
   for (int i = 0; i < n; i++) {
@@ -557,9 +557,14 @@ static void rnng_dispatch_thread(void *args) {
     nng_mtx_unlock(mtx);
   }
 
-  if (nng_recvmsg(hsock, &msg, 0) ||
-      nng_sendmsg(hsock, msg, 0))
-    goto exitlevel2;
+  if (auth) {
+    if (nng_recvmsg(hsock, &msg, 0))
+      goto exitlevel2;
+    if (nng_sendmsg(hsock, msg, 0)) {
+      nng_msg_free(msg);
+      goto exitlevel2;
+    }
+  }
 
   for (int i = 0; i < n; i++) {
     nng_ctx_open(&rctx[i], hsock);
@@ -681,7 +686,8 @@ SEXP rnng_dispatcher_socket(SEXP cv, SEXP n, SEXP host, SEXP url, SEXP tls) {
   if (NANO_TAG(cv) != nano_CvSymbol)
     Rf_error("'cv' is not a valid Condition Variable");
 
-  const int sec = tls != R_NilValue;
+  const int auth = tls == R_MissingArg;
+  const int sec = !auth && tls != R_NilValue;
 
   if (sec && NANO_TAG(tls) != nano_TlsSymbol)
     Rf_error("'tls' is not a valid TLS Configuration");
@@ -693,6 +699,7 @@ SEXP rnng_dispatcher_socket(SEXP cv, SEXP n, SEXP host, SEXP url, SEXP tls) {
 
   nano_thread_disp *disp = R_Calloc(1, nano_thread_disp);
   disp->cv = ncv;
+  ncv->flag = auth;
   disp->n = nd;
   disp->tls = sec ? (nng_tls_config *) NANO_PTR(tls) : NULL;
   if (sec) nng_tls_config_hold(disp->tls);
