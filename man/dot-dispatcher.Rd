@@ -4,18 +4,14 @@
 \alias{.dispatcher}
 \title{Dispatcher Socket}
 \usage{
-.dispatcher(cv, n, host, url, tls = quote(expr = ))
+.dispatcher(cv, host, url, tls = quote(expr = ))
 }
 \arguments{
 \item{cv}{a \sQuote{conditionVariable} object.}
 
-\item{n}{number of connected rep nodes.}
-
 \item{host}{\sQuote{inproc://} url connecting the host to the thread.}
 
-\item{url}{the root URL at which to listen for rep nodes to connect to. The
-actual URLs created append \sQuote{/1}, \sQuote{/2}, ..., \sQuote{/n} to
-this value.}
+\item{url}{the URLs at which to listen for rep nodes.}
 
 \item{tls}{[default NULL] for secure tls+tcp:// or wss:// connections only,
 provide a TLS configuration object created by \code{\link{tls_config}}.}

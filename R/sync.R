@@ -314,11 +314,8 @@ unlock <- function(socket) invisible(.Call(rnng_socket_unlock, socket))
 #'     only).
 #'
 #' @param cv a \sQuote{conditionVariable} object.
-#' @param n number of connected rep nodes.
 #' @param host \sQuote{inproc://} url connecting the host to the thread.
-#' @param url the root URL at which to listen for rep nodes to connect to. The
-#'     actual URLs created append \sQuote{/1}, \sQuote{/2}, ..., \sQuote{/n} to
-#'     this value.
+#' @param url the URLs at which to listen for rep nodes.
 #' @inheritParams listen
 #'
 #' @return A \sQuote{req} Socket. The thread is attached as an attribute.
@@ -326,8 +323,8 @@ unlock <- function(socket) invisible(.Call(rnng_socket_unlock, socket))
 #' @keywords internal
 #' @export
 #'
-.dispatcher <- function(cv, n, host, url, tls = quote(expr =))
-  .Call(rnng_dispatcher_socket, cv, n, host, url, tls)
+.dispatcher <- function(cv, host, url, tls = quote(expr =))
+  .Call(rnng_dispatcher_socket, cv, host, url, tls)
 
 #' Read Online Status
 #'

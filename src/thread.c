@@ -253,6 +253,9 @@ static void thread_disp_finalizer(SEXP xptr) {
     nng_tls_config_free(xp->tls);
   }
   nng_thread_destroy(xp->thr);
+  for (int i = 0; i < xp->n; i++)
+    R_Free(xp->url[i]);
+  R_Free(xp->url);
   R_Free(xp->online);
   R_Free(xp);
 
@@ -464,17 +467,14 @@ static void rnng_dispatch_thread(void *args) {
   nano_cv *ncv = disp->cv;
   nng_mtx *mtx = ncv->mtx;
   nng_cv *cv = ncv->cv;
-  const int n = disp->n;
+  const R_xlen_t n = disp->n;
   int *online = disp->online;
-
-  const char *durl = disp->url;
-  const size_t sz = strlen(durl) + 10;
+  char **url = disp->url;
 
   int xc, end = 0, auth = ncv->flag;
   ncv->flag = 0;
   nng_socket hsock;
   nng_dialer hdial;
-  char url[n][sz];
   nng_socket sock[n];
   nng_ctx ctx[n];
   nng_ctx rctx[n];
@@ -510,9 +510,9 @@ static void rnng_dispatch_thread(void *args) {
   if (nng_dial(hsock, disp->host, &hdial, 0))
     goto exitlevel1;
 
-  nng_url_parse(&up, durl);
-  for (int i = 0; i < n; i++) {
-    snprintf(url[i], sz, "%s/%d", durl, i + 1);
+  nng_url_parse(&up, url[0]);
+  for (R_xlen_t i = 0; i < n; i++) {
+
     signal[i].cv = ncv;
     signal[i].online = &online[i];
     if (nng_req0_open(&sock[i]) ||
@@ -532,6 +532,7 @@ static void rnng_dispatch_thread(void *args) {
       if (nng_listen(sock[i], url[i], &list[i], 0))
         goto exitlevel2;
     }
+
     raio[i].next = ncv;
     raio[i].result = 0;
     if (nng_aio_alloc(&raio[i].aio, raio_complete_signal, &raio[i]))
@@ -545,7 +546,7 @@ static void rnng_dispatch_thread(void *args) {
   }
   nng_url_free(up);
 
-  for (int i = 0; i < n; i++) {
+  for (R_xlen_t i = 0; i < n; i++) {
     nng_mtx_lock(mtx);
     while (ncv->condition == 0)
       nng_cv_wait(cv);
@@ -566,7 +567,7 @@ static void rnng_dispatch_thread(void *args) {
     }
   }
 
-  for (int i = 0; i < n; i++) {
+  for (R_xlen_t i = 0; i < n; i++) {
     nng_ctx_open(&rctx[i], hsock);
     nng_ctx_recv(rctx[i], haio[i].aio);
   }
@@ -584,7 +585,7 @@ static void rnng_dispatch_thread(void *args) {
     memcpy(active, online, n * sizeof(int));
     nng_mtx_unlock(mtx);
 
-    for (int i = 0; i < n; i++) {
+    for (R_xlen_t i = 0; i < n; i++) {
       if (active[i] > store[i]) {
         nng_ctx_open(&rctx[i], hsock);
         nng_ctx_recv(rctx[i], haio[i].aio);
@@ -592,7 +593,7 @@ static void rnng_dispatch_thread(void *args) {
     }
     memcpy(store, active, n * sizeof(int));
 
-    for (int i = 0; i < n; i++) {
+    for (R_xlen_t i = 0; i < n; i++) {
 
       if (busy[i]) {
         nng_mtx_lock(mtx);
@@ -673,7 +674,7 @@ static void rnng_dispatch_thread(void *args) {
   exitlevel3:
   nng_url_free(up);
   exitlevel2:
-  for (int i = 0; i < n; i++)
+  for (R_xlen_t i = 0; i < n; i++)
     nng_close(sock[i]);
   exitlevel1:
   nng_close(hsock);
@@ -681,20 +682,21 @@ static void rnng_dispatch_thread(void *args) {
 
 }
 
-SEXP rnng_dispatcher_socket(SEXP cv, SEXP n, SEXP host, SEXP url, SEXP tls) {
+SEXP rnng_dispatcher_socket(SEXP cv, SEXP host, SEXP url, SEXP tls) {
 
   if (NANO_TAG(cv) != nano_CvSymbol)
     Rf_error("'cv' is not a valid Condition Variable");
 
   const int auth = tls == R_MissingArg;
   const int sec = !auth && tls != R_NilValue;
+  const R_xlen_t nd = XLENGTH(url);
 
   if (sec && NANO_TAG(tls) != nano_TlsSymbol)
     Rf_error("'tls' is not a valid TLS Configuration");
 
   nano_cv *ncv = (nano_cv *) NANO_PTR(cv);
 
-  int xc, nd = nano_integer(n);
+  int xc;
   SEXP xptr, sock, list;
 
   nano_thread_disp *disp = R_Calloc(1, nano_thread_disp);
@@ -704,8 +706,14 @@ SEXP rnng_dispatcher_socket(SEXP cv, SEXP n, SEXP host, SEXP url, SEXP tls) {
   disp->tls = sec ? (nng_tls_config *) NANO_PTR(tls) : NULL;
   if (sec) nng_tls_config_hold(disp->tls);
   disp->host = NANO_STRING(host);
-  disp->url = NANO_STRING(url);
   disp->online = R_Calloc(nd, int);
+  disp->url = R_Calloc(nd, char *);
+  for (R_xlen_t i = 0; i < nd; i++) {
+    const char *up = CHAR(STRING_ELT(url, i));
+    size_t slen = strlen(up);
+    disp->url[i] = R_Calloc(slen + 1, char);
+    memcpy(disp->url[i], up, slen);
+  }
   nng_socket *hsock = R_Calloc(1, nng_socket);
   nano_listener *hl = R_Calloc(1, nano_listener);
 
@@ -737,6 +745,9 @@ SEXP rnng_dispatcher_socket(SEXP cv, SEXP n, SEXP host, SEXP url, SEXP tls) {
   exitlevel1:
   R_Free(hl);
   R_Free(hsock);
+  for (R_xlen_t i = 0; i < nd; i++)
+    R_Free(disp->url[i]);
+  R_Free(disp->url);
   R_Free(disp->online);
   R_Free(disp);
   ERROR_OUT(xc);
