@@ -108,7 +108,7 @@ typedef struct nano_handle_s {
 
 #define ERROR_OUT(xc) Rf_error("%d | %s", xc, nng_strerror(xc))
 #define ERROR_RET(xc) { Rf_warning("%d | %s", xc, nng_strerror(xc)); return mk_error(xc); }
-#define NANONEXT_INIT_BUFSIZE 8192
+#define NANONEXT_INIT_BUFSIZE 4096
 #define NANONEXT_SERIAL_VER 3
 #define NANONEXT_SERIAL_THR 134217728
 #define NANONEXT_ERR_STRLEN 40
