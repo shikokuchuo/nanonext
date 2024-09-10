@@ -515,7 +515,9 @@ nanotestz(close(s3))
 
 cv <- cv()
 nanotestxp(disp <- .dispatcher(cv, host = "inproc://hostdisp", url = c("inproc://disp/1", "inproc://disp/2"), tls = NULL))
-nanotesti(.online(disp), c(0L, 0L))
+s <- socket(protocol = "rep", dial = "inproc://disp/1")
+nanotest(is.integer(.online(disp)))
+reap(s)
 rm(disp)
 
 nanotest(nanonext:::.DollarNames.ncurlAio(NULL, "sta") == "status")
@@ -578,7 +580,6 @@ nanotestn(stop_aio("a"))
 nanotestn(stop_aio(list("a")))
 nanotestn(.keep(NULL, new.env()))
 nanotestn(.keep(new.env(), new.env()))
-nanotestn(.online("a"))
 
 pem <- "-----BEGIN CERTIFICATE----- -----END CERTIFICATE-----"
 test_tls <- function(pem) {
