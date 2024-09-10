@@ -67,28 +67,6 @@ static void raio_complete(void *arg) {
 
 }
 
-static void raio_complete_signal(void *arg) {
-
-  nano_aio *raio = (nano_aio *) arg;
-  nano_cv *ncv = (nano_cv *) raio->next;
-  nng_cv *cv = ncv->cv;
-  nng_mtx *mtx = ncv->mtx;
-
-  const int res = nng_aio_result(raio->aio);
-  if (res == 0)
-    raio->data = nng_aio_get_msg(raio->aio);
-
-  nng_mtx_lock(mtx);
-  raio->result = res - !res;
-  ncv->condition++;
-  nng_cv_wake(cv);
-  nng_mtx_unlock(mtx);
-
-  if (raio->cb != NULL)
-    later2(raio_invoke_cb, raio->cb);
-
-}
-
 static void iraio_complete(void *arg) {
 
   nano_aio *iaio = (nano_aio *) arg;

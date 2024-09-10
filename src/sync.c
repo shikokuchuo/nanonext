@@ -76,14 +76,6 @@ static void request_complete_signal(void *arg) {
 
 }
 
-static void sendaio_complete(void *arg) {
-
-  nng_aio *aio = ((nano_saio *) arg)->aio;
-  if (nng_aio_result(aio))
-    nng_msg_free(nng_aio_get_msg(aio));
-
-}
-
 static void pipe_cb_signal(nng_pipe p, nng_pipe_ev ev, void *arg) {
 
   int sig;
@@ -160,16 +152,6 @@ static void pipe_cb_dropcon(nng_pipe p, nng_pipe_ev ev, void *arg) {
 }
 
 // finalizers ------------------------------------------------------------------
-
-static void cv_finalizer(SEXP xptr) {
-
-  if (NANO_PTR(xptr) == NULL) return;
-  nano_cv *xp = (nano_cv *) NANO_PTR(xptr);
-  nng_cv_free(xp->cv);
-  nng_mtx_free(xp->mtx);
-  R_Free(xp);
-
-}
 
 static void cv_duo_finalizer(SEXP xptr) {
 

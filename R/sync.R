@@ -306,3 +306,36 @@ unlock <- function(socket) invisible(.Call(rnng_socket_unlock, socket))
 #' @export
 #'
 `%~>%` <- function(cv, cv2) invisible(.Call(rnng_signal_thread_create, cv, cv2))
+
+#' Dispatcher Socket
+#'
+#' Creates a Dispatcher socket, which is a special type of \sQuote{req} socket,
+#'     with FIFO scheduling using a threaded implementation (for internal use
+#'     only).
+#'
+#' @param cv a \sQuote{conditionVariable} object.
+#' @param host \sQuote{inproc://} url connecting the host to the thread.
+#' @param url the URLs at which to listen for rep nodes.
+#' @inheritParams listen
+#'
+#' @return A \sQuote{req} Socket. The thread is attached as an attribute.
+#'
+#' @keywords internal
+#' @export
+#'
+.dispatcher <- function(cv, host, url, tls = quote(expr =))
+  .Call(rnng_dispatcher_socket, cv, host, url, tls)
+
+#' Read Online Status
+#'
+#' Reads the online status of threaded dispatcher sockets (for internal use
+#'     only).
+#'
+#' @param sock a dispatcher Socket.
+#'
+#' @return An vector of integer values.
+#'
+#' @keywords internal
+#' @export
+#'
+.online <- function(sock) .Call(rnng_read_online, sock)

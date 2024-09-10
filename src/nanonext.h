@@ -212,6 +212,25 @@ typedef struct nano_thread_duo_s {
   nano_cv *cv2;
 } nano_thread_duo;
 
+typedef struct nano_thread_disp_s {
+  nng_thread *thr;
+  nano_cv *cv;
+  nng_tls_config *tls;
+  nano_saio **saio;
+  nano_aio **raio;
+  nano_aio **haio;
+  nng_url *up;
+  const char *host;
+  char **url;
+  int *online;
+  R_xlen_t n;
+} nano_thread_disp;
+
+typedef struct nano_signal_s {
+  nano_cv *cv;
+  int *online;
+} nano_signal;
+
 typedef struct nano_buf_s {
   unsigned char *buf;
   size_t len;
@@ -227,6 +246,9 @@ SEXP R_mkClosure(SEXP, SEXP, SEXP);
 SEXP nano_findVarInFrame(const SEXP, const SEXP);
 SEXP nano_PreserveObject(const SEXP);
 void nano_ReleaseObject(SEXP);
+void raio_complete_signal(void *);
+void sendaio_complete(void *);
+void cv_finalizer(SEXP);
 void dialer_finalizer(SEXP);
 void listener_finalizer(SEXP);
 void socket_finalizer(SEXP);
@@ -275,6 +297,7 @@ SEXP rnng_cv_wait_safe(SEXP);
 SEXP rnng_dial(SEXP, SEXP, SEXP, SEXP, SEXP);
 SEXP rnng_dialer_close(SEXP);
 SEXP rnng_dialer_start(SEXP, SEXP);
+SEXP rnng_dispatcher_socket(SEXP, SEXP, SEXP, SEXP);
 SEXP rnng_fini(void);
 SEXP rnng_get_opt(SEXP, SEXP);
 SEXP rnng_is_error_value(SEXP);
@@ -293,6 +316,7 @@ SEXP rnng_pipe_close(SEXP);
 SEXP rnng_pipe_notify(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 SEXP rnng_protocol_open(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 SEXP rnng_random(SEXP, SEXP);
+SEXP rnng_read_online(SEXP);
 SEXP rnng_reap(SEXP);
 SEXP rnng_recv(SEXP, SEXP, SEXP, SEXP);
 SEXP rnng_recv_aio(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);

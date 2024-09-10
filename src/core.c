@@ -122,6 +122,33 @@ static SEXP nano_outHook(SEXP x, SEXP fun) {
 
 // functions with forward definitions in nanonext.h ----------------------------
 
+void raio_complete_signal(void *arg) {
+
+  nano_aio *raio = (nano_aio *) arg;
+  nano_cv *ncv = (nano_cv *) raio->next;
+  nng_cv *cv = ncv->cv;
+  nng_mtx *mtx = ncv->mtx;
+
+  const int res = nng_aio_result(raio->aio);
+  if (res == 0)
+    raio->data = nng_aio_get_msg(raio->aio);
+
+  nng_mtx_lock(mtx);
+  raio->result = res - !res;
+  ncv->condition++;
+  nng_cv_wake(cv);
+  nng_mtx_unlock(mtx);
+
+}
+
+void sendaio_complete(void *arg) {
+
+  nng_aio *aio = ((nano_saio *) arg)->aio;
+  if (nng_aio_result(aio))
+    nng_msg_free(nng_aio_get_msg(aio));
+
+}
+
 void dialer_finalizer(SEXP xptr) {
 
   if (NANO_PTR(xptr) == NULL) return;
@@ -149,6 +176,16 @@ void socket_finalizer(SEXP xptr) {
   if (NANO_PTR(xptr) == NULL) return;
   nng_socket *xp = (nng_socket *) NANO_PTR(xptr);
   nng_close(*xp);
+  R_Free(xp);
+
+}
+
+void cv_finalizer(SEXP xptr) {
+
+  if (NANO_PTR(xptr) == NULL) return;
+  nano_cv *xp = (nano_cv *) NANO_PTR(xptr);
+  nng_cv_free(xp->cv);
+  nng_mtx_free(xp->mtx);
   R_Free(xp);
 
 }
