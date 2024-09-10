@@ -513,12 +513,16 @@ nanotestz(close(s1))
 nanotestz(close(s2))
 nanotestz(close(s3))
 
+cv <- cv()
+nanotestxp(disp <- .dispatcher(cv, host = "inproc://hostdisp", url = c("inproc://disp/1", "inproc://disp/2"), tls = NULL))
+nanotesti(.online(disp), c(0L, 0L))
+rm(disp)
+
 nanotest(nanonext:::.DollarNames.ncurlAio(NULL, "sta") == "status")
 nanotest(nanonext:::.DollarNames.recvAio(NULL, "dat") == "data")
 nanotest(nanonext:::.DollarNames.sendAio(NULL, "r") == "result")
 nanotest(length(nanonext:::.DollarNames.nano(NULL)) == 0L)
 
-nanotestxp(disp <- .dispatcher(cv, host = "inproc://dispatcher", url = c("inproc://disp/1", "inproc://disp/2"), tls = NULL))
 fakesock <- `class<-`(new.env(), "nanoSocket")
 nanotesterr(dial(fakesock), "valid Socket")
 nanotesterr(dial(fakesock, autostart = FALSE), "valid Socket")
@@ -575,8 +579,6 @@ nanotestn(stop_aio(list("a")))
 nanotestn(.keep(NULL, new.env()))
 nanotestn(.keep(new.env(), new.env()))
 nanotestn(.online("a"))
-nanotesti(.online(disp), c(0L, 0L))
-nanotestz(reap(disp))
 
 pem <- "-----BEGIN CERTIFICATE----- -----END CERTIFICATE-----"
 test_tls <- function(pem) {

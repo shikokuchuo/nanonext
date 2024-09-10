@@ -507,8 +507,8 @@ static void rnng_dispatch_thread(void *args) {
     return;
   if (nng_dial(hsock, disp->host, &hdial, 0))
     goto exitlevel1;
-
   nng_url_parse(&up, url[0]);
+
   for (R_xlen_t i = 0; i < n; i++) {
 
     signal[i].cv = ncv;
@@ -524,8 +524,10 @@ static void rnng_dispatch_thread(void *args) {
         goto exitlevel2;
       if (nng_tls_config_server_name(disp->tls, up->u_hostname) ||
           nng_listener_set_ptr(list[i], NNG_OPT_TLS_CONFIG, disp->tls) ||
-          nng_listener_start(list[i], 0))
-        goto exitlevel3;
+          nng_listener_start(list[i], 0)) {
+        nng_url_free(up);
+        goto exitlevel2;
+      }
     } else {
       if (nng_listen(sock[i], url[i], &list[i], 0))
         goto exitlevel2;
@@ -533,16 +535,13 @@ static void rnng_dispatch_thread(void *args) {
 
     raio[i].next = ncv;
     raio[i].result = 0;
-    if (nng_aio_alloc(&raio[i].aio, raio_complete_signal, &raio[i]))
-      goto exitlevel2;
-    if (nng_aio_alloc(&saio[i].aio, sendaio_complete, &saio[i]))
-      goto exitlevel2;
     haio[i].next = ncv;
     haio[i].result = 0;
-    if (nng_aio_alloc(&haio[i].aio, raio_complete_signal, &haio[i]))
+    if (nng_aio_alloc(&saio[i].aio, sendaio_complete, &saio[i]) ||
+        nng_aio_alloc(&raio[i].aio, raio_complete_signal, &raio[i]) ||
+        nng_aio_alloc(&haio[i].aio, raio_complete_signal, &haio[i]))
       goto exitlevel2;
   }
-  nng_url_free(up);
 
   for (R_xlen_t i = 0; i < n; i++) {
     nng_mtx_lock(mtx);
@@ -669,11 +668,10 @@ static void rnng_dispatch_thread(void *args) {
 
   }
 
-  exitlevel3:
-  nng_url_free(up);
   exitlevel2:
   for (R_xlen_t i = 0; i < n; i++)
     nng_close(sock[i]);
+  nng_url_free(up);
   exitlevel1:
   nng_close(hsock);
   // nano_printf(1, "Dispatcher thread halted\n");
