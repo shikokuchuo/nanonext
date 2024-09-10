@@ -216,6 +216,10 @@ typedef struct nano_thread_disp_s {
   nng_thread *thr;
   nano_cv *cv;
   nng_tls_config *tls;
+  nano_saio **saio;
+  nano_aio **raio;
+  nano_aio **haio;
+  nng_url *up;
   const char *host;
   char **url;
   int *online;
