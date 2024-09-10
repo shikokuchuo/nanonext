@@ -480,7 +480,7 @@ static void rnng_dispatch_thread(void *args) {
   int *online = disp->online;
   char **url = disp->url;
 
-  int xc, end = 0, auth = ncv->flag;
+  int xc, end = 0, sync = ncv->flag;
   ncv->flag = 0;
   nng_socket hsock;
   nng_dialer hdial;
@@ -561,7 +561,7 @@ static void rnng_dispatch_thread(void *args) {
     nng_mtx_unlock(mtx);
   }
 
-  if (auth) {
+  if (sync) {
     if (nng_recvmsg(hsock, &msg, 0))
       goto exitlevel2;
     if (nng_sendmsg(hsock, msg, 0)) {
@@ -688,8 +688,8 @@ SEXP rnng_dispatcher_socket(SEXP cv, SEXP host, SEXP url, SEXP tls) {
   if (NANO_TAG(cv) != nano_CvSymbol)
     Rf_error("'cv' is not a valid Condition Variable");
 
-  const int auth = tls == R_MissingArg;
-  const int sec = !auth && tls != R_NilValue;
+  const int sync = tls == R_MissingArg;
+  const int sec = !sync && tls != R_NilValue;
   const R_xlen_t nd = XLENGTH(url);
 
   if (sec && NANO_TAG(tls) != nano_TlsSymbol)
@@ -702,7 +702,7 @@ SEXP rnng_dispatcher_socket(SEXP cv, SEXP host, SEXP url, SEXP tls) {
 
   nano_thread_disp *disp = R_Calloc(1, nano_thread_disp);
   disp->cv = ncv;
-  ncv->flag = auth;
+  ncv->flag = sync;
   disp->n = nd;
   disp->tls = sec ? (nng_tls_config *) NANO_PTR(tls) : NULL;
   if (sec) nng_tls_config_hold(disp->tls);
