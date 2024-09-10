@@ -1,7 +1,8 @@
-# nanonext 1.2.1.9015 (development)
+# nanonext 1.2.1.9016 (development)
 
 #### New Features
 
+* Adds support for threaded dispatcher in `mirai`.
 * Adds 'recvAio' method for `promises::as.promise()` and `promises::is.promising()` to enable 'recvAio' promises.
 
 #### Updates

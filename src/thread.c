@@ -369,6 +369,7 @@ SEXP rnng_wait_thread_create(SEXP x) {
 }
 
 static void nano_record_pipe(nng_pipe p, nng_pipe_ev ev, void *arg) {
+
   nano_signal *signal = (nano_signal *) arg;
   const int incr = ev == NNG_PIPE_EV_ADD_POST;
   nano_cv *ncv = signal->cv;
@@ -379,7 +380,7 @@ static void nano_record_pipe(nng_pipe p, nng_pipe_ev ev, void *arg) {
   ncv->condition++;
   nng_cv_wake(cv);
   nng_mtx_unlock(mtx);
-  // nano_printf(1, "pipe ev %d\n", incr);
+
 }
 
 static void rnng_signal_thread(void *args) {
@@ -604,7 +605,6 @@ static void rnng_dispatch_thread(void *args) {
         nng_mtx_unlock(mtx);
         if (xc) {
           raio[i]->result = 0;
-          // nano_printf(1, "received reply %d\n", i);
           if (xc < 0) {
             buf = nng_msg_body((nng_msg *) raio[i]->data);
             if (buf[3] == 0x1) {
@@ -616,7 +616,6 @@ static void rnng_dispatch_thread(void *args) {
             if ((xc = nng_ctx_sendmsg(rctx[i], (nng_msg *) raio[i]->data, 0)))
               nng_msg_free((nng_msg *) raio[i]->data);
           } else {
-            // nano_printf(1, "received error %d\n", i);
             nng_msg_alloc(&msg, 0);
             if (xc == 19)
               nng_msg_append(msg, errnt, sizeof(errnt));
@@ -629,13 +628,11 @@ static void rnng_dispatch_thread(void *args) {
           nng_ctx_close(ctx[i]);
           nng_ctx_close(rctx[i]);
           busy[i] = 0;
-          // nano_printf(1, "processed reply %d\n", i);
           if (end) {
             end = 0;
           } else {
             nng_ctx_open(&rctx[i], hsock);
             nng_ctx_recv(rctx[i], haio[i]->aio);
-            // nano_printf(1, "allocated %d\n", i);
           }
           break;
         }
@@ -649,22 +646,18 @@ static void rnng_dispatch_thread(void *args) {
           haio[i]->result = 0;
           if (xc < 0) {
             busy[i] = 1;
-            // nano_printf(1, "prep for send %d\n", i);
             nng_ctx_open(&ctx[i], sock[i]);
             nng_aio_set_msg(saio[i]->aio, (nng_msg *) haio[i]->data);
             nng_ctx_send(ctx[i], saio[i]->aio);
             nng_ctx_recv(ctx[i], raio[i]->aio);
-            // nano_printf(1, "sent %d\n", i);
           } else {
             nng_msg_alloc(&msg, 0);
             nng_msg_append(msg, (unsigned char *) &xc, sizeof(int));
             if ((xc = nng_ctx_sendmsg(rctx[i], msg, 0)))
               nng_msg_free(msg);
             nng_ctx_close(rctx[i]);
-            // nano_printf(1, "send error resetting %d\n", i);
             nng_ctx_open(&rctx[i], hsock);
             nng_ctx_recv(rctx[i], haio[i]->aio);
-            // nano_printf(1, "allocated %d\n", i);
           }
           break;
         }
@@ -679,7 +672,6 @@ static void rnng_dispatch_thread(void *args) {
     nng_close(sock[i]);
   exitlevel1:
   nng_close(hsock);
-  // nano_printf(1, "Dispatcher thread halted\n");
 
 }
 
