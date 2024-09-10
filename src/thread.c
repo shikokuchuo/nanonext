@@ -208,7 +208,6 @@ static void thread_duo_finalizer(SEXP xptr) {
   if (ncv != NULL) {
     nng_mtx *mtx = ncv->mtx;
     nng_cv *cv = ncv->cv;
-
     nng_mtx_lock(mtx);
     ncv->condition = -1;
     nng_cv_wake(cv);
@@ -243,7 +242,6 @@ static void thread_disp_finalizer(SEXP xptr) {
   if (ncv != NULL) {
     nng_mtx *mtx = ncv->mtx;
     nng_cv *cv = ncv->cv;
-
     nng_mtx_lock(mtx);
     ncv->condition = -1;
     nng_cv_wake(cv);
