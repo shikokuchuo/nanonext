@@ -513,10 +513,19 @@ nanotestz(close(s1))
 nanotestz(close(s2))
 nanotestz(close(s3))
 
-cv <- cv()
+nanotestxp(cv <- cv())
+nanotesterr(.dispatcher("", host = "inproc://hostdisp", url = "inproc://disp/1", tls = NULL), "not a valid Condition Variable")
+nanotesterr(.dispatcher(cv, host = "inproc://hostdisp", url = "inproc://disp/1", tls = ""), "not a valid TLS Configuration")
 nanotestxp(disp <- .dispatcher(cv, host = "inproc://hostdisp", url = "inproc://disp/1", tls = NULL))
 nanotestz(.online(disp))
-s <- socket(protocol = "rep", dial = "inproc://disp/1")
+nanotestn(.online("a"))
+nanotestnano(s <- socket(protocol = "rep", dial = "inproc://disp/1"))
+nanotestz(send(disp, NULL, block = 100L))
+nanotestn(recv(s, block = 100L))
+nanotestz(send(s, TRUE, block = 100L))
+nanotest(recv(disp, block = 100L))
+nanotestz(close(s))
+rm(disp)
 
 nanotest(nanonext:::.DollarNames.ncurlAio(NULL, "sta") == "status")
 nanotest(nanonext:::.DollarNames.recvAio(NULL, "dat") == "data")
@@ -578,10 +587,6 @@ nanotestn(stop_aio("a"))
 nanotestn(stop_aio(list("a")))
 nanotestn(.keep(NULL, new.env()))
 nanotestn(.keep(new.env(), new.env()))
-nanotestn(.online("a"))
-
-close(s)
-rm(disp)
 
 pem <- "-----BEGIN CERTIFICATE----- -----END CERTIFICATE-----"
 test_tls <- function(pem) {
