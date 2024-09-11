@@ -313,7 +313,6 @@ unlock <- function(socket) invisible(.Call(rnng_socket_unlock, socket))
 #'     with FIFO scheduling using a threaded implementation (for internal use
 #'     only).
 #'
-#' @param cv a \sQuote{conditionVariable} object.
 #' @param host \sQuote{inproc://} url connecting the host to the thread.
 #' @param url the URLs at which to listen for rep nodes.
 #' @inheritParams listen
@@ -323,8 +322,8 @@ unlock <- function(socket) invisible(.Call(rnng_socket_unlock, socket))
 #' @keywords internal
 #' @export
 #'
-.dispatcher <- function(cv, host, url, tls = quote(expr =))
-  .Call(rnng_dispatcher_socket, cv, host, url, tls)
+.dispatcher <- function(host, url, tls = quote(expr =))
+  .Call(rnng_dispatcher_socket, host, url, tls)
 
 #' Read Online Status
 #'

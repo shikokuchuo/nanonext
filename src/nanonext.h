@@ -269,6 +269,7 @@ int nano_matcharg(const SEXP);
 int nano_matchargs(const SEXP);
 
 void nano_REprintf(const char *);
+void pipe_cb_signal(nng_pipe, nng_pipe_ev, void *);
 
 SEXP rnng_advance_rng_state(void);
 SEXP rnng_aio_call(SEXP);
@@ -297,7 +298,7 @@ SEXP rnng_cv_wait_safe(SEXP);
 SEXP rnng_dial(SEXP, SEXP, SEXP, SEXP, SEXP);
 SEXP rnng_dialer_close(SEXP);
 SEXP rnng_dialer_start(SEXP, SEXP);
-SEXP rnng_dispatcher_socket(SEXP, SEXP, SEXP, SEXP);
+SEXP rnng_dispatcher_socket(SEXP, SEXP, SEXP);
 SEXP rnng_fini(void);
 SEXP rnng_get_opt(SEXP, SEXP);
 SEXP rnng_is_error_value(SEXP);

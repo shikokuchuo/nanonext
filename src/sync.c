@@ -76,7 +76,7 @@ static void request_complete_signal(void *arg) {
 
 }
 
-static void pipe_cb_signal(nng_pipe p, nng_pipe_ev ev, void *arg) {
+void pipe_cb_signal(nng_pipe p, nng_pipe_ev ev, void *arg) {
 
   int sig;
   nano_cv *ncv = (nano_cv *) arg;

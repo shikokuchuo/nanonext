@@ -4,11 +4,9 @@
 \alias{.dispatcher}
 \title{Dispatcher Socket}
 \usage{
-.dispatcher(cv, host, url, tls = quote(expr = ))
+.dispatcher(host, url, tls = quote(expr = ))
 }
 \arguments{
-\item{cv}{a \sQuote{conditionVariable} object.}
-
 \item{host}{\sQuote{inproc://} url connecting the host to the thread.}
 
 \item{url}{the URLs at which to listen for rep nodes.}
