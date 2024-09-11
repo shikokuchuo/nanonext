@@ -4,7 +4,7 @@
 \alias{.dispatcher}
 \title{Dispatcher Socket}
 \usage{
-.dispatcher(host, url, tls = quote(expr = ))
+.dispatcher(host, url, tls = NULL)
 }
 \arguments{
 \item{host}{\sQuote{inproc://} url connecting the host to the thread.}

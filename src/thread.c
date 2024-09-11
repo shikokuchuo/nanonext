@@ -547,7 +547,7 @@ static void rnng_dispatch_thread(void *args) {
   if (nng_rep0_open(&hsock))
     goto exitlevel1;
 
-  if (nng_dial(hsock, disp->host, &hdial, 0))
+  if (nng_dial(hsock, disp->host, &hdial, NNG_FLAG_NONBLOCK))
     goto exitlevel2;
 
   for (R_xlen_t i = 0; i < n; i++) {
@@ -668,8 +668,7 @@ static void rnng_dispatch_thread(void *args) {
 
 SEXP rnng_dispatcher_socket(SEXP host, SEXP url, SEXP tls) {
 
-  const int sync = tls == R_MissingArg;
-  const int sec = !sync && tls != R_NilValue;
+  const int sec = tls != R_NilValue;
   const R_xlen_t nd = XLENGTH(url);
 
   if (sec && NANO_TAG(tls) != nano_TlsSymbol)
