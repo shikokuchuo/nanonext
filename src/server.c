@@ -243,25 +243,30 @@ void parse_eval_safe(void *data) {
   nano_parse_eval_res = R_ParseEvalString((const char *) data, R_GlobalEnv);
 }
 
-void inproc_server(const char* url) {
+SEXP rnng_rest_server(SEXP url) {
 
+  const char *addr[2] = {CHAR(STRING_ELT(url, 0)), "inproc://n-a-n-o-serv"};
+  nng_thread *thr;
   nng_socket s;
   nng_msg *msg;
   int xc;
 
-  if ((xc = nng_rep0_open(&s)) || (xc = nng_listen(s, url, NULL, 0)))
+  if ((xc = nng_thread_create(&thr, rest_start, (void *) addr)))
+    ERROR_OUT(xc);
+
+  if ((xc = nng_rep0_open(&s)) ||
+      (xc = nng_listen(s, addr[1], NULL, 0)))
     fatal("unable to set up inproc", xc);
 
   for (;;) {
+
     if ((xc = nng_recvmsg(s, &msg, 0)))
       fatal("inproc recvmsg", xc);
 
-    const char *body = nng_msg_body(msg);
-    nano_buf buf;
-
     nano_parse_eval_res = R_BlankScalarString;
-    R_ToplevelExec(parse_eval_safe, (void *) body);
+    R_ToplevelExec(parse_eval_safe, (void *) nng_msg_body(msg));
 
+    nano_buf buf;
     if (TYPEOF(nano_parse_eval_res) == STRSXP) {
       const char *string = NANO_STRING(nano_parse_eval_res);
       buf.buf = (unsigned char *) string;
@@ -274,20 +279,9 @@ void inproc_server(const char* url) {
     if ((xc = nng_sendmsg(s, msg, 0)))
       fatal("inproc sendmsg", xc);
 
+    R_CheckUserInterrupt();
+
   }
-
-}
-
-SEXP rnng_rest_server(SEXP url) {
-
-  const char *addr[2] = {CHAR(STRING_ELT(url, 0)), "inproc://n-a-n-o-serv"};
-  nng_thread *thr;
-  int xc;
-
-  if ((xc = nng_thread_create(&thr, rest_start, (void *) addr)))
-    ERROR_OUT(xc);
-
-  inproc_server(addr[1]);
 
   nng_thread_destroy(thr);
   return R_NilValue;

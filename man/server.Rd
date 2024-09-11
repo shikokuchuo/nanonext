@@ -26,11 +26,12 @@ Query the API with an HTTP client using the \sQuote{POST} method,
     string (if of the appropriate type), or otherwise a serialized R object,
     which should be passed to \code{\link{unserialize}}.
 
-    Use only in a new session. Use \sQuote{ctrl + \\} to forcibly quit
-    when finished as the function blocks with no means of interruption.
-
     If the expression could not be parsed or evaluated, the response will be
     returned with a status code of 500 and a blank body.
+
+    User interrupts will only be processed after the next query has been
+    completed, hence return from the function may not be immediate. Use
+    \sQuote{ctrl + \\} to forcibly quit the entire R session if required.
 }
 \examples{
 if (interactive()) {
