@@ -518,7 +518,7 @@ nanotestxp(disp <- .dispatcher(host = "inproc://hostdisp", url = "inproc://disp/
 nanotestz(.online(disp))
 nanotestn(.online("a"))
 nanotestnano(s <- socket(protocol = "rep"))
-nanotestz(dial(s, url = "inproc://disp/1", autostart = NA))
+nanotestz(dial(s, url = "inproc://disp/1"))
 nanotestz(send(disp, NULL, block = 500L))
 nanotestn(recv(s, block = 500L))
 nanotestz(send(s, TRUE, block = 500L))
