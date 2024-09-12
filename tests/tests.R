@@ -76,10 +76,8 @@ nanotestaio(raio <- n1$recv_aio(timeout = 1L))
 nanotestp(raio)
 nanotest(is_error_value(call_aio(raio)$data))
 nanotest(is_error_value(raio$data))
-while (is_error_value(r <- n$send(data.frame(), block = FALSE))) {
-  r == 8L || break
-  Sys.sleep(0.1)
-}
+r <- n$send(data.frame(), block = FALSE)
+if (r == 8L) r <- n$send(data.frame(), block = 500L)
 nanotestz(r)
 nanotest(is.data.frame(n1$recv(block = 500)))
 nanotestz(n1$send(c("test", "", "spec"), mode = "raw", block = 500))
