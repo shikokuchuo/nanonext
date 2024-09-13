@@ -491,7 +491,7 @@ SEXP rnng_set_promise_context(SEXP x, SEXP ctx) {
 
   nano_aio *raio = (nano_aio *) NANO_PTR(aio);
 
-  if (eln2 == eln2dummy) {
+  if (eln2 == NULL) {
     SEXP str, call;
     PROTECT(str = Rf_mkString("later"));
     PROTECT(call = Rf_lang2(Rf_install("loadNamespace"), str));

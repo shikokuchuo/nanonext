@@ -247,13 +247,6 @@ void later2(void (*fun)(void *), void *data) {
   eln2(fun, data, 0, 0);
 }
 
-void eln2dummy(void (*fun)(void *), void *data, double secs, int loop) {
-  (void) fun;
-  (void) data;
-  (void) secs;
-  (void) loop;
-}
-
 void raio_invoke_cb(void *arg) {
 
   SEXP call, data, node = (SEXP) arg, x = TAG(node);

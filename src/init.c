@@ -201,7 +201,7 @@ static const R_ExternalMethodDef externalMethods[] = {
 void attribute_visible R_init_nanonext(DllInfo* dll) {
   RegisterSymbols();
   PreserveObjects();
-  eln2 = eln2dummy;
+  eln2 = NULL;
   R_registerRoutines(dll, NULL, callMethods, NULL, externalMethods);
   R_useDynamicSymbols(dll, FALSE);
   R_forceSymbols(dll, TRUE);

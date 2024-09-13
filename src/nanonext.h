@@ -237,6 +237,42 @@ typedef struct nano_buf_s {
   size_t cur;
 } nano_buf;
 
+extern void (*eln2)(void (*)(void *), void *, double, int);
+extern uint8_t special_bit;
+
+extern SEXP nano_AioSymbol;
+extern SEXP nano_ContextSymbol;
+extern SEXP nano_CvSymbol;
+extern SEXP nano_DataSymbol;
+extern SEXP nano_DialerSymbol;
+extern SEXP nano_DotcallSymbol;
+extern SEXP nano_HeadersSymbol;
+extern SEXP nano_IdSymbol;
+extern SEXP nano_ListenerSymbol;
+extern SEXP nano_PipeSymbol;
+extern SEXP nano_ProtocolSymbol;
+extern SEXP nano_ResolveSymbol;
+extern SEXP nano_ResponseSymbol;
+extern SEXP nano_ResultSymbol;
+extern SEXP nano_SocketSymbol;
+extern SEXP nano_StateSymbol;
+extern SEXP nano_StatusSymbol;
+extern SEXP nano_StreamSymbol;
+extern SEXP nano_TlsSymbol;
+extern SEXP nano_UrlSymbol;
+extern SEXP nano_ValueSymbol;
+
+extern SEXP nano_aioFuncMsg;
+extern SEXP nano_aioFuncRes;
+extern SEXP nano_aioNFuncs;
+extern SEXP nano_error;
+extern SEXP nano_precious;
+extern SEXP nano_recvAio;
+extern SEXP nano_reqAio;
+extern SEXP nano_sendAio;
+extern SEXP nano_success;
+extern SEXP nano_unresolved;
+
 #if R_VERSION < R_Version(4, 1, 0)
 SEXP R_NewEnv(SEXP, int, int);
 #endif
@@ -253,8 +289,6 @@ void dialer_finalizer(SEXP);
 void listener_finalizer(SEXP);
 void socket_finalizer(SEXP);
 void later2(void (*)(void *), void *);
-extern void (*eln2)(void (*)(void *), void *, double, int);
-void eln2dummy(void (*)(void *), void *, double, int);
 void raio_invoke_cb(void *);
 int nano_integer(const SEXP);
 SEXP mk_error(const int);
@@ -346,40 +380,5 @@ SEXP rnng_url_parse(SEXP);
 SEXP rnng_version(void);
 SEXP rnng_wait_thread_create(SEXP);
 SEXP rnng_write_cert(SEXP, SEXP, SEXP);
-
-extern uint8_t special_bit;
-
-extern SEXP nano_AioSymbol;
-extern SEXP nano_ContextSymbol;
-extern SEXP nano_CvSymbol;
-extern SEXP nano_DataSymbol;
-extern SEXP nano_DialerSymbol;
-extern SEXP nano_DotcallSymbol;
-extern SEXP nano_HeadersSymbol;
-extern SEXP nano_IdSymbol;
-extern SEXP nano_ListenerSymbol;
-extern SEXP nano_PipeSymbol;
-extern SEXP nano_ProtocolSymbol;
-extern SEXP nano_ResolveSymbol;
-extern SEXP nano_ResponseSymbol;
-extern SEXP nano_ResultSymbol;
-extern SEXP nano_SocketSymbol;
-extern SEXP nano_StateSymbol;
-extern SEXP nano_StatusSymbol;
-extern SEXP nano_StreamSymbol;
-extern SEXP nano_TlsSymbol;
-extern SEXP nano_UrlSymbol;
-extern SEXP nano_ValueSymbol;
-
-extern SEXP nano_aioFuncMsg;
-extern SEXP nano_aioFuncRes;
-extern SEXP nano_aioNFuncs;
-extern SEXP nano_error;
-extern SEXP nano_precious;
-extern SEXP nano_recvAio;
-extern SEXP nano_reqAio;
-extern SEXP nano_sendAio;
-extern SEXP nano_success;
-extern SEXP nano_unresolved;
 
 #endif
