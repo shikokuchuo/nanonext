@@ -59,6 +59,6 @@ Specify one of \sQuote{client} or \sQuote{server} only, or neither
 \examples{
 tls <- tls_config()
 tls
-ncurl("https://www.r-project.org/", timeout = 1000L, tls = tls)
+ncurl("https://postman-echo.com/get", timeout = 1000L, tls = tls)
 
 }

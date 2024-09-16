@@ -32,12 +32,8 @@ Is the object an Aio (inheriting from class \sQuote{sendAio} or
     Is the object an ncurlSession (object of class \sQuote{ncurlSession}).
 }
 \examples{
-sock <- socket()
-r <- recv_aio(sock)
-s <- send_aio(sock, "test")
-is_aio(r)
-is_aio(s)
-close(sock)
+nc <- call_aio(ncurl_aio("https://postman-echo.com/get", timeout = 1000L))
+is_aio(nc)
 
 s <- socket()
 is_nano(s)
@@ -46,7 +42,7 @@ is_nano(n)
 close(s)
 n$close()
 
-s <- ncurl_session("https://www.r-project.org/")
+s <- ncurl_session("https://postman-echo.com/get")
 is_ncurl_session(s)
 if (is_ncurl_session(s)) close(s)
 
