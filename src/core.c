@@ -669,7 +669,7 @@ int nano_matchargs(const SEXP mode) {
     switch (slen) {
     case 1:
       if (!strncmp(mod, "c", slen))
-        Rf_error("'mode' should be one of serial, character, complex, double, integer, logical, numeric, raw, string");
+        Rf_error("'mode' should be one of character, complex, double, integer, logical, numeric, raw, string");
     case 2:
     case 3:
       if (!strncmp(mod, "raw", slen)) return 8;
