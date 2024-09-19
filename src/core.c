@@ -22,7 +22,7 @@
 
 static SEXP nano_eval_res;
 
-static void eval_safe (void *call) {
+static void nano_eval_safe (void *call) {
   nano_eval_res = Rf_eval((SEXP) call, R_GlobalEnv);
 }
 
@@ -345,7 +345,7 @@ void nano_serialize(nano_buf *buf, const SEXP object, SEXP hook) {
     if (vec) {
 
       PROTECT(call = Rf_lcons(CADR(hook), Rf_cons(TAG(hook), R_NilValue)));
-      if (R_ToplevelExec(eval_safe, (void *) call) &&
+      if (R_ToplevelExec(nano_eval_safe, call) &&
           TYPEOF(nano_eval_res) == RAWSXP) {
         R_xlen_t xlen = XLENGTH(nano_eval_res);
         if (buf->cur + xlen > buf->len) {
@@ -371,7 +371,7 @@ void nano_serialize(nano_buf *buf, const SEXP object, SEXP hook) {
 
       for (R_xlen_t i = 0; i < llen; i++) {
         PROTECT(call = Rf_lcons(func, Rf_cons(NANO_VECTOR(refList)[i], R_NilValue)));
-        if (R_ToplevelExec(eval_safe, (void *) call) &&
+        if (R_ToplevelExec(nano_eval_safe, call) &&
             TYPEOF(nano_eval_res) == RAWSXP) {
           R_xlen_t xlen = XLENGTH(nano_eval_res);
           if (buf->cur + xlen + sizeof(R_xlen_t) > buf->len) {
@@ -692,5 +692,11 @@ int nano_matchargs(const SEXP mode) {
   }
 
   return INTEGER(mode)[0];
+
+}
+
+SEXP rnng_eval_safe(SEXP arg) {
+
+  return R_ToplevelExec(nano_eval_safe, arg) ? nano_eval_res : Rf_allocVector(RAWSXP, 1);
 
 }
