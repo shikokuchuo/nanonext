@@ -24,8 +24,7 @@
 static SEXP nano_eval_res;
 
 void nano_eval_safe(void *arg) {
-  SEXP data = (SEXP) arg;
-  nano_eval_res = Rf_eval(Rf_lcons(CAR(data), CDR(data)), R_GlobalEnv);
+  nano_eval_res = Rf_eval((SEXP) arg, R_GlobalEnv);
 }
 
 // aio completion callbacks ----------------------------------------------------

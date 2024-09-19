@@ -160,7 +160,7 @@ reply <- function(context,
   block <- if (is.null(timeout)) TRUE else timeout
   res <- recv(context, mode = recv_mode, block = block)
   is_error_value(res) && return(res)
-  data <- .Call(rnng_eval_safe, pairlist(execute, res, ...))
+  data <- .Call(rnng_eval_safe, as.call(list(execute, res, ...)))
   send(context, data = data, mode = send_mode, block = block)
 
 }
