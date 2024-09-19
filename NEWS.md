@@ -1,4 +1,4 @@
-# nanonext 1.2.1.9018 (development)
+# nanonext 1.2.1.9019 (development)
 
 #### New Features
 
@@ -7,6 +7,7 @@
 
 #### Updates
 
+* Upgrades `reply()` to always return even when there is an evaluation error, allowing it to be used safely in a loop without exiting early.
 * Removes deprecated and defunct `next_config()`.
 * Performance enhancements for `promises::as.promise()` methods.
 

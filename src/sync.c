@@ -19,6 +19,15 @@
 #define NANONEXT_SIGNALS
 #include "nanonext.h"
 
+// internal evaluation ---------------------------------------------------------
+
+static SEXP nano_eval_res;
+
+void nano_eval_safe(void *arg) {
+  SEXP data = (SEXP) arg;
+  nano_eval_res = Rf_eval(Rf_lcons(CAR(data), CDR(data)), R_GlobalEnv);
+}
+
 // aio completion callbacks ----------------------------------------------------
 
 static void request_complete(void *arg) {
@@ -521,6 +530,15 @@ SEXP rnng_set_promise_context(SEXP x, SEXP ctx) {
   }
 
   return R_NilValue;
+
+}
+
+SEXP rnng_eval_safe(SEXP arg) {
+
+  nano_eval_res = PROTECT(Rf_allocVector(RAWSXP, 1));
+  R_ToplevelExec(nano_eval_safe, arg);
+  UNPROTECT(1);
+  return nano_eval_res;
 
 }
 
