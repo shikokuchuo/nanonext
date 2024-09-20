@@ -693,7 +693,7 @@ SEXP rnng_dispatcher_socket(SEXP host, SEXP url, SEXP tls) {
   disp->saio = R_Calloc(nd, nano_saio *);
   disp->raio = R_Calloc(nd, nano_aio *);
   disp->haio = R_Calloc(nd, nano_aio *);
-  disp->host = NANO_STRING(host);
+  disp->host = CHAR(STRING_ELT(host, 0));
   disp->online = R_Calloc(nd, int);
   disp->url = R_Calloc(nd, char *);
   for (R_xlen_t i = 0; i < nd; i++) {
