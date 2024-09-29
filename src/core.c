@@ -332,7 +332,7 @@ void nano_serialize(nano_buf *buf, const SEXP object, SEXP hook) {
     NULL,
     nano_write_bytes,
     reg ? nano_inHook : NULL,
-    reg ? hook : R_NilValue
+    hook
   );
 
   R_Serialize(object, &output_stream);
