@@ -302,7 +302,6 @@ int nano_encodes(const SEXP);
 int nano_matcharg(const SEXP);
 int nano_matchargs(const SEXP);
 
-void nano_REprintf(const char *);
 void pipe_cb_signal(nng_pipe, nng_pipe_ev, void *);
 
 SEXP rnng_advance_rng_state(void);

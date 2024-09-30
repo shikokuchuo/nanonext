@@ -20,12 +20,6 @@
 #define NANONEXT_IO
 #include "nanonext.h"
 
-void nano_REprintf(const char *fmt) {
-
-  if (write(STDERR_FILENO, fmt, strlen(fmt))) {} ;
-
-}
-
 // messenger -------------------------------------------------------------------
 
 // # nocov start

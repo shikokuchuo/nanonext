@@ -165,7 +165,7 @@ SEXP rnng_write_cert(SEXP cn, SEXP valid, SEXP inter) {
   snprintf(issuer_name, clen, "CN=%s,O=Nanonext,C=JP", common);
 
   int xc, exit = 1;
-  if (interactive) nano_REprintf("Generating key + certificate [    ]");
+  if (interactive) REprintf("Generating key + certificate [    ]");
   mbedtls_x509_crt issuer_crt;
   mbedtls_pk_context loaded_issuer_key;
   mbedtls_pk_context *issuer_key = &loaded_issuer_key;
@@ -191,18 +191,18 @@ SEXP rnng_write_cert(SEXP cn, SEXP valid, SEXP inter) {
   mbedtls_mpi_init(&serial);
 #endif
 
-  if (interactive) nano_REprintf("\rGenerating key + certificate [.   ]");
+  if (interactive) REprintf("\rGenerating key + certificate [.   ]");
 
   if ((xc = mbedtls_ctr_drbg_seed(&ctr_drbg, mbedtls_entropy_func, &entropy, (const unsigned char *) pers, strlen(pers))) ||
       (xc = mbedtls_pk_setup(&key, mbedtls_pk_info_from_type((mbedtls_pk_type_t) MBEDTLS_PK_RSA))))
     goto exitlevel1;
 
-  if (interactive) nano_REprintf("\rGenerating key + certificate [..  ]");
+  if (interactive) REprintf("\rGenerating key + certificate [..  ]");
 
   if ((xc = mbedtls_rsa_gen_key(mbedtls_pk_rsa(key), mbedtls_ctr_drbg_random, &ctr_drbg, 4096, 65537)))
     goto exitlevel1;
 
-  if (interactive) nano_REprintf("\rGenerating key + certificate [... ]");
+  if (interactive) REprintf("\rGenerating key + certificate [... ]");
 
   if ((xc = mbedtls_pk_write_key_pem(&key, key_buf, 16000)))
     goto exitlevel1;
@@ -256,7 +256,7 @@ SEXP rnng_write_cert(SEXP cn, SEXP valid, SEXP inter) {
   SET_STRING_ELT(cstr, 0, Rf_mkChar((char *) &output_buf));
   SET_STRING_ELT(cstr, 1, R_BlankString);
 
-  if (interactive) nano_REprintf("\rGenerating key + certificate [done]\n");
+  if (interactive) REprintf("\rGenerating key + certificate [done]\n");
   exit = 0;
 
   exitlevel1:

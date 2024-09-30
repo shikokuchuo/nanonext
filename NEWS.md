@@ -1,4 +1,4 @@
-# nanonext 1.2.1.9020 (development)
+# nanonext 1.2.1.9021 (development)
 
 #### New Features
 
@@ -7,6 +7,7 @@
 
 #### Updates
 
+* Warning messages for failure of unserialization or conversion of received message data are now suppressable.
 * Upgrades `reply()` to always return even when there is an evaluation error. This allows it to be used safely in a loop without exiting early, for example.
 * Removes deprecated and defunct `next_config()`.
 * Performance enhancements for `promises::as.promise()` methods.
