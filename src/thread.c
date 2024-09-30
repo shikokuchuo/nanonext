@@ -558,7 +558,8 @@ static void rnng_dispatch_thread(void *args) {
   }
 
   for (R_xlen_t i = 0; i < n; i++) {
-    nng_ctx_open(&rctx[i], hsock);
+    if (nng_ctx_open(&rctx[i], hsock))
+      goto exitlevel2;
     nng_ctx_recv(rctx[i], haio[i]->aio);
   }
 
@@ -577,7 +578,8 @@ static void rnng_dispatch_thread(void *args) {
 
     for (R_xlen_t i = 0; i < n; i++) {
       if (active[i] > store[i]) {
-        nng_ctx_open(&rctx[i], hsock);
+        if (nng_ctx_open(&rctx[i], hsock))
+          goto exitlevel2;
         nng_ctx_recv(rctx[i], haio[i]->aio);
       }
     }
@@ -594,20 +596,20 @@ static void rnng_dispatch_thread(void *args) {
           if (xc < 0) {
             buf = nng_msg_body((nng_msg *) raio[i]->data);
             if (buf[3] == 0x1) {
-              nng_msg_alloc(&msg, 0);
-              if ((xc = nng_ctx_sendmsg(ctx[i], msg, 0)))
+              if (nng_msg_alloc(&msg, 0))
+                goto exitlevel2;
+              if (nng_ctx_sendmsg(ctx[i], msg, 0))
                 nng_msg_free(msg);
               end = 1;
             }
-            if ((xc = nng_ctx_sendmsg(rctx[i], (nng_msg *) raio[i]->data, 0)))
+            if (nng_ctx_sendmsg(rctx[i], (nng_msg *) raio[i]->data, 0))
               nng_msg_free((nng_msg *) raio[i]->data);
           } else {
-            nng_msg_alloc(&msg, 0);
-            if (xc == 19)
-              nng_msg_append(msg, errnt, sizeof(errnt));
-            else
-              nng_msg_append(msg, &xc, sizeof(int));
-            if ((xc = nng_ctx_sendmsg(rctx[i], msg, 0)))
+            if (nng_msg_alloc(&msg, 0) ||
+                (xc == 19 ? nng_msg_append(msg, errnt, sizeof(errnt)) :
+                   nng_msg_append(msg, &xc, sizeof(int))))
+              goto exitlevel2;
+            if (nng_ctx_sendmsg(rctx[i], msg, 0))
               nng_msg_free(msg);
             end = 1;
           }
@@ -617,7 +619,8 @@ static void rnng_dispatch_thread(void *args) {
           if (end) {
             end = 0;
           } else {
-            nng_ctx_open(&rctx[i], hsock);
+            if (nng_ctx_open(&rctx[i], hsock))
+              goto exitlevel2;
             nng_ctx_recv(rctx[i], haio[i]->aio);
           }
           break;
@@ -632,7 +635,8 @@ static void rnng_dispatch_thread(void *args) {
           haio[i]->result = 0;
           if (xc < 0) {
             busy[i] = 1;
-            nng_ctx_open(&ctx[i], sock[i]);
+            if (nng_ctx_open(&ctx[i], sock[i]))
+              goto exitlevel2;
             nng_aio_set_msg(saio[i]->aio, (nng_msg *) haio[i]->data);
             nng_ctx_send(ctx[i], saio[i]->aio);
             nng_ctx_recv(ctx[i], raio[i]->aio);
