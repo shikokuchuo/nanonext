@@ -637,7 +637,7 @@ static void rnng_dispatch_thread(void *args) {
             nng_ctx_send(ctx[i], saio[i]->aio);
             nng_ctx_recv(ctx[i], raio[i]->aio);
           } else {
-            // should never reach here
+            // exit if reaches here
             goto exitlevel2;
           }
           break;
