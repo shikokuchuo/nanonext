@@ -15,7 +15,3 @@ coverage:
 
 ignore:
   - install
-
-flag_management:
-  default_rules:
-    carryforward: false
