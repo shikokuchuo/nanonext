@@ -637,13 +637,8 @@ static void rnng_dispatch_thread(void *args) {
             nng_ctx_send(ctx[i], saio[i]->aio);
             nng_ctx_recv(ctx[i], raio[i]->aio);
           } else {
-            nng_msg_alloc(&msg, 0);
-            nng_msg_append(msg, (unsigned char *) &xc, sizeof(int));
-            if ((xc = nng_ctx_sendmsg(rctx[i], msg, 0)))
-              nng_msg_free(msg);
-            nng_ctx_close(rctx[i]);
-            nng_ctx_open(&rctx[i], hsock);
-            nng_ctx_recv(rctx[i], haio[i]->aio);
+            // should never reach here
+            goto exitlevel2;
           }
           break;
         }
