@@ -64,7 +64,7 @@ Supported transports:
   (over TCP and WebSocket)
 
 Development of the TLS implementation was generously supported by the
-<a href="https://www.r-consortium.org/blog/2024/03/12/isc-funded-grant-secure-tls-connections-in-nanonext-and-mirai-facilitating-high-performance-computing-in-the-life-sciences" alt="R Consortium ISC Grant 2023"><img src="https://www.r-consortium.org/wp-content/uploads/sites/13/2016/09/RConsortium_Horizontal_Pantone.png" alt="R Consortium" width="100" height="22" /></a>
+<img src="https://r-consortium.org/images/RConsortium_Horizontal_Pantone.webp" alt="R Consortium" width="100" height="22" />
 .
 
 Web utilities:
@@ -216,7 +216,7 @@ We would like to acknowledge in particular:
 - [Garrett D’Amore](https://github.com/gdamore), author of the NNG
   library, for generous advice and for implementing a feature request
   specifically for a more efficient ‘aio’ implementation in `nanonext`.
-- The [R Consortium](https://www.r-consortium.org/) for funding the
+- The [R Consortium](https://r-consortium.org/) for funding the
   development of the secure TLS capabilities in the package, and [Henrik
   Bengtsson](https://github.com/HenrikBengtsson) and [Will
   Landau](https://github.com/wlandau/)’s roles in making this possible.
