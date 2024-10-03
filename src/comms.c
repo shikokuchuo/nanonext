@@ -112,42 +112,42 @@ SEXP rnng_dial(SEXP socket, SEXP url, SEXP tls, SEXP autostart, SEXP error) {
   nng_socket *sock = (nng_socket *) NANO_PTR(socket);
   const int start = NANO_INTEGER(autostart);
   const char *ur = CHAR(STRING_ELT(url, 0));
-  nano_dialer *dp = R_Calloc(1, nano_dialer);
-  SEXP dialer, attr, newattr;
+  nng_dialer *dp = R_Calloc(1, nng_dialer);
+  SEXP dialer, attr, newattr, xp;
+  nng_tls_config *cfg;
   nng_url *up;
   int xc;
 
   if (sec) {
-    if ((xc = nng_dialer_create(&dp->dial, *sock, ur)))
+    if ((xc = nng_dialer_create(dp, *sock, ur)) ||
+        (xc = nng_url_parse(&up, ur)))
       goto exitlevel1;
-    dp->tls = (nng_tls_config *) NANO_PTR(tls);
-    nng_tls_config_hold(dp->tls);
-    if ((xc = nng_url_parse(&up, ur)))
+    cfg = (nng_tls_config *) NANO_PTR(tls);
+    if ((xc = nng_tls_config_server_name(cfg, up->u_hostname)) ||
+        (xc = nng_dialer_set_ptr(*dp, NNG_OPT_TLS_CONFIG, cfg)))
       goto exitlevel2;
-    if ((xc = nng_tls_config_server_name(dp->tls, up->u_hostname)) ||
-        (xc = nng_dialer_set_ptr(dp->dial, NNG_OPT_TLS_CONFIG, dp->tls)))
-      goto exitlevel3;
     nng_url_free(up);
-  }
+    if (start && (xc = nng_dialer_start(*dp, start == 1 ? NNG_FLAG_NONBLOCK : 0)))
+        goto exitlevel1;
+    nng_tls_config_hold(cfg);
 
-  switch (start) {
-  case 0:
-    xc = sec ? 0 : nng_dialer_create(&dp->dial, *sock, ur);
-    break;
-  case 1:
-    xc = sec ? nng_dialer_start(dp->dial, NNG_FLAG_NONBLOCK) : nng_dial(*sock, ur, &dp->dial, NNG_FLAG_NONBLOCK);
-    break;
-  default:
-    xc = sec ? nng_dialer_start(dp->dial, 0) : nng_dial(*sock, ur, &dp->dial, 0);
-  }
-  if (xc)
-    goto exitlevel1;
+    PROTECT_INDEX pxi;
+    PROTECT_WITH_INDEX(xp = R_MakeExternalPtr(cfg, nano_TlsSymbol, R_NilValue), &pxi);
+    R_RegisterCFinalizerEx(xp, tls_finalizer, TRUE);
+    REPROTECT(dialer = R_MakeExternalPtr(dp, nano_DialerSymbol, xp), pxi);
 
-  PROTECT(dialer = R_MakeExternalPtr(dp, nano_DialerSymbol, R_NilValue));
+  } else {
+
+    if ((xc = start ? nng_dial(*sock, ur, dp, start == 1 ? NNG_FLAG_NONBLOCK : 0) : nng_dialer_create(dp, *sock, ur)))
+      goto exitlevel1;
+
+    PROTECT(dialer = R_MakeExternalPtr(dp, nano_DialerSymbol, R_NilValue));
+
+  }
   R_RegisterCFinalizerEx(dialer, dialer_finalizer, TRUE);
 
   NANO_CLASS2(dialer, "nanoDialer", "nano");
-  Rf_setAttrib(dialer, nano_IdSymbol, Rf_ScalarInteger(nng_dialer_id(dp->dial)));
+  Rf_setAttrib(dialer, nano_IdSymbol, Rf_ScalarInteger(nng_dialer_id(*dp)));
   Rf_setAttrib(dialer, nano_UrlSymbol, url);
   Rf_setAttrib(dialer, nano_StateSymbol, Rf_mkString(start ? "started" : "not started"));
   Rf_setAttrib(dialer, nano_SocketSymbol, Rf_ScalarInteger(nng_socket_id(*sock)));
@@ -164,10 +164,8 @@ SEXP rnng_dial(SEXP socket, SEXP url, SEXP tls, SEXP autostart, SEXP error) {
   UNPROTECT(2);
   return nano_success;
 
-  exitlevel3:
-  nng_url_free(up);
   exitlevel2:
-  nng_tls_config_free(dp->tls);
+  nng_url_free(up);
   exitlevel1:
   R_Free(dp);
   if (NANO_INTEGER(error)) ERROR_OUT(xc);

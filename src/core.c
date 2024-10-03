@@ -162,10 +162,8 @@ void cv_finalizer(SEXP xptr) {
 void dialer_finalizer(SEXP xptr) {
 
   if (NANO_PTR(xptr) == NULL) return;
-  nano_dialer *xp = (nano_dialer *) NANO_PTR(xptr);
-  nng_dialer_close(xp->dial);
-  if (xp->tls != NULL)
-    nng_tls_config_free(xp->tls);
+  nng_dialer *xp = (nng_dialer *) NANO_PTR(xptr);
+  nng_dialer_close(*xp);
   R_Free(xp);
 
 }

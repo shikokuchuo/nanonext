@@ -137,11 +137,6 @@ typedef union nano_opt_u {
   uint64_t u;
 } nano_opt;
 
-typedef struct nano_dialer_s {
-  nng_dialer dial;
-  nng_tls_config *tls;
-} nano_dialer;
-
 typedef struct nano_stream_s {
   nng_stream *stream;
   union {

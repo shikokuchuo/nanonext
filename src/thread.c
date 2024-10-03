@@ -116,7 +116,7 @@ SEXP rnng_messenger(SEXP url) {
   const char *up = CHAR(STRING_ELT(url, 0));
   nng_socket *sock = R_Calloc(1, nng_socket);
   nng_listener *lp;
-  nano_dialer *dp;
+  nng_dialer *dp;
   int xc, dialer = 0;
   SEXP socket, con;
 
@@ -129,8 +129,8 @@ SEXP rnng_messenger(SEXP url) {
       goto exitlevel1;
     }
     R_Free(lp);
-    dp = R_Calloc(1, nano_dialer);
-    if ((xc = nng_dial(*sock, up, &dp->dial, 0))) {
+    dp = R_Calloc(1, nng_dialer);
+    if ((xc = nng_dial(*sock, up, dp, 0))) {
       R_Free(dp);
       goto exitlevel1;
     }
