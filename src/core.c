@@ -149,13 +149,21 @@ void sendaio_complete(void *arg) {
 
 }
 
+void cv_finalizer(SEXP xptr) {
+
+  if (NANO_PTR(xptr) == NULL) return;
+  nano_cv *xp = (nano_cv *) NANO_PTR(xptr);
+  nng_cv_free(xp->cv);
+  nng_mtx_free(xp->mtx);
+  R_Free(xp);
+
+}
+
 void dialer_finalizer(SEXP xptr) {
 
   if (NANO_PTR(xptr) == NULL) return;
-  nano_dialer *xp = (nano_dialer *) NANO_PTR(xptr);
-  nng_dialer_close(xp->dial);
-  if (xp->tls != NULL)
-    nng_tls_config_free(xp->tls);
+  nng_dialer *xp = (nng_dialer *) NANO_PTR(xptr);
+  nng_dialer_close(*xp);
   R_Free(xp);
 
 }
@@ -163,10 +171,8 @@ void dialer_finalizer(SEXP xptr) {
 void listener_finalizer(SEXP xptr) {
 
   if (NANO_PTR(xptr) == NULL) return;
-  nano_listener *xp = (nano_listener *) NANO_PTR(xptr);
-  nng_listener_close(xp->list);
-  if (xp->tls != NULL)
-    nng_tls_config_free(xp->tls);
+  nng_listener *xp = (nng_listener *) NANO_PTR(xptr);
+  nng_listener_close(*xp);
   R_Free(xp);
 
 }
@@ -180,13 +186,11 @@ void socket_finalizer(SEXP xptr) {
 
 }
 
-void cv_finalizer(SEXP xptr) {
+void tls_finalizer(SEXP xptr) {
 
   if (NANO_PTR(xptr) == NULL) return;
-  nano_cv *xp = (nano_cv *) NANO_PTR(xptr);
-  nng_cv_free(xp->cv);
-  nng_mtx_free(xp->mtx);
-  R_Free(xp);
+  nng_tls_config *xp = (nng_tls_config *) NANO_PTR(xptr);
+  nng_tls_config_free(xp);
 
 }
 

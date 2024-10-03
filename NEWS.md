@@ -1,4 +1,4 @@
-# nanonext 1.2.1.9024 (development)
+# nanonext 1.2.1.9025 (development)
 
 #### New Features
 
@@ -10,7 +10,7 @@
 * Warning messages for unserialization or conversion failures of received data are now suppressable.
 * Upgrades `reply()` to always return even when there is an evaluation error. This allows it to be used safely in a loop without exiting early, for example.
 * Removes deprecated and defunct `next_config()`.
-* Performance enhancements for `promises::as.promise()` methods.
+* Internal performance enhancements.
 * Updates bundled 'libnng' v1.8.0 with latest patches.
 
 # nanonext 1.2.1
