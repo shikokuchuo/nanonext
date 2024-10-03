@@ -115,15 +115,15 @@ SEXP rnng_messenger(SEXP url) {
 
   const char *up = CHAR(STRING_ELT(url, 0));
   nng_socket *sock = R_Calloc(1, nng_socket);
-  nano_listener *lp;
+  nng_listener *lp;
   nano_dialer *dp;
   int xc, dialer = 0;
   SEXP socket, con;
 
   if ((xc = nng_pair0_open(sock)))
     goto exitlevel1;
-  lp = R_Calloc(1, nano_listener);
-  if ((xc = nng_listen(*sock, up, &lp->list, 0))) {
+  lp = R_Calloc(1, nng_listener);
+  if ((xc = nng_listen(*sock, up, lp, 0))) {
     if (xc != 10 && xc != 15) {
       R_Free(lp);
       goto exitlevel1;
@@ -699,7 +699,7 @@ SEXP rnng_dispatcher_socket(SEXP host, SEXP url, SEXP tls) {
     memcpy(disp->url[i], up, slen);
   }
   nng_socket *hsock = R_Calloc(1, nng_socket);
-  nano_listener *hl = R_Calloc(1, nano_listener);
+  nng_listener *hl = R_Calloc(1, nng_listener);
 
   if (nng_url_parse(&disp->up, disp->url[0]))
     goto exitlevel3;
@@ -708,7 +708,7 @@ SEXP rnng_dispatcher_socket(SEXP host, SEXP url, SEXP tls) {
     goto exitlevel4;
 
   if ((xc = nng_socket_set_ms(*hsock, "req:resend-time", 0)) ||
-      (xc = nng_listen(*hsock, disp->host, &hl->list, 0)) ||
+      (xc = nng_listen(*hsock, disp->host, hl, 0)) ||
       (xc = nng_thread_create(&disp->thr, rnng_dispatch_thread, disp)))
     goto exitlevel5;
 

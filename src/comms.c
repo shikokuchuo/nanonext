@@ -188,37 +188,43 @@ SEXP rnng_listen(SEXP socket, SEXP url, SEXP tls, SEXP autostart, SEXP error) {
   nng_socket *sock = (nng_socket *) NANO_PTR(socket);
   const int start = NANO_INTEGER(autostart);
   const char *ur = CHAR(STRING_ELT(url, 0));
-  nano_listener *lp = R_Calloc(1, nano_listener);
-  SEXP listener, attr, newattr;
+  nng_listener *lp = R_Calloc(1, nng_listener);
+  SEXP listener, attr, newattr, xp;
+  nng_tls_config *cfg;
   nng_url *up;
   int xc;
 
   if (sec) {
-    if ((xc = nng_listener_create(&lp->list, *sock, ur)))
+    if ((xc = nng_listener_create(lp, *sock, ur)) ||
+        (xc = nng_url_parse(&up, ur)))
       goto exitlevel1;
-    lp->tls = (nng_tls_config *) NANO_PTR(tls);
-    nng_tls_config_hold(lp->tls);
-    if ((xc = nng_url_parse(&up, ur)))
+    cfg = (nng_tls_config *) NANO_PTR(tls);
+    if ((xc = nng_tls_config_server_name(cfg, up->u_hostname)) ||
+        (xc = nng_listener_set_ptr(*lp, NNG_OPT_TLS_CONFIG, cfg)))
       goto exitlevel2;
-    if ((xc = nng_tls_config_server_name(lp->tls, up->u_hostname)) ||
-        (xc = nng_listener_set_ptr(lp->list, NNG_OPT_TLS_CONFIG, lp->tls)))
-      goto exitlevel3;
     nng_url_free(up);
-  }
+    if (start && (xc = nng_listener_start(*lp, 0)))
+      goto exitlevel1;
+    nng_tls_config_hold(cfg);
 
-  if (start) {
-    xc = sec ? nng_listener_start(lp->list, 0) : nng_listen(*sock, ur, &lp->list, 0);
+    PROTECT_INDEX pxi;
+    PROTECT_WITH_INDEX(xp = R_MakeExternalPtr(cfg, nano_TlsSymbol, R_NilValue), &pxi);
+    R_RegisterCFinalizerEx(xp, tls_finalizer, TRUE);
+    REPROTECT(listener = R_MakeExternalPtr(lp, nano_ListenerSymbol, xp), pxi);
+
   } else {
-    xc = sec ? 0 : nng_listener_create(&lp->list, *sock, ur);
-  }
-  if (xc)
-    goto exitlevel1;
 
-  PROTECT(listener = R_MakeExternalPtr(lp, nano_ListenerSymbol, R_NilValue));
+    if ((xc = start ? nng_listen(*sock, ur, lp, 0) : nng_listener_create(lp, *sock, ur)))
+      goto exitlevel1;
+
+    PROTECT(listener = R_MakeExternalPtr(lp, nano_ListenerSymbol, R_NilValue));
+
+  }
+
   R_RegisterCFinalizerEx(listener, listener_finalizer, TRUE);
 
   NANO_CLASS2(listener, "nanoListener", "nano");
-  Rf_setAttrib(listener, nano_IdSymbol, Rf_ScalarInteger(nng_listener_id(lp->list)));
+  Rf_setAttrib(listener, nano_IdSymbol, Rf_ScalarInteger(nng_listener_id(*lp)));
   Rf_setAttrib(listener, nano_UrlSymbol, url);
   Rf_setAttrib(listener, nano_StateSymbol, Rf_mkString(start ? "started" : "not started"));
   Rf_setAttrib(listener, nano_SocketSymbol, Rf_ScalarInteger(nng_socket_id(*sock)));
@@ -235,10 +241,8 @@ SEXP rnng_listen(SEXP socket, SEXP url, SEXP tls, SEXP autostart, SEXP error) {
   UNPROTECT(2);
   return nano_success;
 
-  exitlevel3:
-  nng_url_free(up);
   exitlevel2:
-  nng_tls_config_free(lp->tls);
+  nng_url_free(up);
   exitlevel1:
   R_Free(lp);
   if (NANO_INTEGER(error)) ERROR_OUT(xc);

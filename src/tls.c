@@ -76,16 +76,6 @@ static int parse_serial_decimal_format(unsigned char *obuf, size_t obufmax,
 }
 #endif
 
-// finalizers ------------------------------------------------------------------
-
-static void tls_finalizer(SEXP xptr) {
-
-  if (NANO_PTR(xptr) == NULL) return;
-  nng_tls_config *xp = (nng_tls_config *) NANO_PTR(xptr);
-  nng_tls_config_free(xp);
-
-}
-
 // Mbed TLS Random Data Generator ----------------------------------------------
 
 SEXP rnng_random(SEXP n, SEXP convert) {

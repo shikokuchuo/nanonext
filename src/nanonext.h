@@ -137,11 +137,6 @@ typedef union nano_opt_u {
   uint64_t u;
 } nano_opt;
 
-typedef struct nano_listener_s {
-  nng_listener list;
-  nng_tls_config *tls;
-} nano_listener;
-
 typedef struct nano_dialer_s {
   nng_dialer dial;
   nng_tls_config *tls;
@@ -303,6 +298,7 @@ int nano_matcharg(const SEXP);
 int nano_matchargs(const SEXP);
 
 void pipe_cb_signal(nng_pipe, nng_pipe_ev, void *);
+void tls_finalizer(SEXP);
 
 SEXP rnng_advance_rng_state(void);
 SEXP rnng_aio_call(SEXP);
