@@ -130,7 +130,7 @@ vignette("nanonext", package = "nanonext")
 
 ### Installation
 
-Install the latest release from CRAN or R-multiverse:
+Install the latest release from CRAN:
 
 ```{r cran, eval=FALSE}
 install.packages("nanonext")
