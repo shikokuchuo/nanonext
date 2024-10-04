@@ -210,9 +210,19 @@ SEXP rnng_set_opt(SEXP object, SEXP opt, SEXP value) {
     case VECSXP:
       if (strncmp(op, "serial", 6))
         Rf_error("type of 'value' not supported");
-      SEXPTYPE typ = TYPEOF(NANO_VECTOR(value)[0]);
-      if (typ != CHARSXP && typ != NILSXP) {
-        xc = 3; break;
+      R_xlen_t xlen = Rf_xlength(value);
+      if (xlen > 0) {
+        if (Rf_xlength(value) != 4 ||
+            TYPEOF(NANO_VECTOR(value)[0]) != STRSXP ||
+            TYPEOF(NANO_VECTOR(value)[3]) != LGLSXP) {
+          xc = 3; break;
+        }
+        SEXPTYPE typ1 = TYPEOF(NANO_VECTOR(value)[1]);
+        SEXPTYPE typ2 = TYPEOF(NANO_VECTOR(value)[2]);
+        if (!(typ1 == CLOSXP || typ1 == SPECIALSXP || typ1 == BUILTINSXP) ||
+            !(typ2 == CLOSXP || typ2 == SPECIALSXP || typ2 == BUILTINSXP)) {
+            xc = 3; break;
+        }
       }
       NANO_SET_PROT(object, Rf_VectorToPairList(value));
       xc = 0;
@@ -556,7 +566,10 @@ SEXP rnng_serial_config(SEXP klass, SEXP sfunc, SEXP ufunc, SEXP vec) {
   SEXP out;
   PROTECT(out = Rf_allocVector(VECSXP, 4));
 
-  SET_VECTOR_ELT(out, 0, STRING_ELT(klass, 0));
+  if (TYPEOF(klass) != STRSXP)
+    Rf_error("'class' must be a character string");
+
+  SET_VECTOR_ELT(out, 0, klass);
 
   SEXPTYPE typ1 = TYPEOF(sfunc);
   SEXPTYPE typ2 = TYPEOF(ufunc);
@@ -565,6 +578,9 @@ SEXP rnng_serial_config(SEXP klass, SEXP sfunc, SEXP ufunc, SEXP vec) {
     Rf_error("both 'sfunc' and 'ufunc' must be functions");
   SET_VECTOR_ELT(out, 1, sfunc);
   SET_VECTOR_ELT(out, 2, ufunc);
+
+  if (TYPEOF(vec) != LGLSXP)
+    Rf_error("'vec' must be a logical value");
 
   SET_VECTOR_ELT(out, 3, Rf_ScalarLogical(NANO_INTEGER(vec) ? 1 : 0));
 
