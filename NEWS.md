@@ -1,4 +1,4 @@
-# nanonext 1.2.1.9025 (development)
+# nanonext 1.2.1.9026 (development)
 
 #### New Features
 
@@ -7,6 +7,7 @@
 
 #### Updates
 
+* `serial_config()` now validates all arguments and returns them as a list. Full validation is also performed when the option is set for additional safety.
 * Warning messages for unserialization or conversion failures of received data are now suppressable.
 * Upgrades `reply()` to always return even when there is an evaluation error. This allows it to be used safely in a loop without exiting early, for example.
 * Removes deprecated and defunct `next_config()`.
