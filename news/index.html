@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">nanonext</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.2.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.1.9026</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -36,9 +36,27 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/shikokuchuo/nanonext/blob/v1.2.1/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/shikokuchuo/nanonext/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="1.2.1.9026" id="nanonext-1219026-development">nanonext 1.2.1.9026 (development)<a class="anchor" aria-label="anchor" href="#nanonext-1219026-development"></a></h2>
+<div class="section level5">
+<h5 id="new-features-1-2-1-9026">New Features<a class="anchor" aria-label="anchor" href="#new-features-1-2-1-9026"></a></h5>
+<ul><li>Adds support for threaded dispatcher in <code>mirai</code>.</li>
+<li>Adds ‘recvAio’ method for <code><a href="https://rstudio.github.io/promises/reference/is.promise.html" class="external-link">promises::as.promise()</a></code> and <code><a href="https://rstudio.github.io/promises/reference/is.promise.html" class="external-link">promises::is.promising()</a></code> to enable ‘recvAio’ promises.</li>
+</ul></div>
+<div class="section level5">
+<h5 id="updates-1-2-1-9026">Updates<a class="anchor" aria-label="anchor" href="#updates-1-2-1-9026"></a></h5>
+<ul><li>
+<code><a href="../reference/serial_config.html">serial_config()</a></code> now validates all arguments and returns them as a list. Full validation is also performed when the option is set for additional safety.</li>
+<li>Warning messages for unserialization or conversion failures of received data are now suppressable.</li>
+<li>Upgrades <code><a href="../reference/reply.html">reply()</a></code> to always return even when there is an evaluation error. This allows it to be used safely in a loop without exiting early, for example.</li>
+<li>Removes deprecated and defunct <code>next_config()</code>.</li>
+<li>Internal performance enhancements.</li>
+<li>Updates bundled ‘libnng’ v1.8.0 with latest patches.</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.2.1" id="nanonext-121">nanonext 1.2.1<a class="anchor" aria-label="anchor" href="#nanonext-121"></a></h2><p class="text-muted">CRAN release: 2024-08-19</p>
 <div class="section level5">
@@ -62,7 +80,7 @@
 <div class="section level5">
 <h5 id="updates-1-2-0">Updates<a class="anchor" aria-label="anchor" href="#updates-1-2-0"></a></h5>
 <ul><li>Send mode ‘next’ is folded into the default ‘serial’, with custom serialization functions applying automatically if they have been registered.</li>
-<li>The session-wide <code><a href="../reference/next_config.html">next_config()</a></code> is now deprecated and defunct, in favour of the new <code><a href="../reference/serial_config.html">serial_config()</a></code>.</li>
+<li>The session-wide <code>next_config()</code> is now deprecated and defunct, in favour of the new <code><a href="../reference/serial_config.html">serial_config()</a></code>.</li>
 <li>
 <code><a href="../reference/ncurl_session.html">ncurl_session()</a></code> now returns ‘errorValue’ 7 (Object closed) when attempting to transact over a closed session or closing a closed session, rather than throwing an error.</li>
 <li>
@@ -154,7 +172,7 @@
 <div class="section level5">
 <h5 id="new-features-0-13-5-1">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-13-5-1"></a></h5>
 <ul><li>
-<code><a href="../reference/next_config.html">next_config()</a></code> gains argument ‘class’ and ‘vec’, enabling custom serialization for all reference object types supported by R serialization.</li>
+<code>next_config()</code> gains argument ‘class’ and ‘vec’, enabling custom serialization for all reference object types supported by R serialization.</li>
 <li>An integer file descriptor is appended to ‘nanoSockets’ as the attribute ‘fd’ - see updated documentation for <code><a href="../reference/socket.html">socket()</a></code>.</li>
 </ul></div>
 <div class="section level5">
@@ -203,7 +221,7 @@
 <li>
 <code><a href="../reference/random.html">random()</a></code> now explicitly limits argument ‘n’ to values between 0 and 1024.</li>
 <li>
-<code><a href="../reference/next_config.html">next_config()</a></code> now returns a pairlist (of the registered serialization functions) rather than a list (for efficiency).</li>
+<code>next_config()</code> now returns a pairlist (of the registered serialization functions) rather than a list (for efficiency).</li>
 <li>Using mode ‘next’, serialization functions with incorrect signatures are now simply ignored rather than raise errors.</li>
 <li>‘nanoStream’ objects simplified internally with updated attributes ‘mode’ and ‘state’.</li>
 <li>Deprecated function <code>.until()</code> is removed.</li>
@@ -224,7 +242,7 @@
 <div class="section level5">
 <h5 id="updates-0-11-0">Updates<a class="anchor" aria-label="anchor" href="#updates-0-11-0"></a></h5>
 <ul><li>
-<code><a href="../reference/next_config.html">next_config()</a></code> replaces <code>nextmode()</code> with the following improvements:
+<code>next_config()</code> replaces <code>nextmode()</code> with the following improvements:
 <ul><li>simplified ‘refhook’ argument takes a pair of serialization and unserialization functions as a list.</li>
 <li>registered ‘refhook’ functions apply to external pointer type objects only.</li>
 <li>no longer returns invisibly for easier confimation that the correct functions have been registered.</li>
@@ -781,11 +799,11 @@
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by Charlie Gao, <img src="https://www.r-consortium.org/wp-content/uploads/sites/13/2016/09/RConsortium_Horizontal_Pantone.png" alt="R Consortium" width="100" height="22">.</p>
+  <p>Developed by Charlie Gao, <img src="https://r-consortium.org/images/RConsortium_Horizontal_Pantone.webp" alt="R Consortium" width="100" height="22">.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
     </footer></div>

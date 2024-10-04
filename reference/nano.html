@@ -9,7 +9,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">nanonext</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.2.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.1.9026</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,7 +38,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Create Nano Object</h1>
-      <small class="dont-index">Source: <a href="https://github.com/shikokuchuo/nanonext/blob/v1.2.1/R/nano.R" class="external-link"><code>R/nano.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/shikokuchuo/nanonext/blob/main/R/nano.R" class="external-link"><code>R/nano.R</code></a></small>
       <div class="d-none name"><code>nano.Rd</code></div>
     </div>
 
@@ -143,22 +143,22 @@ attempting to use the socket before an asynchronous dial has completed.</p></dd>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">nano</span> <span class="op">&lt;-</span> <span class="fu">nano</span><span class="op">(</span><span class="st">"bus"</span>, listen <span class="op">=</span> <span class="st">"inproc://nanonext"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">nano</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt; nano object &gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - socket id: 21</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - socket id: 20</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - state: opened</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - protocol: bus</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - listener:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     inproc://nanonext</span>
 <span class="r-in"><span><span class="va">nano</span><span class="op">$</span><span class="va">socket</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt; nanoSocket &gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - id: 21</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - id: 20</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - state: opened</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - protocol: bus</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - listener:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     inproc://nanonext</span>
 <span class="r-in"><span><span class="va">nano</span><span class="op">$</span><span class="va">listener</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt; nanoListener &gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - id: 10</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - socket: 21</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - id: 9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - socket: 20</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - state: started</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - url: inproc://nanonext</span>
 <span class="r-in"><span></span></span>
@@ -170,15 +170,15 @@ attempting to use the socket before an asynchronous dial has completed.</p></dd>
 <span class="r-in"><span><span class="va">nano</span><span class="op">$</span><span class="va">listener</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt; nanoListener &gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - id: 10</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - socket: 21</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - id: 9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - socket: 20</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - state: started</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - url: inproc://nanonext</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[2]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt; nanoListener &gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - id: 11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - socket: 21</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - id: 10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - socket: 20</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - state: started</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - url: inproc://nanonextgen</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -199,11 +199,11 @@ attempting to use the socket before an asynchronous dial has completed.</p></dd>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by Charlie Gao, <img src="https://www.r-consortium.org/wp-content/uploads/sites/13/2016/09/RConsortium_Horizontal_Pantone.png" alt="R Consortium" width="100" height="22">.</p>
+  <p>Developed by Charlie Gao, <img src="https://r-consortium.org/images/RConsortium_Horizontal_Pantone.webp" alt="R Consortium" width="100" height="22">.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
     </footer></div>

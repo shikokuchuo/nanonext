@@ -31,7 +31,7 @@
 
     <a class="navbar-brand me-2" href="index.html">nanonext</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.2.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.1.9026</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -99,7 +99,7 @@
 <li>
 <a href="https://shikokuchuo.net/nanonext/articles/nanonext.html#tls-secure-connections">TLS</a> (over TCP and WebSocket)</li>
 </ul>
-<p>Development of the TLS implementation was generously supported by the <a href="https://www.r-consortium.org/blog/2024/03/12/isc-funded-grant-secure-tls-connections-in-nanonext-and-mirai-facilitating-high-performance-computing-in-the-life-sciences" alt="R Consortium ISC Grant 2023" class="external-link"><img src="https://www.r-consortium.org/wp-content/uploads/sites/13/2016/09/RConsortium_Horizontal_Pantone.png" alt="R Consortium" width="100" height="22"></a> .</p>
+<p>Development of the TLS implementation was generously supported by the <img src="https://r-consortium.org/images/RConsortium_Horizontal_Pantone.webp" alt="R Consortium" width="100" height="22"> .</p>
 <p>Web utilities:</p>
 <ul>
 <li>
@@ -165,7 +165,7 @@
 <div class="section level3">
 <h3 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h3>
-<p>Install the latest release from CRAN or R-multiverse:</p>
+<p>Install the latest release from CRAN:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"nanonext"</span><span class="op">)</span></span></code></pre></div>
 <p>The current development version is available from R-universe:</p>
@@ -197,7 +197,7 @@
 <ul>
 <li>
 <a href="https://github.com/gdamore" class="external-link">Garrett D’Amore</a>, author of the NNG library, for generous advice and for implementing a feature request specifically for a more efficient ‘aio’ implementation in <code>nanonext</code>.</li>
-<li>The <a href="https://www.r-consortium.org/" class="external-link">R Consortium</a> for funding the development of the secure TLS capabilities in the package, and <a href="https://github.com/HenrikBengtsson" class="external-link">Henrik Bengtsson</a> and <a href="https://github.com/wlandau/" class="external-link">Will Landau</a>’s roles in making this possible.</li>
+<li>The <a href="https://r-consortium.org/" class="external-link">R Consortium</a> for funding the development of the secure TLS capabilities in the package, and <a href="https://github.com/HenrikBengtsson" class="external-link">Henrik Bengtsson</a> and <a href="https://github.com/wlandau/" class="external-link">Will Landau</a>’s roles in making this possible.</li>
 <li>
 <a href="https://github.com/jcheng5/" class="external-link">Joe Cheng</a> for prototyping the integration of <code>nanonext</code> with <code>later</code> to support the next generation of completely event-driven ‘promises’.</li>
 <li>
@@ -257,23 +257,33 @@
 <ul class="list-unstyled">
 <li>Charlie Gao <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0002-0750-061X" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
 <li>
-<img src="https://www.r-consortium.org/wp-content/uploads/sites/13/2016/09/RConsortium_Horizontal_Pantone.png" alt="R Consortium" width="100" height="22"><br><small class="roles"> Funder </small>  </li>
+<img src="https://r-consortium.org/images/RConsortium_Horizontal_Pantone.webp" alt="R Consortium" width="100" height="22"><br><small class="roles"> Funder </small>  </li>
 <li><a href="authors.html">More about authors...</a></li>
 </ul>
 </div>
 
-
+<div class="dev-status">
+<h2 data-toc-skip>Dev status</h2>
+<ul class="list-unstyled">
+<li><a href="https://CRAN.R-project.org/package=nanonext" class="external-link"><img src="https://www.r-pkg.org/badges/version/nanonext?color=112d4e" alt="CRAN status"></a></li>
+<li><a href="https://community.r-multiverse.org/nanonext" class="external-link"><img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fcommunity.r-multiverse.org%2Fapi%2Fpackages%2Fnanonext&amp;query=%24.Version&amp;label=r-multiverse" alt="R-multiverse status"></a></li>
+<li><a href="https://shikokuchuo.r-universe.dev/nanonext" class="external-link"><img src="https://shikokuchuo.r-universe.dev/badges/nanonext?color=3f72af" alt="R-universe status"></a></li>
+<li><a href="https://github.com/shikokuchuo/nanonext/actions" class="external-link"><img src="https://github.com/shikokuchuo/nanonext/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a></li>
+<li><a href="https://app.codecov.io/gh/shikokuchuo/nanonext" class="external-link"><img src="https://codecov.io/gh/shikokuchuo/nanonext/graph/badge.svg" alt="codecov"></a></li>
+<li><a href="https://zenodo.org/badge/latestdoi/451104675" class="external-link"><img src="https://zenodo.org/badge/451104675.svg" alt="DOI"></a></li>
+</ul>
+</div>
 
   </aside>
 </div>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by Charlie Gao, <img src="https://www.r-consortium.org/wp-content/uploads/sites/13/2016/09/RConsortium_Horizontal_Pantone.png" alt="R Consortium" width="100" height="22">.</p>
+  <p>Developed by Charlie Gao, <img src="https://r-consortium.org/images/RConsortium_Horizontal_Pantone.webp" alt="R Consortium" width="100" height="22">.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
     </footer>
