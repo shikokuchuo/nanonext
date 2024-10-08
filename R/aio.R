@@ -368,20 +368,20 @@ as.promise.recvAio <- function(x) {
 
   if (is.null(promise)) {
 
-    if (unresolved(x)) {
-      promise <- promises::then(
-        promises::promise(
-          function(resolve, reject) .keep(x, environment())
-        ),
-        onFulfilled = function(value)
+    promise <- if (.unresolved(x)) {
+
+      promises::promise(
+        function(resolve, reject) .keep(x, environment())
+      )$then(
+        onFulfilled = function(value, .visible)
           if (is_error_value(value)) stop(nng_error(value)) else value
       )
-
     } else {
-      value <- .subset2(x, "value")
-      promise <- if (is_error_value(value))
-        promises::promise_reject(nng_error(value)) else
-          promises::promise_resolve(value)
+      value <- collect_aio(x)
+      promises::promise(
+        function(resolve, reject)
+          if (is_error_value(value)) reject(nng_error(value)) else resolve(value)
+      )
     }
 
     assign("promise", promise, x)
