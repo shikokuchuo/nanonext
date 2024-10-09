@@ -412,8 +412,3 @@ is.promising.recvAio <- function(x) TRUE
 #' @export
 #'
 .keep <- function(x, ctx) .Call(rnng_set_promise_context, x, ctx)
-
-#' @rdname dot-keep
-#' @export
-#'
-set_promise_context <- .keep
