@@ -3,6 +3,7 @@
 #### Updates
 
 * Performance enhancements for 'ncurlAio' and 'recvAio' promises methods.
+* The package has a shiny new hex logo.
 
 # nanonext 1.3.0
 
