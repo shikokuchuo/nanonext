@@ -619,8 +619,7 @@ SEXP rnng_traverse_precious(void) {
   SEXP list = nano_precious;
   int x = 0;
   for (SEXP head = CDR(list); head != R_NilValue; head = CDR(head))
-    if (TAG(head) == R_NilValue)
-      ++x;
+    if (TAG(head) == R_NilValue) ++x;
 
   return Rf_ScalarInteger(x);
 
