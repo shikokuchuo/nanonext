@@ -170,9 +170,6 @@ static void request_finalizer(SEXP xptr) {
   nng_aio_free(xp->aio);
   if (xp->data != NULL)
     nng_msg_free((nng_msg *) xp->data);
-  // release linked list node if cb has already run
-  if (saio->cb != NULL && TAG((SEXP) saio->cb) == R_NilValue)
-    nano_ReleaseObject((SEXP) saio->cb);
   R_Free(saio);
   R_Free(xp);
 

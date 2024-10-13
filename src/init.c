@@ -89,7 +89,7 @@ static void PreserveObjects(void) {
   R_PreserveObject(nano_error = Rf_allocVector(STRSXP, 2));
   SET_STRING_ELT(nano_error, 0, Rf_mkChar("errorValue"));
   SET_STRING_ELT(nano_error, 1, Rf_mkChar("try-error"));
-  R_PreserveObject(nano_precious = Rf_cons(R_NilValue, Rf_cons(R_NilValue, R_NilValue)));
+  R_PreserveObject(nano_precious = Rf_cons(R_NilValue, R_NilValue));
   R_PreserveObject(nano_recvAio = Rf_mkString("recvAio"));
   R_PreserveObject(nano_reqAio = Rf_allocVector(STRSXP, 2));
   SET_STRING_ELT(nano_reqAio, 0, Rf_mkChar("mirai"));
@@ -184,6 +184,7 @@ static const R_CallMethodDef callMethods[] = {
   {"rnng_stream_listen", (DL_FUNC) &rnng_stream_listen, 3},
   {"rnng_strerror", (DL_FUNC) &rnng_strerror, 1},
   {"rnng_subscribe", (DL_FUNC) &rnng_subscribe, 3},
+  {"rnng_traverse_precious", (DL_FUNC) &rnng_traverse_precious, 0},
   {"rnng_tls_config", (DL_FUNC) &rnng_tls_config, 4},
   {"rnng_unresolved", (DL_FUNC) &rnng_unresolved, 1},
   {"rnng_unresolved2", (DL_FUNC) &rnng_unresolved2, 1},

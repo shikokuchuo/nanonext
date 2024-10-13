@@ -231,19 +231,25 @@ SEXP nano_findVarInFrame(const SEXP env, const SEXP sym) {
 
 inline SEXP nano_PreserveObject(const SEXP x) {
 
-  SEXP node = Rf_cons(nano_precious, CDR(nano_precious));
+  SEXP tail = CDR(nano_precious);
+  SEXP node = Rf_cons(nano_precious, tail);
   SETCDR(nano_precious, node);
-  SETCAR(CDR(nano_precious), node);
+  if (tail != R_NilValue)
+    SETCAR(tail, node);
   SET_TAG(node, x);
 
   return node;
 
 }
 
-inline void nano_ReleaseObject(SEXP x) {
+inline void nano_ReleaseObject(SEXP node) {
 
-  SETCDR(CAR(x), CDR(x));
-  SETCAR(CDR(x), CAR(x));
+  SET_TAG(node, R_NilValue);
+  SEXP head = CAR(node);
+  SEXP tail = CDR(node);
+  SETCDR(head, tail);
+  if (tail != R_NilValue)
+    SETCAR(tail, head);
 
 }
 
@@ -258,8 +264,7 @@ void raio_invoke_cb(void *arg) {
   PROTECT(call = Rf_lcons(nano_ResolveSymbol, Rf_cons(data, R_NilValue)));
   Rf_eval(call, NANO_ENCLOS(x));
   UNPROTECT(1);
-  // unreliable to release linked list node from later cb, just free the payload
-  SET_TAG(node, R_NilValue);
+  nano_ReleaseObject(node);
 }
 
 inline int nano_integer(const SEXP x) {

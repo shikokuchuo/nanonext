@@ -651,6 +651,7 @@ if (promises) test_zero(close(s1))
 if (promises) test_zero(close(s))
 if (promises) later::run_now()
 test_true(!identical(get0(".Random.seed"), {.advance(); .Random.seed}))
+test_type("integer", .Call(nanonext:::rnng_traverse_precious))
 if (Sys.info()[["sysname"]] == "Linux") {
   rm(list = ls())
   gc()
