@@ -206,6 +206,7 @@ void attribute_visible R_init_nanonext(DllInfo* dll) {
   R_registerRoutines(dll, NULL, callMethods, NULL, externalMethods);
   R_useDynamicSymbols(dll, FALSE);
   R_forceSymbols(dll, TRUE);
+  R_RegisterCCallable("nanonext", "rnng_thread_create", (DL_FUNC) &rnng_thread_create);
 }
 
 // # nocov start

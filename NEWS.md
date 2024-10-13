@@ -1,5 +1,9 @@
 # nanonext 1.3.0.9000 (development)
 
+#### New Features
+
+* For developers: Exports C level callable `rnng_thread_create()` which creates a thread running a C function with signature `void (*)(void *)` that takes a single  `(void *)` argument, returning an external pointer to the thread.
+
 #### Updates
 
 * Performance enhancements for 'ncurlAio' and 'recvAio' promises methods.

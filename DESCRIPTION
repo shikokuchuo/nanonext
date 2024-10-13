@@ -19,7 +19,9 @@ Authors@R:
              email = "charlie.gao@shikokuchuo.net",
              comment = c(ORCID = "0000-0002-0750-061X")),
       person(given = "Hibiki AI Limited",
-             role = "cph"),
+             role = c("cph", "fnd")),
+      person(given = "Posit Software, PBC",
+             role = c("cph", "fnd")),
       person(given = "R Consortium",
              role = "fnd"))
 License: GPL (>= 3)
