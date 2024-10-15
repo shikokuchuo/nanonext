@@ -2,6 +2,7 @@
 
 #### New Features
 
+* Adds `with_lock()` to evaluate an expression while holding a mutex lock to prevent concurrent access by another thread which also requires the lock.
 * For developers: Exports C level callable `rnng_thread_create()` which creates a thread running a C function with signature `void (*)(void *)` that takes a single  `(void *)` argument, returning an external pointer to the thread.
 
 #### Updates
