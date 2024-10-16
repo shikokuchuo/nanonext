@@ -20,10 +20,33 @@
 #define NANONEXT_IO
 #include "nanonext.h"
 
-// messenger -------------------------------------------------------------------
+// threads callable and messenger ----------------------------------------------
 
 // # nocov start
 // tested interactively
+
+static void thread_finalizer(SEXP xptr) {
+
+  if (NANO_PTR(xptr) == NULL) return;
+  nng_thread *xp = (nng_thread *) NANO_PTR(xptr);
+  nng_thread_destroy(xp);
+
+}
+
+SEXP rnng_thread_create(void (*func)(void *), void *arg) {
+
+  nng_thread *thr;
+  int xc;
+
+  if ((xc = nng_thread_create(&thr, func, arg)))
+    ERROR_OUT(xc);
+
+  SEXP xptr = R_MakeExternalPtr(thr, R_NilValue, R_NilValue);
+  R_RegisterCFinalizerEx(xptr, thread_finalizer, TRUE);
+
+  return xptr;
+
+}
 
 static void nano_printf(const int err, const char *fmt, ...) {
 
@@ -35,14 +58,6 @@ static void nano_printf(const int err, const char *fmt, ...) {
   va_end(arg_ptr);
 
   if (write(err ? STDERR_FILENO : STDOUT_FILENO, buf, (size_t) bytes)) {};
-
-}
-
-static void thread_finalizer(SEXP xptr) {
-
-  if (NANO_PTR(xptr) == NULL) return;
-  nng_thread *xp = (nng_thread *) NANO_PTR(xptr);
-  nng_thread_destroy(xp);
 
 }
 
@@ -160,15 +175,7 @@ SEXP rnng_messenger(SEXP url) {
 SEXP rnng_messenger_thread_create(SEXP args) {
 
   SEXP socket = CADR(args);
-  nng_thread *thr;
-
-  const int xc = nng_thread_create(&thr, rnng_messenger_thread, args);
-  if (xc)
-    ERROR_OUT(xc);
-
-  SEXP xptr = R_MakeExternalPtr(thr, R_NilValue, R_NilValue);
-  NANO_SET_PROT(socket, xptr);
-  R_RegisterCFinalizerEx(xptr, thread_finalizer, TRUE);
+  NANO_SET_PROT(socket, rnng_thread_create(rnng_messenger_thread, args));
 
   return socket;
 
@@ -767,20 +774,5 @@ SEXP rnng_read_online(SEXP sock) {
   memcpy(NANO_DATAPTR(out), disp->online, n * sizeof(int));
 
   return out;
-
-}
-
-SEXP rnng_thread_create(void (*func)(void *), void *arg) {
-
-  nng_thread *thr;
-  int xc;
-
-  if ((xc = nng_thread_create(&thr, func, arg)))
-    ERROR_OUT(xc);
-
-  SEXP xptr = R_MakeExternalPtr(thr, R_NilValue, R_NilValue);
-  R_RegisterCFinalizerEx(xptr, thread_finalizer, TRUE);
-
-  return xptr;
 
 }
