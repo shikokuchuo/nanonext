@@ -165,18 +165,21 @@ parse_url <- function(url) .Call(rnng_url_parse, url)
 #'
 #' Validator functions for object types created by \{nanonext\}.
 #'
+#' Is the object an Aio (inheriting from class \sQuote{sendAio} or
+#' \sQuote{recvAio}).
+#'
+#' Is the object an object inheriting from class \sQuote{nano} i.e. a
+#' nanoSocket, nanoContext, nanoStream, nanoListener, nanoDialer, nanoPipe or
+#' nano Object.
+#'
+#' Is the object an ncurlSession (object of class \sQuote{ncurlSession}).
+#'
+#' Is the object a Condition Variable (object of class
+#' \sQuote{conditionVariable}).
+#'
 #' @param x an object.
 #'
 #' @return Logical value TRUE or FALSE.
-#'
-#' @details Is the object an Aio (inheriting from class \sQuote{sendAio} or
-#'     \sQuote{recvAio}).
-#'
-#'     Is the object an object inheriting from class \sQuote{nano} i.e. a
-#'     nanoSocket, nanoContext, nanoStream, nanoListener, nanoDialer, nanoPipe
-#'     or nano Object.
-#'
-#'     Is the object an ncurlSession (object of class \sQuote{ncurlSession}).
 #'
 #' @examples
 #' nc <- call_aio(ncurl_aio("https://postman-echo.com/get", timeout = 1000L))

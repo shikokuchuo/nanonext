@@ -769,3 +769,18 @@ SEXP rnng_read_online(SEXP sock) {
   return out;
 
 }
+
+SEXP rnng_thread_create(void (*func)(void *), void *arg) {
+
+  nng_thread *thr;
+  int xc;
+
+  if ((xc = nng_thread_create(&thr, func, arg)))
+    ERROR_OUT(xc);
+
+  SEXP xptr = R_MakeExternalPtr(thr, R_NilValue, R_NilValue);
+  R_RegisterCFinalizerEx(xptr, thread_finalizer, TRUE);
+
+  return xptr;
+
+}

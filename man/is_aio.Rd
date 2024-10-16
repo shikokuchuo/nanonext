@@ -23,13 +23,16 @@ Validator functions for object types created by \{nanonext\}.
 }
 \details{
 Is the object an Aio (inheriting from class \sQuote{sendAio} or
-    \sQuote{recvAio}).
+\sQuote{recvAio}).
 
-    Is the object an object inheriting from class \sQuote{nano} i.e. a
-    nanoSocket, nanoContext, nanoStream, nanoListener, nanoDialer, nanoPipe
-    or nano Object.
+Is the object an object inheriting from class \sQuote{nano} i.e. a
+nanoSocket, nanoContext, nanoStream, nanoListener, nanoDialer, nanoPipe or
+nano Object.
 
-    Is the object an ncurlSession (object of class \sQuote{ncurlSession}).
+Is the object an ncurlSession (object of class \sQuote{ncurlSession}).
+
+Is the object a Condition Variable (object of class
+\sQuote{conditionVariable}).
 }
 \examples{
 nc <- call_aio(ncurl_aio("https://postman-echo.com/get", timeout = 1000L))
