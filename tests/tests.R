@@ -525,6 +525,8 @@ test_zero(close(s2))
 test_zero(close(s3))
 
 test_type("externalptr", cv <- cv())
+test_equal(with_lock(cv, "hello"), "hello")
+test_error(with_lock("cv", "hello"), "valid Condition Variable")
 test_error(.dispatcher(host = "inproc://hostdisp", url = "inproc://disp/1", tls = ""), "not a valid TLS Configuration")
 test_type("externalptr", disp <- .dispatcher(host = "inproc://hostdisp", url = "inproc://disp/1", tls = NULL))
 test_zero(.online(disp))
