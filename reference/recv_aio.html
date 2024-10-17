@@ -98,30 +98,28 @@ size is reserved.</p></dd>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>Async receive is always non-blocking and returns a ‘recvAio’
-    immediately.</p>
-<p>For a ‘recvAio’, the received message is available at <code>$data</code>.
-    An ‘unresolved’ logical NA is returned if the async operation is
-    yet to complete.</p>
+immediately.</p>
+<p>For a ‘recvAio’, the received message is available at <code>$data</code>. An
+‘unresolved’ logical NA is returned if the async operation is yet to
+complete.</p>
 <p>To wait for the async operation to complete and retrieve the received
-    message, use <code><a href="call_aio.html">call_aio</a></code> on the returned ‘recvAio’
-    object.</p>
+message, use <code><a href="call_aio.html">call_aio</a></code> on the returned ‘recvAio’ object.</p>
 <p>Alternatively, to stop the async operation, use <code><a href="stop_aio.html">stop_aio</a></code>.</p>
 <p>In case of an error, an integer ‘errorValue’ is returned (to be
-    distiguishable from an integer message value). This can be checked using
-    <code><a href="is_error_value.html">is_error_value</a></code>.</p>
-<p>If an error occurred in unserialization or conversion of the message data
-    to the specified mode, a raw vector will be returned instead to allow
-    recovery (accompanied by a warning).</p>
+distiguishable from an integer message value). This can be checked using
+<code><a href="is_error_value.html">is_error_value</a></code>.</p>
+<p>If an error occurred in unserialization or conversion of the message data to
+the specified mode, a raw vector will be returned instead to allow recovery
+(accompanied by a warning).</p>
     </div>
     <div class="section level2">
     <h2 id="signalling">Signalling<a class="anchor" aria-label="anchor" href="#signalling"></a></h2>
 
 
 
-<p>By supplying a ‘conditionVariable’, when the receive is complete,
-    the ‘conditionVariable’ is signalled by incrementing its value by
-    1. This happens asynchronously and independently of the R execution
-    thread.</p>
+<p>By supplying a ‘conditionVariable’, when the receive is complete, the
+‘conditionVariable’ is signalled by incrementing its value by 1. This
+happens asynchronously and independently of the R execution thread.</p>
     </div>
 
     <div class="section level2">
