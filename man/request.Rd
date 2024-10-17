@@ -27,47 +27,45 @@ either \sQuote{serial} (1L) to send serialised R objects, or \sQuote{raw}
 one of \sQuote{serial} (1L), \sQuote{character} (2L), \sQuote{complex}
 (3L), \sQuote{double} (4L), \sQuote{integer} (5L), \sQuote{logical} (6L),
 \sQuote{numeric} (7L), \sQuote{raw} (8L), or \sQuote{string} (9L). The
-default \sQuote{serial} means a serialised R object; for the other
-modes, received bytes are converted into the respective mode.
-\sQuote{string} is a faster option for length one character vectors.}
+default \sQuote{serial} means a serialised R object; for the other modes,
+received bytes are converted into the respective mode. \sQuote{string} is a
+faster option for length one character vectors.}
 
 \item{timeout}{[default NULL] integer value in milliseconds or NULL, which
 applies a socket-specific default, usually the same as no timeout.}
 
 \item{cv}{(optional) a \sQuote{conditionVariable} to signal when the async
 receive is complete, or NULL. If any other value is supplied, this will
-cause the pipe connection to be dropped when the async receive is
-complete.}
+cause the pipe connection to be dropped when the async receive is complete.}
 }
 \value{
 A \sQuote{recvAio} (object of class \sQuote{mirai} and
-    \sQuote{recvAio}) (invisibly).
+  \sQuote{recvAio}) (invisibly).
 }
 \description{
 Implements a caller/client for the req node of the req/rep protocol. Sends
-    data to the rep node (executor/server) and returns an Aio, which can be
-    called for the value when required.
+data to the rep node (executor/server) and returns an Aio, which can be
+called for the value when required.
 }
 \details{
-Sending the request and receiving the result are both performed
-    async, hence the function will return immediately with a \sQuote{recvAio}
-    object. Access the return value at \code{$data}.
+Sending the request and receiving the result are both performed async, hence
+the function will return immediately with a \sQuote{recvAio} object. Access
+the return value at \code{$data}.
 
-    This is designed so that the process on the server can run concurrently
-    without blocking the client.
+This is designed so that the process on the server can run concurrently
+without blocking the client.
 
-    Optionally use \code{\link{call_aio}} on the \sQuote{recvAio} to call
-    (and wait for) the result.
+Optionally use \code{\link{call_aio}} on the \sQuote{recvAio} to call (and
+wait for) the result.
 
-    If an error occured in the server process, a nul byte \code{00} will be
-    received. This allows an error to be easily distinguished from a NULL
-    return value. \code{\link{is_nul_byte}} can be used to test for a nul
-    byte.
+If an error occured in the server process, a nul byte \code{00} will be
+received. This allows an error to be easily distinguished from a NULL return
+value. \code{\link{is_nul_byte}} can be used to test for a nul byte.
 
-    It is recommended to use a new context for each request to ensure
-    consistent state tracking. For safety, the context used for the request
-    is closed when all references to the returned \sQuote{recvAio} are
-    removed and the object is garbage collected.
+It is recommended to use a new context for each request to ensure consistent
+state tracking. For safety, the context used for the request is closed when
+all references to the returned \sQuote{recvAio} are removed and the object is
+garbage collected.
 }
 \section{Send Modes}{
 
@@ -87,10 +85,9 @@ Sending the request and receiving the result are both performed
 \section{Signalling}{
 
 
-    By supplying a \sQuote{conditionVariable}, when the receive is complete,
-    the \sQuote{conditionVariable} is signalled by incrementing its value by
-    1. This happens asynchronously and independently of the R execution
-    thread.
+By supplying a \sQuote{conditionVariable}, when the receive is complete, the
+\sQuote{conditionVariable} is signalled by incrementing its value by 1. This
+happens asynchronously and independently of the R execution thread.
 }
 
 \examples{

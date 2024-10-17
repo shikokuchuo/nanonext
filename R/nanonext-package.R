@@ -19,40 +19,39 @@
 #' nanonext: NNG (Nanomsg Next Gen) Lightweight Messaging Library
 #'
 #' R binding for NNG (Nanomsg Next Gen), a successor to ZeroMQ. NNG is a socket
-#'     library implementing \sQuote{Scalability Protocols}, a reliable,
-#'     high-performance standard for common communications patterns including
-#'     publish/subscribe, request/reply and service discovery, over in-process,
-#'     IPC, TCP, WebSocket and secure TLS transports. As its own threaded
-#'     concurrency framework, provides a toolkit for asynchronous programming
-#'     and distributed computing, with intuitive \sQuote{aio} objects which
-#'     resolve automatically upon completion of asynchronous operations, and
-#'     synchronisation primitives allowing R to wait upon events signalled by
-#'     concurrent threads.
+#' library implementing \sQuote{Scalability Protocols}, a reliable,
+#' high-performance standard for common communications patterns including
+#' publish/subscribe, request/reply and service discovery, over in-process, IPC,
+#' TCP, WebSocket and secure TLS transports. As its own threaded concurrency
+#' framework, provides a toolkit for asynchronous programming and distributed
+#' computing, with intuitive \sQuote{aio} objects which resolve automatically
+#' upon completion of asynchronous operations, and synchronisation primitives
+#' allowing R to wait upon events signalled by concurrent threads.
 #'
 #' @section Usage notes:
 #'
-#'     \pkg{nanonext} offers 2 equivalent interfaces: a functional interface,
-#'     and an object-oriented interface.
+#' \pkg{nanonext} offers 2 equivalent interfaces: a functional interface, and an
+#' object-oriented interface.
 #'
-#'     The primary object in the functional interface is the Socket. Use
-#'     \code{\link{socket}} to create a socket and dial or listen at an address.
-#'     The socket is then passed as the first argument of subsequent actions
-#'     such as \code{send()} or \code{recv()}.
+#' The primary object in the functional interface is the Socket. Use
+#' \code{\link{socket}} to create a socket and dial or listen at an address. The
+#' socket is then passed as the first argument of subsequent actions such as
+#' \code{send()} or \code{recv()}.
 #'
-#'     The primary object in the object-oriented interface is the nano object.
-#'     Use \code{\link{nano}} to create a nano object which encapsulates a
-#'     Socket and Dialer/Listener. Methods such as \code{$send()} or
-#'     \code{$recv()} can then be accessed directly from the object.
+#' The primary object in the object-oriented interface is the nano object. Use
+#' \code{\link{nano}} to create a nano object which encapsulates a Socket and
+#' Dialer/Listener. Methods such as \code{$send()} or \code{$recv()} can then be
+#' accessed directly from the object.
 #'
 #' @section Documentation:
 #'
-#'     Guide to the implemented protocols for sockets: \link{protocols}
+#' Guide to the implemented protocols for sockets: \link{protocols}
 #'
-#'     Guide to the supported transports for dialers and listeners:
-#'     \link{transports}
+#' Guide to the supported transports for dialers and listeners:
+#' \link{transports}
 #'
-#'     Guide to the options that can be inspected and set using: \link{opt} /
-#'     \link{opt<-}
+#' Guide to the options that can be inspected and set using: \link{opt} /
+#' \link{opt<-}
 #'
 #' @section Reference Manual:
 #'
@@ -60,37 +59,36 @@
 #'
 #' @section Conceptual overview:
 #'
-#'     NNG presents a socket view of networking. A socket implements precisely
-#'     one protocol, such as \sQuote{bus}, etc.
+#' NNG presents a socket view of networking. A socket implements precisely one
+#' protocol, such as \sQuote{bus}, etc.
 #'
-#'     Each socket can be used to send and receive messages (if the protocol
-#'     supports it, and implements the appropriate protocol semantics). For
-#'     example, the \sQuote{sub} protocol automatically filters incoming
-#'     messages to discard topics that have not been subscribed.
+#' Each socket can be used to send and receive messages (if the protocol
+#' supports it, and implements the appropriate protocol semantics). For example,
+#' the \sQuote{sub} protocol automatically filters incoming messages to discard
+#' topics that have not been subscribed.
 #'
-#'     NNG sockets are message-oriented, and messages are either delivered
-#'     wholly, or not at all. Partial delivery is not possible. Furthermore, NNG
-#'     does not provide any other delivery or ordering guarantees: messages may
-#'     be dropped or reordered (some protocols, such as \sQuote{req} may offer
-#'     stronger guarantees by performing their own retry and validation schemes).
+#' NNG sockets are message-oriented, and messages are either delivered wholly,
+#' or not at all. Partial delivery is not possible. Furthermore, NNG does not
+#' provide any other delivery or ordering guarantees: messages may be dropped or
+#' reordered (some protocols, such as \sQuote{req} may offer stronger guarantees
+#' by performing their own retry and validation schemes).
 #'
-#'     Each socket can have zero, one, or many endpoints, which are either
-#'     listeners or dialers (a given socket may use listeners, dialers, or
-#'     both). These endpoints provide access to underlying transports, such as
-#'     TCP, etc.
+#' Each socket can have zero, one, or many endpoints, which are either listeners
+#' or dialers (a given socket may use listeners, dialers, or both). These
+#' endpoints provide access to underlying transports, such as TCP, etc.
 #'
-#'     Each endpoint is associated with a URL, which is a service address.
-#'     For dialers, this is the service address that is contacted, whereas for
-#'     listeners this is where new connections will be accepted.
+#' Each endpoint is associated with a URL, which is a service address. For
+#' dialers, this is the service address that is contacted, whereas for listeners
+#' this is where new connections will be accepted.
 #'
 #' @section Links:
 #'
-#'     NNG: \url{https://nng.nanomsg.org/} \cr
-#'     Mbed TLS: \url{https://www.trustedfirmware.org/projects/mbed-tls/}
+#' NNG: \url{https://nng.nanomsg.org/} \cr
+#' Mbed TLS: \url{https://www.trustedfirmware.org/projects/mbed-tls/}
 #'
 #' @encoding UTF-8
 #' @author Charlie Gao \email{charlie.gao@@shikokuchuo.net}
-#'     (\href{https://orcid.org/0000-0002-0750-061X}{ORCID})
+#'   (\href{https://orcid.org/0000-0002-0750-061X}{ORCID})
 #'
 #' @useDynLib nanonext, .registration = TRUE
 #'

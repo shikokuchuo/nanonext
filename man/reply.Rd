@@ -26,9 +26,9 @@ through \sQuote{...}.}
 one of \sQuote{serial} (1L), \sQuote{character} (2L), \sQuote{complex}
 (3L), \sQuote{double} (4L), \sQuote{integer} (5L), \sQuote{logical} (6L),
 \sQuote{numeric} (7L), \sQuote{raw} (8L), or \sQuote{string} (9L). The
-default \sQuote{serial} means a serialised R object; for the other
-modes, received bytes are converted into the respective mode.
-\sQuote{string} is a faster option for length one character vectors.}
+default \sQuote{serial} means a serialised R object; for the other modes,
+received bytes are converted into the respective mode. \sQuote{string} is a
+faster option for length one character vectors.}
 
 \item{send_mode}{[default 'serial'] character value or integer equivalent -
 either \sQuote{serial} (1L) to send serialised R objects, or \sQuote{raw}
@@ -41,26 +41,27 @@ also include performing 'execute' on the received data. The timeout then
 also applies to sending the result (in the event that the requestor has
 become unavailable since sending the request).}
 
-\item{...}{additional arguments passed to the function specified by 'execute'.}
+\item{...}{additional arguments passed to the function specified by
+'execute'.}
 }
 \value{
 Integer exit code (zero on success).
 }
 \description{
 Implements an executor/server for the rep node of the req/rep protocol.
-    Awaits data, applies an arbitrary specified function, and returns the
-    result to the caller/client.
+Awaits data, applies an arbitrary specified function, and returns the result
+to the caller/client.
 }
 \details{
-Receive will block while awaiting a message to arrive and is usually
-    the desired behaviour. Set a timeout to allow the function to return
-    if no data is forthcoming.
+Receive will block while awaiting a message to arrive and is usually the
+desired behaviour. Set a timeout to allow the function to return if no data
+is forthcoming.
 
-    In the event of an error in either processing the messages or in
-    evaluation of the function with respect to the data, a nul byte \code{00}
-    (or serialized nul byte) will be sent in reply to the client to signal an
-    error. This is to be distinguishable from a possible return value.
-    \code{\link{is_nul_byte}} can be used to test for a nul byte.
+In the event of an error in either processing the messages or in evaluation
+of the function with respect to the data, a nul byte \code{00} (or serialized
+nul byte) will be sent in reply to the client to signal an error. This is to
+be distinguishable from a possible return value. \code{\link{is_nul_byte}}
+can be used to test for a nul byte.
 }
 \section{Send Modes}{
 

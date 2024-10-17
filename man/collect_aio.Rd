@@ -15,21 +15,21 @@ collect_aio_(x)
 }
 \value{
 Depending on the type of \sQuote{x} supplied, an object or list of
-    objects (the same length as \sQuote{x}, preserving names).
+  objects (the same length as \sQuote{x}, preserving names).
 }
 \description{
 \code{collect_aio} collects the data of an Aio or list of Aios, waiting for
-    resolution if still in progress.
+resolution if still in progress.
 
 \code{collect_aio_} is a variant that allows user interrupts, suitable for
-    interactive use.
+interactive use.
 }
 \details{
-This function will wait for the asynchronous operation(s) to
-    complete if still in progress (blocking).
+This function will wait for the asynchronous operation(s) to complete if
+still in progress (blocking).
 
-    Using \code{x[]} on an Aio \code{x} is equivalent to the
-    user-interruptible \code{collect_aio_(x)}.
+Using \code{x[]} on an Aio \code{x} is equivalent to the user-interruptible
+\code{collect_aio_(x)}.
 }
 \examples{
 s1 <- socket("pair", listen = "inproc://nanonext")

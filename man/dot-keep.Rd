@@ -18,7 +18,7 @@ NULL.
 Internal package function.
 }
 \details{
-If successful, both \sQuote{x} and \sQuote{ctx} are preserved and
-    accessible from the promise callback.
+If successful, both \sQuote{x} and \sQuote{ctx} are preserved and accessible
+from the promise callback.
 }
 \keyword{internal}

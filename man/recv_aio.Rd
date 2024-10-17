@@ -43,33 +43,31 @@ Receive data asynchronously over a connection (Socket, Context or Stream).
 }
 \details{
 Async receive is always non-blocking and returns a \sQuote{recvAio}
-    immediately.
+immediately.
 
-    For a \sQuote{recvAio}, the received message is available at \code{$data}.
-    An \sQuote{unresolved} logical NA is returned if the async operation is
-    yet to complete.
+For a \sQuote{recvAio}, the received message is available at \code{$data}. An
+\sQuote{unresolved} logical NA is returned if the async operation is yet to
+complete.
 
-    To wait for the async operation to complete and retrieve the received
-    message, use \code{\link{call_aio}} on the returned \sQuote{recvAio}
-    object.
+To wait for the async operation to complete and retrieve the received
+message, use \code{\link{call_aio}} on the returned \sQuote{recvAio} object.
 
-    Alternatively, to stop the async operation, use \code{\link{stop_aio}}.
+Alternatively, to stop the async operation, use \code{\link{stop_aio}}.
 
-    In case of an error, an integer \sQuote{errorValue} is returned (to be
-    distiguishable from an integer message value). This can be checked using
-    \code{\link{is_error_value}}.
+In case of an error, an integer \sQuote{errorValue} is returned (to be
+distiguishable from an integer message value). This can be checked using
+\code{\link{is_error_value}}.
 
-    If an error occurred in unserialization or conversion of the message data
-    to the specified mode, a raw vector will be returned instead to allow
-    recovery (accompanied by a warning).
+If an error occurred in unserialization or conversion of the message data to
+the specified mode, a raw vector will be returned instead to allow recovery
+(accompanied by a warning).
 }
 \section{Signalling}{
 
 
-    By supplying a \sQuote{conditionVariable}, when the receive is complete,
-    the \sQuote{conditionVariable} is signalled by incrementing its value by
-    1. This happens asynchronously and independently of the R execution
-    thread.
+By supplying a \sQuote{conditionVariable}, when the receive is complete, the
+\sQuote{conditionVariable} is signalled by incrementing its value by 1. This
+happens asynchronously and independently of the R execution thread.
 }
 
 \examples{

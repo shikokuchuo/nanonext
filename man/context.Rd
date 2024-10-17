@@ -14,24 +14,24 @@ A Context (object of class \sQuote{nanoContext} and \sQuote{nano}).
 }
 \description{
 Open a new Context to be used with a Socket. The purpose of a Context is to
-    permit applications to share a single socket, with its underlying dialers
-    and listeners, while still benefiting from separate state tracking.
+permit applications to share a single socket, with its underlying dialers and
+listeners, while still benefiting from separate state tracking.
 }
 \details{
-Contexts allow the independent and concurrent use of stateful
-    operations using the same socket. For example, two different contexts
-    created on a rep socket can each receive requests, and send replies to
-    them, without any regard to or interference with each other.
+Contexts allow the independent and concurrent use of stateful operations
+using the same socket. For example, two different contexts created on a rep
+socket can each receive requests, and send replies to them, without any
+regard to or interference with each other.
 
-    Only the following protocols support creation of contexts: req, rep, sub
-    (in a pub/sub pattern), surveyor, respondent.
+Only the following protocols support creation of contexts: req, rep, sub
+(in a pub/sub pattern), surveyor, respondent.
 
-    To send and receive over a context use \code{\link{send}} and
-    \code{\link{recv}} or their async counterparts \code{\link{send_aio}} and
-    \code{\link{recv_aio}}.
+To send and receive over a context use \code{\link{send}} and
+\code{\link{recv}} or their async counterparts \code{\link{send_aio}} and
+\code{\link{recv_aio}}.
 
-    For nano objects, use the \code{$context_open()} method, which will
-    attach a new context at \code{$context}. See \code{\link{nano}}.
+For nano objects, use the \code{$context_open()} method, which will attach a
+new context at \code{$context}. See \code{\link{nano}}.
 }
 \examples{
 s <- socket("req", listen = "inproc://nanonext")

@@ -13,18 +13,17 @@ unresolved(x)
 }
 \value{
 Logical TRUE if \sQuote{aio} is an unresolved Aio or Aio value or the
-    list of Aios contains at least one unresolved Aio, or FALSE otherwise.
+  list of Aios contains at least one unresolved Aio, or FALSE otherwise.
 }
 \description{
 Query whether an Aio, Aio value or list of Aios remains unresolved. Unlike
-    \code{\link{call_aio}}, this function does not wait for completion.
+\code{\link{call_aio}}, this function does not wait for completion.
 }
 \details{
 Suitable for use in control flow statements such as \code{while} or
-    \code{if}.
+\code{if}.
 
-    Note: querying resolution may cause a previously unresolved Aio to
-    resolve.
+Note: querying resolution may cause a previously unresolved Aio to resolve.
 }
 \examples{
 s1 <- socket("pair", listen = "inproc://nanonext")
