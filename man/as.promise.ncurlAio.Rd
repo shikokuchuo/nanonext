@@ -16,12 +16,11 @@ A \sQuote{promise} object.
 Creates a \sQuote{promise} from an \sQuote{ncurlAio} object.
 }
 \details{
-This function is an S3 method for the generic \code{as.promise} for
-    class \sQuote{ncurlAio}.
+This function is an S3 method for the generic \code{as.promise} for class
+\sQuote{ncurlAio}.
 
-    Requires the \pkg{promises} package.
+Requires the \pkg{promises} package.
 
-    Allows an \sQuote{ncurlAio} to be used with the promise pipe
-    \code{\%...>\%}, which schedules a function to run upon resolution of the
-    Aio.
+Allows an \sQuote{ncurlAio} to be used with the promise pipe \code{\%...>\%},
+which schedules a function to run upon resolution of the Aio.
 }

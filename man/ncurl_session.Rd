@@ -52,10 +52,10 @@ NULL, certificates are not validated.}
 }
 \value{
 For \code{ncurl_session}: an 'ncurlSession' object if successful, or
-    else an 'errorValue'.
+  else an 'errorValue'.
 
 For \code{transact}: a named list of 3 elements:
-    \itemize{
+  \itemize{
     \item \code{$status} - integer HTTP repsonse status code (200 - OK).
     Use \code{\link{status_code}} for a translation of the meaning.
     \item \code{$headers} - named list of response headers (if specified in
@@ -66,13 +66,13 @@ For \code{transact}: a named list of 3 elements:
     'convert = TRUE' was specified for the session), which may be further
     parsed as html, json, xml etc. as required, or else a raw byte vector,
     which may be saved as a file using \code{\link{writeBin}}.
-    }
+  }
 }
 \description{
 nano cURL - a minimalist http(s) client. A session encapsulates a connection,
-    along with all related parameters, and may be used to return data
-    multiple times by repeatedly calling \code{transact}, which transacts
-    once over the connection.
+along with all related parameters, and may be used to return data multiple
+times by repeatedly calling \code{transact}, which transacts once over the
+connection.
 }
 \examples{
 s <- ncurl_session("https://postman-echo.com/get",

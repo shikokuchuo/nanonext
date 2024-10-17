@@ -52,7 +52,7 @@ NULL, certificates are not validated.}
 }
 \value{
 Named list of 3 elements:
-    \itemize{
+ \itemize{
     \item \code{$status} - integer HTTP repsonse status code (200 - OK).
     Use \code{\link{status_code}} for a translation of the meaning.
     \item \code{$headers} - named list of response headers supplied in
@@ -63,7 +63,7 @@ Named list of 3 elements:
     'convert' = TRUE (may be further parsed as html, json, xml etc. as
     required), or a raw byte vector if FALSE (use \code{\link{writeBin}} to
     save as a file).
-    }
+ }
 }
 \description{
 nano cURL - a minimalist http(s) client.
@@ -87,5 +87,5 @@ ncurl("https://postman-echo.com/post",
 }
 \seealso{
 \code{\link{ncurl_aio}} for asynchronous http requests;
-    \code{\link{ncurl_session}} for persistent connections.
+  \code{\link{ncurl_session}} for persistent connections.
 }

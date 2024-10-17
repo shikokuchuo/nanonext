@@ -47,8 +47,8 @@ NULL, certificates are not validated.}
 }
 \value{
 An 'ncurlAio' (object of class 'ncurlAio' and 'recvAio') (invisibly).
-    The following elements may be accessed:
-    \itemize{
+  The following elements may be accessed:
+  \itemize{
     \item \code{$status} - integer HTTP repsonse status code (200 - OK).
     Use \code{\link{status_code}} for a translation of the meaning.
     \item \code{$headers} - named list of response headers supplied in
@@ -59,7 +59,7 @@ An 'ncurlAio' (object of class 'ncurlAio' and 'recvAio') (invisibly).
     'convert' = TRUE (may be further parsed as html, json, xml etc. as
     required), or a raw byte vector if FALSE (use \code{\link{writeBin}} to
     save as a file).
-    }
+  }
 }
 \description{
 nano cURL - a minimalist http(s) client - async edition.
@@ -67,15 +67,14 @@ nano cURL - a minimalist http(s) client - async edition.
 \section{Promises}{
 
 
-    \sQuote{ncurlAio} may be used anywhere that accepts a \sQuote{promise}
-    from the \CRANpkg{promises} package through the included
-    \code{as.promise} method.
+\sQuote{ncurlAio} may be used anywhere that accepts a \sQuote{promise} from
+the \CRANpkg{promises} package through the included \code{as.promise} method.
 
-    The promises created are completely event-driven and non-polling.
+The promises created are completely event-driven and non-polling.
 
-    If a status code of 200 (OK) is returned then the promise is resolved
-    with the reponse body, otherwise it is rejected with a translation of the
-    status code or \sQuote{errorValue} as the case may be.
+If a status code of 200 (OK) is returned then the promise is resolved with
+the reponse body, otherwise it is rejected with a translation of the status
+code or \sQuote{errorValue} as the case may be.
 }
 
 \examples{
