@@ -14,14 +14,14 @@ A Pipe (object of class \sQuote{nanoPipe}).
 }
 \description{
 This function retrieves the Pipe used to receive a message from the Aio. It
-    will block if the Aio has yet to complete. The message is still available
-    for retrieval by the usual means. A Pipe is a low-level object and it is
-    not normally necessary to deal with them directly.
+will block if the Aio has yet to complete. The message is still available for
+retrieval by the usual means. A Pipe is a low-level object and it is not
+normally necessary to deal with them directly.
 }
 \details{
-As Pipes are always owned by a Socket, removing (and garbage
-    collecting) a Pipe does not close it or free its resources. A Pipe may,
-    however, be explicitly closed.
+As Pipes are always owned by a Socket, removing (and garbage collecting) a
+Pipe does not close it or free its resources. A Pipe may, however, be
+explicitly closed.
 }
 \examples{
 s <- socket("rep", listen = "inproc://nanonext")

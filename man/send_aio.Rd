@@ -12,8 +12,8 @@ send_aio(con, data, mode = c("serial", "raw"), timeout = NULL)
 \item{data}{an object (a vector, if mode = \sQuote{raw}).}
 
 \item{mode}{[default 'serial'] character value or integer equivalent - either
-\sQuote{serial} (1L) to send serialised R objects, or \sQuote{raw} (2L)
-to send atomic vectors of any type as a raw byte vector. For Streams,
+\sQuote{serial} (1L) to send serialised R objects, or \sQuote{raw} (2L) to
+send atomic vectors of any type as a raw byte vector. For Streams,
 \sQuote{raw} is the only option and this argument is ignored.}
 
 \item{timeout}{[default NULL] integer value in milliseconds or NULL, which
@@ -41,16 +41,16 @@ Alternatively, to stop the async operation, use \code{\link{stop_aio}}.
 \section{Send Modes}{
 
 
-    The default mode \sQuote{serial} sends serialised R objects to ensure
-    perfect reproducibility within R. When receiving, the corresponding mode
-    \sQuote{serial} should be used. Custom serialization and unserialization
-    functions for reference objects may be enabled by the function
-    \code{\link{serial_config}}.
+The default mode \sQuote{serial} sends serialised R objects to ensure perfect
+reproducibility within R. When receiving, the corresponding mode
+\sQuote{serial} should be used. Custom serialization and unserialization
+functions for reference objects may be enabled by the function
+\code{\link{serial_config}}.
 
-    Mode \sQuote{raw} sends atomic vectors of any type as a raw byte vector,
-    and must be used when interfacing with external applications or raw
-    system sockets, where R serialization is not in use. When receiving, the
-    mode corresponding to the vector sent should be used.
+Mode \sQuote{raw} sends atomic vectors of any type as a raw byte vector, and
+must be used when interfacing with external applications or raw system
+sockets, where R serialization is not in use. When receiving, the mode
+corresponding to the vector sent should be used.
 }
 
 \examples{

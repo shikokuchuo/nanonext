@@ -21,8 +21,8 @@ recv_aio(
 \sQuote{double} (4L), \sQuote{integer} (5L), \sQuote{logical} (6L),
 \sQuote{numeric} (7L), \sQuote{raw} (8L), or \sQuote{string} (9L). The
 default \sQuote{serial} means a serialised R object; for the other modes,
-received bytes are converted into the respective mode. \sQuote{string} is
-a faster option for length one character vectors. For Streams,
+received bytes are converted into the respective mode. \sQuote{string} is a
+faster option for length one character vectors. For Streams,
 \sQuote{serial} is not an option and the default is \sQuote{character}.}
 
 \item{timeout}{[default NULL] integer value in milliseconds or NULL, which

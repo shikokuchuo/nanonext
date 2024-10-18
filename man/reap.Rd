@@ -14,12 +14,12 @@ An integer exit code (zero on success).
 }
 \description{
 An alternative to \code{close} for Sockets, Contexts, Listeners, Dialers and
-    Pipes avoiding S3 method dispatch.
+Pipes avoiding S3 method dispatch.
 }
 \details{
 May be used on unclassed external pointers e.g. those created by
-    \code{\link{.context}}. Returns silently and does not warn or error, nor
-    does it update the state of object attributes.
+\code{\link{.context}}. Returns silently and does not warn or error, nor does
+it update the state of object attributes.
 }
 \examples{
 s <- socket("req")

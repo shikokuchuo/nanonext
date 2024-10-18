@@ -17,12 +17,12 @@ socket(
 \arguments{
 \item{protocol}{[default 'bus'] choose protocol - \sQuote{bus}, \sQuote{pair},
 \sQuote{poly}, \sQuote{push}, \sQuote{pull}, \sQuote{pub}, \sQuote{sub},
-\sQuote{req}, \sQuote{rep}, \sQuote{surveyor}, or \sQuote{respondent} -
-see \link{protocols}.}
+\sQuote{req}, \sQuote{rep}, \sQuote{surveyor}, or \sQuote{respondent} - see
+\link{protocols}.}
 
 \item{dial}{(optional) a URL to dial, specifying the transport and address as
-a character string e.g. 'inproc://anyvalue' or 'tcp://127.0.0.1:5555'
-(see \link{transports}).}
+a character string e.g. 'inproc://anyvalue' or 'tcp://127.0.0.1:5555' (see
+\link{transports}).}
 
 \item{listen}{(optional) a URL to listen at, specifying the transport and
 address as a character string e.g. 'inproc://anyvalue' or
@@ -32,11 +32,11 @@ address as a character string e.g. 'inproc://anyvalue' or
 provide a TLS configuration object created by \code{\link{tls_config}}.}
 
 \item{autostart}{[default TRUE] whether to start the dialer/listener. Set to
-FALSE if setting configuration options on the dialer/listener as it is
-not generally possible to change these once started. For dialers only:
-set to NA to start synchronously - this is less resilient if a
-connection is not immediately possible, but avoids subtle errors from
-attempting to use the socket before an asynchronous dial has completed.}
+FALSE if setting configuration options on the dialer/listener as it is not
+generally possible to change these once started. For dialers only: set to
+NA to start synchronously - this is less resilient if a connection is not
+immediately possible, but avoids subtle errors from attempting to use the
+socket before an asynchronous dial has completed.}
 
 \item{raw}{[default FALSE] whether to open raw mode sockets. Note: not for
 general use - do not enable unless you have a specific need (refer to NNG
@@ -47,59 +47,59 @@ A Socket (object of class \sQuote{nanoSocket} and \sQuote{nano}).
 }
 \description{
 Open a Socket implementing \sQuote{protocol}, and optionally dial (establish
-    an outgoing connection) or listen (accept an incoming connection) at an
-    address.
+an outgoing connection) or listen (accept an incoming connection) at an
+address.
 }
 \details{
-NNG presents a socket view of networking. The sockets are
-    constructed using protocol-specific functions, as a given socket
-    implements precisely one protocol.
+NNG presents a socket view of networking. The sockets are constructed using
+protocol-specific functions, as a given socket implements precisely one
+protocol.
 
-    Each socket may be used to send and receive messages (if the protocol
-    supports it, and implements the appropriate protocol semantics). For
-    example, sub sockets automatically filter incoming messages to discard
-    those for topics that have not been subscribed.
+Each socket may be used to send and receive messages (if the protocol
+supports it, and implements the appropriate protocol semantics). For example,
+sub sockets automatically filter incoming messages to discard those for
+topics that have not been subscribed.
 
-    This function (optionally) binds a single Dialer and/or Listener to a
-    Socket. More complex network topologies may be created by binding further
-    Dialers/Listeners to the Socket as required using \code{\link{dial}} and
-    \code{\link{listen}}.
+This function (optionally) binds a single Dialer and/or Listener to a Socket.
+More complex network topologies may be created by binding further Dialers /
+Listeners to the Socket as required using \code{\link{dial}} and
+\code{\link{listen}}.
 
-    New contexts may also be created using \code{\link{context}} if the
-    protocol supports it.
+New contexts may also be created using \code{\link{context}} if the protocol
+supports it.
 }
 \section{Protocols}{
 
 
-    The following Scalability Protocols (communication patterns) are
-    implemented:
-    \itemize{
-    \item Bus (mesh networks) - protocol: 'bus'
-    \item Pair (two-way radio) - protocol: 'pair'
-    \item Poly (one-to-one of many) - protocol: 'poly'
-    \item Pipeline (one-way pipe) - protocol: 'push', 'pull'
-    \item Publisher/Subscriber (topics & broadcast) - protocol: 'pub', 'sub'
-    \item Request/Reply (RPC) - protocol: 'req', 'rep'
-    \item Survey (voting & service discovery) - protocol: 'surveyor',
-    'respondent'
-    }
+The following Scalability Protocols (communication patterns) are implemented:
+\itemize{
+  \item Bus (mesh networks) - protocol: 'bus'
+  \item Pair (two-way radio) - protocol: 'pair'
+  \item Poly (one-to-one of many) - protocol: 'poly'
+  \item Pipeline (one-way pipe) - protocol: 'push', 'pull'
+  \item Publisher/Subscriber (topics & broadcast) - protocol: 'pub', 'sub'
+  \item Request/Reply (RPC) - protocol: 'req', 'rep'
+  \item Survey (voting & service discovery) - protocol: 'surveyor',
+  'respondent'
+}
 
-    Please see \link{protocols} for further documentation.
+Please see \link{protocols} for further documentation.
 }
 
 \section{Transports}{
 
 
-    The following communications transports may be used:
-    \itemize{
-    \item Inproc (in-process) - url: 'inproc://'
-    \item IPC (inter-process communications) - url: 'ipc://' (or
-    'abstract://' on Linux)
-    \item TCP and TLS over TCP - url: 'tcp://' and 'tls+tcp://'
-    \item WebSocket and TLS over WebSocket - url: 'ws://' and 'wss://'
-    }
+The following communications transports may be used:
 
-    Please see \link{transports} for further documentation.
+\itemize{
+  \item Inproc (in-process) - url: 'inproc://'
+  \item IPC (inter-process communications) - url: 'ipc://' (or 'abstract://'
+  on Linux)
+  \item TCP and TLS over TCP - url: 'tcp://' and 'tls+tcp://'
+  \item WebSocket and TLS over WebSocket - url: 'ws://' and 'wss://'
+}
+
+Please see \link{transports} for further documentation.
 }
 
 \examples{

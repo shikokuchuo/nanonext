@@ -16,12 +16,12 @@ nano(
 \arguments{
 \item{protocol}{[default 'bus'] choose protocol - \sQuote{bus}, \sQuote{pair},
 \sQuote{poly}, \sQuote{push}, \sQuote{pull}, \sQuote{pub}, \sQuote{sub},
-\sQuote{req}, \sQuote{rep}, \sQuote{surveyor}, or \sQuote{respondent} -
-see \link{protocols}.}
+\sQuote{req}, \sQuote{rep}, \sQuote{surveyor}, or \sQuote{respondent} - see
+\link{protocols}.}
 
 \item{dial}{(optional) a URL to dial, specifying the transport and address as
-a character string e.g. 'inproc://anyvalue' or 'tcp://127.0.0.1:5555'
-(see \link{transports}).}
+a character string e.g. 'inproc://anyvalue' or 'tcp://127.0.0.1:5555' (see
+\link{transports}).}
 
 \item{listen}{(optional) a URL to listen at, specifying the transport and
 address as a character string e.g. 'inproc://anyvalue' or
@@ -31,11 +31,11 @@ address as a character string e.g. 'inproc://anyvalue' or
 provide a TLS configuration object created by \code{\link{tls_config}}.}
 
 \item{autostart}{[default TRUE] whether to start the dialer/listener. Set to
-FALSE if setting configuration options on the dialer/listener as it is
-not generally possible to change these once started. For dialers only:
-set to NA to start synchronously - this is less resilient if a
-connection is not immediately possible, but avoids subtle errors from
-attempting to use the socket before an asynchronous dial has completed.}
+FALSE if setting configuration options on the dialer/listener as it is not
+generally possible to change these once started. For dialers only: set to
+NA to start synchronously - this is less resilient if a connection is not
+immediately possible, but avoids subtle errors from attempting to use the
+socket before an asynchronous dial has completed.}
 }
 \value{
 A nano object of class \sQuote{nanoObject}.

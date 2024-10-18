@@ -66,16 +66,16 @@ can be used to test for a nul byte.
 \section{Send Modes}{
 
 
-    The default mode \sQuote{serial} sends serialised R objects to ensure
-    perfect reproducibility within R. When receiving, the corresponding mode
-    \sQuote{serial} should be used. Custom serialization and unserialization
-    functions for reference objects may be enabled by the function
-    \code{\link{serial_config}}.
+The default mode \sQuote{serial} sends serialised R objects to ensure perfect
+reproducibility within R. When receiving, the corresponding mode
+\sQuote{serial} should be used. Custom serialization and unserialization
+functions for reference objects may be enabled by the function
+\code{\link{serial_config}}.
 
-    Mode \sQuote{raw} sends atomic vectors of any type as a raw byte vector,
-    and must be used when interfacing with external applications or raw
-    system sockets, where R serialization is not in use. When receiving, the
-    mode corresponding to the vector sent should be used.
+Mode \sQuote{raw} sends atomic vectors of any type as a raw byte vector, and
+must be used when interfacing with external applications or raw system
+sockets, where R serialization is not in use. When receiving, the mode
+corresponding to the vector sent should be used.
 }
 
 \examples{

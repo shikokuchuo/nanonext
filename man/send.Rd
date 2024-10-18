@@ -12,15 +12,15 @@ send(con, data, mode = c("serial", "raw"), block = NULL)
 \item{data}{an object (a vector, if mode = \sQuote{raw}).}
 
 \item{mode}{[default 'serial'] character value or integer equivalent - either
-\sQuote{serial} (1L) to send serialised R objects, or \sQuote{raw} (2L)
-to send atomic vectors of any type as a raw byte vector. For Streams,
+\sQuote{serial} (1L) to send serialised R objects, or \sQuote{raw} (2L) to
+send atomic vectors of any type as a raw byte vector. For Streams,
 \sQuote{raw} is the only option and this argument is ignored.}
 
 \item{block}{[default NULL] which applies the connection default (see section
-\sQuote{Blocking} below). Specify logical TRUE to block until successful
-or FALSE to return immediately even if unsuccessful (e.g. if no
-connection is available), or else an integer value specifying the maximum
-time to block in milliseconds, after which the operation will time out.}
+\sQuote{Blocking} below). Specify logical TRUE to block until successful or
+FALSE to return immediately even if unsuccessful (e.g. if no connection is
+available), or else an integer value specifying the maximum time to block
+in milliseconds, after which the operation will time out.}
 }
 \value{
 Integer exit code (zero on success).
@@ -31,32 +31,32 @@ Send data over a connection (Socket, Context or Stream).
 \section{Blocking}{
 
 
-    For Sockets and Contexts: the default behaviour is non-blocking with
-    \code{block = FALSE}. This will return immediately with an error if the
-    message could not be queued for sending. Certain protocol / transport
-    combinations may limit the number of messages that can be queued if they
-    have yet to be received.
+For Sockets and Contexts: the default behaviour is non-blocking with
+\code{block = FALSE}. This will return immediately with an error if the
+message could not be queued for sending. Certain protocol / transport
+combinations may limit the number of messages that can be queued if they have
+yet to be received.
 
-    For Streams: the default behaviour is blocking with \code{block = TRUE}.
-    This will wait until the send has completed. Set a timeout to ensure that
-    the function returns under all scenarios. As the underlying
-    implementation uses an asynchronous send with a wait, it is recommended
-    to set a small positive value for \code{block} rather than FALSE.
+For Streams: the default behaviour is blocking with \code{block = TRUE}. This
+will wait until the send has completed. Set a timeout to ensure that the
+function returns under all scenarios. As the underlying implementation uses
+an asynchronous send with a wait, it is recommended to set a small positive
+value for \code{block} rather than FALSE.
 }
 
 \section{Send Modes}{
 
 
-    The default mode \sQuote{serial} sends serialised R objects to ensure
-    perfect reproducibility within R. When receiving, the corresponding mode
-    \sQuote{serial} should be used. Custom serialization and unserialization
-    functions for reference objects may be enabled by the function
-    \code{\link{serial_config}}.
+The default mode \sQuote{serial} sends serialised R objects to ensure perfect
+reproducibility within R. When receiving, the corresponding mode
+\sQuote{serial} should be used. Custom serialization and unserialization
+functions for reference objects may be enabled by the function
+\code{\link{serial_config}}.
 
-    Mode \sQuote{raw} sends atomic vectors of any type as a raw byte vector,
-    and must be used when interfacing with external applications or raw
-    system sockets, where R serialization is not in use. When receiving, the
-    mode corresponding to the vector sent should be used.
+Mode \sQuote{raw} sends atomic vectors of any type as a raw byte vector, and
+must be used when interfacing with external applications or raw system
+sockets, where R serialization is not in use. When receiving, the mode
+corresponding to the vector sent should be used.
 }
 
 \examples{
