@@ -13,19 +13,18 @@ unlock(socket)
 \item{socket}{a Socket.}
 
 \item{cv}{(optional) a \sQuote{conditionVariable}. If supplied, the socket is
-locked only whilst the condition variable is an odd value. This is
-designed to allow an initial connection, as well as subsequent
-re-connections after a connection has ended, if the conditon variable is
-also registered with \code{\link{pipe_notify}} for both add and remove
-pipe events.}
+locked only whilst the condition variable is an odd value. This is designed
+to allow an initial connection, as well as subsequent re-connections after
+a connection has ended, if the conditon variable is also registered with
+\code{\link{pipe_notify}} for both add and remove pipe events.}
 }
 \value{
 Invisibly, zero on success (will otherwise error).
 }
 \description{
 Prevents further pipe connections from being established at a Socket. If a
-    socket is locked, new pipe connections are closed before they can be
-    added to the socket.
+socket is locked, new pipe connections are closed before they can be added to
+the socket.
 }
 \examples{
 s <- socket("bus", listen = "inproc://nanolock")

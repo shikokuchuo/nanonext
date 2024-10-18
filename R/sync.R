@@ -19,54 +19,53 @@
 #' Condition Variables
 #'
 #' \code{cv} creates a new condition variable (protected by a mutex internal to
-#'     the object).
+#' the object).
+#'
+#' Pass the \sQuote{conditionVariable} to the asynchronous receive functions
+#' \code{\link{recv_aio}} or \code{\link{request}}. Alternatively, to be
+#' notified of a pipe event, pass it to \code{\link{pipe_notify}}.
+#'
+#' Completion of the receive or pipe event, which happens asynchronously and
+#' independently of the main R thread, will signal the condition variable by
+#' incrementing it by 1.
+#'
+#' This will cause the R execution thread waiting on the condition variable
+#' using \code{wait} or \code{until} to wake and continue.
+#'
+#' For argument \sQuote{msec}, non-integer values will be coerced to integer.
+#' Non-numeric input will be ignored and return immediately.
 #'
 #' @return For \strong{cv}: a \sQuote{conditionVariable} object.
 #'
-#'     For \strong{wait}: (invisibly) logical TRUE, or else FALSE if a flag has
-#'     been set.
+#'  For \strong{wait}: (invisibly) logical TRUE, or else FALSE if a flag has
+#'  been set.
 #'
-#'     For \strong{until}: (invisibly) logical TRUE if signalled, or else FALSE
-#'     if the timeout was reached.
+#'  For \strong{until}: (invisibly) logical TRUE if signalled, or else FALSE if
+#'  the timeout was reached.
 #'
-#'     For \strong{cv_value}: integer value of the condition variable.
+#'  For \strong{cv_value}: integer value of the condition variable.
 #'
-#'     For \strong{cv_reset} and \strong{cv_signal}: zero (invisibly).
-#'
-#' @details Pass the \sQuote{conditionVariable} to the asynchronous receive
-#'     functions \code{\link{recv_aio}} or \code{\link{request}}. Alternatively,
-#'     to be notified of a pipe event, pass it to \code{\link{pipe_notify}}.
-#'
-#'     Completion of the receive or pipe event, which happens asynchronously and
-#'     independently of the main R thread, will signal the condition variable by
-#'     incrementing it by 1.
-#'
-#'     This will cause the R execution thread waiting on the condition variable
-#'     using \code{wait} or \code{until} to wake and continue.
-#'
-#'     For argument \sQuote{msec}, non-integer values will be coerced to
-#'     integer. Non-numeric input will be ignored and return immediately.
+#'  For \strong{cv_reset} and \strong{cv_signal}: zero (invisibly).
 #'
 #' @section Condition:
 #'
-#'     The condition internal to this \sQuote{conditionVariable} maintains a
-#'     state (value). Each signal increments the value by 1. Each time
-#'     \code{wait} or \code{until} returns (apart from due to timeout), the
-#'     value is decremented by 1.
+#' The condition internal to this \sQuote{conditionVariable} maintains a state
+#' (value). Each signal increments the value by 1. Each time \code{wait} or
+#' \code{until} returns (apart from due to timeout), the value is decremented
+#' by 1.
 #'
-#'     The internal condition may be inspected at any time using \code{cv_value}
-#'     and reset using \code{cv_reset}. This affords a high degree of
-#'     flexibility in designing complex concurrent applications.
+#' The internal condition may be inspected at any time using \code{cv_value} and
+#' reset using \code{cv_reset}. This affords a high degree of flexibility in
+#' designing complex concurrent applications.
 #'
 #' @section Flag:
 #'
-#'     The condition variable also contains a flag that certain signalling
-#'     functions such as \code{\link{pipe_notify}} can set. When this flag has
-#'     been set, all subsequent \code{wait} calls will return logical FALSE
-#'     instead of TRUE.
+#' The condition variable also contains a flag that certain signalling functions
+#' such as \code{\link{pipe_notify}} can set. When this flag has been set, all
+#' subsequent \code{wait} calls will return logical FALSE instead of TRUE.
 #'
-#'     Note that the flag is not automatically reset, but may be reset manually
-#'     using \code{cv_reset}.
+#' Note that the flag is not automatically reset, but may be reset manually
+#' using \code{cv_reset}.
 #'
 #' @examples
 #' cv <- cv()
@@ -78,8 +77,8 @@ cv <- function() .Call(rnng_cv_alloc)
 #' Condition Variables - Wait
 #'
 #' \code{wait} waits on a condition being signalled by completion of an
-#'     asynchronous receive or pipe event. \cr \code{wait_} is a variant that
-#'     allows user interrupts, suitable for interactive use.
+#' asynchronous receive or pipe event. \cr \code{wait_} is a variant that allows
+#' user interrupts, suitable for interactive use.
 #'
 #' @param cv a \sQuote{conditionVariable} object.
 #'
@@ -102,11 +101,11 @@ wait_ <- function(cv) invisible(.Call(rnng_cv_wait_safe, cv))
 #' Condition Variables - Until
 #'
 #' \code{until} waits until a future time on a condition being signalled by
-#'     completion of an asynchronous receive or pipe event. \cr \code{until_} is
-#'     a variant that allows user interrupts, suitable for interactive use.
+#' completion of an asynchronous receive or pipe event. \cr \code{until_} is a
+#' variant that allows user interrupts, suitable for interactive use.
 #'
 #' @param msec maximum time in milliseconds to wait for the condition variable
-#'     to be signalled.
+#'   to be signalled.
 #'
 #' @examples
 #' until(cv, 10L)
@@ -163,32 +162,31 @@ cv_signal <- function(cv) invisible(.Call(rnng_cv_signal, cv))
 #' Pipe Notify
 #'
 #' Signals a \sQuote{conditionVariable} whenever pipes (individual connections)
-#'     are added or removed at a socket.
+#' are added or removed at a socket.
+#'
+#' For add: this event occurs after the pipe is fully added to the socket. Prior
+#' to this time, it is not possible to communicate over the pipe with the socket.
+#'
+#' For remove: this event occurs after the pipe has been removed from the socket.
+#' The underlying transport may be closed at this point, and it is not possible
+#' to communicate using this pipe.
 #'
 #' @param socket a Socket.
 #' @param cv a \sQuote{conditionVariable} to signal, or NULL to cancel a
-#'     previously set signal.
+#'   previously set signal.
 #' @param cv2 [default NULL] optionally, if specified, a second
-#'     \sQuote{conditionVariable} to signal. Note that this cv is signalled
-#'     sequentially after the first condition variable.
+#'   \sQuote{conditionVariable} to signal. Note that this cv is signalled
+#'   sequentially after the first condition variable.
 #' @param add [default FALSE] logical value whether to signal (or cancel signal)
-#'     when a pipe is added.
+#'   when a pipe is added.
 #' @param remove [default FALSE] logical value whether to signal (or cancel
-#'     signal) when a pipe is removed.
+#'   signal) when a pipe is removed.
 #' @param flag [default FALSE] logical value whether to also set a flag in the
-#'     \sQuote{conditionVariable}. This can help distinguish between different
-#'     types of signal, and causes any subsequent \code{\link{wait}} to return
-#'     FALSE instead of TRUE. If a signal from the \pkg{tools} package, e.g.
-#'     \code{tools::SIGINT}, or an equivalent integer value is supplied, this
-#'     sets a flag and additionally raises this signal upon the flag being set.
-#'
-#' @details For add: this event occurs after the pipe is fully added to the
-#'     socket. Prior to this time, it is not possible to communicate over the
-#'     pipe with the socket.
-#'
-#'     For remove: this event occurs after the pipe has been removed from the
-#'     socket. The underlying transport may be closed at this point, and it is
-#'     not possible to communicate using this pipe.
+#'   \sQuote{conditionVariable}. This can help distinguish between different
+#'   types of signal, and causes any subsequent \code{\link{wait}} to return
+#'   FALSE instead of TRUE. If a signal from the \pkg{tools} package, e.g.
+#'   \code{tools::SIGINT}, or an equivalent integer value is supplied, this sets
+#'   a flag and additionally raises this signal upon the flag being set.
 #'
 #' @return Invisibly, zero on success (will otherwise error).
 #'
@@ -227,16 +225,15 @@ pipe_notify <- function(socket, cv, cv2 = NULL, add = FALSE, remove = FALSE, fla
 #' Lock / Unlock a Socket
 #'
 #' Prevents further pipe connections from being established at a Socket. If a
-#'     socket is locked, new pipe connections are closed before they can be
-#'     added to the socket.
+#' socket is locked, new pipe connections are closed before they can be added to
+#' the socket.
 #'
 #' @param socket a Socket.
 #' @param cv (optional) a \sQuote{conditionVariable}. If supplied, the socket is
-#'     locked only whilst the condition variable is an odd value. This is
-#'     designed to allow an initial connection, as well as subsequent
-#'     re-connections after a connection has ended, if the conditon variable is
-#'     also registered with \code{\link{pipe_notify}} for both add and remove
-#'     pipe events.
+#'   locked only whilst the condition variable is an odd value. This is designed
+#'   to allow an initial connection, as well as subsequent re-connections after
+#'   a connection has ended, if the conditon variable is also registered with
+#'   \code{\link{pipe_notify}} for both add and remove pipe events.
 #'
 #' @return Invisibly, zero on success (will otherwise error).
 #'
@@ -274,23 +271,23 @@ unlock <- function(socket) invisible(.Call(rnng_socket_unlock, socket))
 #'
 #' Forwards signals from one \sQuote{conditionVariable} to another.
 #'
+#' The condition value of \sQuote{cv} is initially reset to zero when this
+#' operator returns. Only one forwarder can be active on a \sQuote{cv} at any
+#' given time, and assigning a new forwarding target cancels any currently
+#' existing forwarding.
+#'
+#' Changes in the condition value of \sQuote{cv} are forwarded to \sQuote{cv2},
+#' but only on each occassion \sQuote{cv} is signalled. This means that waiting
+#' on \sQuote{cv} will cause a temporary divergence between the actual condition
+#' value of \sQuote{cv} and that recorded at \sQuote{cv2}, until the next time
+#' \sQuote{cv} is signalled.
+#'
 #' @param cv a \sQuote{conditionVariable} object, from which to forward the
-#'     signal.
+#'   signal.
 #' @param cv2 a \sQuote{conditionVariable} object, to which the signal is
-#'     forwarded.
+#'   forwarded.
 #'
 #' @return Invisibly, \sQuote{cv2}.
-#'
-#' @details The condition value of \sQuote{cv} is initially reset to zero when
-#'     this operator returns. Only one forwarder can be active on a \sQuote{cv}
-#'     at any given time, and assigning a new forwarding target cancels any
-#'     currently existing forwarding.
-#'
-#'     Changes in the condition value of \sQuote{cv} are forwarded to
-#'     \sQuote{cv2}, but only on each occassion \sQuote{cv} is signalled. This
-#'     means that waiting on \sQuote{cv} will cause a temporary divergence
-#'     between the actual condition value of \sQuote{cv} and that recorded at
-#'     \sQuote{cv2}, until the next time \sQuote{cv} is signalled.
 #'
 #' @examples
 #' cva <- cv(); cvb <- cv(); cv1 <- cv(); cv2 <- cv()
@@ -310,8 +307,7 @@ unlock <- function(socket) invisible(.Call(rnng_socket_unlock, socket))
 #' Dispatcher Socket
 #'
 #' Creates a Dispatcher socket, which is a special type of \sQuote{req} socket,
-#'     with FIFO scheduling using a threaded implementation (for internal use
-#'     only).
+#' with FIFO scheduling using a threaded implementation (for internal use only).
 #'
 #' @param host \sQuote{inproc://} url connecting the host to the thread.
 #' @param url the URLs at which to listen for rep nodes.
@@ -328,7 +324,7 @@ unlock <- function(socket) invisible(.Call(rnng_socket_unlock, socket))
 #' Read Online Status
 #'
 #' Reads the online status of threaded dispatcher sockets (for internal use
-#'     only).
+#' only).
 #'
 #' @param sock a dispatcher Socket.
 #'

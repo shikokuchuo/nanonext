@@ -26,24 +26,23 @@ signal) when a pipe is removed.}
 \sQuote{conditionVariable}. This can help distinguish between different
 types of signal, and causes any subsequent \code{\link{wait}} to return
 FALSE instead of TRUE. If a signal from the \pkg{tools} package, e.g.
-\code{tools::SIGINT}, or an equivalent integer value is supplied, this
-sets a flag and additionally raises this signal upon the flag being set.}
+\code{tools::SIGINT}, or an equivalent integer value is supplied, this sets
+a flag and additionally raises this signal upon the flag being set.}
 }
 \value{
 Invisibly, zero on success (will otherwise error).
 }
 \description{
 Signals a \sQuote{conditionVariable} whenever pipes (individual connections)
-    are added or removed at a socket.
+are added or removed at a socket.
 }
 \details{
-For add: this event occurs after the pipe is fully added to the
-    socket. Prior to this time, it is not possible to communicate over the
-    pipe with the socket.
+For add: this event occurs after the pipe is fully added to the socket. Prior
+to this time, it is not possible to communicate over the pipe with the socket.
 
-    For remove: this event occurs after the pipe has been removed from the
-    socket. The underlying transport may be closed at this point, and it is
-    not possible to communicate using this pipe.
+For remove: this event occurs after the pipe has been removed from the socket.
+The underlying transport may be closed at this point, and it is not possible
+to communicate using this pipe.
 }
 \examples{
 s <- socket(listen = "inproc://nanopipe")

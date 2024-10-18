@@ -20,16 +20,16 @@ Invisibly, \sQuote{cv2}.
 Forwards signals from one \sQuote{conditionVariable} to another.
 }
 \details{
-The condition value of \sQuote{cv} is initially reset to zero when
-    this operator returns. Only one forwarder can be active on a \sQuote{cv}
-    at any given time, and assigning a new forwarding target cancels any
-    currently existing forwarding.
+The condition value of \sQuote{cv} is initially reset to zero when this
+operator returns. Only one forwarder can be active on a \sQuote{cv} at any
+given time, and assigning a new forwarding target cancels any currently
+existing forwarding.
 
-    Changes in the condition value of \sQuote{cv} are forwarded to
-    \sQuote{cv2}, but only on each occassion \sQuote{cv} is signalled. This
-    means that waiting on \sQuote{cv} will cause a temporary divergence
-    between the actual condition value of \sQuote{cv} and that recorded at
-    \sQuote{cv2}, until the next time \sQuote{cv} is signalled.
+Changes in the condition value of \sQuote{cv} are forwarded to \sQuote{cv2},
+but only on each occassion \sQuote{cv} is signalled. This means that waiting
+on \sQuote{cv} will cause a temporary divergence between the actual condition
+value of \sQuote{cv} and that recorded at \sQuote{cv2}, until the next time
+\sQuote{cv} is signalled.
 }
 \examples{
 cva <- cv(); cvb <- cv(); cv1 <- cv(); cv2 <- cv()
