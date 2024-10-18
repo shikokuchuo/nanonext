@@ -32,41 +32,41 @@ halts execution.}
 }
 \value{
 Invisibly, an integer exit code (zero on success). A new Listener
-    (object of class \sQuote{nanoListener} and \sQuote{nano}) is created and
-    bound to the Socket if successful.
+  (object of class \sQuote{nanoListener} and \sQuote{nano}) is created and
+  bound to the Socket if successful.
 }
 \description{
 Creates a new Listener and binds it to a Socket.
 }
 \details{
-To view all Listeners bound to a socket use \code{$listener} on the
-    socket, which returns a list of Listener objects. To access any
-    individual Listener (e.g. to set options on it), index into the list e.g.
-    \code{$listener[[1]]} to return the first Listener.
+To view all Listeners bound to a socket use \code{$listener} on the socket,
+which returns a list of Listener objects. To access any individual Listener
+(e.g. to set options on it), index into the list e.g. \code{$listener[[1]]}
+to return the first Listener.
 
-    A listener is an external pointer to a listener object, which accepts
-    incoming connections. A given listener object may have many connections
-    at the same time, much like an HTTP server can have many connections to
-    multiple clients simultaneously.
+A listener is an external pointer to a listener object, which accepts
+incoming connections. A given listener object may have many connections at
+the same time, much like an HTTP server can have many connections to multiple
+clients simultaneously.
 }
 \section{Further details}{
 
 
-    Dialers and Listeners are always associated with a single socket. A
-    given socket may have multiple Listeners and/or multiple Dialers.
+Dialers and Listeners are always associated with a single socket. A given
+socket may have multiple Listeners and/or multiple Dialers.
 
-    The client/server relationship described by dialer/listener is completely
-    orthogonal to any similar relationship in the protocols. For example, a
-    rep socket may use a dialer to connect to a listener on an req socket.
-    This orthogonality can lead to innovative solutions to otherwise
-    challenging communications problems.
+The client/server relationship described by dialer/listener is completely
+orthogonal to any similar relationship in the protocols. For example, a rep
+socket may use a dialer to connect to a listener on an req socket. This
+orthogonality can lead to innovative solutions to otherwise challenging
+communications problems.
 
-    Any configuration options on the dialer/listener should be set by
-    \code{\link{opt<-}} before starting the dialer/listener with
-    \code{\link{start}}.
+Any configuration options on the dialer/listener should be set by
+\code{\link{opt<-}} before starting the dialer/listener with
+\code{\link{start}}.
 
-    Dialers/Listeners may be destroyed by \code{\link{close}}. They are also
-    closed when their associated socket is closed.
+Dialers/Listeners may be destroyed by \code{\link{close}}. They are also
+closed when their associated socket is closed.
 }
 
 \examples{

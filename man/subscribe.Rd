@@ -13,24 +13,24 @@ unsubscribe(con, topic = NULL)
 \item{con}{a Socket or Context using the \sQuote{sub} protocol.}
 
 \item{topic}{[default NULL] an atomic type or NULL. The default NULL
-subscribes to all topics / unsubscribes from all topics (if all topics
-were previously subscribed).}
+subscribes to all topics / unsubscribes from all topics (if all topics were
+previously subscribed).}
 }
 \value{
 Invisibly, the passed Socket or Context.
 }
 \description{
 For a socket or context using the sub protocol in a publisher/subscriber
-    pattern. Set a topic to subscribe to, or remove a topic from the
-    subscription list.
+pattern. Set a topic to subscribe to, or remove a topic from the subscription
+list.
 }
 \details{
 To use pub/sub the publisher must:
-    \itemize{
-    \item specify \code{mode = 'raw'} when sending.
-    \item ensure the sent vector starts with the topic.
-    }
-    The subscriber should then receive specifying the correct mode.
+\itemize{
+  \item specify \code{mode = 'raw'} when sending.
+  \item ensure the sent vector starts with the topic.
+}
+The subscriber should then receive specifying the correct mode.
 }
 \examples{
 pub <- socket("pub", listen = "inproc://nanonext")

@@ -11,7 +11,7 @@ A character vector of length 2.
 }
 \description{
 Returns the versions of the \sQuote{libnng} and \sQuote{libmbedtls} libraries
-    used.
+used by the package.
 }
 \examples{
 nng_version()

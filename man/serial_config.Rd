@@ -26,15 +26,15 @@ list of reference objects, e.g. \code{torch::torch_serialize} and
 }
 \value{
 A list comprising the configuration. This should be set on a Socket
-    using \code{\link{opt<-}} with option name \sQuote{serial}.
+  using \code{\link{opt<-}} with option name \sQuote{serial}.
 }
 \description{
 Returns a serialization configuration, which may be set on a Socket for
-    custom serialization and unserialization of non-system reference objects,
-    allowing these to be sent and received between different R sessions. This
-    utilises the 'refhook' system of R native serialization. Once set, the
-    functions apply to all send and receive operations performed in mode
-    \sQuote{serial} over the Socket or Context created from the Socket.
+custom serialization and unserialization of non-system reference objects,
+allowing these to be sent and received between different R sessions. This
+utilises the 'refhook' system of R native serialization. Once set, the
+functions apply to all send and receive operations performed in mode
+\sQuote{serial} over the Socket or Context created from the Socket.
 }
 \examples{
 cfg <- serial_config("test_cls", function(x) serialize(x, NULL), unserialize)

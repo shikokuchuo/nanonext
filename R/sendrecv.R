@@ -32,7 +32,7 @@
 #'   available), or else an integer value specifying the maximum time to block
 #'   in milliseconds, after which the operation will time out.
 #'
-#' @return Integer exit code (zero on success).
+#' @return An integer exit code (zero on success).
 #'
 #' @section Blocking:
 #'

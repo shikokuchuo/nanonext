@@ -20,53 +20,53 @@
 #'
 #' Creates a new Dialer and binds it to a Socket.
 #'
+#' To view all Dialers bound to a socket use \code{$dialer} on the socket, which
+#' returns a list of Dialer objects. To access any individual Dialer (e.g. to
+#' set options on it), index into the list e.g. \code{$dialer[[1]]} to return
+#' the first Dialer.
+#'
+#' A Dialer is an external pointer to a dialer object, which creates a single
+#' outgoing connection at a time. If the connection is broken, or fails, the
+#' dialer object will automatically attempt to reconnect, and will keep doing so
+#' until the dialer or socket is destroyed.
+#'
 #' @param socket a Socket.
 #' @param url [default 'inproc://nanonext'] a URL to dial, specifying the
-#'     transport and address as a character string e.g. 'inproc://anyvalue' or
-#'     'tcp://127.0.0.1:5555' (see \link{transports}).
+#'   transport and address as a character string e.g. 'inproc://anyvalue' or
+#'   'tcp://127.0.0.1:5555' (see \link{transports}).
 #' @param tls [default NULL] for secure tls+tcp:// or wss:// connections only,
-#'     provide a TLS configuration object created by \code{\link{tls_config}}.
+#'   provide a TLS configuration object created by \code{\link{tls_config}}.
 #' @param autostart [default TRUE] whether to start the dialer (by default
-#'     asynchronously). Set to NA to start synchronously - this is less
-#'     resilient if a connection is not immediately possible, but avoids subtle
-#'     errors from attempting to use the socket before an asynchronous dial has
-#'     completed. Set to FALSE if setting configuration options on the dialer as
-#'     it is not generally possible to change these once started.
+#'   asynchronously). Set to NA to start synchronously - this is less resilient
+#'   if a connection is not immediately possible, but avoids subtle errors from
+#'   attempting to use the socket before an asynchronous dial has completed. Set
+#'   to FALSE if setting configuration options on the dialer as it is not
+#'   generally possible to change these once started.
 #' @param error [default FALSE] behaviour on error: if FALSE, returns an integer
-#'     exit code accompanied by a warning, or, if TRUE, generates an error and
-#'     halts execution.
+#'   exit code accompanied by a warning, or, if TRUE, generates an error and
+#'   halts execution.
 #'
 #' @return Invisibly, an integer exit code (zero on success). A new Dialer
-#'     (object of class \sQuote{nanoDialer} and \sQuote{nano}) is created and
-#'     bound to the Socket if successful.
-#'
-#' @details To view all Dialers bound to a socket use \code{$dialer} on the
-#'     socket, which returns a list of Dialer objects. To access any individual
-#'     Dialer (e.g. to set options on it), index into the list e.g.
-#'     \code{$dialer[[1]]} to return the first Dialer.
-#'
-#'     A Dialer is an external pointer to a dialer object, which creates a
-#'     single outgoing connection at a time. If the connection is broken, or
-#'     fails, the dialer object will automatically attempt to reconnect, and
-#'     will keep doing so until the dialer or socket is destroyed.
+#'   (object of class \sQuote{nanoDialer} and \sQuote{nano}) is created and
+#'   bound to the Socket if successful.
 #'
 #' @section Further details:
 #'
-#'     Dialers and Listeners are always associated with a single socket. A
-#'     given socket may have multiple Listeners and/or multiple Dialers.
+#' Dialers and Listeners are always associated with a single socket. A given
+#' socket may have multiple Listeners and/or multiple Dialers.
 #'
-#'     The client/server relationship described by dialer/listener is completely
-#'     orthogonal to any similar relationship in the protocols. For example, a
-#'     rep socket may use a dialer to connect to a listener on an req socket.
-#'     This orthogonality can lead to innovative solutions to otherwise
-#'     challenging communications problems.
+#' The client/server relationship described by dialer/listener is completely
+#' orthogonal to any similar relationship in the protocols. For example, a rep
+#' socket may use a dialer to connect to a listener on an req socket. This
+#' orthogonality can lead to innovative solutions to otherwise challenging
+#' communications problems.
 #'
-#'     Any configuration options on the dialer/listener should be set by
-#'     \code{\link{opt<-}} before starting the dialer/listener with
-#'     \code{\link{start}}.
+#' Any configuration options on the dialer/listener should be set by
+#' \code{\link{opt<-}} before starting the dialer/listener with
+#' \code{\link{start}}.
 #'
-#'     Dialers/Listeners may be destroyed by \code{\link{close}}. They are also
-#'     closed when their associated socket is closed.
+#' Dialers/Listeners may be destroyed by \code{\link{close}}. They are also
+#' closed when their associated socket is closed.
 #'
 #' @examples
 #' socket <- socket("rep")
@@ -94,42 +94,42 @@ dial <- function(socket, url = "inproc://nanonext", tls = NULL, autostart = TRUE
 #'
 #' Creates a new Listener and binds it to a Socket.
 #'
+#' To view all Listeners bound to a socket use \code{$listener} on the socket,
+#' which returns a list of Listener objects. To access any individual Listener
+#' (e.g. to set options on it), index into the list e.g. \code{$listener[[1]]}
+#' to return the first Listener.
+#'
+#' A listener is an external pointer to a listener object, which accepts
+#' incoming connections. A given listener object may have many connections at
+#' the same time, much like an HTTP server can have many connections to multiple
+#' clients simultaneously.
+#'
 #' @inheritParams dial
 #' @param autostart [default TRUE] whether to start the listener. Set to FALSE
-#'     if setting configuration options on the listener as it is not generally
-#'     possible to change these once started.
+#'   if setting configuration options on the listener as it is not generally
+#'   possible to change these once started.
 #'
 #' @return Invisibly, an integer exit code (zero on success). A new Listener
-#'     (object of class \sQuote{nanoListener} and \sQuote{nano}) is created and
-#'     bound to the Socket if successful.
-#'
-#' @details To view all Listeners bound to a socket use \code{$listener} on the
-#'     socket, which returns a list of Listener objects. To access any
-#'     individual Listener (e.g. to set options on it), index into the list e.g.
-#'     \code{$listener[[1]]} to return the first Listener.
-#'
-#'     A listener is an external pointer to a listener object, which accepts
-#'     incoming connections. A given listener object may have many connections
-#'     at the same time, much like an HTTP server can have many connections to
-#'     multiple clients simultaneously.
+#'   (object of class \sQuote{nanoListener} and \sQuote{nano}) is created and
+#'   bound to the Socket if successful.
 #'
 #' @section Further details:
 #'
-#'     Dialers and Listeners are always associated with a single socket. A
-#'     given socket may have multiple Listeners and/or multiple Dialers.
+#' Dialers and Listeners are always associated with a single socket. A given
+#' socket may have multiple Listeners and/or multiple Dialers.
 #'
-#'     The client/server relationship described by dialer/listener is completely
-#'     orthogonal to any similar relationship in the protocols. For example, a
-#'     rep socket may use a dialer to connect to a listener on an req socket.
-#'     This orthogonality can lead to innovative solutions to otherwise
-#'     challenging communications problems.
+#' The client/server relationship described by dialer/listener is completely
+#' orthogonal to any similar relationship in the protocols. For example, a rep
+#' socket may use a dialer to connect to a listener on an req socket. This
+#' orthogonality can lead to innovative solutions to otherwise challenging
+#' communications problems.
 #'
-#'     Any configuration options on the dialer/listener should be set by
-#'     \code{\link{opt<-}} before starting the dialer/listener with
-#'     \code{\link{start}}.
+#' Any configuration options on the dialer/listener should be set by
+#' \code{\link{opt<-}} before starting the dialer/listener with
+#' \code{\link{start}}.
 #'
-#'     Dialers/Listeners may be destroyed by \code{\link{close}}. They are also
-#'     closed when their associated socket is closed.
+#' Dialers/Listeners may be destroyed by \code{\link{close}}. They are also
+#' closed when their associated socket is closed.
 #'
 #' @examples
 #' socket <- socket("req")
@@ -159,11 +159,11 @@ listen <- function(socket, url = "inproc://nanonext", tls = NULL, autostart = TR
 #'
 #' @param x a Listener or Dialer.
 #' @param async [default TRUE] (applicable to Dialers only) logical flag whether
-#'     the connection attempt, including any name resolution, is to be made
-#'     asynchronously. This behaviour is more resilient, but also generally
-#'     makes diagnosing failures somewhat more difficult. If FALSE, failure,
-#'     such as if the connection is refused, will be returned immediately, and
-#'     no further action will be taken.
+#'   the connection attempt, including any name resolution, is to be made
+#'   asynchronously. This behaviour is more resilient, but also generally makes
+#'   diagnosing failures somewhat more difficult. If FALSE, failure, such as if
+#'   the connection is refused, will be returned immediately, and no further
+#'   action will be taken.
 #' @param ... not used.
 #'
 #' @return Invisibly, an integer exit code (zero on success).

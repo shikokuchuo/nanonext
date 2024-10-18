@@ -7,33 +7,30 @@
 random(n = 1L, convert = TRUE)
 }
 \arguments{
-\item{n}{[default 1L] integer random bytes to generate (from 0 to 1024).}
+\item{n}{[default 1L] integer random bytes to generate (from 0 to 1024),
+coerced to integer if required. If a vector, the first element is taken.}
 
 \item{convert}{[default TRUE] logical FALSE to return a raw vector, or TRUE
 to return the hex representation of the bytes as a character string.}
 }
 \value{
 A length \sQuote{n} raw vector, or length one vector of \sQuote{2n}
-    random characters, depending on the value of \sQuote{convert} supplied.
+  random characters, depending on the value of \sQuote{convert} supplied.
 }
 \description{
 Strictly not for use in statistical analysis. Non-reproducible and with
-    unknown statistical properties. Provides an alternative source of
-    randomness from the Mbed TLS library for purposes such as cryptographic
-    key generation. Mbed TLS uses a block-cipher in counter mode operation,
-    as defined in NIST SP800-90A: \emph{Recommendation for Random Number
-    Generation Using Deterministic Random Bit Generators}. The implementation
-    uses AES-256 as the underlying block cipher, with a derivation function,
-    and an entropy collector combining entropy from multiple sources
-    including at least one strong entropy source.
-}
-\details{
-If \sQuote{n} is non-integer, it will be coerced to integer; if a
-    vector, only the first element will be used.
+unknown statistical properties. Provides an alternative source of randomness
+from the Mbed TLS library for purposes such as cryptographic key generation.
+Mbed TLS uses a block-cipher in counter mode operation, as defined in
+NIST SP800-90A: \emph{Recommendation for Random Number Generation Using
+Deterministic Random Bit Generators}. The implementation uses AES-256 as the
+underlying block cipher, with a derivation function, and an entropy collector
+combining entropy from multiple sources including at least one strong entropy
+source.
 }
 \note{
 Results obtained are independent of and do not alter the state of R's
-    own pseudo-random number generators.
+  own pseudo-random number generators.
 }
 \examples{
 random()

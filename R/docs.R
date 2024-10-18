@@ -20,8 +20,8 @@
 #'
 #' @description Protocols implemented by \pkg{nanonext}.
 #'
-#'     For an authoritative guide please refer to the online documentation for
-#'     the NNG library at \url{https://nng.nanomsg.org/man/}.
+#' For an authoritative guide please refer to the online documentation for the
+#' NNG library at \url{https://nng.nanomsg.org/man/}.
 #'
 #' @section Bus (mesh networks):
 #'
@@ -140,9 +140,8 @@ NULL
 #'
 #' @description Transports supported by \pkg{nanonext}.
 #'
-#'     For an authoritative guide please refer to the online documentation for
-#'     the NNG library at \url{https://nng.nanomsg.org/man/}.
-#'
+#' For an authoritative guide please refer to the online documentation for the
+#' NNG library at \url{https://nng.nanomsg.org/man/}.
 #'
 #' @section Inproc:
 #'

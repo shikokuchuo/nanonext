@@ -8,8 +8,8 @@ write_cert(cn = "localhost", valid = "20301231235959")
 }
 \arguments{
 \item{cn}{[default 'localhost'] character issuer common name (CN) for the
-certificate. This can be either a hostname or an IP address, but must
-match the actual server URL as client authentication will depend on it.}
+certificate. This can be either a hostname or an IP address, but must match
+the actual server URL as client authentication will depend on it.}
 
 \item{valid}{[default '20301231235959'] character \sQuote{not after}
 date-time in \sQuote{yyyymmddhhmmss} format. The certificate is not valid
@@ -17,16 +17,16 @@ after this time.}
 }
 \value{
 A list of length 2, comprising \code{$server} and \code{$client}.
-    These may be passed directly to the relevant argument of
-    \code{\link{tls_config}}.
+  These may be passed directly to the relevant argument of
+  \code{\link{tls_config}}.
 }
 \description{
 Generate self-signed x509 certificate and 4096 bit RSA private/public key
-    pair for use with authenticated, encrypted TLS communications.
+pair for use with authenticated, encrypted TLS communications.
 }
 \details{
-For interactive sessions only, a status message is printed at the
-    start of key / certificate generation and also when complete.
+For interactive sessions only, a status message is printed at the start of
+key / certificate generation and also when complete.
 }
 \examples{
 

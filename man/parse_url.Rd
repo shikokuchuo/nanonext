@@ -11,7 +11,7 @@ parse_url(url)
 }
 \value{
 A named character vector of length 10, comprising:
-    \itemize{
+ \itemize{
     \item \code{rawurl} - the unparsed URL string.
     \item \code{scheme} - the URL scheme, such as "http" or "inproc"
     (always lower case).
@@ -27,9 +27,9 @@ A named character vector of length 10, comprising:
     \item \code{fragment} - used for specifying an anchor, the part after #
     in a URL.
     \item \code{requri} - the full Request-URI (path[?query][#fragment]).
-    }
-    Values that cannot be determined are represented by an empty string
-    \code{''}.
+ }
+ Values that cannot be determined are represented by an empty string
+ \code{''}.
 }
 \description{
 Parses a character string containing an RFC 3986 compliant URL as per NNG.

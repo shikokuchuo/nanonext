@@ -8,7 +8,7 @@ zzz()
 }
 \description{
 Only present for cleaning up after running examples and tests. Do not attempt
-    to run the examples.
+to run the examples.
 }
 \examples{
 if (Sys.info()[["sysname"]] == "Linux") {

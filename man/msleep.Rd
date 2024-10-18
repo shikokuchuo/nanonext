@@ -14,15 +14,15 @@ Invisible NULL.
 }
 \description{
 Sleep function. May block for longer than requested, with the actual wait
-    time determined by the capabilities of the underlying system.
+time determined by the capabilities of the underlying system.
 }
 \details{
-Non-integer values for \sQuote{time} are coerced to integer.
-    Negative, logical and other non-numeric values are ignored, causing the
-    function to return immediately.
+Non-integer values for \sQuote{time} are coerced to integer. Negative,
+logical and other non-numeric values are ignored, causing the function to
+return immediately.
 
-    Note that unlike \code{\link{Sys.sleep}}, this function is not
-    user-interruptible by sending SIGINT e.g. with ctrl + c.
+Note that unlike \code{\link{Sys.sleep}}, this function is not
+user-interruptible by sending SIGINT e.g. with ctrl + c.
 }
 \examples{
 time <- mclock(); msleep(100); mclock() - time
