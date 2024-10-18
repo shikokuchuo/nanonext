@@ -76,11 +76,11 @@ provide a TLS configuration object created by <code><a href="tls_config.html">tl
 
 <dt id="arg-autostart">autostart<a class="anchor" aria-label="anchor" href="#arg-autostart"></a></dt>
 <dd><p>[default TRUE] whether to start the dialer (by default
-asynchronously). Set to NA to start synchronously - this is less
-resilient if a connection is not immediately possible, but avoids subtle
-errors from attempting to use the socket before an asynchronous dial has
-completed. Set to FALSE if setting configuration options on the dialer as
-it is not generally possible to change these once started.</p></dd>
+asynchronously). Set to NA to start synchronously - this is less resilient
+if a connection is not immediately possible, but avoids subtle errors from
+attempting to use the socket before an asynchronous dial has completed. Set
+to FALSE if setting configuration options on the dialer as it is not
+generally possible to change these once started.</p></dd>
 
 
 <dt id="arg-error">error<a class="anchor" aria-label="anchor" href="#arg-error"></a></dt>
@@ -92,37 +92,37 @@ halts execution.</p></dd>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>Invisibly, an integer exit code (zero on success). A new Dialer
-    (object of class ‘nanoDialer’ and ‘nano’) is created and
-    bound to the Socket if successful.</p>
+  (object of class ‘nanoDialer’ and ‘nano’) is created and
+  bound to the Socket if successful.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>To view all Dialers bound to a socket use <code>$dialer</code> on the
-    socket, which returns a list of Dialer objects. To access any individual
-    Dialer (e.g. to set options on it), index into the list e.g.
-    <code>$dialer[[1]]</code> to return the first Dialer.</p>
-<p>A Dialer is an external pointer to a dialer object, which creates a
-    single outgoing connection at a time. If the connection is broken, or
-    fails, the dialer object will automatically attempt to reconnect, and
-    will keep doing so until the dialer or socket is destroyed.</p>
+    <p>To view all Dialers bound to a socket use <code>$dialer</code> on the socket, which
+returns a list of Dialer objects. To access any individual Dialer (e.g. to
+set options on it), index into the list e.g. <code>$dialer[[1]]</code> to return
+the first Dialer.</p>
+<p>A Dialer is an external pointer to a dialer object, which creates a single
+outgoing connection at a time. If the connection is broken, or fails, the
+dialer object will automatically attempt to reconnect, and will keep doing so
+until the dialer or socket is destroyed.</p>
     </div>
     <div class="section level2">
     <h2 id="further-details">Further details<a class="anchor" aria-label="anchor" href="#further-details"></a></h2>
 
 
 
-<p>Dialers and Listeners are always associated with a single socket. A
-    given socket may have multiple Listeners and/or multiple Dialers.</p>
+<p>Dialers and Listeners are always associated with a single socket. A given
+socket may have multiple Listeners and/or multiple Dialers.</p>
 <p>The client/server relationship described by dialer/listener is completely
-    orthogonal to any similar relationship in the protocols. For example, a
-    rep socket may use a dialer to connect to a listener on an req socket.
-    This orthogonality can lead to innovative solutions to otherwise
-    challenging communications problems.</p>
+orthogonal to any similar relationship in the protocols. For example, a rep
+socket may use a dialer to connect to a listener on an req socket. This
+orthogonality can lead to innovative solutions to otherwise challenging
+communications problems.</p>
 <p>Any configuration options on the dialer/listener should be set by
-    <code>opt&lt;-</code> before starting the dialer/listener with
-    <code><a href="start.html">start</a></code>.</p>
+<code>opt&lt;-</code> before starting the dialer/listener with
+<code><a href="start.html">start</a></code>.</p>
 <p>Dialers/Listeners may be destroyed by <code><a href="close.html">close</a></code>. They are also
-    closed when their associated socket is closed.</p>
+closed when their associated socket is closed.</p>
     </div>
 
     <div class="section level2">

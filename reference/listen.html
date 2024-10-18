@@ -89,37 +89,37 @@ halts execution.</p></dd>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>Invisibly, an integer exit code (zero on success). A new Listener
-    (object of class ‘nanoListener’ and ‘nano’) is created and
-    bound to the Socket if successful.</p>
+  (object of class ‘nanoListener’ and ‘nano’) is created and
+  bound to the Socket if successful.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>To view all Listeners bound to a socket use <code>$listener</code> on the
-    socket, which returns a list of Listener objects. To access any
-    individual Listener (e.g. to set options on it), index into the list e.g.
-    <code>$listener[[1]]</code> to return the first Listener.</p>
+    <p>To view all Listeners bound to a socket use <code>$listener</code> on the socket,
+which returns a list of Listener objects. To access any individual Listener
+(e.g. to set options on it), index into the list e.g. <code>$listener[[1]]</code>
+to return the first Listener.</p>
 <p>A listener is an external pointer to a listener object, which accepts
-    incoming connections. A given listener object may have many connections
-    at the same time, much like an HTTP server can have many connections to
-    multiple clients simultaneously.</p>
+incoming connections. A given listener object may have many connections at
+the same time, much like an HTTP server can have many connections to multiple
+clients simultaneously.</p>
     </div>
     <div class="section level2">
     <h2 id="further-details">Further details<a class="anchor" aria-label="anchor" href="#further-details"></a></h2>
 
 
 
-<p>Dialers and Listeners are always associated with a single socket. A
-    given socket may have multiple Listeners and/or multiple Dialers.</p>
+<p>Dialers and Listeners are always associated with a single socket. A given
+socket may have multiple Listeners and/or multiple Dialers.</p>
 <p>The client/server relationship described by dialer/listener is completely
-    orthogonal to any similar relationship in the protocols. For example, a
-    rep socket may use a dialer to connect to a listener on an req socket.
-    This orthogonality can lead to innovative solutions to otherwise
-    challenging communications problems.</p>
+orthogonal to any similar relationship in the protocols. For example, a rep
+socket may use a dialer to connect to a listener on an req socket. This
+orthogonality can lead to innovative solutions to otherwise challenging
+communications problems.</p>
 <p>Any configuration options on the dialer/listener should be set by
-    <code>opt&lt;-</code> before starting the dialer/listener with
-    <code><a href="start.html">start</a></code>.</p>
+<code>opt&lt;-</code> before starting the dialer/listener with
+<code><a href="start.html">start</a></code>.</p>
 <p>Dialers/Listeners may be destroyed by <code><a href="close.html">close</a></code>. They are also
-    closed when their associated socket is closed.</p>
+closed when their associated socket is closed.</p>
     </div>
 
     <div class="section level2">
