@@ -22,6 +22,18 @@
 
 // threads callable and messenger ----------------------------------------------
 
+int nano_wait_thread_created = 0;
+
+nng_thread *nano_wait_thr;
+nng_mtx *nano_wait_mtx;
+nng_cv *nano_wait_cv;
+int nano_wait_condition = 0;
+
+nng_mtx *nano_shared_mtx;
+nng_cv *nano_shared_cv;
+static int nano_shared_condition = 0;
+nng_aio *nano_shared_aio;
+
 // # nocov start
 // tested interactively
 
@@ -185,22 +197,6 @@ SEXP rnng_messenger_thread_create(SEXP args) {
 
 // threaded functions ----------------------------------------------------------
 
-static void thread_aio_finalizer(SEXP xptr) {
-
-  if (NANO_PTR(xptr) == NULL) return;
-  nano_thread_aio *xp = (nano_thread_aio *) NANO_PTR(xptr);
-  nano_cv *ncv = xp->cv;
-  nng_mtx *mtx = ncv->mtx;
-  nng_cv *cv = ncv->cv;
-  nng_aio_stop(xp->aio);
-  nng_thread_destroy(xp->thr);
-  nng_cv_free(cv);
-  nng_mtx_free(mtx);
-  R_Free(ncv);
-  R_Free(xp);
-
-}
-
 static void thread_duo_finalizer(SEXP xptr) {
 
   if (NANO_PTR(xptr) == NULL) return;
@@ -221,17 +217,24 @@ static void thread_duo_finalizer(SEXP xptr) {
 
 static void rnng_wait_thread(void *args) {
 
-  nano_thread_aio *taio = (nano_thread_aio *) args;
-  nano_cv *ncv = taio->cv;
-  nng_mtx *mtx = ncv->mtx;
-  nng_cv *cv = ncv->cv;
+  while (1) {
+    nng_mtx_lock(nano_wait_mtx);
+    while (nano_wait_condition == 0)
+      nng_cv_wait(nano_wait_cv);
+    if (nano_wait_condition == -1) {
+      nng_mtx_unlock(nano_wait_mtx);
+      break;
+    }
+    nano_wait_condition = 0;
+    nng_mtx_unlock(nano_wait_mtx);
 
-  nng_aio_wait(taio->aio);
+    nng_aio_wait(nano_shared_aio);
 
-  nng_mtx_lock(mtx);
-  ncv->condition = 1;
-  nng_cv_wake(cv);
-  nng_mtx_unlock(mtx);
+    nng_mtx_lock(nano_shared_mtx);
+    nano_shared_condition = 1;
+    nng_cv_wake(nano_shared_cv);
+    nng_mtx_unlock(nano_shared_mtx);
+  }
 
 }
 
@@ -272,6 +275,11 @@ static void thread_disp_finalizer(SEXP xptr) {
 
 }
 
+static void check_interrupt(void * data) {
+  (void) data;
+  R_CheckUserInterrupt();
+}
+
 SEXP rnng_wait_thread_create(SEXP x) {
 
   const SEXPTYPE typ = TYPEOF(x);
@@ -281,51 +289,52 @@ SEXP rnng_wait_thread_create(SEXP x) {
     if (NANO_TAG(coreaio) != nano_AioSymbol)
       return x;
 
-    PROTECT(coreaio);
     nano_aio *aiop = (nano_aio *) NANO_PTR(coreaio);
-
-    nano_thread_aio *taio = R_Calloc(1, nano_thread_aio);
-    nano_cv *ncv = R_Calloc(1, nano_cv);
-    taio->aio = aiop->aio;
-    taio->cv = ncv;
-    nng_mtx *mtx;
-    nng_cv *cv;
 
     int xc, signalled;
 
-    if ((xc = nng_mtx_alloc(&mtx)))
-      goto exitlevel1;
+    if (nano_wait_thread_created == 0) {
+      if ((xc = nng_mtx_alloc(&nano_wait_mtx)))
+        goto exitlevel1;
 
-    if ((xc = nng_cv_alloc(&cv, mtx)))
-      goto exitlevel2;
+      if ((xc = nng_cv_alloc(&nano_wait_cv, nano_wait_mtx)))
+        goto exitlevel2;
 
-    ncv->mtx = mtx;
-    ncv->cv = cv;
+      if ((xc = nng_mtx_alloc(&nano_shared_mtx)))
+        goto exitlevel3;
 
-    if ((xc = nng_thread_create(&taio->thr, rnng_wait_thread, taio)))
-      goto exitlevel3;
+      if ((xc = nng_cv_alloc(&nano_shared_cv, nano_shared_mtx)))
+        goto exitlevel4;
 
-    SEXP xptr;
-    PROTECT(xptr = R_MakeExternalPtr(taio, R_NilValue, R_NilValue));
-    R_RegisterCFinalizerEx(xptr, thread_aio_finalizer, TRUE);
-    R_MakeWeakRef(coreaio, xptr, R_NilValue, TRUE);
-    UNPROTECT(2);
+      if ((xc = nng_thread_create(&nano_wait_thr, rnng_wait_thread, NULL)))
+        goto exitlevel5;
+
+      nano_wait_thread_created = 1;
+    }
+
+    nng_mtx_lock(nano_wait_mtx);
+    nano_shared_aio = aiop->aio;
+    nano_wait_condition = 1;
+    nng_cv_wake(nano_wait_cv);
+    nng_mtx_unlock(nano_wait_mtx);
 
     nng_time time = nng_clock();
 
     while (1) {
       time = time + 400;
       signalled = 1;
-      nng_mtx_lock(mtx);
-      while (ncv->condition == 0) {
-        if (nng_cv_until(cv, time) == NNG_ETIMEDOUT) {
+      nng_mtx_lock(nano_shared_mtx);
+      while (nano_shared_condition == 0) {
+        if (nng_cv_until(nano_shared_cv, time) == NNG_ETIMEDOUT) {
           signalled = 0;
           break;
         }
       }
-      nng_mtx_unlock(mtx);
+      nano_shared_condition = 0;
+      nng_mtx_unlock(nano_shared_mtx);
       if (signalled) break;
-      R_CheckUserInterrupt();
+      if (!R_ToplevelExec(check_interrupt, NULL))
+        nng_aio_stop(nano_shared_aio);
     }
 
     switch (aiop->type) {
@@ -348,13 +357,15 @@ SEXP rnng_wait_thread_create(SEXP x) {
 
     return x;
 
+    exitlevel5:
+    nng_cv_free(nano_shared_cv);
+    exitlevel4:
+    nng_mtx_free(nano_shared_mtx);
     exitlevel3:
-    nng_cv_free(cv);
+    nng_cv_free(nano_wait_cv);
     exitlevel2:
-    nng_mtx_free(mtx);
+    nng_mtx_free(nano_wait_mtx);
     exitlevel1:
-    R_Free(ncv);
-    R_Free(taio);
     ERROR_OUT(xc);
 
   } else if (typ == VECSXP) {

@@ -22,6 +22,15 @@ void (*eln2)(void (*)(void *), void *, double, int) = NULL;
 
 uint8_t special_bit = 0;
 
+extern int nano_wait_thread_created;
+extern int nano_wait_condition;
+extern nng_thread *nano_wait_thr;
+extern nng_mtx *nano_wait_mtx;
+extern nng_cv *nano_wait_cv;
+extern nng_mtx *nano_shared_mtx;
+extern nng_cv *nano_shared_cv;
+extern nng_aio *nano_shared_aio;
+
 SEXP nano_AioSymbol;
 SEXP nano_ContextSymbol;
 SEXP nano_CvSymbol;
@@ -211,5 +220,18 @@ void attribute_visible R_init_nanonext(DllInfo* dll) {
 // # nocov start
 void attribute_visible R_unload_nanonext(DllInfo *info) {
   ReleaseObjects();
+  if (nano_wait_thread_created) {
+    if (nano_shared_aio != NULL)
+      nng_aio_stop(nano_shared_aio);
+    nng_mtx_lock(nano_wait_mtx);
+    nano_wait_condition = -1;
+    nng_cv_wake(nano_wait_cv);
+    nng_mtx_unlock(nano_wait_mtx);
+    nng_thread_destroy(nano_wait_thr);
+    nng_cv_free(nano_shared_cv);
+    nng_mtx_free(nano_shared_mtx);
+    nng_cv_free(nano_wait_cv);
+    nng_mtx_free(nano_wait_mtx);
+  }
 }
 // # nocov end
