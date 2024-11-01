@@ -1,4 +1,4 @@
-# nanonext 1.3.0.9001 (development)
+# nanonext 1.3.0.9002 (development)
 
 #### New Features
 
@@ -11,6 +11,7 @@
 #### Updates
 
 * Performance enhancements for 'ncurlAio' and 'recvAio' promises methods.
+* Updates bundled 'libnng' to v1.9.0 stable release.
 * The package has a shiny new hex logo.
 
 # nanonext 1.3.0
