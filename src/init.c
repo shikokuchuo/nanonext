@@ -133,11 +133,8 @@ static const R_CallMethodDef callMethods[] = {
   {"rnng_ctx_create", (DL_FUNC) &rnng_ctx_create, 1},
   {"rnng_ctx_open", (DL_FUNC) &rnng_ctx_open, 1},
   {"rnng_cv_alloc", (DL_FUNC) &rnng_cv_alloc, 0},
-  {"rnng_cv_assert", (DL_FUNC) &rnng_cv_assert, 1},
-  {"rnng_cv_lock", (DL_FUNC) &rnng_cv_lock, 1},
   {"rnng_cv_reset", (DL_FUNC) &rnng_cv_reset, 1},
   {"rnng_cv_signal", (DL_FUNC) &rnng_cv_signal, 1},
-  {"rnng_cv_unlock", (DL_FUNC) &rnng_cv_unlock, 1},
   {"rnng_cv_until", (DL_FUNC) &rnng_cv_until, 2},
   {"rnng_cv_until_safe", (DL_FUNC) &rnng_cv_until_safe, 2},
   {"rnng_cv_value", (DL_FUNC) &rnng_cv_value, 1},
@@ -209,9 +206,6 @@ void attribute_visible R_init_nanonext(DllInfo* dll) {
   R_registerRoutines(dll, NULL, callMethods, NULL, externalMethods);
   R_useDynamicSymbols(dll, FALSE);
   R_forceSymbols(dll, TRUE);
-  R_RegisterCCallable("nanonext", "rnng_thread_create", (DL_FUNC) &rnng_thread_create);
-  R_RegisterCCallable("nanonext", "rnng_cv_lock", (DL_FUNC) &rnng_cv_lock);
-  R_RegisterCCallable("nanonext", "rnng_cv_unlock", (DL_FUNC) &rnng_cv_unlock);
 }
 
 // # nocov start

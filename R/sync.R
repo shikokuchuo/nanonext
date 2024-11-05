@@ -334,30 +334,3 @@ unlock <- function(socket) invisible(.Call(rnng_socket_unlock, socket))
 #' @export
 #'
 .online <- function(sock) .Call(rnng_read_online, sock)
-
-#' With Lock
-#'
-#' Evaluate an expression whilst holding a mutex lock internal to a
-#' \sQuote{conditionVariable}. The purpose of this function is to prevent
-#' access to objects guarded by the same lock from another thread.
-#'
-#' Do not attempt to call any function using the conditionVariable \sQuote{cv}
-#' in \sQuote{expr} otherwise you will create a deadlock.
-#'
-#' @inheritParams wait
-#' @param expr an expression to evaluate under lock.
-#'
-#' @return The return value of \sQuote{expr}.
-#'
-#' @examples
-#' cv <- cv()
-#' with_lock(cv, "hello")
-#'
-#' @export
-#'
-with_lock <- function(cv, expr) {
-  .Call(rnng_cv_assert, cv)
-  .Call(rnng_cv_lock, cv)
-  on.exit(.Call(rnng_cv_unlock, cv))
-  expr
-}

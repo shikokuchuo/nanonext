@@ -1,12 +1,4 @@
-# nanonext 1.3.0.9003 (development)
-
-#### New Features
-
-* Adds `with_lock()` to evaluate an expression while holding a mutex lock to prevent concurrent access by another thread which also requires the lock.
-* Exports the following C level callables for developers:
-  - `rnng_thread_create()` which creates a thread running a C function with signature `void (*)(void *)` that takes a single `(void *)` argument, returning an external pointer to the thread.
-  - `rnng_cv_lock()` which locks the mutex internal to a 'conditionVariable' (safe to use from another thread).
-  - `rnng_cv_unlock()` which unlocks the mutex internal to a 'conditionVariable' (safe to use from another thread).
+# nanonext 1.3.0.9004 (development)
 
 #### Updates
 

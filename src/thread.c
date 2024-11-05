@@ -33,7 +33,7 @@ static void thread_finalizer(SEXP xptr) {
 
 }
 
-SEXP rnng_thread_create(void (*func)(void *), void *arg) {
+static SEXP rnng_thread_create(void (*func)(void *), void *arg) {
 
   nng_thread *thr;
   int xc;

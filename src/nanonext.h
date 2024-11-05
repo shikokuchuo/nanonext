@@ -312,11 +312,8 @@ SEXP rnng_ctx_close(SEXP);
 SEXP rnng_ctx_create(SEXP);
 SEXP rnng_ctx_open(SEXP);
 SEXP rnng_cv_alloc(void);
-SEXP rnng_cv_assert(SEXP);
-SEXP rnng_cv_lock(SEXP);
 SEXP rnng_cv_reset(SEXP);
 SEXP rnng_cv_signal(SEXP);
-SEXP rnng_cv_unlock(SEXP);
 SEXP rnng_cv_until(SEXP, SEXP);
 SEXP rnng_cv_until_safe(SEXP, SEXP);
 SEXP rnng_cv_value(SEXP);
@@ -375,7 +372,5 @@ SEXP rnng_url_parse(SEXP);
 SEXP rnng_version(void);
 SEXP rnng_wait_thread_create(SEXP);
 SEXP rnng_write_cert(SEXP, SEXP, SEXP);
-
-SEXP rnng_thread_create(void (*)(void *), void *);
 
 #endif
