@@ -193,6 +193,22 @@ SEXP rnng_messenger_thread_create(SEXP args) {
 
 // threaded functions ----------------------------------------------------------
 
+static void thread_aio_finalizer(SEXP xptr) {
+
+  if (NANO_PTR(xptr) == NULL) return;
+  nano_thread_aio *xp = (nano_thread_aio *) NANO_PTR(xptr);
+  nano_cv *ncv = xp->cv;
+  nng_mtx *mtx = ncv->mtx;
+  nng_cv *cv = ncv->cv;
+  nng_aio_stop(xp->aio);
+  nng_thread_destroy(xp->thr);
+  nng_cv_free(cv);
+  nng_mtx_free(mtx);
+  R_Free(ncv);
+  R_Free(xp);
+
+}
+
 static void thread_duo_finalizer(SEXP xptr) {
 
   if (NANO_PTR(xptr) == NULL) return;
@@ -208,29 +224,6 @@ static void thread_duo_finalizer(SEXP xptr) {
   }
   nng_thread_destroy(xp->thr);
   R_Free(xp);
-
-}
-
-static void rnng_wait_thread(void *args) {
-
-  while (1) {
-    nng_mtx_lock(nano_wait_mtx);
-    while (nano_wait_condition == 0)
-      nng_cv_wait(nano_wait_cv);
-    if (nano_wait_condition == -1) {
-      nng_mtx_unlock(nano_wait_mtx);
-      break;
-    }
-    nng_mtx_unlock(nano_wait_mtx);
-
-    nng_aio_wait(nano_shared_aio);
-
-    nng_mtx_lock(nano_wait_mtx);
-    nano_shared_aio = NULL;
-    nano_wait_condition = 0;
-    nng_cv_wake(nano_wait_cv);
-    nng_mtx_unlock(nano_wait_mtx);
-  }
 
 }
 
@@ -271,19 +264,43 @@ static void thread_disp_finalizer(SEXP xptr) {
 
 }
 
-SEXP rnng_thread_shutdown(void) {
-  if (nano_wait_thread_created) {
-    if (nano_shared_aio != NULL)
-      nng_aio_stop(nano_shared_aio);
+static void rnng_wait_thread(void *args) {
+
+  while (1) {
     nng_mtx_lock(nano_wait_mtx);
-    nano_wait_condition = -1;
+    while (nano_wait_condition == 0)
+      nng_cv_wait(nano_wait_cv);
+    if (nano_wait_condition == -1) {
+      nng_mtx_unlock(nano_wait_mtx);
+      break;
+    }
+    nng_mtx_unlock(nano_wait_mtx);
+
+    nng_aio_wait(nano_shared_aio);
+
+    nng_mtx_lock(nano_wait_mtx);
+    nano_shared_aio = NULL;
+    nano_wait_condition = 0;
     nng_cv_wake(nano_wait_cv);
     nng_mtx_unlock(nano_wait_mtx);
-    nng_thread_destroy(nano_wait_thr);
-    nng_cv_free(nano_wait_cv);
-    nng_mtx_free(nano_wait_mtx);
   }
-  return R_NilValue;
+
+}
+
+static void rnng_wait_thread_single(void *args) {
+
+  nano_thread_aio *taio = (nano_thread_aio *) args;
+  nano_cv *ncv = taio->cv;
+  nng_mtx *mtx = ncv->mtx;
+  nng_cv *cv = ncv->cv;
+
+  nng_aio_wait(taio->aio);
+
+  nng_mtx_lock(mtx);
+  ncv->condition = 1;
+  nng_cv_wake(cv);
+  nng_mtx_unlock(mtx);
+
 }
 
 SEXP rnng_wait_thread_create(SEXP x) {
@@ -312,39 +329,86 @@ SEXP rnng_wait_thread_create(SEXP x) {
       nano_wait_thread_created = 1;
     }
 
-    int restart;
-    do {
-      nng_mtx_lock(nano_wait_mtx);
-      if (nano_wait_condition == 0) {
-        nano_shared_aio = aiop->aio;
-        nano_wait_condition = 1;
-        nng_cv_wake(nano_wait_cv);
-      } else {
-        if (nano_shared_aio != aiop->aio) {
-          nng_aio_stop(nano_shared_aio);
-          while (nano_wait_condition == 1)
-            nng_cv_wait(nano_wait_cv);
-        }
-      }
-      restart = nano_wait_condition == 0;
-      nng_mtx_unlock(nano_wait_mtx);
-    } while (restart);
+    int thread_required = 0;
+    nng_mtx_lock(nano_wait_mtx);
+    if (nano_wait_condition == 0) {
+      nano_shared_aio = aiop->aio;
+      nano_wait_condition = 1;
+      nng_cv_wake(nano_wait_cv);
+    } else if (nano_shared_aio != aiop->aio) {
+        thread_required = 1;
+    }
+    nng_mtx_unlock(nano_wait_mtx);
 
-    nng_time time = nng_clock();
+    if (thread_required) {
 
-    while (1) {
-      time = time + 400;
-      signalled = 1;
-      nng_mtx_lock(nano_wait_mtx);
-      while (nano_wait_condition == 1) {
-        if (nng_cv_until(nano_wait_cv, time) == NNG_ETIMEDOUT) {
-          signalled = 0;
-          break;
-        }
+      PROTECT(coreaio);
+      nano_thread_aio *taio = R_Calloc(1, nano_thread_aio);
+      nano_cv *ncv = R_Calloc(1, nano_cv);
+      taio->aio = aiop->aio;
+      taio->cv = ncv;
+      nng_mtx *mtx;
+      nng_cv *cv;
+
+      if ((xc = nng_mtx_alloc(&mtx)))
+        ERROR_OUT(xc);
+
+      if ((xc = nng_cv_alloc(&cv, mtx))) {
+        nng_mtx_free(mtx);
+        ERROR_OUT(xc);
       }
-      nng_mtx_unlock(nano_wait_mtx);
-      if (signalled) break;
-      R_CheckUserInterrupt();
+
+      ncv->mtx = mtx;
+      ncv->cv = cv;
+
+      if ((xc = nng_thread_create(&taio->thr, rnng_wait_thread_single, taio))) {
+        nng_cv_free(cv);
+        nng_mtx_free(mtx);
+        ERROR_OUT(xc);
+      }
+
+      SEXP xptr;
+      PROTECT(xptr = R_MakeExternalPtr(taio, R_NilValue, R_NilValue));
+      R_RegisterCFinalizerEx(xptr, thread_aio_finalizer, TRUE);
+      R_MakeWeakRef(coreaio, xptr, R_NilValue, TRUE);
+      UNPROTECT(2);
+
+      nng_time time = nng_clock();
+
+      while (1) {
+        time = time + 400;
+        signalled = 1;
+        nng_mtx_lock(mtx);
+        while (ncv->condition == 0) {
+          if (nng_cv_until(cv, time) == NNG_ETIMEDOUT) {
+            signalled = 0;
+            break;
+          }
+        }
+        nng_mtx_unlock(mtx);
+        if (signalled) break;
+        R_CheckUserInterrupt();
+      }
+
+    } else {
+
+      nng_time time = nng_clock();
+
+      while (1) {
+        time = time + 400;
+        signalled = 1;
+        nng_mtx_lock(nano_wait_mtx);
+        while (nano_wait_condition == 1) {
+          if (nng_cv_until(nano_wait_cv, time) == NNG_ETIMEDOUT) {
+            signalled = 0;
+            break;
+          }
+        }
+        nng_mtx_unlock(nano_wait_mtx);
+        if (signalled) break;
+        R_CheckUserInterrupt();
+      }
+
     }
 
     switch (aiop->type) {
@@ -385,6 +449,21 @@ SEXP rnng_wait_thread_create(SEXP x) {
 
   return x;
 
+}
+
+SEXP rnng_thread_shutdown(void) {
+  if (nano_wait_thread_created) {
+    if (nano_shared_aio != NULL)
+      nng_aio_stop(nano_shared_aio);
+    nng_mtx_lock(nano_wait_mtx);
+    nano_wait_condition = -1;
+    nng_cv_wake(nano_wait_cv);
+    nng_mtx_unlock(nano_wait_mtx);
+    nng_thread_destroy(nano_wait_thr);
+    nng_cv_free(nano_wait_cv);
+    nng_mtx_free(nano_wait_mtx);
+  }
+  return R_NilValue;
 }
 
 static void nano_record_pipe(nng_pipe p, nng_pipe_ev ev, void *arg) {
