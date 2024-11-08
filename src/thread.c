@@ -30,11 +30,6 @@ nng_mtx *nano_wait_mtx;
 nng_cv *nano_wait_cv;
 int nano_wait_condition = 0;
 
-static void check_interrupt(void * data) {
-  (void) data;
-  R_CheckUserInterrupt();
-}
-
 // # nocov start
 // tested interactively
 
@@ -317,13 +312,23 @@ SEXP rnng_wait_thread_create(SEXP x) {
       nano_wait_thread_created = 1;
     }
 
-    nng_mtx_lock(nano_wait_mtx);
-    if (nano_wait_condition == 0) {
-      nano_shared_aio = aiop->aio;
-      nano_wait_condition = 1;
-      nng_cv_wake(nano_wait_cv);
-    }
-    nng_mtx_unlock(nano_wait_mtx);
+    int restart;
+    do {
+      nng_mtx_lock(nano_wait_mtx);
+      if (nano_wait_condition == 0) {
+        nano_shared_aio = aiop->aio;
+        nano_wait_condition = 1;
+        nng_cv_wake(nano_wait_cv);
+      } else {
+        if (nano_shared_aio != aiop->aio) {
+          nng_aio_stop(nano_shared_aio);
+          while (nano_wait_condition == 1)
+            nng_cv_wait(nano_wait_cv);
+        }
+      }
+      restart = nano_wait_condition == 0;
+      nng_mtx_unlock(nano_wait_mtx);
+    } while (restart);
 
     nng_time time = nng_clock();
 
@@ -339,8 +344,7 @@ SEXP rnng_wait_thread_create(SEXP x) {
       }
       nng_mtx_unlock(nano_wait_mtx);
       if (signalled) break;
-      if (!R_ToplevelExec(check_interrupt, NULL))
-        nng_aio_stop(nano_shared_aio);
+      R_CheckUserInterrupt();
     }
 
     switch (aiop->type) {

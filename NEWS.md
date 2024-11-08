@@ -1,9 +1,5 @@
 # nanonext 1.3.0.9004 (development)
 
-#### Behavioural Change
-
-* User interrupts while using `call_aio_()`, `collect_aio_()` or the equivalent `[]` method now cancel the 'aio' operation causing the Aio to return an 'errorValue 20 | Operation Canceled'.
-
 #### Updates
 
 * Performs interruptible 'aio' waits using a single dedicated thread, rather than launching new threads, for higher performance and efficiency.
