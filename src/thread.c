@@ -231,6 +231,7 @@ static void rnng_wait_thread(void *args) {
     nng_aio_wait(nano_shared_aio);
 
     nng_mtx_lock(nano_shared_mtx);
+    nano_shared_aio = NULL;
     nano_shared_condition = 1;
     nng_cv_wake(nano_shared_cv);
     nng_mtx_unlock(nano_shared_mtx);
@@ -277,6 +278,23 @@ static void thread_disp_finalizer(SEXP xptr) {
 static void check_interrupt(void * data) {
   (void) data;
   R_CheckUserInterrupt();
+}
+
+SEXP rnng_thread_shutdown(void) {
+  if (nano_wait_thread_created) {
+    if (nano_shared_aio != NULL)
+      nng_aio_stop(nano_shared_aio);
+    nng_mtx_lock(nano_wait_mtx);
+    nano_wait_condition = -1;
+    nng_cv_wake(nano_wait_cv);
+    nng_mtx_unlock(nano_wait_mtx);
+    nng_thread_destroy(nano_wait_thr);
+    nng_cv_free(nano_shared_cv);
+    nng_mtx_free(nano_shared_mtx);
+    nng_cv_free(nano_wait_cv);
+    nng_mtx_free(nano_wait_mtx);
+  }
+  return R_NilValue;
 }
 
 SEXP rnng_wait_thread_create(SEXP x) {

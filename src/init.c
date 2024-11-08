@@ -193,8 +193,9 @@ static const R_CallMethodDef callMethods[] = {
   {"rnng_stream_listen", (DL_FUNC) &rnng_stream_listen, 3},
   {"rnng_strerror", (DL_FUNC) &rnng_strerror, 1},
   {"rnng_subscribe", (DL_FUNC) &rnng_subscribe, 3},
-  {"rnng_traverse_precious", (DL_FUNC) &rnng_traverse_precious, 0},
+  {"rnng_thread_shutdown", (DL_FUNC) &rnng_thread_shutdown, 0},
   {"rnng_tls_config", (DL_FUNC) &rnng_tls_config, 4},
+  {"rnng_traverse_precious", (DL_FUNC) &rnng_traverse_precious, 0},
   {"rnng_unresolved", (DL_FUNC) &rnng_unresolved, 1},
   {"rnng_unresolved2", (DL_FUNC) &rnng_unresolved2, 1},
   {"rnng_url_parse", (DL_FUNC) &rnng_url_parse, 1},
@@ -220,18 +221,6 @@ void attribute_visible R_init_nanonext(DllInfo* dll) {
 // # nocov start
 void attribute_visible R_unload_nanonext(DllInfo *info) {
   ReleaseObjects();
-  if (nano_wait_thread_created) {
-    if (nano_shared_aio != NULL)
-      nng_aio_stop(nano_shared_aio);
-    nng_mtx_lock(nano_wait_mtx);
-    nano_wait_condition = -1;
-    nng_cv_wake(nano_wait_cv);
-    nng_mtx_unlock(nano_wait_mtx);
-    nng_thread_destroy(nano_wait_thr);
-    nng_cv_free(nano_shared_cv);
-    nng_mtx_free(nano_shared_mtx);
-    nng_cv_free(nano_wait_cv);
-    nng_mtx_free(nano_wait_mtx);
-  }
+  rnng_thread_shutdown();
 }
 // # nocov end
