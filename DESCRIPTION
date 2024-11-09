@@ -40,3 +40,4 @@ Suggests:
 VignetteBuilder: litedown
 RoxygenNote: 7.3.2
 Config/build/compilation-database: true
+Remotes: qsbase/qs2
