@@ -288,7 +288,7 @@ void nano_serialize(nano_buf *, const SEXP, SEXP);
 SEXP nano_unserialize(unsigned char *, const size_t, SEXP);
 SEXP nano_decode(unsigned char *, const size_t, const uint8_t, SEXP);
 void nano_encode(nano_buf *, const SEXP);
-int nano_encodes(const SEXP);
+void nano_encodes(const SEXP, nano_buf *, const SEXP, SEXP);
 int nano_matcharg(const SEXP);
 int nano_matchargs(const SEXP);
 

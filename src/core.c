@@ -559,7 +559,7 @@ SEXP nano_decode(unsigned char *buf, const size_t sz, const uint8_t mod, SEXP ho
     return data;
   default:
     data = nano_unserialize(buf, sz, hook);
-  return data;
+    return data;
   }
 
   memcpy(NANO_DATAPTR(data), buf, sz);
@@ -612,26 +612,41 @@ void nano_encode(nano_buf *enc, const SEXP object) {
 
 }
 
-int nano_encodes(const SEXP mode) {
+void nano_encodes(const SEXP mode, nano_buf *buf, const SEXP data, SEXP hook) {
 
-  if (TYPEOF(mode) != INTSXP) {
+  int typ;
+  if (TYPEOF(mode) == INTSXP) {
+    typ = INTEGER(mode)[0];
+  } else {
     const char *mod = CHAR(STRING_ELT(mode, 0));
     size_t slen = strlen(mod);
     switch (slen) {
     case 1:
     case 2:
     case 3:
-      if (!memcmp(mod, "raw", slen)) return 2;
+      if (!memcmp(mod, "raw", slen)) {
+        typ = 2;
+        break;
+      }
     case 4:
     case 5:
     case 6:
-      if (!memcmp(mod, "serial", slen)) return 1;
+      if (!memcmp(mod, "serial", slen)) {
+        typ = 1;
+        break;
+      }
     default:
       Rf_error("'mode' should be either serial or raw");
     }
   }
 
-  return INTEGER(mode)[0];
+  switch (typ) {
+  case 2:
+    nano_encode(buf, data);
+    break;
+  default:
+    nano_serialize(buf, data, hook);
+  }
 
 }
 

@@ -425,7 +425,7 @@ SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeou
   nng_msg *msg;
   int xc;
 
-  nano_encodes(sendmode) == 2 ? nano_encode(&buf, data) : nano_serialize(&buf, data, NANO_PROT(con));
+  nano_encodes(sendmode, &buf, data, NANO_PROT(con));
   saio = R_Calloc(1, nano_saio);
   saio->cb = NULL;
 
