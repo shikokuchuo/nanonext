@@ -228,6 +228,10 @@ typedef struct nano_buf_s {
 } nano_buf;
 
 extern void (*eln2)(void (*)(void *), void *, double, int);
+
+extern char *(*qs2_serialize)(SEXP, uint64_t *, const int, const bool, const int);
+extern SEXP (*qs2_deserialize)(const char *, const uint64_t, const bool, const int);
+
 extern uint8_t special_bit;
 
 extern SEXP nano_AioSymbol;

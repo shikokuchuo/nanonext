@@ -91,5 +91,6 @@
 #'   (\href{https://orcid.org/0000-0002-0750-061X}{ORCID})
 #'
 #' @useDynLib nanonext, .registration = TRUE
+#' @importFrom qs2 qs_serialize
 #'
 "_PACKAGE"

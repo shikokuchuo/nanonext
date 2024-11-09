@@ -309,12 +309,22 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
 
   const int flags = block == R_NilValue ? NNG_DURATION_DEFAULT : TYPEOF(block) == LGLSXP ? 0 : nano_integer(block);
   nano_buf buf;
-  int xc;
+  int xc, mod;
 
   const SEXP ptrtag = NANO_TAG(con);
   if (ptrtag == nano_SocketSymbol) {
 
-    nano_encodes(mode) == 2 ? nano_encode(&buf, data) : nano_serialize(&buf, data, NANO_PROT(con));
+    mod = nano_encodes(mode);
+    switch (mod) {
+    case 2:
+      nano_encode(&buf, data);
+      break;
+    case 0:
+      buf.buf = (unsigned char *) qs2_serialize(data, &buf.cur, 1, 0, 1);
+      break;
+    default:
+      nano_serialize(&buf, data, NANO_PROT(con));
+    }
     nng_socket *sock = (nng_socket *) NANO_PTR(con);
 
     if (flags <= 0) {
@@ -420,6 +430,9 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
   } else {
     Rf_error("'con' is not a valid Socket, Context or Stream");
   }
+
+  if (mod == 3)
+    free(buf.buf);
 
   if (xc)
     return mk_error(xc);
