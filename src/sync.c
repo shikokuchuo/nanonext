@@ -184,10 +184,10 @@ SEXP rnng_cv_alloc(void) {
   int xc;
 
   if ((xc = nng_mtx_alloc(&cvp->mtx)))
-    goto exitlevel1;
+    goto fail;
 
   if ((xc = nng_cv_alloc(&cvp->cv, cvp->mtx)))
-    goto exitlevel2;
+    goto fail;
 
   PROTECT(xp = R_MakeExternalPtr(cvp, nano_CvSymbol, R_NilValue));
   R_RegisterCFinalizerEx(xp, cv_finalizer, TRUE);
@@ -196,10 +196,9 @@ SEXP rnng_cv_alloc(void) {
   UNPROTECT(1);
   return xp;
 
-  exitlevel2:
-    nng_mtx_free(cvp->mtx);
-  exitlevel1:
-    R_Free(cvp);
+  fail:
+  if (cvp->mtx) nng_mtx_free(cvp->mtx);
+  R_Free(cvp);
   ERROR_OUT(xc);
 
 }
@@ -420,35 +419,32 @@ SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeou
 
   SEXP aio, env, fun;
   nano_buf buf;
-  nano_saio *saio;
-  nano_aio *raio;
-  nng_msg *msg;
-  int xc;
 
   nano_encodes(sendmode, &buf, data, NANO_PROT(con));
-  saio = R_Calloc(1, nano_saio);
-  saio->cb = NULL;
+
+  int xc;
+  nano_saio *saio = R_Calloc(1, nano_saio);
+
+  nng_msg *msg = NULL;
 
   if ((xc = nng_msg_alloc(&msg, 0)))
-    goto exitlevel1;
+    goto fail;
 
   if ((xc = nng_msg_append(msg, buf.buf, buf.cur)) ||
-      (xc = nng_aio_alloc(&saio->aio, sendaio_complete, saio))) {
-    nng_msg_free(msg);
-    goto exitlevel1;
-  }
+      (xc = nng_aio_alloc(&saio->aio, sendaio_complete, saio)))
+    goto fail;
 
   nng_aio_set_msg(saio->aio, msg);
   nng_ctx_send(*ctx, saio->aio);
 
-  raio = R_Calloc(1, nano_aio);
+  nano_aio *raio = R_Calloc(1, nano_aio);
   raio->type = signal ? REQAIOS : REQAIO;
   raio->mode = mod;
   raio->cb = saio;
   raio->next = ncv;
 
   if ((xc = nng_aio_alloc(&raio->aio, signal ? request_complete_signal : drop ? request_complete_dropcon : request_complete, raio)))
-    goto exitlevel2;
+    goto fail;
 
   nng_aio_set_timeout(raio->aio, dur);
   nng_ctx_recv(*ctx, raio->aio);
@@ -467,10 +463,10 @@ SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeou
   UNPROTECT(3);
   return env;
 
-  exitlevel2:
+  fail:
   R_Free(raio);
-  nng_aio_free(saio->aio);
-  exitlevel1:
+  if (saio->aio) nng_aio_free(saio->aio);
+  if (msg) nng_msg_free(msg);
   R_Free(saio);
   NANO_FREE(buf);
   return mk_error_data(xc);

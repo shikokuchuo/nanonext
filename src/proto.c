@@ -222,10 +222,10 @@ SEXP rnng_reap(SEXP con) {
 SEXP rnng_aio_collect_pipe(SEXP aio) {
 
   if (TYPEOF(aio) != ENVSXP)
-    goto exitlevel1;
+    goto fail;
   const SEXP coreaio = nano_findVarInFrame(aio, nano_AioSymbol);
   if (NANO_TAG(coreaio) != nano_AioSymbol)
-    goto exitlevel1;
+    goto fail;
 
   nano_aio *aiop = (nano_aio *) NANO_PTR(coreaio);
   switch (aiop->type) {
@@ -239,7 +239,7 @@ SEXP rnng_aio_collect_pipe(SEXP aio) {
     case SENDAIO:
     case IOV_SENDAIO:
     case HTTP_AIO:
-      goto exitlevel1;
+      goto fail;
   }
 
   nng_pipe *p;
@@ -260,9 +260,8 @@ SEXP rnng_aio_collect_pipe(SEXP aio) {
   UNPROTECT(1);
   return pipe;
 
-  exitlevel1:
+  fail:
   Rf_error("'x' is not a valid or active recvAio");
-  return R_NilValue;
 
 }
 
