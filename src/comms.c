@@ -357,6 +357,10 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
 
     }
 
+
+    if (mod == 0)
+      free(buf.buf);
+
   } else if (ptrtag == nano_ContextSymbol) {
 
     nano_encodes(mode) == 2 ? nano_encode(&buf, data) : nano_serialize(&buf, data, NANO_PROT(con));
@@ -430,9 +434,6 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
   } else {
     Rf_error("'con' is not a valid Socket, Context or Stream");
   }
-
-  if (mod == 3)
-    free(buf.buf);
 
   if (xc)
     return mk_error(xc);
