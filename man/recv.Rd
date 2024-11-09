@@ -99,6 +99,18 @@ recv(ctxp, mode = "double", block = 100)
 close(req)
 close(rep)
 
+# using qs2 format (specify mode = 0L)
+
+s <- socket(listen = "inproc://qs2")
+s1 <- socket(dial = "inproc://qs2")
+q <- list(a = 1, b = "test", c = data.frame())
+send(s, q, mode = 0L)
+r <- recv(s1, mode = 0L)
+identical(q, r)
+
+close(s)
+close(s1)
+
 }
 \seealso{
 \code{\link{recv_aio}} for asynchronous receive.

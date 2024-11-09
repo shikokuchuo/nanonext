@@ -557,9 +557,12 @@ SEXP nano_decode(unsigned char *buf, const size_t sz, const uint8_t mod, SEXP ho
   case 9:
     data = rawToChar(buf, sz);
     return data;
+  case 0:
+    data = qs2_deserialize((char *) buf, sz, 0, 1);
+    return data;
   default:
     data = nano_unserialize(buf, sz, hook);
-  return data;
+    return data;
   }
 
   memcpy(NANO_DATAPTR(data), buf, sz);
