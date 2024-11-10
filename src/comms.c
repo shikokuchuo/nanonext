@@ -123,9 +123,9 @@ SEXP rnng_dial(SEXP socket, SEXP url, SEXP tls, SEXP autostart, SEXP error) {
         (xc = nng_url_parse(&up, ur)) ||
         (xc = nng_tls_config_server_name(cfg, up->u_hostname)) ||
         (xc = nng_dialer_set_ptr(*dp, NNG_OPT_TLS_CONFIG, cfg)))
-      goto fail;
+      goto exit;
     if (start && (xc = nng_dialer_start(*dp, start == 1 ? NNG_FLAG_NONBLOCK : 0)))
-      goto fail;
+      goto exit;
     nng_url_free(up);
     nng_tls_config_hold(cfg);
 
@@ -137,7 +137,7 @@ SEXP rnng_dial(SEXP socket, SEXP url, SEXP tls, SEXP autostart, SEXP error) {
   } else {
 
     if ((xc = start ? nng_dial(*sock, ur, dp, start == 1 ? NNG_FLAG_NONBLOCK : 0) : nng_dialer_create(dp, *sock, ur)))
-      goto fail;
+      goto exit;
 
     PROTECT(dialer = R_MakeExternalPtr(dp, nano_DialerSymbol, R_NilValue));
 
@@ -162,7 +162,7 @@ SEXP rnng_dial(SEXP socket, SEXP url, SEXP tls, SEXP autostart, SEXP error) {
   UNPROTECT(2);
   return nano_success;
 
-  fail:
+  exit:
   if (up) nng_url_free(up);
   R_Free(dp);
   if (NANO_INTEGER(error)) ERROR_OUT(xc);
@@ -194,9 +194,9 @@ SEXP rnng_listen(SEXP socket, SEXP url, SEXP tls, SEXP autostart, SEXP error) {
         (xc = nng_url_parse(&up, ur)) ||
         (xc = nng_tls_config_server_name(cfg, up->u_hostname)) ||
         (xc = nng_listener_set_ptr(*lp, NNG_OPT_TLS_CONFIG, cfg)))
-      goto fail;
+      goto exit;
     if (start && (xc = nng_listener_start(*lp, 0)))
-      goto fail;
+      goto exit;
     nng_url_free(up);
     nng_tls_config_hold(cfg);
 
@@ -208,7 +208,7 @@ SEXP rnng_listen(SEXP socket, SEXP url, SEXP tls, SEXP autostart, SEXP error) {
   } else {
 
     if ((xc = start ? nng_listen(*sock, ur, lp, 0) : nng_listener_create(lp, *sock, ur)))
-      goto fail;
+      goto exit;
 
     PROTECT(listener = R_MakeExternalPtr(lp, nano_ListenerSymbol, R_NilValue));
 
@@ -234,7 +234,7 @@ SEXP rnng_listen(SEXP socket, SEXP url, SEXP tls, SEXP autostart, SEXP error) {
   UNPROTECT(2);
   return nano_success;
 
-  fail:
+  exit:
   if (up) nng_url_free(up);
   R_Free(lp);
   if (NANO_INTEGER(error)) ERROR_OUT(xc);
@@ -316,14 +316,14 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
     if (flags <= 0) {
 
       if ((xc = nng_send(*sock, buf.buf, buf.cur, flags ? NNG_FLAG_NONBLOCK : (NANO_INTEGER(block) != 1) * NNG_FLAG_NONBLOCK)))
-        goto fail;
+        goto exit;
 
     } else {
 
       if ((xc = nng_msg_alloc(&msgp, 0)) ||
           (xc = nng_msg_append(msgp, buf.buf, buf.cur)) ||
           (xc = nng_aio_alloc(&aiop, NULL, NULL)))
-        goto fail;
+        goto exit;
 
       nng_aio_set_msg(aiop, msgp);
       nng_aio_set_timeout(aiop, flags);
@@ -345,14 +345,14 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
       if ((xc = nng_msg_alloc(&msgp, 0)) ||
           (xc = nng_msg_append(msgp, buf.buf, buf.cur)) ||
           (xc = nng_ctx_sendmsg(*ctxp, msgp, flags ? NNG_FLAG_NONBLOCK : (NANO_INTEGER(block) != 1) * NNG_FLAG_NONBLOCK)))
-        goto fail;
+        goto exit;
 
     } else {
 
       if ((xc = nng_msg_alloc(&msgp, 0)) ||
           (xc = nng_msg_append(msgp, buf.buf, buf.cur)) ||
           (xc = nng_aio_alloc(&aiop, NULL, NULL)))
-        goto fail;
+        goto exit;
 
       nng_aio_set_msg(aiop, msgp);
       nng_aio_set_timeout(aiop, flags);
@@ -377,7 +377,7 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
 
     if ((xc = nng_aio_alloc(&aiop, NULL, NULL)) ||
         (xc = nng_aio_set_iov(aiop, 1u, &iov)))
-      goto fail;
+      goto exit;
 
     nng_aio_set_timeout(aiop, flags ? flags : (NANO_INTEGER(block) != 0) * NNG_DURATION_DEFAULT);
     nng_stream_send(sp, aiop);
@@ -396,7 +396,7 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
 
   return nano_success;
 
-  fail:
+  exit:
   if (aiop) nng_aio_free(aiop);
   if (msgp) nng_msg_free(msgp);
   NANO_FREE(buf);
@@ -422,7 +422,7 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP bytes) {
     if (flags <= 0) {
 
       if ((xc = nng_recv(*sock, &buf, &sz, NNG_FLAG_ALLOC + (flags < 0 || NANO_INTEGER(block) != 1) * NNG_FLAG_NONBLOCK)))
-        goto fail;
+        goto exit;
 
       res = nano_decode(buf, sz, mod, NANO_PROT(con));
       nng_free(buf, sz);
@@ -430,12 +430,12 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP bytes) {
     } else {
 
       if ((xc = nng_aio_alloc(&aiop, NULL, NULL)))
-        goto fail;
+        goto exit;
       nng_aio_set_timeout(aiop, flags);
       nng_recv_aio(*sock, aiop);
       nng_aio_wait(aiop);
       if ((xc = nng_aio_result(aiop)))
-        goto fail;
+        goto exit;
       nng_msg *msgp = nng_aio_get_msg(aiop);
       nng_aio_free(aiop);
       buf = nng_msg_body(msgp);
@@ -453,7 +453,7 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP bytes) {
     if (flags <= 0) {
 
       if ((xc = nng_ctx_recvmsg(*ctxp, &msgp, (flags < 0 || NANO_INTEGER(block) != 1) * NNG_FLAG_NONBLOCK)))
-        goto fail;
+        goto exit;
 
       buf = nng_msg_body(msgp);
       sz = nng_msg_len(msgp);
@@ -463,13 +463,13 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP bytes) {
     } else {
 
       if ((xc = nng_aio_alloc(&aiop, NULL, NULL)))
-        goto fail;
+        goto exit;
       nng_aio_set_timeout(aiop, flags);
       nng_ctx_recv(*ctxp, aiop);
 
       nng_aio_wait(aiop);
       if ((xc = nng_aio_result(aiop)))
-        goto fail;
+        goto exit;
 
       msgp = nng_aio_get_msg(aiop);
       nng_aio_free(aiop);
@@ -493,14 +493,14 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP bytes) {
 
     if ((xc = nng_aio_alloc(&aiop, NULL, NULL)) ||
         (xc = nng_aio_set_iov(aiop, 1u, &iov)))
-      goto fail2;
+      goto exit2;
 
     nng_aio_set_timeout(aiop, flags ? flags : (NANO_INTEGER(block) != 0) * NNG_DURATION_DEFAULT);
     nng_stream_recv(*sp, aiop);
 
     nng_aio_wait(aiop);
     if ((xc = nng_aio_result(aiop)))
-      goto fail2;
+      goto exit2;
 
     sz = nng_aio_count(aiop);
     nng_aio_free(aiop);
@@ -513,9 +513,9 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP bytes) {
 
   return res;
 
-  fail2:
+  exit2:
   R_Free(buf);
-  fail:
+  exit:
   if (aiop) nng_aio_free(aiop);
   return mk_error(xc);
 

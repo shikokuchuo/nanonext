@@ -142,18 +142,18 @@ SEXP rnng_messenger(SEXP url) {
   SEXP socket, con;
 
   if ((xc = nng_pair0_open(sock)))
-    goto fail;
+    goto exit;
   lp = R_Calloc(1, nng_listener);
   if ((xc = nng_listen(*sock, up, lp, 0))) {
     if (xc != 10 && xc != 15) {
       R_Free(lp);
-      goto fail;
+      goto exit;
     }
     R_Free(lp);
     dp = R_Calloc(1, nng_dialer);
     if ((xc = nng_dial(*sock, up, dp, 0))) {
       R_Free(dp);
-      goto fail;
+      goto exit;
     }
     dialer = 1;
   }
@@ -172,7 +172,7 @@ SEXP rnng_messenger(SEXP url) {
   UNPROTECT(2);
   return socket;
 
-  fail:
+  exit:
   R_Free(sock);
   ERROR_OUT(xc);
 
@@ -239,16 +239,16 @@ void single_wait_thread_create(SEXP x) {
   int xc, signalled;
 
   if ((xc = nng_mtx_alloc(&mtx)))
-    goto fail;
+    goto exit;
 
   if ((xc = nng_cv_alloc(&cv, mtx)))
-    goto fail;
+    goto exit;
 
   ncv->mtx = mtx;
   ncv->cv = cv;
 
   if ((xc = nng_thread_create(&taio->thr, rnng_wait_thread_single, taio)))
-    goto fail;
+    goto exit;
 
   SEXP xptr;
   PROTECT(xptr = R_MakeExternalPtr(taio, R_NilValue, R_NilValue));
@@ -275,10 +275,10 @@ void single_wait_thread_create(SEXP x) {
 
   return;
 
-  fail:
-    if (cv) nng_cv_free(cv);
-    if (mtx) nng_mtx_free(mtx);
-    ERROR_OUT(xc);
+  exit:
+  if (cv) nng_cv_free(cv);
+  if (mtx) nng_mtx_free(mtx);
+  ERROR_OUT(xc);
 
 }
 
@@ -378,7 +378,7 @@ SEXP rnng_wait_thread_create(SEXP x) {
       if ((xc = nng_mtx_alloc(&nano_wait_mtx)) ||
           (xc = nng_cv_alloc(&nano_wait_cv, nano_wait_mtx)) ||
           (xc = nng_thread_create(&nano_wait_thr, rnng_wait_thread, NULL)))
-        goto fail;
+        goto exit;
     }
 
     int thread_required = 0;
@@ -439,7 +439,7 @@ SEXP rnng_wait_thread_create(SEXP x) {
 
     return x;
 
-    fail:
+    exit:
     if (nano_wait_cv) nng_cv_free(nano_wait_cv);
     if (nano_wait_mtx) nng_mtx_free(nano_wait_mtx);
     ERROR_OUT(xc);
@@ -618,7 +618,7 @@ static void rnng_dispatch_thread(void *args) {
   };
 
   if (nng_rep0_open(&hsock))
-    goto fail;
+    goto exit;
 
   for (R_xlen_t i = 0; i < n; i++) {
 
@@ -628,17 +628,17 @@ static void rnng_dispatch_thread(void *args) {
         nng_socket_set_ms(sock[i], "req:resend-time", 0) ||
         nng_pipe_notify(sock[i], NNG_PIPE_EV_ADD_POST, nano_record_pipe, &signal[i]) ||
         nng_pipe_notify(sock[i], NNG_PIPE_EV_REM_POST, nano_record_pipe, &signal[i]))
-      goto fail2;
+      goto exit2;
 
     if (disp->tls != NULL) {
       if (nng_listener_create(&list[i], sock[i], url[i]) ||
           nng_tls_config_server_name(disp->tls, disp->up->u_hostname) ||
           nng_listener_set_ptr(list[i], NNG_OPT_TLS_CONFIG, disp->tls) ||
           nng_listener_start(list[i], 0))
-        goto fail2;
+        goto exit2;
     } else {
       if (nng_listen(sock[i], url[i], &list[i], 0))
-        goto fail2;
+        goto exit2;
     }
 
     raio[i]->next = ncv;
@@ -648,11 +648,11 @@ static void rnng_dispatch_thread(void *args) {
     if (nng_aio_alloc(&saio[i]->aio, sendaio_complete, saio[i]) ||
         nng_aio_alloc(&raio[i]->aio, raio_complete_signal, raio[i]) ||
         nng_aio_alloc(&haio[i]->aio, raio_complete_signal, haio[i]))
-      goto fail2;
+      goto exit2;
   }
 
   if (nng_dial(hsock, disp->host, &hdial, 0))
-    goto fail2;
+    goto exit2;
 
   for (R_xlen_t i = 0; i < n; i++) {
     nng_mtx_lock(mtx);
@@ -660,7 +660,7 @@ static void rnng_dispatch_thread(void *args) {
       nng_cv_wait(cv);
     if (ncv->condition < 0) {
       nng_mtx_unlock(mtx);
-      goto fail2;
+      goto exit2;
     }
     ncv->condition--;
     nng_mtx_unlock(mtx);
@@ -668,7 +668,7 @@ static void rnng_dispatch_thread(void *args) {
 
   for (R_xlen_t i = 0; i < n; i++) {
     if (nng_ctx_open(&rctx[i], hsock))
-      goto fail2;
+      goto exit2;
     nng_ctx_recv(rctx[i], haio[i]->aio);
   }
 
@@ -679,7 +679,7 @@ static void rnng_dispatch_thread(void *args) {
       nng_cv_wait(cv);
     if (ncv->condition < 0) {
       nng_mtx_unlock(mtx);
-      goto fail2;
+      goto exit2;
     }
     ncv->condition--;
     memcpy(active, online, n * sizeof(int));
@@ -688,7 +688,7 @@ static void rnng_dispatch_thread(void *args) {
     for (R_xlen_t i = 0; i < n; i++) {
       if (active[i] > store[i]) {
         if (nng_ctx_open(&rctx[i], hsock))
-          goto fail2;
+          goto exit2;
         nng_ctx_recv(rctx[i], haio[i]->aio);
       }
     }
@@ -706,7 +706,7 @@ static void rnng_dispatch_thread(void *args) {
             buf = nng_msg_body((nng_msg *) raio[i]->data);
             if (buf[3] == 0x1) {
               if (nng_msg_alloc(&msg, 0))
-                goto fail2;
+                goto exit2;
               if (nng_ctx_sendmsg(ctx[i], msg, 0))
                 nng_msg_free(msg);
               end = 1;
@@ -717,7 +717,7 @@ static void rnng_dispatch_thread(void *args) {
             if (nng_msg_alloc(&msg, 0) ||
                 (xc == 19 ? nng_msg_append(msg, errnt, sizeof(errnt)) :
                    nng_msg_append(msg, &xc, sizeof(int))))
-              goto fail2;
+              goto exit2;
             if (nng_ctx_sendmsg(rctx[i], msg, 0))
               nng_msg_free(msg);
             end = 1;
@@ -729,7 +729,7 @@ static void rnng_dispatch_thread(void *args) {
             end = 0;
           } else {
             if (nng_ctx_open(&rctx[i], hsock))
-              goto fail2;
+              goto exit2;
             nng_ctx_recv(rctx[i], haio[i]->aio);
           }
           break;
@@ -745,13 +745,13 @@ static void rnng_dispatch_thread(void *args) {
           if (xc < 0) {
             busy[i] = 1;
             if (nng_ctx_open(&ctx[i], sock[i]))
-              goto fail2;
+              goto exit2;
             nng_aio_set_msg(saio[i]->aio, (nng_msg *) haio[i]->data);
             nng_ctx_send(ctx[i], saio[i]->aio);
             nng_ctx_recv(ctx[i], raio[i]->aio);
           } else {
             // exit if reaches here
-            goto fail2;
+            goto exit2;
           }
           break;
         }
@@ -761,10 +761,10 @@ static void rnng_dispatch_thread(void *args) {
 
   }
 
-  fail2:
+  exit2:
   for (R_xlen_t i = 0; i < n; i++)
     nng_close(sock[i]);
-  fail:
+  exit:
   nng_close(hsock);
 
 }
@@ -791,7 +791,7 @@ SEXP rnng_dispatcher_socket(SEXP host, SEXP url, SEXP tls) {
 
   if ((xc = nng_mtx_alloc(&ncv->mtx)) ||
       (xc = nng_cv_alloc(&ncv->cv, ncv->mtx)))
-    goto fail;
+    goto exit;
 
   disp->cv = ncv;
   disp->n = nd;
@@ -820,7 +820,7 @@ SEXP rnng_dispatcher_socket(SEXP host, SEXP url, SEXP tls) {
       (xc = nng_socket_set_ms(*hsock, "req:resend-time", 0)) ||
       (xc = nng_listen(*hsock, disp->host, hl, 0)) ||
       (xc = nng_thread_create(&disp->thr, rnng_dispatch_thread, disp)))
-    goto fail;
+    goto exit;
 
   PROTECT(sock = R_MakeExternalPtr(hsock, nano_SocketSymbol, R_NilValue));
   R_RegisterCFinalizerEx(sock, socket_finalizer, TRUE);
@@ -836,7 +836,7 @@ SEXP rnng_dispatcher_socket(SEXP host, SEXP url, SEXP tls) {
   UNPROTECT(1);
   return sock;
 
-  fail:
+  exit:
   if (hsock) nng_close(*hsock);
   if (disp->up) nng_url_free(disp->up);
   R_Free(hl);

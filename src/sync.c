@@ -185,7 +185,7 @@ SEXP rnng_cv_alloc(void) {
 
   if ((xc = nng_mtx_alloc(&cvp->mtx)) ||
       (xc = nng_cv_alloc(&cvp->cv, cvp->mtx)))
-    goto fail;
+    goto exit;
 
   PROTECT(xp = R_MakeExternalPtr(cvp, nano_CvSymbol, R_NilValue));
   R_RegisterCFinalizerEx(xp, cv_finalizer, TRUE);
@@ -194,7 +194,7 @@ SEXP rnng_cv_alloc(void) {
   UNPROTECT(1);
   return xp;
 
-  fail:
+  exit:
   if (cvp->mtx) nng_mtx_free(cvp->mtx);
   R_Free(cvp);
   ERROR_OUT(xc);
@@ -428,7 +428,7 @@ SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeou
   if ((xc = nng_msg_alloc(&msg, 0)) ||
       (xc = nng_msg_append(msg, buf.buf, buf.cur)) ||
       (xc = nng_aio_alloc(&saio->aio, sendaio_complete, saio)))
-    goto fail;
+    goto exit;
 
   nng_aio_set_msg(saio->aio, msg);
   nng_ctx_send(*ctx, saio->aio);
@@ -439,7 +439,7 @@ SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeou
   raio->next = ncv;
 
   if ((xc = nng_aio_alloc(&raio->aio, signal ? request_complete_signal : drop ? request_complete_dropcon : request_complete, raio)))
-    goto fail;
+    goto exit;
 
   nng_aio_set_timeout(raio->aio, dur);
   nng_ctx_recv(*ctx, raio->aio);
@@ -458,7 +458,7 @@ SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeou
   UNPROTECT(3);
   return env;
 
-  fail:
+  exit:
   if (saio->aio) nng_aio_free(saio->aio);
   if (msg) nng_msg_free(msg);
   R_Free(raio);

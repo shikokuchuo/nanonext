@@ -222,10 +222,10 @@ SEXP rnng_reap(SEXP con) {
 SEXP rnng_aio_collect_pipe(SEXP aio) {
 
   if (TYPEOF(aio) != ENVSXP)
-    goto fail;
+    goto exit;
   const SEXP coreaio = nano_findVarInFrame(aio, nano_AioSymbol);
   if (NANO_TAG(coreaio) != nano_AioSymbol)
-    goto fail;
+    goto exit;
 
   nano_aio *aiop = (nano_aio *) NANO_PTR(coreaio);
   switch (aiop->type) {
@@ -239,7 +239,7 @@ SEXP rnng_aio_collect_pipe(SEXP aio) {
     case SENDAIO:
     case IOV_SENDAIO:
     case HTTP_AIO:
-      goto fail;
+      goto exit;
   }
 
   nng_pipe *p;
@@ -260,7 +260,7 @@ SEXP rnng_aio_collect_pipe(SEXP aio) {
   UNPROTECT(1);
   return pipe;
 
-  fail:
+  exit:
   Rf_error("'x' is not a valid or active recvAio");
 
 }
@@ -297,13 +297,13 @@ SEXP rnng_stream_dial(SEXP url, SEXP textframes, SEXP tls) {
 
   if ((xc = nng_url_parse(&up, add)) ||
       (xc = nng_stream_dialer_alloc_url(&nst->endpoint.dial, up)))
-    goto fail;
+    goto exit;
 
   if (!strcmp(up->u_scheme, "ws") || !strcmp(up->u_scheme, "wss")) {
     if (nst->textframes &&
         ((xc = nng_stream_dialer_set_bool(nst->endpoint.dial, "ws:recv-text", 1)) ||
         (xc = nng_stream_dialer_set_bool(nst->endpoint.dial, "ws:send-text", 1))))
-      goto fail;
+      goto exit;
   }
 
   if (!strcmp(up->u_scheme, "wss")) {
@@ -313,7 +313,7 @@ SEXP rnng_stream_dial(SEXP url, SEXP textframes, SEXP tls) {
           (xc = nng_tls_config_server_name(nst->tls, up->u_hostname)) ||
           (xc = nng_tls_config_auth_mode(nst->tls, NNG_TLS_AUTH_MODE_NONE)) ||
           (xc = nng_stream_dialer_set_ptr(nst->endpoint.dial, NNG_OPT_TLS_CONFIG, nst->tls)))
-        goto fail;
+        goto exit;
     } else {
 
       nst->tls = (nng_tls_config *) NANO_PTR(tls);
@@ -321,18 +321,18 @@ SEXP rnng_stream_dial(SEXP url, SEXP textframes, SEXP tls) {
 
       if ((xc = nng_tls_config_server_name(nst->tls, up->u_hostname)) ||
           (xc = nng_stream_dialer_set_ptr(nst->endpoint.dial, NNG_OPT_TLS_CONFIG, nst->tls)))
-        goto fail;
+        goto exit;
     }
 
   }
 
   if ((xc = nng_aio_alloc(&aiop, NULL, NULL)))
-    goto fail;
+    goto exit;
 
   nng_stream_dialer_dial(nst->endpoint.dial, aiop);
   nng_aio_wait(aiop);
   if ((xc = nng_aio_result(aiop)))
-    goto fail;
+    goto exit;
 
   nst->stream = nng_aio_get_output(aiop, 0);
 
@@ -350,7 +350,7 @@ SEXP rnng_stream_dial(SEXP url, SEXP textframes, SEXP tls) {
   UNPROTECT(1);
   return sd;
 
-  fail:
+  exit:
   if (aiop) nng_aio_free(aiop);
   if (nst->tls) nng_tls_config_free(nst->tls);
   if (nst->endpoint.dial) nng_stream_dialer_free(nst->endpoint.dial);
@@ -377,13 +377,13 @@ SEXP rnng_stream_listen(SEXP url, SEXP textframes, SEXP tls) {
 
   if ((xc = nng_url_parse(&up, add)) ||
       (xc = nng_stream_listener_alloc_url(&nst->endpoint.list, up)))
-    goto fail;
+    goto exit;
 
   if (!strcmp(up->u_scheme, "ws") || !strcmp(up->u_scheme, "wss")) {
     if (nst->textframes &&
         ((xc = nng_stream_listener_set_bool(nst->endpoint.list, "ws:recv-text", 1)) ||
         (xc = nng_stream_listener_set_bool(nst->endpoint.list, "ws:send-text", 1))))
-      goto fail;
+      goto exit;
   }
 
   if (!strcmp(up->u_scheme, "wss")) {
@@ -392,7 +392,7 @@ SEXP rnng_stream_listen(SEXP url, SEXP textframes, SEXP tls) {
       if ((xc = nng_tls_config_alloc(&nst->tls, NNG_TLS_MODE_SERVER)) ||
           (xc = nng_tls_config_auth_mode(nst->tls, NNG_TLS_AUTH_MODE_NONE)) ||
           (xc = nng_stream_listener_set_ptr(nst->endpoint.list, NNG_OPT_TLS_CONFIG, nst->tls)))
-        goto fail;
+        goto exit;
     } else {
 
       nst->tls = (nng_tls_config *) NANO_PTR(tls);
@@ -400,19 +400,19 @@ SEXP rnng_stream_listen(SEXP url, SEXP textframes, SEXP tls) {
 
       if ((xc = nng_tls_config_server_name(nst->tls, up->u_hostname)) ||
           (xc = nng_stream_listener_set_ptr(nst->endpoint.list, NNG_OPT_TLS_CONFIG, nst->tls)))
-        goto fail;
+        goto exit;
     }
 
   }
 
   if ((xc = nng_stream_listener_listen(nst->endpoint.list)) ||
       (xc = nng_aio_alloc(&aiop, NULL, NULL)))
-    goto fail;
+    goto exit;
 
   nng_stream_listener_accept(nst->endpoint.list, aiop);
   nng_aio_wait(aiop);
   if ((xc = nng_aio_result(aiop)))
-    goto fail;
+    goto exit;
 
   nst->stream = nng_aio_get_output(aiop, 0);
 
@@ -430,7 +430,7 @@ SEXP rnng_stream_listen(SEXP url, SEXP textframes, SEXP tls) {
   UNPROTECT(1);
   return sl;
 
-  fail:
+  exit:
   if (aiop) nng_aio_free(aiop);
   if (nst->tls) nng_tls_config_free(nst->tls);
   if (nst->endpoint.list) nng_stream_listener_free(nst->endpoint.list);

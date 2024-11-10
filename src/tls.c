@@ -154,7 +154,7 @@ SEXP rnng_write_cert(SEXP cn, SEXP valid, SEXP inter) {
   char issuer_name[clen];          /* issuer name for certificate        */
   snprintf(issuer_name, clen, "CN=%s,O=Nanonext,C=JP", common);
 
-  int xc, exit = 1;
+  int xc, err = 1;
   if (interactive) REprintf("Generating key + certificate [    ]");
   mbedtls_x509_crt issuer_crt;
   mbedtls_pk_context loaded_issuer_key;
@@ -185,17 +185,17 @@ SEXP rnng_write_cert(SEXP cn, SEXP valid, SEXP inter) {
 
   if ((xc = mbedtls_ctr_drbg_seed(&ctr_drbg, mbedtls_entropy_func, &entropy, (const unsigned char *) pers, strlen(pers))) ||
       (xc = mbedtls_pk_setup(&key, mbedtls_pk_info_from_type((mbedtls_pk_type_t) MBEDTLS_PK_RSA))))
-    goto fail;
+    goto exit;
 
   if (interactive) REprintf("\rGenerating key + certificate [..  ]");
 
   if ((xc = mbedtls_rsa_gen_key(mbedtls_pk_rsa(key), mbedtls_ctr_drbg_random, &ctr_drbg, 4096, 65537)))
-    goto fail;
+    goto exit;
 
   if (interactive) REprintf("\rGenerating key + certificate [... ]");
 
   if ((xc = mbedtls_pk_write_key_pem(&key, key_buf, 16000)))
-    goto fail;
+    goto exit;
 
   size_t klen = strlen((char *) key_buf);
 
@@ -210,14 +210,14 @@ SEXP rnng_write_cert(SEXP cn, SEXP valid, SEXP inter) {
 #else
       (xc = mbedtls_pk_parse_key(&loaded_issuer_key, key_buf, klen + 1, NULL, 0)))
 #endif
-    goto fail;
+    goto exit;
 
   mbedtls_x509write_crt_set_subject_key(&crt, issuer_key);
   mbedtls_x509write_crt_set_issuer_key(&crt, issuer_key);
 
   if ((xc = mbedtls_x509write_crt_set_subject_name(&crt, issuer_name)) ||
       (xc = mbedtls_x509write_crt_set_issuer_name(&crt, issuer_name)))
-    goto fail;
+    goto exit;
 
   mbedtls_x509write_crt_set_version(&crt, version);
   mbedtls_x509write_crt_set_md_alg(&crt, md);
@@ -232,7 +232,7 @@ SEXP rnng_write_cert(SEXP cn, SEXP valid, SEXP inter) {
       (xc = mbedtls_x509write_crt_set_subject_key_identifier(&crt)) ||
       (xc = mbedtls_x509write_crt_set_authority_key_identifier(&crt)) ||
       (xc = mbedtls_x509write_crt_pem(&crt, output_buf, 4096, mbedtls_ctr_drbg_random, &ctr_drbg)))
-    goto fail;
+    goto exit;
 
   SEXP vec, kcstr, cstr;
   const char *names[] = {"server", "client", ""};
@@ -247,9 +247,9 @@ SEXP rnng_write_cert(SEXP cn, SEXP valid, SEXP inter) {
   SET_STRING_ELT(cstr, 1, R_BlankString);
 
   if (interactive) REprintf("\rGenerating key + certificate [done]\n");
-  exit = 0;
+  err = 0;
 
-  fail:
+  exit:
 
   mbedtls_x509_csr_free(&csr); // #if defined(MBEDTLS_X509_CSR_PARSE_C)
   mbedtls_x509_crt_free(&issuer_crt);
@@ -262,7 +262,7 @@ SEXP rnng_write_cert(SEXP cn, SEXP valid, SEXP inter) {
   mbedtls_ctr_drbg_free(&ctr_drbg);
   mbedtls_entropy_free(&entropy);
 
-  if (exit) {
+  if (err) {
     mbedtls_strerror(xc, buf, sizeof(buf));
     Rf_error("%d | %s", xc, buf);
   }
@@ -288,16 +288,16 @@ SEXP rnng_tls_config(SEXP client, SEXP server, SEXP pass, SEXP auth) {
     usefile = XLENGTH(client);
     if ((xc = nng_tls_config_alloc(&cfg, NNG_TLS_MODE_CLIENT)) ||
         (xc = nng_tls_config_auth_mode(cfg, mod)))
-      goto fail;
+      goto exit;
 
     if (usefile > 1) {
       crl = NANO_STR_N(client, 1);
       if ((xc = nng_tls_config_ca_chain(cfg, file, strncmp(crl, "", 1) ? crl : NULL)))
-        goto fail;
+        goto exit;
     } else {
       file = R_ExpandFileName(file);
       if ((xc = nng_tls_config_ca_file(cfg, file)))
-        goto fail;
+        goto exit;
     }
 
   } else if (server != R_NilValue) {
@@ -306,22 +306,22 @@ SEXP rnng_tls_config(SEXP client, SEXP server, SEXP pass, SEXP auth) {
     pss = pass != R_NilValue ? CHAR(STRING_ELT(pass, 0)) : NULL;
     if ((xc = nng_tls_config_alloc(&cfg, NNG_TLS_MODE_SERVER)) ||
         (xc = nng_tls_config_auth_mode(cfg, mod)))
-      goto fail;
+      goto exit;
 
     if (usefile > 1) {
       key = NANO_STR_N(server, 1);
       if ((xc = nng_tls_config_own_cert(cfg, file, key, pss)))
-        goto fail;
+        goto exit;
     } else {
       file = R_ExpandFileName(file);
       if ((xc = nng_tls_config_cert_key_file(cfg, file, pss)))
-        goto fail;
+        goto exit;
     }
 
   } else {
     if ((xc = nng_tls_config_alloc(&cfg, NNG_TLS_MODE_CLIENT)) ||
         (xc = nng_tls_config_auth_mode(cfg, NNG_TLS_AUTH_MODE_NONE)))
-      goto fail;
+      goto exit;
   }
 
   PROTECT(xp = R_MakeExternalPtr(cfg, nano_TlsSymbol, R_NilValue));
@@ -341,7 +341,7 @@ SEXP rnng_tls_config(SEXP client, SEXP server, SEXP pass, SEXP auth) {
   UNPROTECT(1);
   return xp;
 
-  fail:
+  exit:
   if (cfg) nng_tls_config_free(cfg);
   ERROR_OUT(xc);
 

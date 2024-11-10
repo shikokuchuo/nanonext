@@ -435,7 +435,7 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
     if ((xc = nng_msg_alloc(&msg, 0)) ||
         (xc = nng_msg_append(msg, buf.buf, buf.cur)) ||
         (xc = nng_aio_alloc(&saio->aio, saio_complete, saio)))
-      goto fail;
+      goto exit;
 
     nng_aio_set_msg(saio->aio, msg);
     nng_aio_set_timeout(saio->aio, dur);
@@ -463,7 +463,7 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
 
     if ((xc = nng_aio_alloc(&saio->aio, isaio_complete, saio)) ||
         (xc = nng_aio_set_iov(saio->aio, 1u, &iov)))
-      goto fail;
+      goto exit;
 
     nng_aio_set_timeout(saio->aio, dur);
     nng_stream_send(sp, saio->aio);
@@ -485,7 +485,7 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
     if ((xc = nng_msg_alloc(&msg, 0)) ||
         (xc = nng_msg_append(msg, buf.buf, buf.cur)) ||
         (xc = nng_aio_alloc(&saio->aio, saio_complete, saio)))
-      goto fail;
+      goto exit;
 
     nng_msg_set_pipe(msg, *p);
     nng_aio_set_msg(saio->aio, msg);
@@ -510,7 +510,7 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
   UNPROTECT(3);
   return env;
 
-  fail:
+  exit:
   if (saio->aio) nng_aio_free(saio->aio);
   R_Free(saio->data);
   if (msg) nng_msg_free(msg);
@@ -540,7 +540,7 @@ SEXP rnng_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP cvar, SEXP bytes, SEX
     raio->cb = NULL;
 
     if ((xc = nng_aio_alloc(&raio->aio, signal ? raio_complete_signal : raio_complete, raio)))
-      goto fail;
+      goto exit;
 
     nng_aio_set_timeout(raio->aio, dur);
     sock ? nng_recv_aio(*(nng_socket *) NANO_PTR(con), raio->aio) :
@@ -567,7 +567,7 @@ SEXP rnng_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP cvar, SEXP bytes, SEX
 
     if ((xc = nng_aio_alloc(&raio->aio, signal ? iraio_complete_signal : iraio_complete, raio)) ||
         (xc = nng_aio_set_iov(raio->aio, 1u, &iov)))
-      goto fail;
+      goto exit;
 
     nng_aio_set_timeout(raio->aio, dur);
     nng_stream_recv(*sp, raio->aio);
@@ -589,7 +589,7 @@ SEXP rnng_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP cvar, SEXP bytes, SEX
   UNPROTECT(3);
   return env;
 
-  fail:
+  exit:
   if (raio->aio) nng_aio_free(raio->aio);
   R_Free(raio->data);
   R_Free(raio);
