@@ -111,14 +111,13 @@ SEXP rnng_dial(SEXP socket, SEXP url, SEXP tls, SEXP autostart, SEXP error) {
   const int start = NANO_INTEGER(autostart);
   const char *ur = CHAR(STRING_ELT(url, 0));
   nng_dialer *dp = R_Calloc(1, nng_dialer);
-  nng_tls_config *cfg = NULL;
   nng_url *up = NULL;
 
   SEXP dialer, attr, newattr, xp;
   int xc;
 
   if (tls != R_NilValue) {
-    cfg = (nng_tls_config *) NANO_PTR(tls);
+    nng_tls_config *cfg = (nng_tls_config *) NANO_PTR(tls);
     if ((xc = nng_dialer_create(dp, *sock, ur)) ||
         (xc = nng_url_parse(&up, ur)) ||
         (xc = nng_tls_config_server_name(cfg, up->u_hostname)) ||
@@ -182,14 +181,13 @@ SEXP rnng_listen(SEXP socket, SEXP url, SEXP tls, SEXP autostart, SEXP error) {
   const int start = NANO_INTEGER(autostart);
   const char *ur = CHAR(STRING_ELT(url, 0));
   nng_listener *lp = R_Calloc(1, nng_listener);
-  nng_tls_config *cfg = NULL;
   nng_url *up = NULL;
 
   SEXP listener, attr, newattr, xp;
   int xc;
 
   if (tls != R_NilValue) {
-    cfg = (nng_tls_config *) NANO_PTR(tls);
+    nng_tls_config *cfg = (nng_tls_config *) NANO_PTR(tls);
     if ((xc = nng_listener_create(lp, *sock, ur)) ||
         (xc = nng_url_parse(&up, ur)) ||
         (xc = nng_tls_config_server_name(cfg, up->u_hostname)) ||
