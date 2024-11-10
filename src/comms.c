@@ -104,31 +104,29 @@ SEXP rnng_dial(SEXP socket, SEXP url, SEXP tls, SEXP autostart, SEXP error) {
   if (NANO_TAG(socket) != nano_SocketSymbol)
     Rf_error("'socket' is not a valid Socket");
 
-  const uint8_t sec = tls != R_NilValue;
-
-  if (sec && NANO_TAG(tls) != nano_TlsSymbol)
+  if (tls != R_NilValue && NANO_TAG(tls) != nano_TlsSymbol)
     Rf_error("'tls' is not a valid TLS Configuration");
 
   nng_socket *sock = (nng_socket *) NANO_PTR(socket);
   const int start = NANO_INTEGER(autostart);
   const char *ur = CHAR(STRING_ELT(url, 0));
   nng_dialer *dp = R_Calloc(1, nng_dialer);
+  nng_tls_config *cfg = NULL;
+  nng_url *up = NULL;
+
   SEXP dialer, attr, newattr, xp;
-  nng_tls_config *cfg;
-  nng_url *up;
   int xc;
 
-  if (sec) {
-    if ((xc = nng_dialer_create(dp, *sock, ur)) ||
-        (xc = nng_url_parse(&up, ur)))
-      goto exitlevel1;
+  if (tls != R_NilValue) {
     cfg = (nng_tls_config *) NANO_PTR(tls);
-    if ((xc = nng_tls_config_server_name(cfg, up->u_hostname)) ||
+    if ((xc = nng_dialer_create(dp, *sock, ur)) ||
+        (xc = nng_url_parse(&up, ur)) ||
+        (xc = nng_tls_config_server_name(cfg, up->u_hostname)) ||
         (xc = nng_dialer_set_ptr(*dp, NNG_OPT_TLS_CONFIG, cfg)))
-      goto exitlevel2;
-    nng_url_free(up);
+      goto fail;
     if (start && (xc = nng_dialer_start(*dp, start == 1 ? NNG_FLAG_NONBLOCK : 0)))
-        goto exitlevel1;
+      goto fail;
+    nng_url_free(up);
     nng_tls_config_hold(cfg);
 
     PROTECT_INDEX pxi;
@@ -139,7 +137,7 @@ SEXP rnng_dial(SEXP socket, SEXP url, SEXP tls, SEXP autostart, SEXP error) {
   } else {
 
     if ((xc = start ? nng_dial(*sock, ur, dp, start == 1 ? NNG_FLAG_NONBLOCK : 0) : nng_dialer_create(dp, *sock, ur)))
-      goto exitlevel1;
+      goto fail;
 
     PROTECT(dialer = R_MakeExternalPtr(dp, nano_DialerSymbol, R_NilValue));
 
@@ -164,9 +162,8 @@ SEXP rnng_dial(SEXP socket, SEXP url, SEXP tls, SEXP autostart, SEXP error) {
   UNPROTECT(2);
   return nano_success;
 
-  exitlevel2:
-  nng_url_free(up);
-  exitlevel1:
+  fail:
+  if (up) nng_url_free(up);
   R_Free(dp);
   if (NANO_INTEGER(error)) ERROR_OUT(xc);
   ERROR_RET(xc);
@@ -178,31 +175,29 @@ SEXP rnng_listen(SEXP socket, SEXP url, SEXP tls, SEXP autostart, SEXP error) {
   if (NANO_TAG(socket) != nano_SocketSymbol)
     Rf_error("'socket' is not a valid Socket");
 
-  const uint8_t sec = tls != R_NilValue;
-
-  if (sec && NANO_TAG(tls) != nano_TlsSymbol)
+  if (tls != R_NilValue && NANO_TAG(tls) != nano_TlsSymbol)
     Rf_error("'tls' is not a valid TLS Configuration");
 
   nng_socket *sock = (nng_socket *) NANO_PTR(socket);
   const int start = NANO_INTEGER(autostart);
   const char *ur = CHAR(STRING_ELT(url, 0));
   nng_listener *lp = R_Calloc(1, nng_listener);
+  nng_tls_config *cfg = NULL;
+  nng_url *up = NULL;
+
   SEXP listener, attr, newattr, xp;
-  nng_tls_config *cfg;
-  nng_url *up;
   int xc;
 
-  if (sec) {
-    if ((xc = nng_listener_create(lp, *sock, ur)) ||
-        (xc = nng_url_parse(&up, ur)))
-      goto exitlevel1;
+  if (tls != R_NilValue) {
     cfg = (nng_tls_config *) NANO_PTR(tls);
-    if ((xc = nng_tls_config_server_name(cfg, up->u_hostname)) ||
+    if ((xc = nng_listener_create(lp, *sock, ur)) ||
+        (xc = nng_url_parse(&up, ur)) ||
+        (xc = nng_tls_config_server_name(cfg, up->u_hostname)) ||
         (xc = nng_listener_set_ptr(*lp, NNG_OPT_TLS_CONFIG, cfg)))
-      goto exitlevel2;
-    nng_url_free(up);
+      goto fail;
     if (start && (xc = nng_listener_start(*lp, 0)))
-      goto exitlevel1;
+      goto fail;
+    nng_url_free(up);
     nng_tls_config_hold(cfg);
 
     PROTECT_INDEX pxi;
@@ -213,7 +208,7 @@ SEXP rnng_listen(SEXP socket, SEXP url, SEXP tls, SEXP autostart, SEXP error) {
   } else {
 
     if ((xc = start ? nng_listen(*sock, ur, lp, 0) : nng_listener_create(lp, *sock, ur)))
-      goto exitlevel1;
+      goto fail;
 
     PROTECT(listener = R_MakeExternalPtr(lp, nano_ListenerSymbol, R_NilValue));
 
@@ -239,9 +234,8 @@ SEXP rnng_listen(SEXP socket, SEXP url, SEXP tls, SEXP autostart, SEXP error) {
   UNPROTECT(2);
   return nano_success;
 
-  exitlevel2:
-  nng_url_free(up);
-  exitlevel1:
+  fail:
+  if (up) nng_url_free(up);
   R_Free(lp);
   if (NANO_INTEGER(error)) ERROR_OUT(xc);
   ERROR_RET(xc);
@@ -309,7 +303,8 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
 
   const int flags = block == R_NilValue ? NNG_DURATION_DEFAULT : TYPEOF(block) == LGLSXP ? 0 : nano_integer(block);
   nano_buf buf;
-  nng_msg *msgp;
+  nng_msg *msgp = NULL;
+  nng_aio *aiop = NULL;
   int xc;
 
   const SEXP ptrtag = NANO_TAG(con);
@@ -320,24 +315,19 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
 
     if (flags <= 0) {
 
-      xc = nng_send(*sock, buf.buf, buf.cur, flags ? NNG_FLAG_NONBLOCK : (NANO_INTEGER(block) != 1) * NNG_FLAG_NONBLOCK);
-      NANO_FREE(buf);
+      if ((xc = nng_send(*sock, buf.buf, buf.cur, flags ? NNG_FLAG_NONBLOCK : (NANO_INTEGER(block) != 1) * NNG_FLAG_NONBLOCK)))
+        goto fail;
 
     } else {
 
-      nng_aio *aiop;
-
-      if ((xc = nng_msg_alloc(&msgp, 0)))
-        goto exitlevel1;
-
-      if ((xc = nng_msg_append(msgp, buf.buf, buf.cur)) ||
+      if ((xc = nng_msg_alloc(&msgp, 0)) ||
+          (xc = nng_msg_append(msgp, buf.buf, buf.cur)) ||
           (xc = nng_aio_alloc(&aiop, NULL, NULL)))
-        goto exitlevel2;
+        goto fail;
 
       nng_aio_set_msg(aiop, msgp);
       nng_aio_set_timeout(aiop, flags);
       nng_send_aio(*sock, aiop);
-      NANO_FREE(buf);
       nng_aio_wait(aiop);
       if ((xc = nng_aio_result(aiop)))
         nng_msg_free(nng_aio_get_msg(aiop));
@@ -352,30 +342,21 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
 
     if (flags <= 0) {
 
-      if ((xc = nng_msg_alloc(&msgp, 0)))
-        goto exitlevel1;
-
-      if ((xc = nng_msg_append(msgp, buf.buf, buf.cur)) ||
+      if ((xc = nng_msg_alloc(&msgp, 0)) ||
+          (xc = nng_msg_append(msgp, buf.buf, buf.cur)) ||
           (xc = nng_ctx_sendmsg(*ctxp, msgp, flags ? NNG_FLAG_NONBLOCK : (NANO_INTEGER(block) != 1) * NNG_FLAG_NONBLOCK)))
-        goto exitlevel2;
-
-      NANO_FREE(buf);
+        goto fail;
 
     } else {
 
-      nng_aio *aiop;
-
-      if ((xc = nng_msg_alloc(&msgp, 0)))
-        goto exitlevel1;
-
-      if ((xc = nng_msg_append(msgp, buf.buf, buf.cur)) ||
+      if ((xc = nng_msg_alloc(&msgp, 0)) ||
+          (xc = nng_msg_append(msgp, buf.buf, buf.cur)) ||
           (xc = nng_aio_alloc(&aiop, NULL, NULL)))
-        goto exitlevel2;
+        goto fail;
 
       nng_aio_set_msg(aiop, msgp);
       nng_aio_set_timeout(aiop, flags);
       nng_ctx_send(*ctxp, aiop);
-      NANO_FREE(buf);
       nng_aio_wait(aiop);
       if ((xc = nng_aio_result(aiop)))
         nng_msg_free(nng_aio_get_msg(aiop));
@@ -389,23 +370,17 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
 
     nano_stream *nst = (nano_stream *) NANO_PTR(con);
     nng_stream *sp = nst->stream;
-    nng_aio *aiop;
     nng_iov iov;
 
     iov.iov_len = buf.cur - nst->textframes;
     iov.iov_buf = buf.buf;
 
-    if ((xc = nng_aio_alloc(&aiop, NULL, NULL)))
-      goto exitlevel1;
-
-    if ((xc = nng_aio_set_iov(aiop, 1u, &iov))) {
-      nng_aio_free(aiop);
-      goto exitlevel1;
-    }
+    if ((xc = nng_aio_alloc(&aiop, NULL, NULL)) ||
+        (xc = nng_aio_set_iov(aiop, 1u, &iov)))
+      goto fail;
 
     nng_aio_set_timeout(aiop, flags ? flags : (NANO_INTEGER(block) != 0) * NNG_DURATION_DEFAULT);
     nng_stream_send(sp, aiop);
-    NANO_FREE(buf);
     nng_aio_wait(aiop);
     xc = nng_aio_result(aiop);
     nng_aio_free(aiop);
@@ -414,14 +389,16 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
     Rf_error("'con' is not a valid Socket, Context or Stream");
   }
 
+  NANO_FREE(buf);
+
   if (xc)
     return mk_error(xc);
 
   return nano_success;
 
-  exitlevel2:
-  nng_msg_free(msgp);
-  exitlevel1:
+  fail:
+  if (aiop) nng_aio_free(aiop);
+  if (msgp) nng_msg_free(msgp);
   NANO_FREE(buf);
   return mk_error(xc);
 
@@ -430,10 +407,11 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
 SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP bytes) {
 
   const int flags = block == R_NilValue ? NNG_DURATION_DEFAULT : TYPEOF(block) == LGLSXP ? 0 : nano_integer(block);
-  int xc;
+  nng_aio *aiop = NULL;
   unsigned char *buf;
   size_t sz;
   SEXP res;
+  int xc;
 
   const SEXP ptrtag = NANO_TAG(con);
   if (ptrtag == nano_SocketSymbol) {
@@ -443,25 +421,21 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP bytes) {
 
     if (flags <= 0) {
 
-      xc = nng_recv(*sock, &buf, &sz, NNG_FLAG_ALLOC + (flags < 0 || NANO_INTEGER(block) != 1) * NNG_FLAG_NONBLOCK);
-      if (xc)
-        goto exitlevel1;
+      if ((xc = nng_recv(*sock, &buf, &sz, NNG_FLAG_ALLOC + (flags < 0 || NANO_INTEGER(block) != 1) * NNG_FLAG_NONBLOCK)))
+        goto fail;
 
       res = nano_decode(buf, sz, mod, NANO_PROT(con));
       nng_free(buf, sz);
 
     } else {
 
-      nng_aio *aiop;
       if ((xc = nng_aio_alloc(&aiop, NULL, NULL)))
-        goto exitlevel1;
+        goto fail;
       nng_aio_set_timeout(aiop, flags);
       nng_recv_aio(*sock, aiop);
       nng_aio_wait(aiop);
-      if ((xc = nng_aio_result(aiop))) {
-        nng_aio_free(aiop);
-        goto exitlevel1;
-      }
+      if ((xc = nng_aio_result(aiop)))
+        goto fail;
       nng_msg *msgp = nng_aio_get_msg(aiop);
       nng_aio_free(aiop);
       buf = nng_msg_body(msgp);
@@ -478,9 +452,8 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP bytes) {
 
     if (flags <= 0) {
 
-      xc = nng_ctx_recvmsg(*ctxp, &msgp, (flags < 0 || NANO_INTEGER(block) != 1) * NNG_FLAG_NONBLOCK);
-      if (xc)
-        goto exitlevel1;
+      if ((xc = nng_ctx_recvmsg(*ctxp, &msgp, (flags < 0 || NANO_INTEGER(block) != 1) * NNG_FLAG_NONBLOCK)))
+        goto fail;
 
       buf = nng_msg_body(msgp);
       sz = nng_msg_len(msgp);
@@ -489,18 +462,14 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP bytes) {
 
     } else {
 
-      nng_aio *aiop;
-
       if ((xc = nng_aio_alloc(&aiop, NULL, NULL)))
-        goto exitlevel1;
+        goto fail;
       nng_aio_set_timeout(aiop, flags);
       nng_ctx_recv(*ctxp, aiop);
 
       nng_aio_wait(aiop);
-      if ((xc = nng_aio_result(aiop))) {
-        nng_aio_free(aiop);
-        goto exitlevel1;
-      }
+      if ((xc = nng_aio_result(aiop)))
+        goto fail;
 
       msgp = nng_aio_get_msg(aiop);
       nng_aio_free(aiop);
@@ -517,28 +486,21 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP bytes) {
     const size_t xlen = (size_t) nano_integer(bytes);
     nng_stream **sp = (nng_stream **) NANO_PTR(con);
     nng_iov iov;
-    nng_aio *aiop;
 
     buf = R_Calloc(xlen, unsigned char);
     iov.iov_len = xlen;
     iov.iov_buf = buf;
 
-    if ((xc = nng_aio_alloc(&aiop, NULL, NULL)))
-      goto exitlevel2;
-
-    if ((xc = nng_aio_set_iov(aiop, 1u, &iov))) {
-      nng_aio_free(aiop);
-      goto exitlevel2;
-    }
+    if ((xc = nng_aio_alloc(&aiop, NULL, NULL)) ||
+        (xc = nng_aio_set_iov(aiop, 1u, &iov)))
+      goto fail2;
 
     nng_aio_set_timeout(aiop, flags ? flags : (NANO_INTEGER(block) != 0) * NNG_DURATION_DEFAULT);
     nng_stream_recv(*sp, aiop);
 
     nng_aio_wait(aiop);
-    if ((xc = nng_aio_result(aiop))) {
-      nng_aio_free(aiop);
-      goto exitlevel2;
-    }
+    if ((xc = nng_aio_result(aiop)))
+      goto fail2;
 
     sz = nng_aio_count(aiop);
     nng_aio_free(aiop);
@@ -551,9 +513,10 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP bytes) {
 
   return res;
 
-  exitlevel2:
+  fail2:
   R_Free(buf);
-  exitlevel1:
+  fail:
+  if (aiop) nng_aio_free(aiop);
   return mk_error(xc);
 
 }
