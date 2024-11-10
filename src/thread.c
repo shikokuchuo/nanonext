@@ -236,9 +236,8 @@ static void thread_disp_finalizer(SEXP xptr) {
   ncv->condition = -1;
   nng_cv_wake(cv);
   nng_mtx_unlock(mtx);
-  if (xp->tls != NULL) {
+  if (xp->tls != NULL)
     nng_tls_config_free(xp->tls);
-  }
   nng_thread_destroy(xp->thr);
   nng_url_free(xp->up);
   for (int i = 0; i < xp->n; i++) {
@@ -760,7 +759,7 @@ static void rnng_dispatch_thread(void *args) {
   for (R_xlen_t i = 0; i < n; i++)
     nng_close(sock[i]);
   fail:
-    nng_close(hsock);
+  nng_close(hsock);
 
 }
 

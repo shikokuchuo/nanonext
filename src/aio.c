@@ -127,9 +127,6 @@ static void iaio_finalizer(SEXP xptr) {
   nng_aio_free(xp->aio);
   if (xp->data != NULL)
     R_Free(xp->data);
-  // release linked list node if cb has already run
-  if (xp->cb != NULL && TAG((SEXP) xp->cb) == R_NilValue)
-    nano_ReleaseObject((SEXP) xp->cb);
   R_Free(xp);
 
 }
