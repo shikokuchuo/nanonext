@@ -415,15 +415,15 @@ SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeou
   nng_ctx *ctx = (nng_ctx *) NANO_PTR(con);
   nano_cv *ncv = signal ? (nano_cv *) NANO_PTR(cvar) : NULL;
 
-  SEXP aio, env, fun;
   nano_buf buf;
-
   nano_encodes(sendmode, &buf, data, NANO_PROT(con));
 
-  int xc;
   nano_saio *saio = R_Calloc(1, nano_saio);
+  nano_aio *raio = R_Calloc(1, nano_aio);
 
   nng_msg *msg = NULL;
+  SEXP aio, env, fun;
+  int xc;
 
   if ((xc = nng_msg_alloc(&msg, 0)) ||
       (xc = nng_msg_append(msg, buf.buf, buf.cur)) ||
@@ -433,7 +433,6 @@ SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeou
   nng_aio_set_msg(saio->aio, msg);
   nng_ctx_send(*ctx, saio->aio);
 
-  nano_aio *raio = R_Calloc(1, nano_aio);
   raio->type = signal ? REQAIOS : REQAIO;
   raio->mode = mod;
   raio->cb = saio;
@@ -460,9 +459,9 @@ SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeou
   return env;
 
   fail:
-  R_Free(raio);
   if (saio->aio) nng_aio_free(saio->aio);
   if (msg) nng_msg_free(msg);
+  R_Free(raio);
   R_Free(saio);
   NANO_FREE(buf);
   return mk_error_data(xc);

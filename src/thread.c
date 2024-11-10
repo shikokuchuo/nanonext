@@ -612,6 +612,9 @@ static void rnng_dispatch_thread(void *args) {
     0x72, 0x6f, 0x72, 0xfe, 0x00, 0x00, 0x00
   };
 
+  if (nng_rep0_open(&hsock))
+    goto fail;
+
   for (R_xlen_t i = 0; i < n; i++) {
 
     signal[i].cv = ncv;
@@ -620,17 +623,17 @@ static void rnng_dispatch_thread(void *args) {
         nng_socket_set_ms(sock[i], "req:resend-time", 0) ||
         nng_pipe_notify(sock[i], NNG_PIPE_EV_ADD_POST, nano_record_pipe, &signal[i]) ||
         nng_pipe_notify(sock[i], NNG_PIPE_EV_REM_POST, nano_record_pipe, &signal[i]))
-      goto fail;
+      goto fail2;
 
     if (disp->tls != NULL) {
       if (nng_listener_create(&list[i], sock[i], url[i]) ||
           nng_tls_config_server_name(disp->tls, disp->up->u_hostname) ||
           nng_listener_set_ptr(list[i], NNG_OPT_TLS_CONFIG, disp->tls) ||
           nng_listener_start(list[i], 0))
-        goto fail;
+        goto fail2;
     } else {
       if (nng_listen(sock[i], url[i], &list[i], 0))
-        goto fail;
+        goto fail2;
     }
 
     raio[i]->next = ncv;
@@ -640,12 +643,11 @@ static void rnng_dispatch_thread(void *args) {
     if (nng_aio_alloc(&saio[i]->aio, sendaio_complete, saio[i]) ||
         nng_aio_alloc(&raio[i]->aio, raio_complete_signal, raio[i]) ||
         nng_aio_alloc(&haio[i]->aio, raio_complete_signal, haio[i]))
-      goto fail;
+      goto fail2;
   }
 
-  if (nng_rep0_open(&hsock) ||
-      nng_dial(hsock, disp->host, &hdial, 0))
-    goto fail;
+  if (nng_dial(hsock, disp->host, &hdial, 0))
+    goto fail2;
 
   for (R_xlen_t i = 0; i < n; i++) {
     nng_mtx_lock(mtx);
@@ -653,7 +655,7 @@ static void rnng_dispatch_thread(void *args) {
       nng_cv_wait(cv);
     if (ncv->condition < 0) {
       nng_mtx_unlock(mtx);
-      goto fail;
+      goto fail2;
     }
     ncv->condition--;
     nng_mtx_unlock(mtx);
@@ -661,7 +663,7 @@ static void rnng_dispatch_thread(void *args) {
 
   for (R_xlen_t i = 0; i < n; i++) {
     if (nng_ctx_open(&rctx[i], hsock))
-      goto fail;
+      goto fail2;
     nng_ctx_recv(rctx[i], haio[i]->aio);
   }
 
@@ -672,7 +674,7 @@ static void rnng_dispatch_thread(void *args) {
       nng_cv_wait(cv);
     if (ncv->condition < 0) {
       nng_mtx_unlock(mtx);
-      goto fail;
+      goto fail2;
     }
     ncv->condition--;
     memcpy(active, online, n * sizeof(int));
@@ -681,7 +683,7 @@ static void rnng_dispatch_thread(void *args) {
     for (R_xlen_t i = 0; i < n; i++) {
       if (active[i] > store[i]) {
         if (nng_ctx_open(&rctx[i], hsock))
-          goto fail;
+          goto fail2;
         nng_ctx_recv(rctx[i], haio[i]->aio);
       }
     }
@@ -699,7 +701,7 @@ static void rnng_dispatch_thread(void *args) {
             buf = nng_msg_body((nng_msg *) raio[i]->data);
             if (buf[3] == 0x1) {
               if (nng_msg_alloc(&msg, 0))
-                goto fail;
+                goto fail2;
               if (nng_ctx_sendmsg(ctx[i], msg, 0))
                 nng_msg_free(msg);
               end = 1;
@@ -710,7 +712,7 @@ static void rnng_dispatch_thread(void *args) {
             if (nng_msg_alloc(&msg, 0) ||
                 (xc == 19 ? nng_msg_append(msg, errnt, sizeof(errnt)) :
                    nng_msg_append(msg, &xc, sizeof(int))))
-              goto fail;
+              goto fail2;
             if (nng_ctx_sendmsg(rctx[i], msg, 0))
               nng_msg_free(msg);
             end = 1;
@@ -722,7 +724,7 @@ static void rnng_dispatch_thread(void *args) {
             end = 0;
           } else {
             if (nng_ctx_open(&rctx[i], hsock))
-              goto fail;
+              goto fail2;
             nng_ctx_recv(rctx[i], haio[i]->aio);
           }
           break;
@@ -738,13 +740,13 @@ static void rnng_dispatch_thread(void *args) {
           if (xc < 0) {
             busy[i] = 1;
             if (nng_ctx_open(&ctx[i], sock[i]))
-              goto fail;
+              goto fail2;
             nng_aio_set_msg(saio[i]->aio, (nng_msg *) haio[i]->data);
             nng_ctx_send(ctx[i], saio[i]->aio);
             nng_ctx_recv(ctx[i], raio[i]->aio);
           } else {
             // exit if reaches here
-            goto fail;
+            goto fail2;
           }
           break;
         }
@@ -754,10 +756,11 @@ static void rnng_dispatch_thread(void *args) {
 
   }
 
-  fail:
-  nng_close(hsock);
+  fail2:
   for (R_xlen_t i = 0; i < n; i++)
     nng_close(sock[i]);
+  fail:
+    nng_close(hsock);
 
 }
 

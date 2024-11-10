@@ -33,7 +33,7 @@ static void nano_write_bytes(R_outpstream_t stream, void *src, int len) {
   size_t req = buf->cur + (size_t) len;
   if (req > buf->len) {
     if (req > R_XLEN_T_MAX) {
-      if (buf->len) R_Free(buf->buf);
+      R_Free(buf->buf);
       Rf_error("serialization exceeds max length of raw vector");
     }
     do {
