@@ -22,7 +22,6 @@ void (*eln2)(void (*)(void *), void *, double, int) = NULL;
 
 uint8_t special_bit = 0;
 
-extern int nano_wait_thread_created;
 extern nng_thread *nano_wait_thr;
 extern nng_aio *nano_shared_aio;
 extern nng_mtx *nano_wait_mtx;
