@@ -422,6 +422,7 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
 
   const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) nano_integer(timeout);
   nano_aio *saio;
+  nng_msg *msg = NULL;
   SEXP aio, env, fun;
   nano_buf buf;
   int sock, xc;
@@ -430,18 +431,14 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
   if ((sock = ptrtag == nano_SocketSymbol) || ptrtag == nano_ContextSymbol) {
 
     nano_encodes(mode, &buf, data, NANO_PROT(con));
-    nng_msg *msg;
+
     saio = R_Calloc(1, nano_aio);
     saio->type = SENDAIO;
 
-    if ((xc = nng_msg_alloc(&msg, 0)))
-      goto exitlevel1;
-
-    if ((xc = nng_msg_append(msg, buf.buf, buf.cur)) ||
-        (xc = nng_aio_alloc(&saio->aio, saio_complete, saio))) {
-      nng_msg_free(msg);
-      goto exitlevel1;
-    }
+    if ((xc = nng_msg_alloc(&msg, 0)) ||
+        (xc = nng_msg_append(msg, buf.buf, buf.cur)) ||
+        (xc = nng_aio_alloc(&saio->aio, saio_complete, saio)))
+      goto fail;
 
     nng_aio_set_msg(saio->aio, msg);
     nng_aio_set_timeout(saio->aio, dur);
@@ -467,11 +464,9 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
     iov.iov_len = buf.cur - nst->textframes;
     iov.iov_buf = saio->data;
 
-    if ((xc = nng_aio_alloc(&saio->aio, isaio_complete, saio)))
-      goto exitlevel2;
-
-    if ((xc = nng_aio_set_iov(saio->aio, 1u, &iov)))
-      goto exitlevel3;
+    if ((xc = nng_aio_alloc(&saio->aio, isaio_complete, saio)) ||
+        (xc = nng_aio_set_iov(saio->aio, 1u, &iov)))
+      goto fail;
 
     nng_aio_set_timeout(saio->aio, dur);
     nng_stream_send(sp, saio->aio);
@@ -486,18 +481,14 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
     nng_socket sock = nng_pipe_socket(*p);
 
     nano_encodes(mode, &buf, data, NANO_PROT(con));
-    nng_msg *msg;
+
     saio = R_Calloc(1, nano_aio);
     saio->type = SENDAIO;
 
-    if ((xc = nng_msg_alloc(&msg, 0)))
-      goto exitlevel1;
-
-    if ((xc = nng_msg_append(msg, buf.buf, buf.cur)) ||
-        (xc = nng_aio_alloc(&saio->aio, saio_complete, saio))) {
-      nng_msg_free(msg);
-      goto exitlevel1;
-    }
+    if ((xc = nng_msg_alloc(&msg, 0)) ||
+        (xc = nng_msg_append(msg, buf.buf, buf.cur)) ||
+        (xc = nng_aio_alloc(&saio->aio, saio_complete, saio)))
+      goto fail;
 
     nng_msg_set_pipe(msg, *p);
     nng_aio_set_msg(saio->aio, msg);
@@ -522,11 +513,10 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
   UNPROTECT(3);
   return env;
 
-  exitlevel3:
-  nng_aio_free(saio->aio);
-  exitlevel2:
+  fail:
+  if (saio->aio) nng_aio_free(saio->aio);
   R_Free(saio->data);
-  exitlevel1:
+  if (msg) nng_msg_free(msg);
   R_Free(saio);
   NANO_FREE(buf);
   return mk_error_data(-xc);
@@ -553,7 +543,7 @@ SEXP rnng_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP cvar, SEXP bytes, SEX
     raio->cb = NULL;
 
     if ((xc = nng_aio_alloc(&raio->aio, signal ? raio_complete_signal : raio_complete, raio)))
-      goto exitlevel1;
+      goto fail;
 
     nng_aio_set_timeout(raio->aio, dur);
     sock ? nng_recv_aio(*(nng_socket *) NANO_PTR(con), raio->aio) :
@@ -578,11 +568,9 @@ SEXP rnng_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP cvar, SEXP bytes, SEX
     iov.iov_len = xlen;
     iov.iov_buf = raio->data;
 
-    if ((xc = nng_aio_alloc(&raio->aio, signal ? iraio_complete_signal : iraio_complete, raio)))
-      goto exitlevel2;
-
-    if ((xc = nng_aio_set_iov(raio->aio, 1u, &iov)))
-      goto exitlevel3;
+    if ((xc = nng_aio_alloc(&raio->aio, signal ? iraio_complete_signal : iraio_complete, raio)) ||
+        (xc = nng_aio_set_iov(raio->aio, 1u, &iov)))
+      goto fail;
 
     nng_aio_set_timeout(raio->aio, dur);
     nng_stream_recv(*sp, raio->aio);
@@ -604,11 +592,9 @@ SEXP rnng_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP cvar, SEXP bytes, SEX
   UNPROTECT(3);
   return env;
 
-  exitlevel3:
-  nng_aio_free(raio->aio);
-  exitlevel2:
+  fail:
+  if (raio->aio) nng_aio_free(raio->aio);
   R_Free(raio->data);
-  exitlevel1:
   R_Free(raio);
   return mk_error_data(xc);
 

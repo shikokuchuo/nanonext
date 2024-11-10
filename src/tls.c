@@ -286,9 +286,8 @@ SEXP rnng_tls_config(SEXP client, SEXP server, SEXP pass, SEXP auth) {
   if (client != R_NilValue) {
     file = CHAR(STRING_ELT(client, 0));
     usefile = XLENGTH(client);
-    if ((xc = nng_tls_config_alloc(&cfg, NNG_TLS_MODE_CLIENT)))
-      goto fail;
-    if ((xc = nng_tls_config_auth_mode(cfg, mod)))
+    if ((xc = nng_tls_config_alloc(&cfg, NNG_TLS_MODE_CLIENT)) ||
+        (xc = nng_tls_config_auth_mode(cfg, mod)))
       goto fail;
 
     if (usefile > 1) {
@@ -305,9 +304,8 @@ SEXP rnng_tls_config(SEXP client, SEXP server, SEXP pass, SEXP auth) {
     file = CHAR(STRING_ELT(server, 0));
     usefile = XLENGTH(server);
     pss = pass != R_NilValue ? CHAR(STRING_ELT(pass, 0)) : NULL;
-    if ((xc = nng_tls_config_alloc(&cfg, NNG_TLS_MODE_SERVER)))
-      goto fail;
-    if ((xc = nng_tls_config_auth_mode(cfg, mod)))
+    if ((xc = nng_tls_config_alloc(&cfg, NNG_TLS_MODE_SERVER)) ||
+        (xc = nng_tls_config_auth_mode(cfg, mod)))
       goto fail;
 
     if (usefile > 1) {
@@ -321,9 +319,8 @@ SEXP rnng_tls_config(SEXP client, SEXP server, SEXP pass, SEXP auth) {
     }
 
   } else {
-    if ((xc = nng_tls_config_alloc(&cfg, NNG_TLS_MODE_CLIENT)))
-      goto fail;
-    if ((xc = nng_tls_config_auth_mode(cfg, NNG_TLS_AUTH_MODE_NONE)))
+    if ((xc = nng_tls_config_alloc(&cfg, NNG_TLS_MODE_CLIENT)) ||
+        (xc = nng_tls_config_auth_mode(cfg, NNG_TLS_AUTH_MODE_NONE)))
       goto fail;
   }
 

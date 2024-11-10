@@ -183,10 +183,8 @@ SEXP rnng_cv_alloc(void) {
   SEXP xp;
   int xc;
 
-  if ((xc = nng_mtx_alloc(&cvp->mtx)))
-    goto fail;
-
-  if ((xc = nng_cv_alloc(&cvp->cv, cvp->mtx)))
+  if ((xc = nng_mtx_alloc(&cvp->mtx)) ||
+      (xc = nng_cv_alloc(&cvp->cv, cvp->mtx)))
     goto fail;
 
   PROTECT(xp = R_MakeExternalPtr(cvp, nano_CvSymbol, R_NilValue));
@@ -427,10 +425,8 @@ SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeou
 
   nng_msg *msg = NULL;
 
-  if ((xc = nng_msg_alloc(&msg, 0)))
-    goto fail;
-
-  if ((xc = nng_msg_append(msg, buf.buf, buf.cur)) ||
+  if ((xc = nng_msg_alloc(&msg, 0)) ||
+      (xc = nng_msg_append(msg, buf.buf, buf.cur)) ||
       (xc = nng_aio_alloc(&saio->aio, sendaio_complete, saio)))
     goto fail;
 
