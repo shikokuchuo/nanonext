@@ -246,9 +246,8 @@ static void thread_disp_finalizer(SEXP xptr) {
   ncv->condition = -1;
   nng_cv_wake(cv);
   nng_mtx_unlock(mtx);
-  if (xp->tls != NULL) {
+  if (xp->tls != NULL)
     nng_tls_config_free(xp->tls);
-  }
   nng_thread_destroy(xp->thr);
   nng_url_free(xp->up);
   for (int i = 0; i < xp->n; i++) {
