@@ -284,60 +284,6 @@ void single_wait_thread_create(SEXP x) {
 
 // # nocov end
 
-static void thread_duo_finalizer(SEXP xptr) {
-
-  if (NANO_PTR(xptr) == NULL) return;
-  nano_thread_duo *xp = (nano_thread_duo *) NANO_PTR(xptr);
-  nano_cv *ncv = xp->cv;
-  if (ncv != NULL) {
-    nng_mtx *mtx = ncv->mtx;
-    nng_cv *cv = ncv->cv;
-    nng_mtx_lock(mtx);
-    ncv->condition = -1;
-    nng_cv_wake(cv);
-    nng_mtx_unlock(mtx);
-  }
-  nng_thread_destroy(xp->thr);
-  R_Free(xp);
-
-}
-
-static void thread_disp_finalizer(SEXP xptr) {
-
-  if (NANO_PTR(xptr) == NULL) return;
-  nano_thread_disp *xp = (nano_thread_disp *) NANO_PTR(xptr);
-  nano_cv *ncv = xp->cv;
-  nng_mtx *mtx = ncv->mtx;
-  nng_cv *cv = ncv->cv;
-  nng_mtx_lock(mtx);
-  ncv->condition = -1;
-  nng_cv_wake(cv);
-  nng_mtx_unlock(mtx);
-  if (xp->tls != NULL)
-    nng_tls_config_free(xp->tls);
-  nng_thread_destroy(xp->thr);
-  nng_url_free(xp->up);
-  for (int i = 0; i < xp->n; i++) {
-    nng_aio_free(xp->saio[i]->aio);
-    nng_aio_free(xp->raio[i]->aio);
-    nng_aio_free(xp->haio[i]->aio);
-    R_Free(xp->saio[i]);
-    R_Free(xp->raio[i]);
-    R_Free(xp->haio[i]);
-    R_Free(xp->url[i]);
-  }
-  R_Free(xp->saio);
-  R_Free(xp->raio);
-  R_Free(xp->haio);
-  R_Free(xp->url);
-  R_Free(xp->online);
-  nng_cv_free(ncv->cv);
-  nng_mtx_free(ncv->mtx);
-  R_Free(xp->cv);
-  R_Free(xp);
-
-}
-
 static void rnng_wait_thread(void *args) {
 
   while (1) {
@@ -468,6 +414,7 @@ SEXP rnng_thread_shutdown(void) {
     nng_thread_destroy(nano_wait_thr);
     nng_cv_free(nano_wait_cv);
     nng_mtx_free(nano_wait_mtx);
+    nano_wait_thr = NULL;
   }
   return R_NilValue;
 }
@@ -484,6 +431,24 @@ static void nano_record_pipe(nng_pipe p, nng_pipe_ev ev, void *arg) {
   ncv->condition++;
   nng_cv_wake(cv);
   nng_mtx_unlock(mtx);
+
+}
+
+static void thread_duo_finalizer(SEXP xptr) {
+
+  if (NANO_PTR(xptr) == NULL) return;
+  nano_thread_duo *xp = (nano_thread_duo *) NANO_PTR(xptr);
+  nano_cv *ncv = xp->cv;
+  if (ncv != NULL) {
+    nng_mtx *mtx = ncv->mtx;
+    nng_cv *cv = ncv->cv;
+    nng_mtx_lock(mtx);
+    ncv->condition = -1;
+    nng_cv_wake(cv);
+    nng_mtx_unlock(mtx);
+  }
+  nng_thread_destroy(xp->thr);
+  R_Free(xp);
 
 }
 
@@ -571,6 +536,43 @@ SEXP rnng_signal_thread_create(SEXP cv, SEXP cv2) {
   R_RegisterCFinalizerEx(xptr, thread_duo_finalizer, TRUE);
 
   return cv2;
+
+}
+
+
+static void thread_disp_finalizer(SEXP xptr) {
+
+  if (NANO_PTR(xptr) == NULL) return;
+  nano_thread_disp *xp = (nano_thread_disp *) NANO_PTR(xptr);
+  nano_cv *ncv = xp->cv;
+  nng_mtx *mtx = ncv->mtx;
+  nng_cv *cv = ncv->cv;
+  nng_mtx_lock(mtx);
+  ncv->condition = -1;
+  nng_cv_wake(cv);
+  nng_mtx_unlock(mtx);
+  if (xp->tls != NULL)
+    nng_tls_config_free(xp->tls);
+  nng_thread_destroy(xp->thr);
+  nng_url_free(xp->up);
+  for (int i = 0; i < xp->n; i++) {
+    nng_aio_free(xp->saio[i]->aio);
+    nng_aio_free(xp->raio[i]->aio);
+    nng_aio_free(xp->haio[i]->aio);
+    R_Free(xp->saio[i]);
+    R_Free(xp->raio[i]);
+    R_Free(xp->haio[i]);
+    R_Free(xp->url[i]);
+  }
+  R_Free(xp->saio);
+  R_Free(xp->raio);
+  R_Free(xp->haio);
+  R_Free(xp->url);
+  R_Free(xp->online);
+  nng_cv_free(ncv->cv);
+  nng_mtx_free(ncv->mtx);
+  R_Free(xp->cv);
+  R_Free(xp);
 
 }
 
