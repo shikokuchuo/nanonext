@@ -229,8 +229,8 @@ typedef struct nano_buf_s {
 
 extern void (*eln2)(void (*)(void *), void *, double, int);
 
-extern char *(*qs2_serialize)(SEXP, uint64_t *, const int, const bool, const int);
-extern SEXP (*qs2_deserialize)(const char *, const uint64_t, const bool, const int);
+extern unsigned char *(*qs2_serialize)(SEXP, size_t *, const int, const bool, const int);
+extern SEXP (*qs2_deserialize)(const unsigned char *, const size_t, const bool, const int);
 
 extern uint8_t special_bit;
 

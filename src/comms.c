@@ -320,7 +320,7 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
       nano_encode(&buf, data);
       break;
     case 0:
-      buf.buf = (unsigned char *) qs2_serialize(data, &buf.cur, 1, 0, 1);
+      buf.buf = qs2_serialize(data, &buf.cur, 1, 0, 1);
       break;
     default:
       nano_serialize(&buf, data, NANO_PROT(con));

@@ -20,8 +20,8 @@
 
 void (*eln2)(void (*)(void *), void *, double, int) = NULL;
 
-char *(*qs2_serialize)(SEXP, uint64_t *, const int, const bool, const int);
-SEXP (*qs2_deserialize)(const char *, const uint64_t, const bool, const int);
+unsigned char *(*qs2_serialize)(SEXP, size_t *, const int, const bool, const int);
+SEXP (*qs2_deserialize)(const unsigned char *, const size_t, const bool, const int);
 
 uint8_t special_bit = 0;
 
@@ -214,8 +214,8 @@ static const R_ExternalMethodDef externalMethods[] = {
 void attribute_visible R_init_nanonext(DllInfo* dll) {
   RegisterSymbols();
   PreserveObjects();
-  qs2_serialize = (char *(*)(SEXP, uint64_t *, const int, const bool, const int)) R_GetCCallable("qs2", "c_qs_serialize");
-  qs2_deserialize = (SEXP (*)(const char *, const uint64_t, const bool, const int)) R_GetCCallable("qs2", "c_qs_deserialize");
+  qs2_serialize = (unsigned char *(*)(SEXP, size_t *, const int, const bool, const int)) R_GetCCallable("qs2", "c_qs_serialize");
+  qs2_deserialize = (SEXP (*)(const unsigned char *, const size_t, const bool, const int)) R_GetCCallable("qs2", "c_qs_deserialize");
   R_registerRoutines(dll, NULL, callMethods, NULL, externalMethods);
   R_useDynamicSymbols(dll, FALSE);
   R_forceSymbols(dll, TRUE);
