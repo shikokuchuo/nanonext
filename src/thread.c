@@ -462,6 +462,7 @@ SEXP rnng_thread_shutdown(void) {
     nng_thread_destroy(nano_wait_thr);
     nng_cv_free(nano_wait_cv);
     nng_mtx_free(nano_wait_mtx);
+    nano_wait_thr = NULL;
   }
   return R_NilValue;
 }
