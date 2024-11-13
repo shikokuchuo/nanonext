@@ -22,6 +22,12 @@ void (*eln2)(void (*)(void *), void *, double, int) = NULL;
 
 uint8_t special_bit = 0;
 
+extern nng_thread *nano_wait_thr;
+extern nng_aio *nano_shared_aio;
+extern nng_mtx *nano_wait_mtx;
+extern nng_cv *nano_wait_cv;
+extern int nano_wait_condition;
+
 SEXP nano_AioSymbol;
 SEXP nano_ContextSymbol;
 SEXP nano_CvSymbol;
@@ -184,8 +190,9 @@ static const R_CallMethodDef callMethods[] = {
   {"rnng_stream_listen", (DL_FUNC) &rnng_stream_listen, 3},
   {"rnng_strerror", (DL_FUNC) &rnng_strerror, 1},
   {"rnng_subscribe", (DL_FUNC) &rnng_subscribe, 3},
-  {"rnng_traverse_precious", (DL_FUNC) &rnng_traverse_precious, 0},
+  {"rnng_thread_shutdown", (DL_FUNC) &rnng_thread_shutdown, 0},
   {"rnng_tls_config", (DL_FUNC) &rnng_tls_config, 4},
+  {"rnng_traverse_precious", (DL_FUNC) &rnng_traverse_precious, 0},
   {"rnng_unresolved", (DL_FUNC) &rnng_unresolved, 1},
   {"rnng_unresolved2", (DL_FUNC) &rnng_unresolved2, 1},
   {"rnng_url_parse", (DL_FUNC) &rnng_url_parse, 1},
@@ -210,6 +217,7 @@ void attribute_visible R_init_nanonext(DllInfo* dll) {
 
 // # nocov start
 void attribute_visible R_unload_nanonext(DllInfo *info) {
+  rnng_thread_shutdown();
   ReleaseObjects();
 }
 // # nocov end

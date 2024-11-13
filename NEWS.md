@@ -1,7 +1,8 @@
-# nanonext 1.3.0.9009 (development)
+# nanonext 1.3.0.9010 (development)
 
 #### Updates
 
+* Performs interruptible 'aio' waits using a single dedicated thread, rather than launching new threads, for higher performance and efficiency.
 * Performance enhancements for 'ncurlAio' and 'recvAio' promises methods.
 * Updates bundled 'libnng' to v1.9.0 stable release.
 * The package has a shiny new hex logo.
