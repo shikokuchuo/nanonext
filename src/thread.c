@@ -142,18 +142,18 @@ SEXP rnng_messenger(SEXP url) {
   SEXP socket, con;
 
   if ((xc = nng_pair0_open(sock)))
-    goto fail;
+    goto exitlevel1;
   lp = R_Calloc(1, nng_listener);
   if ((xc = nng_listen(*sock, up, lp, 0))) {
     if (xc != 10 && xc != 15) {
       R_Free(lp);
-      goto fail;
+      goto exitlevel2;
     }
     R_Free(lp);
     dp = R_Calloc(1, nng_dialer);
     if ((xc = nng_dial(*sock, up, dp, 0))) {
       R_Free(dp);
-      goto fail;
+      goto exitlevel2;
     }
     dialer = 1;
   }
@@ -172,7 +172,9 @@ SEXP rnng_messenger(SEXP url) {
   UNPROTECT(2);
   return socket;
 
-  fail:
+  exitlevel2:
+  nng_close(*sock);
+  exitlevel1:
   R_Free(sock);
   ERROR_OUT(xc);
 
