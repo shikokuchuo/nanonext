@@ -22,10 +22,10 @@
 
 // threads callable and messenger ----------------------------------------------
 
-nng_thread *nano_wait_thr = NULL;
-nng_aio *nano_shared_aio = NULL;
 nng_mtx *nano_wait_mtx = NULL;
 nng_cv *nano_wait_cv = NULL;
+nng_thread *nano_wait_thr = NULL;
+nng_aio *nano_shared_aio = NULL;
 int nano_wait_condition = 0;
 
 // # nocov start
@@ -307,21 +307,21 @@ void single_wait_thread_create(SEXP x) {
   nano_cv *ncv = R_Calloc(1, nano_cv);
   taio->aio = aiop->aio;
   taio->cv = ncv;
-  nng_mtx *mtx = NULL;
-  nng_cv *cv = NULL;
+  nng_mtx *mtx;
+  nng_cv *cv;
   int xc, signalled;
 
   if ((xc = nng_mtx_alloc(&mtx)))
-    goto fail;
+    goto exitlevel1;
 
   if ((xc = nng_cv_alloc(&cv, mtx)))
-    goto fail;
+    goto exitlevel2;
 
   ncv->mtx = mtx;
   ncv->cv = cv;
 
   if ((xc = nng_thread_create(&taio->thr, rnng_wait_thread_single, taio)))
-    goto fail;
+    goto exitlevel3;
 
   SEXP xptr;
   PROTECT(xptr = R_MakeExternalPtr(taio, R_NilValue, R_NilValue));
@@ -348,9 +348,11 @@ void single_wait_thread_create(SEXP x) {
 
   return;
 
-  fail:
-  if (cv) nng_cv_free(cv);
-  if (mtx) nng_mtx_free(mtx);
+  exitlevel3:
+  nng_cv_free(cv);
+  exitlevel2:
+  nng_mtx_free(mtx);
+  exitlevel1:
   ERROR_OUT(xc);
 
 }
@@ -369,10 +371,14 @@ SEXP rnng_wait_thread_create(SEXP x) {
     int xc, signalled;
 
     if (!nano_wait_thr) {
-      if ((xc = nng_mtx_alloc(&nano_wait_mtx)) ||
-          (xc = nng_cv_alloc(&nano_wait_cv, nano_wait_mtx)) ||
-          (xc = nng_thread_create(&nano_wait_thr, rnng_wait_thread, NULL)))
-        goto fail;
+      if ((xc = nng_mtx_alloc(&nano_wait_mtx)))
+        goto exitlevel1;
+
+      if ((xc = nng_cv_alloc(&nano_wait_cv, nano_wait_mtx)))
+        goto exitlevel2;
+
+      if ((xc = nng_thread_create(&nano_wait_thr, rnng_wait_thread, NULL)))
+        goto exitlevel3;
     }
 
     int thread_required = 0;
@@ -433,9 +439,11 @@ SEXP rnng_wait_thread_create(SEXP x) {
 
     return x;
 
-    fail:
-    if (nano_wait_cv) nng_cv_free(nano_wait_cv);
-    if (nano_wait_mtx) nng_mtx_free(nano_wait_mtx);
+    exitlevel3:
+    nng_cv_free(nano_wait_cv);
+    exitlevel2:
+    nng_mtx_free(nano_wait_mtx);
+    exitlevel1:
     ERROR_OUT(xc);
 
   } else if (typ == VECSXP) {
