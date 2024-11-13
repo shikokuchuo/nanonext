@@ -22,11 +22,11 @@ void (*eln2)(void (*)(void *), void *, double, int) = NULL;
 
 uint8_t special_bit = 0;
 
-extern nng_thread *nano_wait_thr;
-extern nng_aio *nano_shared_aio;
-extern nng_mtx *nano_wait_mtx;
-extern nng_cv *nano_wait_cv;
-extern int nano_wait_condition;
+nng_mtx *nano_wait_mtx;
+nng_cv *nano_wait_cv;
+nng_thread *nano_wait_thr = NULL;
+nng_aio *nano_shared_aio = NULL;
+int nano_wait_condition = 0;
 
 SEXP nano_AioSymbol;
 SEXP nano_ContextSymbol;

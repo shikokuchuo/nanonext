@@ -22,11 +22,11 @@
 
 // threads callable and messenger ----------------------------------------------
 
-nng_mtx *nano_wait_mtx = NULL;
-nng_cv *nano_wait_cv = NULL;
-nng_thread *nano_wait_thr = NULL;
-nng_aio *nano_shared_aio = NULL;
-int nano_wait_condition = 0;
+extern nng_thread *nano_wait_thr;
+extern nng_aio *nano_shared_aio;
+extern nng_mtx *nano_wait_mtx;
+extern nng_cv *nano_wait_cv;
+extern int nano_wait_condition;
 
 // # nocov start
 // tested interactively
@@ -462,7 +462,7 @@ SEXP rnng_wait_thread_create(SEXP x) {
 }
 
 SEXP rnng_thread_shutdown(void) {
-  if (nano_wait_thr) {
+  if (nano_wait_thr != NULL) {
     if (nano_shared_aio != NULL)
       nng_aio_stop(nano_shared_aio);
     nng_mtx_lock(nano_wait_mtx);
@@ -472,7 +472,6 @@ SEXP rnng_thread_shutdown(void) {
     nng_thread_destroy(nano_wait_thr);
     nng_cv_free(nano_wait_cv);
     nng_mtx_free(nano_wait_mtx);
-    nano_wait_thr = NULL;
   }
   return R_NilValue;
 }
