@@ -1,4 +1,4 @@
-# nanonext 1.3.0.9012 (development)
+# nanonext 1.3.1
 
 #### Updates
 
