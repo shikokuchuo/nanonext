@@ -58,6 +58,7 @@ typedef struct nano_handle_s {
 #endif
 
 #ifdef NANONEXT_IO
+#include <limits.h>
 #include <time.h>
 #include <unistd.h>
 #include <stdarg.h>
@@ -214,6 +215,7 @@ typedef struct nano_thread_disp_s {
   char **url;
   int *online;
   R_xlen_t n;
+  int resend;
 } nano_thread_disp;
 
 typedef struct nano_signal_s {
@@ -322,7 +324,7 @@ SEXP rnng_cv_wait_safe(SEXP);
 SEXP rnng_dial(SEXP, SEXP, SEXP, SEXP, SEXP);
 SEXP rnng_dialer_close(SEXP);
 SEXP rnng_dialer_start(SEXP, SEXP);
-SEXP rnng_dispatcher_socket(SEXP, SEXP, SEXP);
+SEXP rnng_dispatcher_socket(SEXP, SEXP, SEXP, SEXP);
 SEXP rnng_eval_safe(SEXP);
 SEXP rnng_fini(void);
 SEXP rnng_get_opt(SEXP, SEXP);

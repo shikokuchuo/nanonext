@@ -311,6 +311,8 @@ unlock <- function(socket) invisible(.Call(rnng_socket_unlock, socket))
 #'
 #' @param host \sQuote{inproc://} url connecting the host to the thread.
 #' @param url the URLs at which to listen for rep nodes.
+#' @param retry [default FALSE] whether to use NNG protocol-level retries if a
+#'   connection is dropped (or else return an error).
 #' @inheritParams listen
 #'
 #' @return A \sQuote{req} Socket. The thread is attached as an attribute.
@@ -318,8 +320,8 @@ unlock <- function(socket) invisible(.Call(rnng_socket_unlock, socket))
 #' @keywords internal
 #' @export
 #'
-.dispatcher <- function(host, url, tls = NULL)
-  .Call(rnng_dispatcher_socket, host, url, tls)
+.dispatcher <- function(host, url, tls = NULL, retry = FALSE)
+  .Call(rnng_dispatcher_socket, host, url, tls, retry)
 
 #' Read Online Status
 #'

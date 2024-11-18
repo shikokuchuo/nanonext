@@ -4,7 +4,7 @@
 \alias{.dispatcher}
 \title{Dispatcher Socket}
 \usage{
-.dispatcher(host, url, tls = NULL)
+.dispatcher(host, url, tls = NULL, retry = FALSE)
 }
 \arguments{
 \item{host}{\sQuote{inproc://} url connecting the host to the thread.}
@@ -13,6 +13,9 @@
 
 \item{tls}{[default NULL] for secure tls+tcp:// or wss:// connections only,
 provide a TLS configuration object created by \code{\link{tls_config}}.}
+
+\item{retry}{[default FALSE] whether to use NNG protocol-level retries if a
+connection is dropped (or else return an error).}
 }
 \value{
 A \sQuote{req} Socket. The thread is attached as an attribute.

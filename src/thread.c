@@ -594,6 +594,7 @@ static void rnng_dispatch_thread(void *args) {
   const R_xlen_t n = disp->n;
   int *online = disp->online;
   char **url = disp->url;
+  const nng_duration resend = (nng_duration) disp->resend;
 
   int xc, end = 0;
   nng_socket hsock;
@@ -632,7 +633,7 @@ static void rnng_dispatch_thread(void *args) {
     signal[i].cv = ncv;
     signal[i].online = &online[i];
     if (nng_req0_open(&sock[i]) ||
-        nng_socket_set_ms(sock[i], "req:resend-time", 0) ||
+        nng_socket_set_ms(sock[i], "req:resend-time", resend) ||
         nng_pipe_notify(sock[i], NNG_PIPE_EV_ADD_POST, nano_record_pipe, &signal[i]) ||
         nng_pipe_notify(sock[i], NNG_PIPE_EV_REM_POST, nano_record_pipe, &signal[i]))
       goto exitlevel1;
@@ -779,7 +780,7 @@ static void rnng_dispatch_thread(void *args) {
 
 }
 
-SEXP rnng_dispatcher_socket(SEXP host, SEXP url, SEXP tls) {
+SEXP rnng_dispatcher_socket(SEXP host, SEXP url, SEXP tls, SEXP retry) {
 
   const int sec = tls != R_NilValue;
   const R_xlen_t nd = XLENGTH(url);
@@ -798,6 +799,7 @@ SEXP rnng_dispatcher_socket(SEXP host, SEXP url, SEXP tls) {
     goto exitlevel2;
 
   nano_thread_disp *disp = R_Calloc(1, nano_thread_disp);
+  disp->resend = NANO_INTEGER(retry) ? INT_MAX : 0;
   disp->cv = ncv;
   disp->n = nd;
   disp->tls = sec ? (nng_tls_config *) NANO_PTR(tls) : NULL;
