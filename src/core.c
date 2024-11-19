@@ -262,7 +262,7 @@ void raio_invoke_cb(void *arg) {
   SEXP call, data, node = (SEXP) arg, x = TAG(node);
   data = rnng_aio_get_msg(x);
   PROTECT(call = Rf_lcons(nano_ResolveSymbol, Rf_cons(data, R_NilValue)));
-  Rf_eval(call, NANO_ENCLOS(x));
+  Rf_eval(call, R_NilValue);
   UNPROTECT(1);
   nano_ReleaseObject(node);
 }
