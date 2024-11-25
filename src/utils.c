@@ -482,8 +482,26 @@ SEXP rnng_get_opt(SEXP object, SEXP opt) {
       typ = 6; break;
     }
 
+  } else if (ptrtag == nano_PipeSymbol) {
+
+      nng_pipe *p = (nng_pipe *) NANO_PTR(object);
+      for (;;) {
+        xc = nng_pipe_get_string(*p, op, &optval.str);
+        if (xc == 0) { typ = 1; break; }
+        xc = nng_pipe_get_ms(*p, op, &optval.d);
+        if (xc == 0) { typ = 2; break; }
+        xc = nng_pipe_get_size(*p, op, &optval.s);
+        if (xc == 0) { typ = 3; break; }
+        xc = nng_pipe_get_int(*p, op, &optval.i);
+        if (xc == 0) { typ = 4; break; }
+        xc = nng_pipe_get_bool(*p, op, &optval.b);
+        if (xc == 0) { typ = 5; break; }
+        xc = nng_pipe_get_uint64(*p, op, &optval.u);
+        typ = 6; break;
+      }
+
   } else {
-    Rf_error("'object' is not a valid Socket, Context, Stream, Listener or Dialer");
+    Rf_error("'object' is not a valid Socket, Context, Stream, Listener, Dialer or Pipe");
   }
 
   if (xc)

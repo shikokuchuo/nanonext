@@ -1,4 +1,8 @@
-# nanonext 1.3.2.9000 (development)
+# nanonext 1.3.2.9001 (development)
+
+#### New Features
+
+* `opt()` gains the ability to retrieve options from a Pipe.
 
 # nanonext 1.3.2
 
