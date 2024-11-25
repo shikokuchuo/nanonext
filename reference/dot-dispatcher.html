@@ -49,7 +49,7 @@ with FIFO scheduling using a threaded implementation (for internal use only).</p
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">.dispatcher</span><span class="op">(</span><span class="va">host</span>, <span class="va">url</span>, tls <span class="op">=</span> <span class="cn">NULL</span>, retry <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">.dispatcher</span><span class="op">(</span><span class="va">host</span>, <span class="va">url</span>, tls <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -67,11 +67,6 @@ with FIFO scheduling using a threaded implementation (for internal use only).</p
 <dt id="arg-tls">tls<a class="anchor" aria-label="anchor" href="#arg-tls"></a></dt>
 <dd><p>[default NULL] for secure tls+tcp:// or wss:// connections only,
 provide a TLS configuration object created by <code><a href="tls_config.html">tls_config</a></code>.</p></dd>
-
-
-<dt id="arg-retry">retry<a class="anchor" aria-label="anchor" href="#arg-retry"></a></dt>
-<dd><p>[default FALSE] whether to use NNG protocol-level retries if a
-connection is dropped (or else return an error).</p></dd>
 
 </dl></div>
     <div class="section level2">
