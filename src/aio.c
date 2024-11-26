@@ -506,7 +506,7 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
     R_RegisterCFinalizerEx(aio, saio_finalizer, TRUE);
 
   } else {
-    NANO_ERROR("'con' is not a valid Socket, Context or Stream");
+    NANO_ERROR("'con' is not a valid Socket, Context, Stream or Pipe");
   }
 
   PROTECT(env = R_NewEnv(R_NilValue, 0, 0));
