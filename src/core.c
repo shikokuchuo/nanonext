@@ -16,6 +16,7 @@
 
 // nanonext - C level - Core Functions -----------------------------------------
 
+#define NANONEXT_SIGNALS
 #include "nanonext.h"
 
 // internals -------------------------------------------------------------------
@@ -138,6 +139,14 @@ void raio_complete_signal(void *arg) {
   ncv->condition++;
   nng_cv_wake(cv);
   nng_mtx_unlock(mtx);
+
+  if (nano_interrupt) {
+#ifdef _WIN32
+    raise(SIGINT);
+#else
+    kill(getpid(), SIGINT);
+#endif
+  }
 
 }
 
