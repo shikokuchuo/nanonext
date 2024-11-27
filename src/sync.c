@@ -623,3 +623,10 @@ SEXP rnng_socket_unlock(SEXP socket) {
   return nano_success;
 
 }
+
+SEXP rnng_interrupt_switch(void) {
+
+  nano_interrupt = nano_interrupt ? 0 : 1;
+  return R_NilValue;
+
+}

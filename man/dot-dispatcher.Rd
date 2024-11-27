@@ -19,6 +19,7 @@ A \sQuote{req} Socket. The thread is attached as an attribute.
 }
 \description{
 Creates a Dispatcher socket, which is a special type of \sQuote{req} socket,
-with FIFO scheduling using a threaded implementation (for internal use only).
+with FIFO scheduling using a threaded implementation. Internal package
+function.
 }
 \keyword{internal}

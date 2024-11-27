@@ -307,7 +307,8 @@ unlock <- function(socket) invisible(.Call(rnng_socket_unlock, socket))
 #' Dispatcher Socket
 #'
 #' Creates a Dispatcher socket, which is a special type of \sQuote{req} socket,
-#' with FIFO scheduling using a threaded implementation (for internal use only).
+#' with FIFO scheduling using a threaded implementation. Internal package
+#' function.
 #'
 #' @param host \sQuote{inproc://} url connecting the host to the thread.
 #' @param url the URLs at which to listen for rep nodes.
@@ -323,8 +324,8 @@ unlock <- function(socket) invisible(.Call(rnng_socket_unlock, socket))
 
 #' Read Online Status
 #'
-#' Reads the online status of threaded dispatcher sockets (for internal use
-#' only).
+#' Reads the online status of threaded dispatcher sockets. Internal package
+#' function.
 #'
 #' @param sock a dispatcher Socket.
 #'
@@ -334,3 +335,19 @@ unlock <- function(socket) invisible(.Call(rnng_socket_unlock, socket))
 #' @export
 #'
 .online <- function(sock) .Call(rnng_read_online, sock)
+
+#' Interrupt Switch
+#'
+#' Toggles on or off whether async receive completions trigger an interrupt.
+#' Internal package function.
+#'
+#' @return NULL.
+#'
+#' @examples
+#' .interrupt()
+#' .interrupt()
+#'
+#' @keywords internal
+#' @export
+#'
+.interrupt <- function() .Call(rnng_interrupt_switch)

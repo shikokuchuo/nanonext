@@ -16,6 +16,7 @@
 
 // nanonext - C level - Async Functions ----------------------------------------
 
+#define NANONEXT_SIGNALS
 #include "nanonext.h"
 
 // internals -------------------------------------------------------------------
@@ -64,6 +65,14 @@ static void raio_complete(void *arg) {
 
   if (raio->cb != NULL)
     later2(raio_invoke_cb, raio->cb);
+
+  if (nano_interrupt) {
+#ifdef _WIN32
+    raise(SIGINT);
+#else
+    kill(getpid(), SIGINT);
+#endif
+  }
 
 }
 

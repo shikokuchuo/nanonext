@@ -20,6 +20,7 @@
 
 void (*eln2)(void (*)(void *), void *, double, int) = NULL;
 
+int nano_interrupt = 0;
 uint8_t special_bit = 0;
 
 nng_mtx *nano_wait_mtx;
@@ -153,6 +154,7 @@ static const R_CallMethodDef callMethods[] = {
   {"rnng_eval_safe", (DL_FUNC) &rnng_eval_safe, 1},
   {"rnng_fini", (DL_FUNC) &rnng_fini, 0},
   {"rnng_get_opt", (DL_FUNC) &rnng_get_opt, 2},
+  {"rnng_interrupt_switch", (DL_FUNC) &rnng_interrupt_switch, 0},
   {"rnng_is_error_value", (DL_FUNC) &rnng_is_error_value, 1},
   {"rnng_is_nul_byte", (DL_FUNC) &rnng_is_nul_byte, 1},
   {"rnng_listen", (DL_FUNC) &rnng_listen, 5},
@@ -176,7 +178,7 @@ static const R_CallMethodDef callMethods[] = {
   {"rnng_send", (DL_FUNC) &rnng_send, 4},
   {"rnng_send_aio", (DL_FUNC) &rnng_send_aio, 5},
   {"rnng_serial_config", (DL_FUNC) &rnng_serial_config, 4},
-  {"rnng_set_marker", (DL_FUNC) &rnng_set_marker, 1},
+  {"rnng_set_marker", (DL_FUNC) &rnng_set_marker, 0},
   {"rnng_set_opt", (DL_FUNC) &rnng_set_opt, 3},
   {"rnng_set_promise_context", (DL_FUNC) &rnng_set_promise_context, 2},
   {"rnng_signal_thread_create", (DL_FUNC) &rnng_signal_thread_create, 2},

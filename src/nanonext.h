@@ -229,6 +229,7 @@ typedef struct nano_buf_s {
 
 extern void (*eln2)(void (*)(void *), void *, double, int);
 extern uint8_t special_bit;
+extern int nano_interrupt;
 
 extern SEXP nano_AioSymbol;
 extern SEXP nano_ContextSymbol;
@@ -326,6 +327,7 @@ SEXP rnng_dispatcher_socket(SEXP, SEXP, SEXP);
 SEXP rnng_eval_safe(SEXP);
 SEXP rnng_fini(void);
 SEXP rnng_get_opt(SEXP, SEXP);
+SEXP rnng_interrupt_switch(void);
 SEXP rnng_is_error_value(SEXP);
 SEXP rnng_is_nul_byte(SEXP);
 SEXP rnng_listen(SEXP, SEXP, SEXP, SEXP, SEXP);
@@ -350,7 +352,7 @@ SEXP rnng_request(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 SEXP rnng_send(SEXP, SEXP, SEXP, SEXP);
 SEXP rnng_send_aio(SEXP, SEXP, SEXP, SEXP, SEXP);
 SEXP rnng_serial_config(SEXP, SEXP, SEXP, SEXP);
-SEXP rnng_set_marker(SEXP);
+SEXP rnng_set_marker(void);
 SEXP rnng_set_opt(SEXP, SEXP, SEXP);
 SEXP rnng_set_promise_context(SEXP, SEXP);
 SEXP rnng_signal_thread_create(SEXP, SEXP);

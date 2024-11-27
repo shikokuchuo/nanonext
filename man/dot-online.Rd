@@ -13,7 +13,7 @@
 An vector of integer values.
 }
 \description{
-Reads the online status of threaded dispatcher sockets (for internal use
-only).
+Reads the online status of threaded dispatcher sockets. Internal package
+function.
 }
 \keyword{internal}
