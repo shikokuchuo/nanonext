@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">nanonext</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.2.9004</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.2.9005</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -40,12 +40,19 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.3.2.9004" id="nanonext-1329004-development">nanonext 1.3.2.9004 (development)<a class="anchor" aria-label="anchor" href="#nanonext-1329004-development"></a></h2>
+<h2 class="pkg-version" data-toc-text="1.3.2.9005" id="nanonext-1329005-development">nanonext 1.3.2.9005 (development)<a class="anchor" aria-label="anchor" href="#nanonext-1329005-development"></a></h2>
 <div class="section level5">
-<h5 id="new-features-1-3-2-9004">New Features<a class="anchor" aria-label="anchor" href="#new-features-1-3-2-9004"></a></h5>
+<h5 id="new-features-1-3-2-9005">New Features<a class="anchor" aria-label="anchor" href="#new-features-1-3-2-9005"></a></h5>
 <ul><li>
 <code><a href="../reference/opt.html">opt()</a></code> gains the ability to retrieve options from a Pipe.</li>
 <li>A ‘recvAio’ now records the integer pipe ID, where successful, at <code>$aio</code> upon resolution.</li>
+<li>
+<code><a href="../reference/socket_pipe.html">socket_pipe()</a></code> creates a ‘nanoPipe’ object from an integer pipe ID.</li>
+</ul></div>
+<div class="section level5">
+<h5 id="updates-1-3-2-9005">Updates<a class="anchor" aria-label="anchor" href="#updates-1-3-2-9005"></a></h5>
+<ul><li>
+<code><a href="../reference/collect_aio.html">collect_aio()</a></code> is superseded by <code><a href="../reference/socket_pipe.html">socket_pipe()</a></code> and is removed.</li>
 </ul></div>
 </div>
     <div class="section level2">
@@ -99,7 +106,7 @@
 <code><a href="../reference/opt.html">'opt&lt;-'()</a></code> now accepts the special option ‘serial’ for Sockets, which takes a configuration returned from <code><a href="../reference/serial_config.html">serial_config()</a></code>.</li>
 <li>Adds the ‘poly’ protocol for one-to-one of many socket connections (NNG’s pair v1 polyamorous mode).</li>
 <li>Adds <code><a href="../reference/is_aio.html">is_ncurl_session()</a></code> as a validation function.</li>
-<li>Adds <code><a href="../reference/collect_pipe.html">collect_pipe()</a></code> for obtaining the underlying Pipe from a ‘recvAio’. This affords more granular control of connections, with the ability to close individual pipes.</li>
+<li>Adds <code>collect_pipe()</code> for obtaining the underlying Pipe from a ‘recvAio’. This affords more granular control of connections, with the ability to close individual pipes.</li>
 <li>
 <code><a href="../reference/send_aio.html">send_aio()</a></code> now accept a Pipe to direct messages to a specific peer for supported protocols such as ‘poly’.</li>
 </ul></div>
