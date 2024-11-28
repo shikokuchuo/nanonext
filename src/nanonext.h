@@ -193,6 +193,15 @@ typedef struct nano_cv_duo_s {
   nano_cv *cv2;
 } nano_cv_duo;
 
+typedef struct nano_monitor_s {
+  nano_cv *cv;
+  nng_pipe *pipes;
+  int start;
+  int size;
+  int count;
+  int updates;
+} nano_monitor;
+
 typedef struct nano_thread_aio_s {
   nng_thread *thr;
   nano_cv *cv;
@@ -338,6 +347,8 @@ SEXP rnng_listener_close(SEXP);
 SEXP rnng_listener_start(SEXP);
 SEXP rnng_messenger(SEXP);
 SEXP rnng_messenger_thread_create(SEXP);
+SEXP rnng_monitor_create(SEXP, SEXP, SEXP);
+SEXP rnng_monitor_read(SEXP);
 SEXP rnng_ncurl(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 SEXP rnng_ncurl_aio(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 SEXP rnng_ncurl_session(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);

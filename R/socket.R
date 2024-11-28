@@ -149,6 +149,34 @@ socket <- function(protocol = c("bus", "pair", "poly", "push", "pull", "pub",
 #'
 collect_pipe <- function(x) .Call(rnng_aio_collect_pipe, x)
 
+#' Create a Pipe Monitor
+#'
+#' This function monitors pipe additions and removals from a socket.
+#'
+#' @param sock a Socket.
+#' @param cv a conditionVariable.
+#' @param n initial size of monitor (number of pipes).
+#'
+#' @return An external pointer that may be passed to \code{read_monitor}.
+#'
+#' @examples
+#' cv <- cv()
+#' s <- socket("rep", listen = "inproc://nanonext")
+#' m <- pipe_monitor(s, cv, 8L)
+#' read_monitor(m)
+#' close(s)
+#'
+#' @export
+#'
+pipe_monitor <- function(sock, cv, n) .Call(rnng_monitor_create, sock, cv, n)
+
+#' @param x an external pointer to a pipe monitor.
+#'
+#' @rdname pipe_monitor
+#' @export
+#'
+read_monitor <- function(x) .Call(rnng_monitor_read, x)
+
 #' Close Connection
 #'
 #' Close Connection on a Socket, Context, Dialer, Listener, Stream, Pipe, or
