@@ -142,7 +142,8 @@ void raio_complete_signal(void *arg) {
 
   if (nano_interrupt) {
 #ifdef _WIN32
-    raise(SIGINT);
+#include <Rembedded.h>
+    UserBreak = 1;
 #else
     kill(getpid(), SIGINT);
 #endif
