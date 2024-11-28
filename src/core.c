@@ -130,12 +130,15 @@ void raio_complete_signal(void *arg) {
   nng_cv *cv = ncv->cv;
   nng_mtx *mtx = ncv->mtx;
 
-  const int res = nng_aio_result(raio->aio);
-  if (res == 0)
-    raio->data = nng_aio_get_msg(raio->aio);
+  int res = nng_aio_result(raio->aio);
+  if (res == 0) {
+    nng_msg *msg = nng_aio_get_msg(raio->aio);
+    raio->data = msg;
+    res = -nng_msg_get_pipe(msg).id;
+  }
 
   nng_mtx_lock(mtx);
-  raio->result = res - !res;
+  raio->result = res;
   ncv->condition++;
   nng_cv_wake(cv);
   nng_mtx_unlock(mtx);

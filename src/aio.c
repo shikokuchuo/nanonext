@@ -56,11 +56,14 @@ static void isaio_complete(void *arg) {
 static void raio_complete(void *arg) {
 
   nano_aio *raio = (nano_aio *) arg;
-  const int res = nng_aio_result(raio->aio);
-  if (res == 0)
-    raio->data = nng_aio_get_msg(raio->aio);
+  int res = nng_aio_result(raio->aio);
+  if (res == 0) {
+    nng_msg *msg = nng_aio_get_msg(raio->aio);
+    raio->data = msg;
+    res = -nng_msg_get_pipe(msg).id;
+  }
 
-  raio->result = res - !res;
+  raio->result = res;
 
   if (raio->cb != NULL)
     later2(raio_invoke_cb, raio->cb);
@@ -197,7 +200,7 @@ SEXP rnng_aio_get_msg(SEXP env) {
     break;
   }
 
-  SEXP out;
+  SEXP out, result;
   unsigned char *buf;
   size_t sz;
 
@@ -211,10 +214,11 @@ SEXP rnng_aio_get_msg(SEXP env) {
   }
 
   PROTECT(out = nano_decode(buf, sz, raio->mode, NANO_PROT(aio)));
+  PROTECT(result = Rf_ScalarInteger(-res));
   Rf_defineVar(nano_ValueSymbol, out, env);
-  Rf_defineVar(nano_AioSymbol, R_NilValue, env);
+  Rf_defineVar(nano_AioSymbol, result, env);
 
-  UNPROTECT(1);
+  UNPROTECT(2);
   return out;
 
 }
@@ -348,7 +352,7 @@ static int rnng_unresolved_impl(SEXP x) {
       break;
     default:
       value = rnng_aio_get_msg(x);
-    break;
+      break;
     }
     xc = value == nano_unresolved;
     break;
