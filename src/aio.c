@@ -25,7 +25,7 @@ static SEXP mk_error_aio(const int xc, SEXP env) {
   SEXP err = PROTECT(Rf_ScalarInteger(xc));
   Rf_classgets(err, nano_error);
   Rf_defineVar(nano_ValueSymbol, err, env);
-  Rf_defineVar(nano_AioSymbol, R_NilValue, env);
+  Rf_defineVar(nano_AioSymbol, nano_success, env);
   UNPROTECT(1);
   return err;
 

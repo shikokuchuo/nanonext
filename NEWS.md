@@ -1,9 +1,14 @@
-# nanonext 1.3.2.9004 (development)
+# nanonext 1.3.2.9005 (development)
 
 #### New Features
 
 * `opt()` gains the ability to retrieve options from a Pipe.
 * A 'recvAio' now records the integer pipe ID, where successful, at `$aio` upon resolution.
+* `socket_pipe()` creates a 'nanoPipe' object from an integer pipe ID.
+
+#### Updates
+
+* `collect_aio()` is superseded by `socket_pipe()` and is removed.
 
 # nanonext 1.3.2
 

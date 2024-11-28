@@ -219,50 +219,25 @@ SEXP rnng_reap(SEXP con) {
 
 // pipes -----------------------------------------------------------------------
 
-SEXP rnng_aio_collect_pipe(SEXP aio) {
+SEXP rnng_socket_pipe(SEXP id) {
 
-  if (TYPEOF(aio) != ENVSXP)
-    goto exitlevel1;
-  const SEXP coreaio = nano_findVarInFrame(aio, nano_AioSymbol);
-  if (NANO_TAG(coreaio) != nano_AioSymbol)
-    goto exitlevel1;
-
-  nano_aio *aiop = (nano_aio *) NANO_PTR(coreaio);
-  switch (aiop->type) {
-    case RECVAIO:
-    case REQAIO:
-    case IOV_RECVAIO:
-    case RECVAIOS:
-    case REQAIOS:
-    case IOV_RECVAIOS:
-      break;
-    case SENDAIO:
-    case IOV_SENDAIO:
-    case HTTP_AIO:
-      goto exitlevel1;
-  }
+  const int pipeid = nano_integer(id);
+  if (!pipeid)
+    Rf_error("invalid Pipe ID provided");
 
   nng_pipe *p;
   SEXP pipe;
 
-  nng_aio_wait(aiop->aio);
-  const int xc = aiop->result;
-  if (xc > 0)
-    ERROR_OUT(xc);
-
   p = R_Calloc(1, nng_pipe);
-  *p = nng_msg_get_pipe((nng_msg *) aiop->data);
+  p->id = pipeid;
+
   PROTECT(pipe = R_MakeExternalPtr(p, nano_PipeSymbol, R_NilValue));
   R_RegisterCFinalizerEx(pipe, pipe_finalizer, TRUE);
   NANO_CLASS2(pipe, "nanoPipe", "nano");
-  Rf_setAttrib(pipe, nano_IdSymbol, Rf_ScalarInteger(nng_pipe_id(*p)));
+  Rf_setAttrib(pipe, nano_IdSymbol, Rf_ScalarInteger(pipeid));
 
   UNPROTECT(1);
   return pipe;
-
-  exitlevel1:
-  Rf_error("'x' is not a valid or active recvAio");
-  return R_NilValue;
 
 }
 

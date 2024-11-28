@@ -115,18 +115,18 @@ socket <- function(protocol = c("bus", "pair", "poly", "push", "pull", "pub",
                    raw = FALSE)
   .Call(rnng_protocol_open, protocol, dial, listen, tls, autostart, raw)
 
-#' Collect the Pipe from an Aio
+#' Create a Pipe from a Pipe ID
 #'
-#' This function retrieves the Pipe used to receive a message from the Aio. It
-#' will block if the Aio has yet to complete. The message is still available for
-#' retrieval by the usual means. A Pipe is a low-level object and it is not
-#' normally necessary to deal with them directly.
+#' This function creates a Pipe from the pipe identifier recorded at $aio in a
+#' resolved Aio, for use with compatible functions such as \code{\link{send_aio}}.
+#' A Pipe is a low-level object and it is not normally necessary to deal with
+#' them directly.
 #'
 #' As Pipes are always owned by a Socket, removing (and garbage collecting) a
 #' Pipe does not close it or free its resources. A Pipe may, however, be
 #' explicitly closed.
 #'
-#' @param x a 'recvAio' object.
+#' @param x integer pipe ID.
 #'
 #' @return A Pipe (object of class \sQuote{nanoPipe}).
 #'
@@ -137,7 +137,8 @@ socket <- function(protocol = c("bus", "pair", "poly", "push", "pull", "pub",
 #' r <- recv_aio(s, timeout = 500)
 #'
 #' if (!send(s1, "")) {
-#'   p <- tryCatch(collect_pipe(r), error = identity)
+#'   call_aio(r)
+#'   p <- socket_pipe(r$aio)
 #'   print(p)
 #'   reap(p)
 #' }
@@ -147,7 +148,7 @@ socket <- function(protocol = c("bus", "pair", "poly", "push", "pull", "pub",
 #'
 #' @export
 #'
-collect_pipe <- function(x) .Call(rnng_aio_collect_pipe, x)
+socket_pipe <- function(x) .Call(rnng_socket_pipe, x)
 
 #' Close Connection
 #'
