@@ -60,7 +60,8 @@ static void raio_complete(void *arg) {
   if (res == 0) {
     nng_msg *msg = nng_aio_get_msg(raio->aio);
     raio->data = msg;
-    res = -nng_msg_get_pipe(msg).id;
+    nng_pipe p = nng_msg_get_pipe(msg);
+    res = - (int) p.id;
   }
 
   raio->result = res;
@@ -447,7 +448,7 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP pipe, SEXP
 
     if (pipeid) {
       nng_pipe p;
-      p.id = pipeid;
+      p.id = (uint32_t) pipeid;
       nng_msg_set_pipe(msg, p);
     }
     nng_aio_set_msg(saio->aio, msg);

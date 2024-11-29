@@ -134,7 +134,8 @@ void raio_complete_signal(void *arg) {
   if (res == 0) {
     nng_msg *msg = nng_aio_get_msg(raio->aio);
     raio->data = msg;
-    res = -nng_msg_get_pipe(msg).id;
+    nng_pipe p = nng_msg_get_pipe(msg);
+    res = - (int) p.id;
   }
 
   nng_mtx_lock(mtx);

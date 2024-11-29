@@ -28,7 +28,8 @@ static void request_complete(void *arg) {
   if (res == 0) {
     nng_msg *msg = nng_aio_get_msg(raio->aio);
     raio->data = msg;
-    res = -nng_msg_get_pipe(msg).id;
+    nng_pipe p = nng_msg_get_pipe(msg);
+    res = - (int) p.id;
   }
   raio->result = res;
 
@@ -46,7 +47,7 @@ static void request_complete_dropcon(void *arg) {
     nng_msg *msg = nng_aio_get_msg(raio->aio);
     raio->data = msg;
     nng_pipe p = nng_msg_get_pipe(msg);
-    res = -p.id;
+    res = - (int) p.id;
     nng_pipe_close(p);
   }
   raio->result = res;
@@ -68,7 +69,8 @@ static void request_complete_signal(void *arg) {
   if (res == 0) {
     nng_msg *msg = nng_aio_get_msg(raio->aio);
     raio->data = msg;
-    res = -nng_msg_get_pipe(msg).id;
+    nng_pipe p = nng_msg_get_pipe(msg);
+    res = - (int) p.id;
   }
 
   nng_mtx_lock(mtx);
