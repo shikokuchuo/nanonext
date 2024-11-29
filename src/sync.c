@@ -160,6 +160,31 @@ static void pipe_cb_dropcon(nng_pipe p, nng_pipe_ev ev, void *arg) {
 
 }
 
+static void pipe_cb_monitor(nng_pipe p, nng_pipe_ev ev, void *arg) {
+
+  nano_monitor *monitor = (nano_monitor *) arg;
+
+  nano_cv *ncv = monitor->cv;
+  nng_cv *cv = ncv->cv;
+  nng_mtx *mtx = ncv->mtx;
+
+  const int id = (int) p.id;
+  if (!id)
+    return;
+
+  nng_mtx_lock(mtx);
+  if (monitor->updates >= monitor->size) {
+    monitor->size += 8;
+    monitor->ids = R_Realloc(monitor->ids, monitor->size, int);
+  }
+  monitor->ids[monitor->updates] = ev == NNG_PIPE_EV_ADD_POST ? id : -id;
+  monitor->updates++;
+  ncv->condition++;
+  nng_cv_wake(cv);
+  nng_mtx_unlock(mtx);
+
+}
+
 // finalizers ------------------------------------------------------------------
 
 static void cv_duo_finalizer(SEXP xptr) {
@@ -180,6 +205,15 @@ static void request_finalizer(SEXP xptr) {
   if (xp->data != NULL)
     nng_msg_free((nng_msg *) xp->data);
   R_Free(saio);
+  R_Free(xp);
+
+}
+
+static void monitor_finalizer(SEXP xptr) {
+
+  if (NANO_PTR(xptr) == NULL) return;
+  nano_monitor *xp = (nano_monitor *) NANO_PTR(xptr);
+  R_Free(xp->ids);
   R_Free(xp);
 
 }
@@ -637,5 +671,66 @@ SEXP rnng_interrupt_switch(void) {
 
   nano_interrupt = nano_interrupt ? 0 : 1;
   return R_NilValue;
+
+}
+
+// monitors --------------------------------------------------------------------
+
+SEXP rnng_monitor_create(SEXP socket, SEXP cv) {
+
+  if (NANO_TAG(socket) != nano_SocketSymbol)
+    Rf_error("'socket' is not a valid Socket");
+
+  if (NANO_TAG(cv) != nano_CvSymbol)
+    Rf_error("'cv' is not a valid Condition Variable");
+
+  const int n = 8;
+  nano_monitor *monitor = R_Calloc(1, nano_monitor);
+  monitor->ids = R_Calloc(n, int);
+  monitor->size = n;
+  monitor->cv = (nano_cv *) NANO_PTR(cv);
+  nng_socket *sock = (nng_socket *) NANO_PTR(socket);
+
+  int xc;
+
+  if ((xc = nng_pipe_notify(*sock, NNG_PIPE_EV_ADD_POST, pipe_cb_monitor, monitor)))
+    ERROR_OUT(xc);
+
+  if ((xc = nng_pipe_notify(*sock, NNG_PIPE_EV_REM_POST, pipe_cb_monitor, monitor)))
+    ERROR_OUT(xc);
+
+  SEXP xptr = R_MakeExternalPtr(monitor, nano_MonitorSymbol, R_NilValue);
+  R_RegisterCFinalizerEx(xptr, monitor_finalizer, TRUE);
+  NANO_CLASS2(xptr, "nanoMonitor", "nano");
+  Rf_setAttrib(xptr, nano_SocketSymbol, Rf_ScalarInteger(nng_socket_id(*sock)));
+
+  return xptr;
+
+}
+
+SEXP rnng_monitor_read(SEXP x) {
+
+  if (NANO_TAG(x) != nano_MonitorSymbol)
+    Rf_error("'x' is not a valid Monitor");
+
+  nano_monitor *monitor = (nano_monitor *) NANO_PTR(x);
+
+  nano_cv *ncv = monitor->cv;
+  nng_mtx *mtx = ncv->mtx;
+
+  SEXP out;
+  nng_mtx_lock(mtx);
+  const int updates = monitor->updates;
+  if (updates) {
+    out = Rf_allocVector(INTSXP, updates);
+    memcpy(NANO_DATAPTR(out), monitor->ids, updates * sizeof(int));
+    monitor->updates = 0;
+  }
+  nng_mtx_unlock(mtx);
+
+  if (!updates)
+    out = R_NilValue;
+
+  return out;
 
 }
