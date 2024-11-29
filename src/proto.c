@@ -40,14 +40,6 @@ static void stream_finalizer(SEXP xptr) {
 
 }
 
-static void pipe_finalizer(SEXP xptr) {
-
-  if (NANO_PTR(xptr) == NULL) return;
-  nng_pipe *xp = (nng_pipe *) NANO_PTR(xptr);
-  R_Free(xp);
-
-}
-
 // sockets ---------------------------------------------------------------------
 
 SEXP rnng_protocol_open(SEXP protocol, SEXP dial, SEXP listen, SEXP tls, SEXP autostart, SEXP raw) {
@@ -212,43 +204,6 @@ SEXP rnng_reap(SEXP con) {
 
   if (xc)
     return mk_error(xc);
-
-  return nano_success;
-
-}
-
-// pipes -----------------------------------------------------------------------
-
-SEXP rnng_socket_pipe(SEXP id) {
-
-  const int pipeid = nano_integer(id);
-  if (!pipeid)
-    Rf_error("invalid Pipe ID provided");
-
-  nng_pipe *p;
-  SEXP pipe;
-
-  p = R_Calloc(1, nng_pipe);
-  p->id = pipeid;
-
-  PROTECT(pipe = R_MakeExternalPtr(p, nano_PipeSymbol, R_NilValue));
-  R_RegisterCFinalizerEx(pipe, pipe_finalizer, TRUE);
-  NANO_CLASS2(pipe, "nanoPipe", "nano");
-  Rf_setAttrib(pipe, nano_IdSymbol, Rf_ScalarInteger(pipeid));
-
-  UNPROTECT(1);
-  return pipe;
-
-}
-
-SEXP rnng_pipe_close(SEXP pipe) {
-
-  if (NANO_TAG(pipe) != nano_PipeSymbol)
-    Rf_error("'pipe' is not a valid Pipe");
-  nng_pipe *p = (nng_pipe *) NANO_PTR(pipe);
-  const int xc = nng_pipe_close(*p);
-  if (xc)
-    ERROR_RET(xc);
 
   return nano_success;
 

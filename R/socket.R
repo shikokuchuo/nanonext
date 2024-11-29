@@ -115,41 +115,6 @@ socket <- function(protocol = c("bus", "pair", "poly", "push", "pull", "pub",
                    raw = FALSE)
   .Call(rnng_protocol_open, protocol, dial, listen, tls, autostart, raw)
 
-#' Create a Pipe from a Pipe ID
-#'
-#' This function creates a Pipe from the pipe identifier recorded at $aio in a
-#' resolved Aio, for use with compatible functions such as \code{\link{send_aio}}.
-#' A Pipe is a low-level object and it is not normally necessary to deal with
-#' them directly.
-#'
-#' As Pipes are always owned by a Socket, removing (and garbage collecting) a
-#' Pipe does not close it or free its resources. A Pipe may, however, be
-#' explicitly closed.
-#'
-#' @param x integer pipe ID.
-#'
-#' @return A Pipe (object of class \sQuote{nanoPipe}).
-#'
-#' @examples
-#' s <- socket("rep", listen = "inproc://nanonext")
-#' s1 <- socket("req", dial = "inproc://nanonext")
-#'
-#' r <- recv_aio(s, timeout = 500)
-#'
-#' if (!send(s1, "")) {
-#'   call_aio(r)
-#'   p <- socket_pipe(r$aio)
-#'   print(p)
-#'   reap(p)
-#' }
-#'
-#' close(s)
-#' close(s1)
-#'
-#' @export
-#'
-socket_pipe <- function(x) .Call(rnng_socket_pipe, x)
-
 #' Close Connection
 #'
 #' Close Connection on a Socket, Context, Dialer, Listener, Stream, Pipe, or
@@ -175,11 +140,7 @@ socket_pipe <- function(x) .Call(rnng_socket_pipe, x)
 #'
 #' Closing an \sQuote{ncurlSession} closes the http(s) connection.
 #'
-#' As Pipes are owned by the corresponding Socket, removing (and garbage
-#' collecting) a Pipe does not close it or free its resources. A Pipe may,
-#' however, be explicitly closed.
-#'
-#' @param con a Socket, Context, Dialer, Listener, Stream, Pipe, or
+#' @param con a Socket, Context, Dialer, Listener, Stream, or
 #'   \sQuote{ncurlSession}.
 #' @param ... not used.
 #'
@@ -197,12 +158,6 @@ NULL
 #' @export
 #'
 close.nanoSocket <- function(con, ...) invisible(.Call(rnng_close, con))
-
-#' @rdname close
-#' @method close nanoPipe
-#' @export
-#'
-close.nanoPipe <- function(con, ...) invisible(.Call(rnng_pipe_close, con))
 
 #' Reap
 #'
