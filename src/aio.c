@@ -198,10 +198,11 @@ SEXP rnng_aio_get_msg(SEXP env) {
 
     break;
   default:
-    break;
+    res = 0;
+    return mk_error_aio(res, env);
   }
 
-  SEXP out, result;
+  SEXP out, pipe;
   unsigned char *buf;
   size_t sz;
 
@@ -215,9 +216,9 @@ SEXP rnng_aio_get_msg(SEXP env) {
   }
 
   PROTECT(out = nano_decode(buf, sz, raio->mode, NANO_PROT(aio)));
-  PROTECT(result = Rf_ScalarInteger(-res));
+  PROTECT(pipe = Rf_ScalarInteger(-res));
   Rf_defineVar(nano_ValueSymbol, out, env);
-  Rf_defineVar(nano_AioSymbol, result, env);
+  Rf_defineVar(nano_AioSymbol, pipe, env);
 
   UNPROTECT(2);
   return out;
