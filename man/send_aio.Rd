@@ -4,10 +4,10 @@
 \alias{send_aio}
 \title{Send Async}
 \usage{
-send_aio(con, data, mode = c("serial", "raw"), timeout = NULL)
+send_aio(con, data, mode = c("serial", "raw"), timeout = NULL, pipe = 0L)
 }
 \arguments{
-\item{con}{a Socket, Context, Stream or Pipe.}
+\item{con}{a Socket, Context or Stream.}
 
 \item{data}{an object (a vector, if mode = \sQuote{raw}).}
 
@@ -18,6 +18,9 @@ send atomic vectors of any type as a raw byte vector. For Streams,
 
 \item{timeout}{[default NULL] integer value in milliseconds or NULL, which
 applies a socket-specific default, usually the same as no timeout.}
+
+\item{pipe}{[default 0L] only applicable to Sockets using the 'poly' protocol,
+an integer pipe ID if directing the send via a specific pipe.}
 }
 \value{
 A \sQuote{sendAio} (object of class \sQuote{sendAio}) (invisibly).

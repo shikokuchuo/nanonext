@@ -419,9 +419,10 @@ SEXP rnng_unresolved2(SEXP x) {
 
 // send recv aio functions -----------------------------------------------------
 
-SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
+SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP pipe, SEXP clo) {
 
   const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) nano_integer(timeout);
+  const int pipeid = nano_integer(pipe);
   nano_aio *saio;
   SEXP aio, env, fun;
   nano_buf buf;
@@ -444,6 +445,11 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
       goto exitlevel1;
     }
 
+    if (pipeid) {
+      nng_pipe p;
+      p.id = pipeid;
+      nng_msg_set_pipe(msg, p);
+    }
     nng_aio_set_msg(saio->aio, msg);
     nng_aio_set_timeout(saio->aio, dur);
     sock ? nng_send_aio(*(nng_socket *) NANO_PTR(con), saio->aio) :
