@@ -17,7 +17,7 @@ read_monitor(x)
 \item{x}{an external pointer to a monitor.}
 }
 \value{
-For \code{monitor}: an external pointer. \cr
+For \code{monitor}: a Monitor (object of class 'nanoMonitor'). \cr
   For \code{read_monitor}: an integer vector of pipe IDs (positive if added,
   negative if removed), or else NULL if there were no changes since the
   previous read.
@@ -31,7 +31,7 @@ s <- socket("poly")
 s1 <- socket("poly")
 
 m <- monitor(s, cv)
-read_monitor(m)
+m
 
 listen(s)
 dial(s1)

@@ -701,6 +701,8 @@ SEXP rnng_monitor_create(SEXP socket, SEXP cv) {
 
   SEXP xptr = R_MakeExternalPtr(monitor, nano_MonitorSymbol, R_NilValue);
   R_RegisterCFinalizerEx(xptr, monitor_finalizer, TRUE);
+  NANO_CLASS2(xptr, "nanoMonitor", "nano");
+  Rf_setAttrib(xptr, nano_SocketSymbol, Rf_ScalarInteger(nng_socket_id(*sock)));
 
   return xptr;
 

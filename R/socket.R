@@ -197,7 +197,7 @@ reap <- function(con) .Call(rnng_reap, con)
 #' @param sock a Socket.
 #' @param cv a conditionVariable.
 #'
-#' @return For \code{monitor}: an external pointer. \cr
+#' @return For \code{monitor}: a Monitor (object of class 'nanoMonitor'). \cr
 #'   For \code{read_monitor}: an integer vector of pipe IDs (positive if added,
 #'   negative if removed), or else NULL if there were no changes since the
 #'   previous read.
@@ -208,7 +208,7 @@ reap <- function(con) .Call(rnng_reap, con)
 #' s1 <- socket("poly")
 #'
 #' m <- monitor(s, cv)
-#' read_monitor(m)
+#' m
 #'
 #' listen(s)
 #' dial(s1)
