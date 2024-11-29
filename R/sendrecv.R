@@ -31,6 +31,8 @@
 #'   FALSE to return immediately even if unsuccessful (e.g. if no connection is
 #'   available), or else an integer value specifying the maximum time to block
 #'   in milliseconds, after which the operation will time out.
+#' @param pipe [default 0L] only applicable to Sockets using the 'poly'
+#'   protocol, an integer pipe ID if directing the send via a specific pipe.
 #'
 #' @return An integer exit code (zero on success).
 #'
@@ -84,8 +86,8 @@
 #'
 #' @export
 #'
-send <- function(con, data, mode = c("serial", "raw"), block = NULL)
-  .Call(rnng_send, con, data, mode, block)
+send <- function(con, data, mode = c("serial", "raw"), block = NULL, pipe = 0L)
+  .Call(rnng_send, con, data, mode, block, pipe)
 
 #' Receive
 #'

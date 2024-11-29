@@ -19,8 +19,8 @@ send atomic vectors of any type as a raw byte vector. For Streams,
 \item{timeout}{[default NULL] integer value in milliseconds or NULL, which
 applies a socket-specific default, usually the same as no timeout.}
 
-\item{pipe}{[default 0L] only applicable to Sockets using the 'poly' protocol,
-an integer pipe ID if directing the send via a specific pipe.}
+\item{pipe}{[default 0L] only applicable to Sockets using the 'poly'
+protocol, an integer pipe ID if directing the send via a specific pipe.}
 }
 \value{
 A \sQuote{sendAio} (object of class \sQuote{sendAio}) (invisibly).
