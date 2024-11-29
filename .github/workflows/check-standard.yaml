@@ -2,9 +2,7 @@
 # Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
 on:
   push:
-    branches: [main, dev]
   pull_request:
-    branches: [main, dev]
 
 name: R-CMD-check
 
@@ -18,13 +16,106 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - {os: macOS-latest,   r: 'release'}
+          - {os: windows-latest, r: 'devel', http-user-agent: 'release'}
+          - {os: windows-latest, r: 'devel', http-user-agent: 'release'}
+          - {os: windows-latest, r: 'devel', http-user-agent: 'release'}
+          - {os: windows-latest, r: 'devel', http-user-agent: 'release'}
+          - {os: windows-latest, r: 'devel', http-user-agent: 'release'}
           - {os: windows-latest, r: 'release'}
+          - {os: windows-latest, r: 'release'}
+          - {os: windows-latest, r: 'release'}
+          - {os: windows-latest, r: 'release'}
+          - {os: windows-latest, r: 'release'}
+          - {os: windows-latest, r: 'oldrel-1'}
+          - {os: windows-latest, r: 'oldrel-1'}
+          - {os: windows-latest, r: 'oldrel-1'}
+          - {os: windows-latest, r: 'oldrel-1'}
+          - {os: windows-latest, r: 'oldrel-1'}
           - {os: windows-latest, r: 'oldrel-2'}
-          - {os: ubuntu-latest,  r: 'devel', http-user-agent: 'release'}
-          - {os: ubuntu-latest,  r: 'release'}
-          - {os: ubuntu-latest,  r: 'oldrel-1'}
-          - {os: ubuntu-latest,  r: 'oldrel-4'}
+          - {os: windows-latest, r: 'oldrel-2'}
+          - {os: windows-latest, r: 'oldrel-2'}
+          - {os: windows-latest, r: 'oldrel-2'}
+          - {os: windows-latest, r: 'oldrel-2'}
+          - {os: windows-latest, r: 'devel', http-user-agent: 'release'}
+          - {os: windows-latest, r: 'devel', http-user-agent: 'release'}
+          - {os: windows-latest, r: 'devel', http-user-agent: 'release'}
+          - {os: windows-latest, r: 'devel', http-user-agent: 'release'}
+          - {os: windows-latest, r: 'devel', http-user-agent: 'release'}
+          - {os: windows-latest, r: 'release'}
+          - {os: windows-latest, r: 'release'}
+          - {os: windows-latest, r: 'release'}
+          - {os: windows-latest, r: 'release'}
+          - {os: windows-latest, r: 'release'}
+          - {os: windows-latest, r: 'oldrel-1'}
+          - {os: windows-latest, r: 'oldrel-1'}
+          - {os: windows-latest, r: 'oldrel-1'}
+          - {os: windows-latest, r: 'oldrel-1'}
+          - {os: windows-latest, r: 'oldrel-1'}
+          - {os: windows-latest, r: 'oldrel-2'}
+          - {os: windows-latest, r: 'oldrel-2'}
+          - {os: windows-latest, r: 'oldrel-2'}
+          - {os: windows-latest, r: 'oldrel-2'}
+          - {os: windows-latest, r: 'oldrel-2'}
+          - {os: windows-latest, r: 'devel', http-user-agent: 'release'}
+          - {os: windows-latest, r: 'devel', http-user-agent: 'release'}
+          - {os: windows-latest, r: 'devel', http-user-agent: 'release'}
+          - {os: windows-latest, r: 'devel', http-user-agent: 'release'}
+          - {os: windows-latest, r: 'devel', http-user-agent: 'release'}
+          - {os: windows-latest, r: 'release'}
+          - {os: windows-latest, r: 'release'}
+          - {os: windows-latest, r: 'release'}
+          - {os: windows-latest, r: 'release'}
+          - {os: windows-latest, r: 'release'}
+          - {os: windows-latest, r: 'oldrel-1'}
+          - {os: windows-latest, r: 'oldrel-1'}
+          - {os: windows-latest, r: 'oldrel-1'}
+          - {os: windows-latest, r: 'oldrel-1'}
+          - {os: windows-latest, r: 'oldrel-1'}
+          - {os: windows-latest, r: 'oldrel-2'}
+          - {os: windows-latest, r: 'oldrel-2'}
+          - {os: windows-latest, r: 'oldrel-2'}
+          - {os: windows-latest, r: 'oldrel-2'}
+          - {os: windows-latest, r: 'oldrel-2'}
+          - {os: windows-latest, r: 'devel', http-user-agent: 'release'}
+          - {os: windows-latest, r: 'devel', http-user-agent: 'release'}
+          - {os: windows-latest, r: 'devel', http-user-agent: 'release'}
+          - {os: windows-latest, r: 'devel', http-user-agent: 'release'}
+          - {os: windows-latest, r: 'devel', http-user-agent: 'release'}
+          - {os: windows-latest, r: 'release'}
+          - {os: windows-latest, r: 'release'}
+          - {os: windows-latest, r: 'release'}
+          - {os: windows-latest, r: 'release'}
+          - {os: windows-latest, r: 'release'}
+          - {os: windows-latest, r: 'oldrel-1'}
+          - {os: windows-latest, r: 'oldrel-1'}
+          - {os: windows-latest, r: 'oldrel-1'}
+          - {os: windows-latest, r: 'oldrel-1'}
+          - {os: windows-latest, r: 'oldrel-1'}
+          - {os: windows-latest, r: 'oldrel-2'}
+          - {os: windows-latest, r: 'oldrel-2'}
+          - {os: windows-latest, r: 'oldrel-2'}
+          - {os: windows-latest, r: 'oldrel-2'}
+          - {os: windows-latest, r: 'oldrel-2'}
+          - {os: windows-latest, r: 'devel', http-user-agent: 'release'}
+          - {os: windows-latest, r: 'devel', http-user-agent: 'release'}
+          - {os: windows-latest, r: 'devel', http-user-agent: 'release'}
+          - {os: windows-latest, r: 'devel', http-user-agent: 'release'}
+          - {os: windows-latest, r: 'devel', http-user-agent: 'release'}
+          - {os: windows-latest, r: 'release'}
+          - {os: windows-latest, r: 'release'}
+          - {os: windows-latest, r: 'release'}
+          - {os: windows-latest, r: 'release'}
+          - {os: windows-latest, r: 'release'}
+          - {os: windows-latest, r: 'oldrel-1'}
+          - {os: windows-latest, r: 'oldrel-1'}
+          - {os: windows-latest, r: 'oldrel-1'}
+          - {os: windows-latest, r: 'oldrel-1'}
+          - {os: windows-latest, r: 'oldrel-1'}
+          - {os: windows-latest, r: 'oldrel-2'}
+          - {os: windows-latest, r: 'oldrel-2'}
+          - {os: windows-latest, r: 'oldrel-2'}
+          - {os: windows-latest, r: 'oldrel-2'}
+          - {os: windows-latest, r: 'oldrel-2'}
 
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
