@@ -17,10 +17,10 @@ read_monitor(x)
 \item{x}{an external pointer to a monitor.}
 }
 \value{
-For monitor: an external pointer. \cr
-  For read_monitor: an integer vector of pipe IDs (positive if added,
-  negative if removed), or else integer zero if there were no changes since
-  the previous read.
+For \code{monitor}: an external pointer. \cr
+  For \code{read_monitor}: an integer vector of pipe IDs (positive if added,
+  negative if removed), or else NULL if there were no changes since the
+  previous read.
 }
 \description{
 This function monitors pipe additions and removals from a socket.

@@ -727,7 +727,7 @@ SEXP rnng_monitor_read(SEXP x) {
   nng_mtx_unlock(mtx);
 
   if (!updates)
-    out = nano_success;
+    out = R_NilValue;
 
   return out;
 

@@ -197,10 +197,10 @@ reap <- function(con) .Call(rnng_reap, con)
 #' @param sock a Socket.
 #' @param cv a conditionVariable.
 #'
-#' @return For monitor: an external pointer. \cr
-#'   For read_monitor: an integer vector of pipe IDs (positive if added,
-#'   negative if removed), or else integer zero if there were no changes since
-#'   the previous read.
+#' @return For \code{monitor}: an external pointer. \cr
+#'   For \code{read_monitor}: an integer vector of pipe IDs (positive if added,
+#'   negative if removed), or else NULL if there were no changes since the
+#'   previous read.
 #'
 #' @examples
 #' cv <- cv()
