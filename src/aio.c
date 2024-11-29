@@ -60,7 +60,8 @@ static void raio_complete(void *arg) {
   if (res == 0) {
     nng_msg *msg = nng_aio_get_msg(raio->aio);
     raio->data = msg;
-    res = -nng_msg_get_pipe(msg).id;
+    nng_pipe p = nng_msg_get_pipe(msg);
+    res = - (int) p.id;
   }
 
   raio->result = res;
@@ -419,9 +420,10 @@ SEXP rnng_unresolved2(SEXP x) {
 
 // send recv aio functions -----------------------------------------------------
 
-SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
+SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP pipe, SEXP clo) {
 
   const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) nano_integer(timeout);
+  const int pipeid = nano_integer(pipe);
   nano_aio *saio;
   SEXP aio, env, fun;
   nano_buf buf;
@@ -444,6 +446,11 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
       goto exitlevel1;
     }
 
+    if (pipeid) {
+      nng_pipe p;
+      p.id = (uint32_t) pipeid;
+      nng_msg_set_pipe(msg, p);
+    }
     nng_aio_set_msg(saio->aio, msg);
     nng_aio_set_timeout(saio->aio, dur);
     sock ? nng_send_aio(*(nng_socket *) NANO_PTR(con), saio->aio) :
@@ -481,36 +488,8 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP clo) {
     PROTECT(aio = R_MakeExternalPtr(saio, nano_AioSymbol, R_NilValue));
     R_RegisterCFinalizerEx(aio, iaio_finalizer, TRUE);
 
-  } else if (ptrtag == nano_PipeSymbol) {
-
-    nng_pipe *p = (nng_pipe *) NANO_PTR(con);
-    nng_socket sock = nng_pipe_socket(*p);
-
-    nano_encodes(mode) == 2 ? nano_encode(&buf, data) : nano_serialize(&buf, data, NANO_PROT(con));
-    nng_msg *msg;
-    saio = R_Calloc(1, nano_aio);
-    saio->type = SENDAIO;
-
-    if ((xc = nng_msg_alloc(&msg, 0)))
-      goto exitlevel1;
-
-    if ((xc = nng_msg_append(msg, buf.buf, buf.cur)) ||
-        (xc = nng_aio_alloc(&saio->aio, saio_complete, saio))) {
-      nng_msg_free(msg);
-      goto exitlevel1;
-    }
-
-    nng_msg_set_pipe(msg, *p);
-    nng_aio_set_msg(saio->aio, msg);
-    nng_aio_set_timeout(saio->aio, dur);
-    nng_send_aio(sock, saio->aio);
-    NANO_FREE(buf);
-
-    PROTECT(aio = R_MakeExternalPtr(saio, nano_AioSymbol, R_NilValue));
-    R_RegisterCFinalizerEx(aio, saio_finalizer, TRUE);
-
-  } else {
-    NANO_ERROR("'con' is not a valid Socket, Context, Stream or Pipe");
+  }  else {
+    NANO_ERROR("'con' is not a valid Socket, Context, or Stream");
   }
 
   PROTECT(env = R_NewEnv(R_NilValue, 0, 0));

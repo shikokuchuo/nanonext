@@ -8,7 +8,6 @@
 \alias{close.ncurlSession}
 \alias{close}
 \alias{close.nanoSocket}
-\alias{close.nanoPipe}
 \alias{close.nanoStream}
 \title{Close Connection}
 \usage{
@@ -22,12 +21,10 @@
 
 \method{close}{nanoSocket}(con, ...)
 
-\method{close}{nanoPipe}(con, ...)
-
 \method{close}{nanoStream}(con, ...)
 }
 \arguments{
-\item{con}{a Socket, Context, Dialer, Listener, Stream, Pipe, or
+\item{con}{a Socket, Context, Dialer, Listener, Stream, or
 \sQuote{ncurlSession}.}
 
 \item{...}{not used.}
@@ -59,10 +56,6 @@ Closing a Stream: if any send or receive operations are pending, they will be
 terminated and any new operations will fail after the connection is closed.
 
 Closing an \sQuote{ncurlSession} closes the http(s) connection.
-
-As Pipes are owned by the corresponding Socket, removing (and garbage
-collecting) a Pipe does not close it or free its resources. A Pipe may,
-however, be explicitly closed.
 }
 \seealso{
 \code{\link{reap}}

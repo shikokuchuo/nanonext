@@ -1,14 +1,15 @@
-# nanonext 1.3.2.9005 (development)
+# nanonext 1.3.2.9006 (development)
 
 #### New Features
 
-* `opt()` gains the ability to retrieve options from a Pipe.
-* A 'recvAio' now records the integer pipe ID, where successful, at `$aio` upon resolution.
-* `socket_pipe()` creates a 'nanoPipe' object from an integer pipe ID.
+* New interface to Pipes moves to using integer pipe IDs rather than Pipe (external pointer) objects:
+  + `send_aio()` gains the argument 'pipe' which accepts an integer pipe ID for directed sends (currently only supported by Sockets using the 'poly' protocol).
+  + A 'recvAio' now records the integer pipe ID, where successful, at `$aio` upon resolution.
+  + Pipe objects (of class 'nanoPipe') are obsoleted.
 
 #### Updates
 
-* `collect_aio()` is superseded by `socket_pipe()` and is removed.
+* `collect_aio()` is removed given the pipe interface changes.
 
 # nanonext 1.3.2
 
