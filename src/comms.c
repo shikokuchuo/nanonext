@@ -305,52 +305,17 @@ SEXP rnng_listener_close(SEXP listener) {
 
 // send and recv ---------------------------------------------------------------
 
-SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
+SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block, SEXP pipe) {
 
   const int flags = block == R_NilValue ? NNG_DURATION_DEFAULT : TYPEOF(block) == LGLSXP ? 0 : nano_integer(block);
   nano_buf buf;
-  int xc;
+  int sock, xc;
 
   const SEXP ptrtag = NANO_TAG(con);
-  if (ptrtag == nano_SocketSymbol) {
+  if ((sock = ptrtag == nano_SocketSymbol) || ptrtag == nano_ContextSymbol) {
 
+    const int pipeid = nano_integer(pipe);
     nano_encodes(mode) == 2 ? nano_encode(&buf, data) : nano_serialize(&buf, data, NANO_PROT(con));
-    nng_socket *sock = (nng_socket *) NANO_PTR(con);
-
-    if (flags <= 0) {
-
-      xc = nng_send(*sock, buf.buf, buf.cur, flags ? NNG_FLAG_NONBLOCK : (NANO_INTEGER(block) != 1) * NNG_FLAG_NONBLOCK);
-      NANO_FREE(buf);
-
-    } else {
-
-      nng_msg *msgp;
-      nng_aio *aiop;
-
-      if ((xc = nng_msg_alloc(&msgp, 0)))
-        goto exitlevel1;
-
-      if ((xc = nng_msg_append(msgp, buf.buf, buf.cur)) ||
-          (xc = nng_aio_alloc(&aiop, NULL, NULL))) {
-        nng_msg_free(msgp);
-        goto exitlevel1;
-      }
-
-      nng_aio_set_msg(aiop, msgp);
-      nng_aio_set_timeout(aiop, flags);
-      nng_send_aio(*sock, aiop);
-      NANO_FREE(buf);
-      nng_aio_wait(aiop);
-      if ((xc = nng_aio_result(aiop)))
-        nng_msg_free(nng_aio_get_msg(aiop));
-      nng_aio_free(aiop);
-
-    }
-
-  } else if (ptrtag == nano_ContextSymbol) {
-
-    nano_encodes(mode) == 2 ? nano_encode(&buf, data) : nano_serialize(&buf, data, NANO_PROT(con));
-    nng_ctx *ctxp = (nng_ctx *) NANO_PTR(con);
     nng_msg *msgp;
 
     if (flags <= 0) {
@@ -358,8 +323,15 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
       if ((xc = nng_msg_alloc(&msgp, 0)))
         goto exitlevel1;
 
+      if (pipeid) {
+        nng_pipe p;
+        p.id = (uint32_t) pipeid;
+        nng_msg_set_pipe(msgp, p);
+      }
+
       if ((xc = nng_msg_append(msgp, buf.buf, buf.cur)) ||
-          (xc = nng_ctx_sendmsg(*ctxp, msgp, flags ? NNG_FLAG_NONBLOCK : (NANO_INTEGER(block) != 1) * NNG_FLAG_NONBLOCK))) {
+          (xc = sock ? nng_sendmsg(*(nng_socket *) NANO_PTR(con), msgp, flags ? NNG_FLAG_NONBLOCK : (NANO_INTEGER(block) != 1) * NNG_FLAG_NONBLOCK) :
+                       nng_ctx_sendmsg(*(nng_ctx *) NANO_PTR(con), msgp, flags ? NNG_FLAG_NONBLOCK : (NANO_INTEGER(block) != 1) * NNG_FLAG_NONBLOCK))) {
         nng_msg_free(msgp);
         goto exitlevel1;
       }
@@ -373,6 +345,12 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
       if ((xc = nng_msg_alloc(&msgp, 0)))
         goto exitlevel1;
 
+      if (pipeid) {
+        nng_pipe p;
+        p.id = (uint32_t) pipeid;
+        nng_msg_set_pipe(msgp, p);
+      }
+
       if ((xc = nng_msg_append(msgp, buf.buf, buf.cur)) ||
           (xc = nng_aio_alloc(&aiop, NULL, NULL))) {
         nng_msg_free(msgp);
@@ -381,7 +359,8 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block) {
 
       nng_aio_set_msg(aiop, msgp);
       nng_aio_set_timeout(aiop, flags);
-      nng_ctx_send(*ctxp, aiop);
+      sock ? nng_send_aio(*(nng_socket *) NANO_PTR(con), aiop) :
+             nng_ctx_send(*(nng_ctx *) NANO_PTR(con), aiop);
       NANO_FREE(buf);
       nng_aio_wait(aiop);
       if ((xc = nng_aio_result(aiop)))

@@ -38,8 +38,6 @@
 #' @param con a Socket, Context or Stream.
 #' @param timeout [default NULL] integer value in milliseconds or NULL, which
 #'   applies a socket-specific default, usually the same as no timeout.
-#' @param pipe [default 0L] only applicable to Sockets using the 'poly' protocol,
-#'   an integer pipe ID if directing the send via a specific pipe.
 #'
 #' @return A \sQuote{sendAio} (object of class \sQuote{sendAio}) (invisibly).
 #'

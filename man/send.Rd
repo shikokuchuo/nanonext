@@ -4,7 +4,7 @@
 \alias{send}
 \title{Send}
 \usage{
-send(con, data, mode = c("serial", "raw"), block = NULL)
+send(con, data, mode = c("serial", "raw"), block = NULL, pipe = 0L)
 }
 \arguments{
 \item{con}{a Socket, Context or Stream.}
@@ -21,6 +21,9 @@ send atomic vectors of any type as a raw byte vector. For Streams,
 FALSE to return immediately even if unsuccessful (e.g. if no connection is
 available), or else an integer value specifying the maximum time to block
 in milliseconds, after which the operation will time out.}
+
+\item{pipe}{[default 0L] only applicable to Sockets using the 'poly'
+protocol, an integer pipe ID if directing the send via a specific pipe.}
 }
 \value{
 An integer exit code (zero on success).

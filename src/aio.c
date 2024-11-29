@@ -440,17 +440,18 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP pipe, SEXP
     if ((xc = nng_msg_alloc(&msg, 0)))
       goto exitlevel1;
 
+    if (pipeid) {
+      nng_pipe p;
+      p.id = (uint32_t) pipeid;
+      nng_msg_set_pipe(msg, p);
+    }
+
     if ((xc = nng_msg_append(msg, buf.buf, buf.cur)) ||
         (xc = nng_aio_alloc(&saio->aio, saio_complete, saio))) {
       nng_msg_free(msg);
       goto exitlevel1;
     }
 
-    if (pipeid) {
-      nng_pipe p;
-      p.id = (uint32_t) pipeid;
-      nng_msg_set_pipe(msg, p);
-    }
     nng_aio_set_msg(saio->aio, msg);
     nng_aio_set_timeout(saio->aio, dur);
     sock ? nng_send_aio(*(nng_socket *) NANO_PTR(con), saio->aio) :
