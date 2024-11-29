@@ -9,7 +9,7 @@ ncurl Session."><meta property="og:image" content="https://shikokuchuo.net/nanon
 
     <a class="navbar-brand me-2" href="../index.html">nanonext</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.2.9005</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.2.9006</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -64,9 +64,6 @@ ncurl Session.</p>
 <span><span class="co"># S3 method for class 'nanoSocket'</span></span>
 <span><span class="fu">close</span><span class="op">(</span><span class="va">con</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># S3 method for class 'nanoPipe'</span></span>
-<span><span class="fu">close</span><span class="op">(</span><span class="va">con</span>, <span class="va">...</span><span class="op">)</span></span>
-<span></span>
 <span><span class="co"># S3 method for class 'nanoStream'</span></span>
 <span><span class="fu">close</span><span class="op">(</span><span class="va">con</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -76,7 +73,7 @@ ncurl Session.</p>
 
 
 <dl><dt id="arg-con">con<a class="anchor" aria-label="anchor" href="#arg-con"></a></dt>
-<dd><p>a Socket, Context, Dialer, Listener, Stream, Pipe, or
+<dd><p>a Socket, Context, Dialer, Listener, Stream, or
 ‘ncurlSession’.</p></dd>
 
 
@@ -104,9 +101,6 @@ completely transmitted.</p>
 <p>Closing a Stream: if any send or receive operations are pending, they will be
 terminated and any new operations will fail after the connection is closed.</p>
 <p>Closing an ‘ncurlSession’ closes the http(s) connection.</p>
-<p>As Pipes are owned by the corresponding Socket, removing (and garbage
-collecting) a Pipe does not close it or free its resources. A Pipe may,
-however, be explicitly closed.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
