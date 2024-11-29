@@ -195,9 +195,6 @@ SEXP rnng_reap(SEXP con) {
   } else if (ptrtag == nano_DialerSymbol) {
     xc = nng_dialer_close(*(nng_dialer *) NANO_PTR(con));
 
-  } else if (ptrtag == nano_PipeSymbol) {
-    xc = nng_pipe_close(*(nng_pipe *) NANO_PTR(con));
-
   } else {
     xc = 3;
   }

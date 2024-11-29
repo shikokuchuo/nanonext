@@ -2,10 +2,9 @@
 
 #### New Features
 
-* New interface to Pipes:
-  + `send_aio()` gains the argument 'pipe' which accepts an integer pipe ID for directed sends (supported only by Sockets using the 'poly' protocol).
+* New interface to Pipes moves to using integer pipe IDs rather than Pipe (external pointer) objects:
+  + `send_aio()` gains the argument 'pipe' which accepts an integer pipe ID for directed sends (currently only supported by Sockets using the 'poly' protocol).
   + A 'recvAio' now records the integer pipe ID, where successful, at `$aio` upon resolution.
-  + `opt()` gains the ability to retrieve options from a Pipe.
   + Pipe objects (of class 'nanoPipe') are obsoleted.
 
 #### Updates
