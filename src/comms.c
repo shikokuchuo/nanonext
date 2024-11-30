@@ -314,7 +314,7 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block, SEXP pipe) {
   const SEXP ptrtag = NANO_TAG(con);
   if ((sock = ptrtag == nano_SocketSymbol) || ptrtag == nano_ContextSymbol) {
 
-    const int pipeid = nano_integer(pipe);
+    const int pipeid = sock ? nano_integer(pipe) : 0;
     nano_encodes(mode) == 2 ? nano_encode(&buf, data) : nano_serialize(&buf, data, NANO_PROT(con));
     nng_msg *msgp;
 
