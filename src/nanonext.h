@@ -336,7 +336,7 @@ SEXP rnng_dispatcher_socket(SEXP, SEXP, SEXP);
 SEXP rnng_eval_safe(SEXP);
 SEXP rnng_fini(void);
 SEXP rnng_get_opt(SEXP, SEXP);
-SEXP rnng_interrupt_switch(void);
+SEXP rnng_interrupt_switch(SEXP);
 SEXP rnng_is_error_value(SEXP);
 SEXP rnng_is_nul_byte(SEXP);
 SEXP rnng_listen(SEXP, SEXP, SEXP, SEXP, SEXP);

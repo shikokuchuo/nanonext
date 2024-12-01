@@ -347,6 +347,24 @@ serial_config <- function(class, sfunc, ufunc, vec = FALSE)
 #'
 .advance <- function() .Call(rnng_advance_rng_state)
 
+#' Interrupt Switch
+#'
+#' Sets whether async receive completions trigger an interrupt.
+#' Internal package function.
+#'
+#' @param x logical value.
+#'
+#' @return The logical value 'x' supplied.
+#'
+#' @examples
+#' .interrupt()
+#' .interrupt(FALSE)
+#'
+#' @keywords internal
+#' @export
+#'
+.interrupt <- function(x = TRUE) .Call(rnng_interrupt_switch, x)
+
 #' Internal Package Function
 #'
 #' Only present for cleaning up after running examples and tests. Do not attempt

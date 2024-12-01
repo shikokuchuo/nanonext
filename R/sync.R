@@ -335,19 +335,3 @@ unlock <- function(socket) invisible(.Call(rnng_socket_unlock, socket))
 #' @export
 #'
 .online <- function(sock) .Call(rnng_read_online, sock)
-
-#' Interrupt Switch
-#'
-#' Toggles on or off whether async receive completions trigger an interrupt.
-#' Internal package function.
-#'
-#' @return NULL.
-#'
-#' @examples
-#' .interrupt()
-#' .interrupt()
-#'
-#' @keywords internal
-#' @export
-#'
-.interrupt <- function() .Call(rnng_interrupt_switch)

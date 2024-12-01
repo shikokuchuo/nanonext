@@ -667,13 +667,6 @@ SEXP rnng_socket_unlock(SEXP socket) {
 
 }
 
-SEXP rnng_interrupt_switch(void) {
-
-  nano_interrupt = nano_interrupt ? 0 : 1;
-  return R_NilValue;
-
-}
-
 // monitors --------------------------------------------------------------------
 
 SEXP rnng_monitor_create(SEXP socket, SEXP cv) {
