@@ -589,10 +589,10 @@ SEXP rnng_serial_config(SEXP klass, SEXP sfunc, SEXP ufunc, SEXP vec) {
 
 }
 
-SEXP rnng_set_marker(void) {
+SEXP rnng_set_marker(SEXP x) {
 
-  special_bit = special_bit ? (uint8_t) 0 : (uint8_t) 1;
-  return R_NilValue;
+  special_bit = (uint8_t) NANO_INTEGER(x);
+  return x;
 
 }
 

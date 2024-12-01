@@ -316,18 +316,20 @@ serial_config <- function(class, sfunc, ufunc, vec = FALSE)
 
 #' Set Serialization Marker
 #'
-#' Toggles the serialization marker on or off. Internal package function.
+#' Internal package function.
 #'
-#' @return NULL.
+#' @param x logical value.
+#'
+#' @return The logical value 'x' supplied.
 #'
 #' @examples
 #' .mark()
-#' .mark()
+#' .mark(FALSE)
 #'
 #' @keywords internal
 #' @export
 #'
-.mark <- function() .Call(rnng_set_marker)
+.mark <- function(x = TRUE) .Call(rnng_set_marker, x)
 
 #' Advances the RNG State
 #'
