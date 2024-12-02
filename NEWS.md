@@ -1,4 +1,4 @@
-# nanonext 1.3.2.9011 (development)
+# nanonext 1.3.2.9012 (development)
 
 #### New Features
 
@@ -10,7 +10,7 @@
 
 #### Updates
 
-* `collect_aio()` is removed given the pipe interface changes.
+* `collect_pipe()` is removed given the pipe interface changes.
 
 # nanonext 1.3.2
 

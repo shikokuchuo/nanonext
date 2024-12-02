@@ -170,14 +170,6 @@ void raio_complete_signal(void *arg) {
   nng_cv_wake(cv);
   nng_mtx_unlock(mtx);
 
-  if (nano_interrupt) {
-#ifdef _WIN32
-    UserBreak = 1;
-#else
-    kill(getpid(), SIGINT);
-#endif
-  }
-
 }
 
 void sendaio_complete(void *arg) {
