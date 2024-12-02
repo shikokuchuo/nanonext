@@ -123,7 +123,7 @@ static SEXP nano_outHook(SEXP x, SEXP fun) {
 
 // functions with forward definitions in nanonext.h ----------------------------
 
-void raio_complete(void *arg) {
+void raio_complete_interrupt(void *arg) {
 
   nano_aio *raio = (nano_aio *) arg;
   int res = nng_aio_result(raio->aio);
