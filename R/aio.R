@@ -361,7 +361,7 @@ as.promise.recvAio <- function(x) {
 
   if (is.null(promise)) {
 
-    promise <- if (.unresolved(x)) {
+    promise <- if (unresolved(x)) {
 
       promises::promise(
         function(resolve, reject) .keep(x, environment())
@@ -370,7 +370,7 @@ as.promise.recvAio <- function(x) {
           if (is_error_value(value)) stop(nng_error(value)) else value
       )
     } else {
-      value <- collect_aio(x)
+      value <- .subset2(x, "value")
       promises::promise(
         function(resolve, reject)
           if (is_error_value(value)) reject(nng_error(value)) else resolve(value)
