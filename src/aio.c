@@ -53,6 +53,24 @@ static void isaio_complete(void *arg) {
 
 }
 
+static void raio_complete(void *arg) {
+
+  nano_aio *raio = (nano_aio *) arg;
+  int res = nng_aio_result(raio->aio);
+  if (res == 0) {
+    nng_msg *msg = nng_aio_get_msg(raio->aio);
+    raio->data = msg;
+    nng_pipe p = nng_msg_get_pipe(msg);
+    res = - (int) p.id;
+  }
+
+  raio->result = res;
+
+  if (raio->cb != NULL)
+    later2(raio_invoke_cb, raio->cb);
+
+}
+
 static void iraio_complete(void *arg) {
 
   nano_aio *iaio = (nano_aio *) arg;
@@ -500,7 +518,14 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP pipe, SEXP
 SEXP rnng_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP cvar, SEXP bytes, SEXP clo) {
 
   const nng_duration dur = timeout == R_NilValue ? NNG_DURATION_DEFAULT : (nng_duration) nano_integer(timeout);
-  const int signal = NANO_TAG(cvar) == nano_CvSymbol;
+  int signal, interrupt;
+  if (cvar == R_NilValue) {
+    signal = 0;
+    interrupt = 0;
+  } else {
+    signal = NANO_TAG(cvar) == nano_CvSymbol;
+    interrupt = 1 - signal;
+  }
   nano_cv *ncv = signal ? (nano_cv *) NANO_PTR(cvar) : NULL;
   nano_aio *raio;
   SEXP aio, env, fun;
@@ -516,7 +541,7 @@ SEXP rnng_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP cvar, SEXP bytes, SEX
     raio->mode = mod;
     raio->cb = NULL;
 
-    if ((xc = nng_aio_alloc(&raio->aio, signal ? raio_complete_signal : raio_complete, raio)))
+    if ((xc = nng_aio_alloc(&raio->aio, signal ? raio_complete_signal : interrupt ? raio_complete_interrupt : raio_complete, raio)))
       goto exitlevel1;
 
     nng_aio_set_timeout(raio->aio, dur);
