@@ -123,6 +123,32 @@ static SEXP nano_outHook(SEXP x, SEXP fun) {
 
 // functions with forward definitions in nanonext.h ----------------------------
 
+void raio_complete(void *arg) {
+
+  nano_aio *raio = (nano_aio *) arg;
+  int res = nng_aio_result(raio->aio);
+  if (res == 0) {
+    nng_msg *msg = nng_aio_get_msg(raio->aio);
+    raio->data = msg;
+    nng_pipe p = nng_msg_get_pipe(msg);
+    res = - (int) p.id;
+  }
+
+  raio->result = res;
+
+  if (raio->cb != NULL)
+    later2(raio_invoke_cb, raio->cb);
+
+  if (nano_interrupt) {
+#ifdef _WIN32
+    UserBreak = 1;
+#else
+    kill(getpid(), SIGINT);
+#endif
+  }
+
+}
+
 void raio_complete_signal(void *arg) {
 
   nano_aio *raio = (nano_aio *) arg;

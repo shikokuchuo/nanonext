@@ -53,24 +53,6 @@ static void isaio_complete(void *arg) {
 
 }
 
-static void raio_complete(void *arg) {
-
-  nano_aio *raio = (nano_aio *) arg;
-  int res = nng_aio_result(raio->aio);
-  if (res == 0) {
-    nng_msg *msg = nng_aio_get_msg(raio->aio);
-    raio->data = msg;
-    nng_pipe p = nng_msg_get_pipe(msg);
-    res = - (int) p.id;
-  }
-
-  raio->result = res;
-
-  if (raio->cb != NULL)
-    later2(raio_invoke_cb, raio->cb);
-
-}
-
 static void iraio_complete(void *arg) {
 
   nano_aio *iaio = (nano_aio *) arg;

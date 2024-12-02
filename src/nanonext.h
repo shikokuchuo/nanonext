@@ -283,6 +283,7 @@ SEXP R_mkClosure(SEXP, SEXP, SEXP);
 SEXP nano_findVarInFrame(const SEXP, const SEXP);
 SEXP nano_PreserveObject(const SEXP);
 void nano_ReleaseObject(SEXP);
+void raio_complete(void *);
 void raio_complete_signal(void *);
 void sendaio_complete(void *);
 void cv_finalizer(SEXP);
