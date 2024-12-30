@@ -1,8 +1,9 @@
-# nanonext 1.4.0.9000 (development)
+# nanonext 1.4.0.9001 (development)
 
 #### Updates
 
 * Removes partial matching from using `$`, `[[` or `[` on an object inheriting from class 'nano'.
+* Updates bundled 'libnng' to v1.10.0 pre-release.
 
 # nanonext 1.4.0
 
