@@ -409,18 +409,18 @@ print.tlsConfig <- function(x, ...) {
 
 #' @export
 #'
-`[[.nano` <- function(x, i, exact = FALSE)
+`[[.nano` <- function(x, i, exact = TRUE)
   attr(x, i, exact = exact)
 
 #' @export
 #'
-`[.nano` <- function(x, i, exact = FALSE)
+`[.nano` <- function(x, i, exact = TRUE)
   attr(x, deparse(substitute(i)), exact = exact)
 
 #' @export
 #'
 `$.nano` <- function(x, name)
-  attr(x, name, exact = FALSE)
+  attr(x, name, exact = TRUE)
 
 #' @export
 #'

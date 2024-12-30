@@ -1,5 +1,9 @@
 # nanonext 1.4.0.9000 (development)
 
+#### Updates
+
+* Removes partial matching from using `$`, `[[` or `[` on an object inheriting from class 'nano'.
+
 # nanonext 1.4.0
 
 #### New Features
