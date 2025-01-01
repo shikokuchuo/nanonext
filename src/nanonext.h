@@ -81,6 +81,7 @@ typedef struct nano_handle_s {
 #include <errno.h>
 #endif
 
+#include <stdint.h>
 #ifndef R_NO_REMAP
 #define R_NO_REMAP
 #endif
