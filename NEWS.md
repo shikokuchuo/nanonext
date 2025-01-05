@@ -1,5 +1,9 @@
 # nanonext 1.4.0.9000 (development)
 
+#### New Features
+
+* Send and receive functions gain `mode = qs2`, to take advantage of serialization from the qs2 package where available.
+
 #### Updates
 
 * Removes partial matching from using `$`, `[[` or `[` on an object inheriting from class 'nano'.

@@ -315,7 +315,19 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block, SEXP pipe) {
   if ((sock = ptrtag == nano_SocketSymbol) || ptrtag == nano_ContextSymbol) {
 
     const int pipeid = sock ? nano_integer(pipe) : 0;
-    nano_encodes(mode) == 2 ? nano_encode(&buf, data) : nano_serialize(&buf, data, NANO_PROT(con));
+    const int mod = nano_encodes(mode);
+    switch (mod) {
+    case 2:
+      nano_encode(&buf, data);
+      break;
+    case 3:
+      nano_qs2_loaded();
+      buf.buf = qs2_serialize(data, &buf.cur, 3, true, 1);
+      break;
+    default:
+      nano_serialize(&buf, data, NANO_PROT(con));
+    }
+
     nng_msg *msgp;
 
     if (flags <= 0) {
@@ -336,7 +348,7 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block, SEXP pipe) {
         goto exitlevel1;
       }
 
-      NANO_FREE(buf);
+      NANO_FREE(buf); else if (mod == 3) qs2_free(buf.buf);
 
     } else {
 
