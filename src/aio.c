@@ -486,7 +486,19 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP pipe, SEXP
   if ((sock = !NANO_PTR_CHECK(con, nano_SocketSymbol)) || !NANO_PTR_CHECK(con, nano_ContextSymbol)) {
 
     const int pipeid = sock ? nano_integer(pipe) : 0;
-    nano_encodes(mode) == 2 ? nano_encode(&buf, data) : nano_serialize(&buf, data, NANO_PROT(con));
+    const int mod = nano_encodes(mode);
+    switch (mod) {
+    case 2:
+      nano_encode(&buf, data);
+      break;
+    case 3:
+      nano_qs2_loaded();
+      buf.buf = qs2_serialize(data, &buf.cur, 3, true, 1);
+      break;
+    default:
+      nano_serialize(&buf, data, NANO_PROT(con));
+    }
+
     nng_msg *msg;
     saio = R_Calloc(1, nano_aio);
     saio->type = SENDAIO;
@@ -510,7 +522,7 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP pipe, SEXP
     nng_aio_set_timeout(saio->aio, dur);
     sock ? nng_send_aio(*(nng_socket *) NANO_PTR(con), saio->aio) :
            nng_ctx_send(*(nng_ctx *) NANO_PTR(con), saio->aio);
-    NANO_FREE(buf);
+    NANO_FREE(buf); else if (mod == 3) qs2_free(buf.buf);
 
     PROTECT(aio = R_MakeExternalPtr(saio, nano_AioSymbol, R_NilValue));
     R_RegisterCFinalizerEx(aio, saio_finalizer, TRUE);

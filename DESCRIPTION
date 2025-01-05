@@ -33,8 +33,10 @@ Enhances:
     promises
 Suggests: 
     later,
-    litedown
+    litedown,
+    qs2
 VignetteBuilder: litedown
 RoxygenNote: 7.3.2
 Config/build/compilation-database: true
 Roxygen: list(markdown = TRUE)
+Remotes: qsbase/qs2

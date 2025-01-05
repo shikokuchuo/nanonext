@@ -437,6 +437,19 @@ SEXP nano_unserialize(unsigned char *buf, const size_t sz, SEXP hook) {
 
 }
 
+void nano_qs2_loaded(void) {
+  if (qs2_deserialize != NULL)
+    return;
+  SEXP str, call;
+  PROTECT(str = Rf_mkString("qs2"));
+  PROTECT(call = Rf_lang2(Rf_install("loadNamespace"), str));
+  Rf_eval(call, R_BaseEnv);
+  UNPROTECT(2);
+  qs2_serialize = (unsigned char *(*)(SEXP, size_t *, const int, const bool, const int)) R_GetCCallable("qs2", "c_qs_serialize");
+  qs2_deserialize = (SEXP (*)(const unsigned char *, const size_t, const bool, const int)) R_GetCCallable("qs2", "c_qs_deserialize");
+  qs2_free = (bool (*)(void *)) R_GetCCallable("qs2", "c_qs_free");
+}
+
 SEXP nano_decode(unsigned char *buf, const size_t sz, const uint8_t mod, SEXP hook) {
 
   SEXP data;
@@ -508,6 +521,10 @@ SEXP nano_decode(unsigned char *buf, const size_t sz, const uint8_t mod, SEXP ho
   case 9:
     data = rawToChar(buf, sz);
     return data;
+  case 10:
+    nano_qs2_loaded();
+    data = qs2_deserialize(buf, sz, false, 1);
+    return data;
   default:
     data = nano_unserialize(buf, sz, hook);
   return data;
@@ -573,12 +590,13 @@ int nano_encodes(const SEXP mode) {
     case 2:
     case 3:
       if (!memcmp(mod, "raw", slen)) return 2;
+      if (!memcmp(mod, "qs2", slen)) return 3;
     case 4:
     case 5:
     case 6:
       if (!memcmp(mod, "serial", slen)) return 1;
     default:
-      Rf_error("'mode' should be either serial or raw");
+      Rf_error("'mode' should be one of serial, raw, qs2");
     }
   }
 
@@ -594,10 +612,11 @@ int nano_matcharg(const SEXP mode) {
     switch (slen) {
     case 1:
       if (!memcmp(mod, "c", slen) || !memcmp(mod, "s", slen))
-        Rf_error("'mode' should be one of serial, character, complex, double, integer, logical, numeric, raw, string");
+        Rf_error("'mode' should be one of serial, character, complex, double, integer, logical, numeric, raw, string, qs2");
     case 2:
     case 3:
       if (!memcmp(mod, "raw", slen)) return 8;
+      if (!memcmp(mod, "qs2", slen)) return 10;
     case 4:
     case 5:
     case 6:
@@ -613,7 +632,7 @@ int nano_matcharg(const SEXP mode) {
     case 9:
       if (!memcmp(mod, "character", slen)) return 2;
     default:
-      Rf_error("'mode' should be one of serial, character, complex, double, integer, logical, numeric, raw, string");
+      Rf_error("'mode' should be one of serial, character, complex, double, integer, logical, numeric, raw, string, qs2");
     }
   }
 
@@ -624,7 +643,7 @@ int nano_matcharg(const SEXP mode) {
 int nano_matchargs(const SEXP mode) {
 
   if (TYPEOF(mode) != INTSXP) {
-    const char *mod = CHAR(STRING_ELT(mode, XLENGTH(mode) == 9));
+    const char *mod = CHAR(STRING_ELT(mode, XLENGTH(mode) == 10));
     size_t slen = strlen(mod);
     switch (slen) {
     case 1:

@@ -6,6 +6,10 @@
 
 # nanonext 1.5.1
 
+#### New Features
+
+* Send and receive functions gain `mode = qs2`, to take advantage of serialization from the qs2 package where available.
+
 #### Updates
 
 * `pipe_notify()` drops argument 'cv2' for signalling 2 condition variables on one pipe event. Use signal forwarders `%~>%` instead.

@@ -7,7 +7,7 @@
 recv_aio(
   con,
   mode = c("serial", "character", "complex", "double", "integer", "logical", "numeric",
-    "raw", "string"),
+    "raw", "string", "qs2"),
   timeout = NULL,
   cv = NULL,
   n = 65536L
