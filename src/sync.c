@@ -1,4 +1,4 @@
-// Copyright (C) 2022-2024 Hibiki AI Limited <info@hibiki-ai.com>
+// Copyright (C) 2022-2025 Hibiki AI Limited <info@hibiki-ai.com>
 //
 // This file is part of nanonext.
 //
@@ -591,7 +591,7 @@ SEXP rnng_pipe_notify(SEXP socket, SEXP cv, SEXP cv2, SEXP add, SEXP remove, SEX
 
   sock = (nng_socket *) NANO_PTR(socket);
   nano_cv *cvp = (nano_cv *) NANO_PTR(cv);
-  const int flg = NANO_INTEGER(flag);
+  const int flg = nano_integer(flag);
 
   if (cv2 != R_NilValue) {
 
