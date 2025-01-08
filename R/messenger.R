@@ -1,4 +1,4 @@
-# Copyright (C) 2022-2024 Hibiki AI Limited <info@hibiki-ai.com>
+# Copyright (C) 2022-2025 Hibiki AI Limited <info@hibiki-ai.com>
 #
 # This file is part of nanonext.
 #
@@ -60,7 +60,7 @@ messenger <- function(url, auth = NULL) {
   sock <- .Call(rnng_messenger, url)
   on.exit(expr = {
     send(sock, data = writeBin(":d ", raw()), mode = 2L, block = FALSE)
-    .Call(rnng_close, sock)
+    close(sock)
   })
   cat("\n", file = stdout())
   intro <- unlist(strsplit("nanonext messenger", ""))

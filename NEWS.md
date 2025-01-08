@@ -1,8 +1,9 @@
-# nanonext 1.4.0.9000 (development)
+# nanonext 1.4.0.9001 (development)
 
 #### Updates
 
-* Removes partial matching from using `$`, `[[` or `[` on an object inheriting from class 'nano'.
+* `reap()` now accepts an integer pipe ID to close the associated pipe. 
+* Removes partial matching when using `$`, `[[` or `[` on an object inheriting from class 'nano'.
 
 # nanonext 1.4.0
 

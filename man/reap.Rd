@@ -7,7 +7,7 @@
 reap(con)
 }
 \arguments{
-\item{con}{a Socket, Context, Listener, Dialer or Pipe.}
+\item{con}{a Socket, Context, Listener, Dialer or integer pipe ID.}
 }
 \value{
 An integer exit code (zero on success).

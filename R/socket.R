@@ -1,4 +1,4 @@
-# Copyright (C) 2022-2024 Hibiki AI Limited <info@hibiki-ai.com>
+# Copyright (C) 2022-2025 Hibiki AI Limited <info@hibiki-ai.com>
 #
 # This file is part of nanonext.
 #
@@ -168,7 +168,7 @@ close.nanoSocket <- function(con, ...) invisible(.Call(rnng_close, con))
 #' \code{\link{.context}}. Returns silently and does not warn or error, nor does
 #' it update the state of object attributes.
 #'
-#' @param con a Socket, Context, Listener, Dialer or Pipe.
+#' @param con a Socket, Context, Listener, Dialer or integer pipe ID.
 #'
 #' @return An integer exit code (zero on success).
 #'
