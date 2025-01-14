@@ -161,14 +161,14 @@ close.nanoSocket <- function(con, ...) invisible(.Call(rnng_close, con))
 
 #' Reap
 #'
-#' An alternative to \code{close} for Sockets, Contexts, Listeners, Dialers and
-#' Pipes avoiding S3 method dispatch.
+#' An alternative to \code{close} for Sockets, Contexts, Listeners, and Dialers
+#' avoiding S3 method dispatch.
 #'
 #' May be used on unclassed external pointers e.g. those created by
 #' \code{\link{.context}}. Returns silently and does not warn or error, nor does
 #' it update the state of object attributes.
 #'
-#' @param con a Socket, Context, Listener, Dialer or integer pipe ID.
+#' @param con a Socket, Context, Listener or Dialer.
 #'
 #' @return An integer exit code (zero on success).
 #'

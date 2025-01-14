@@ -195,11 +195,6 @@ SEXP rnng_reap(SEXP con) {
   } else if (ptrtag == nano_DialerSymbol) {
     xc = nng_dialer_close(*(nng_dialer *) NANO_PTR(con));
 
-  } else if (TYPEOF(con) == INTSXP) {
-    nng_pipe p;
-    p.id = (uint32_t) NANO_INTEGER(con);
-    xc = nng_pipe_close(p);
-
   } else {
     xc = 3;
   }
