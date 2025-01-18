@@ -70,7 +70,7 @@ fi
 
 if [ $? -ne 0 ]
 then
-  echo "No existing 'libmbedtls' >= 2.5 found"
+  echo "Existing 'libmbedtls' >= 2.5 not found"
   echo "Detecting 'cmake'..."
   which cmake
   if [ $? -ne 0 ]
@@ -140,7 +140,7 @@ fi
 
 if [ $? -ne 0 ]
 then
-  echo "No existing 'libnng' >= 1.6 found"
+  echo "Existing 'libnng' >= 1.6 not found"
   echo "Detecting 'cmake'..."
   which cmake
   if [ $? -ne 0 ]
