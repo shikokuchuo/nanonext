@@ -197,8 +197,7 @@ SEXP rnng_listen(SEXP socket, SEXP url, SEXP tls, SEXP autostart, SEXP error) {
         (xc = nng_url_parse(&up, ur)))
       goto exitlevel1;
     cfg = (nng_tls_config *) NANO_PTR(tls);
-    if ((xc = nng_tls_config_server_name(cfg, up->u_hostname)) ||
-        (xc = nng_listener_set_ptr(*lp, NNG_OPT_TLS_CONFIG, cfg)))
+    if ((xc = nng_listener_set_ptr(*lp, NNG_OPT_TLS_CONFIG, cfg)))
       goto exitlevel2;
     nng_url_free(up);
     if (start && (xc = nng_listener_start(*lp, 0)))
