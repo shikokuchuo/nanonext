@@ -104,7 +104,7 @@ SEXP rnng_dial(SEXP socket, SEXP url, SEXP tls, SEXP autostart, SEXP error) {
   if (NANO_TAG(socket) != nano_SocketSymbol)
     Rf_error("'socket' is not a valid Socket");
 
-  const uint8_t sec = tls != R_NilValue;
+  const int sec = tls != R_NilValue;
 
   if (sec && NANO_TAG(tls) != nano_TlsSymbol)
     Rf_error("'tls' is not a valid TLS Configuration");
@@ -178,7 +178,7 @@ SEXP rnng_listen(SEXP socket, SEXP url, SEXP tls, SEXP autostart, SEXP error) {
   if (NANO_TAG(socket) != nano_SocketSymbol)
     Rf_error("'socket' is not a valid Socket");
 
-  const uint8_t sec = tls != R_NilValue;
+  const int sec = tls != R_NilValue;
 
   if (sec && NANO_TAG(tls) != nano_TlsSymbol)
     Rf_error("'tls' is not a valid TLS Configuration");
@@ -189,18 +189,13 @@ SEXP rnng_listen(SEXP socket, SEXP url, SEXP tls, SEXP autostart, SEXP error) {
   nng_listener *lp = R_Calloc(1, nng_listener);
   SEXP listener, attr, newattr, xp;
   nng_tls_config *cfg;
-  nng_url *up;
   int xc;
 
   if (sec) {
-    if ((xc = nng_listener_create(lp, *sock, ur)) ||
-        (xc = nng_url_parse(&up, ur)))
-      goto exitlevel1;
     cfg = (nng_tls_config *) NANO_PTR(tls);
-    if ((xc = nng_listener_set_ptr(*lp, NNG_OPT_TLS_CONFIG, cfg)))
-      goto exitlevel2;
-    nng_url_free(up);
-    if (start && (xc = nng_listener_start(*lp, 0)))
+    if ((xc = nng_listener_create(lp, *sock, ur)) ||
+        (xc = nng_listener_set_ptr(*lp, NNG_OPT_TLS_CONFIG, cfg)) ||
+        (start && (xc = nng_listener_start(*lp, 0))))
       goto exitlevel1;
     nng_tls_config_hold(cfg);
 
@@ -238,8 +233,6 @@ SEXP rnng_listen(SEXP socket, SEXP url, SEXP tls, SEXP autostart, SEXP error) {
   UNPROTECT(2);
   return nano_success;
 
-  exitlevel2:
-  nng_url_free(up);
   exitlevel1:
   R_Free(lp);
   if (NANO_INTEGER(error)) ERROR_OUT(xc);
