@@ -1,5 +1,10 @@
 # nanonext 1.4.0.9003 (development)
 
+#### Library Updates
+
+* Bundled 'libnng' updated to latest 1.10.1 release.
+* Bundled 'libmbedtls' updated to latest 3.6.2 LTS branch release.
+
 #### Updates
 
 * `write_cert()` no longer displays a status message when interactive (thanks @wlandau, #74).
