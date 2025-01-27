@@ -24,6 +24,10 @@ A list of length 2, comprising \code{$server} and \code{$client}.
 Generate self-signed x509 certificate and 4096 bit RSA private/public key
 pair for use with authenticated, encrypted TLS communications.
 }
+\details{
+Note that it can take a second or two for the key and certificate to be
+generated.
+}
 \examples{
 
 if (interactive()) {

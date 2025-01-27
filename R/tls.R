@@ -77,6 +77,9 @@ tls_config <- function(client = NULL, server = NULL, pass = NULL, auth = is.null
 #' Generate self-signed x509 certificate and 4096 bit RSA private/public key
 #' pair for use with authenticated, encrypted TLS communications.
 #'
+#' Note that it can take a second or two for the key and certificate to be
+#' generated.
+#'
 #' @param cn [default 'localhost'] character issuer common name (CN) for the
 #'   certificate. This can be either a hostname or an IP address, but must match
 #'   the actual server URL as client authentication will depend on it.
