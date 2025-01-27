@@ -1,4 +1,9 @@
-# nanonext 1.4.0.9003 (development)
+# nanonext 1.4.0.9004 (development)
+
+#### Library Updates
+
+* Bundled 'libnng' updated to latest 1.10.1 release.
+* Bundled 'libmbedtls' updated to latest 3.6.2 LTS branch release.
 
 #### Updates
 
