@@ -198,7 +198,7 @@ static const R_CallMethodDef callMethods[] = {
   {"rnng_url_parse", (DL_FUNC) &rnng_url_parse, 1},
   {"rnng_version", (DL_FUNC) &rnng_version, 0},
   {"rnng_wait_thread_create", (DL_FUNC) &rnng_wait_thread_create, 1},
-  {"rnng_write_cert", (DL_FUNC) &rnng_write_cert, 3},
+  {"rnng_write_cert", (DL_FUNC) &rnng_write_cert, 2},
   {NULL, NULL, 0}
 };
 

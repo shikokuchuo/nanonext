@@ -126,11 +126,10 @@ SEXP rnng_random(SEXP n, SEXP convert) {
 
 // nanonext - Key Generation and Certificates ----------------------------------
 
-SEXP rnng_write_cert(SEXP cn, SEXP valid, SEXP inter) {
+SEXP rnng_write_cert(SEXP cn, SEXP valid) {
 
   const char *common = CHAR(STRING_ELT(cn, 0));
   const char *not_after = CHAR(STRING_ELT(valid, 0)); /* validity period not after */
-  const int interactive = NANO_INTEGER(inter);
   mbedtls_entropy_context entropy;
   mbedtls_ctr_drbg_context ctr_drbg;
   mbedtls_pk_context key;
@@ -155,7 +154,6 @@ SEXP rnng_write_cert(SEXP cn, SEXP valid, SEXP inter) {
   snprintf(issuer_name, clen, "CN=%s,O=Nanonext,C=JP", common);
 
   int xc, exit = 1;
-  if (interactive) REprintf("Generating key + certificate [    ]");
   mbedtls_x509_crt issuer_crt;
   mbedtls_pk_context loaded_issuer_key;
   mbedtls_pk_context *issuer_key = &loaded_issuer_key;
@@ -181,20 +179,10 @@ SEXP rnng_write_cert(SEXP cn, SEXP valid, SEXP inter) {
   mbedtls_mpi_init(&serial);
 #endif
 
-  if (interactive) REprintf("\rGenerating key + certificate [.   ]");
-
   if ((xc = mbedtls_ctr_drbg_seed(&ctr_drbg, mbedtls_entropy_func, &entropy, (const unsigned char *) pers, strlen(pers))) ||
-      (xc = mbedtls_pk_setup(&key, mbedtls_pk_info_from_type((mbedtls_pk_type_t) MBEDTLS_PK_RSA))))
-    goto exitlevel1;
-
-  if (interactive) REprintf("\rGenerating key + certificate [..  ]");
-
-  if ((xc = mbedtls_rsa_gen_key(mbedtls_pk_rsa(key), mbedtls_ctr_drbg_random, &ctr_drbg, 4096, 65537)))
-    goto exitlevel1;
-
-  if (interactive) REprintf("\rGenerating key + certificate [... ]");
-
-  if ((xc = mbedtls_pk_write_key_pem(&key, key_buf, 16000)))
+      (xc = mbedtls_pk_setup(&key, mbedtls_pk_info_from_type((mbedtls_pk_type_t) MBEDTLS_PK_RSA))) ||
+      (xc = mbedtls_rsa_gen_key(mbedtls_pk_rsa(key), mbedtls_ctr_drbg_random, &ctr_drbg, 4096, 65537)) ||
+      (xc = mbedtls_pk_write_key_pem(&key, key_buf, 16000)))
     goto exitlevel1;
 
   size_t klen = strlen((char *) key_buf);
@@ -246,7 +234,6 @@ SEXP rnng_write_cert(SEXP cn, SEXP valid, SEXP inter) {
   SET_STRING_ELT(cstr, 0, Rf_mkChar((char *) &output_buf));
   SET_STRING_ELT(cstr, 1, R_BlankString);
 
-  if (interactive) REprintf("\rGenerating key + certificate [done]\n");
   exit = 0;
 
   exitlevel1:

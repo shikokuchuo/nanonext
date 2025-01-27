@@ -25,8 +25,8 @@ Generate self-signed x509 certificate and 4096 bit RSA private/public key
 pair for use with authenticated, encrypted TLS communications.
 }
 \details{
-For interactive sessions only, a status message is printed at the start of
-key / certificate generation and also when complete.
+Note that it can take a second or two for the key and certificate to be
+generated.
 }
 \examples{
 

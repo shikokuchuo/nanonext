@@ -370,6 +370,6 @@ SEXP rnng_unresolved2(SEXP);
 SEXP rnng_url_parse(SEXP);
 SEXP rnng_version(void);
 SEXP rnng_wait_thread_create(SEXP);
-SEXP rnng_write_cert(SEXP, SEXP, SEXP);
+SEXP rnng_write_cert(SEXP, SEXP);
 
 #endif
