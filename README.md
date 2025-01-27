@@ -22,8 +22,8 @@ IPC, TCP, WebSocket and secure TLS transports. Implements ‘Scalability
 Protocols’, a standard for common communications patterns including
 publish/subscribe, request/reply and service discovery.
 
-As its own \]threaded concurrency
-framework\](<https://shikokuchuo.net/nanonext/articles/nanonext.html#async-and-concurrency>),
+As its own [threaded concurrency
+framework](https://shikokuchuo.net/nanonext/articles/nanonext.html#async-and-concurrency),
 provides a toolkit for asynchronous programming and distributed
 computing. Intuitive ‘aio’ objects resolve automatically when
 asynchronous operations complete, and [synchronisation
