@@ -1,7 +1,8 @@
-# nanonext 1.4.0.9002 (development)
+# nanonext 1.4.0.9003 (development)
 
 #### Updates
 
+* `write_cert()` no longer displays a status message when interactive (thanks @wlandau, #74).
 * Removes partial matching when using `$`, `[[` or `[` on an object inheriting from class 'nano'.
 
 # nanonext 1.4.0
