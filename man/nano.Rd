@@ -5,8 +5,8 @@
 \title{Create Nano Object}
 \usage{
 nano(
-  protocol = c("bus", "pair", "push", "pull", "pub", "sub", "req", "rep", "surveyor",
-    "respondent"),
+  protocol = c("bus", "pair", "poly", "push", "pull", "pub", "sub", "req", "rep",
+    "surveyor", "respondent"),
   dial = NULL,
   listen = NULL,
   tls = NULL,

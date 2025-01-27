@@ -367,6 +367,11 @@ test_true(!wait(cv))
 test_true(!wait(cv2))
 test_class("errorValue", resp$recv())
 
+test_class("nanoObject", poly <- nano(protocol = "poly", listen = "inproc://polytest"))
+test_equal(formals(poly$send)$pipe, 0L)
+test_equal(formals(poly$send_aio)$pipe, 0L)
+test_zero(poly$close())
+
 test_zero(cv_reset(cv))
 test_class("nanoSocket", poly <- socket(protocol = "poly"))
 test_class("nanoSocket", poly1 <- socket(protocol = "poly"))

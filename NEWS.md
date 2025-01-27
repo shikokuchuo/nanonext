@@ -7,6 +7,7 @@
 
 #### Updates
 
+* `nano()` updated with the 'poly' protocol, with 'pipe' argument enabled for the send methods.
 * `write_cert()` no longer displays a status message when interactive (thanks @wlandau, #74).
 * Removes partial matching when using `$`, `[[` or `[` on an object inheriting from class 'nano'.
 

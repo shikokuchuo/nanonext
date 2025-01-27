@@ -87,8 +87,8 @@
 #'
 #' @export
 #'
-nano <- function(protocol = c("bus", "pair", "push", "pull", "pub", "sub",
-                              "req", "rep", "surveyor", "respondent"),
+nano <- function(protocol = c("bus", "pair", "poly", "push", "pull", "pub",
+                              "sub", "req", "rep", "surveyor", "respondent"),
                  dial = NULL,
                  listen = NULL,
                  tls = NULL,
@@ -100,6 +100,7 @@ nano <- function(protocol = c("bus", "pair", "push", "pull", "pub", "sub",
   makeActiveBinding(sym = "socket",
                     fun = function(x) if (length(sock2)) sock2 else socket,
                     env = nano)
+  is_poly <- attr(socket, "protocol") == "poly"
 
   if (length(dial)) {
     r <- dial(socket, url = dial, tls = tls, autostart = autostart)
@@ -179,11 +180,21 @@ nano <- function(protocol = c("bus", "pair", "push", "pull", "pub", "sub",
                                  timeout = NULL)
     recv_aio(socket, mode = mode, timeout = timeout)
 
-  nano[["send"]] <- function(data, mode = c("serial", "raw"), block = NULL)
-    send(socket, data = data, mode = mode, block = block)
+  nano[["send"]] <- if (is_poly) {
+    function(data, mode = c("serial", "raw"), block = NULL, pipe = 0L)
+      send(socket, data = data, mode = mode, block = block, pipe = pipe)
+  } else {
+    function(data, mode = c("serial", "raw"), block = NULL)
+      send(socket, data = data, mode = mode, block = block)
+  }
 
-  nano[["send_aio"]] <- function(data, mode = c("serial", "raw"), timeout = NULL)
-    send_aio(socket, data = data, mode = mode, timeout = timeout)
+  nano[["send_aio"]] <- if (is_poly) {
+    function(data, mode = c("serial", "raw"), timeout = NULL, pipe = 0L)
+      send_aio(socket, data = data, mode = mode, timeout = timeout, pipe = pipe)
+  } else {
+    function(data, mode = c("serial", "raw"), timeout = NULL)
+      send_aio(socket, data = data, mode = mode, timeout = timeout)
+  }
 
   nano[["opt"]] <- function(name, value)
     if (missing(value)) opt(socket, name = name) else
