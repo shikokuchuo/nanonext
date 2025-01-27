@@ -1,4 +1,4 @@
-# nanonext 1.4.0.9004 (development)
+# nanonext 1.5.0
 
 #### Library Updates
 
@@ -10,7 +10,7 @@
 * `nano()` updated with the 'poly' protocol, with 'pipe' argument enabled for the send methods.
 * `write_cert()` no longer displays a status message when interactive (thanks @wlandau, #74).
 * Removes partial matching when using `$`, `[[` or `[` on an object inheriting from class 'nano'.
-* Fixes a rare hang on socket close that was possible on Windows platforms (#76).
+* Fixes a rare hang on socket close that was possible on Windows platforms for IPC connections (#76).
 
 # nanonext 1.4.0
 
