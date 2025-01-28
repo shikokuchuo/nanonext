@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">nanonext</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.4.0.9004</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.5.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -40,20 +40,20 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.4.0.9004" id="nanonext-1409004-development">nanonext 1.4.0.9004 (development)<a class="anchor" aria-label="anchor" href="#nanonext-1409004-development"></a></h2>
+<h2 class="pkg-version" data-toc-text="1.5.0" id="nanonext-150">nanonext 1.5.0<a class="anchor" aria-label="anchor" href="#nanonext-150"></a></h2>
 <div class="section level5">
-<h5 id="library-updates-1-4-0-9004">Library Updates<a class="anchor" aria-label="anchor" href="#library-updates-1-4-0-9004"></a></h5>
+<h5 id="library-updates-1-5-0">Library Updates<a class="anchor" aria-label="anchor" href="#library-updates-1-5-0"></a></h5>
 <ul><li>Bundled ‘libnng’ updated to latest 1.10.1 release.</li>
 <li>Bundled ‘libmbedtls’ updated to latest 3.6.2 LTS branch release.</li>
 </ul></div>
 <div class="section level5">
-<h5 id="updates-1-4-0-9004">Updates<a class="anchor" aria-label="anchor" href="#updates-1-4-0-9004"></a></h5>
+<h5 id="updates-1-5-0">Updates<a class="anchor" aria-label="anchor" href="#updates-1-5-0"></a></h5>
 <ul><li>
 <code><a href="../reference/nano.html">nano()</a></code> updated with the ‘poly’ protocol, with ‘pipe’ argument enabled for the send methods.</li>
 <li>
 <code><a href="../reference/write_cert.html">write_cert()</a></code> no longer displays a status message when interactive (thanks <a href="https://github.com/wlandau" class="external-link">@wlandau</a>, <a href="https://github.com/shikokuchuo/nanonext/issues/74" class="external-link">#74</a>).</li>
 <li>Removes partial matching when using <code>$</code>, <code>[[</code> or <code>[</code> on an object inheriting from class ‘nano’.</li>
-<li>Fixes a rare hang on socket close that was possible on Windows platforms (<a href="https://github.com/shikokuchuo/nanonext/issues/76" class="external-link">#76</a>).</li>
+<li>Fixes a rare hang on socket close that was possible on Windows platforms for IPC connections (<a href="https://github.com/shikokuchuo/nanonext/issues/76" class="external-link">#76</a>).</li>
 </ul></div>
 </div>
     <div class="section level2">
