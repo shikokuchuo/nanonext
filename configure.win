@@ -2,6 +2,10 @@
 LIB_VER="110"
 TLS_VER="362"
 
+# Find compiler and export flags
+CC=`"${R_HOME}/bin/R" CMD config CC`
+export CC
+
 tar -xf src/mbedtls-$TLS_VER.tar.xz
 cd mbedtls-$TLS_VER
 echo "Compiling 'libmbedtls' from source ..."
@@ -17,6 +21,12 @@ cmake -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX=../install .
 cmake --build . --target install
 cd ..
 rm -rf nng-$LIB_VER
+
+PKG_CFLAGS="-I../install/include -DNNG_STATIC_LIB"
+PKG_LIBS="-L../install/lib -lnng -lmbedtls -lmbedx509 -lmbedcrypto -lbcrypt -lws2_32"
+
+# Write to Makevars
+sed -e "s|@cflags@|$PKG_CFLAGS|" -e "s|@libs@|$PKG_LIBS|" src/Makevars.in > src/Makevars
 
 # Success
 exit 0
