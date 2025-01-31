@@ -2,7 +2,7 @@
 
 #### Updates
 
-* Unified Windows build system now attempts to compile 'libmbedtls' and 'libnng' from source even on R <= 4.1 using Rtools40 or earlier.
+* Unified Windows build system now compiles 'libmbedtls' and 'libnng' from source even on R <= 4.1 using Rtools40 or earlier.
 
 # nanonext 1.5.0
 
