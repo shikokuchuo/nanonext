@@ -201,12 +201,14 @@ OpenCSW - refer to the ‘cmake’ website for the latest source file.*
 
 #### Windows
 
-For R \>= 4.2 using the ‘Rtools42’ or newer toolchains, ‘libnng’ v1.10.1
-and ‘libmbedtls’ v3.6.2 will be automatically compiled from the package
-sources during installation.
+On Windows, ‘libnng’ v1.10.1 and ‘libmbedtls’ v3.6.2 will be compiled
+from the package sources during installation and hence requires the
+‘Rtools’ toolchain.
 
-For previous R versions, pre-compiled ‘libnng’ v1.10.1 and ‘libmbedtls’
-v3.6.2 libraries are downloaded and used for installation instead.
+For R \>= 4.2 using the ‘Rtools42’ or newer toolchains, the prerequisite
+‘cmake’ is included. For previous R versions using ‘Rtools40’ or
+earlier, it may be necessary to separately install a version of ‘cmake’
+in Windows and ensure that it is added to your system’s `PATH`.
 
 ### Acknowledgements and Links
 
