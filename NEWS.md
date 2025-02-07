@@ -1,5 +1,9 @@
 # nanonext 1.5.0.9000 (development)
 
+#### New Features
+
+* Send and receive functions gain `mode = qs2`, to take advantage of serialization from the qs2 package where available.
+
 #### Updates
 
 * Unified Windows build system now compiles 'libmbedtls' and 'libnng' from source even on R <= 4.1 using Rtools40 or earlier.

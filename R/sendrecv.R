@@ -23,9 +23,10 @@
 #' @param con a Socket, Context or Stream.
 #' @param data an object (a vector, if mode = \sQuote{raw}).
 #' @param mode [default 'serial'] character value or integer equivalent - either
-#'   \sQuote{serial} (1L) to send serialised R objects, or \sQuote{raw} (2L) to
-#'   send atomic vectors of any type as a raw byte vector. For Streams,
-#'   \sQuote{raw} is the only option and this argument is ignored.
+#'   \sQuote{serial} (1L) to send serialised R objects, \sQuote{raw} (2L) to
+#'   send atomic vectors of any type as a raw byte vector, or \sQuote{qs2} (3L)
+#'   to use qs2 serialization. For Streams, \sQuote{raw} is the only option and
+#'   this argument is ignored.
 #' @param block [default NULL] which applies the connection default (see section
 #'   \sQuote{Blocking} below). Specify logical TRUE to block until successful or
 #'   FALSE to return immediately even if unsuccessful (e.g. if no connection is
@@ -86,7 +87,7 @@
 #'
 #' @export
 #'
-send <- function(con, data, mode = c("serial", "raw"), block = NULL, pipe = 0L)
+send <- function(con, data, mode = c("serial", "raw", "qs2"), block = NULL, pipe = 0L)
   .Call(rnng_send, con, data, mode, block, pipe)
 
 #' Receive
@@ -97,11 +98,12 @@ send <- function(con, data, mode = c("serial", "raw"), block = NULL, pipe = 0L)
 #' @param mode [default 'serial'] character value or integer equivalent - one of
 #'   \sQuote{serial} (1L), \sQuote{character} (2L), \sQuote{complex} (3L),
 #'   \sQuote{double} (4L), \sQuote{integer} (5L), \sQuote{logical} (6L),
-#'   \sQuote{numeric} (7L), \sQuote{raw} (8L), or \sQuote{string} (9L). The
-#'   default \sQuote{serial} means a serialised R object; for the other modes,
-#'   received bytes are converted into the respective mode. \sQuote{string} is a
-#'   faster option for length one character vectors. For Streams,
-#'   \sQuote{serial} is not an option and the default is \sQuote{character}.
+#'   \sQuote{numeric} (7L), \sQuote{raw} (8L), \sQuote{string} (9L), or
+#'   \sQuote{qs2} (10L). The default \sQuote{serial} means a serialised R object
+#'   and \sQuote{qs2} a qs2-serialized object; for the other modes, received
+#'   bytes are converted into the respective mode. \sQuote{string} is a faster
+#'   option for length one character vectors. For Streams, \sQuote{serial} and
+#'   \sQuote{qs2} are not options and the default is \sQuote{character}.
 #' @param n [default 65536L] applicable to Streams only, the maximum number of
 #'   bytes to receive. Can be an over-estimate, but note that a buffer of this
 #'   size is reserved.
@@ -168,7 +170,7 @@ send <- function(con, data, mode = c("serial", "raw"), block = NULL, pipe = 0L)
 #'
 recv <- function(con,
                  mode = c("serial", "character", "complex", "double",
-                          "integer", "logical", "numeric", "raw", "string"),
+                          "integer", "logical", "numeric", "raw", "string", "qs2"),
                  block = NULL,
                  n = 65536L)
   .Call(rnng_recv, con, mode, block, n)
