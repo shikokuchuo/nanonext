@@ -109,39 +109,6 @@ void pipe_cb_signal(nng_pipe p, nng_pipe_ev ev, void *arg) {
 
 }
 
-static void pipe_cb_signal_duo(nng_pipe p, nng_pipe_ev ev, void *arg) {
-
-  int sig;
-  nano_cv_duo *duo = (nano_cv_duo *) arg;
-  nano_cv *ncv = duo->cv;
-  nano_cv *ncv2 = duo->cv2;
-
-  nng_cv *cv = ncv->cv;
-  nng_mtx *mtx = ncv->mtx;
-  nng_cv *cv2 = ncv2->cv;
-  nng_mtx *mtx2 = ncv2->mtx;
-
-  nng_mtx_lock(mtx);
-  sig = ncv->flag;
-  if (sig > 0) ncv->flag = -1;
-  ncv->condition++;
-  nng_cv_wake(cv);
-  nng_mtx_unlock(mtx);
-  nng_mtx_lock(mtx2);
-  if (sig > 0) ncv2->flag = -1;
-  ncv2->condition++;
-  nng_cv_wake(cv2);
-  nng_mtx_unlock(mtx2);
-  if (sig > 1) {
-#ifdef _WIN32
-    raise(sig);
-#else
-    kill(getpid(), sig);
-#endif
-  }
-
-}
-
 static void pipe_cb_dropcon(nng_pipe p, nng_pipe_ev ev, void *arg) {
 
   if (arg != NULL) {
@@ -186,14 +153,6 @@ static void pipe_cb_monitor(nng_pipe p, nng_pipe_ev ev, void *arg) {
 }
 
 // finalizers ------------------------------------------------------------------
-
-static void cv_duo_finalizer(SEXP xptr) {
-
-  if (NANO_PTR(xptr) == NULL) return;
-  nano_cv_duo *xp = (nano_cv_duo *) NANO_PTR(xptr);
-  R_Free(xp);
-
-}
 
 static void request_finalizer(SEXP xptr) {
 
@@ -566,7 +525,7 @@ SEXP rnng_set_promise_context(SEXP x, SEXP ctx) {
 
 // pipes -----------------------------------------------------------------------
 
-SEXP rnng_pipe_notify(SEXP socket, SEXP cv, SEXP cv2, SEXP add, SEXP remove, SEXP flag) {
+SEXP rnng_pipe_notify(SEXP socket, SEXP cv, SEXP add, SEXP remove, SEXP flag) {
 
   if (NANO_PTR_CHECK(socket, nano_SocketSymbol))
     Rf_error("'socket' is not a valid Socket");
@@ -593,37 +552,13 @@ SEXP rnng_pipe_notify(SEXP socket, SEXP cv, SEXP cv2, SEXP add, SEXP remove, SEX
   nano_cv *cvp = (nano_cv *) NANO_PTR(cv);
   const int flg = nano_integer(flag);
 
-  if (cv2 != R_NilValue) {
+  cvp->flag = flg < 0 ? 1 : flg;
 
-    if (NANO_PTR_CHECK(cv2, nano_CvSymbol))
-      Rf_error("'cv2' is not a valid Condition Variable");
+  if (NANO_INTEGER(add) && (xc = nng_pipe_notify(*sock, NNG_PIPE_EV_ADD_POST, pipe_cb_signal, cvp)))
+    ERROR_OUT(xc);
 
-    cvp->flag = flg < 0 ? 1 : flg;
-    nano_cv_duo *duo = R_Calloc(1, nano_cv_duo);
-    duo->cv = cvp;
-    duo->cv2 = (nano_cv *) NANO_PTR(cv2);
-
-    if (NANO_INTEGER(add) && (xc = nng_pipe_notify(*sock, NNG_PIPE_EV_ADD_POST, pipe_cb_signal_duo, duo)))
-      ERROR_OUT(xc);
-
-    if (NANO_INTEGER(remove) && (xc = nng_pipe_notify(*sock, NNG_PIPE_EV_REM_POST, pipe_cb_signal_duo, duo)))
-      ERROR_OUT(xc);
-
-    SEXP xptr = R_MakeExternalPtr(duo, R_NilValue, R_NilValue);
-    NANO_SET_PROT(cv, xptr);
-    R_RegisterCFinalizerEx(xptr, cv_duo_finalizer, TRUE);
-
-  } else {
-
-    cvp->flag = flg < 0 ? 1 : flg;
-
-    if (NANO_INTEGER(add) && (xc = nng_pipe_notify(*sock, NNG_PIPE_EV_ADD_POST, pipe_cb_signal, cvp)))
-      ERROR_OUT(xc);
-
-    if (NANO_INTEGER(remove) && (xc = nng_pipe_notify(*sock, NNG_PIPE_EV_REM_POST, pipe_cb_signal, cvp)))
-      ERROR_OUT(xc);
-
-  }
+  if (NANO_INTEGER(remove) && (xc = nng_pipe_notify(*sock, NNG_PIPE_EV_REM_POST, pipe_cb_signal, cvp)))
+    ERROR_OUT(xc);
 
   return nano_success;
 
