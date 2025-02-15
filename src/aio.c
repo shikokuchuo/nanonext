@@ -144,6 +144,8 @@ SEXP rnng_aio_result(SEXP env) {
     return exist;
 
   const SEXP aio = nano_findVarInFrame(env, nano_AioSymbol);
+  if (NANO_PTR_CHECK(aio, nano_AioSymbol))
+    Rf_error("object is not a valid Aio");
 
   nano_aio *saio = (nano_aio *) NANO_PTR(aio);
 
@@ -166,6 +168,8 @@ SEXP rnng_aio_get_msg(SEXP env) {
     return exist;
 
   const SEXP aio = nano_findVarInFrame(env, nano_AioSymbol);
+  if (NANO_PTR_CHECK(aio, nano_AioSymbol))
+    Rf_error("object is not a valid Aio");
 
   nano_aio *raio = (nano_aio *) NANO_PTR(aio);
 
@@ -230,7 +234,7 @@ SEXP rnng_aio_call(SEXP x) {
   switch (TYPEOF(x)) {
   case ENVSXP: ;
     const SEXP coreaio = nano_findVarInFrame(x, nano_AioSymbol);
-    if (NANO_TAG(coreaio) != nano_AioSymbol)
+    if (NANO_PTR_CHECK(coreaio, nano_AioSymbol))
       return x;
 
     nano_aio *aiop = (nano_aio *) NANO_PTR(coreaio);
@@ -317,7 +321,7 @@ SEXP rnng_aio_stop(SEXP x) {
   switch (TYPEOF(x)) {
   case ENVSXP: ;
     const SEXP coreaio = nano_findVarInFrame(x, nano_AioSymbol);
-    if (NANO_TAG(coreaio) != nano_AioSymbol) break;
+    if (NANO_PTR_CHECK(coreaio, nano_AioSymbol)) break;
     nano_aio *aiop = (nano_aio *) NANO_PTR(coreaio);
     nng_aio_stop(aiop->aio);
     break;
@@ -339,7 +343,7 @@ static int rnng_unresolved_impl(SEXP x) {
   switch (TYPEOF(x)) {
   case ENVSXP: ;
     const SEXP coreaio = nano_findVarInFrame(x, nano_AioSymbol);
-    if (NANO_TAG(coreaio) != nano_AioSymbol) {
+    if (NANO_PTR_CHECK(coreaio, nano_AioSymbol)) {
       xc = 0; break;
     }
     SEXP value;
@@ -391,7 +395,7 @@ static int rnng_unresolved2_impl(SEXP x) {
 
   if (TYPEOF(x) == ENVSXP) {
     const SEXP coreaio = nano_findVarInFrame(x, nano_AioSymbol);
-    if (NANO_TAG(coreaio) != nano_AioSymbol)
+    if (NANO_PTR_CHECK(coreaio, nano_AioSymbol))
       return 0;
     nano_aio *aiop = (nano_aio *) NANO_PTR(coreaio);
     return nng_aio_busy(aiop->aio);
@@ -429,8 +433,7 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP pipe, SEXP
   nano_buf buf;
   int sock, xc;
 
-  const SEXP ptrtag = NANO_TAG(con);
-  if ((sock = ptrtag == nano_SocketSymbol) || ptrtag == nano_ContextSymbol) {
+  if ((sock = !NANO_PTR_CHECK(con, nano_SocketSymbol)) || !NANO_PTR_CHECK(con, nano_ContextSymbol)) {
 
     const int pipeid = sock ? nano_integer(pipe) : 0;
     nano_encodes(mode) == 2 ? nano_encode(&buf, data) : nano_serialize(&buf, data, NANO_PROT(con));
@@ -462,7 +465,7 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP pipe, SEXP
     PROTECT(aio = R_MakeExternalPtr(saio, nano_AioSymbol, R_NilValue));
     R_RegisterCFinalizerEx(aio, saio_finalizer, TRUE);
 
-  } else if (ptrtag == nano_StreamSymbol) {
+  } else if (!NANO_PTR_CHECK(con, nano_StreamSymbol)) {
 
     nano_encode(&buf, data);
 
@@ -490,7 +493,7 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP pipe, SEXP
     PROTECT(aio = R_MakeExternalPtr(saio, nano_AioSymbol, R_NilValue));
     R_RegisterCFinalizerEx(aio, iaio_finalizer, TRUE);
 
-  }  else {
+  } else {
     NANO_ERROR("'con' is not a valid Socket, Context, or Stream");
   }
 
@@ -523,7 +526,7 @@ SEXP rnng_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP cvar, SEXP bytes, SEX
     signal = 0;
     interrupt = 0;
   } else {
-    signal = NANO_TAG(cvar) == nano_CvSymbol;
+    signal = !NANO_PTR_CHECK(cvar, nano_CvSymbol);
     interrupt = 1 - signal;
   }
   nano_cv *ncv = signal ? (nano_cv *) NANO_PTR(cvar) : NULL;
@@ -531,8 +534,7 @@ SEXP rnng_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP cvar, SEXP bytes, SEX
   SEXP aio, env, fun;
   int sock, xc;
 
-  const SEXP ptrtag = NANO_TAG(con);
-  if ((sock = ptrtag == nano_SocketSymbol) || ptrtag == nano_ContextSymbol) {
+  if ((sock = !NANO_PTR_CHECK(con, nano_SocketSymbol)) || !NANO_PTR_CHECK(con, nano_ContextSymbol)) {
 
     const uint8_t mod = (uint8_t) nano_matcharg(mode);
     raio = R_Calloc(1, nano_aio);
@@ -551,7 +553,7 @@ SEXP rnng_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP cvar, SEXP bytes, SEX
     PROTECT(aio = R_MakeExternalPtr(raio, nano_AioSymbol, NANO_PROT(con)));
     R_RegisterCFinalizerEx(aio, raio_finalizer, TRUE);
 
-  } else if (ptrtag == nano_StreamSymbol) {
+  } else if (!NANO_PTR_CHECK(con, nano_StreamSymbol)) {
 
     const uint8_t mod = (uint8_t) nano_matchargs(mode);
     const size_t xlen = (size_t) nano_integer(bytes);

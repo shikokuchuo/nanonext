@@ -335,7 +335,7 @@ SEXP rnng_wait_thread_create(SEXP x) {
   if (typ == ENVSXP) {
 
     const SEXP coreaio = nano_findVarInFrame(x, nano_AioSymbol);
-    if (NANO_TAG(coreaio) != nano_AioSymbol)
+    if (NANO_PTR_CHECK(coreaio, nano_AioSymbol))
       return x;
 
     nano_aio *aiop = (nano_aio *) NANO_PTR(coreaio);
@@ -495,10 +495,10 @@ static void rnng_signal_thread(void *args) {
 
 SEXP rnng_signal_thread_create(SEXP cv, SEXP cv2) {
 
-  if (NANO_TAG(cv) != nano_CvSymbol)
+  if (NANO_PTR_CHECK(cv, nano_CvSymbol))
     Rf_error("'cv' is not a valid Condition Variable");
 
-  if (NANO_TAG(cv2) != nano_CvSymbol)
+  if (NANO_PTR_CHECK(cv2, nano_CvSymbol))
     Rf_error("'cv2' is not a valid Condition Variable");
 
   SEXP existing = Rf_getAttrib(cv, R_MissingArg);

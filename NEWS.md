@@ -2,6 +2,7 @@
 
 #### Updates
 
+* Renders it safe to serialize 'nano' and 'aio' objects - they will be inactive when unserialized.
 * Unified Windows build system now compiles 'libmbedtls' and 'libnng' from source even on R <= 4.1 using Rtools40 or earlier.
 
 # nanonext 1.5.0

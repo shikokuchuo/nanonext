@@ -166,8 +166,9 @@ SEXP rnng_protocol_open(SEXP protocol, SEXP dial, SEXP listen, SEXP tls, SEXP au
 
 SEXP rnng_close(SEXP socket) {
 
-  if (NANO_TAG(socket) != nano_SocketSymbol)
+  if (NANO_PTR_CHECK(socket, nano_SocketSymbol))
     Rf_error("'socket' is not a valid Socket");
+
   nng_socket *sock = (nng_socket *) NANO_PTR(socket);
   const int xc = nng_close(*sock);
   if (xc)
@@ -181,18 +182,17 @@ SEXP rnng_close(SEXP socket) {
 SEXP rnng_reap(SEXP con) {
 
   int xc;
-  const SEXP ptrtag = NANO_TAG(con);
 
-  if (ptrtag == nano_ContextSymbol) {
+  if (!NANO_PTR_CHECK(con, nano_ContextSymbol)) {
     xc = nng_ctx_close(*(nng_ctx *) NANO_PTR(con));
 
-  } else if (ptrtag == nano_SocketSymbol) {
+  } else if (!NANO_PTR_CHECK(con, nano_SocketSymbol)) {
     xc = nng_close(*(nng_socket *) NANO_PTR(con));
 
-  } else if (ptrtag == nano_ListenerSymbol) {
+  } else if (!NANO_PTR_CHECK(con, nano_ListenerSymbol)) {
     xc = nng_listener_close(*(nng_listener *) NANO_PTR(con));
 
-  } else if (ptrtag == nano_DialerSymbol) {
+  } else if (!NANO_PTR_CHECK(con, nano_DialerSymbol)) {
     xc = nng_dialer_close(*(nng_dialer *) NANO_PTR(con));
 
   } else {
@@ -211,7 +211,7 @@ SEXP rnng_reap(SEXP con) {
 SEXP rnng_stream_dial(SEXP url, SEXP textframes, SEXP tls) {
 
   const char *add = CHAR(STRING_ELT(url, 0));
-  if (tls != R_NilValue && NANO_TAG(tls) != nano_TlsSymbol)
+  if (tls != R_NilValue && NANO_PTR_CHECK(tls, nano_TlsSymbol))
     Rf_error("'tls' is not a valid TLS Configuration");
   nano_stream *nst = R_Calloc(1, nano_stream);
   nst->mode = NANO_STREAM_DIALER;
@@ -300,7 +300,7 @@ SEXP rnng_stream_dial(SEXP url, SEXP textframes, SEXP tls) {
 SEXP rnng_stream_listen(SEXP url, SEXP textframes, SEXP tls) {
 
   const char *add = CHAR(STRING_ELT(url, 0));
-  if (tls != R_NilValue && NANO_TAG(tls) != nano_TlsSymbol)
+  if (tls != R_NilValue && NANO_PTR_CHECK(tls, nano_TlsSymbol))
     Rf_error("'tls' is not a valid TLS Configuration");
   nano_stream *nst = R_Calloc(1, nano_stream);
   nst->mode = NANO_STREAM_LISTENER;
@@ -390,11 +390,10 @@ SEXP rnng_stream_listen(SEXP url, SEXP textframes, SEXP tls) {
 
 SEXP rnng_stream_close(SEXP stream) {
 
-  if (NANO_TAG(stream) != nano_StreamSymbol)
-    Rf_error("'stream' is not a valid or active Stream");
+  if (NANO_PTR_CHECK(stream, nano_StreamSymbol))
+    Rf_error("'stream' is not a valid Stream");
 
   stream_finalizer(stream);
-  NANO_SET_TAG(stream, R_NilValue);
   R_ClearExternalPtr(stream);
   Rf_setAttrib(stream, nano_StateSymbol, Rf_mkString("closed"));
 

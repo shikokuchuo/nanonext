@@ -182,8 +182,7 @@ SEXP rnng_set_opt(SEXP object, SEXP opt, SEXP value) {
   const int typ = TYPEOF(value);
   int xc, val;
 
-  const SEXP ptrtag = NANO_TAG(object);
-  if (ptrtag == nano_SocketSymbol) {
+  if (!NANO_PTR_CHECK(object, nano_SocketSymbol)) {
 
     nng_socket *sock = (nng_socket *) NANO_PTR(object);
     switch (typ) {
@@ -231,7 +230,7 @@ SEXP rnng_set_opt(SEXP object, SEXP opt, SEXP value) {
       Rf_error("type of 'value' not supported");
     }
 
-  } else if (ptrtag == nano_ContextSymbol) {
+  } else if (!NANO_PTR_CHECK(object, nano_ContextSymbol)) {
 
     nng_ctx *ctx = (nng_ctx *) NANO_PTR(object);
     switch (typ) {
@@ -259,7 +258,7 @@ SEXP rnng_set_opt(SEXP object, SEXP opt, SEXP value) {
       Rf_error("type of 'value' not supported");
     }
 
-  } else if (ptrtag == nano_StreamSymbol) {
+  } else if (!NANO_PTR_CHECK(object, nano_StreamSymbol)) {
 
     nng_stream **st = (nng_stream **) NANO_PTR(object);
     switch (typ) {
@@ -287,7 +286,7 @@ SEXP rnng_set_opt(SEXP object, SEXP opt, SEXP value) {
       Rf_error("type of 'value' not supported");
     }
 
-  } else if (ptrtag == nano_ListenerSymbol) {
+  } else if (!NANO_PTR_CHECK(object, nano_ListenerSymbol)) {
 
     nng_listener *list = (nng_listener *) NANO_PTR(object);
     switch (typ) {
@@ -315,7 +314,7 @@ SEXP rnng_set_opt(SEXP object, SEXP opt, SEXP value) {
       Rf_error("type of 'value' not supported");
     }
 
-  } else if (ptrtag == nano_DialerSymbol) {
+  } else if (!NANO_PTR_CHECK(object, nano_DialerSymbol)) {
 
     nng_dialer *dial = (nng_dialer *) NANO_PTR(object);
     switch (typ) {
@@ -360,14 +359,13 @@ SEXP rnng_subscribe(SEXP object, SEXP value, SEXP sub) {
   nano_buf buf;
   int xc;
 
-  const SEXP ptrtag = NANO_TAG(object);
-  if (ptrtag == nano_SocketSymbol) {
+  if (!NANO_PTR_CHECK(object, nano_SocketSymbol)) {
 
     nng_socket *sock = (nng_socket *) NANO_PTR(object);
     nano_encode(&buf, value);
     xc = nng_socket_set(*sock, op, buf.buf, buf.cur - (TYPEOF(value) == STRSXP));
 
-  } else if (ptrtag == nano_ContextSymbol) {
+  } else if (!NANO_PTR_CHECK(object, nano_ContextSymbol)) {
 
     nng_ctx *ctx = (nng_ctx *) NANO_PTR(object);
     nano_encode(&buf, value);
@@ -391,8 +389,7 @@ SEXP rnng_get_opt(SEXP object, SEXP opt) {
   int xc, typ;
   nano_opt optval;
 
-  const SEXP ptrtag = NANO_TAG(object);
-  if (ptrtag == nano_SocketSymbol) {
+  if (!NANO_PTR_CHECK(object, nano_SocketSymbol)) {
 
     nng_socket *sock = (nng_socket *) NANO_PTR(object);
     for (;;) {
@@ -410,7 +407,7 @@ SEXP rnng_get_opt(SEXP object, SEXP opt) {
       typ = 6; break;
     }
 
-  } else if (ptrtag == nano_ContextSymbol) {
+  } else if (!NANO_PTR_CHECK(object, nano_ContextSymbol)) {
 
     nng_ctx *ctx = (nng_ctx *) NANO_PTR(object);
     for (;;) {
@@ -428,7 +425,7 @@ SEXP rnng_get_opt(SEXP object, SEXP opt) {
       typ = 6; break;
     }
 
-  } else if (ptrtag == nano_StreamSymbol) {
+  } else if (!NANO_PTR_CHECK(object, nano_StreamSymbol)) {
 
     nng_stream **st = (nng_stream **) NANO_PTR(object);
     for (;;) {
@@ -446,7 +443,7 @@ SEXP rnng_get_opt(SEXP object, SEXP opt) {
       typ = 6; break;
     }
 
-  } else if (ptrtag == nano_ListenerSymbol) {
+  } else if (!NANO_PTR_CHECK(object, nano_ListenerSymbol)) {
 
     nng_listener *list = (nng_listener *) NANO_PTR(object);
     for (;;) {
@@ -464,7 +461,7 @@ SEXP rnng_get_opt(SEXP object, SEXP opt) {
       typ = 6; break;
     }
 
-  } else if (ptrtag == nano_DialerSymbol) {
+  } else if (!NANO_PTR_CHECK(object, nano_DialerSymbol)) {
 
     nng_dialer *dial = (nng_dialer *) NANO_PTR(object);
     for (;;) {
@@ -523,20 +520,19 @@ SEXP rnng_stats_get(SEXP object, SEXP stat) {
   int xc;
   nng_stat *nst, *sst;
 
-  const SEXP ptrtag = NANO_TAG(object);
-  if (ptrtag == nano_SocketSymbol) {
+  if (!NANO_PTR_CHECK(object, nano_SocketSymbol)) {
     if ((xc = nng_stats_get(&nst)))
       ERROR_OUT(xc);
     nng_socket *sock = (nng_socket *) NANO_PTR(object);
     sst = nng_stat_find_socket(nst, *sock);
 
-  } else if (ptrtag == nano_ListenerSymbol) {
+  } else if (!NANO_PTR_CHECK(object, nano_ListenerSymbol)) {
     if ((xc = nng_stats_get(&nst)))
       ERROR_OUT(xc);
     nng_listener *list = (nng_listener *) NANO_PTR(object);
     sst = nng_stat_find_listener(nst, *list);
 
-  } else if (ptrtag == nano_DialerSymbol) {
+  } else if (!NANO_PTR_CHECK(object, nano_DialerSymbol)) {
     if ((xc = nng_stats_get(&nst)))
       ERROR_OUT(xc);
     nng_dialer *dial = (nng_dialer *) NANO_PTR(object);

@@ -33,7 +33,7 @@ static void context_finalizer(SEXP xptr) {
 
 SEXP rnng_ctx_open(SEXP socket) {
 
-  if (NANO_TAG(socket) != nano_SocketSymbol)
+  if (NANO_PTR_CHECK(socket, nano_SocketSymbol))
     Rf_error("'socket' is not a valid Socket");
 
   nng_socket *sock = (nng_socket *) NANO_PTR(socket);
@@ -62,7 +62,7 @@ SEXP rnng_ctx_open(SEXP socket) {
 
 SEXP rnng_ctx_create(SEXP socket) {
 
-  if (NANO_TAG(socket) != nano_SocketSymbol)
+  if (NANO_PTR_CHECK(socket, nano_SocketSymbol))
     Rf_error("'socket' is not a valid Socket");
 
   nng_socket *sock = (nng_socket *) NANO_PTR(socket);
@@ -84,7 +84,7 @@ SEXP rnng_ctx_create(SEXP socket) {
 
 SEXP rnng_ctx_close(SEXP context) {
 
-  if (NANO_TAG(context) != nano_ContextSymbol)
+  if (NANO_PTR_CHECK(context, nano_ContextSymbol))
     Rf_error("'context' is not a valid Context");
   nng_ctx *ctx = (nng_ctx *) NANO_PTR(context);
 
@@ -101,12 +101,12 @@ SEXP rnng_ctx_close(SEXP context) {
 
 SEXP rnng_dial(SEXP socket, SEXP url, SEXP tls, SEXP autostart, SEXP error) {
 
-  if (NANO_TAG(socket) != nano_SocketSymbol)
+  if (NANO_PTR_CHECK(socket, nano_SocketSymbol))
     Rf_error("'socket' is not a valid Socket");
 
   const int sec = tls != R_NilValue;
 
-  if (sec && NANO_TAG(tls) != nano_TlsSymbol)
+  if (sec && NANO_PTR_CHECK(tls, nano_TlsSymbol))
     Rf_error("'tls' is not a valid TLS Configuration");
 
   nng_socket *sock = (nng_socket *) NANO_PTR(socket);
@@ -175,12 +175,12 @@ SEXP rnng_dial(SEXP socket, SEXP url, SEXP tls, SEXP autostart, SEXP error) {
 
 SEXP rnng_listen(SEXP socket, SEXP url, SEXP tls, SEXP autostart, SEXP error) {
 
-  if (NANO_TAG(socket) != nano_SocketSymbol)
+  if (NANO_PTR_CHECK(socket, nano_SocketSymbol))
     Rf_error("'socket' is not a valid Socket");
 
   const int sec = tls != R_NilValue;
 
-  if (sec && NANO_TAG(tls) != nano_TlsSymbol)
+  if (sec && NANO_PTR_CHECK(tls, nano_TlsSymbol))
     Rf_error("'tls' is not a valid TLS Configuration");
 
   nng_socket *sock = (nng_socket *) NANO_PTR(socket);
@@ -242,7 +242,7 @@ SEXP rnng_listen(SEXP socket, SEXP url, SEXP tls, SEXP autostart, SEXP error) {
 
 SEXP rnng_dialer_start(SEXP dialer, SEXP async) {
 
-  if (NANO_TAG(dialer) != nano_DialerSymbol)
+  if (NANO_PTR_CHECK(dialer, nano_DialerSymbol))
     Rf_error("'dialer' is not a valid Dialer");
   nng_dialer *dial = (nng_dialer *) NANO_PTR(dialer);
   const int flags = (NANO_INTEGER(async) == 1) * NNG_FLAG_NONBLOCK;
@@ -257,7 +257,7 @@ SEXP rnng_dialer_start(SEXP dialer, SEXP async) {
 
 SEXP rnng_listener_start(SEXP listener) {
 
-  if (NANO_TAG(listener) != nano_ListenerSymbol)
+  if (NANO_PTR_CHECK(listener, nano_ListenerSymbol))
     Rf_error("'listener' is not a valid Listener");
   nng_listener *list = (nng_listener *) NANO_PTR(listener);
   const int xc = nng_listener_start(*list, 0);
@@ -271,7 +271,7 @@ SEXP rnng_listener_start(SEXP listener) {
 
 SEXP rnng_dialer_close(SEXP dialer) {
 
-  if (NANO_TAG(dialer) != nano_DialerSymbol)
+  if (NANO_PTR_CHECK(dialer, nano_DialerSymbol))
     Rf_error("'dialer' is not a valid Dialer");
   nng_dialer *dial = (nng_dialer *) NANO_PTR(dialer);
   const int xc = nng_dialer_close(*dial);
@@ -284,7 +284,7 @@ SEXP rnng_dialer_close(SEXP dialer) {
 
 SEXP rnng_listener_close(SEXP listener) {
 
-  if (NANO_TAG(listener) != nano_ListenerSymbol)
+  if (NANO_PTR_CHECK(listener, nano_ListenerSymbol))
     Rf_error("'listener' is not a valid Listener");
   nng_listener *list = (nng_listener *) NANO_PTR(listener);
   const int xc = nng_listener_close(*list);
@@ -303,8 +303,7 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block, SEXP pipe) {
   nano_buf buf;
   int sock, xc;
 
-  const SEXP ptrtag = NANO_TAG(con);
-  if ((sock = ptrtag == nano_SocketSymbol) || ptrtag == nano_ContextSymbol) {
+  if ((sock = !NANO_PTR_CHECK(con, nano_SocketSymbol)) || !NANO_PTR_CHECK(con, nano_ContextSymbol)) {
 
     const int pipeid = sock ? nano_integer(pipe) : 0;
     nano_encodes(mode) == 2 ? nano_encode(&buf, data) : nano_serialize(&buf, data, NANO_PROT(con));
@@ -361,7 +360,7 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block, SEXP pipe) {
 
     }
 
-  } else if (ptrtag == nano_StreamSymbol) {
+  } else if (!NANO_PTR_CHECK(con, nano_StreamSymbol)) {
 
     nano_encode(&buf, data);
 
@@ -411,8 +410,7 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP bytes) {
   size_t sz;
   SEXP res;
 
-  const SEXP ptrtag = NANO_TAG(con);
-  if (ptrtag == nano_SocketSymbol) {
+  if (!NANO_PTR_CHECK(con, nano_SocketSymbol)) {
 
     const int mod = nano_matcharg(mode);
     nng_socket *sock = (nng_socket *) NANO_PTR(con);
@@ -446,7 +444,7 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP bytes) {
       nng_msg_free(msgp);
     }
 
-  } else if (ptrtag == nano_ContextSymbol) {
+  } else if (!NANO_PTR_CHECK(con, nano_ContextSymbol)) {
 
     const int mod = nano_matcharg(mode);
     nng_ctx *ctxp = (nng_ctx *) NANO_PTR(con);
@@ -487,7 +485,7 @@ SEXP rnng_recv(SEXP con, SEXP mode, SEXP block, SEXP bytes) {
 
     }
 
-  } else if (ptrtag == nano_StreamSymbol) {
+  } else if (!NANO_PTR_CHECK(con, nano_StreamSymbol)) {
 
     const int mod = nano_matchargs(mode);
     const size_t xlen = (size_t) nano_integer(bytes);
