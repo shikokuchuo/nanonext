@@ -31,6 +31,9 @@
 #' Specify only one of 'dial' or 'listen'. If both are specified, 'listen' will
 #' be ignored.
 #'
+#' Closing a stream renders it invalid and attempting to perform additional
+#' operations on it will error.
+#'
 #' @param dial a URL to dial, specifying the transport and address as a
 #'   character string e.g. 'ipc:///tmp/anyvalue' or 'tcp://127.0.0.1:5555' (not
 #'   all transports are supported).
@@ -46,9 +49,20 @@
 #' @return A Stream (object of class \sQuote{nanoStream} and \sQuote{nano}).
 #'
 #' @examples
-#' # will succeed only if there is an open connection at the address:
+#' # Will succeed only if there is an open connection at the address:
 #' s <- tryCatch(stream(dial = "tcp://127.0.0.1:5555"), error = identity)
 #' s
+#' @examplesIf interactive()
+#' # Run in interactive sessions only as connection is not always available:
+#' s <- tryCatch(
+#'   stream(dial = "wss://echo.websocket.events/", textframes = TRUE),
+#'   error = identity
+#' )
+#' s
+#' if (is_nano(s)) recv(s)
+#' if (is_nano(s)) send(s, "hello")
+#' if (is_nano(s)) recv(s)
+#' if (is_nano(s)) close(s)
 #'
 #' @export
 #'

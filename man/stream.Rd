@@ -39,10 +39,24 @@ It is often the case that 'textframes' needs to be set to TRUE.
 
 Specify only one of 'dial' or 'listen'. If both are specified, 'listen' will
 be ignored.
+
+Closing a stream renders it invalid and attempting to perform additional
+operations on it will error.
 }
 \examples{
-# will succeed only if there is an open connection at the address:
+# Will succeed only if there is an open connection at the address:
 s <- tryCatch(stream(dial = "tcp://127.0.0.1:5555"), error = identity)
 s
-
+\dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+# Run in interactive sessions only as connection is not always available:
+s <- tryCatch(
+  stream(dial = "wss://echo.websocket.events/", textframes = TRUE),
+  error = identity
+)
+s
+if (is_nano(s)) recv(s)
+if (is_nano(s)) send(s, "hello")
+if (is_nano(s)) recv(s)
+if (is_nano(s)) close(s)
+\dontshow{\}) # examplesIf}
 }
