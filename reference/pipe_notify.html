@@ -49,7 +49,7 @@ are added or removed at a socket.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">pipe_notify</span><span class="op">(</span><span class="va">socket</span>, <span class="va">cv</span>, cv2 <span class="op">=</span> <span class="cn">NULL</span>, add <span class="op">=</span> <span class="cn">FALSE</span>, remove <span class="op">=</span> <span class="cn">FALSE</span>, flag <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">pipe_notify</span><span class="op">(</span><span class="va">socket</span>, <span class="va">cv</span>, add <span class="op">=</span> <span class="cn">FALSE</span>, remove <span class="op">=</span> <span class="cn">FALSE</span>, flag <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -63,12 +63,6 @@ are added or removed at a socket.</p>
 <dt id="arg-cv">cv<a class="anchor" aria-label="anchor" href="#arg-cv"></a></dt>
 <dd><p>a ‘conditionVariable’ to signal, or NULL to cancel a
 previously set signal.</p></dd>
-
-
-<dt id="arg-cv-">cv2<a class="anchor" aria-label="anchor" href="#arg-cv-"></a></dt>
-<dd><p>[default NULL] optionally, if specified, a second
-‘conditionVariable’ to signal. Note that this cv is signalled
-sequentially after the first condition variable.</p></dd>
 
 
 <dt id="arg-add">add<a class="anchor" aria-label="anchor" href="#arg-add"></a></dt>
@@ -107,38 +101,27 @@ to communicate using this pipe.</p>
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu"><a href="socket.html">socket</a></span><span class="op">(</span>listen <span class="op">=</span> <span class="st">"inproc://nanopipe"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">cv</span> <span class="op">&lt;-</span> <span class="fu"><a href="cv.html">cv</a></span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">cv2</span> <span class="op">&lt;-</span> <span class="fu"><a href="cv.html">cv</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu">pipe_notify</span><span class="op">(</span><span class="va">s</span>, <span class="va">cv</span>, <span class="va">cv2</span>, add <span class="op">=</span> <span class="cn">TRUE</span>, remove <span class="op">=</span> <span class="cn">TRUE</span>, flag <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">pipe_notify</span><span class="op">(</span><span class="va">s</span>, <span class="va">cv</span>, add <span class="op">=</span> <span class="cn">TRUE</span>, remove <span class="op">=</span> <span class="cn">TRUE</span>, flag <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="cv.html">cv_value</a></span><span class="op">(</span><span class="va">cv</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
-<span class="r-in"><span><span class="fu"><a href="cv.html">cv_value</a></span><span class="op">(</span><span class="va">cv2</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">s1</span> <span class="op">&lt;-</span> <span class="fu"><a href="socket.html">socket</a></span><span class="op">(</span>dial <span class="op">=</span> <span class="st">"inproc://nanopipe"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="cv.html">cv_value</a></span><span class="op">(</span><span class="va">cv</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
-<span class="r-in"><span><span class="fu"><a href="cv.html">cv_value</a></span><span class="op">(</span><span class="va">cv2</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
 <span class="r-in"><span><span class="fu"><a href="reap.html">reap</a></span><span class="op">(</span><span class="va">s1</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
 <span class="r-in"><span><span class="fu"><a href="cv.html">cv_value</a></span><span class="op">(</span><span class="va">cv</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2</span>
-<span class="r-in"><span><span class="fu"><a href="cv.html">cv_value</a></span><span class="op">(</span><span class="va">cv2</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">pipe_notify</span><span class="op">(</span><span class="va">s</span>, <span class="cn">NULL</span>, add <span class="op">=</span> <span class="cn">TRUE</span>, remove <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">s1</span> <span class="op">&lt;-</span> <span class="fu"><a href="socket.html">socket</a></span><span class="op">(</span>dial <span class="op">=</span> <span class="st">"inproc://nanopipe"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="cv.html">cv_value</a></span><span class="op">(</span><span class="va">cv</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2</span>
-<span class="r-in"><span><span class="fu"><a href="cv.html">cv_value</a></span><span class="op">(</span><span class="va">cv2</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2</span>
 <span class="r-in"><span><span class="fu"><a href="reap.html">reap</a></span><span class="op">(</span><span class="va">s1</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="op">(</span><span class="fu"><a href="cv.html">wait</a></span><span class="op">(</span><span class="va">cv</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE</span>
-<span class="r-in"><span><span class="op">(</span><span class="fu"><a href="cv.html">wait</a></span><span class="op">(</span><span class="va">cv2</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="close.html">close</a></span><span class="op">(</span><span class="va">s</span><span class="op">)</span></span></span>
