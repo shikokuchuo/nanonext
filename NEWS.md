@@ -1,4 +1,4 @@
-# nanonext 1.5.0.9000 (development)
+# nanonext 1.5.1
 
 #### Updates
 
@@ -6,7 +6,7 @@
 * The abillity to `lock()` and `unlock()` sockets is removed.
 * Renders it safe to serialize 'nano' and 'aio' objects - they will be inactive when unserialized.
 * Unified Windows build system now compiles 'libmbedtls' and 'libnng' from source even on R <= 4.1 using Rtools40 or earlier.
-* Requires 'libnng' >= 1.9.0.
+* Minimum supported 'libnng' version increased to 1.9.0.
 
 # nanonext 1.5.0
 
