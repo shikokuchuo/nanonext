@@ -168,7 +168,7 @@
 <p>Install the latest release from CRAN:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"nanonext"</span><span class="op">)</span></span></code></pre></div>
-<p>The current development version is available from R-universe:</p>
+<p>Or the current development version from R-universe:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"nanonext"</span>, repos <span class="op">=</span> <span class="st">"https://shikokuchuo.r-universe.dev"</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -178,7 +178,7 @@
 <div class="section level4">
 <h4 id="linux--mac--solaris">Linux / Mac / Solaris<a class="anchor" aria-label="anchor" href="#linux--mac--solaris"></a>
 </h4>
-<p>Installation from source requires ‘libnng’ &gt;= v1.6.0 and ‘libmbedtls’ &gt;= 2.5.0 (suitable installations are automatically detected), or else ‘cmake’ to compile ‘libnng’ v1.10.1 and ‘libmbedtls’ v3.6.2 included within the package sources.</p>
+<p>Installation from source requires ‘libnng’ &gt;= v1.10.0 and ‘libmbedtls’ &gt;= 2.5.0 (suitable installations are automatically detected), or else ‘cmake’ to compile ‘libnng’ v1.10.1 and ‘libmbedtls’ v3.6.2 included within the package sources.</p>
 <p><strong>It is recommended for optimal performance and stability to let the package automatically compile bundled versions of ‘libmbedtls’ and ‘libnng’ during installation.</strong> To ensure the libraries are compiled from source even if system installations are present, set the <code>NANONEXT_LIBS</code> environment variable prior to installation e.g. by <code>Sys.setenv(NANONEXT_LIBS = 1)</code>.</p>
 <p>As system libraries, ‘libnng’ is available as libnng-dev (deb) or nng-devel (rpm), and ‘libmbedtls’ as libmbedtls-dev (deb) or libmbedtls-devel (rpm). The <code>INCLUDE_DIR</code> and <code>LIB_DIR</code> environment variables may be set prior to package installation to specify a custom location for ‘libmbedtls’ or ‘libnng’ other than the standard filesystem locations.</p>
 <p><em>Additional requirements for Solaris: (i) the ‘xz’ package - available on OpenCSW, and (ii) a more recent version of ‘cmake’ than available on OpenCSW - refer to the ‘cmake’ website for the latest source file.</em></p>
@@ -266,7 +266,6 @@
 <h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
 <li><a href="https://CRAN.R-project.org/package=nanonext" class="external-link"><img src="https://www.r-pkg.org/badges/version/nanonext" alt="CRAN status"></a></li>
-<li><a href="https://community.r-multiverse.org/nanonext" class="external-link"><img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fcommunity.r-multiverse.org%2Fapi%2Fpackages%2Fnanonext&amp;query=%24.Version&amp;label=r-multiverse" alt="R-multiverse status"></a></li>
 <li><a href="https://shikokuchuo.r-universe.dev/nanonext" class="external-link"><img src="https://shikokuchuo.r-universe.dev/badges/nanonext?color=3f72af" alt="R-universe status"></a></li>
 <li><a href="https://github.com/shikokuchuo/nanonext/actions" class="external-link"><img src="https://github.com/shikokuchuo/nanonext/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a></li>
 <li><a href="https://app.codecov.io/gh/shikokuchuo/nanonext" class="external-link"><img src="https://codecov.io/gh/shikokuchuo/nanonext/graph/badge.svg" alt="codecov"></a></li>
