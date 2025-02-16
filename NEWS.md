@@ -3,6 +3,7 @@
 #### Updates
 
 * `pipe_notify()` drops argument 'cv2' for signalling 2 condition variables on one pipe event. Use signal forwarders `%~>%` instead.
+* The abillity to `lock()` and `unlock()` sockets is removed.
 * Renders it safe to serialize 'nano' and 'aio' objects - they will be inactive when unserialized.
 * Unified Windows build system now compiles 'libmbedtls' and 'libnng' from source even on R <= 4.1 using Rtools40 or earlier.
 

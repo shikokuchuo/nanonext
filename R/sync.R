@@ -213,51 +213,6 @@ cv_signal <- function(cv) invisible(.Call(rnng_cv_signal, cv))
 pipe_notify <- function(socket, cv, add = FALSE, remove = FALSE, flag = FALSE)
   invisible(.Call(rnng_pipe_notify, socket, cv, add, remove, flag))
 
-#' Lock / Unlock a Socket
-#'
-#' Prevents further pipe connections from being established at a Socket. If a
-#' socket is locked, new pipe connections are closed before they can be added to
-#' the socket.
-#'
-#' @param socket a Socket.
-#' @param cv (optional) a \sQuote{conditionVariable}. If supplied, the socket is
-#'   locked only whilst the condition variable is an odd value. This is designed
-#'   to allow an initial connection, as well as subsequent re-connections after
-#'   a connection has ended, if the conditon variable is also registered with
-#'   \code{\link{pipe_notify}} for both add and remove pipe events.
-#'
-#' @return Invisibly, zero on success (will otherwise error).
-#'
-#' @examples
-#' s <- socket("bus", listen = "inproc://nanolock")
-#' s1 <- socket("bus", dial = "inproc://nanolock")
-#' lock(s)
-#' s2 <- socket("bus", dial = "inproc://nanolock")
-#'
-#' send(s, "test")
-#' recv(s1)
-#' recv(s2)
-#'
-#' unlock(s)
-#' s3 <- socket("bus", dial = "inproc://nanolock")
-#' send(s, "test")
-#' recv(s1)
-#' recv(s3)
-#'
-#' close(s)
-#' close(s1)
-#' close(s2)
-#' close(s3)
-#'
-#' @export
-#'
-lock <- function(socket, cv = NULL) invisible(.Call(rnng_socket_lock, socket, cv))
-
-#' @rdname lock
-#' @export
-#'
-unlock <- function(socket) invisible(.Call(rnng_socket_unlock, socket))
-
 #' Signal Forwarder
 #'
 #' Forwards signals from one \sQuote{conditionVariable} to another.

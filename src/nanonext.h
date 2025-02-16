@@ -348,8 +348,6 @@ SEXP rnng_set_opt(SEXP, SEXP, SEXP);
 SEXP rnng_set_promise_context(SEXP, SEXP);
 SEXP rnng_signal_thread_create(SEXP, SEXP);
 SEXP rnng_sleep(SEXP);
-SEXP rnng_socket_lock(SEXP, SEXP);
-SEXP rnng_socket_unlock(SEXP);
 SEXP rnng_stats_get(SEXP, SEXP);
 SEXP rnng_status_code(SEXP);
 SEXP rnng_stream_close(SEXP);

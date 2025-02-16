@@ -93,3 +93,13 @@
 #' @useDynLib nanonext, .registration = TRUE
 #'
 "_PACKAGE"
+
+
+#' Lock
+#'
+#' Stub function retained for compatibility purposes only.
+#'
+#' @keywords internal
+#' @export
+#'
+lock <- function() {} # may be removed after mirai > 2.1.0 is released

@@ -109,24 +109,6 @@ void pipe_cb_signal(nng_pipe p, nng_pipe_ev ev, void *arg) {
 
 }
 
-static void pipe_cb_dropcon(nng_pipe p, nng_pipe_ev ev, void *arg) {
-
-  if (arg != NULL) {
-    nano_cv *ncv = (nano_cv *) arg;
-    nng_mtx *mtx = ncv->mtx;
-    int cond;
-    nng_mtx_lock(mtx);
-    if ((cond = ncv->condition % 2))
-      ncv->condition--;
-    nng_mtx_unlock(mtx);
-    if (cond)
-      nng_pipe_close(p);
-  } else {
-    nng_pipe_close(p);
-  }
-
-}
-
 static void pipe_cb_monitor(nng_pipe p, nng_pipe_ev ev, void *arg) {
 
   nano_monitor *monitor = (nano_monitor *) arg;
@@ -558,44 +540,6 @@ SEXP rnng_pipe_notify(SEXP socket, SEXP cv, SEXP add, SEXP remove, SEXP flag) {
     ERROR_OUT(xc);
 
   if (NANO_INTEGER(remove) && (xc = nng_pipe_notify(*sock, NNG_PIPE_EV_REM_POST, pipe_cb_signal, cvp)))
-    ERROR_OUT(xc);
-
-  return nano_success;
-
-}
-
-SEXP rnng_socket_lock(SEXP socket, SEXP cv) {
-
-  if (NANO_PTR_CHECK(socket, nano_SocketSymbol))
-    Rf_error("'socket' is not a valid Socket");
-  nng_socket *sock = (nng_socket *) NANO_PTR(socket);
-
-  int xc;
-  if (cv != R_NilValue) {
-    if (NANO_PTR_CHECK(cv, nano_CvSymbol))
-      Rf_error("'cv' is not a valid Condition Variable");
-    nano_cv *ncv = (nano_cv *) NANO_PTR(cv);
-    xc = nng_pipe_notify(*sock, NNG_PIPE_EV_ADD_PRE, pipe_cb_dropcon, ncv);
-  } else {
-    xc = nng_pipe_notify(*sock, NNG_PIPE_EV_ADD_PRE, pipe_cb_dropcon, NULL);
-  }
-
-  if (xc)
-    ERROR_OUT(xc);
-
-  return nano_success;
-
-}
-
-SEXP rnng_socket_unlock(SEXP socket) {
-
-  if (NANO_PTR_CHECK(socket, nano_SocketSymbol))
-    Rf_error("'socket' is not a valid Socket");
-
-  nng_socket *sock = (nng_socket *) NANO_PTR(socket);
-
-  const int xc = nng_pipe_notify(*sock, NNG_PIPE_EV_ADD_PRE, NULL, NULL);
-  if (xc)
     ERROR_OUT(xc);
 
   return nano_success;

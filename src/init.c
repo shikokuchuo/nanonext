@@ -181,8 +181,6 @@ static const R_CallMethodDef callMethods[] = {
   {"rnng_set_promise_context", (DL_FUNC) &rnng_set_promise_context, 2},
   {"rnng_signal_thread_create", (DL_FUNC) &rnng_signal_thread_create, 2},
   {"rnng_sleep", (DL_FUNC) &rnng_sleep, 1},
-  {"rnng_socket_lock", (DL_FUNC) &rnng_socket_lock, 2},
-  {"rnng_socket_unlock", (DL_FUNC) &rnng_socket_unlock, 1},
   {"rnng_stats_get", (DL_FUNC) &rnng_stats_get, 2},
   {"rnng_status_code", (DL_FUNC) &rnng_status_code, 1},
   {"rnng_stream_close", (DL_FUNC) &rnng_stream_close, 1},
