@@ -174,7 +174,7 @@ install.packages("nanonext", repos = "https://shikokuchuo.r-universe.dev")
 
 #### Linux / Mac / Solaris
 
-Installation from source requires ‘libnng’ \>= v1.6.0 and ‘libmbedtls’
+Installation from source requires ‘libnng’ \>= v1.10.0 and ‘libmbedtls’
 \>= 2.5.0 (suitable installations are automatically detected), or else
 ‘cmake’ to compile ‘libnng’ v1.10.1 and ‘libmbedtls’ v3.6.2 included
 within the package sources.
