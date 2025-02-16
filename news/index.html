@@ -45,6 +45,7 @@
 <h5 id="updates-1-5-0-9000">Updates<a class="anchor" aria-label="anchor" href="#updates-1-5-0-9000"></a></h5>
 <ul><li>
 <code><a href="../reference/pipe_notify.html">pipe_notify()</a></code> drops argument ‘cv2’ for signalling 2 condition variables on one pipe event. Use signal forwarders <code>%~&gt;%</code> instead.</li>
+<li>The abillity to <code><a href="../reference/lock.html">lock()</a></code> and <code>unlock()</code> sockets is removed.</li>
 <li>Renders it safe to serialize ‘nano’ and ‘aio’ objects - they will be inactive when unserialized.</li>
 <li>Unified Windows build system now compiles ‘libmbedtls’ and ‘libnng’ from source even on R &lt;= 4.1 using Rtools40 or earlier.</li>
 </ul></div>
@@ -490,7 +491,7 @@
 <h5 id="updates-0-8-3">Updates<a class="anchor" aria-label="anchor" href="#updates-0-8-3"></a></h5>
 <ul><li>Removes ‘verify’ argument of <code><a href="../reference/context.html">context()</a></code> (changed to ‘…’ for compatibility) as <code><a href="../reference/request.html">request()</a></code> and <code>request_signal()</code> have been rendered safe internally for use with timeouts.</li>
 <li>The name of the single argument to <code><a href="../reference/msleep.html">msleep()</a></code> has been changed to ‘time’ from ‘msec’.</li>
-<li>Functions <code><a href="../reference/pipe_notify.html">pipe_notify()</a></code>, <code><a href="../reference/lock.html">lock()</a></code> and <code><a href="../reference/lock.html">unlock()</a></code> now error if unsuccessful rather than returning with a warning.</li>
+<li>Functions <code><a href="../reference/pipe_notify.html">pipe_notify()</a></code>, <code><a href="../reference/lock.html">lock()</a></code> and <code>unlock()</code> now error if unsuccessful rather than returning with a warning.</li>
 <li>For compiling bundled ‘libmbedtls’ and ‘libnng’ libraries from source, R’s configured C compiler is now chosen over the system default where this is different.</li>
 <li>Bundled ‘libnng’ source updated to v1.6.0 alpha (c5e9d8a).</li>
 <li>Bundled ‘libmbedtls’ source updated to v3.4.0.</li>
@@ -501,7 +502,7 @@
 <div class="section level5">
 <h5 id="new-features-0-8-2">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-8-2"></a></h5>
 <ul><li>
-<code><a href="../reference/lock.html">lock()</a></code> and <code><a href="../reference/lock.html">unlock()</a></code> implemented to prevent further pipe connections from being established at a socket, optionally tied to the value of a condition variable.</li>
+<code><a href="../reference/lock.html">lock()</a></code> and <code>unlock()</code> implemented to prevent further pipe connections from being established at a socket, optionally tied to the value of a condition variable.</li>
 </ul></div>
 <div class="section level5">
 <h5 id="updates-0-8-2">Updates<a class="anchor" aria-label="anchor" href="#updates-0-8-2"></a></h5>
