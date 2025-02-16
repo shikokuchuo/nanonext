@@ -563,6 +563,7 @@ SEXP rnng_monitor_create(SEXP socket, SEXP cv) {
   monitor->cv = (nano_cv *) NANO_PTR(cv);
   nng_socket *sock = (nng_socket *) NANO_PTR(socket);
 
+  SEXP xptr;
   int xc;
 
   if ((xc = nng_pipe_notify(*sock, NNG_PIPE_EV_ADD_POST, pipe_cb_monitor, monitor)))
@@ -571,10 +572,11 @@ SEXP rnng_monitor_create(SEXP socket, SEXP cv) {
   if ((xc = nng_pipe_notify(*sock, NNG_PIPE_EV_REM_POST, pipe_cb_monitor, monitor)))
     ERROR_OUT(xc);
 
-  SEXP xptr = R_MakeExternalPtr(monitor, nano_MonitorSymbol, R_NilValue);
+  PROTECT(xptr = R_MakeExternalPtr(monitor, nano_MonitorSymbol, R_NilValue));
   R_RegisterCFinalizerEx(xptr, monitor_finalizer, TRUE);
   NANO_CLASS2(xptr, "nanoMonitor", "nano");
   Rf_setAttrib(xptr, nano_SocketSymbol, Rf_ScalarInteger(nng_socket_id(*sock)));
+  UNPROTECT(1);
 
   return xptr;
 
