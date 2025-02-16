@@ -71,7 +71,7 @@ closed when their associated socket is closed.
 
 \examples{
 socket <- socket("req")
-listen(socket, url = "tcp://127.0.0.1:6547", autostart = FALSE)
+listen(socket, url = "inproc://nanolisten", autostart = FALSE)
 socket$listener
 start(socket$listener[[1]])
 socket$listener
@@ -79,7 +79,7 @@ close(socket$listener[[1]])
 close(socket)
 
 nano <- nano("bus")
-nano$listen(url = "tcp://127.0.0.1:6548", autostart = FALSE)
+nano$listen(url = "inproc://nanolisten", autostart = FALSE)
 nano$listener
 nano$listener_start()
 nano$listener

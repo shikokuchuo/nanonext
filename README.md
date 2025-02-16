@@ -7,8 +7,6 @@
 
 [![CRAN
 status](https://www.r-pkg.org/badges/version/nanonext)](https://CRAN.R-project.org/package=nanonext)
-[![R-multiverse
-status](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fcommunity.r-multiverse.org%2Fapi%2Fpackages%2Fnanonext&query=%24.Version&label=r-multiverse)](https://community.r-multiverse.org/nanonext)
 [![R-universe
 status](https://shikokuchuo.r-universe.dev/badges/nanonext?color=3f72af)](https://shikokuchuo.r-universe.dev/nanonext)
 [![R-CMD-check](https://github.com/shikokuchuo/nanonext/workflows/R-CMD-check/badge.svg)](https://github.com/shikokuchuo/nanonext/actions)
@@ -166,7 +164,7 @@ Install the latest release from CRAN:
 install.packages("nanonext")
 ```
 
-The current development version is available from R-universe:
+Or the current development version from R-universe:
 
 ``` r
 install.packages("nanonext", repos = "https://shikokuchuo.r-universe.dev")
@@ -176,7 +174,7 @@ install.packages("nanonext", repos = "https://shikokuchuo.r-universe.dev")
 
 #### Linux / Mac / Solaris
 
-Installation from source requires ‘libnng’ \>= v1.6.0 and ‘libmbedtls’
+Installation from source requires ‘libnng’ \>= v1.10.0 and ‘libmbedtls’
 \>= 2.5.0 (suitable installations are automatically detected), or else
 ‘cmake’ to compile ‘libnng’ v1.10.1 and ‘libmbedtls’ v3.6.2 included
 within the package sources.

@@ -131,8 +131,8 @@ close.nanoContext <- function(con, ...) invisible(.Call(rnng_ctx_close, con))
 #' @inheritSection send Send Modes
 #'
 #' @examples
-#' req <- socket("req", listen = "tcp://127.0.0.1:6546")
-#' rep <- socket("rep", dial = "tcp://127.0.0.1:6546")
+#' req <- socket("req", listen = "inproc://req-example")
+#' rep <- socket("rep", dial = "inproc://req-example")
 #'
 #' ctxq <- context(req)
 #' ctxp <- context(rep)
