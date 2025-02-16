@@ -74,7 +74,7 @@ closed when their associated socket is closed.
 
 \examples{
 socket <- socket("rep")
-dial(socket, url = "tcp://127.0.0.1:6545", autostart = FALSE)
+dial(socket, url = "inproc://nanodial", autostart = FALSE)
 socket$dialer
 start(socket$dialer[[1]])
 socket$dialer
@@ -82,7 +82,7 @@ close(socket$dialer[[1]])
 close(socket)
 
 nano <- nano("bus")
-nano$dial(url = "tcp://127.0.0.1:6546", autostart = FALSE)
+nano$dial(url = "inproc://nanodial", autostart = FALSE)
 nano$dialer
 nano$dialer_start()
 nano$dialer

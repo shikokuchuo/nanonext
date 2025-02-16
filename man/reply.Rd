@@ -79,8 +79,8 @@ corresponding to the vector sent should be used.
 }
 
 \examples{
-req <- socket("req", listen = "tcp://127.0.0.1:6546")
-rep <- socket("rep", dial = "tcp://127.0.0.1:6546")
+req <- socket("req", listen = "inproc://req-example")
+rep <- socket("rep", dial = "inproc://req-example")
 
 ctxq <- context(req)
 ctxp <- context(rep)
