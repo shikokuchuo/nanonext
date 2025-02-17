@@ -7,7 +7,7 @@
 recv_aio(
   con,
   mode = c("serial", "character", "complex", "double", "integer", "logical", "numeric",
-    "raw", "string"),
+    "raw", "string", "qs2"),
   timeout = NULL,
   cv = NULL,
   n = 65536L
@@ -19,11 +19,12 @@ recv_aio(
 \item{mode}{[default 'serial'] character value or integer equivalent - one of
 \sQuote{serial} (1L), \sQuote{character} (2L), \sQuote{complex} (3L),
 \sQuote{double} (4L), \sQuote{integer} (5L), \sQuote{logical} (6L),
-\sQuote{numeric} (7L), \sQuote{raw} (8L), or \sQuote{string} (9L). The
-default \sQuote{serial} means a serialised R object; for the other modes,
-received bytes are converted into the respective mode. \sQuote{string} is a
-faster option for length one character vectors. For Streams,
-\sQuote{serial} is not an option and the default is \sQuote{character}.}
+\sQuote{numeric} (7L), \sQuote{raw} (8L), \sQuote{string} (9L), or
+\sQuote{qs2} (10L). The default \sQuote{serial} means a serialised R object
+and \sQuote{qs2} a qs2-serialized object; for the other modes, received
+bytes are converted into the respective mode. \sQuote{string} is a faster
+option for length one character vectors. For Streams, \sQuote{serial} and
+\sQuote{qs2} are not options and the default is \sQuote{character}.}
 
 \item{timeout}{[default NULL] integer value in milliseconds or NULL, which
 applies a socket-specific default, usually the same as no timeout.}

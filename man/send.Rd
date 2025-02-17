@@ -4,7 +4,7 @@
 \alias{send}
 \title{Send}
 \usage{
-send(con, data, mode = c("serial", "raw"), block = NULL, pipe = 0L)
+send(con, data, mode = c("serial", "raw", "qs2"), block = NULL, pipe = 0L)
 }
 \arguments{
 \item{con}{a Socket, Context or Stream.}
@@ -12,9 +12,10 @@ send(con, data, mode = c("serial", "raw"), block = NULL, pipe = 0L)
 \item{data}{an object (a vector, if mode = \sQuote{raw}).}
 
 \item{mode}{[default 'serial'] character value or integer equivalent - either
-\sQuote{serial} (1L) to send serialised R objects, or \sQuote{raw} (2L) to
-send atomic vectors of any type as a raw byte vector. For Streams,
-\sQuote{raw} is the only option and this argument is ignored.}
+\sQuote{serial} (1L) to send serialised R objects, \sQuote{raw} (2L) to
+send atomic vectors of any type as a raw byte vector, or \sQuote{qs2} (3L)
+to use qs2 serialization. For Streams, \sQuote{raw} is the only option and
+this argument is ignored.}
 
 \item{block}{[default NULL] which applies the connection default (see section
 \sQuote{Blocking} below). Specify logical TRUE to block until successful or
