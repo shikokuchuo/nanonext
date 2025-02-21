@@ -4,7 +4,13 @@
 \alias{send_aio}
 \title{Send Async}
 \usage{
-send_aio(con, data, mode = c("serial", "raw"), timeout = NULL, pipe = 0L)
+send_aio(
+  con,
+  data,
+  mode = c("serial", "raw", "qs2"),
+  timeout = NULL,
+  pipe = 0L
+)
 }
 \arguments{
 \item{con}{a Socket, Context or Stream.}
@@ -12,9 +18,10 @@ send_aio(con, data, mode = c("serial", "raw"), timeout = NULL, pipe = 0L)
 \item{data}{an object (a vector, if mode = \sQuote{raw}).}
 
 \item{mode}{[default 'serial'] character value or integer equivalent - either
-\sQuote{serial} (1L) to send serialised R objects, or \sQuote{raw} (2L) to
-send atomic vectors of any type as a raw byte vector. For Streams,
-\sQuote{raw} is the only option and this argument is ignored.}
+\sQuote{serial} (1L) to send serialised R objects, \sQuote{raw} (2L) to
+send atomic vectors of any type as a raw byte vector, or \sQuote{qs2} (3L)
+to use qs2 serialization. For Streams, \sQuote{raw} is the only option and
+this argument is ignored.}
 
 \item{timeout}{[default NULL] integer value in milliseconds or NULL, which
 applies a socket-specific default, usually the same as no timeout.}
