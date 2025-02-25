@@ -456,7 +456,7 @@ test_error(stream(dial = "wss://127.0.0.1:5555", tls = "wrong"), "valid TLS")
 test_error(stream(listen = "errorValue3"), "argument")
 test_error(stream(listen = "inproc://notsup"), "Not supported")
 test_error(stream(listen = "errorValue3", tls = "wrong"), "valid TLS")
-test_error(stream(), "specify")
+test_error(stream(), "specify a URL")
 
 test_type("character", ver <- nng_version())
 test_equal(length(ver), 2L)
