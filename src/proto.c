@@ -208,7 +208,7 @@ SEXP rnng_reap(SEXP con) {
 
 // streams ---------------------------------------------------------------------
 
-SEXP rnng_stream_dial(SEXP url, SEXP textframes, SEXP tls) {
+static SEXP nano_stream_dial(SEXP url, SEXP textframes, SEXP tls) {
 
   const char *add = CHAR(STRING_ELT(url, 0));
   if (tls != R_NilValue && NANO_PTR_CHECK(tls, nano_TlsSymbol))
@@ -297,7 +297,7 @@ SEXP rnng_stream_dial(SEXP url, SEXP textframes, SEXP tls) {
 
 }
 
-SEXP rnng_stream_listen(SEXP url, SEXP textframes, SEXP tls) {
+static SEXP nano_stream_listen(SEXP url, SEXP textframes, SEXP tls) {
 
   const char *add = CHAR(STRING_ELT(url, 0));
   if (tls != R_NilValue && NANO_PTR_CHECK(tls, nano_TlsSymbol))
@@ -386,6 +386,16 @@ SEXP rnng_stream_listen(SEXP url, SEXP textframes, SEXP tls) {
   R_Free(nst);
   ERROR_OUT(xc);
 
+}
+
+SEXP rnng_stream_open(SEXP dial, SEXP listen, SEXP textframes, SEXP tls) {
+  if (dial != R_NilValue) {
+    return nano_stream_dial(dial, textframes, tls);
+  } else if (listen != R_NilValue) {
+    return nano_stream_listen(listen, textframes, tls);
+  } else {
+    NANO_ERROR("specify a URL for either 'dial' or 'listen'");
+  }
 }
 
 SEXP rnng_stream_close(SEXP stream) {
