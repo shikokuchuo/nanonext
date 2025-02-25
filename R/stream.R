@@ -67,11 +67,7 @@
 #' @export
 #'
 stream <- function(dial = NULL, listen = NULL, textframes = FALSE, tls = NULL)
-  if (length(dial))
-    .Call(rnng_stream_dial, dial, textframes, tls) else
-      if (length(listen))
-        .Call(rnng_stream_listen, listen, textframes, tls) else
-          stop("specify a URL for either 'dial' or 'listen'")
+  .Call(rnng_stream_open, dial, listen, textframes, tls)
 
 #' @rdname close
 #' @method close nanoStream
