@@ -89,23 +89,23 @@ to return the hex representation of the bytes as a character string.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A length ‘n’ raw vector, or length one vector of ‘2n’
-  random characters, depending on the value of ‘convert’ supplied.</p>
+    <p>A length <code>n</code> raw vector, or length one vector of <code>2n</code> random
+characters, depending on the value of <code>convert</code> supplied.</p>
     </div>
     <div class="section level2">
     <h2 id="note">Note<a class="anchor" aria-label="anchor" href="#note"></a></h2>
     <p>Results obtained are independent of and do not alter the state of R's
-  own pseudo-random number generators.</p>
+own pseudo-random number generators.</p>
     </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">random</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "e7"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "e6"</span>
 <span class="r-in"><span><span class="fu">random</span><span class="op">(</span><span class="fl">8L</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "a6164d60d6143df9"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "129c2612837e9fa1"</span>
 <span class="r-in"><span><span class="fu">random</span><span class="op">(</span>n <span class="op">=</span> <span class="fl">8L</span>, convert <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] ea fa 1f 65 8f c6 e4 8d</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] b3 25 cd 05 37 59 6c e4</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

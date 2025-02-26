@@ -66,8 +66,8 @@ previously set signal.</p></dd>
 
 
 <dt id="arg-add">add<a class="anchor" aria-label="anchor" href="#arg-add"></a></dt>
-<dd><p>[default FALSE] logical value whether to signal (or cancel signal)
-when a pipe is added.</p></dd>
+<dd><p>[default FALSE] logical value whether to signal (or cancel
+signal) when a pipe is added.</p></dd>
 
 
 <dt id="arg-remove">remove<a class="anchor" aria-label="anchor" href="#arg-remove"></a></dt>
@@ -78,10 +78,10 @@ signal) when a pipe is removed.</p></dd>
 <dt id="arg-flag">flag<a class="anchor" aria-label="anchor" href="#arg-flag"></a></dt>
 <dd><p>[default FALSE] logical value whether to also set a flag in the
 ‘conditionVariable’. This can help distinguish between different
-types of signal, and causes any subsequent <code><a href="cv.html">wait</a></code> to return
-FALSE instead of TRUE. If a signal from the <span class="pkg">tools</span> package, e.g.
-<code><a href="https://rdrr.io/r/tools/pskill.html" class="external-link">tools::SIGINT</a></code>, or an equivalent integer value is supplied, this sets
-a flag and additionally raises this signal upon the flag being set.</p></dd>
+types of signal, and causes any subsequent <code><a href="cv.html">wait()</a></code> to return FALSE instead
+of TRUE. If a signal from the <span class="pkg">tools</span> package, e.g. <code><a href="https://rdrr.io/r/tools/pskill.html" class="external-link">tools::SIGINT</a></code>, or
+an equivalent integer value is supplied, this sets a flag and additionally
+raises this signal upon the flag being set.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -91,10 +91,11 @@ a flag and additionally raises this signal upon the flag being set.</p></dd>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>For add: this event occurs after the pipe is fully added to the socket. Prior
-to this time, it is not possible to communicate over the pipe with the socket.</p>
-<p>For remove: this event occurs after the pipe has been removed from the socket.
-The underlying transport may be closed at this point, and it is not possible
-to communicate using this pipe.</p>
+to this time, it is not possible to communicate over the pipe with the
+socket.</p>
+<p>For remove: this event occurs after the pipe has been removed from the
+socket. The underlying transport may be closed at this point, and it is not
+possible to communicate using this pipe.</p>
     </div>
 
     <div class="section level2">

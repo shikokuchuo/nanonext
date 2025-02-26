@@ -74,8 +74,8 @@ to the caller/client.</p>
 <dt id="arg-execute">execute<a class="anchor" aria-label="anchor" href="#arg-execute"></a></dt>
 <dd><p>a function which takes the received (converted) data as its
 first argument. Can be an anonymous function of the form
-<code>function(x) do(x)</code>. Additional arguments can also be passed in
-through ‘...’.</p></dd>
+<code>function(x) do(x)</code>. Additional arguments can also be passed in through
+<code>...</code>.</p></dd>
 
 
 <dt id="arg-recv-mode">recv_mode<a class="anchor" aria-label="anchor" href="#arg-recv-mode"></a></dt>
@@ -120,8 +120,8 @@ is forthcoming.</p>
 <p>In the event of an error in either processing the messages or in evaluation
 of the function with respect to the data, a nul byte <code>00</code> (or serialized
 nul byte) will be sent in reply to the client to signal an error. This is to
-be distinguishable from a possible return value. <code><a href="is_error_value.html">is_nul_byte</a></code>
-can be used to test for a nul byte.</p>
+be distinguishable from a possible return value. <code><a href="is_error_value.html">is_nul_byte()</a></code> can be used
+to test for a nul byte.</p>
     </div>
     <div class="section level2">
     <h2 id="send-modes">Send Modes<a class="anchor" aria-label="anchor" href="#send-modes"></a></h2>
@@ -132,7 +132,7 @@ can be used to test for a nul byte.</p>
 reproducibility within R. When receiving, the corresponding mode
 ‘serial’ should be used. Custom serialization and unserialization
 functions for reference objects may be enabled by the function
-<code><a href="serial_config.html">serial_config</a></code>.</p>
+<code><a href="serial_config.html">serial_config()</a></code>.</p>
 <p>Mode ‘raw’ sends atomic vectors of any type as a raw byte vector, and
 must be used when interfacing with external applications or raw system
 sockets, where R serialization is not in use. When receiving, the mode

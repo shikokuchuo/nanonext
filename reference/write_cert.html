@@ -49,7 +49,7 @@ pair for use with authenticated, encrypted TLS communications.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">write_cert</span><span class="op">(</span>cn <span class="op">=</span> <span class="st">"localhost"</span>, valid <span class="op">=</span> <span class="st">"20301231235959"</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">write_cert</span><span class="op">(</span>cn <span class="op">=</span> <span class="st">"127.0.0.1"</span>, valid <span class="op">=</span> <span class="st">"20301231235959"</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -57,7 +57,7 @@ pair for use with authenticated, encrypted TLS communications.</p>
 
 
 <dl><dt id="arg-cn">cn<a class="anchor" aria-label="anchor" href="#arg-cn"></a></dt>
-<dd><p>[default 'localhost'] character issuer common name (CN) for the
+<dd><p>[default '127.0.0.1'] character issuer common name (CN) for the
 certificate. This can be either a hostname or an IP address, but must match
 the actual server URL as client authentication will depend on it.</p></dd>
 
@@ -70,9 +70,8 @@ after this time.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A list of length 2, comprising <code>$server</code> and <code>$client</code>.
-  These may be passed directly to the relevant argument of
-  <code><a href="tls_config.html">tls_config</a></code>.</p>
+    <p>A list of length 2, comprising <code>$server</code> and <code>$client</code>. These may be
+passed directly to the relevant argument of <code><a href="tls_config.html">tls_config()</a></code>.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>

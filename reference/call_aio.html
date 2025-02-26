@@ -81,8 +81,8 @@ interactive use.</p>
     <p>For a ‘recvAio’, the received value may be retrieved at <code>$data</code>.</p>
 <p>For a ‘sendAio’, the send result may be retrieved at <code>$result</code>.
 This will be zero on success, or else an integer error code.</p>
-<p>To access the values directly, use for example on a ‘recvAio’
-<code>x</code>: <code>call_aio(x)$data</code>.</p>
+<p>To access the values directly, use for example on a ‘recvAio’ <code>x</code>:
+<code>call_aio(x)$data</code>.</p>
 <p>For a ‘recvAio’, if an error occurred in unserialization or conversion
 of the message data to the specified mode, a raw vector will be returned
 instead to allow recovery (accompanied by a warning).</p>
@@ -96,12 +96,12 @@ object.</p>
 
 
 <p>Aio values may be accessed directly at <code>$result</code> for a ‘sendAio’,
-and <code>$data</code> for a ‘recvAio’. If the Aio operation is yet to
-complete, an ‘unresolved’ logical NA will be returned. Once complete,
-the resolved value will be returned instead.</p>
-<p><code><a href="unresolved.html">unresolved</a></code> may also be used, which returns TRUE only if an Aio
-or Aio value has yet to resolve and FALSE otherwise. This is suitable for use
-in control flow statements such as <code>while</code> or <code>if</code>.</p>
+and <code>$data</code> for a ‘recvAio’. If the Aio operation is yet to complete,
+an ‘unresolved’ logical NA will be returned. Once complete, the
+resolved value will be returned instead.</p>
+<p><code><a href="unresolved.html">unresolved()</a></code> may also be used, which returns TRUE only if an Aio or Aio
+value has yet to resolve and FALSE otherwise. This is suitable for use in
+control flow statements such as <code>while</code> or <code>if</code>.</p>
     </div>
 
     <div class="section level2">

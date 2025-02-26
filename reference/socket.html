@@ -68,10 +68,10 @@ address.</p>
 
 
 <dl><dt id="arg-protocol">protocol<a class="anchor" aria-label="anchor" href="#arg-protocol"></a></dt>
-<dd><p>[default 'bus'] choose protocol - ‘bus’, ‘pair’,
-‘poly’, ‘push’, ‘pull’, ‘pub’, ‘sub’,
-‘req’, ‘rep’, ‘surveyor’, or ‘respondent’ - see
-<a href="protocols.html">protocols</a>.</p></dd>
+<dd><p>[default 'bus'] choose protocol - ‘bus’,
+‘pair’, ‘poly’, ‘push’, ‘pull’, ‘pub’,
+‘sub’, ‘req’, ‘rep’, ‘surveyor’, or
+‘respondent’ - see <a href="protocols.html">protocols</a>.</p></dd>
 
 
 <dt id="arg-dial">dial<a class="anchor" aria-label="anchor" href="#arg-dial"></a></dt>
@@ -88,16 +88,16 @@ address as a character string e.g. 'inproc://anyvalue' or
 
 <dt id="arg-tls">tls<a class="anchor" aria-label="anchor" href="#arg-tls"></a></dt>
 <dd><p>[default NULL] for secure tls+tcp:// or wss:// connections only,
-provide a TLS configuration object created by <code><a href="tls_config.html">tls_config</a></code>.</p></dd>
+provide a TLS configuration object created by <code><a href="tls_config.html">tls_config()</a></code>.</p></dd>
 
 
 <dt id="arg-autostart">autostart<a class="anchor" aria-label="anchor" href="#arg-autostart"></a></dt>
-<dd><p>[default TRUE] whether to start the dialer/listener. Set to
-FALSE if setting configuration options on the dialer/listener as it is not
-generally possible to change these once started. For dialers only: set to
-NA to start synchronously - this is less resilient if a connection is not
-immediately possible, but avoids subtle errors from attempting to use the
-socket before an asynchronous dial has completed.</p></dd>
+<dd><p>[default TRUE] whether to start the dialer/listener. Set
+to FALSE if setting configuration options on the dialer/listener as it is
+not generally possible to change these once started. For dialers only: set
+to NA to start synchronously - this is less resilient if a connection is
+not immediately possible, but avoids subtle errors from attempting to use
+the socket before an asynchronous dial has completed.</p></dd>
 
 
 <dt id="arg-raw">raw<a class="anchor" aria-label="anchor" href="#arg-raw"></a></dt>
@@ -121,10 +121,9 @@ sub sockets automatically filter incoming messages to discard those for
 topics that have not been subscribed.</p>
 <p>This function (optionally) binds a single Dialer and/or Listener to a Socket.
 More complex network topologies may be created by binding further Dialers /
-Listeners to the Socket as required using <code><a href="dial.html">dial</a></code> and
-<code><a href="listen.html">listen</a></code>.</p>
-<p>New contexts may also be created using <code><a href="context.html">context</a></code> if the protocol
-supports it.</p>
+Listeners to the Socket as required using <code><a href="dial.html">dial()</a></code> and <code><a href="listen.html">listen()</a></code>.</p>
+<p>New contexts may also be created using <code><a href="context.html">context()</a></code> if the protocol supports
+it.</p>
     </div>
     <div class="section level2">
     <h2 id="protocols">Protocols<a class="anchor" aria-label="anchor" href="#protocols"></a></h2>
@@ -138,7 +137,7 @@ supports it.</p>
 <li><p>Publisher/Subscriber (topics &amp; broadcast) - protocol: 'pub', 'sub'</p></li>
 <li><p>Request/Reply (RPC) - protocol: 'req', 'rep'</p></li>
 <li><p>Survey (voting &amp; service discovery) - protocol: 'surveyor',
-  'respondent'</p></li>
+'respondent'</p></li>
 </ul><p>Please see <a href="protocols.html">protocols</a> for further documentation.</p>
     </div>
     <div class="section level2">
@@ -149,7 +148,7 @@ supports it.</p>
 <p>The following communications transports may be used:</p>
 <ul><li><p>Inproc (in-process) - url: 'inproc://'</p></li>
 <li><p>IPC (inter-process communications) - url: 'ipc://' (or 'abstract://'
-  on Linux)</p></li>
+on Linux)</p></li>
 <li><p>TCP and TLS over TCP - url: 'tcp://' and 'tls+tcp://'</p></li>
 <li><p>WebSocket and TLS over WebSocket - url: 'ws://' and 'wss://'</p></li>
 </ul><p>Please see <a href="transports.html">transports</a> for further documentation.</p>

@@ -105,7 +105,7 @@ cause the pipe connection to be dropped when the async receive is complete.</p><
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A ‘recvAio’ (object of class ‘mirai’ and
-  ‘recvAio’) (invisibly).</p>
+‘recvAio’) (invisibly).</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -114,11 +114,11 @@ the function will return immediately with a ‘recvAio’ object. Access
 the return value at <code>$data</code>.</p>
 <p>This is designed so that the process on the server can run concurrently
 without blocking the client.</p>
-<p>Optionally use <code><a href="call_aio.html">call_aio</a></code> on the ‘recvAio’ to call (and
-wait for) the result.</p>
-<p>If an error occured in the server process, a nul byte <code>00</code> will be
-received. This allows an error to be easily distinguished from a NULL return
-value. <code><a href="is_error_value.html">is_nul_byte</a></code> can be used to test for a nul byte.</p>
+<p>Optionally use <code><a href="call_aio.html">call_aio()</a></code> on the ‘recvAio’ to call (and wait for)
+the result.</p>
+<p>If an error occured in the server process, a nul byte <code>00</code> will be received.
+This allows an error to be easily distinguished from a NULL return value.
+<code><a href="is_error_value.html">is_nul_byte()</a></code> can be used to test for a nul byte.</p>
 <p>It is recommended to use a new context for each request to ensure consistent
 state tracking. For safety, the context used for the request is closed when
 all references to the returned ‘recvAio’ are removed and the object is
@@ -133,7 +133,7 @@ garbage collected.</p>
 reproducibility within R. When receiving, the corresponding mode
 ‘serial’ should be used. Custom serialization and unserialization
 functions for reference objects may be enabled by the function
-<code><a href="serial_config.html">serial_config</a></code>.</p>
+<code><a href="serial_config.html">serial_config()</a></code>.</p>
 <p>Mode ‘raw’ sends atomic vectors of any type as a raw byte vector, and
 must be used when interfacing with external applications or raw system
 sockets, where R serialization is not in use. When receiving, the mode

@@ -64,8 +64,8 @@
 
 
 <dt id="arg-mode">mode<a class="anchor" aria-label="anchor" href="#arg-mode"></a></dt>
-<dd><p>[default 'serial'] character value or integer equivalent - one of
-‘serial’ (1L), ‘character’ (2L), ‘complex’ (3L),
+<dd><p>[default 'serial'] character value or integer equivalent - one
+of ‘serial’ (1L), ‘character’ (2L), ‘complex’ (3L),
 ‘double’ (4L), ‘integer’ (5L), ‘logical’ (6L),
 ‘numeric’ (7L), ‘raw’ (8L), or ‘string’ (9L). The
 default ‘serial’ means a serialised R object; for the other modes,
@@ -75,11 +75,11 @@ faster option for length one character vectors. For Streams,
 
 
 <dt id="arg-block">block<a class="anchor" aria-label="anchor" href="#arg-block"></a></dt>
-<dd><p>[default NULL] which applies the connection default (see section
-‘Blocking’ below). Specify logical TRUE to block until successful or
-FALSE to return immediately even if unsuccessful (e.g. if no connection is
-available), or else an integer value specifying the maximum time to block
-in milliseconds, after which the operation will time out.</p></dd>
+<dd><p>[default NULL] which applies the connection default (see
+section ‘Blocking’ below). Specify logical TRUE to block until
+successful or FALSE to return immediately even if unsuccessful (e.g. if no
+connection is available), or else an integer value specifying the maximum
+time to block in milliseconds, after which the operation will time out.</p></dd>
 
 
 <dt id="arg-n">n<a class="anchor" aria-label="anchor" href="#arg-n"></a></dt>
@@ -90,7 +90,7 @@ size is reserved.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>The received data in the ‘mode’ specified.</p>
+    <p>The received data in the <code>mode</code> specified.</p>
     </div>
     <div class="section level2">
     <h2 id="errors">Errors<a class="anchor" aria-label="anchor" href="#errors"></a></h2>
@@ -99,7 +99,7 @@ size is reserved.</p></dd>
 
 <p>In case of an error, an integer ‘errorValue’ is returned (to be
 distiguishable from an integer message value). This can be verified using
-<code><a href="is_error_value.html">is_error_value</a></code>.</p>
+<code><a href="is_error_value.html">is_error_value()</a></code>.</p>
 <p>If an error occurred in unserialization or conversion of the message data to
 the specified mode, a raw vector will be returned instead to allow recovery
 (accompanied by a warning).</p>
@@ -110,17 +110,17 @@ the specified mode, a raw vector will be returned instead to allow recovery
 
 
 <p>For Sockets and Contexts: the default behaviour is non-blocking with
-<code>block = FALSE</code>. This will return immediately with an error if no
-messages are available.</p>
-<p>For Streams: the default behaviour is blocking with <code>block = TRUE</code>. This
-will wait until a message is received. Set a timeout to ensure that the
-function returns under all scenarios. As the underlying implementation uses
-an asynchronous receive with a wait, it is recommended to set a small
-positive value for <code>block</code> rather than FALSE.</p>
+<code>block = FALSE</code>. This will return immediately with an error if no messages
+are available.</p>
+<p>For Streams: the default behaviour is blocking with <code>block = TRUE</code>. This will
+wait until a message is received. Set a timeout to ensure that the function
+returns under all scenarios. As the underlying implementation uses an
+asynchronous receive with a wait, it is recommended to set a small positive
+value for <code>block</code> rather than FALSE.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="recv_aio.html">recv_aio</a></code> for asynchronous receive.</p></div>
+    <div class="dont-index"><p><code><a href="recv_aio.html">recv_aio()</a></code> for asynchronous receive.</p></div>
     </div>
 
     <div class="section level2">

@@ -65,19 +65,17 @@ forwarded.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>Invisibly, ‘cv2’.</p>
+    <p>Invisibly, <code>cv2</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>The condition value of ‘cv’ is initially reset to zero when this
-operator returns. Only one forwarder can be active on a ‘cv’ at any
-given time, and assigning a new forwarding target cancels any currently
-existing forwarding.</p>
-<p>Changes in the condition value of ‘cv’ are forwarded to ‘cv2’,
-but only on each occassion ‘cv’ is signalled. This means that waiting
-on ‘cv’ will cause a temporary divergence between the actual condition
-value of ‘cv’ and that recorded at ‘cv2’, until the next time
-‘cv’ is signalled.</p>
+    <p>The condition value of <code>cv</code> is initially reset to zero when this operator
+returns. Only one forwarder can be active on a <code>cv</code> at any given time, and
+assigning a new forwarding target cancels any currently existing forwarding.</p>
+<p>Changes in the condition value of <code>cv</code> are forwarded to <code>cv2</code>, but only on
+each occassion <code>cv</code> is signalled. This means that waiting on <code>cv</code> will cause
+a temporary divergence between the actual condition value of <code>cv</code> and that
+recorded at <code>cv2</code>, until the next time <code>cv</code> is signalled.</p>
     </div>
 
     <div class="section level2">

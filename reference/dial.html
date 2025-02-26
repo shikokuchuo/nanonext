@@ -71,7 +71,7 @@ transport and address as a character string e.g. 'inproc://anyvalue' or
 
 <dt id="arg-tls">tls<a class="anchor" aria-label="anchor" href="#arg-tls"></a></dt>
 <dd><p>[default NULL] for secure tls+tcp:// or wss:// connections only,
-provide a TLS configuration object created by <code><a href="tls_config.html">tls_config</a></code>.</p></dd>
+provide a TLS configuration object created by <code><a href="tls_config.html">tls_config()</a></code>.</p></dd>
 
 
 <dt id="arg-autostart">autostart<a class="anchor" aria-label="anchor" href="#arg-autostart"></a></dt>
@@ -84,23 +84,23 @@ generally possible to change these once started.</p></dd>
 
 
 <dt id="arg-error">error<a class="anchor" aria-label="anchor" href="#arg-error"></a></dt>
-<dd><p>[default FALSE] behaviour on error: if FALSE, returns an integer
-exit code accompanied by a warning, or, if TRUE, generates an error and
-halts execution.</p></dd>
+<dd><p>[default FALSE] behaviour on error: if FALSE, returns an
+integer exit code accompanied by a warning, or, if TRUE, generates an error
+and halts execution.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>Invisibly, an integer exit code (zero on success). A new Dialer
-  (object of class ‘nanoDialer’ and ‘nano’) is created and
-  bound to the Socket if successful.</p>
+(object of class ‘nanoDialer’ and ‘nano’) is created and
+bound to the Socket if successful.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>To view all Dialers bound to a socket use <code>$dialer</code> on the socket, which
 returns a list of Dialer objects. To access any individual Dialer (e.g. to
-set options on it), index into the list e.g. <code>$dialer[[1]]</code> to return
-the first Dialer.</p>
+set options on it), index into the list e.g. <code>$dialer[[1]]</code> to return the
+first Dialer.</p>
 <p>A Dialer is an external pointer to a dialer object, which creates a single
 outgoing connection at a time. If the connection is broken, or fails, the
 dialer object will automatically attempt to reconnect, and will keep doing so
@@ -118,11 +118,10 @@ orthogonal to any similar relationship in the protocols. For example, a rep
 socket may use a dialer to connect to a listener on an req socket. This
 orthogonality can lead to innovative solutions to otherwise challenging
 communications problems.</p>
-<p>Any configuration options on the dialer/listener should be set by
-<code>opt&lt;-</code> before starting the dialer/listener with
-<code><a href="start.html">start</a></code>.</p>
-<p>Dialers/Listeners may be destroyed by <code><a href="close.html">close</a></code>. They are also
-closed when their associated socket is closed.</p>
+<p>Any configuration options on the dialer/listener should be set by <code><a href="opt.html">opt&lt;-()</a></code>
+before starting the dialer/listener with <code><a href="start.html">start()</a></code>.</p>
+<p>Dialers/Listeners may be destroyed by <code><a href="close.html">close()</a></code>. They are also closed when
+their associated socket is closed.</p>
     </div>
 
     <div class="section level2">

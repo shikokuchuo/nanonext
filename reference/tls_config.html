@@ -77,7 +77,7 @@ certificate first),<br><strong>or</strong> a length 2 character vector comprisin
 
 
 <dt id="arg-pass">pass<a class="anchor" aria-label="anchor" href="#arg-pass"></a></dt>
-<dd><p>(optional) required only if the secret key supplied to 'server'
+<dd><p>(optional) required only if the secret key supplied to <code>server</code>
 is encrypted with a password. For security, consider providing through a
 function that returns this value, rather than directly.</p></dd>
 
@@ -88,7 +88,7 @@ for client and FALSE for server configurations. If TRUE, the session is
 only allowed to proceed if the peer has presented a certificate and it has
 been validated. If FALSE, authentication is optional, whereby a certificate
 is validated if presented by the peer, but the session allowed to proceed
-otherwise. If neither 'client' nor 'server' are supplied, then no
+otherwise. If neither <code>client</code> nor <code>server</code> are supplied, then no
 authentication is performed and this argument has no effect.</p></dd>
 
 </dl></div>
@@ -123,7 +123,7 @@ SSL/TLS certificates text file).
 <span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $data</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "{\n  \"args\": {},\n  \"headers\": {\n    \"host\": \"postman-echo.com\",\n    \"x-request-start\": \"t1740567251.684\",\n    \"connection\": \"close\",\n    \"x-forwarded-proto\": \"https\",\n    \"x-forwarded-port\": \"443\",\n    \"x-amzn-trace-id\": \"Root=1-67bef2d3-578fa0497d5775002234e97b\"\n  },\n  \"url\": \"https://postman-echo.com/get\"\n}"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "{\n  \"args\": {},\n  \"headers\": {\n    \"host\": \"postman-echo.com\",\n    \"x-request-start\": \"t1740585896.543\",\n    \"connection\": \"close\",\n    \"x-forwarded-proto\": \"https\",\n    \"x-forwarded-port\": \"443\",\n    \"x-amzn-trace-id\": \"Root=1-67bf3ba8-0fd7b62d64abc484342e88ef\"\n  },\n  \"url\": \"https://postman-echo.com/get\"\n}"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
