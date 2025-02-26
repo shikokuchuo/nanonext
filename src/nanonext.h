@@ -134,11 +134,11 @@ typedef struct nano_handle_s {
 
 typedef union nano_opt_u {
   char *str;
-  bool b;
+  uint64_t u;
+  size_t s;
   nng_duration d;
   int i;
-  size_t s;
-  uint64_t u;
+  bool b;
 } nano_opt;
 
 typedef struct nano_stream_s {
