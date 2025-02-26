@@ -134,11 +134,11 @@ typedef struct nano_handle_s {
 
 typedef union nano_opt_u {
   char *str;
-  bool b;
+  uint64_t u;
+  size_t s;
   nng_duration d;
   int i;
-  size_t s;
-  uint64_t u;
+  bool b;
 } nano_opt;
 
 typedef struct nano_stream_s {
@@ -262,13 +262,8 @@ SEXP R_NewEnv(SEXP, int, int);
 #if R_VERSION < R_Version(4, 5, 0)
 SEXP R_mkClosure(SEXP, SEXP, SEXP);
 #endif
-SEXP nano_findVarInFrame(const SEXP, const SEXP);
 SEXP nano_PreserveObject(const SEXP);
 void nano_ReleaseObject(SEXP);
-void raio_complete_interrupt(void *);
-void raio_complete_signal(void *);
-void sendaio_complete(void *);
-void cv_finalizer(SEXP);
 void dialer_finalizer(SEXP);
 void listener_finalizer(SEXP);
 void socket_finalizer(SEXP);
