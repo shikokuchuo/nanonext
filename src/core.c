@@ -16,7 +16,6 @@
 
 // nanonext - C level - Core Functions -----------------------------------------
 
-#define NANONEXT_SIGNALS
 #include "nanonext.h"
 
 // internals -------------------------------------------------------------------
@@ -122,73 +121,6 @@ static SEXP nano_outHook(SEXP x, SEXP fun) {
 }
 
 // functions with forward definitions in nanonext.h ----------------------------
-
-void raio_complete_interrupt(void *arg) {
-
-  nano_aio *raio = (nano_aio *) arg;
-  int res = nng_aio_result(raio->aio);
-  if (res == 0) {
-    nng_msg *msg = nng_aio_get_msg(raio->aio);
-    raio->data = msg;
-    nng_pipe p = nng_msg_get_pipe(msg);
-    res = - (int) p.id;
-  }
-
-  raio->result = res;
-
-  if (raio->cb != NULL)
-    later2(raio_invoke_cb, raio->cb);
-
-  if (nano_interrupt) {
-#ifdef _WIN32
-    UserBreak = 1;
-#else
-    kill(getpid(), SIGINT);
-#endif
-  }
-
-}
-
-void raio_complete_signal(void *arg) {
-
-  nano_aio *raio = (nano_aio *) arg;
-  nano_cv *ncv = (nano_cv *) raio->next;
-  nng_cv *cv = ncv->cv;
-  nng_mtx *mtx = ncv->mtx;
-
-  int res = nng_aio_result(raio->aio);
-  if (res == 0) {
-    nng_msg *msg = nng_aio_get_msg(raio->aio);
-    raio->data = msg;
-    nng_pipe p = nng_msg_get_pipe(msg);
-    res = - (int) p.id;
-  }
-
-  nng_mtx_lock(mtx);
-  raio->result = res;
-  ncv->condition++;
-  nng_cv_wake(cv);
-  nng_mtx_unlock(mtx);
-
-}
-
-void sendaio_complete(void *arg) {
-
-  nng_aio *aio = ((nano_saio *) arg)->aio;
-  if (nng_aio_result(aio))
-    nng_msg_free(nng_aio_get_msg(aio));
-
-}
-
-void cv_finalizer(SEXP xptr) {
-
-  if (NANO_PTR(xptr) == NULL) return;
-  nano_cv *xp = (nano_cv *) NANO_PTR(xptr);
-  nng_cv_free(xp->cv);
-  nng_mtx_free(xp->mtx);
-  R_Free(xp);
-
-}
 
 void dialer_finalizer(SEXP xptr) {
 

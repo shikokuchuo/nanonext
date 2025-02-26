@@ -264,10 +264,6 @@ SEXP R_mkClosure(SEXP, SEXP, SEXP);
 #endif
 SEXP nano_PreserveObject(const SEXP);
 void nano_ReleaseObject(SEXP);
-void raio_complete_interrupt(void *);
-void raio_complete_signal(void *);
-void sendaio_complete(void *);
-void cv_finalizer(SEXP);
 void dialer_finalizer(SEXP);
 void listener_finalizer(SEXP);
 void socket_finalizer(SEXP);

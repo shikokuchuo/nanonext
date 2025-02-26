@@ -16,6 +16,7 @@
 
 // nanonext - C level - Async Functions ----------------------------------------
 
+#define NANONEXT_SIGNALS
 #include "nanonext.h"
 
 // internals -------------------------------------------------------------------
@@ -68,6 +69,55 @@ static void raio_complete(void *arg) {
 
   if (raio->cb != NULL)
     later2(raio_invoke_cb, raio->cb);
+
+}
+
+static void raio_complete_signal(void *arg) {
+
+  nano_aio *raio = (nano_aio *) arg;
+  nano_cv *ncv = (nano_cv *) raio->next;
+  nng_cv *cv = ncv->cv;
+  nng_mtx *mtx = ncv->mtx;
+
+  int res = nng_aio_result(raio->aio);
+  if (res == 0) {
+    nng_msg *msg = nng_aio_get_msg(raio->aio);
+    raio->data = msg;
+    nng_pipe p = nng_msg_get_pipe(msg);
+    res = - (int) p.id;
+  }
+
+  nng_mtx_lock(mtx);
+  raio->result = res;
+  ncv->condition++;
+  nng_cv_wake(cv);
+  nng_mtx_unlock(mtx);
+
+}
+
+static void raio_complete_interrupt(void *arg) {
+
+  nano_aio *raio = (nano_aio *) arg;
+  int res = nng_aio_result(raio->aio);
+  if (res == 0) {
+    nng_msg *msg = nng_aio_get_msg(raio->aio);
+    raio->data = msg;
+    nng_pipe p = nng_msg_get_pipe(msg);
+    res = - (int) p.id;
+  }
+
+  raio->result = res;
+
+  if (raio->cb != NULL)
+    later2(raio_invoke_cb, raio->cb);
+
+  if (nano_interrupt) {
+#ifdef _WIN32
+    UserBreak = 1;
+#else
+    kill(getpid(), SIGINT);
+#endif
+  }
 
 }
 
