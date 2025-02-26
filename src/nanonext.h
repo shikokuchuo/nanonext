@@ -262,7 +262,6 @@ SEXP R_NewEnv(SEXP, int, int);
 #if R_VERSION < R_Version(4, 5, 0)
 SEXP R_mkClosure(SEXP, SEXP, SEXP);
 #endif
-SEXP nano_findVarInFrame(const SEXP, const SEXP);
 SEXP nano_PreserveObject(const SEXP);
 void nano_ReleaseObject(SEXP);
 void raio_complete_interrupt(void *);

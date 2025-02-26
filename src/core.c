@@ -248,18 +248,6 @@ inline SEXP R_mkClosure(SEXP formals, SEXP body, SEXP env) {
 
 #endif
 
-SEXP nano_findVarInFrame(const SEXP env, const SEXP sym) {
-
-  SEXP frame = CAR(env);  // FRAME
-  while (frame != R_NilValue) {
-    if (TAG(frame) == sym)
-      return CAR(frame); // BINDING_VALUE
-    frame = CDR(frame);
-  }
-  return R_UnboundValue;
-
-}
-
 inline SEXP nano_PreserveObject(const SEXP x) {
 
   SEXP tail = CDR(nano_precious);
