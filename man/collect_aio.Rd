@@ -14,8 +14,8 @@ collect_aio_(x)
 \sQuote{recvAio} or \sQuote{ncurlAio}).}
 }
 \value{
-Depending on the type of \sQuote{x} supplied, an object or list of
-  objects (the same length as \sQuote{x}, preserving names).
+Depending on the type of \code{x} supplied, an object or list of objects
+(the same length as \code{x}, preserving names).
 }
 \description{
 \code{collect_aio} collects the data of an Aio or list of Aios, waiting for

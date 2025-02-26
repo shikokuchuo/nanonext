@@ -25,13 +25,13 @@ for all asynchronous operations to complete before returning.
 interactive use.
 }
 \details{
-For a \sQuote{recvAio}, the received value may be retrieved at \code{$data}.
+For a \sQuote{recvAio}, the received value may be retrieved at \verb{$data}.
 
-For a \sQuote{sendAio}, the send result may be retrieved at \code{$result}.
+For a \sQuote{sendAio}, the send result may be retrieved at \verb{$result}.
 This will be zero on success, or else an integer error code.
 
-To access the values directly, use for example on a \sQuote{recvAio}
-\code{x}: \code{call_aio(x)$data}.
+To access the values directly, use for example on a \sQuote{recvAio} \code{x}:
+\code{call_aio(x)$data}.
 
 For a \sQuote{recvAio}, if an error occurred in unserialization or conversion
 of the message data to the specified mode, a raw vector will be returned
@@ -44,14 +44,14 @@ object.
 \section{Alternatively}{
 
 
-Aio values may be accessed directly at \code{$result} for a \sQuote{sendAio},
-and \code{$data} for a \sQuote{recvAio}. If the Aio operation is yet to
-complete, an \sQuote{unresolved} logical NA will be returned. Once complete,
-the resolved value will be returned instead.
+Aio values may be accessed directly at \verb{$result} for a \sQuote{sendAio},
+and \verb{$data} for a \sQuote{recvAio}. If the Aio operation is yet to complete,
+an \sQuote{unresolved} logical NA will be returned. Once complete, the
+resolved value will be returned instead.
 
-\code{\link{unresolved}} may also be used, which returns TRUE only if an Aio
-or Aio value has yet to resolve and FALSE otherwise. This is suitable for use
-in control flow statements such as \code{while} or \code{if}.
+\code{\link[=unresolved]{unresolved()}} may also be used, which returns TRUE only if an Aio or Aio
+value has yet to resolve and FALSE otherwise. This is suitable for use in
+control flow statements such as \code{while} or \code{if}.
 }
 
 \examples{

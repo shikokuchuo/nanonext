@@ -1,4 +1,4 @@
-# Copyright (C) 2022-2024 Hibiki AI Limited <info@hibiki-ai.com>
+# Copyright (C) 2022-2025 Hibiki AI Limited <info@hibiki-ai.com>
 #
 # This file is part of nanonext.
 #
@@ -30,24 +30,24 @@
 #' ceritficates may usually be found at \file{/etc/ssl/certs/ca-certificates.crt}
 #' on Linux systems. Otherwise, root CA certificates in PEM format are available
 #' at the Common CA Database site run by Mozilla:
-#' \url{https://www.ccadb.org/resources} (select the Server Authentication
+#' <https://www.ccadb.org/resources> (select the Server Authentication
 #' SSL/TLS certificates text file).
-#' \emph{This link is not endorsed; use at your own risk.}
+#' *This link is not endorsed; use at your own risk.*
 #'
-#' @param client \strong{either} the character path to a file containing X.509
+#' @param client **either** the character path to a file containing X.509
 #'   certificate(s) in PEM format, comprising the certificate authority
 #'   certificate chain (and revocation list if present), used to validate
 #'   certificates presented by peers,\cr
-#'   \strong{or} a length 2 character vector comprising [i] the certificate
-#'   authority certificate chain and [ii] the certificate revocation list, or
-#'   empty string \code{''} if not applicable.
-#' @param server \strong{either} the character path to a file containing the
+#'   **or** a length 2 character vector comprising \[i\] the certificate
+#'   authority certificate chain and \[ii\] the certificate revocation list, or
+#'   empty string `''` if not applicable.
+#' @param server **either** the character path to a file containing the
 #'   PEM-encoded TLS certificate and associated private key (may contain
 #'   additional certificates leading to a validation chain, with the leaf
 #'   certificate first),\cr
-#'   \strong{or} a length 2 character vector comprising [i] the TLS certificate
-#'   (optionally certificate chain) and [ii] the associated private key.
-#' @param pass (optional) required only if the secret key supplied to 'server'
+#'   **or** a length 2 character vector comprising \[i\] the TLS certificate
+#'   (optionally certificate chain) and \[ii\] the associated private key.
+#' @param pass (optional) required only if the secret key supplied to `server`
 #'   is encrypted with a password. For security, consider providing through a
 #'   function that returns this value, rather than directly.
 #' @param auth logical value whether to require authentication - by default TRUE
@@ -55,7 +55,7 @@
 #'   only allowed to proceed if the peer has presented a certificate and it has
 #'   been validated. If FALSE, authentication is optional, whereby a certificate
 #'   is validated if presented by the peer, but the session allowed to proceed
-#'   otherwise. If neither 'client' nor 'server' are supplied, then no
+#'   otherwise. If neither `client` nor `server` are supplied, then no
 #'   authentication is performed and this argument has no effect.
 #'
 #' @return A \sQuote{tlsConfig} object.
@@ -80,16 +80,15 @@ tls_config <- function(client = NULL, server = NULL, pass = NULL, auth = is.null
 #' Note that it can take a second or two for the key and certificate to be
 #' generated.
 #'
-#' @param cn [default 'localhost'] character issuer common name (CN) for the
+#' @param cn \[default '127.0.0.1'\] character issuer common name (CN) for the
 #'   certificate. This can be either a hostname or an IP address, but must match
 #'   the actual server URL as client authentication will depend on it.
-#' @param valid [default '20301231235959'] character \sQuote{not after}
+#' @param valid \[default '20301231235959'\] character \sQuote{not after}
 #'   date-time in \sQuote{yyyymmddhhmmss} format. The certificate is not valid
 #'   after this time.
 #'
-#' @return A list of length 2, comprising \code{$server} and \code{$client}.
-#'   These may be passed directly to the relevant argument of
-#'   \code{\link{tls_config}}.
+#' @return A list of length 2, comprising `$server` and `$client`. These may be
+#'   passed directly to the relevant argument of [tls_config()].
 #'
 #' @examples
 #'
@@ -114,5 +113,5 @@ tls_config <- function(client = NULL, server = NULL, pass = NULL, auth = is.null
 #'
 #' @export
 #'
-write_cert <- function(cn = "localhost", valid = "20301231235959")
+write_cert <- function(cn = "127.0.0.1", valid = "20301231235959")
   .Call(rnng_write_cert, cn, valid)

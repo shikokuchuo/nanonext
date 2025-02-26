@@ -10,7 +10,7 @@
 \item{x}{logical value.}
 }
 \value{
-The logical value 'x' supplied.
+The logical value \code{x} supplied.
 }
 \description{
 Sets whether async receive completions trigger an interrupt.

@@ -40,7 +40,7 @@ cause the pipe connection to be dropped when the async receive is complete.}
 }
 \value{
 A \sQuote{recvAio} (object of class \sQuote{mirai} and
-  \sQuote{recvAio}) (invisibly).
+\sQuote{recvAio}) (invisibly).
 }
 \description{
 Implements a caller/client for the req node of the req/rep protocol. Sends
@@ -50,17 +50,17 @@ called for the value when required.
 \details{
 Sending the request and receiving the result are both performed async, hence
 the function will return immediately with a \sQuote{recvAio} object. Access
-the return value at \code{$data}.
+the return value at \verb{$data}.
 
 This is designed so that the process on the server can run concurrently
 without blocking the client.
 
-Optionally use \code{\link{call_aio}} on the \sQuote{recvAio} to call (and
-wait for) the result.
+Optionally use \code{\link[=call_aio]{call_aio()}} on the \sQuote{recvAio} to call (and wait for)
+the result.
 
-If an error occured in the server process, a nul byte \code{00} will be
-received. This allows an error to be easily distinguished from a NULL return
-value. \code{\link{is_nul_byte}} can be used to test for a nul byte.
+If an error occured in the server process, a nul byte \code{00} will be received.
+This allows an error to be easily distinguished from a NULL return value.
+\code{\link[=is_nul_byte]{is_nul_byte()}} can be used to test for a nul byte.
 
 It is recommended to use a new context for each request to ensure consistent
 state tracking. For safety, the context used for the request is closed when
@@ -74,7 +74,7 @@ The default mode \sQuote{serial} sends serialised R objects to ensure perfect
 reproducibility within R. When receiving, the corresponding mode
 \sQuote{serial} should be used. Custom serialization and unserialization
 functions for reference objects may be enabled by the function
-\code{\link{serial_config}}.
+\code{\link[=serial_config]{serial_config()}}.
 
 Mode \sQuote{raw} sends atomic vectors of any type as a raw byte vector, and
 must be used when interfacing with external applications or raw system

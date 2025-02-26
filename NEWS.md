@@ -1,5 +1,9 @@
 # nanonext (development version)
 
+#### Updates
+
+* `write_cert()` argument 'cn' now defaults to '127.0.0.1' instead of 'localhost'.
+
 # nanonext 1.5.1
 
 #### Updates

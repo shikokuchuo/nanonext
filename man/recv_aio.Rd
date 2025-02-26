@@ -16,8 +16,8 @@ recv_aio(
 \arguments{
 \item{con}{a Socket, Context or Stream.}
 
-\item{mode}{[default 'serial'] character value or integer equivalent - one of
-\sQuote{serial} (1L), \sQuote{character} (2L), \sQuote{complex} (3L),
+\item{mode}{[default 'serial'] character value or integer equivalent - one
+of \sQuote{serial} (1L), \sQuote{character} (2L), \sQuote{complex} (3L),
 \sQuote{double} (4L), \sQuote{integer} (5L), \sQuote{logical} (6L),
 \sQuote{numeric} (7L), \sQuote{raw} (8L), or \sQuote{string} (9L). The
 default \sQuote{serial} means a serialised R object; for the other modes,
@@ -45,18 +45,18 @@ Receive data asynchronously over a connection (Socket, Context or Stream).
 Async receive is always non-blocking and returns a \sQuote{recvAio}
 immediately.
 
-For a \sQuote{recvAio}, the received message is available at \code{$data}. An
+For a \sQuote{recvAio}, the received message is available at \verb{$data}. An
 \sQuote{unresolved} logical NA is returned if the async operation is yet to
 complete.
 
 To wait for the async operation to complete and retrieve the received
-message, use \code{\link{call_aio}} on the returned \sQuote{recvAio} object.
+message, use \code{\link[=call_aio]{call_aio()}} on the returned \sQuote{recvAio} object.
 
-Alternatively, to stop the async operation, use \code{\link{stop_aio}}.
+Alternatively, to stop the async operation, use \code{\link[=stop_aio]{stop_aio()}}.
 
 In case of an error, an integer \sQuote{errorValue} is returned (to be
 distiguishable from an integer message value). This can be checked using
-\code{\link{is_error_value}}.
+\code{\link[=is_error_value]{is_error_value()}}.
 
 If an error occurred in unserialization or conversion of the message data to
 the specified mode, a raw vector will be returned instead to allow recovery

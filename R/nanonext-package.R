@@ -33,29 +33,29 @@
 #' \pkg{nanonext} offers 2 equivalent interfaces: a functional interface, and an
 #' object-oriented interface.
 #'
-#' The primary object in the functional interface is the Socket. Use
-#' \code{\link{socket}} to create a socket and dial or listen at an address. The
-#' socket is then passed as the first argument of subsequent actions such as
-#' \code{send()} or \code{recv()}.
+#' The primary object in the functional interface is the Socket. Use [socket()]
+#' to create a socket and dial or listen at an address. The socket is then
+#' passed as the first argument of subsequent actions such as `send()` or
+#' `recv()`.
 #'
 #' The primary object in the object-oriented interface is the nano object. Use
-#' \code{\link{nano}} to create a nano object which encapsulates a Socket and
-#' Dialer/Listener. Methods such as \code{$send()} or \code{$recv()} can then be
-#' accessed directly from the object.
+#' [nano()] to create a nano object which encapsulates a Socket and
+#' Dialer/Listener. Methods such as `$send()` or `$recv()` can then be accessed
+#' directly from the object.
 #'
 #' @section Documentation:
 #'
-#' Guide to the implemented protocols for sockets: \link{protocols}
+#' Guide to the implemented protocols for sockets: [protocols]
 #'
 #' Guide to the supported transports for dialers and listeners:
-#' \link{transports}
+#' [transports]
 #'
-#' Guide to the options that can be inspected and set using: \link{opt} /
-#' \link{opt<-}
+#' Guide to the options that can be inspected and set using: [opt] /
+#' [opt<-]
 #'
 #' @section Reference Manual:
 #'
-#' \code{vignette("nanonext", package = "nanonext")}
+#' `vignette("nanonext", package = "nanonext")`
 #'
 #' @section Conceptual overview:
 #'
@@ -83,12 +83,12 @@
 #'
 #' @section Links:
 #'
-#' NNG: \url{https://nng.nanomsg.org/} \cr
-#' Mbed TLS: \url{https://www.trustedfirmware.org/projects/mbed-tls/}
+#' NNG: <https://nng.nanomsg.org/> \cr
+#' Mbed TLS: <https://www.trustedfirmware.org/projects/mbed-tls/>
 #'
 #' @encoding UTF-8
 #' @author Charlie Gao \email{charlie.gao@@shikokuchuo.net}
-#'   (\href{https://orcid.org/0000-0002-0750-061X}{ORCID})
+#'   ([ORCID](https://orcid.org/0000-0002-0750-061X))
 #'
 #' @useDynLib nanonext, .registration = TRUE
 #'

@@ -24,7 +24,7 @@ authentication, based on NNG scalability protocols.
 }
 \note{
 The authentication protocol is an experimental proof of concept which
-  is not secure, and should not be used for critical applications.
+is not secure, and should not be used for critical applications.
 }
 \section{Usage}{
 
@@ -34,10 +34,10 @@ Type outgoing messages and hit return to send.
 The timestamps of outgoing messages are prefixed by \code{>} and that of
 incoming messages by \code{<}.
 
-\code{:q} is the command to quit.
+\verb{:q} is the command to quit.
 
-Both parties must supply the same argument for \sQuote{auth}, otherwise the
-party trying to connect will receive an \sQuote{authentication error} and be
+Both parties must supply the same argument for \code{auth}, otherwise the party
+trying to connect will receive an \sQuote{authentication error} and be
 immediately disconnected.
 }
 

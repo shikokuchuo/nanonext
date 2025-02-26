@@ -58,5 +58,5 @@ terminated and any new operations will fail after the connection is closed.
 Closing an \sQuote{ncurlSession} closes the http(s) connection.
 }
 \seealso{
-\code{\link{reap}}
+\code{\link[=reap]{reap()}}
 }

@@ -9,7 +9,7 @@
 \arguments{
 \item{x}{a \sQuote{recvAio} or \sQuote{ncurlAio} object.}
 
-\item{ctx}{the return value of \sQuote{environment()}.}
+\item{ctx}{the return value of \code{environment()}.}
 }
 \value{
 NULL.
@@ -18,7 +18,7 @@ NULL.
 Internal package function.
 }
 \details{
-If successful, both \sQuote{x} and \sQuote{ctx} are preserved and accessible
-from the promise callback.
+If successful, both \code{x} and \code{ctx} are preserved and accessible from the
+promise callback.
 }
 \keyword{internal}

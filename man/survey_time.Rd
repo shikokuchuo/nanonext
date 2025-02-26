@@ -23,15 +23,15 @@ ended are discarded.
 \details{
 After using this function, to start a new survey, the surveyor must:
 \itemize{
-  \item send a message.
-  \item switch to receiving responses.
+\item send a message.
+\item switch to receiving responses.
 }
 
 To respond to a survey, the respondent must:
 \itemize{
-  \item receive the survey message.
-  \item send a reply using \code{\link{send_aio}} before the survey has timed
-  out (a reply can only be sent after receiving a survey).
+\item receive the survey message.
+\item send a reply using \code{\link[=send_aio]{send_aio()}} before the survey has timed out (a
+reply can only be sent after receiving a survey).
 }
 }
 \examples{

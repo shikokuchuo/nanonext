@@ -9,19 +9,18 @@ unresolved(x)
 \arguments{
 \item{x}{an Aio or list of Aios (objects of class \sQuote{sendAio},
 \sQuote{recvAio} or \sQuote{ncurlAio}), or Aio value stored at
-\code{$result} or \code{$data} etc.}
+\verb{$result} or \verb{$data} etc.}
 }
 \value{
-Logical TRUE if \sQuote{aio} is an unresolved Aio or Aio value or the
-  list of Aios contains at least one unresolved Aio, or FALSE otherwise.
+Logical TRUE if \code{x} is an unresolved Aio or Aio value or the list of
+Aios contains at least one unresolved Aio, or FALSE otherwise.
 }
 \description{
 Query whether an Aio, Aio value or list of Aios remains unresolved. Unlike
-\code{\link{call_aio}}, this function does not wait for completion.
+\code{\link[=call_aio]{call_aio()}}, this function does not wait for completion.
 }
 \details{
-Suitable for use in control flow statements such as \code{while} or
-\code{if}.
+Suitable for use in control flow statements such as \code{while} or \code{if}.
 
 Note: querying resolution may cause a previously unresolved Aio to resolve.
 }

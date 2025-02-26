@@ -33,29 +33,28 @@
 #'
 #' This function (optionally) binds a single Dialer and/or Listener to a Socket.
 #' More complex network topologies may be created by binding further Dialers /
-#' Listeners to the Socket as required using \code{\link{dial}} and
-#' \code{\link{listen}}.
+#' Listeners to the Socket as required using [dial()] and [listen()].
 #'
-#' New contexts may also be created using \code{\link{context}} if the protocol
-#' supports it.
+#' New contexts may also be created using [context()] if the protocol supports
+#' it.
 #'
-#' @param protocol [default 'bus'] choose protocol - \sQuote{bus}, \sQuote{pair},
-#'   \sQuote{poly}, \sQuote{push}, \sQuote{pull}, \sQuote{pub}, \sQuote{sub},
-#'   \sQuote{req}, \sQuote{rep}, \sQuote{surveyor}, or \sQuote{respondent} - see
-#'   \link{protocols}.
+#' @param protocol \[default 'bus'\] choose protocol - \sQuote{bus},
+#'   \sQuote{pair}, \sQuote{poly}, \sQuote{push}, \sQuote{pull}, \sQuote{pub},
+#'   \sQuote{sub}, \sQuote{req}, \sQuote{rep}, \sQuote{surveyor}, or
+#'   \sQuote{respondent} - see [protocols].
 #' @param dial (optional) a URL to dial, specifying the transport and address as
 #'   a character string e.g. 'inproc://anyvalue' or 'tcp://127.0.0.1:5555' (see
-#'   \link{transports}).
+#'   [transports]).
 #' @param listen (optional) a URL to listen at, specifying the transport and
 #'   address as a character string e.g. 'inproc://anyvalue' or
-#'   'tcp://127.0.0.1:5555' (see \link{transports}).
-#' @param autostart [default TRUE] whether to start the dialer/listener. Set to
-#'   FALSE if setting configuration options on the dialer/listener as it is not
-#'   generally possible to change these once started. For dialers only: set to
-#'   NA to start synchronously - this is less resilient if a connection is not
-#'   immediately possible, but avoids subtle errors from attempting to use the
-#'   socket before an asynchronous dial has completed.
-#' @param raw [default FALSE] whether to open raw mode sockets. Note: not for
+#'   'tcp://127.0.0.1:5555' (see [transports]).
+#' @param autostart \[default TRUE\] whether to start the dialer/listener. Set
+#'   to FALSE if setting configuration options on the dialer/listener as it is
+#'   not generally possible to change these once started. For dialers only: set
+#'   to NA to start synchronously - this is less resilient if a connection is
+#'   not immediately possible, but avoids subtle errors from attempting to use
+#'   the socket before an asynchronous dial has completed.
+#' @param raw \[default FALSE\] whether to open raw mode sockets. Note: not for
 #'   general use - do not enable unless you have a specific need (refer to NNG
 #'   documentation).
 #' @inheritParams dial
@@ -76,7 +75,7 @@
 #'   'respondent'
 #' }
 #'
-#' Please see \link{protocols} for further documentation.
+#' Please see [protocols] for further documentation.
 #'
 #' @section Transports:
 #'
@@ -90,7 +89,7 @@
 #'   \item WebSocket and TLS over WebSocket - url: 'ws://' and 'wss://'
 #' }
 #'
-#' Please see \link{transports} for further documentation.
+#' Please see [transports] for further documentation.
 #'
 #' @examples
 #' s <- socket(protocol = "req", listen = "inproc://nanosocket")
@@ -146,7 +145,7 @@ socket <- function(protocol = c("bus", "pair", "poly", "push", "pull", "pub",
 #'
 #' @return Invisibly, an integer exit code (zero on success).
 #'
-#' @seealso \code{\link{reap}}
+#' @seealso [reap()]
 #'
 #' @name close
 #' @rdname close
@@ -161,18 +160,18 @@ close.nanoSocket <- function(con, ...) invisible(.Call(rnng_close, con))
 
 #' Reap
 #'
-#' An alternative to \code{close} for Sockets, Contexts, Listeners, and Dialers
+#' An alternative to `close` for Sockets, Contexts, Listeners, and Dialers
 #' avoiding S3 method dispatch.
 #'
 #' May be used on unclassed external pointers e.g. those created by
-#' \code{\link{.context}}. Returns silently and does not warn or error, nor does
-#' it update the state of object attributes.
+#' [.context()]. Returns silently and does not warn or error, nor does it update
+#' the state of object attributes.
 #'
 #' @param con a Socket, Context, Listener or Dialer.
 #'
 #' @return An integer exit code (zero on success).
 #'
-#' @seealso \code{\link{close}}
+#' @seealso [close()]
 #'
 #' @examples
 #' s <- socket("req")
@@ -195,10 +194,10 @@ reap <- function(con) .Call(rnng_reap, con)
 #' This function monitors pipe additions and removals from a socket.
 #'
 #' @param sock a Socket.
-#' @param cv a conditionVariable.
+#' @param cv a \sQuote{conditionVariable}.
 #'
-#' @return For \code{monitor}: a Monitor (object of class 'nanoMonitor'). \cr
-#'   For \code{read_monitor}: an integer vector of pipe IDs (positive if added,
+#' @return For `monitor`: a Monitor (object of class \sQuote{nanoMonitor}). \cr
+#'   For `read_monitor`: an integer vector of pipe IDs (positive if added,
 #'   negative if removed), or else NULL if there were no changes since the
 #'   previous read.
 #'
@@ -225,7 +224,7 @@ reap <- function(con) .Call(rnng_reap, con)
 #'
 monitor <- function(sock, cv) .Call(rnng_monitor_create, sock, cv)
 
-#' @param x an external pointer to a monitor.
+#' @param x a Monitor.
 #'
 #' @rdname monitor
 #' @export

@@ -21,9 +21,9 @@ transact(session)
 \arguments{
 \item{url}{the URL address.}
 
-\item{convert}{[default TRUE] logical value whether to attempt conversion of
-the received raw bytes to a character vector. Set to FALSE if downloading
-non-text data.}
+\item{convert}{[default TRUE] logical value whether to attempt conversion
+of the received raw bytes to a character vector. Set to FALSE if
+downloading non-text data.}
 
 \item{method}{(optional) the HTTP method as a character string. Defaults to
 'GET' if not specified, and could also be 'POST', 'PUT' etc.}
@@ -45,33 +45,33 @@ will return NULL if not present. A non-character vector will be ignored.}
 connection and subsequent transact attempts time out.}
 
 \item{tls}{(optional) applicable to secure HTTPS sites only, a client TLS
-Configuration object created by \code{\link{tls_config}}. If missing or
-NULL, certificates are not validated.}
+Configuration object created by \code{\link[=tls_config]{tls_config()}}. If missing or NULL,
+certificates are not validated.}
 
-\item{session}{an 'ncurlSession' object.}
+\item{session}{an \sQuote{ncurlSession} object.}
 }
 \value{
-For \code{ncurl_session}: an 'ncurlSession' object if successful, or
-  else an 'errorValue'.
+For \code{ncurl_session}: an \sQuote{ncurlSession} object if successful,
+or else an \sQuote{errorValue}.
 
 For \code{transact}: a named list of 3 elements:
-  \itemize{
-    \item \code{$status} - integer HTTP repsonse status code (200 - OK).
-    Use \code{\link{status_code}} for a translation of the meaning.
-    \item \code{$headers} - named list of response headers (if specified in
-    the session), or NULL otherwise. If the status code is within the 300
-    range, i.e. a redirect, the response header 'Location' is automatically
-    appended to return the redirect address.
-    \item \code{$data} - the response body as a character string (if
-    'convert = TRUE' was specified for the session), which may be further
-    parsed as html, json, xml etc. as required, or else a raw byte vector,
-    which may be saved as a file using \code{\link{writeBin}}.
-  }
+\itemize{
+\item \verb{$status} - integer HTTP repsonse status code (200 - OK).
+Use \code{\link[=status_code]{status_code()}} for a translation of the meaning.
+\item \verb{$headers} - named list of response headers (if specified in
+the session), or NULL otherwise. If the status code is within the 300
+range, i.e. a redirect, the response header \sQuote{Location} is
+automatically appended to return the redirect address.
+\item \verb{$data} - the response body as a character string (if
+\code{convert = TRUE} was specified for the session), which may be further
+parsed as html, json, xml etc. as required, or else a raw byte vector,
+which may be saved as a file using \code{\link[=writeBin]{writeBin()}}.
+}
 }
 \description{
 nano cURL - a minimalist http(s) client. A session encapsulates a connection,
 along with all related parameters, and may be used to return data multiple
-times by repeatedly calling \code{transact}, which transacts once over the
+times by repeatedly calling \code{transact()}, which transacts once over the
 connection.
 }
 \examples{
@@ -84,5 +84,5 @@ if (is_ncurl_session(s)) close(s)
 
 }
 \seealso{
-\code{\link{ncurl_aio}} for asynchronous http requests.
+\code{\link[=ncurl_aio]{ncurl_aio()}} for asynchronous http requests.
 }

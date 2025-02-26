@@ -36,19 +36,19 @@ to be signalled.}
 \value{
 For \strong{cv}: a \sQuote{conditionVariable} object.
 
- For \strong{wait}: (invisibly) logical TRUE, or else FALSE if a flag has
- been set.
+For \strong{wait}: (invisibly) logical TRUE, or else FALSE if a flag has been
+set.
 
- For \strong{until}: (invisibly) logical TRUE if signalled, or else FALSE if
- the timeout was reached.
+For \strong{until}: (invisibly) logical TRUE if signalled, or else FALSE if the
+timeout was reached.
 
- For \strong{cv_value}: integer value of the condition variable.
+For \strong{cv_value}: integer value of the condition variable.
 
- For \strong{cv_reset} and \strong{cv_signal}: zero (invisibly).
+For \strong{cv_reset} and \strong{cv_signal}: zero (invisibly).
 }
 \description{
-\code{cv} creates a new condition variable (protected by a mutex internal to
-the object).
+\code{cv} creates a new condition variable (protected by a mutex internal to the
+object).
 
 \code{wait} waits on a condition being signalled by completion of an
 asynchronous receive or pipe event. \cr \code{wait_} is a variant that allows
@@ -66,29 +66,28 @@ variant that allows user interrupts, suitable for interactive use.
 }
 \details{
 Pass the \sQuote{conditionVariable} to the asynchronous receive functions
-\code{\link{recv_aio}} or \code{\link{request}}. Alternatively, to be
-notified of a pipe event, pass it to \code{\link{pipe_notify}}.
+\code{\link[=recv_aio]{recv_aio()}} or \code{\link[=request]{request()}}. Alternatively, to be notified of a pipe event,
+pass it to \code{\link[=pipe_notify]{pipe_notify()}}.
 
 Completion of the receive or pipe event, which happens asynchronously and
 independently of the main R thread, will signal the condition variable by
 incrementing it by 1.
 
 This will cause the R execution thread waiting on the condition variable
-using \code{wait} or \code{until} to wake and continue.
+using \code{wait()} or \code{until()} to wake and continue.
 
-For argument \sQuote{msec}, non-integer values will be coerced to integer.
+For argument \code{msec}, non-integer values will be coerced to integer.
 Non-numeric input will be ignored and return immediately.
 }
 \section{Condition}{
 
 
 The condition internal to this \sQuote{conditionVariable} maintains a state
-(value). Each signal increments the value by 1. Each time \code{wait} or
-\code{until} returns (apart from due to timeout), the value is decremented
-by 1.
+(value). Each signal increments the value by 1. Each time \code{wait()} or
+\code{until()} returns (apart from due to timeout), the value is decremented by 1.
 
-The internal condition may be inspected at any time using \code{cv_value} and
-reset using \code{cv_reset}. This affords a high degree of flexibility in
+The internal condition may be inspected at any time using \code{cv_value()} and
+reset using \code{cv_reset()}. This affords a high degree of flexibility in
 designing complex concurrent applications.
 }
 
@@ -96,11 +95,11 @@ designing complex concurrent applications.
 
 
 The condition variable also contains a flag that certain signalling functions
-such as \code{\link{pipe_notify}} can set. When this flag has been set, all
-subsequent \code{wait} calls will return logical FALSE instead of TRUE.
+such as \code{\link[=pipe_notify]{pipe_notify()}} can set. When this flag has been set, all subsequent
+\code{wait()} calls will return logical FALSE instead of TRUE.
 
 Note that the flag is not automatically reset, but may be reset manually
-using \code{cv_reset}.
+using \code{cv_reset()}.
 }
 
 \examples{

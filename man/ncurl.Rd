@@ -19,13 +19,13 @@ ncurl(
 \arguments{
 \item{url}{the URL address.}
 
-\item{convert}{[default TRUE] logical value whether to attempt conversion of
-the received raw bytes to a character vector. Set to FALSE if downloading
-non-text data.}
+\item{convert}{[default TRUE] logical value whether to attempt conversion
+of the received raw bytes to a character vector. Set to FALSE if
+downloading non-text data.}
 
 \item{follow}{[default FALSE] logical value whether to automatically follow
 redirects (not applicable for async requests). If FALSE, the redirect
-address is returned as response header 'Location'.}
+address is returned as response header \sQuote{Location}.}
 
 \item{method}{(optional) the HTTP method as a character string. Defaults to
 'GET' if not specified, and could also be 'POST', 'PUT' etc.}
@@ -47,23 +47,23 @@ will return NULL if not present. A non-character vector will be ignored.}
 transaction times out if not yet complete.}
 
 \item{tls}{(optional) applicable to secure HTTPS sites only, a client TLS
-Configuration object created by \code{\link{tls_config}}. If missing or
-NULL, certificates are not validated.}
+Configuration object created by \code{\link[=tls_config]{tls_config()}}. If missing or NULL,
+certificates are not validated.}
 }
 \value{
 Named list of 3 elements:
- \itemize{
-    \item \code{$status} - integer HTTP repsonse status code (200 - OK).
-    Use \code{\link{status_code}} for a translation of the meaning.
-    \item \code{$headers} - named list of response headers supplied in
-    'response', or NULL otherwise. If the status code is within the 300
-    range, i.e. a redirect, the response header 'Location' is automatically
-    appended to return the redirect address.
-    \item \code{$data} - the response body, as a character string if
-    'convert' = TRUE (may be further parsed as html, json, xml etc. as
-    required), or a raw byte vector if FALSE (use \code{\link{writeBin}} to
-    save as a file).
- }
+\itemize{
+\item \verb{$status} - integer HTTP repsonse status code (200 - OK).
+Use \code{\link[=status_code]{status_code()}} for a translation of the meaning.
+\item \verb{$headers} - named list of response headers supplied in \code{response},
+or NULL otherwise. If the status code is within the 300 range, i.e. a
+redirect, the response header \sQuote{Location} is automatically appended
+to return the redirect address.
+\item \verb{$data} - the response body, as a character string if
+\code{convert = TRUE} (may be further parsed as html, json, xml etc. as
+required), or a raw byte vector if FALSE (use \code{\link[=writeBin]{writeBin()}} to save as a
+file).
+}
 }
 \description{
 nano cURL - a minimalist http(s) client.
@@ -86,6 +86,6 @@ ncurl("https://postman-echo.com/post",
 
 }
 \seealso{
-\code{\link{ncurl_aio}} for asynchronous http requests;
-  \code{\link{ncurl_session}} for persistent connections.
+\code{\link[=ncurl_aio]{ncurl_aio()}} for asynchronous http requests; \code{\link[=ncurl_session]{ncurl_session()}} for
+persistent connections.
 }

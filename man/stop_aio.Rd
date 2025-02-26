@@ -17,12 +17,11 @@ Invisible NULL.
 Stop an asynchronous Aio operation, or a list of Aio operations.
 }
 \details{
-Stops the asynchronous I/O operation associated with \sQuote{aio} by
-aborting, and then waits for it to complete or to be completely aborted, and
-for the callback associated with the \sQuote{aio} to have completed
-executing. If successful, the \sQuote{aio} will resolve to an
-\sQuote{errorValue} 20 (Operation canceled).
+Stops the asynchronous I/O operation associated with Aio \code{x} by aborting, and
+then waits for it to complete or to be completely aborted, and for the
+callback associated with the Aio to have completed executing. If successful,
+the Aio will resolve to an \sQuote{errorValue} 20 (Operation canceled).
 
-Note this function operates silently and does not error even if \sQuote{aio}
-is not an active Aio, always returning invisible NULL.
+Note this function operates silently and does not error even if \code{x} is not an
+active Aio, always returning invisible NULL.
 }

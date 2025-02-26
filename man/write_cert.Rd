@@ -4,10 +4,10 @@
 \alias{write_cert}
 \title{Generate Self-Signed Certificate and Key}
 \usage{
-write_cert(cn = "localhost", valid = "20301231235959")
+write_cert(cn = "127.0.0.1", valid = "20301231235959")
 }
 \arguments{
-\item{cn}{[default 'localhost'] character issuer common name (CN) for the
+\item{cn}{[default '127.0.0.1'] character issuer common name (CN) for the
 certificate. This can be either a hostname or an IP address, but must match
 the actual server URL as client authentication will depend on it.}
 
@@ -16,9 +16,8 @@ date-time in \sQuote{yyyymmddhhmmss} format. The certificate is not valid
 after this time.}
 }
 \value{
-A list of length 2, comprising \code{$server} and \code{$client}.
-  These may be passed directly to the relevant argument of
-  \code{\link{tls_config}}.
+A list of length 2, comprising \verb{$server} and \verb{$client}. These may be
+passed directly to the relevant argument of \code{\link[=tls_config]{tls_config()}}.
 }
 \description{
 Generate self-signed x509 certificate and 4096 bit RSA private/public key

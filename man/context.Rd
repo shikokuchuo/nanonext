@@ -26,12 +26,11 @@ regard to or interference with each other.
 Only the following protocols support creation of contexts: req, rep, sub
 (in a pub/sub pattern), surveyor, respondent.
 
-To send and receive over a context use \code{\link{send}} and
-\code{\link{recv}} or their async counterparts \code{\link{send_aio}} and
-\code{\link{recv_aio}}.
+To send and receive over a context use \code{\link[=send]{send()}} and \code{\link[=recv]{recv()}} or their async
+counterparts \code{\link[=send_aio]{send_aio()}} and \code{\link[=recv_aio]{recv_aio()}}.
 
-For nano objects, use the \code{$context_open()} method, which will attach a
-new context at \code{$context}. See \code{\link{nano}}.
+For nano objects, use the \verb{$context_open()} method, which will attach a new
+context at \verb{$context}. See \code{\link[=nano]{nano()}}.
 }
 \examples{
 s <- socket("req", listen = "inproc://nanonext")
@@ -50,5 +49,5 @@ n$close()
 
 }
 \seealso{
-\code{\link{request}} and \code{\link{reply}} for use with contexts.
+\code{\link[=request]{request()}} and \code{\link[=reply]{reply()}} for use with contexts.
 }
