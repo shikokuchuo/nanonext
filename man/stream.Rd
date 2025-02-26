@@ -15,12 +15,12 @@ all transports are supported).}
 character string e.g. 'ipc:///tmp/anyvalue' or 'tcp://127.0.0.1:5555' (not
 all transports are supported).}
 
-\item{textframes}{[default FALSE] applicable to the websocket transport only,
-enables sending and receiving of TEXT frames (ignored otherwise).}
+\item{textframes}{[default FALSE] applicable to the websocket transport
+only, enables sending and receiving of TEXT frames (ignored otherwise).}
 
 \item{tls}{(optional) applicable to secure websockets only, a client or
-server TLS configuration object created by \code{\link{tls_config}}. If
-missing or NULL, certificates are not validated.}
+server TLS configuration object created by \code{\link[=tls_config]{tls_config()}}. If missing or
+NULL, certificates are not validated.}
 }
 \value{
 A Stream (object of class \sQuote{nanoStream} and \sQuote{nano}).

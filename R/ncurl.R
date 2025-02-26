@@ -1,4 +1,4 @@
-# Copyright (C) 2022-2024 Hibiki AI Limited <info@hibiki-ai.com>
+# Copyright (C) 2022-2025 Hibiki AI Limited <info@hibiki-ai.com>
 #
 # This file is part of nanonext.
 #
@@ -21,12 +21,12 @@
 #' nano cURL - a minimalist http(s) client.
 #'
 #' @param url the URL address.
-#' @param convert [default TRUE] logical value whether to attempt conversion of
-#'   the received raw bytes to a character vector. Set to FALSE if downloading
-#'   non-text data.
-#' @param follow [default FALSE] logical value whether to automatically follow
+#' @param convert \[default TRUE\] logical value whether to attempt conversion
+#'   of the received raw bytes to a character vector. Set to FALSE if
+#'   downloading non-text data.
+#' @param follow \[default FALSE\] logical value whether to automatically follow
 #'   redirects (not applicable for async requests). If FALSE, the redirect
-#'   address is returned as response header 'Location'.
+#'   address is returned as response header \sQuote{Location}.
 #' @param method (optional) the HTTP method as a character string. Defaults to
 #'   'GET' if not specified, and could also be 'POST', 'PUT' etc.
 #' @param headers (optional) a named character vector specifying the HTTP
@@ -37,30 +37,31 @@
 #'   vector, only the first element is taken, and non-character objects are
 #'   ignored.
 #' @param response (optional) a character vector specifying the response headers
-#'   to return e.g. \code{c("date", "server")}. These are case-insensitive and
+#'   to return e.g. `c("date", "server")`. These are case-insensitive and
 #'   will return NULL if not present. A non-character vector will be ignored.
 #' @param timeout (optional) integer value in milliseconds after which the
 #'   transaction times out if not yet complete.
 #' @param tls (optional) applicable to secure HTTPS sites only, a client TLS
-#'   Configuration object created by \code{\link{tls_config}}. If missing or
-#'   NULL, certificates are not validated.
+#'   Configuration object created by [tls_config()]. If missing or NULL,
+#'   certificates are not validated.
 #'
 #' @return Named list of 3 elements:
 #'  \itemize{
-#'     \item \code{$status} - integer HTTP repsonse status code (200 - OK).
-#'     Use \code{\link{status_code}} for a translation of the meaning.
-#'     \item \code{$headers} - named list of response headers supplied in
-#'     'response', or NULL otherwise. If the status code is within the 300
-#'     range, i.e. a redirect, the response header 'Location' is automatically
-#'     appended to return the redirect address.
-#'     \item \code{$data} - the response body, as a character string if
-#'     'convert' = TRUE (may be further parsed as html, json, xml etc. as
-#'     required), or a raw byte vector if FALSE (use \code{\link{writeBin}} to
-#'     save as a file).
+#'     \item `$status` - integer HTTP repsonse status code (200 - OK).
+#'     Use [status_code()] for a translation of the meaning.
+#'     \item `$headers` - named list of response headers supplied in `response`,
+#'     or NULL otherwise. If the status code is within the 300 range, i.e. a
+#'     redirect, the response header \sQuote{Location} is automatically appended
+#'     to return the redirect address.
+#'     \item `$data` - the response body, as a character string if
+#'     `convert = TRUE` (may be further parsed as html, json, xml etc. as
+#'     required), or a raw byte vector if FALSE (use [writeBin()] to save as a
+#'     file).
 #'  }
 #'
-#' @seealso \code{\link{ncurl_aio}} for asynchronous http requests;
-#'   \code{\link{ncurl_session}} for persistent connections.
+#' @seealso [ncurl_aio()] for asynchronous http requests; [ncurl_session()] for
+#'   persistent connections.
+#'
 #' @examples
 #' ncurl("https://postman-echo.com/get",
 #'        convert = FALSE,
@@ -99,22 +100,22 @@ ncurl <- function(url,
 #' @return An 'ncurlAio' (object of class 'ncurlAio' and 'recvAio') (invisibly).
 #'   The following elements may be accessed:
 #'   \itemize{
-#'     \item \code{$status} - integer HTTP repsonse status code (200 - OK).
-#'     Use \code{\link{status_code}} for a translation of the meaning.
-#'     \item \code{$headers} - named list of response headers supplied in
-#'     'response', or NULL otherwise. If the status code is within the 300
-#'     range, i.e. a redirect, the response header 'Location' is automatically
-#'     appended to return the redirect address.
-#'     \item \code{$data} - the response body, as a character string if
-#'     'convert' = TRUE (may be further parsed as html, json, xml etc. as
-#'     required), or a raw byte vector if FALSE (use \code{\link{writeBin}} to
-#'     save as a file).
+#'     \item `$status` - integer HTTP repsonse status code (200 - OK).
+#'     Use [status_code()] for a translation of the meaning.
+#'     \item `$headers` - named list of response headers supplied in `response`,
+#'     or NULL otherwise. If the status code is within the 300 range, i.e. a
+#'     redirect, the response header \sQuote{Location} is automatically appended
+#'     to return the redirect address.
+#'     \item `$data` - the response body, as a character string if
+#'     `convert = TRUE` (may be further parsed as html, json, xml etc. as
+#'     required), or a raw byte vector if FALSE (use [writeBin()] to save as a
+#'     file).
 #'   }
 #'
 #' @section Promises:
 #'
 #' \sQuote{ncurlAio} may be used anywhere that accepts a \sQuote{promise} from
-#' the \CRANpkg{promises} package through the included \code{as.promise} method.
+#' the \CRANpkg{promises} package through the included `as.promise` method.
 #'
 #' The promises created are completely event-driven and non-polling.
 #'
@@ -122,7 +123,9 @@ ncurl <- function(url,
 #' the reponse body, otherwise it is rejected with a translation of the status
 #' code or \sQuote{errorValue} as the case may be.
 #'
-#' @seealso \code{\link{ncurl_session}} for persistent connections.
+#' @seealso [ncurl()] for synchronous http requests; [ncurl_session()] for
+#'   persistent connections.
+#'
 #' @examples
 #' nc <- ncurl_aio("https://postman-echo.com/get",
 #'                 response = c("date", "server"),
@@ -159,17 +162,19 @@ ncurl_aio <- function(url,
 #'
 #' nano cURL - a minimalist http(s) client. A session encapsulates a connection,
 #' along with all related parameters, and may be used to return data multiple
-#' times by repeatedly calling \code{transact}, which transacts once over the
+#' times by repeatedly calling `transact()`, which transacts once over the
 #' connection.
 #'
 #' @inheritParams ncurl
 #' @param timeout (optional) integer value in milliseconds after which the
 #'   connection and subsequent transact attempts time out.
 #'
-#' @return For \code{ncurl_session}: an 'ncurlSession' object if successful, or
-#'   else an 'errorValue'.
+#' @return For `ncurl_session`: an \sQuote{ncurlSession} object if successful,
+#'   or else an \sQuote{errorValue}.
 #'
-#' @seealso \code{\link{ncurl_aio}} for asynchronous http requests.
+#' @seealso [ncurl()] for synchronous http requests; [ncurl_aio()] for
+#'   asynchronous http requests.
+#'
 #' @examples
 #' s <- ncurl_session("https://postman-echo.com/get",
 #'                    response = "date",
@@ -190,20 +195,20 @@ ncurl_session <- function(url,
                           tls = NULL)
     .Call(rnng_ncurl_session, url, convert, method, headers, data, response, timeout, tls)
 
-#' @param session an 'ncurlSession' object.
+#' @param session an \sQuote{ncurlSession} object.
 #'
-#' @return For \code{transact}: a named list of 3 elements:
+#' @return For `transact`: a named list of 3 elements:
 #'   \itemize{
-#'     \item \code{$status} - integer HTTP repsonse status code (200 - OK).
-#'     Use \code{\link{status_code}} for a translation of the meaning.
-#'     \item \code{$headers} - named list of response headers (if specified in
+#'     \item `$status` - integer HTTP repsonse status code (200 - OK).
+#'     Use [status_code()] for a translation of the meaning.
+#'     \item `$headers` - named list of response headers (if specified in
 #'     the session), or NULL otherwise. If the status code is within the 300
-#'     range, i.e. a redirect, the response header 'Location' is automatically
-#'     appended to return the redirect address.
-#'     \item \code{$data} - the response body as a character string (if
-#'     'convert = TRUE' was specified for the session), which may be further
+#'     range, i.e. a redirect, the response header \sQuote{Location} is
+#'     automatically appended to return the redirect address.
+#'     \item `$data` - the response body as a character string (if
+#'     `convert = TRUE` was specified for the session), which may be further
 #'     parsed as html, json, xml etc. as required, or else a raw byte vector,
-#'     which may be saved as a file using \code{\link{writeBin}}.
+#'     which may be saved as a file using [writeBin()].
 #'   }
 #'
 #' @rdname ncurl_session
@@ -221,13 +226,13 @@ close.ncurlSession <- function(con, ...) invisible(.Call(rnng_ncurl_session_clos
 #'
 #' Creates a \sQuote{promise} from an \sQuote{ncurlAio} object.
 #'
-#' This function is an S3 method for the generic \code{as.promise} for class
+#' This function is an S3 method for the generic `as.promise` for class
 #' \sQuote{ncurlAio}.
 #'
 #' Requires the \pkg{promises} package.
 #'
-#' Allows an \sQuote{ncurlAio} to be used with the promise pipe \code{\%...>\%},
-#' which schedules a function to run upon resolution of the Aio.
+#' Allows an \sQuote{ncurlAio} to be used with the promise pipe `%...>%`, which
+#' schedules a function to run upon resolution of the Aio.
 #'
 #' @param x an object of class \sQuote{ncurlAio}.
 #'

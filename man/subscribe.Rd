@@ -27,8 +27,8 @@ list.
 \details{
 To use pub/sub the publisher must:
 \itemize{
-  \item specify \code{mode = 'raw'} when sending.
-  \item ensure the sent vector starts with the topic.
+\item specify \code{mode = 'raw'} when sending.
+\item ensure the sent vector starts with the topic.
 }
 The subscriber should then receive specifying the correct mode.
 }

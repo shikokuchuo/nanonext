@@ -12,15 +12,15 @@ read_monitor(x)
 \arguments{
 \item{sock}{a Socket.}
 
-\item{cv}{a conditionVariable.}
+\item{cv}{a \sQuote{conditionVariable}.}
 
-\item{x}{an external pointer to a monitor.}
+\item{x}{a Monitor.}
 }
 \value{
-For \code{monitor}: a Monitor (object of class 'nanoMonitor'). \cr
-  For \code{read_monitor}: an integer vector of pipe IDs (positive if added,
-  negative if removed), or else NULL if there were no changes since the
-  previous read.
+For \code{monitor}: a Monitor (object of class \sQuote{nanoMonitor}). \cr
+For \code{read_monitor}: an integer vector of pipe IDs (positive if added,
+negative if removed), or else NULL if there were no changes since the
+previous read.
 }
 \description{
 This function monitors pipe additions and removals from a socket.

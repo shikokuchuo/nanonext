@@ -20,7 +20,7 @@ transport and address as a character string e.g. 'inproc://anyvalue' or
 'tcp://127.0.0.1:5555' (see \link{transports}).}
 
 \item{tls}{[default NULL] for secure tls+tcp:// or wss:// connections only,
-provide a TLS configuration object created by \code{\link{tls_config}}.}
+provide a TLS configuration object created by \code{\link[=tls_config]{tls_config()}}.}
 
 \item{autostart}{[default TRUE] whether to start the dialer (by default
 asynchronously). Set to NA to start synchronously - this is less resilient
@@ -29,23 +29,23 @@ attempting to use the socket before an asynchronous dial has completed. Set
 to FALSE if setting configuration options on the dialer as it is not
 generally possible to change these once started.}
 
-\item{error}{[default FALSE] behaviour on error: if FALSE, returns an integer
-exit code accompanied by a warning, or, if TRUE, generates an error and
-halts execution.}
+\item{error}{[default FALSE] behaviour on error: if FALSE, returns an
+integer exit code accompanied by a warning, or, if TRUE, generates an error
+and halts execution.}
 }
 \value{
 Invisibly, an integer exit code (zero on success). A new Dialer
-  (object of class \sQuote{nanoDialer} and \sQuote{nano}) is created and
-  bound to the Socket if successful.
+(object of class \sQuote{nanoDialer} and \sQuote{nano}) is created and
+bound to the Socket if successful.
 }
 \description{
 Creates a new Dialer and binds it to a Socket.
 }
 \details{
-To view all Dialers bound to a socket use \code{$dialer} on the socket, which
+To view all Dialers bound to a socket use \verb{$dialer} on the socket, which
 returns a list of Dialer objects. To access any individual Dialer (e.g. to
-set options on it), index into the list e.g. \code{$dialer[[1]]} to return
-the first Dialer.
+set options on it), index into the list e.g. \verb{$dialer[[1]]} to return the
+first Dialer.
 
 A Dialer is an external pointer to a dialer object, which creates a single
 outgoing connection at a time. If the connection is broken, or fails, the
@@ -64,12 +64,11 @@ socket may use a dialer to connect to a listener on an req socket. This
 orthogonality can lead to innovative solutions to otherwise challenging
 communications problems.
 
-Any configuration options on the dialer/listener should be set by
-\code{\link{opt<-}} before starting the dialer/listener with
-\code{\link{start}}.
+Any configuration options on the dialer/listener should be set by \code{\link[=opt<-]{opt<-()}}
+before starting the dialer/listener with \code{\link[=start]{start()}}.
 
-Dialers/Listeners may be destroyed by \code{\link{close}}. They are also
-closed when their associated socket is closed.
+Dialers/Listeners may be destroyed by \code{\link[=close]{close()}}. They are also closed when
+their associated socket is closed.
 }
 
 \examples{

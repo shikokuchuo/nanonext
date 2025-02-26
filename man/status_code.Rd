@@ -11,7 +11,7 @@ status_code(x)
 }
 \value{
 A character vector comprising the status code and explanation
-  separated by \sQuote{ | }.
+separated by \sQuote{ | }.
 }
 \description{
 Provides an explanation for HTTP response status codes (in the range 100 to

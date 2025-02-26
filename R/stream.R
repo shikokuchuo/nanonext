@@ -1,4 +1,4 @@
-# Copyright (C) 2022-2023 Hibiki AI Limited <info@hibiki-ai.com>
+# Copyright (C) 2022-2025 Hibiki AI Limited <info@hibiki-ai.com>
 #
 # This file is part of nanonext.
 #
@@ -40,11 +40,11 @@
 #' @param listen a URL to listen at, specifying the transport and address as a
 #'   character string e.g. 'ipc:///tmp/anyvalue' or 'tcp://127.0.0.1:5555' (not
 #'   all transports are supported).
-#' @param textframes [default FALSE] applicable to the websocket transport only,
-#'   enables sending and receiving of TEXT frames (ignored otherwise).
+#' @param textframes \[default FALSE\] applicable to the websocket transport
+#'   only, enables sending and receiving of TEXT frames (ignored otherwise).
 #' @param tls (optional) applicable to secure websockets only, a client or
-#'   server TLS configuration object created by \code{\link{tls_config}}. If
-#'   missing or NULL, certificates are not validated.
+#'   server TLS configuration object created by [tls_config()]. If missing or
+#'   NULL, certificates are not validated.
 #'
 #' @return A Stream (object of class \sQuote{nanoStream} and \sQuote{nano}).
 #'

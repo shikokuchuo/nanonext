@@ -1,4 +1,4 @@
-# Copyright (C) 2022-2023 Hibiki AI Limited <info@hibiki-ai.com>
+# Copyright (C) 2022-2025 Hibiki AI Limited <info@hibiki-ai.com>
 #
 # This file is part of nanonext.
 #
@@ -23,18 +23,18 @@
 #'
 #' Note: once a dialer or listener has started, it is not generally possible to
 #' change its configuration. Hence create the dialer or listener with
-#' \code{autostart = FALSE} if configuration needs to be set.
+#' `autostart = FALSE` if configuration needs to be set.
 #'
 #' To get or set options on a Listener or Dialer attached to a Socket or nano
-#' object, pass in the objects directly via for example \code{$listener[[1]]}
-#' for the first Listener.
+#' object, pass in the objects directly via for example `$listener[[1]]` for the
+#' first Listener.
 #'
 #' Some options are only meaningful or supported in certain contexts; for
 #' example there is no single meaningful address for a socket, since sockets can
 #' have multiple dialers and endpoints associated with them.
 #'
 #' For an authoritative guide please refer to the online documentation for the
-#' NNG library at \url{https://nng.nanomsg.org/man/}.
+#' NNG library at <https://nng.nanomsg.org/man/>.
 #'
 #' @param object a Socket, Context, Stream, Listener or Dialer.
 #' @param name name of option, e.g. 'recv-buffer', as a character string. See
@@ -52,25 +52,25 @@
 #' option:
 #'
 #' \itemize{
-#'   \item 'serial' [type list]
+#'   \item 'serial' (type list)
 #'
 #'   For Sockets only. This accepts a configuration created by
-#'   \code{\link{serial_config}}. Setting a new configuration replaces any
-#'   already set. To remove entirely, supply an empty list. Note: this option is
-#'   write-only and can be set but not retrieved.
+#'   [serial_config()]. Setting a new configuration replaces any already set. To
+#'   remove entirely, supply an empty list. Note: this option is write-only and
+#'   can be set but not retrieved.
 #' }
 #'
 #' @section Global Options:
 #'
 #' \itemize{
-#'   \item 'reconnect-time-min' [type 'ms']
+#'   \item 'reconnect-time-min' (type 'ms')
 #'
 #'   This is the minimum amount of time (milliseconds) to wait before attempting
 #'   to establish a connection after a previous attempt has failed. This can be
 #'   set on a socket, but it can also be overridden on an individual dialer. The
 #'   option is irrelevant for listeners.
 #'
-#'   \item 'reconnect-time-max' [type 'ms']
+#'   \item 'reconnect-time-max' (type 'ms')
 #'
 #'   This is the maximum amount of time (milliseconds) to wait before attempting
 #'   to establish a connection after a previous attempt has failed. If this is
@@ -82,7 +82,7 @@
 #'   also be overridden on an individual dialer. The option is irrelevant for
 #'   listeners.
 #'
-#'   \item 'recv-size-max' [type 'size']
+#'   \item 'recv-size-max' (type 'size')
 #'
 #'   This is the maximum message size that the will be accepted from a remote
 #'   peer. If a peer attempts to send a message larger than this, then the
@@ -95,7 +95,7 @@
 #'   this to a non-zero value to prevent denial-of-service attacks. NOTE: Some
 #'   transports may have further message size restrictions.
 #'
-#'   \item 'recv-buffer' [type 'int']
+#'   \item 'recv-buffer' (type 'int')
 #'
 #'   This is the depth of the socket’s receive buffer as a number of messages.
 #'   Messages received by a transport may be buffered until the application has
@@ -103,13 +103,13 @@
 #'   8192, inclusive. NOTE: Not all protocols support buffering received
 #'   messages. For example req can only deal with a single reply at a time.
 #'
-#'   \item 'recv-timeout' [type 'ms']
+#'   \item 'recv-timeout' (type 'ms')
 #'
 #'   This is the socket receive timeout in milliseconds. When no message is
 #'   available for receiving at the socket for this period of time, receive
 #'   operations will fail with a return value of 5L ('timed out').
 #'
-#'   \item 'send-buffer' [type 'int']
+#'   \item 'send-buffer' (type 'int')
 #'
 #'   This is the depth of the socket send buffer as a number of messages.
 #'   Messages sent by an application may be buffered by the socket until a
@@ -118,14 +118,14 @@
 #'   buffering sent messages; generally multicast protocols like pub will simply
 #'   discard messages when they cannot be delivered immediately.
 #'
-#'   \item 'send-timeout' [type 'ms']
+#'   \item 'send-timeout' (type 'ms')
 #'
 #'   This is the socket send timeout in milliseconds. When a message cannot be
 #'   queued for delivery by the socket for this period of time (such as if send
 #'   buffers are full), the operation will fail with a return value of 5L
 #'   ('timed out').
 #'
-#'   \item 'recv-fd' [type 'int']
+#'   \item 'recv-fd' (type 'int')
 #'
 #'   This is the socket receive file descriptor. For supported protocols, this
 #'   will become readable when a message is available for receiving on the
@@ -133,20 +133,20 @@
 #'   descriptor, but it is suitable for use with poll(), select(), or WSAPoll()
 #'   on Windows, and similar functions.
 #'
-#'   \item 'send-fd' [type 'int']
+#'   \item 'send-fd' (type 'int')
 #'
 #'   This is the socket send file descriptor. Attempts should not be made to
 #'   read or write to the returned file descriptor, but it is suitable for use
 #'   with poll(), select(), or WSAPoll() on Windows, and similar functions.
 #'
-#'   \item 'socket-name' [type 'string']
+#'   \item 'socket-name' (type 'string')
 #'
 #'   This is the socket name. By default this is a string corresponding to the
 #'   value of the socket. The string must fit within 64-bytes, including the
 #'   terminating NUL byte. The value is intended for application use, and is not
 #'   used for anything in the library itself.
 #'
-#'   \item 'url' [type 'string']
+#'   \item 'url' (type 'string')
 #'
 #'   This read-only option is used on a listener or dialer to obtain the URL
 #'   with which it was configured.
@@ -156,7 +156,7 @@
 #' @section Protocol-specific Options:
 #'
 #' \itemize{
-#'   \item 'req:resend-time' [type 'ms']
+#'   \item 'req:resend-time' (type 'ms')
 #'
 #'   (Request protocol) When a new request is started, a timer of this duration
 #'   is also started. If no reply is received before this timer expires, then
@@ -164,7 +164,7 @@
 #'   peer to whom the original request was sent disconnects, or if a peer
 #'   becomes available while the requester is waiting for an available peer.)
 #'
-#'   \item 'sub:subscribe' [type 'string']
+#'   \item 'sub:subscribe' (type 'string')
 #'
 #'   (Subscribe protocol) This option registers a topic that the subscriber is
 #'   interested in. Each incoming message is checked against the list of
@@ -172,20 +172,20 @@
 #'   topic, then the message is accepted. If no topic matches, then the message
 #'   is discarded. To receive all messages, set the topic to NULL.
 #'
-#'   \item 'sub:unsubscribe' [type 'string']
+#'   \item 'sub:unsubscribe' (type 'string')
 #'
 #'   (Subscribe protocol) This option removes a topic from the subscription
 #'   list. Note that if the topic was not previously subscribed to with
 #'   'sub:subscribe' then an 'entry not found' error will result.
 #'
-#'   \item 'sub:prefnew' [type 'bool']
+#'   \item 'sub:prefnew' (type 'bool')
 #'
 #'   (Subscribe protocol) This option specifies the behavior of the subscriber
 #'   when the queue is full. When TRUE (the default), the subscriber will make
 #'   room in the queue by removing the oldest message. When FALSE, the
 #'   subscriber will reject messages if the message queue does not have room.
 #'
-#'   \item 'surveyor:survey-time' [type 'ms']
+#'   \item 'surveyor:survey-time' (type 'ms')
 #'
 #'   (Surveyor protocol) Duration of surveys. When a new survey is started, a
 #'   timer of this duration is also started. Any responses arriving after this
@@ -198,7 +198,7 @@
 #' @section Transport-specific Options:
 #'
 #' \itemize{
-#'   \item 'ipc:permissions' [type 'int']
+#'   \item 'ipc:permissions' (type 'int')
 #'
 #'   (IPC transport) This option may be applied to a listener to configure the
 #'   permissions that are used on the UNIX domain socket created by that
@@ -207,7 +207,7 @@
 #'   (typically meaning read-write to the owner, and no permissions for anyone
 #'   else.) The default is system-specific, most often 0644.
 #'
-#'   \item 'tcp-nodelay' [type 'bool']
+#'   \item 'tcp-nodelay' (type 'bool')
 #'
 #'   (TCP transport) This option is used to disable (or enable) the use of
 #'   Nagle's algorithm for TCP connections. When TRUE (the default), messages
@@ -218,7 +218,7 @@
 #'   cost to latency. When used on a dialer or a listener, the value affects how
 #'   newly created connections will be configured.
 #'
-#'   \item 'tcp-keepalive' [type 'bool']
+#'   \item 'tcp-keepalive' (type 'bool')
 #'
 #'   (TCP transport) This option is used to enable the sending of keep-alive
 #'   messages on the underlying TCP stream. This option is FALSE by default.
@@ -233,7 +233,7 @@
 #'   keep connection table entries in NAT and other middleware from expiring due
 #'   to lack of activity.
 #'
-#'   \item 'tcp-bound-port' [type 'int']
+#'   \item 'tcp-bound-port' (type 'int')
 #'
 #'   (TCP transport) Local TCP port number. This is used on a listener, and is
 #'   intended to be used after starting the listener in combination with a
@@ -241,21 +241,21 @@
 #'   selected and bound. The value is provided as an integer, but only the low
 #'   order 16 bits will be set, and is in native byte order for convenience.
 #'
-#'   \item 'ws:request-headers' [type 'string']
+#'   \item 'ws:request-headers' (type 'string')
 #'
 #'   (WebSocket transport) Concatenation of multiple lines terminated by CRLF
 #'   sequences, that can be used to add further headers to the HTTP request sent
 #'   when connecting. This option can be set on dialers, and must be done before
 #'   the transport is started.
 #'
-#'   \item 'ws:response-headers' [type 'string']
+#'   \item 'ws:response-headers' (type 'string')
 #'
 #'   (WebSocket transport) Concatenation of multiple lines terminated by CRLF
 #'   sequences, that can be used to add further headers to the HTTP response
 #'   sent when connecting. This option can be set on listeners, and must be done
 #'   before the transport is started.
 #'
-#'   \item 'ws:request-uri' [type 'string']
+#'   \item 'ws:request-uri' (type 'string')
 #'
 #'   (WebSocket transport) For obtaining the URI sent by the client. This can be
 #'   useful when a handler supports an entire directory tree.
@@ -321,13 +321,13 @@ opt <- function(object, name)
 #'
 #' To use pub/sub the publisher must:
 #' \itemize{
-#'   \item specify \code{mode = 'raw'} when sending.
+#'   \item specify `mode = 'raw'` when sending.
 #'   \item ensure the sent vector starts with the topic.
 #' }
 #' The subscriber should then receive specifying the correct mode.
 #'
 #' @param con a Socket or Context using the \sQuote{sub} protocol.
-#' @param topic [default NULL] an atomic type or NULL. The default NULL
+#' @param topic \[default NULL\] an atomic type or NULL. The default NULL
 #'   subscribes to all topics / unsubscribes from all topics (if all topics were
 #'   previously subscribed).
 #'
@@ -386,12 +386,12 @@ unsubscribe <- function(con, topic = NULL)
 #' To respond to a survey, the respondent must:
 #' \itemize{
 #'   \item receive the survey message.
-#'   \item send a reply using \code{\link{send_aio}} before the survey has timed
-#'   out (a reply can only be sent after receiving a survey).
+#'   \item send a reply using [send_aio()] before the survey has timed out (a
+#'   reply can only be sent after receiving a survey).
 #' }
 #'
 #' @param con a Socket or Context using the \sQuote{surveyor} protocol.
-#' @param value [default 1000L] integer survey timeout in milliseconds.
+#' @param value \[default 1000L\] integer survey timeout in milliseconds.
 #'
 #' @return Invisibly, the passed Socket or Context.
 #'

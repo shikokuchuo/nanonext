@@ -19,7 +19,7 @@ is_ncurl_session(x)
 Logical value TRUE or FALSE.
 }
 \description{
-Validator functions for object types created by \{nanonext\}.
+Validator functions for object types created by \pkg{nanonext}.
 }
 \details{
 Is the object an Aio (inheriting from class \sQuote{sendAio} or

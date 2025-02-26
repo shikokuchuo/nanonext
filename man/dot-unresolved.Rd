@@ -11,20 +11,19 @@
 \sQuote{recvAio} or \sQuote{ncurlAio}).}
 }
 \value{
-Logical TRUE if \sQuote{aio} is an unresolved Aio or else FALSE, or
-  if \sQuote{aio} is a list, the integer number of unresolved Aios in the
-  list.
+Logical TRUE if \code{x} is an unresolved Aio or else FALSE, or if \code{x} is
+a list, the integer number of unresolved Aios in the list.
 }
 \description{
 Query whether an Aio or list of Aios remains unresolved. This is an
-experimental technical utility version of \code{\link{unresolved}} not
-intended for ordinary use. Provides a method of querying the busy status of
-an Aio without altering its state in any way i.e. not attempting to retrieve
-the result or message.
+experimental technical utility version of \code{\link[=unresolved]{unresolved()}} not intended for
+ordinary use. Provides a method of querying the busy status of an Aio without
+altering its state in any way i.e. not attempting to retrieve the result or
+message.
 }
 \details{
 \code{.unresolved()} is not intended to be used for \sQuote{recvAio} returned
-by a signalling function, in which case \code{\link{unresolved}} must be used
-in all cases.
+by a signalling function, in which case \code{\link[=unresolved]{unresolved()}} must be used in all
+cases.
 }
 \keyword{internal}

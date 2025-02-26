@@ -14,12 +14,12 @@ An external pointer.
 }
 \description{
 Open a new Context to be used with a Socket. This function is a performance
-variant of \code{\link{context}}, designed to wrap a socket in a function
-argument when calling \code{\link{request}} or \code{\link{reply}}.
+variant of \code{\link[=context]{context()}}, designed to wrap a socket in a function argument when
+calling \code{\link[=request]{request()}} or \code{\link[=reply]{reply()}}.
 }
 \details{
 External pointers created by this function are unclassed, hence methods for
-contexts such as \code{\link{close}} will not work (use \code{\link{reap}}
-instead). Otherwise they function identically to a Context when passed to all
-messaging functions.
+contexts such as \code{\link[=close]{close()}} will not work (use \code{\link[=reap]{reap()}} instead). Otherwise
+they function identically to a Context when passed to all messaging
+functions.
 }

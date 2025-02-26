@@ -22,7 +22,7 @@ certificate first),\cr
 \strong{or} a length 2 character vector comprising [i] the TLS certificate
 (optionally certificate chain) and [ii] the associated private key.}
 
-\item{pass}{(optional) required only if the secret key supplied to 'server'
+\item{pass}{(optional) required only if the secret key supplied to \code{server}
 is encrypted with a password. For security, consider providing through a
 function that returns this value, rather than directly.}
 
@@ -31,7 +31,7 @@ for client and FALSE for server configurations. If TRUE, the session is
 only allowed to proceed if the peer has presented a certificate and it has
 been validated. If FALSE, authentication is optional, whereby a certificate
 is validated if presented by the peer, but the session allowed to proceed
-otherwise. If neither 'client' nor 'server' are supplied, then no
+otherwise. If neither \code{client} nor \code{server} are supplied, then no
 authentication is performed and this argument has no effect.}
 }
 \value{

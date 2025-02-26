@@ -19,8 +19,8 @@ reply(
 
 \item{execute}{a function which takes the received (converted) data as its
 first argument. Can be an anonymous function of the form
-\code{function(x) do(x)}. Additional arguments can also be passed in
-through \sQuote{...}.}
+\code{function(x) do(x)}. Additional arguments can also be passed in through
+\code{...}.}
 
 \item{recv_mode}{[default 'serial'] character value or integer equivalent -
 one of \sQuote{serial} (1L), \sQuote{character} (2L), \sQuote{complex}
@@ -60,8 +60,8 @@ is forthcoming.
 In the event of an error in either processing the messages or in evaluation
 of the function with respect to the data, a nul byte \code{00} (or serialized
 nul byte) will be sent in reply to the client to signal an error. This is to
-be distinguishable from a possible return value. \code{\link{is_nul_byte}}
-can be used to test for a nul byte.
+be distinguishable from a possible return value. \code{\link[=is_nul_byte]{is_nul_byte()}} can be used
+to test for a nul byte.
 }
 \section{Send Modes}{
 
@@ -70,7 +70,7 @@ The default mode \sQuote{serial} sends serialised R objects to ensure perfect
 reproducibility within R. When receiving, the corresponding mode
 \sQuote{serial} should be used. Custom serialization and unserialization
 functions for reference objects may be enabled by the function
-\code{\link{serial_config}}.
+\code{\link[=serial_config]{serial_config()}}.
 
 Mode \sQuote{raw} sends atomic vectors of any type as a raw byte vector, and
 must be used when interfacing with external applications or raw system

@@ -14,8 +14,8 @@ coerced to integer if required. If a vector, the first element is taken.}
 to return the hex representation of the bytes as a character string.}
 }
 \value{
-A length \sQuote{n} raw vector, or length one vector of \sQuote{2n}
-  random characters, depending on the value of \sQuote{convert} supplied.
+A length \code{n} raw vector, or length one vector of \verb{2n} random
+characters, depending on the value of \code{convert} supplied.
 }
 \description{
 Strictly not for use in statistical analysis. Non-reproducible and with
@@ -30,7 +30,7 @@ source.
 }
 \note{
 Results obtained are independent of and do not alter the state of R's
-  own pseudo-random number generators.
+own pseudo-random number generators.
 }
 \examples{
 random()

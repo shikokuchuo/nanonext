@@ -1,4 +1,4 @@
-# Copyright (C) 2022-2024 Hibiki AI Limited <info@hibiki-ai.com>
+# Copyright (C) 2022-2025 Hibiki AI Limited <info@hibiki-ai.com>
 #
 # This file is part of nanonext.
 #
@@ -30,18 +30,17 @@
 #' Only the following protocols support creation of contexts: req, rep, sub
 #' (in a pub/sub pattern), surveyor, respondent.
 #'
-#' To send and receive over a context use \code{\link{send}} and
-#' \code{\link{recv}} or their async counterparts \code{\link{send_aio}} and
-#' \code{\link{recv_aio}}.
+#' To send and receive over a context use [send()] and [recv()] or their async
+#' counterparts [send_aio()] and [recv_aio()].
 #'
-#' For nano objects, use the \code{$context_open()} method, which will attach a
-#' new context at \code{$context}. See \code{\link{nano}}.
+#' For nano objects, use the `$context_open()` method, which will attach a new
+#' context at `$context`. See [nano()].
 #'
 #' @param socket a Socket.
 #'
 #' @return A Context (object of class \sQuote{nanoContext} and \sQuote{nano}).
 #'
-#' @seealso \code{\link{request}} and \code{\link{reply}} for use with contexts.
+#' @seealso [request()] and [reply()] for use with contexts.
 #' @examples
 #' s <- socket("req", listen = "inproc://nanonext")
 #' ctx <- context(s)
@@ -64,13 +63,13 @@ context <- function(socket) .Call(rnng_ctx_open, socket)
 #' Technical Utility: Open Context
 #'
 #' Open a new Context to be used with a Socket. This function is a performance
-#' variant of \code{\link{context}}, designed to wrap a socket in a function
-#' argument when calling \code{\link{request}} or \code{\link{reply}}.
+#' variant of [context()], designed to wrap a socket in a function argument when
+#' calling [request()] or [reply()].
 #'
 #' External pointers created by this function are unclassed, hence methods for
-#' contexts such as \code{\link{close}} will not work (use \code{\link{reap}}
-#' instead). Otherwise they function identically to a Context when passed to all
-#' messaging functions.
+#' contexts such as [close()] will not work (use [reap()] instead). Otherwise
+#' they function identically to a Context when passed to all messaging
+#' functions.
 #'
 #' @param socket a Socket.
 #'
@@ -97,27 +96,27 @@ close.nanoContext <- function(con, ...) invisible(.Call(rnng_ctx_close, con))
 #' is forthcoming.
 #'
 #' In the event of an error in either processing the messages or in evaluation
-#' of the function with respect to the data, a nul byte \code{00} (or serialized
+#' of the function with respect to the data, a nul byte `00` (or serialized
 #' nul byte) will be sent in reply to the client to signal an error. This is to
-#' be distinguishable from a possible return value. \code{\link{is_nul_byte}}
-#' can be used to test for a nul byte.
+#' be distinguishable from a possible return value. [is_nul_byte()] can be used
+#' to test for a nul byte.
 #'
 #' @param context a Context.
 #' @param execute a function which takes the received (converted) data as its
 #'   first argument. Can be an anonymous function of the form
-#'   \code{function(x) do(x)}. Additional arguments can also be passed in
-#'   through \sQuote{...}.
-#' @param send_mode [default 'serial'] character value or integer equivalent -
+#'   `function(x) do(x)`. Additional arguments can also be passed in through
+#'   `...`.
+#' @param send_mode \[default 'serial'\] character value or integer equivalent -
 #'   either \sQuote{serial} (1L) to send serialised R objects, or \sQuote{raw}
 #'   (2L) to send atomic vectors of any type as a raw byte vector.
-#' @param recv_mode [default 'serial'] character value or integer equivalent -
+#' @param recv_mode \[default 'serial'\] character value or integer equivalent -
 #'   one of \sQuote{serial} (1L), \sQuote{character} (2L), \sQuote{complex}
 #'   (3L), \sQuote{double} (4L), \sQuote{integer} (5L), \sQuote{logical} (6L),
 #'   \sQuote{numeric} (7L), \sQuote{raw} (8L), or \sQuote{string} (9L). The
 #'   default \sQuote{serial} means a serialised R object; for the other modes,
 #'   received bytes are converted into the respective mode. \sQuote{string} is a
 #'   faster option for length one character vectors.
-#' @param timeout [default NULL] integer value in milliseconds or NULL, which
+#' @param timeout \[default NULL\] integer value in milliseconds or NULL, which
 #'   applies a socket-specific default, usually the same as no timeout. Note
 #'   that this applies to receiving the request. The total elapsed time would
 #'   also include performing 'execute' on the received data. The timeout then
@@ -174,17 +173,17 @@ reply <- function(context,
 #'
 #' Sending the request and receiving the result are both performed async, hence
 #' the function will return immediately with a \sQuote{recvAio} object. Access
-#' the return value at \code{$data}.
+#' the return value at `$data`.
 #'
 #' This is designed so that the process on the server can run concurrently
 #' without blocking the client.
 #'
-#' Optionally use \code{\link{call_aio}} on the \sQuote{recvAio} to call (and
-#' wait for) the result.
+#' Optionally use [call_aio()] on the \sQuote{recvAio} to call (and wait for)
+#' the result.
 #'
-#' If an error occured in the server process, a nul byte \code{00} will be
-#' received. This allows an error to be easily distinguished from a NULL return
-#' value. \code{\link{is_nul_byte}} can be used to test for a nul byte.
+#' If an error occured in the server process, a nul byte `00` will be received.
+#' This allows an error to be easily distinguished from a NULL return value.
+#' [is_nul_byte()] can be used to test for a nul byte.
 #'
 #' It is recommended to use a new context for each request to ensure consistent
 #' state tracking. For safety, the context used for the request is closed when
@@ -194,7 +193,7 @@ reply <- function(context,
 #' @inheritParams reply
 #' @inheritParams recv
 #' @param data an object (if send_mode = \sQuote{raw}, a vector).
-#' @param timeout [default NULL] integer value in milliseconds or NULL, which
+#' @param timeout \[default NULL\] integer value in milliseconds or NULL, which
 #'   applies a socket-specific default, usually the same as no timeout.
 #' @param cv (optional) a \sQuote{conditionVariable} to signal when the async
 #'   receive is complete, or NULL. If any other value is supplied, this will

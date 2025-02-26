@@ -23,15 +23,15 @@ primitives allow R to wait upon events signalled by concurrent threads.
 \pkg{nanonext} offers 2 equivalent interfaces: a functional interface, and an
 object-oriented interface.
 
-The primary object in the functional interface is the Socket. Use
-\code{\link{socket}} to create a socket and dial or listen at an address. The
-socket is then passed as the first argument of subsequent actions such as
-\code{send()} or \code{recv()}.
+The primary object in the functional interface is the Socket. Use \code{\link[=socket]{socket()}}
+to create a socket and dial or listen at an address. The socket is then
+passed as the first argument of subsequent actions such as \code{send()} or
+\code{recv()}.
 
 The primary object in the object-oriented interface is the nano object. Use
-\code{\link{nano}} to create a nano object which encapsulates a Socket and
-Dialer/Listener. Methods such as \code{$send()} or \code{$recv()} can then be
-accessed directly from the object.
+\code{\link[=nano]{nano()}} to create a nano object which encapsulates a Socket and
+Dialer/Listener. Methods such as \verb{$send()} or \verb{$recv()} can then be accessed
+directly from the object.
 }
 
 \section{Documentation}{
@@ -96,5 +96,5 @@ Useful links:
 }
 \author{
 Charlie Gao \email{charlie.gao@shikokuchuo.net}
-  (\href{https://orcid.org/0000-0002-0750-061X}{ORCID})
+(\href{https://orcid.org/0000-0002-0750-061X}{ORCID})
 }
