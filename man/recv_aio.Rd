@@ -107,3 +107,6 @@ res <- send_aio(s2, c(1.1, 2.2, 3.3), mode = "raw", timeout = 100)
 close(s2)
 
 }
+\seealso{
+\code{\link[=recv]{recv()}} for synchronous receive.
+}

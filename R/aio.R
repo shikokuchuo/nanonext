@@ -43,6 +43,8 @@
 #'
 #' @inheritSection send Send Modes
 #'
+#' @seealso [send()] for synchronous send.
+#'
 #' @examples
 #' pub <- socket("pub", dial = "inproc://nanonext")
 #'
@@ -96,6 +98,8 @@ send_aio <- function(con, data, mode = c("serial", "raw"), timeout = NULL, pipe 
 #' By supplying a \sQuote{conditionVariable}, when the receive is complete, the
 #' \sQuote{conditionVariable} is signalled by incrementing its value by 1. This
 #' happens asynchronously and independently of the R execution thread.
+#'
+#' @seealso [recv()] for synchronous receive.
 #'
 #' @examples
 #' s1 <- socket("pair", listen = "inproc://nanonext")

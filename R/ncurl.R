@@ -123,7 +123,8 @@ ncurl <- function(url,
 #' the reponse body, otherwise it is rejected with a translation of the status
 #' code or \sQuote{errorValue} as the case may be.
 #'
-#' @seealso [ncurl_session()] for persistent connections.
+#' @seealso [ncurl()] for synchronous http requests; [ncurl_session()] for
+#'   persistent connections.
 #'
 #' @examples
 #' nc <- ncurl_aio("https://postman-echo.com/get",
@@ -171,7 +172,8 @@ ncurl_aio <- function(url,
 #' @return For `ncurl_session`: an \sQuote{ncurlSession} object if successful,
 #'   or else an \sQuote{errorValue}.
 #'
-#' @seealso [ncurl_aio()] for asynchronous http requests.
+#' @seealso [ncurl()] for synchronous http requests; [ncurl_aio()] for
+#'   asynchronous http requests.
 #'
 #' @examples
 #' s <- ncurl_session("https://postman-echo.com/get",

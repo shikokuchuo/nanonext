@@ -69,3 +69,6 @@ call_aio(res)$result
 close(pub)
 
 }
+\seealso{
+\code{\link[=send]{send()}} for synchronous send.
+}

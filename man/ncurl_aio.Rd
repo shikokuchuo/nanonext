@@ -99,5 +99,6 @@ is.promise(p2)
 
 }
 \seealso{
-\code{\link[=ncurl_session]{ncurl_session()}} for persistent connections.
+\code{\link[=ncurl]{ncurl()}} for synchronous http requests; \code{\link[=ncurl_session]{ncurl_session()}} for
+persistent connections.
 }

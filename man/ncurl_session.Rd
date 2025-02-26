@@ -84,5 +84,6 @@ if (is_ncurl_session(s)) close(s)
 
 }
 \seealso{
-\code{\link[=ncurl_aio]{ncurl_aio()}} for asynchronous http requests.
+\code{\link[=ncurl]{ncurl()}} for synchronous http requests; \code{\link[=ncurl_aio]{ncurl_aio()}} for
+asynchronous http requests.
 }
