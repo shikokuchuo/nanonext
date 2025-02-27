@@ -3,6 +3,8 @@
 #### Updates
 
 * `write_cert()` argument 'cn' now defaults to '127.0.0.1' instead of 'localhost'.
+* A 'req' socket with 'req:resend-time' set as 0 now efficiently frees the message as soon as the send has completed.
+* Bundled 'libnng' updated to 1.10.2 pre-release.
 
 # nanonext 1.5.1
 
