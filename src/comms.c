@@ -307,6 +307,7 @@ SEXP rnng_send(SEXP con, SEXP data, SEXP mode, SEXP block, SEXP pipe) {
 
     const int pipeid = sock ? nano_integer(pipe) : 0;
     nano_encodes(mode) == 2 ? nano_encode(&buf, data) : nano_serialize(&buf, data, NANO_PROT(con));
+
     nng_msg *msgp;
 
     if (flags <= 0) {

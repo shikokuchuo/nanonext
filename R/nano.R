@@ -483,3 +483,13 @@ print.tlsConfig <- function(x, ...) {
 #'
 .DollarNames.ncurlAio <- function(x, pattern = "")
   grep(pattern, c("status", "headers", "data"), value = TRUE, fixed = TRUE)
+
+#' Use qs2 serialization
+#'
+#' Use serialization from \CRANpkg{qs2} instead of base R.
+#'
+#' @return NULL.
+#'
+#' @export
+#'
+use_qs2 <- function() .Call(rnng_use_qs2)

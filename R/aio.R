@@ -140,8 +140,8 @@ send_aio <- function(con, data, mode = c("serial", "raw"), timeout = NULL, pipe 
 #' @export
 #'
 recv_aio <- function(con,
-                     mode = c("serial", "character", "complex", "double",
-                              "integer", "logical", "numeric", "raw", "string"),
+                     mode = c("serial", "character", "complex", "double", "integer",
+                              "logical", "numeric", "raw", "string"),
                      timeout = NULL,
                      cv = NULL,
                      n = 65536L)

@@ -219,6 +219,9 @@ typedef struct nano_buf_s {
   size_t cur;
 } nano_buf;
 
+extern int serial_alt;
+extern unsigned char *(*qs2_serialize)(SEXP, size_t *, const int, const bool, const int);
+extern SEXP (*qs2_deserialize)(const unsigned char *, const size_t, const bool, const int);
 extern void (*eln2)(void (*)(void *), void *, double, int);
 extern uint8_t special_bit;
 extern int nano_interrupt;
@@ -280,6 +283,7 @@ void nano_encode(nano_buf *, const SEXP);
 int nano_encodes(const SEXP);
 int nano_matcharg(const SEXP);
 int nano_matchargs(const SEXP);
+void nano_qs2_loaded(void);
 
 void pipe_cb_signal(nng_pipe, nng_pipe_ev, void *);
 void tls_finalizer(SEXP);
@@ -358,5 +362,6 @@ SEXP rnng_url_parse(SEXP);
 SEXP rnng_version(void);
 SEXP rnng_wait_thread_create(SEXP);
 SEXP rnng_write_cert(SEXP, SEXP);
+SEXP rnng_use_qs2(void);
 
 #endif
