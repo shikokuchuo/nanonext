@@ -427,18 +427,7 @@ SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeou
   nng_msg *msg;
   int xc;
 
-  const int mod = nano_encodes(sendmode);
-  if (mod == 2) {
-    nano_encode(&buf, data);
-  } else {
-    if (serial_alt) {
-      nano_qs2_loaded();
-      buf.buf = qs2_serialize(data, &buf.cur, 3, true, 1);
-      buf.len = buf.cur;
-    } else {
-      nano_serialize(&buf, data, NANO_PROT(con));
-    }
-  }
+  nano_encodes(sendmode) == 2 ? nano_encode(&buf, data) : nano_serialize(&buf, data, NANO_PROT(con));
 
   saio = R_Calloc(1, nano_saio);
   saio->cb = NULL;

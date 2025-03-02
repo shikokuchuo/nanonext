@@ -1,14 +1,14 @@
 # nanonext (development version)
 
+#### New Features
+
+* `use_qs2()` switches serialization to use the qs2 package.
+
 #### Updates
 
 * `write_cert()` argument 'cn' now defaults to '127.0.0.1' instead of 'localhost'.
 
 # nanonext 1.5.1
-
-#### New Features
-
-* Send and receive functions gain `mode = qs2`, to take advantage of serialization from the qs2 package where available.
 
 #### Updates
 

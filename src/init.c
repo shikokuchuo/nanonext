@@ -21,7 +21,6 @@
 int serial_alt = 0;
 unsigned char *(*qs2_serialize)(SEXP, size_t *, const int, const bool, const int) = NULL;
 SEXP (*qs2_deserialize)(const unsigned char *, const size_t, const bool, const int) = NULL;
-bool (*qs2_free)(void *) = NULL;
 void (*eln2)(void (*)(void *), void *, double, int) = NULL;
 
 int nano_interrupt = 0;

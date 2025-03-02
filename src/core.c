@@ -266,6 +266,13 @@ SEXP rawToChar(const unsigned char *buf, const size_t sz) {
 
 void nano_serialize(nano_buf *buf, const SEXP object, SEXP hook) {
 
+  if (serial_alt) {
+    nano_qs2_loaded();
+    buf->buf = qs2_serialize(object, &buf->cur, 3, true, 1);
+    buf->len = buf->cur;
+    return;
+  }
+
   NANO_ALLOC(buf, NANONEXT_INIT_BUFSIZE);
   const int reg = hook != R_NilValue;
   int vec;
@@ -450,7 +457,6 @@ void nano_qs2_loaded(void) {
   UNPROTECT(2);
   qs2_serialize = (unsigned char *(*)(SEXP, size_t *, const int, const bool, const int)) R_GetCCallable("qs2", "c_qs_serialize");
   qs2_deserialize = (SEXP (*)(const unsigned char *, const size_t, const bool, const int)) R_GetCCallable("qs2", "c_qs_deserialize");
-  qs2_free = (bool (*)(void *)) R_GetCCallable("qs2", "c_qs_free");
 }
 
 SEXP nano_decode(unsigned char *buf, const size_t sz, const uint8_t mod, SEXP hook) {
