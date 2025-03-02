@@ -402,6 +402,9 @@ SEXP nano_unserialize(unsigned char *buf, const size_t sz, SEXP hook) {
       }
       cur = 12;
       goto resume;
+    case 0x0b:
+      nano_qs2_loaded();
+      return qs2_deserialize(buf, sz, false, 1);
     }
   }
 
@@ -435,6 +438,19 @@ SEXP nano_unserialize(unsigned char *buf, const size_t sz, SEXP hook) {
 
   return out;
 
+}
+
+void nano_qs2_loaded(void) {
+  if (qs2_deserialize != NULL)
+    return;
+  SEXP str, call;
+  PROTECT(str = Rf_mkString("qs2"));
+  PROTECT(call = Rf_lang2(Rf_install("loadNamespace"), str));
+  Rf_eval(call, R_BaseEnv);
+  UNPROTECT(2);
+  qs2_serialize = (unsigned char *(*)(SEXP, size_t *, const int, const bool, const int)) R_GetCCallable("qs2", "c_qs_serialize");
+  qs2_deserialize = (SEXP (*)(const unsigned char *, const size_t, const bool, const int)) R_GetCCallable("qs2", "c_qs_deserialize");
+  qs2_free = (bool (*)(void *)) R_GetCCallable("qs2", "c_qs_free");
 }
 
 SEXP nano_decode(unsigned char *buf, const size_t sz, const uint8_t mod, SEXP hook) {
@@ -510,7 +526,7 @@ SEXP nano_decode(unsigned char *buf, const size_t sz, const uint8_t mod, SEXP ho
     return data;
   default:
     data = nano_unserialize(buf, sz, hook);
-  return data;
+    return data;
   }
 
   memcpy(NANO_DATAPTR(data), buf, sz);
@@ -658,5 +674,12 @@ int nano_matchargs(const SEXP mode) {
 SEXP rnng_eval_safe(SEXP arg) {
 
   return R_ToplevelExec(nano_eval_safe, arg) ? nano_eval_res : Rf_allocVector(RAWSXP, 1);
+
+}
+
+SEXP rnng_use_qs2(void) {
+
+  serial_alt = 1;
+  return R_NilValue;
 
 }
