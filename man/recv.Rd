@@ -7,7 +7,7 @@
 recv(
   con,
   mode = c("serial", "character", "complex", "double", "integer", "logical", "numeric",
-    "raw", "string", "qs2"),
+    "raw", "string"),
   block = NULL,
   n = 65536L
 )

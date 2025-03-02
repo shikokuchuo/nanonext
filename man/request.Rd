@@ -7,9 +7,9 @@
 request(
   context,
   data,
-  send_mode = c("serial", "raw", "qs2"),
+  send_mode = c("serial", "raw"),
   recv_mode = c("serial", "character", "complex", "double", "integer", "logical",
-    "numeric", "raw", "string", "qs2"),
+    "numeric", "raw", "string"),
   timeout = NULL,
   cv = NULL
 )

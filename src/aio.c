@@ -487,16 +487,16 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP pipe, SEXP
 
     const int pipeid = sock ? nano_integer(pipe) : 0;
     const int mod = nano_encodes(mode);
-    switch (mod) {
-    case 2:
+    if (mod == 2) {
       nano_encode(&buf, data);
-      break;
-    case 3:
-      nano_qs2_loaded();
-      buf.buf = qs2_serialize(data, &buf.cur, 3, true, 1);
-      break;
-    default:
-      nano_serialize(&buf, data, NANO_PROT(con));
+    } else {
+      if (serial_alt) {
+        nano_qs2_loaded();
+        buf.buf = qs2_serialize(data, &buf.cur, 3, true, 1);
+        buf.len = buf.cur;
+      } else {
+        nano_serialize(&buf, data, NANO_PROT(con));
+      }
     }
 
     nng_msg *msg;
@@ -522,7 +522,7 @@ SEXP rnng_send_aio(SEXP con, SEXP data, SEXP mode, SEXP timeout, SEXP pipe, SEXP
     nng_aio_set_timeout(saio->aio, dur);
     sock ? nng_send_aio(*(nng_socket *) NANO_PTR(con), saio->aio) :
            nng_ctx_send(*(nng_ctx *) NANO_PTR(con), saio->aio);
-    NANO_FREE(buf); else if (mod == 3) qs2_free(buf.buf);
+    NANO_FREE(buf);
 
     PROTECT(aio = R_MakeExternalPtr(saio, nano_AioSymbol, R_NilValue));
     R_RegisterCFinalizerEx(aio, saio_finalizer, TRUE);

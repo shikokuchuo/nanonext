@@ -4,13 +4,7 @@
 \alias{send_aio}
 \title{Send Async}
 \usage{
-send_aio(
-  con,
-  data,
-  mode = c("serial", "raw", "qs2"),
-  timeout = NULL,
-  pipe = 0L
-)
+send_aio(con, data, mode = c("serial", "raw"), timeout = NULL, pipe = 0L)
 }
 \arguments{
 \item{con}{a Socket, Context or Stream.}

@@ -483,3 +483,7 @@ print.tlsConfig <- function(x, ...) {
 #'
 .DollarNames.ncurlAio <- function(x, pattern = "")
   grep(pattern, c("status", "headers", "data"), value = TRUE, fixed = TRUE)
+
+#' @export
+#'
+use_qs2 <- function() .Call(rnng_use_qs2)

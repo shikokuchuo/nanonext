@@ -241,9 +241,9 @@ reply <- function(context,
 #'
 request <- function(context,
                     data,
-                    send_mode = c("serial", "raw", "qs2"),
+                    send_mode = c("serial", "raw"),
                     recv_mode = c("serial", "character", "complex", "double", "integer",
-                                  "logical", "numeric", "raw", "string", "qs2"),
+                                  "logical", "numeric", "raw", "string"),
                     timeout = NULL,
                     cv = NULL)
   data <- .Call(rnng_request, context, data, send_mode, recv_mode, timeout, cv, environment())

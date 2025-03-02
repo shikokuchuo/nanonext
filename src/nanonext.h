@@ -219,6 +219,7 @@ typedef struct nano_buf_s {
   size_t cur;
 } nano_buf;
 
+extern int serial_alt;
 extern unsigned char *(*qs2_serialize)(SEXP, size_t *, const int, const bool, const int);
 extern SEXP (*qs2_deserialize)(const unsigned char *, const size_t, const bool, const int);
 extern bool (*qs2_free)(void *);
@@ -362,5 +363,6 @@ SEXP rnng_url_parse(SEXP);
 SEXP rnng_version(void);
 SEXP rnng_wait_thread_create(SEXP);
 SEXP rnng_write_cert(SEXP, SEXP);
+SEXP rnng_use_qs2(void);
 
 #endif

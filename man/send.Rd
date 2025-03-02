@@ -4,7 +4,7 @@
 \alias{send}
 \title{Send}
 \usage{
-send(con, data, mode = c("serial", "raw", "qs2"), block = NULL, pipe = 0L)
+send(con, data, mode = c("serial", "raw"), block = NULL, pipe = 0L)
 }
 \arguments{
 \item{con}{a Socket, Context or Stream.}

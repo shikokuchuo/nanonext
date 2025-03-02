@@ -18,6 +18,7 @@
 
 #include "nanonext.h"
 
+int serial_alt = 0;
 unsigned char *(*qs2_serialize)(SEXP, size_t *, const int, const bool, const int) = NULL;
 SEXP (*qs2_deserialize)(const unsigned char *, const size_t, const bool, const int) = NULL;
 bool (*qs2_free)(void *) = NULL;
@@ -199,6 +200,7 @@ static const R_CallMethodDef callMethods[] = {
   {"rnng_version", (DL_FUNC) &rnng_version, 0},
   {"rnng_wait_thread_create", (DL_FUNC) &rnng_wait_thread_create, 1},
   {"rnng_write_cert", (DL_FUNC) &rnng_write_cert, 2},
+  {"rnng_use_qs2", (DL_FUNC) &rnng_use_qs2, 0},
   {NULL, NULL, 0}
 };
 

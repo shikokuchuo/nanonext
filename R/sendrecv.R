@@ -87,7 +87,7 @@
 #'
 #' @export
 #'
-send <- function(con, data, mode = c("serial", "raw", "qs2"), block = NULL, pipe = 0L)
+send <- function(con, data, mode = c("serial", "raw"), block = NULL, pipe = 0L)
   .Call(rnng_send, con, data, mode, block, pipe)
 
 #' Receive
@@ -170,7 +170,7 @@ send <- function(con, data, mode = c("serial", "raw", "qs2"), block = NULL, pipe
 #'
 recv <- function(con,
                  mode = c("serial", "character", "complex", "double",
-                          "integer", "logical", "numeric", "raw", "string", "qs2"),
+                          "integer", "logical", "numeric", "raw", "string"),
                  block = NULL,
                  n = 65536L)
   .Call(rnng_recv, con, mode, block, n)

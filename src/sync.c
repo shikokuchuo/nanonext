@@ -428,16 +428,16 @@ SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeou
   int xc;
 
   const int mod = nano_encodes(sendmode);
-  switch (mod) {
-  case 2:
+  if (mod == 2) {
     nano_encode(&buf, data);
-    break;
-  case 3:
-    nano_qs2_loaded();
-    buf.buf = qs2_serialize(data, &buf.cur, 3, true, 1);
-    break;
-  default:
-    nano_serialize(&buf, data, NANO_PROT(con));
+  } else {
+    if (serial_alt) {
+      nano_qs2_loaded();
+      buf.buf = qs2_serialize(data, &buf.cur, 3, true, 1);
+      buf.len = buf.cur;
+    } else {
+      nano_serialize(&buf, data, NANO_PROT(con));
+    }
   }
 
   saio = R_Calloc(1, nano_saio);
@@ -466,7 +466,7 @@ SEXP rnng_request(SEXP con, SEXP data, SEXP sendmode, SEXP recvmode, SEXP timeou
 
   nng_aio_set_timeout(raio->aio, dur);
   nng_ctx_recv(*ctx, raio->aio);
-  NANO_FREE(buf); else if (mod == 3) qs2_free(buf.buf);
+  NANO_FREE(buf);
 
   PROTECT(aio = R_MakeExternalPtr(raio, nano_AioSymbol, NANO_PROT(con)));
   R_RegisterCFinalizerEx(aio, request_finalizer, TRUE);
