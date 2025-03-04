@@ -45,7 +45,9 @@
 <h5 id="updates-development-version">Updates<a class="anchor" aria-label="anchor" href="#updates-development-version"></a></h5>
 <ul><li>
 <code><a href="../reference/write_cert.html">write_cert()</a></code> argument ‘cn’ now defaults to ‘127.0.0.1’ instead of ‘localhost’.</li>
-<li>A ‘req’ socket with ‘req:resend-time’ set as 0 now efficiently frees the message as soon as the send has completed.</li>
+<li>
+<code><a href="../reference/messenger.html">messenger()</a></code> now exits cleanly, correcting a regression in nanonext 1.5.0 (<a href="https://github.com/shikokuchuo/nanonext/issues/87" class="external-link">#87</a>).</li>
+<li>A ‘req’ socket with option ‘req:resend-time’ set as 0 now efficiently frees the message as soon as the send has completed.</li>
 <li>Bundled ‘libnng’ updated to 1.10.2 pre-release.</li>
 </ul></div>
 </div>
