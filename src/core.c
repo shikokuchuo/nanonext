@@ -244,11 +244,11 @@ SEXP mk_error_data(const int xc) {
 
 }
 
-SEXP rawToChar(const unsigned char *buf, const size_t sz) {
+SEXP nano_raw_char(const unsigned char *buf, const size_t sz) {
 
   SEXP out;
-  int i, j;
-  for (i = 0, j = -1; i < sz; i++) if (buf[i]) j = i; else break;
+  int i;
+  for (i = 0; i < sz; i++) if (!buf[i]) break;
   if (sz - i > 1) {
     Rf_warningcall_immediate(R_NilValue, "data could not be converted to a character string");
     out = Rf_allocVector(RAWSXP, sz);
@@ -257,7 +257,7 @@ SEXP rawToChar(const unsigned char *buf, const size_t sz) {
   }
 
   PROTECT(out = Rf_allocVector(STRSXP, 1));
-  SET_STRING_ELT(out, 0, Rf_mkCharLenCE((const char *) buf, j + 1, CE_NATIVE));
+  SET_STRING_ELT(out, 0, Rf_mkCharLenCE((const char *) buf, i, CE_NATIVE));
 
   UNPROTECT(1);
   return out;
@@ -506,7 +506,7 @@ SEXP nano_decode(unsigned char *buf, const size_t sz, const uint8_t mod, SEXP ho
     data = Rf_allocVector(RAWSXP, sz);
     break;
   case 9:
-    data = rawToChar(buf, sz);
+    data = nano_raw_char(buf, sz);
     return data;
   default:
     data = nano_unserialize(buf, sz, hook);

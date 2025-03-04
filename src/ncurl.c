@@ -290,7 +290,7 @@ SEXP rnng_ncurl(SEXP http, SEXP convert, SEXP follow, SEXP method, SEXP headers,
   nng_http_res_get_data(res, &dat, &sz);
 
   if (NANO_INTEGER(convert)) {
-    vec = rawToChar(dat, sz);
+    vec = nano_raw_char(dat, sz);
   } else {
     vec = Rf_allocVector(RAWSXP, sz);
     if (dat != NULL)
@@ -505,7 +505,7 @@ static SEXP rnng_aio_http_impl(SEXP env, const int typ) {
   nng_http_res_get_data(handle->res, &dat, &sz);
 
   if (haio->mode) {
-    vec = rawToChar(dat, sz);
+    vec = nano_raw_char(dat, sz);
   } else {
     vec = Rf_allocVector(RAWSXP, sz);
     if (dat != NULL)
@@ -694,7 +694,7 @@ SEXP rnng_ncurl_transact(SEXP session) {
   nng_http_res_get_data(handle->res, &dat, &sz);
 
   if (haio->mode) {
-    vec = rawToChar(dat, sz);
+    vec = nano_raw_char(dat, sz);
   } else {
     vec = Rf_allocVector(RAWSXP, sz);
     if (dat != NULL)
