@@ -60,7 +60,7 @@ messenger <- function(url, auth = NULL) {
   sock <- .Call(rnng_messenger, url)
   on.exit(expr = {
     send(sock, data = writeBin(":d ", raw()), mode = 2L, block = FALSE)
-    close(sock)
+    reap(sock)
   })
   cat("\n", file = stdout())
   intro <- unlist(strsplit("nanonext messenger", ""))
