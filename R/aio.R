@@ -402,7 +402,6 @@ is.promising.recvAio <- function(x) TRUE
 #'
 #' @return NULL.
 #'
-#' @keywords internal
-#' @export
+#' @noRd
 #'
 .keep <- function(x, ctx) .Call(rnng_set_promise_context, x, ctx)
