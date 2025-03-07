@@ -95,11 +95,9 @@ test_class("recvAio", raio <- n$recv_aio(timeout = 500))
 test_print(raio)
 test_equal(nchar(call_aio(raio)[["value"]]), 10000L)
 raio$newfield <- "doesnotwork"
-raio[["newfield"]] <- "doesnotwork"
 test_null(raio$newfield)
 test_class("sendAio", saio <- n$send_aio(c(1.1, 2.2), mode = "raw", timeout = 500))
 saio$newfield <- "doesnotwork"
-saio[["newfield"]] <- "doesnotwork"
 test_null(saio$newfield)
 test_type("logical", unresolved(saio))
 test_type("logical", .unresolved(saio))

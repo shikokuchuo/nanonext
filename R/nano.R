@@ -450,19 +450,11 @@ print.tlsConfig <- function(x, ...) {
 
 #' @export
 #'
-`[[<-.recvAio` <- function(x, i, value) x
-
-#' @export
-#'
 `[.sendAio` <- function(x, i) collect_aio_(x)
 
 #' @export
 #'
 `$<-.sendAio` <- function(x, name, value) x
-
-#' @export
-#'
-`[[<-.sendAio` <- function(x, i, value) x
 
 #' @exportS3Method utils::.DollarNames
 #'
