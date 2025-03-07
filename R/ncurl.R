@@ -265,7 +265,7 @@ as.promise.ncurlAio <- function(x) {
       )
     }
 
-    assign("promise", promise, x)
+    `[[<-`(x, "promise", promise)
 
   }
 

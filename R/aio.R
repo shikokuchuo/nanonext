@@ -378,7 +378,7 @@ as.promise.recvAio <- function(x) {
       )
     }
 
-    assign("promise", promise, x)
+    `[[<-`(x, "promise", promise)
 
   }
 
