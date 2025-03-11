@@ -250,18 +250,19 @@ as.promise.ncurlAio <- function(x) {
       promises::promise(
         function(resolve, reject) .keep(x, environment())
       )$then(
-        onFulfilled = function(value, .visible)
-          if (value != 200L)
-            stop(if (value < 100) nng_error(value) else status_code(value)) else
-              .subset2(x, "value")
+        onFulfilled = function(value, .visible) {
+          value == 200L || stop(if (value < 100) nng_error(value) else status_code(value))
+          .subset2(x, "value")
+        }
       )
     } else {
       value <- .subset2(x, "result")
       promises::promise(
         function(resolve, reject)
-          if (value != 200L)
-            reject(if (value < 100) nng_error(value) else status_code(value)) else
-              resolve(.subset2(x, "value"))
+          resolve({
+            value == 200L || stop(if (value < 100) nng_error(value) else status_code(value))
+            .subset2(x, "value")
+          })
       )
     }
 
