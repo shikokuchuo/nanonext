@@ -367,14 +367,19 @@ as.promise.recvAio <- function(x) {
       promises::promise(
         function(resolve, reject) .keep(x, environment())
       )$then(
-        onFulfilled = function(value, .visible)
-          if (is_error_value(value)) stop(nng_error(value)) else value
+        onFulfilled = function(value, .visible) {
+          is_error_value(value) && stop(nng_error(value))
+          value
+        }
       )
     } else {
       value <- .subset2(x, "value")
       promises::promise(
         function(resolve, reject)
-          if (is_error_value(value)) reject(nng_error(value)) else resolve(value)
+          resolve({
+            is_error_value(value) && stop(nng_error(value))
+            value
+          })
       )
     }
 
