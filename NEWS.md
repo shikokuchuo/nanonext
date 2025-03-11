@@ -4,6 +4,7 @@
 
 * `write_cert()` argument 'cn' now defaults to '127.0.0.1' instead of 'localhost'.
 * `messenger()` now exits cleanly, correcting a regression in nanonext 1.5.0 (#87).
+* Promises created from 'recvAio' and 'ncurlAio' now reject in exactly the same way whether or not they were resolved at time of creation (#89).
 * A 'req' socket with option 'req:resend-time' set as 0 now efficiently frees the message as soon as the send has completed.
 * Bundled 'libnng' updated to 1.10.2 pre-release.
 
