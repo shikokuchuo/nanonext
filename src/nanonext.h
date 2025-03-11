@@ -208,11 +208,6 @@ typedef struct nano_thread_duo_s {
   nano_cv *cv2;
 } nano_thread_duo;
 
-typedef struct nano_signal_s {
-  nano_cv *cv;
-  int *online;
-} nano_signal;
-
 typedef struct nano_buf_s {
   unsigned char *buf;
   size_t len;
