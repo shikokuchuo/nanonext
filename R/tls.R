@@ -88,11 +88,7 @@ tls_config <- function(client = NULL, server = NULL, pass = NULL, auth = is.null
 #' @return A list of length 2, comprising `$server` and `$client`. These may be
 #'   passed directly to the relevant argument of [tls_config()].
 #'
-#' @examples
-#'
-#' if (interactive()) {
-#' # Only run examples in interactive R sessions
-#'
+#' @examplesIf interactive()
 #' cert <- write_cert(cn = "127.0.0.1")
 #' ser <- tls_config(server = cert$server)
 #' cli <- tls_config(client = cert$client)
@@ -106,8 +102,6 @@ tls_config <- function(client = NULL, server = NULL, pass = NULL, auth = is.null
 #' close(s)
 #'
 #' cert
-#'
-#' }
 #'
 #' @export
 #'

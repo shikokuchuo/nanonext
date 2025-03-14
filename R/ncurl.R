@@ -135,16 +135,13 @@ ncurl <- function(url,
 #' nc$headers
 #' nc$data
 #'
-#' if (interactive() && requireNamespace("promises", quietly = TRUE)) {
-#'
+#' @examplesIf interactive() && requireNamespace("promises", quietly = TRUE)
 #' library(promises)
 #' p <- as.promise(nc)
 #' print(p)
 #'
 #' p2 <- ncurl_aio("https://postman-echo.com/get") %...>% cat
 #' is.promise(p2)
-#'
-#' }
 #'
 #' @export
 #'

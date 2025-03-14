@@ -86,17 +86,14 @@ nc$status
 nc$headers
 nc$data
 
-if (interactive() && requireNamespace("promises", quietly = TRUE)) {
-
+\dontshow{if (interactive() && requireNamespace("promises", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 library(promises)
 p <- as.promise(nc)
 print(p)
 
 p2 <- ncurl_aio("https://postman-echo.com/get") \%...>\% cat
 is.promise(p2)
-
-}
-
+\dontshow{\}) # examplesIf}
 }
 \seealso{
 \code{\link[=ncurl]{ncurl()}} for synchronous http requests; \code{\link[=ncurl_session]{ncurl_session()}} for
