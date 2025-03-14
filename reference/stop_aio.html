@@ -54,8 +54,8 @@
 
 
 <dl><dt id="arg-x">x<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
-<dd><p>an Aio or list of Aios (objects of class ‘sendAio’,
-‘recvAio’ or ‘ncurlAio’).</p></dd>
+<dd><p>an Aio or list of Aios (objects of class 'sendAio', 'recvAio' or
+'ncurlAio').</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -67,7 +67,7 @@
     <p>Stops the asynchronous I/O operation associated with Aio <code>x</code> by aborting, and
 then waits for it to complete or to be completely aborted, and for the
 callback associated with the Aio to have completed executing. If successful,
-the Aio will resolve to an ‘errorValue’ 20 (Operation canceled).</p>
+the Aio will resolve to an 'errorValue' 20 (Operation canceled).</p>
 <p>Note this function operates silently and does not error even if <code>x</code> is not an
 active Aio, always returning invisible NULL.</p>
     </div>

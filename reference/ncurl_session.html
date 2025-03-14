@@ -79,7 +79,7 @@ connection.</p>
 
 <dt id="arg-convert">convert<a class="anchor" aria-label="anchor" href="#arg-convert"></a></dt>
 <dd><p>[default TRUE] logical value whether to attempt conversion
-of the received raw bytes to a character vector. Set to FALSE if
+of the received raw bytes to a character vector. Set to <code>FALSE</code> if
 downloading non-text data.</p></dd>
 
 
@@ -90,8 +90,8 @@ downloading non-text data.</p></dd>
 
 <dt id="arg-headers">headers<a class="anchor" aria-label="anchor" href="#arg-headers"></a></dt>
 <dd><p>(optional) a named character vector specifying the HTTP
-request headers, for example: <br><code>c(Authorization = "Bearer APIKEY", `Content-Type` = "text/plain")</code>
-<br> A non-character or non-named vector will be ignored.</p></dd>
+request headers, for example: <br><code>c(Authorization = "Bearer APIKEY", "Content-Type" = "text/plain")</code> <br>
+A non-character or non-named vector will be ignored.</p></dd>
 
 
 <dt id="arg-data">data<a class="anchor" aria-label="anchor" href="#arg-data"></a></dt>
@@ -118,19 +118,19 @@ certificates are not validated.</p></dd>
 
 
 <dt id="arg-session">session<a class="anchor" aria-label="anchor" href="#arg-session"></a></dt>
-<dd><p>an ‘ncurlSession’ object.</p></dd>
+<dd><p>an 'ncurlSession' object.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>For <code>ncurl_session</code>: an ‘ncurlSession’ object if successful,
-or else an ‘errorValue’.</p>
+    <p>For <code>ncurl_session</code>: an 'ncurlSession' object if successful, or else
+an 'errorValue'.</p>
 <p>For <code>transact</code>: a named list of 3 elements:</p><ul><li><p><code>$status</code> - integer HTTP repsonse status code (200 - OK).
 Use <code><a href="status_code.html">status_code()</a></code> for a translation of the meaning.</p></li>
-<li><p><code>$headers</code> - named list of response headers (if specified in
-the session), or NULL otherwise. If the status code is within the 300
-range, i.e. a redirect, the response header ‘Location’ is
-automatically appended to return the redirect address.</p></li>
+<li><p><code>$headers</code> - named list of response headers (if specified in the
+session), or NULL otherwise. If the status code is within the 300 range,
+i.e. a redirect, the response header 'Location' is automatically appended
+to return the redirect address.</p></li>
 <li><p><code>$data</code> - the response body as a character string (if
 <code>convert = TRUE</code> was specified for the session), which may be further
 parsed as html, json, xml etc. as required, or else a raw byte vector,
@@ -155,11 +155,11 @@ asynchronous http requests.</p></div>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $headers</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $headers$date</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Tue, 11 Mar 2025 22:33:56 GMT"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Fri, 14 Mar 2025 19:41:44 GMT"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $data</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "{\n  \"args\": {},\n  \"headers\": {\n    \"host\": \"postman-echo.com\",\n    \"x-request-start\": \"t1741732436.434\",\n    \"connection\": \"close\",\n    \"x-forwarded-proto\": \"https\",\n    \"x-forwarded-port\": \"443\",\n    \"x-amzn-trace-id\": \"Root=1-67d0ba54-58720baa41823d1b1fa1b7ac\"\n  },\n  \"url\": \"https://postman-echo.com/get\"\n}"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "{\n  \"args\": {},\n  \"headers\": {\n    \"host\": \"postman-echo.com\",\n    \"x-request-start\": \"t1741981304.141\",\n    \"connection\": \"close\",\n    \"x-forwarded-proto\": \"https\",\n    \"x-forwarded-port\": \"443\",\n    \"x-amzn-trace-id\": \"Root=1-67d48678-2b6303170c5759d02344bfc2\"\n  },\n  \"url\": \"https://postman-echo.com/get\"\n}"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="is_aio.html">is_ncurl_session</a></span><span class="op">(</span><span class="va">s</span><span class="op">)</span><span class="op">)</span> <span class="fu"><a href="close.html">close</a></span><span class="op">(</span><span class="va">s</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>

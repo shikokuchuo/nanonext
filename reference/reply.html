@@ -80,18 +80,17 @@ first argument. Can be an anonymous function of the form
 
 <dt id="arg-recv-mode">recv_mode<a class="anchor" aria-label="anchor" href="#arg-recv-mode"></a></dt>
 <dd><p>[default 'serial'] character value or integer equivalent -
-one of ‘serial’ (1L), ‘character’ (2L), ‘complex’
-(3L), ‘double’ (4L), ‘integer’ (5L), ‘logical’ (6L),
-‘numeric’ (7L), ‘raw’ (8L), or ‘string’ (9L). The
-default ‘serial’ means a serialised R object; for the other modes,
-received bytes are converted into the respective mode. ‘string’ is a
-faster option for length one character vectors.</p></dd>
+one of <code>"serial"</code> (1L), <code>"character"</code> (2L), <code>"complex"</code> (3L), <code>"double"</code>
+(4L), <code>"integer"</code> (5L), <code>"logical"</code> (6L), <code>"numeric"</code> (7L), <code>"raw"</code> (8L),
+or <code>"string"</code> (9L). The default <code>"serial"</code> means a serialised R object; for
+the other modes, received bytes are converted into the respective mode.
+<code>"string"</code> is a faster option for length one character vectors.</p></dd>
 
 
 <dt id="arg-send-mode">send_mode<a class="anchor" aria-label="anchor" href="#arg-send-mode"></a></dt>
 <dd><p>[default 'serial'] character value or integer equivalent -
-either ‘serial’ (1L) to send serialised R objects, or ‘raw’
-(2L) to send atomic vectors of any type as a raw byte vector.</p></dd>
+either <code>"serial"</code> (1L) to send serialised R objects, or <code>"raw"</code> (2L) to
+send atomic vectors of any type as a raw byte vector.</p></dd>
 
 
 <dt id="arg-timeout">timeout<a class="anchor" aria-label="anchor" href="#arg-timeout"></a></dt>
@@ -128,15 +127,14 @@ to test for a nul byte.</p>
 
 
 
-<p>The default mode ‘serial’ sends serialised R objects to ensure perfect
-reproducibility within R. When receiving, the corresponding mode
-‘serial’ should be used. Custom serialization and unserialization
-functions for reference objects may be enabled by the function
-<code><a href="serial_config.html">serial_config()</a></code>.</p>
-<p>Mode ‘raw’ sends atomic vectors of any type as a raw byte vector, and
-must be used when interfacing with external applications or raw system
-sockets, where R serialization is not in use. When receiving, the mode
-corresponding to the vector sent should be used.</p>
+<p>The default mode <code>"serial"</code> sends serialised R objects to ensure perfect
+reproducibility within R. When receiving, the corresponding mode <code>"serial"</code>
+should be used. Custom serialization and unserialization functions for
+reference objects may be enabled by the function <code><a href="serial_config.html">serial_config()</a></code>.</p>
+<p>Mode <code>"raw"</code> sends atomic vectors of any type as a raw byte vector, and must
+be used when interfacing with external applications or raw system sockets,
+where R serialization is not in use. When receiving, the mode corresponding
+to the vector sent should be used.</p>
     </div>
 
     <div class="section level2">

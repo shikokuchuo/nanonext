@@ -84,15 +84,15 @@ NULL, certificates are not validated.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A Stream (object of class ‘nanoStream’ and ‘nano’).</p>
+    <p>A Stream (object of class 'nanoStream' and 'nano').</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>A Stream is used for raw byte stream connections. Byte streams are reliable
 in that data will not be delivered out of order, or with portions missing.</p>
-<p>Can be used to dial a (secure) websocket address starting 'ws://' or 'wss://'.
-It is often the case that 'textframes' needs to be set to TRUE.</p>
-<p>Specify only one of 'dial' or 'listen'. If both are specified, 'listen' will
+<p>Can be used to dial a (secure) websocket address starting 'ws://' or
+'wss://'. It is often the case that <code>textframes</code> needs to be set to <code>TRUE</code>.</p>
+<p>Specify only one of <code>dial</code> or <code>listen</code>. If both are specified, <code>listen</code> will
 be ignored.</p>
 <p>Closing a stream renders it invalid and attempting to perform additional
 operations on it will error.</p>

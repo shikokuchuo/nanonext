@@ -4,12 +4,12 @@ custom serialization and unserialization of non-system reference objects,
 allowing these to be sent and received between different R sessions. This
 utilises the 'refhook' system of R native serialization. Once set, the
 functions apply to all send and receive operations performed in mode
-&amp;#8216;serial&amp;#8217; over the Socket or Context created from the Socket."><meta property="og:description" content="Returns a serialization configuration, which may be set on a Socket for
+&quot;serial&quot; over the Socket or Context created from the Socket."><meta property="og:description" content="Returns a serialization configuration, which may be set on a Socket for
 custom serialization and unserialization of non-system reference objects,
 allowing these to be sent and received between different R sessions. This
 utilises the 'refhook' system of R native serialization. Once set, the
 functions apply to all send and receive operations performed in mode
-&amp;#8216;serial&amp;#8217; over the Socket or Context created from the Socket."><meta property="og:image" content="https://shikokuchuo.net/nanonext/logo.png"></head><body>
+&quot;serial&quot; over the Socket or Context created from the Socket."><meta property="og:image" content="https://shikokuchuo.net/nanonext/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -56,7 +56,7 @@ custom serialization and unserialization of non-system reference objects,
 allowing these to be sent and received between different R sessions. This
 utilises the 'refhook' system of R native serialization. Once set, the
 functions apply to all send and receive operations performed in mode
-‘serial’ over the Socket or Context created from the Socket.</p>
+<code>"serial"</code> over the Socket or Context created from the Socket.</p>
     </div>
 
     <div class="section level2">
@@ -70,13 +70,12 @@ functions apply to all send and receive operations performed in mode
 
 <dl><dt id="arg-class">class<a class="anchor" aria-label="anchor" href="#arg-class"></a></dt>
 <dd><p>character string of the class of object custom serialization
-functions are applied to, e.g. ‘ArrowTabular’ or
-‘torch_tensor’.</p></dd>
+functions are applied to, e.g. 'ArrowTabular' or 'torch_tensor'.</p></dd>
 
 
 <dt id="arg-sfunc">sfunc<a class="anchor" aria-label="anchor" href="#arg-sfunc"></a></dt>
 <dd><p>a function that accepts a reference object inheriting from
-‘class’ (or a list of such objects) and returns a raw vector.</p></dd>
+<code>class</code> (or a list of such objects) and returns a raw vector.</p></dd>
 
 
 <dt id="arg-ufunc">ufunc<a class="anchor" aria-label="anchor" href="#arg-ufunc"></a></dt>
@@ -86,16 +85,16 @@ object (or list of such objects).</p></dd>
 
 <dt id="arg-vec">vec<a class="anchor" aria-label="anchor" href="#arg-vec"></a></dt>
 <dd><p>[default FALSE] whether or not the serialization functions are
-vectorized. If FALSE, they should accept and return reference objects
+vectorized. If <code>FALSE</code>, they should accept and return reference objects
 individually e.g. <code>arrow::write_to_raw</code> and <code>arrow::read_ipc_stream</code>. If
-TRUE, they should accept and return a list of reference objects, e.g.
+<code>TRUE</code>, they should accept and return a list of reference objects, e.g.
 <code>torch::torch_serialize</code> and <code>torch::torch_load</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A list comprising the configuration. This should be set on a Socket
-using <code><a href="opt.html">opt&lt;-()</a></code> with option name ‘serial’.</p>
+using <code><a href="opt.html">opt&lt;-()</a></code> with option name <code>"serial"</code>.</p>
     </div>
 
     <div class="section level2">
@@ -108,7 +107,7 @@ using <code><a href="opt.html">opt&lt;-()</a></code> with option name ‘serial�
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[2]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> function (x) </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> serialize(x, NULL)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x562a17e1ee30&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x56214ea6a1f0&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[3]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> function (connection, refhook = NULL) </span>
@@ -118,7 +117,7 @@ using <code><a href="opt.html">opt&lt;-()</a></code> with option name ‘serial�
 <span class="r-out co"><span class="r-pr">#&gt;</span>         stop("'connection' must be a connection")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     .Internal(unserialize(connection, refhook))</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;bytecode: 0x562a17e26f20&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;bytecode: 0x56214ea73dc8&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: namespace:base&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[4]]</span>

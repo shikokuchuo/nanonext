@@ -68,8 +68,8 @@ interactive use.</p>
 
 
 <dl><dt id="arg-x">x<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
-<dd><p>an Aio or list of Aios (objects of class ‘sendAio’,
-‘recvAio’ or ‘ncurlAio’).</p></dd>
+<dd><p>an Aio or list of Aios (objects of class 'sendAio', 'recvAio' or
+'ncurlAio').</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -78,29 +78,28 @@ interactive use.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>For a ‘recvAio’, the received value may be retrieved at <code>$data</code>.</p>
-<p>For a ‘sendAio’, the send result may be retrieved at <code>$result</code>.
+    <p>For a 'recvAio', the received value may be retrieved at <code>$data</code>.</p>
+<p>For a 'sendAio', the send result may be retrieved at <code>$result</code>.
 This will be zero on success, or else an integer error code.</p>
-<p>To access the values directly, use for example on a ‘recvAio’ <code>x</code>:
+<p>To access the values directly, use for example on a 'recvAio' <code>x</code>:
 <code>call_aio(x)$data</code>.</p>
-<p>For a ‘recvAio’, if an error occurred in unserialization or conversion
-of the message data to the specified mode, a raw vector will be returned
-instead to allow recovery (accompanied by a warning).</p>
-<p>Note: this function operates silently and does not error even if ‘aio’
-is not an active Aio or list of Aios, always returning invisibly the passed
-object.</p>
+<p>For a 'recvAio', if an error occurred in unserialization or conversion of the
+message data to the specified mode, a raw vector will be returned instead to
+allow recovery (accompanied by a warning).</p>
+<p>Note: this function operates silently and does not error even if <code>x</code> is not
+an active Aio or list of Aios, always returning invisibly the passed object.</p>
     </div>
     <div class="section level2">
     <h2 id="alternatively">Alternatively<a class="anchor" aria-label="anchor" href="#alternatively"></a></h2>
 
 
 
-<p>Aio values may be accessed directly at <code>$result</code> for a ‘sendAio’,
-and <code>$data</code> for a ‘recvAio’. If the Aio operation is yet to complete,
-an ‘unresolved’ logical NA will be returned. Once complete, the
-resolved value will be returned instead.</p>
-<p><code><a href="unresolved.html">unresolved()</a></code> may also be used, which returns TRUE only if an Aio or Aio
-value has yet to resolve and FALSE otherwise. This is suitable for use in
+<p>Aio values may be accessed directly at <code>$result</code> for a 'sendAio', and <code>$data</code>
+for a 'recvAio'. If the Aio operation is yet to complete, an 'unresolved'
+logical NA will be returned. Once complete, the resolved value will be
+returned instead.</p>
+<p><code><a href="unresolved.html">unresolved()</a></code> may also be used, which returns <code>TRUE</code> only if an Aio or Aio
+value has yet to resolve and <code>FALSE</code> otherwise. This is suitable for use in
 control flow statements such as <code>while</code> or <code>if</code>.</p>
     </div>
 

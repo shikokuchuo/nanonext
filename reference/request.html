@@ -72,23 +72,22 @@ called for the value when required.</p>
 
 
 <dt id="arg-data">data<a class="anchor" aria-label="anchor" href="#arg-data"></a></dt>
-<dd><p>an object (if send_mode = ‘raw’, a vector).</p></dd>
+<dd><p>an object (if <code>send_mode = "raw"</code>, a vector).</p></dd>
 
 
 <dt id="arg-send-mode">send_mode<a class="anchor" aria-label="anchor" href="#arg-send-mode"></a></dt>
 <dd><p>[default 'serial'] character value or integer equivalent -
-either ‘serial’ (1L) to send serialised R objects, or ‘raw’
-(2L) to send atomic vectors of any type as a raw byte vector.</p></dd>
+either <code>"serial"</code> (1L) to send serialised R objects, or <code>"raw"</code> (2L) to
+send atomic vectors of any type as a raw byte vector.</p></dd>
 
 
 <dt id="arg-recv-mode">recv_mode<a class="anchor" aria-label="anchor" href="#arg-recv-mode"></a></dt>
 <dd><p>[default 'serial'] character value or integer equivalent -
-one of ‘serial’ (1L), ‘character’ (2L), ‘complex’
-(3L), ‘double’ (4L), ‘integer’ (5L), ‘logical’ (6L),
-‘numeric’ (7L), ‘raw’ (8L), or ‘string’ (9L). The
-default ‘serial’ means a serialised R object; for the other modes,
-received bytes are converted into the respective mode. ‘string’ is a
-faster option for length one character vectors.</p></dd>
+one of <code>"serial"</code> (1L), <code>"character"</code> (2L), <code>"complex"</code> (3L), <code>"double"</code>
+(4L), <code>"integer"</code> (5L), <code>"logical"</code> (6L), <code>"numeric"</code> (7L), <code>"raw"</code> (8L),
+or <code>"string"</code> (9L). The default <code>"serial"</code> means a serialised R object; for
+the other modes, received bytes are converted into the respective mode.
+<code>"string"</code> is a faster option for length one character vectors.</p></dd>
 
 
 <dt id="arg-timeout">timeout<a class="anchor" aria-label="anchor" href="#arg-timeout"></a></dt>
@@ -97,31 +96,30 @@ applies a socket-specific default, usually the same as no timeout.</p></dd>
 
 
 <dt id="arg-cv">cv<a class="anchor" aria-label="anchor" href="#arg-cv"></a></dt>
-<dd><p>(optional) a ‘conditionVariable’ to signal when the async
-receive is complete, or NULL. If any other value is supplied, this will
-cause the pipe connection to be dropped when the async receive is complete.</p></dd>
+<dd><p>(optional) a 'conditionVariable' to signal when the async receive
+is complete, or NULL. If any other value is supplied, this will cause the
+pipe connection to be dropped when the async receive is complete.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A ‘recvAio’ (object of class ‘mirai’ and
-‘recvAio’) (invisibly).</p>
+    <p>A 'recvAio' (object of class 'mirai' and 'recvAio') (invisibly).</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>Sending the request and receiving the result are both performed async, hence
-the function will return immediately with a ‘recvAio’ object. Access
-the return value at <code>$data</code>.</p>
+the function will return immediately with a 'recvAio' object. Access the
+return value at <code>$data</code>.</p>
 <p>This is designed so that the process on the server can run concurrently
 without blocking the client.</p>
-<p>Optionally use <code><a href="call_aio.html">call_aio()</a></code> on the ‘recvAio’ to call (and wait for)
-the result.</p>
+<p>Optionally use <code><a href="call_aio.html">call_aio()</a></code> on the 'recvAio' to call (and wait for) the
+result.</p>
 <p>If an error occured in the server process, a nul byte <code>00</code> will be received.
 This allows an error to be easily distinguished from a NULL return value.
 <code><a href="is_error_value.html">is_nul_byte()</a></code> can be used to test for a nul byte.</p>
 <p>It is recommended to use a new context for each request to ensure consistent
 state tracking. For safety, the context used for the request is closed when
-all references to the returned ‘recvAio’ are removed and the object is
+all references to the returned 'recvAio' are removed and the object is
 garbage collected.</p>
     </div>
     <div class="section level2">
@@ -129,23 +127,22 @@ garbage collected.</p>
 
 
 
-<p>The default mode ‘serial’ sends serialised R objects to ensure perfect
-reproducibility within R. When receiving, the corresponding mode
-‘serial’ should be used. Custom serialization and unserialization
-functions for reference objects may be enabled by the function
-<code><a href="serial_config.html">serial_config()</a></code>.</p>
-<p>Mode ‘raw’ sends atomic vectors of any type as a raw byte vector, and
-must be used when interfacing with external applications or raw system
-sockets, where R serialization is not in use. When receiving, the mode
-corresponding to the vector sent should be used.</p>
+<p>The default mode <code>"serial"</code> sends serialised R objects to ensure perfect
+reproducibility within R. When receiving, the corresponding mode <code>"serial"</code>
+should be used. Custom serialization and unserialization functions for
+reference objects may be enabled by the function <code><a href="serial_config.html">serial_config()</a></code>.</p>
+<p>Mode <code>"raw"</code> sends atomic vectors of any type as a raw byte vector, and must
+be used when interfacing with external applications or raw system sockets,
+where R serialization is not in use. When receiving, the mode corresponding
+to the vector sent should be used.</p>
     </div>
     <div class="section level2">
     <h2 id="signalling">Signalling<a class="anchor" aria-label="anchor" href="#signalling"></a></h2>
 
 
 
-<p>By supplying a ‘conditionVariable’, when the receive is complete, the
-‘conditionVariable’ is signalled by incrementing its value by 1. This
+<p>By supplying a 'conditionVariable', when the receive is complete, the
+'conditionVariable' is signalled by incrementing its value by 1. This
 happens asynchronously and independently of the R execution thread.</p>
     </div>
 

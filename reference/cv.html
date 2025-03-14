@@ -98,7 +98,7 @@ variant that allows user interrupts, suitable for interactive use.</p>
 
 
 <dl><dt id="arg-cv">cv<a class="anchor" aria-label="anchor" href="#arg-cv"></a></dt>
-<dd><p>a ‘conditionVariable’ object.</p></dd>
+<dd><p>a 'conditionVariable' object.</p></dd>
 
 
 <dt id="arg-msec">msec<a class="anchor" aria-label="anchor" href="#arg-msec"></a></dt>
@@ -108,7 +108,7 @@ to be signalled.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>For <strong>cv</strong>: a ‘conditionVariable’ object.</p>
+    <p>For <strong>cv</strong>: a 'conditionVariable' object.</p>
 <p>For <strong>wait</strong>: (invisibly) logical TRUE, or else FALSE if a flag has been
 set.</p>
 <p>For <strong>until</strong>: (invisibly) logical TRUE if signalled, or else FALSE if the
@@ -118,7 +118,7 @@ timeout was reached.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>Pass the ‘conditionVariable’ to the asynchronous receive functions
+    <p>Pass the 'conditionVariable' to the asynchronous receive functions
 <code><a href="recv_aio.html">recv_aio()</a></code> or <code><a href="request.html">request()</a></code>. Alternatively, to be notified of a pipe event,
 pass it to <code><a href="pipe_notify.html">pipe_notify()</a></code>.</p>
 <p>Completion of the receive or pipe event, which happens asynchronously and
@@ -134,9 +134,9 @@ Non-numeric input will be ignored and return immediately.</p>
 
 
 
-<p>The condition internal to this ‘conditionVariable’ maintains a state
-(value). Each signal increments the value by 1. Each time <code>wait()</code> or
-<code>until()</code> returns (apart from due to timeout), the value is decremented by 1.</p>
+<p>The condition internal to this 'conditionVariable' maintains a state (value).
+Each signal increments the value by 1. Each time <code>wait()</code> or <code>until()</code>
+returns (apart from due to timeout), the value is decremented by 1.</p>
 <p>The internal condition may be inspected at any time using <code>cv_value()</code> and
 reset using <code>cv_reset()</code>. This affords a high degree of flexibility in
 designing complex concurrent applications.</p>

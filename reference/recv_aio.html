@@ -66,13 +66,12 @@
 
 <dt id="arg-mode">mode<a class="anchor" aria-label="anchor" href="#arg-mode"></a></dt>
 <dd><p>[default 'serial'] character value or integer equivalent - one
-of ‘serial’ (1L), ‘character’ (2L), ‘complex’ (3L),
-‘double’ (4L), ‘integer’ (5L), ‘logical’ (6L),
-‘numeric’ (7L), ‘raw’ (8L), or ‘string’ (9L). The
-default ‘serial’ means a serialised R object; for the other modes,
-received bytes are converted into the respective mode. ‘string’ is a
-faster option for length one character vectors. For Streams,
-‘serial’ is not an option and the default is ‘character’.</p></dd>
+of <code>"serial"</code> (1L), <code>"character"</code> (2L), <code>"complex"</code> (3L), <code>"double"</code> (4L),
+<code>"integer"</code> (5L), <code>"logical"</code> (6L), <code>"numeric"</code> (7L), <code>"raw"</code> (8L), or
+<code>"string"</code> (9L). The default <code>"serial"</code> means a serialised R object; for
+the other modes, received bytes are converted into the respective mode.
+<code>"string"</code> is a faster option for length one character vectors. For
+Streams, <code>"serial"</code> is not an option and the default is <code>"character"</code>.</p></dd>
 
 
 <dt id="arg-timeout">timeout<a class="anchor" aria-label="anchor" href="#arg-timeout"></a></dt>
@@ -81,8 +80,8 @@ applies a socket-specific default, usually the same as no timeout.</p></dd>
 
 
 <dt id="arg-cv">cv<a class="anchor" aria-label="anchor" href="#arg-cv"></a></dt>
-<dd><p>(optional) a ‘conditionVariable’ to signal when the async
-receive is complete.</p></dd>
+<dd><p>(optional) a 'conditionVariable' to signal when the async receive
+is complete.</p></dd>
 
 
 <dt id="arg-n">n<a class="anchor" aria-label="anchor" href="#arg-n"></a></dt>
@@ -93,19 +92,18 @@ size is reserved.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A ‘recvAio’ (object of class ‘recvAio’) (invisibly).</p>
+    <p>A 'recvAio' (object of class 'recvAio') (invisibly).</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>Async receive is always non-blocking and returns a ‘recvAio’
-immediately.</p>
-<p>For a ‘recvAio’, the received message is available at <code>$data</code>. An
-‘unresolved’ logical NA is returned if the async operation is yet to
+    <p>Async receive is always non-blocking and returns a 'recvAio' immediately.</p>
+<p>For a 'recvAio', the received message is available at <code>$data</code>. An
+'unresolved' logical NA is returned if the async operation is yet to
 complete.</p>
 <p>To wait for the async operation to complete and retrieve the received
-message, use <code><a href="call_aio.html">call_aio()</a></code> on the returned ‘recvAio’ object.</p>
+message, use <code><a href="call_aio.html">call_aio()</a></code> on the returned 'recvAio' object.</p>
 <p>Alternatively, to stop the async operation, use <code><a href="stop_aio.html">stop_aio()</a></code>.</p>
-<p>In case of an error, an integer ‘errorValue’ is returned (to be
+<p>In case of an error, an integer 'errorValue' is returned (to be
 distiguishable from an integer message value). This can be checked using
 <code><a href="is_error_value.html">is_error_value()</a></code>.</p>
 <p>If an error occurred in unserialization or conversion of the message data to
@@ -117,8 +115,8 @@ the specified mode, a raw vector will be returned instead to allow recovery
 
 
 
-<p>By supplying a ‘conditionVariable’, when the receive is complete, the
-‘conditionVariable’ is signalled by incrementing its value by 1. This
+<p>By supplying a 'conditionVariable', when the receive is complete, the
+'conditionVariable' is signalled by incrementing its value by 1. This
 happens asynchronously and independently of the R execution thread.</p>
     </div>
     <div class="section level2">
