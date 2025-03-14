@@ -8,24 +8,23 @@ serial_config(class, sfunc, ufunc, vec = FALSE)
 }
 \arguments{
 \item{class}{character string of the class of object custom serialization
-functions are applied to, e.g. \sQuote{ArrowTabular} or
-\sQuote{torch_tensor}.}
+functions are applied to, e.g. 'ArrowTabular' or 'torch_tensor'.}
 
 \item{sfunc}{a function that accepts a reference object inheriting from
-\sQuote{class} (or a list of such objects) and returns a raw vector.}
+\code{class} (or a list of such objects) and returns a raw vector.}
 
 \item{ufunc}{a function that accepts a raw vector and returns a reference
 object (or list of such objects).}
 
 \item{vec}{[default FALSE] whether or not the serialization functions are
-vectorized. If FALSE, they should accept and return reference objects
+vectorized. If \code{FALSE}, they should accept and return reference objects
 individually e.g. \code{arrow::write_to_raw} and \code{arrow::read_ipc_stream}. If
-TRUE, they should accept and return a list of reference objects, e.g.
+\code{TRUE}, they should accept and return a list of reference objects, e.g.
 \code{torch::torch_serialize} and \code{torch::torch_load}.}
 }
 \value{
 A list comprising the configuration. This should be set on a Socket
-using \code{\link[=opt<-]{opt<-()}} with option name \sQuote{serial}.
+using \code{\link[=opt<-]{opt<-()}} with option name \code{"serial"}.
 }
 \description{
 Returns a serialization configuration, which may be set on a Socket for
@@ -33,7 +32,7 @@ custom serialization and unserialization of non-system reference objects,
 allowing these to be sent and received between different R sessions. This
 utilises the 'refhook' system of R native serialization. Once set, the
 functions apply to all send and receive operations performed in mode
-\sQuote{serial} over the Socket or Context created from the Socket.
+\code{"serial"} over the Socket or Context created from the Socket.
 }
 \examples{
 cfg <- serial_config("test_cls", function(x) serialize(x, NULL), unserialize)

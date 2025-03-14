@@ -7,12 +7,12 @@
 .unresolved(x)
 }
 \arguments{
-\item{x}{an Aio or list of Aios (objects of class \sQuote{sendAio},
-\sQuote{recvAio} or \sQuote{ncurlAio}).}
+\item{x}{an Aio or list of Aios (objects of class 'sendAio', 'recvAio' or
+'ncurlAio').}
 }
 \value{
-Logical TRUE if \code{x} is an unresolved Aio or else FALSE, or if \code{x} is
-a list, the integer number of unresolved Aios in the list.
+Logical \code{TRUE} if \code{x} is an unresolved Aio or else \code{FALSE}, or if \code{x}
+is a list, the integer number of unresolved Aios in the list.
 }
 \description{
 Query whether an Aio or list of Aios remains unresolved. This is an
@@ -22,8 +22,7 @@ altering its state in any way i.e. not attempting to retrieve the result or
 message.
 }
 \details{
-\code{.unresolved()} is not intended to be used for \sQuote{recvAio} returned
-by a signalling function, in which case \code{\link[=unresolved]{unresolved()}} must be used in all
-cases.
+\code{.unresolved()} is not intended to be used for 'recvAio' returned by a
+signalling function, in which case \code{\link[=unresolved]{unresolved()}} must be used in all cases.
 }
 \keyword{internal}

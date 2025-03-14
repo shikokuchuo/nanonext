@@ -37,7 +37,7 @@ incoming messages by \code{<}.
 \verb{:q} is the command to quit.
 
 Both parties must supply the same argument for \code{auth}, otherwise the party
-trying to connect will receive an \sQuote{authentication error} and be
-immediately disconnected.
+trying to connect will receive an 'authentication error' and be immediately
+disconnected.
 }
 

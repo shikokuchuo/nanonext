@@ -7,20 +7,20 @@
 \method{as.promise}{recvAio}(x)
 }
 \arguments{
-\item{x}{an object of class \sQuote{recvAio}.}
+\item{x}{an object of class 'recvAio'.}
 }
 \value{
-A \sQuote{promise} object.
+A 'promise' object.
 }
 \description{
-Creates a \sQuote{promise} from an \sQuote{recvAio} object.
+Creates a 'promise' from an 'recvAio' object.
 }
 \details{
 This function is an S3 method for the generic \code{as.promise} for class
-\sQuote{recvAio}.
+'recvAio'.
 
 Requires the \pkg{promises} package.
 
-Allows an \sQuote{recvAio} to be used with the promise pipe \verb{\%...>\%}, which
-schedules a function to run upon resolution of the Aio.
+Allows a 'recvAio' to be used with the promise pipe \verb{\%...>\%}, which schedules
+a function to run upon resolution of the Aio.
 }

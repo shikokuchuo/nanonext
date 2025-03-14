@@ -28,8 +28,7 @@ the scheme).
 URL.
 \item \code{requri} - the full Request-URI (path[?query][#fragment]).
 }
-Values that cannot be determined are represented by an empty string
-\code{''}.
+Values that cannot be determined are represented by an empty string \code{""}.
 }
 \description{
 Parses a character string containing an RFC 3986 compliant URL as per NNG.

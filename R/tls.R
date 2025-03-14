@@ -19,12 +19,11 @@
 #' Create TLS Configuration
 #'
 #' Create a TLS configuration object to be used for secure connections. Specify
-#' \sQuote{client} to create a client configuration or \sQuote{server} to create
-#' a server configuration.
+#' `client` to create a client configuration or `server` to create a server
+#' configuration.
 #'
-#' Specify one of \sQuote{client} or \sQuote{server} only, or neither (in which
-#' case an empty client configuration is created), as a configuration can only
-#' be of one type.
+#' Specify one of `client` or `server` only, or neither (in which case an empty
+#' client configuration is created), as a configuration can only be of one type.
 #'
 #' For creating client configurations for public internet usage, root CA
 #' ceritficates may usually be found at \file{/etc/ssl/certs/ca-certificates.crt}
@@ -40,7 +39,7 @@
 #'   certificates presented by peers,\cr
 #'   **or** a length 2 character vector comprising \[i\] the certificate
 #'   authority certificate chain and \[ii\] the certificate revocation list, or
-#'   empty string `''` if not applicable.
+#'   empty string `""` if not applicable.
 #' @param server **either** the character path to a file containing the
 #'   PEM-encoded TLS certificate and associated private key (may contain
 #'   additional certificates leading to a validation chain, with the leaf
@@ -58,7 +57,7 @@
 #'   otherwise. If neither `client` nor `server` are supplied, then no
 #'   authentication is performed and this argument has no effect.
 #'
-#' @return A \sQuote{tlsConfig} object.
+#' @return A 'tlsConfig' object.
 #'
 #' @examples
 #' tls <- tls_config()
@@ -83,18 +82,13 @@ tls_config <- function(client = NULL, server = NULL, pass = NULL, auth = is.null
 #' @param cn \[default '127.0.0.1'\] character issuer common name (CN) for the
 #'   certificate. This can be either a hostname or an IP address, but must match
 #'   the actual server URL as client authentication will depend on it.
-#' @param valid \[default '20301231235959'\] character \sQuote{not after}
-#'   date-time in \sQuote{yyyymmddhhmmss} format. The certificate is not valid
-#'   after this time.
+#' @param valid \[default '20301231235959'\] character 'not after' date-time in
+#'   'yyyymmddhhmmss' format. The certificate is not valid after this time.
 #'
 #' @return A list of length 2, comprising `$server` and `$client`. These may be
 #'   passed directly to the relevant argument of [tls_config()].
 #'
-#' @examples
-#'
-#' if (interactive()) {
-#' # Only run examples in interactive R sessions
-#'
+#' @examplesIf interactive()
 #' cert <- write_cert(cn = "127.0.0.1")
 #' ser <- tls_config(server = cert$server)
 #' cli <- tls_config(client = cert$client)
@@ -108,8 +102,6 @@ tls_config <- function(client = NULL, server = NULL, pass = NULL, auth = is.null
 #' close(s)
 #'
 #' cert
-#'
-#' }
 #'
 #' @export
 #'

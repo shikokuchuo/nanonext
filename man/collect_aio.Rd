@@ -10,8 +10,8 @@ collect_aio(x)
 collect_aio_(x)
 }
 \arguments{
-\item{x}{an Aio or list of Aios (objects of class \sQuote{sendAio},
-\sQuote{recvAio} or \sQuote{ncurlAio}).}
+\item{x}{an Aio or list of Aios (objects of class 'sendAio', 'recvAio' or
+'ncurlAio').}
 }
 \value{
 Depending on the type of \code{x} supplied, an object or list of objects

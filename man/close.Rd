@@ -24,8 +24,7 @@
 \method{close}{nanoStream}(con, ...)
 }
 \arguments{
-\item{con}{a Socket, Context, Dialer, Listener, Stream, or
-\sQuote{ncurlSession}.}
+\item{con}{a Socket, Context, Dialer, Listener, Stream, or 'ncurlSession'.}
 
 \item{...}{not used.}
 }
@@ -55,7 +54,7 @@ completely transmitted.
 Closing a Stream: if any send or receive operations are pending, they will be
 terminated and any new operations will fail after the connection is closed.
 
-Closing an \sQuote{ncurlSession} closes the http(s) connection.
+Closing an 'ncurlSession' closes the http(s) connection.
 }
 \seealso{
 \code{\link[=reap]{reap()}}

@@ -13,7 +13,7 @@ certificate chain (and revocation list if present), used to validate
 certificates presented by peers,\cr
 \strong{or} a length 2 character vector comprising [i] the certificate
 authority certificate chain and [ii] the certificate revocation list, or
-empty string \code{''} if not applicable.}
+empty string \code{""} if not applicable.}
 
 \item{server}{\strong{either} the character path to a file containing the
 PEM-encoded TLS certificate and associated private key (may contain
@@ -35,17 +35,16 @@ otherwise. If neither \code{client} nor \code{server} are supplied, then no
 authentication is performed and this argument has no effect.}
 }
 \value{
-A \sQuote{tlsConfig} object.
+A 'tlsConfig' object.
 }
 \description{
 Create a TLS configuration object to be used for secure connections. Specify
-\sQuote{client} to create a client configuration or \sQuote{server} to create
-a server configuration.
+\code{client} to create a client configuration or \code{server} to create a server
+configuration.
 }
 \details{
-Specify one of \sQuote{client} or \sQuote{server} only, or neither (in which
-case an empty client configuration is created), as a configuration can only
-be of one type.
+Specify one of \code{client} or \code{server} only, or neither (in which case an empty
+client configuration is created), as a configuration can only be of one type.
 
 For creating client configurations for public internet usage, root CA
 ceritficates may usually be found at \file{/etc/ssl/certs/ca-certificates.crt}

@@ -32,8 +32,8 @@ and halts execution.}
 }
 \value{
 Invisibly, an integer exit code (zero on success). A new Listener
-(object of class \sQuote{nanoListener} and \sQuote{nano}) is created and
-bound to the Socket if successful.
+(object of class 'nanoListener' and 'nano') is created and bound to the
+Socket if successful.
 }
 \description{
 Creates a new Listener and binds it to a Socket.

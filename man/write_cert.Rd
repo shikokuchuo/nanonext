@@ -11,9 +11,8 @@ write_cert(cn = "127.0.0.1", valid = "20301231235959")
 certificate. This can be either a hostname or an IP address, but must match
 the actual server URL as client authentication will depend on it.}
 
-\item{valid}{[default '20301231235959'] character \sQuote{not after}
-date-time in \sQuote{yyyymmddhhmmss} format. The certificate is not valid
-after this time.}
+\item{valid}{[default '20301231235959'] character 'not after' date-time in
+'yyyymmddhhmmss' format. The certificate is not valid after this time.}
 }
 \value{
 A list of length 2, comprising \verb{$server} and \verb{$client}. These may be
@@ -28,10 +27,7 @@ Note that it can take a second or two for the key and certificate to be
 generated.
 }
 \examples{
-
-if (interactive()) {
-# Only run examples in interactive R sessions
-
+\dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 cert <- write_cert(cn = "127.0.0.1")
 ser <- tls_config(server = cert$server)
 cli <- tls_config(client = cert$client)
@@ -45,7 +41,5 @@ close(s1)
 close(s)
 
 cert
-
-}
-
+\dontshow{\}) # examplesIf}
 }

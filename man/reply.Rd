@@ -23,16 +23,15 @@ first argument. Can be an anonymous function of the form
 \code{...}.}
 
 \item{recv_mode}{[default 'serial'] character value or integer equivalent -
-one of \sQuote{serial} (1L), \sQuote{character} (2L), \sQuote{complex}
-(3L), \sQuote{double} (4L), \sQuote{integer} (5L), \sQuote{logical} (6L),
-\sQuote{numeric} (7L), \sQuote{raw} (8L), or \sQuote{string} (9L). The
-default \sQuote{serial} means a serialised R object; for the other modes,
-received bytes are converted into the respective mode. \sQuote{string} is a
-faster option for length one character vectors.}
+one of \code{"serial"} (1L), \code{"character"} (2L), \code{"complex"} (3L), \code{"double"}
+(4L), \code{"integer"} (5L), \code{"logical"} (6L), \code{"numeric"} (7L), \code{"raw"} (8L),
+or \code{"string"} (9L). The default \code{"serial"} means a serialised R object; for
+the other modes, received bytes are converted into the respective mode.
+\code{"string"} is a faster option for length one character vectors.}
 
 \item{send_mode}{[default 'serial'] character value or integer equivalent -
-either \sQuote{serial} (1L) to send serialised R objects, or \sQuote{raw}
-(2L) to send atomic vectors of any type as a raw byte vector.}
+either \code{"serial"} (1L) to send serialised R objects, or \code{"raw"} (2L) to
+send atomic vectors of any type as a raw byte vector.}
 
 \item{timeout}{[default NULL] integer value in milliseconds or NULL, which
 applies a socket-specific default, usually the same as no timeout. Note
@@ -66,16 +65,15 @@ to test for a nul byte.
 \section{Send Modes}{
 
 
-The default mode \sQuote{serial} sends serialised R objects to ensure perfect
-reproducibility within R. When receiving, the corresponding mode
-\sQuote{serial} should be used. Custom serialization and unserialization
-functions for reference objects may be enabled by the function
-\code{\link[=serial_config]{serial_config()}}.
+The default mode \code{"serial"} sends serialised R objects to ensure perfect
+reproducibility within R. When receiving, the corresponding mode \code{"serial"}
+should be used. Custom serialization and unserialization functions for
+reference objects may be enabled by the function \code{\link[=serial_config]{serial_config()}}.
 
-Mode \sQuote{raw} sends atomic vectors of any type as a raw byte vector, and
-must be used when interfacing with external applications or raw system
-sockets, where R serialization is not in use. When receiving, the mode
-corresponding to the vector sent should be used.
+Mode \code{"raw"} sends atomic vectors of any type as a raw byte vector, and must
+be used when interfacing with external applications or raw system sockets,
+where R serialization is not in use. When receiving, the mode corresponding
+to the vector sent should be used.
 }
 
 \examples{

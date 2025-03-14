@@ -17,44 +17,42 @@ recv_aio(
 \item{con}{a Socket, Context or Stream.}
 
 \item{mode}{[default 'serial'] character value or integer equivalent - one
-of \sQuote{serial} (1L), \sQuote{character} (2L), \sQuote{complex} (3L),
-\sQuote{double} (4L), \sQuote{integer} (5L), \sQuote{logical} (6L),
-\sQuote{numeric} (7L), \sQuote{raw} (8L), or \sQuote{string} (9L). The
-default \sQuote{serial} means a serialised R object; for the other modes,
-received bytes are converted into the respective mode. \sQuote{string} is a
-faster option for length one character vectors. For Streams,
-\sQuote{serial} is not an option and the default is \sQuote{character}.}
+of \code{"serial"} (1L), \code{"character"} (2L), \code{"complex"} (3L), \code{"double"} (4L),
+\code{"integer"} (5L), \code{"logical"} (6L), \code{"numeric"} (7L), \code{"raw"} (8L), or
+\code{"string"} (9L). The default \code{"serial"} means a serialised R object; for
+the other modes, received bytes are converted into the respective mode.
+\code{"string"} is a faster option for length one character vectors. For
+Streams, \code{"serial"} is not an option and the default is \code{"character"}.}
 
 \item{timeout}{[default NULL] integer value in milliseconds or NULL, which
 applies a socket-specific default, usually the same as no timeout.}
 
-\item{cv}{(optional) a \sQuote{conditionVariable} to signal when the async
-receive is complete.}
+\item{cv}{(optional) a 'conditionVariable' to signal when the async receive
+is complete.}
 
 \item{n}{[default 65536L] applicable to Streams only, the maximum number of
 bytes to receive. Can be an over-estimate, but note that a buffer of this
 size is reserved.}
 }
 \value{
-A \sQuote{recvAio} (object of class \sQuote{recvAio}) (invisibly).
+A 'recvAio' (object of class 'recvAio') (invisibly).
 }
 \description{
 Receive data asynchronously over a connection (Socket, Context or Stream).
 }
 \details{
-Async receive is always non-blocking and returns a \sQuote{recvAio}
-immediately.
+Async receive is always non-blocking and returns a 'recvAio' immediately.
 
-For a \sQuote{recvAio}, the received message is available at \verb{$data}. An
-\sQuote{unresolved} logical NA is returned if the async operation is yet to
+For a 'recvAio', the received message is available at \verb{$data}. An
+'unresolved' logical NA is returned if the async operation is yet to
 complete.
 
 To wait for the async operation to complete and retrieve the received
-message, use \code{\link[=call_aio]{call_aio()}} on the returned \sQuote{recvAio} object.
+message, use \code{\link[=call_aio]{call_aio()}} on the returned 'recvAio' object.
 
 Alternatively, to stop the async operation, use \code{\link[=stop_aio]{stop_aio()}}.
 
-In case of an error, an integer \sQuote{errorValue} is returned (to be
+In case of an error, an integer 'errorValue' is returned (to be
 distiguishable from an integer message value). This can be checked using
 \code{\link[=is_error_value]{is_error_value()}}.
 
@@ -65,8 +63,8 @@ the specified mode, a raw vector will be returned instead to allow recovery
 \section{Signalling}{
 
 
-By supplying a \sQuote{conditionVariable}, when the receive is complete, the
-\sQuote{conditionVariable} is signalled by incrementing its value by 1. This
+By supplying a 'conditionVariable', when the receive is complete, the
+'conditionVariable' is signalled by incrementing its value by 1. This
 happens asynchronously and independently of the R execution thread.
 }
 

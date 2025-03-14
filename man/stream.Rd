@@ -23,7 +23,7 @@ server TLS configuration object created by \code{\link[=tls_config]{tls_config()
 NULL, certificates are not validated.}
 }
 \value{
-A Stream (object of class \sQuote{nanoStream} and \sQuote{nano}).
+A Stream (object of class 'nanoStream' and 'nano').
 }
 \description{
 Open a Stream by either dialing (establishing an outgoing connection) or
@@ -34,10 +34,10 @@ low-level interface intended for communicating with non-NNG endpoints.
 A Stream is used for raw byte stream connections. Byte streams are reliable
 in that data will not be delivered out of order, or with portions missing.
 
-Can be used to dial a (secure) websocket address starting 'ws://' or 'wss://'.
-It is often the case that 'textframes' needs to be set to TRUE.
+Can be used to dial a (secure) websocket address starting 'ws://' or
+'wss://'. It is often the case that \code{textframes} needs to be set to \code{TRUE}.
 
-Specify only one of 'dial' or 'listen'. If both are specified, 'listen' will
+Specify only one of \code{dial} or \code{listen}. If both are specified, \code{listen} will
 be ignored.
 
 Closing a stream renders it invalid and attempting to perform additional

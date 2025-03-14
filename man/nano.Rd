@@ -14,10 +14,9 @@ nano(
 )
 }
 \arguments{
-\item{protocol}{[default 'bus'] choose protocol - \sQuote{bus},
-\sQuote{pair}, \sQuote{poly}, \sQuote{push}, \sQuote{pull}, \sQuote{pub},
-\sQuote{sub}, \sQuote{req}, \sQuote{rep}, \sQuote{surveyor}, or
-\sQuote{respondent} - see \link{protocols}.}
+\item{protocol}{[default 'bus'] choose protocol - \code{"bus"}, \code{"pair"},
+\code{"poly"}, \code{"push"}, \code{"pull"}, \code{"pub"}, \code{"sub"}, \code{"req"}, \code{"rep"},
+\code{"surveyor"}, or \code{"respondent"} - see \link{protocols}.}
 
 \item{dial}{(optional) a URL to dial, specifying the transport and address as
 a character string e.g. 'inproc://anyvalue' or 'tcp://127.0.0.1:5555' (see
@@ -38,7 +37,7 @@ not immediately possible, but avoids subtle errors from attempting to use
 the socket before an asynchronous dial has completed.}
 }
 \value{
-A nano object of class \sQuote{nanoObject}.
+A nano object of class 'nanoObject'.
 }
 \description{
 Create a nano object, encapsulating a Socket, Dialers/Listeners and

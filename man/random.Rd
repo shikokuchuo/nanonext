@@ -10,8 +10,8 @@ random(n = 1L, convert = TRUE)
 \item{n}{[default 1L] integer random bytes to generate (from 0 to 1024),
 coerced to integer if required. If a vector, the first element is taken.}
 
-\item{convert}{[default TRUE] logical FALSE to return a raw vector, or TRUE
-to return the hex representation of the bytes as a character string.}
+\item{convert}{[default TRUE] logical \code{FALSE} to return a raw vector, or
+\code{TRUE} to return the hex representation of the bytes as a character string.}
 }
 \value{
 A length \code{n} raw vector, or length one vector of \verb{2n} random

@@ -35,8 +35,8 @@ and halts execution.}
 }
 \value{
 Invisibly, an integer exit code (zero on success). A new Dialer
-(object of class \sQuote{nanoDialer} and \sQuote{nano}) is created and
-bound to the Socket if successful.
+(object of class 'nanoDialer' and 'nano') is created and bound to the
+Socket if successful.
 }
 \description{
 Creates a new Dialer and binds it to a Socket.
