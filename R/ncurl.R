@@ -22,17 +22,17 @@
 #'
 #' @param url the URL address.
 #' @param convert \[default TRUE\] logical value whether to attempt conversion
-#'   of the received raw bytes to a character vector. Set to FALSE if
+#'   of the received raw bytes to a character vector. Set to `FALSE` if
 #'   downloading non-text data.
 #' @param follow \[default FALSE\] logical value whether to automatically follow
-#'   redirects (not applicable for async requests). If FALSE, the redirect
-#'   address is returned as response header \sQuote{Location}.
+#'   redirects (not applicable for async requests). If `FALSE`, the redirect
+#'   address is returned as response header 'Location'.
 #' @param method (optional) the HTTP method as a character string. Defaults to
 #'   'GET' if not specified, and could also be 'POST', 'PUT' etc.
 #' @param headers (optional) a named character vector specifying the HTTP
 #'   request headers, for example: \cr
-#'   \code{c(Authorization = "Bearer APIKEY", `Content-Type` = "text/plain")}
-#'   \cr A non-character or non-named vector will be ignored.
+#'   `c(Authorization = "Bearer APIKEY", "Content-Type" = "text/plain")` \cr
+#'   A non-character or non-named vector will be ignored.
 #' @param data (optional) character string request data to be submitted. If a
 #'   vector, only the first element is taken, and non-character objects are
 #'   ignored.
@@ -51,8 +51,8 @@
 #'     Use [status_code()] for a translation of the meaning.
 #'     \item `$headers` - named list of response headers supplied in `response`,
 #'     or NULL otherwise. If the status code is within the 300 range, i.e. a
-#'     redirect, the response header \sQuote{Location} is automatically appended
-#'     to return the redirect address.
+#'     redirect, the response header 'Location' is automatically appended to
+#'     return the redirect address.
 #'     \item `$data` - the response body, as a character string if
 #'     `convert = TRUE` (may be further parsed as html, json, xml etc. as
 #'     required), or a raw byte vector if FALSE (use [writeBin()] to save as a
@@ -104,8 +104,8 @@ ncurl <- function(url,
 #'     Use [status_code()] for a translation of the meaning.
 #'     \item `$headers` - named list of response headers supplied in `response`,
 #'     or NULL otherwise. If the status code is within the 300 range, i.e. a
-#'     redirect, the response header \sQuote{Location} is automatically appended
-#'     to return the redirect address.
+#'     redirect, the response header 'Location' is automatically appended to
+#'     return the redirect address.
 #'     \item `$data` - the response body, as a character string if
 #'     `convert = TRUE` (may be further parsed as html, json, xml etc. as
 #'     required), or a raw byte vector if FALSE (use [writeBin()] to save as a
@@ -114,14 +114,14 @@ ncurl <- function(url,
 #'
 #' @section Promises:
 #'
-#' \sQuote{ncurlAio} may be used anywhere that accepts a \sQuote{promise} from
-#' the \CRANpkg{promises} package through the included `as.promise` method.
+#' 'ncurlAio' may be used anywhere that accepts a 'promise' from the
+#' \CRANpkg{promises} package through the included `as.promise` method.
 #'
 #' The promises created are completely event-driven and non-polling.
 #'
 #' If a status code of 200 (OK) is returned then the promise is resolved with
 #' the reponse body, otherwise it is rejected with a translation of the status
-#' code or \sQuote{errorValue} as the case may be.
+#' code or 'errorValue' as the case may be.
 #'
 #' @seealso [ncurl()] for synchronous http requests; [ncurl_session()] for
 #'   persistent connections.
@@ -169,8 +169,8 @@ ncurl_aio <- function(url,
 #' @param timeout (optional) integer value in milliseconds after which the
 #'   connection and subsequent transact attempts time out.
 #'
-#' @return For `ncurl_session`: an \sQuote{ncurlSession} object if successful,
-#'   or else an \sQuote{errorValue}.
+#' @return For `ncurl_session`: an 'ncurlSession' object if successful, or else
+#'   an 'errorValue'.
 #'
 #' @seealso [ncurl()] for synchronous http requests; [ncurl_aio()] for
 #'   asynchronous http requests.
@@ -195,16 +195,16 @@ ncurl_session <- function(url,
                           tls = NULL)
     .Call(rnng_ncurl_session, url, convert, method, headers, data, response, timeout, tls)
 
-#' @param session an \sQuote{ncurlSession} object.
+#' @param session an 'ncurlSession' object.
 #'
 #' @return For `transact`: a named list of 3 elements:
 #'   \itemize{
 #'     \item `$status` - integer HTTP repsonse status code (200 - OK).
 #'     Use [status_code()] for a translation of the meaning.
-#'     \item `$headers` - named list of response headers (if specified in
-#'     the session), or NULL otherwise. If the status code is within the 300
-#'     range, i.e. a redirect, the response header \sQuote{Location} is
-#'     automatically appended to return the redirect address.
+#'     \item `$headers` - named list of response headers (if specified in the
+#'     session), or NULL otherwise. If the status code is within the 300 range,
+#'     i.e. a redirect, the response header 'Location' is automatically appended
+#'     to return the redirect address.
 #'     \item `$data` - the response body as a character string (if
 #'     `convert = TRUE` was specified for the session), which may be further
 #'     parsed as html, json, xml etc. as required, or else a raw byte vector,
@@ -224,19 +224,19 @@ close.ncurlSession <- function(con, ...) invisible(.Call(rnng_ncurl_session_clos
 
 #' Make ncurlAio Promise
 #'
-#' Creates a \sQuote{promise} from an \sQuote{ncurlAio} object.
+#' Creates a 'promise' from an 'ncurlAio' object.
 #'
 #' This function is an S3 method for the generic `as.promise` for class
-#' \sQuote{ncurlAio}.
+#' 'ncurlAio'.
 #'
 #' Requires the \pkg{promises} package.
 #'
-#' Allows an \sQuote{ncurlAio} to be used with the promise pipe `%...>%`, which
+#' Allows an 'ncurlAio' to be used with the promise pipe `%...>%`, which
 #' schedules a function to run upon resolution of the Aio.
 #'
-#' @param x an object of class \sQuote{ncurlAio}.
+#' @param x an object of class 'ncurlAio'.
 #'
-#' @return A \sQuote{promise} object.
+#' @return A 'promise' object.
 #'
 #' @exportS3Method promises::as.promise
 #'

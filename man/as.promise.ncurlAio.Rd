@@ -7,20 +7,20 @@
 \method{as.promise}{ncurlAio}(x)
 }
 \arguments{
-\item{x}{an object of class \sQuote{ncurlAio}.}
+\item{x}{an object of class 'ncurlAio'.}
 }
 \value{
-A \sQuote{promise} object.
+A 'promise' object.
 }
 \description{
-Creates a \sQuote{promise} from an \sQuote{ncurlAio} object.
+Creates a 'promise' from an 'ncurlAio' object.
 }
 \details{
 This function is an S3 method for the generic \code{as.promise} for class
-\sQuote{ncurlAio}.
+'ncurlAio'.
 
 Requires the \pkg{promises} package.
 
-Allows an \sQuote{ncurlAio} to be used with the promise pipe \verb{\%...>\%}, which
+Allows an 'ncurlAio' to be used with the promise pipe \verb{\%...>\%}, which
 schedules a function to run upon resolution of the Aio.
 }

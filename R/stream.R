@@ -46,7 +46,7 @@
 #'   server TLS configuration object created by [tls_config()]. If missing or
 #'   NULL, certificates are not validated.
 #'
-#' @return A Stream (object of class \sQuote{nanoStream} and \sQuote{nano}).
+#' @return A Stream (object of class 'nanoStream' and 'nano').
 #'
 #' @examples
 #' # Will succeed only if there is an open connection at the address:

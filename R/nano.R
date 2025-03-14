@@ -63,7 +63,7 @@
 #'
 #' @inheritParams socket
 #'
-#' @return A nano object of class \sQuote{nanoObject}.
+#' @return A nano object of class 'nanoObject'.
 #'
 #' @examples
 #' nano <- nano("bus", listen = "inproc://nanonext")

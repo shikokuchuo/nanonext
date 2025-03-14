@@ -28,13 +28,13 @@ cv_reset(cv)
 cv_signal(cv)
 }
 \arguments{
-\item{cv}{a \sQuote{conditionVariable} object.}
+\item{cv}{a 'conditionVariable' object.}
 
 \item{msec}{maximum time in milliseconds to wait for the condition variable
 to be signalled.}
 }
 \value{
-For \strong{cv}: a \sQuote{conditionVariable} object.
+For \strong{cv}: a 'conditionVariable' object.
 
 For \strong{wait}: (invisibly) logical TRUE, or else FALSE if a flag has been
 set.
@@ -65,7 +65,7 @@ variant that allows user interrupts, suitable for interactive use.
 \code{cv_signal} signals a condition variable.
 }
 \details{
-Pass the \sQuote{conditionVariable} to the asynchronous receive functions
+Pass the 'conditionVariable' to the asynchronous receive functions
 \code{\link[=recv_aio]{recv_aio()}} or \code{\link[=request]{request()}}. Alternatively, to be notified of a pipe event,
 pass it to \code{\link[=pipe_notify]{pipe_notify()}}.
 
@@ -82,9 +82,9 @@ Non-numeric input will be ignored and return immediately.
 \section{Condition}{
 
 
-The condition internal to this \sQuote{conditionVariable} maintains a state
-(value). Each signal increments the value by 1. Each time \code{wait()} or
-\code{until()} returns (apart from due to timeout), the value is decremented by 1.
+The condition internal to this 'conditionVariable' maintains a state (value).
+Each signal increments the value by 1. Each time \code{wait()} or \code{until()}
+returns (apart from due to timeout), the value is decremented by 1.
 
 The internal condition may be inspected at any time using \code{cv_value()} and
 reset using \code{cv_reset()}. This affords a high degree of flexibility in

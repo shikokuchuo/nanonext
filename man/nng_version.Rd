@@ -10,8 +10,8 @@ nng_version()
 A character vector of length 2.
 }
 \description{
-Returns the versions of the \sQuote{libnng} and \sQuote{libmbedtls} libraries
-used by the package.
+Returns the versions of the 'libnng' and 'libmbedtls' libraries used by the
+package.
 }
 \examples{
 nng_version()

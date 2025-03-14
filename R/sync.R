@@ -21,7 +21,7 @@
 #' `cv` creates a new condition variable (protected by a mutex internal to the
 #' object).
 #'
-#' Pass the \sQuote{conditionVariable} to the asynchronous receive functions
+#' Pass the 'conditionVariable' to the asynchronous receive functions
 #' [recv_aio()] or [request()]. Alternatively, to be notified of a pipe event,
 #' pass it to [pipe_notify()].
 #'
@@ -35,7 +35,7 @@
 #' For argument `msec`, non-integer values will be coerced to integer.
 #' Non-numeric input will be ignored and return immediately.
 #'
-#' @return For **cv**: a \sQuote{conditionVariable} object.
+#' @return For **cv**: a 'conditionVariable' object.
 #'
 #'  For **wait**: (invisibly) logical TRUE, or else FALSE if a flag has been
 #'  set.
@@ -49,9 +49,9 @@
 #'
 #' @section Condition:
 #'
-#' The condition internal to this \sQuote{conditionVariable} maintains a state
-#' (value). Each signal increments the value by 1. Each time `wait()` or
-#' `until()` returns (apart from due to timeout), the value is decremented by 1.
+#' The condition internal to this 'conditionVariable' maintains a state (value).
+#' Each signal increments the value by 1. Each time `wait()` or `until()`
+#' returns (apart from due to timeout), the value is decremented by 1.
 #'
 #' The internal condition may be inspected at any time using `cv_value()` and
 #' reset using `cv_reset()`. This affords a high degree of flexibility in
@@ -79,7 +79,7 @@ cv <- function() .Call(rnng_cv_alloc)
 #' asynchronous receive or pipe event. \cr `wait_` is a variant that allows
 #' user interrupts, suitable for interactive use.
 #'
-#' @param cv a \sQuote{conditionVariable} object.
+#' @param cv a 'conditionVariable' object.
 #'
 #' @examples
 #' \dontrun{
@@ -160,8 +160,8 @@ cv_signal <- function(cv) invisible(.Call(rnng_cv_signal, cv))
 
 #' Pipe Notify
 #'
-#' Signals a \sQuote{conditionVariable} whenever pipes (individual connections)
-#' are added or removed at a socket.
+#' Signals a 'conditionVariable' whenever pipes (individual connections) are
+#' added or removed at a socket.
 #'
 #' For add: this event occurs after the pipe is fully added to the socket. Prior
 #' to this time, it is not possible to communicate over the pipe with the
@@ -172,17 +172,17 @@ cv_signal <- function(cv) invisible(.Call(rnng_cv_signal, cv))
 #' possible to communicate using this pipe.
 #'
 #' @param socket a Socket.
-#' @param cv a \sQuote{conditionVariable} to signal, or NULL to cancel a
-#'   previously set signal.
+#' @param cv a 'conditionVariable' to signal, or NULL to cancel a previously set
+#'   signal.
 #' @param add \[default FALSE\] logical value whether to signal (or cancel
 #'   signal) when a pipe is added.
 #' @param remove \[default FALSE\] logical value whether to signal (or cancel
 #'   signal) when a pipe is removed.
 #' @param flag \[default FALSE\] logical value whether to also set a flag in the
-#'   \sQuote{conditionVariable}. This can help distinguish between different
-#'   types of signal, and causes any subsequent [wait()] to return FALSE instead
-#'   of TRUE. If a signal from the \pkg{tools} package, e.g. `tools::SIGINT`, or
-#'   an equivalent integer value is supplied, this sets a flag and additionally
+#'   'conditionVariable'. This can help distinguish between different types of
+#'   signal, and causes any subsequent [wait()] to return FALSE instead of TRUE.
+#'   If a signal from the \pkg{tools} package, e.g. `tools::SIGINT`, or an
+#'   equivalent integer value is supplied, this sets a flag and additionally
 #'   raises this signal upon the flag being set.
 #'
 #' @return Invisibly, zero on success (will otherwise error).
@@ -215,7 +215,7 @@ pipe_notify <- function(socket, cv, add = FALSE, remove = FALSE, flag = FALSE)
 
 #' Signal Forwarder
 #'
-#' Forwards signals from one \sQuote{conditionVariable} to another.
+#' Forwards signals from one 'conditionVariable' to another.
 #'
 #' The condition value of `cv` is initially reset to zero when this operator
 #' returns. Only one forwarder can be active on a `cv` at any given time, and
@@ -226,10 +226,8 @@ pipe_notify <- function(socket, cv, add = FALSE, remove = FALSE, flag = FALSE)
 #' a temporary divergence between the actual condition value of `cv` and that
 #' recorded at `cv2`, until the next time `cv` is signalled.
 #'
-#' @param cv a \sQuote{conditionVariable} object, from which to forward the
-#'   signal.
-#' @param cv2 a \sQuote{conditionVariable} object, to which the signal is
-#'   forwarded.
+#' @param cv a 'conditionVariable' object, from which to forward the signal.
+#' @param cv2 a 'conditionVariable' object, to which the signal is forwarded.
 #'
 #' @return Invisibly, `cv2`.
 #'

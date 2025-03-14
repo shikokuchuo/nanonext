@@ -7,17 +7,15 @@
 cv \%~>\% cv2
 }
 \arguments{
-\item{cv}{a \sQuote{conditionVariable} object, from which to forward the
-signal.}
+\item{cv}{a 'conditionVariable' object, from which to forward the signal.}
 
-\item{cv2}{a \sQuote{conditionVariable} object, to which the signal is
-forwarded.}
+\item{cv2}{a 'conditionVariable' object, to which the signal is forwarded.}
 }
 \value{
 Invisibly, \code{cv2}.
 }
 \description{
-Forwards signals from one \sQuote{conditionVariable} to another.
+Forwards signals from one 'conditionVariable' to another.
 }
 \details{
 The condition value of \code{cv} is initially reset to zero when this operator

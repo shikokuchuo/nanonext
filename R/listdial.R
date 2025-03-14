@@ -47,8 +47,8 @@
 #'   and halts execution.
 #'
 #' @return Invisibly, an integer exit code (zero on success). A new Dialer
-#'   (object of class \sQuote{nanoDialer} and \sQuote{nano}) is created and
-#'   bound to the Socket if successful.
+#'   (object of class 'nanoDialer' and 'nano') is created and bound to the
+#'   Socket if successful.
 #'
 #' @section Further details:
 #'
@@ -109,8 +109,8 @@ dial <- function(socket, url = "inproc://nanonext", tls = NULL, autostart = TRUE
 #'   possible to change these once started.
 #'
 #' @return Invisibly, an integer exit code (zero on success). A new Listener
-#'   (object of class \sQuote{nanoListener} and \sQuote{nano}) is created and
-#'   bound to the Socket if successful.
+#'   (object of class 'nanoListener' and 'nano') is created and bound to the
+#'   Socket if successful.
 #'
 #' @inheritSection dial Further details
 #'

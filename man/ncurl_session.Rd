@@ -22,7 +22,7 @@ transact(session)
 \item{url}{the URL address.}
 
 \item{convert}{[default TRUE] logical value whether to attempt conversion
-of the received raw bytes to a character vector. Set to FALSE if
+of the received raw bytes to a character vector. Set to \code{FALSE} if
 downloading non-text data.}
 
 \item{method}{(optional) the HTTP method as a character string. Defaults to
@@ -30,8 +30,8 @@ downloading non-text data.}
 
 \item{headers}{(optional) a named character vector specifying the HTTP
 request headers, for example: \cr
-\code{c(Authorization = "Bearer APIKEY", `Content-Type` = "text/plain")}
-\cr A non-character or non-named vector will be ignored.}
+\code{c(Authorization = "Bearer APIKEY", "Content-Type" = "text/plain")} \cr
+A non-character or non-named vector will be ignored.}
 
 \item{data}{(optional) character string request data to be submitted. If a
 vector, only the first element is taken, and non-character objects are
@@ -48,20 +48,20 @@ connection and subsequent transact attempts time out.}
 Configuration object created by \code{\link[=tls_config]{tls_config()}}. If missing or NULL,
 certificates are not validated.}
 
-\item{session}{an \sQuote{ncurlSession} object.}
+\item{session}{an 'ncurlSession' object.}
 }
 \value{
-For \code{ncurl_session}: an \sQuote{ncurlSession} object if successful,
-or else an \sQuote{errorValue}.
+For \code{ncurl_session}: an 'ncurlSession' object if successful, or else
+an 'errorValue'.
 
 For \code{transact}: a named list of 3 elements:
 \itemize{
 \item \verb{$status} - integer HTTP repsonse status code (200 - OK).
 Use \code{\link[=status_code]{status_code()}} for a translation of the meaning.
-\item \verb{$headers} - named list of response headers (if specified in
-the session), or NULL otherwise. If the status code is within the 300
-range, i.e. a redirect, the response header \sQuote{Location} is
-automatically appended to return the redirect address.
+\item \verb{$headers} - named list of response headers (if specified in the
+session), or NULL otherwise. If the status code is within the 300 range,
+i.e. a redirect, the response header 'Location' is automatically appended
+to return the redirect address.
 \item \verb{$data} - the response body as a character string (if
 \code{convert = TRUE} was specified for the session), which may be further
 parsed as html, json, xml etc. as required, or else a raw byte vector,

@@ -38,7 +38,7 @@
 #'
 #' @param socket a Socket.
 #'
-#' @return A Context (object of class \sQuote{nanoContext} and \sQuote{nano}).
+#' @return A Context (object of class 'nanoContext' and 'nano').
 #'
 #' @seealso [request()] and [reply()] for use with contexts.
 #' @examples
@@ -107,15 +107,14 @@ close.nanoContext <- function(con, ...) invisible(.Call(rnng_ctx_close, con))
 #'   `function(x) do(x)`. Additional arguments can also be passed in through
 #'   `...`.
 #' @param send_mode \[default 'serial'\] character value or integer equivalent -
-#'   either \sQuote{serial} (1L) to send serialised R objects, or \sQuote{raw}
-#'   (2L) to send atomic vectors of any type as a raw byte vector.
+#'   either `"serial"` (1L) to send serialised R objects, or `"raw"` (2L) to
+#'   send atomic vectors of any type as a raw byte vector.
 #' @param recv_mode \[default 'serial'\] character value or integer equivalent -
-#'   one of \sQuote{serial} (1L), \sQuote{character} (2L), \sQuote{complex}
-#'   (3L), \sQuote{double} (4L), \sQuote{integer} (5L), \sQuote{logical} (6L),
-#'   \sQuote{numeric} (7L), \sQuote{raw} (8L), or \sQuote{string} (9L). The
-#'   default \sQuote{serial} means a serialised R object; for the other modes,
-#'   received bytes are converted into the respective mode. \sQuote{string} is a
-#'   faster option for length one character vectors.
+#'   one of `"serial"` (1L), `"character"` (2L), `"complex"` (3L), `"double"`
+#'   (4L), `"integer"` (5L), `"logical"` (6L), `"numeric"` (7L), `"raw"` (8L),
+#'   or `"string"` (9L). The default `"serial"` means a serialised R object; for
+#'   the other modes, received bytes are converted into the respective mode.
+#'   `"string"` is a faster option for length one character vectors.
 #' @param timeout \[default NULL\] integer value in milliseconds or NULL, which
 #'   applies a socket-specific default, usually the same as no timeout. Note
 #'   that this applies to receiving the request. The total elapsed time would
@@ -172,14 +171,14 @@ reply <- function(context,
 #' called for the value when required.
 #'
 #' Sending the request and receiving the result are both performed async, hence
-#' the function will return immediately with a \sQuote{recvAio} object. Access
-#' the return value at `$data`.
+#' the function will return immediately with a 'recvAio' object. Access the
+#' return value at `$data`.
 #'
 #' This is designed so that the process on the server can run concurrently
 #' without blocking the client.
 #'
-#' Optionally use [call_aio()] on the \sQuote{recvAio} to call (and wait for)
-#' the result.
+#' Optionally use [call_aio()] on the 'recvAio' to call (and wait for) the
+#' result.
 #'
 #' If an error occured in the server process, a nul byte `00` will be received.
 #' This allows an error to be easily distinguished from a NULL return value.
@@ -187,20 +186,19 @@ reply <- function(context,
 #'
 #' It is recommended to use a new context for each request to ensure consistent
 #' state tracking. For safety, the context used for the request is closed when
-#' all references to the returned \sQuote{recvAio} are removed and the object is
+#' all references to the returned 'recvAio' are removed and the object is
 #' garbage collected.
 #'
 #' @inheritParams reply
 #' @inheritParams recv
-#' @param data an object (if send_mode = \sQuote{raw}, a vector).
+#' @param data an object (if `send_mode = "raw"`, a vector).
 #' @param timeout \[default NULL\] integer value in milliseconds or NULL, which
 #'   applies a socket-specific default, usually the same as no timeout.
-#' @param cv (optional) a \sQuote{conditionVariable} to signal when the async
-#'   receive is complete, or NULL. If any other value is supplied, this will
-#'   cause the pipe connection to be dropped when the async receive is complete.
+#' @param cv (optional) a 'conditionVariable' to signal when the async receive
+#'   is complete, or NULL. If any other value is supplied, this will cause the
+#'   pipe connection to be dropped when the async receive is complete.
 #'
-#' @return A \sQuote{recvAio} (object of class \sQuote{mirai} and
-#'   \sQuote{recvAio}) (invisibly).
+#' @return A 'recvAio' (object of class 'mirai' and 'recvAio') (invisibly).
 #'
 #' @inheritSection send Send Modes
 #' @inheritSection recv_aio Signalling

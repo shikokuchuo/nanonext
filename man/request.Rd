@@ -17,30 +17,28 @@ request(
 \arguments{
 \item{context}{a Context.}
 
-\item{data}{an object (if send_mode = \sQuote{raw}, a vector).}
+\item{data}{an object (if \code{send_mode = "raw"}, a vector).}
 
 \item{send_mode}{[default 'serial'] character value or integer equivalent -
-either \sQuote{serial} (1L) to send serialised R objects, or \sQuote{raw}
-(2L) to send atomic vectors of any type as a raw byte vector.}
+either \code{"serial"} (1L) to send serialised R objects, or \code{"raw"} (2L) to
+send atomic vectors of any type as a raw byte vector.}
 
 \item{recv_mode}{[default 'serial'] character value or integer equivalent -
-one of \sQuote{serial} (1L), \sQuote{character} (2L), \sQuote{complex}
-(3L), \sQuote{double} (4L), \sQuote{integer} (5L), \sQuote{logical} (6L),
-\sQuote{numeric} (7L), \sQuote{raw} (8L), or \sQuote{string} (9L). The
-default \sQuote{serial} means a serialised R object; for the other modes,
-received bytes are converted into the respective mode. \sQuote{string} is a
-faster option for length one character vectors.}
+one of \code{"serial"} (1L), \code{"character"} (2L), \code{"complex"} (3L), \code{"double"}
+(4L), \code{"integer"} (5L), \code{"logical"} (6L), \code{"numeric"} (7L), \code{"raw"} (8L),
+or \code{"string"} (9L). The default \code{"serial"} means a serialised R object; for
+the other modes, received bytes are converted into the respective mode.
+\code{"string"} is a faster option for length one character vectors.}
 
 \item{timeout}{[default NULL] integer value in milliseconds or NULL, which
 applies a socket-specific default, usually the same as no timeout.}
 
-\item{cv}{(optional) a \sQuote{conditionVariable} to signal when the async
-receive is complete, or NULL. If any other value is supplied, this will
-cause the pipe connection to be dropped when the async receive is complete.}
+\item{cv}{(optional) a 'conditionVariable' to signal when the async receive
+is complete, or NULL. If any other value is supplied, this will cause the
+pipe connection to be dropped when the async receive is complete.}
 }
 \value{
-A \sQuote{recvAio} (object of class \sQuote{mirai} and
-\sQuote{recvAio}) (invisibly).
+A 'recvAio' (object of class 'mirai' and 'recvAio') (invisibly).
 }
 \description{
 Implements a caller/client for the req node of the req/rep protocol. Sends
@@ -49,14 +47,14 @@ called for the value when required.
 }
 \details{
 Sending the request and receiving the result are both performed async, hence
-the function will return immediately with a \sQuote{recvAio} object. Access
-the return value at \verb{$data}.
+the function will return immediately with a 'recvAio' object. Access the
+return value at \verb{$data}.
 
 This is designed so that the process on the server can run concurrently
 without blocking the client.
 
-Optionally use \code{\link[=call_aio]{call_aio()}} on the \sQuote{recvAio} to call (and wait for)
-the result.
+Optionally use \code{\link[=call_aio]{call_aio()}} on the 'recvAio' to call (and wait for) the
+result.
 
 If an error occured in the server process, a nul byte \code{00} will be received.
 This allows an error to be easily distinguished from a NULL return value.
@@ -64,29 +62,28 @@ This allows an error to be easily distinguished from a NULL return value.
 
 It is recommended to use a new context for each request to ensure consistent
 state tracking. For safety, the context used for the request is closed when
-all references to the returned \sQuote{recvAio} are removed and the object is
+all references to the returned 'recvAio' are removed and the object is
 garbage collected.
 }
 \section{Send Modes}{
 
 
-The default mode \sQuote{serial} sends serialised R objects to ensure perfect
-reproducibility within R. When receiving, the corresponding mode
-\sQuote{serial} should be used. Custom serialization and unserialization
-functions for reference objects may be enabled by the function
-\code{\link[=serial_config]{serial_config()}}.
+The default mode \code{"serial"} sends serialised R objects to ensure perfect
+reproducibility within R. When receiving, the corresponding mode \code{"serial"}
+should be used. Custom serialization and unserialization functions for
+reference objects may be enabled by the function \code{\link[=serial_config]{serial_config()}}.
 
-Mode \sQuote{raw} sends atomic vectors of any type as a raw byte vector, and
-must be used when interfacing with external applications or raw system
-sockets, where R serialization is not in use. When receiving, the mode
-corresponding to the vector sent should be used.
+Mode \code{"raw"} sends atomic vectors of any type as a raw byte vector, and must
+be used when interfacing with external applications or raw system sockets,
+where R serialization is not in use. When receiving, the mode corresponding
+to the vector sent should be used.
 }
 
 \section{Signalling}{
 
 
-By supplying a \sQuote{conditionVariable}, when the receive is complete, the
-\sQuote{conditionVariable} is signalled by incrementing its value by 1. This
+By supplying a 'conditionVariable', when the receive is complete, the
+'conditionVariable' is signalled by incrementing its value by 1. This
 happens asynchronously and independently of the R execution thread.
 }
 

@@ -18,9 +18,8 @@
 
 #' Open Socket
 #'
-#' Open a Socket implementing \sQuote{protocol}, and optionally dial (establish
-#' an outgoing connection) or listen (accept an incoming connection) at an
-#' address.
+#' Open a Socket implementing `protocol`, and optionally dial (establish an
+#' outgoing connection) or listen (accept an incoming connection) at an address.
 #'
 #' NNG presents a socket view of networking. The sockets are constructed using
 #' protocol-specific functions, as a given socket implements precisely one
@@ -38,10 +37,9 @@
 #' New contexts may also be created using [context()] if the protocol supports
 #' it.
 #'
-#' @param protocol \[default 'bus'\] choose protocol - \sQuote{bus},
-#'   \sQuote{pair}, \sQuote{poly}, \sQuote{push}, \sQuote{pull}, \sQuote{pub},
-#'   \sQuote{sub}, \sQuote{req}, \sQuote{rep}, \sQuote{surveyor}, or
-#'   \sQuote{respondent} - see [protocols].
+#' @param protocol \[default 'bus'\] choose protocol - `"bus"`, `"pair"`,
+#'   `"poly"`, `"push"`, `"pull"`, `"pub"`, `"sub"`, `"req"`, `"rep"`,
+#'   `"surveyor"`, or `"respondent"` - see [protocols].
 #' @param dial (optional) a URL to dial, specifying the transport and address as
 #'   a character string e.g. 'inproc://anyvalue' or 'tcp://127.0.0.1:5555' (see
 #'   [transports]).
@@ -59,7 +57,7 @@
 #'   documentation).
 #' @inheritParams dial
 #'
-#' @return A Socket (object of class \sQuote{nanoSocket} and \sQuote{nano}).
+#' @return A Socket (object of class 'nanoSocket' and 'nano').
 #'
 #' @section Protocols:
 #'
@@ -137,10 +135,9 @@ socket <- function(protocol = c("bus", "pair", "poly", "push", "pull", "pub",
 #' Closing a Stream: if any send or receive operations are pending, they will be
 #' terminated and any new operations will fail after the connection is closed.
 #'
-#' Closing an \sQuote{ncurlSession} closes the http(s) connection.
+#' Closing an 'ncurlSession' closes the http(s) connection.
 #'
-#' @param con a Socket, Context, Dialer, Listener, Stream, or
-#'   \sQuote{ncurlSession}.
+#' @param con a Socket, Context, Dialer, Listener, Stream, or 'ncurlSession'.
 #' @param ... not used.
 #'
 #' @return Invisibly, an integer exit code (zero on success).
@@ -194,9 +191,9 @@ reap <- function(con) .Call(rnng_reap, con)
 #' This function monitors pipe additions and removals from a socket.
 #'
 #' @param sock a Socket.
-#' @param cv a \sQuote{conditionVariable}.
+#' @param cv a 'conditionVariable'.
 #'
-#' @return For `monitor`: a Monitor (object of class \sQuote{nanoMonitor}). \cr
+#' @return For `monitor`: a Monitor (object of class 'nanoMonitor'). \cr
 #'   For `read_monitor`: an integer vector of pipe IDs (positive if added,
 #'   negative if removed), or else NULL if there were no changes since the
 #'   previous read.

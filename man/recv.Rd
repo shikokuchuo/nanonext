@@ -16,17 +16,16 @@ recv(
 \item{con}{a Socket, Context or Stream.}
 
 \item{mode}{[default 'serial'] character value or integer equivalent - one
-of \sQuote{serial} (1L), \sQuote{character} (2L), \sQuote{complex} (3L),
-\sQuote{double} (4L), \sQuote{integer} (5L), \sQuote{logical} (6L),
-\sQuote{numeric} (7L), \sQuote{raw} (8L), or \sQuote{string} (9L). The
-default \sQuote{serial} means a serialised R object; for the other modes,
-received bytes are converted into the respective mode. \sQuote{string} is a
-faster option for length one character vectors. For Streams,
-\sQuote{serial} is not an option and the default is \sQuote{character}.}
+of \code{"serial"} (1L), \code{"character"} (2L), \code{"complex"} (3L), \code{"double"} (4L),
+\code{"integer"} (5L), \code{"logical"} (6L), \code{"numeric"} (7L), \code{"raw"} (8L), or
+\code{"string"} (9L). The default \code{"serial"} means a serialised R object; for
+the other modes, received bytes are converted into the respective mode.
+\code{"string"} is a faster option for length one character vectors. For
+Streams, \code{"serial"} is not an option and the default is \code{"character"}.}
 
 \item{block}{[default NULL] which applies the connection default (see
-section \sQuote{Blocking} below). Specify logical TRUE to block until
-successful or FALSE to return immediately even if unsuccessful (e.g. if no
+section 'Blocking' below). Specify logical \code{TRUE} to block until successful
+or \code{FALSE} to return immediately even if unsuccessful (e.g. if no
 connection is available), or else an integer value specifying the maximum
 time to block in milliseconds, after which the operation will time out.}
 
@@ -43,7 +42,7 @@ Receive data over a connection (Socket, Context or Stream).
 \section{Errors}{
 
 
-In case of an error, an integer \sQuote{errorValue} is returned (to be
+In case of an error, an integer 'errorValue' is returned (to be
 distiguishable from an integer message value). This can be verified using
 \code{\link[=is_error_value]{is_error_value()}}.
 
@@ -63,7 +62,7 @@ For Streams: the default behaviour is blocking with \code{block = TRUE}. This wi
 wait until a message is received. Set a timeout to ensure that the function
 returns under all scenarios. As the underlying implementation uses an
 asynchronous receive with a wait, it is recommended to set a small positive
-value for \code{block} rather than FALSE.
+value for \code{block} rather than \code{FALSE}.
 }
 
 \examples{

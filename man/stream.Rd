@@ -23,7 +23,7 @@ server TLS configuration object created by \code{\link[=tls_config]{tls_config()
 NULL, certificates are not validated.}
 }
 \value{
-A Stream (object of class \sQuote{nanoStream} and \sQuote{nano}).
+A Stream (object of class 'nanoStream' and 'nano').
 }
 \description{
 Open a Stream by either dialing (establishing an outgoing connection) or

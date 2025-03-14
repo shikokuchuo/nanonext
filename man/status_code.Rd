@@ -11,13 +11,13 @@ status_code(x)
 }
 \value{
 A character vector comprising the status code and explanation
-separated by \sQuote{ | }.
+separated by \code{'|'}.
 }
 \description{
 Provides an explanation for HTTP response status codes (in the range 100 to
 599). If the status code is not defined as per RFC 9110,
-\sQuote{Unknown HTTP Status} is returned - this may be a custom code used by
-the server.
+\code{"Unknown HTTP Status"} is returned - this may be a custom code used by the
+server.
 }
 \examples{
 status_code(200)

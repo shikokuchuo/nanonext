@@ -9,13 +9,13 @@
 \description{
 R binding for NNG (Nanomsg Next Gen), a successor to ZeroMQ. NNG is a socket
 library for reliable, high-performance messaging over in-process, IPC, TCP,
-WebSocket and secure TLS transports. Implements
-\sQuote{Scalability Protocols}, a standard for common communications patterns
-including publish/subscribe, request/reply and service discovery. As its own
-threaded concurrency framework, provides a toolkit for asynchronous
-programming and distributed computing. Intuitive 'aio' objects resolve
-automatically when asynchronous operations complete, and synchronisation
-primitives allow R to wait upon events signalled by concurrent threads.
+WebSocket and secure TLS transports. Implements 'Scalability Protocols', a
+standard for common communications patterns including publish/subscribe,
+request/reply and service discovery. As its own threaded concurrency
+framework, provides a toolkit for asynchronous programming and distributed
+computing. Intuitive 'aio' objects resolve automatically when asynchronous
+operations complete, and synchronisation primitives allow R to wait upon
+events signalled by concurrent threads.
 }
 \section{Usage notes}{
 
@@ -56,18 +56,18 @@ Guide to the options that can be inspected and set using: \link{opt} /
 
 
 NNG presents a socket view of networking. A socket implements precisely one
-protocol, such as \sQuote{bus}, etc.
+protocol, such as 'bus', etc.
 
 Each socket can be used to send and receive messages (if the protocol
 supports it, and implements the appropriate protocol semantics). For example,
-the \sQuote{sub} protocol automatically filters incoming messages to discard
-topics that have not been subscribed.
+the 'sub' protocol automatically filters incoming messages to discard topics
+that have not been subscribed.
 
 NNG sockets are message-oriented, and messages are either delivered wholly,
 or not at all. Partial delivery is not possible. Furthermore, NNG does not
 provide any other delivery or ordering guarantees: messages may be dropped or
-reordered (some protocols, such as \sQuote{req} may offer stronger guarantees
-by performing their own retry and validation schemes).
+reordered (some protocols, such as 'req' may offer stronger guarantees by
+performing their own retry and validation schemes).
 
 Each socket can have zero, one, or many endpoints, which are either listeners
 or dialers (a given socket may use listeners, dialers, or both). These

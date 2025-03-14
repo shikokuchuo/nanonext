@@ -326,8 +326,8 @@ opt <- function(object, name)
 #' }
 #' The subscriber should then receive specifying the correct mode.
 #'
-#' @param con a Socket or Context using the \sQuote{sub} protocol.
-#' @param topic \[default NULL\] an atomic type or NULL. The default NULL
+#' @param con a Socket or Context using the 'sub' protocol.
+#' @param topic \[default NULL\] an atomic type or `NULL`. The default `NULL`
 #'   subscribes to all topics / unsubscribes from all topics (if all topics were
 #'   previously subscribed).
 #'
@@ -390,7 +390,7 @@ unsubscribe <- function(con, topic = NULL)
 #'   reply can only be sent after receiving a survey).
 #' }
 #'
-#' @param con a Socket or Context using the \sQuote{surveyor} protocol.
+#' @param con a Socket or Context using the 'surveyor' protocol.
 #' @param value \[default 1000L\] integer survey timeout in milliseconds.
 #'
 #' @return Invisibly, the passed Socket or Context.
