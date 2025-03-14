@@ -25,10 +25,10 @@
 #' A Stream is used for raw byte stream connections. Byte streams are reliable
 #' in that data will not be delivered out of order, or with portions missing.
 #'
-#' Can be used to dial a (secure) websocket address starting 'ws://' or 'wss://'.
-#' It is often the case that 'textframes' needs to be set to TRUE.
+#' Can be used to dial a (secure) websocket address starting 'ws://' or
+#' 'wss://'. It is often the case that `textframes` needs to be set to `TRUE`.
 #'
-#' Specify only one of 'dial' or 'listen'. If both are specified, 'listen' will
+#' Specify only one of `dial` or `listen`. If both are specified, `listen` will
 #' be ignored.
 #'
 #' Closing a stream renders it invalid and attempting to perform additional
