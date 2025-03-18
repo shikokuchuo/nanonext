@@ -198,7 +198,7 @@ is_aio <- function(x) inherits(x, c("recvAio", "sendAio"))
 is_nano <- function(x) inherits(x, c("nano", "nanoObject"))
 
 #' @examples
-#' s <- ncurl_session("https://postman-echo.com/get")
+#' s <- ncurl_session("https://postman-echo.com/get", timeout = 1000L)
 #' is_ncurl_session(s)
 #' if (is_ncurl_session(s)) close(s)
 #'

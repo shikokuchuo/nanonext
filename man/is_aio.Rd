@@ -43,7 +43,7 @@ is_nano(n)
 close(s)
 n$close()
 
-s <- ncurl_session("https://postman-echo.com/get")
+s <- ncurl_session("https://postman-echo.com/get", timeout = 1000L)
 is_ncurl_session(s)
 if (is_ncurl_session(s)) close(s)
 
