@@ -316,7 +316,8 @@ serial_config <- function(class, sfunc, ufunc, vec = FALSE)
 #'
 #' @return The logical value `x` supplied.
 #'
-#' @noRd
+#' @keywords internal
+#' @export
 #'
 .mark <- function(x = TRUE) .Call(rnng_set_marker, x)
 
@@ -326,7 +327,8 @@ serial_config <- function(class, sfunc, ufunc, vec = FALSE)
 #'
 #' @return NULL.
 #'
-#' @noRd
+#' @keywords internal
+#' @export
 #'
 .advance <- function() .Call(rnng_advance_rng_state)
 
@@ -339,7 +341,8 @@ serial_config <- function(class, sfunc, ufunc, vec = FALSE)
 #'
 #' @return The logical value `x` supplied.
 #'
-#' @noRd
+#' @keywords internal
+#' @export
 #'
 .interrupt <- function(x = TRUE) .Call(rnng_interrupt_switch, x)
 
