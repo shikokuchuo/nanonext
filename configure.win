@@ -23,7 +23,7 @@ cd ..
 rm -rf nng-$LIB_VER
 
 PKG_CFLAGS="-I../install/include -DNNG_STATIC_LIB"
-PKG_LIBS="-L../install/lib -lnng -lmbedtls -lmbedx509 -lmbedcrypto -lbcrypt -lws2_32"
+PKG_LIBS="../install/lib/libnng.b ../install/lib/libmbedtls.b ../install/lib/libmbedx509.b ../install/lib/libmbedcrypto.b -lbcrypt -lws2_32"
 
 # Write to Makevars
 sed -e "s|@cflags@|$PKG_CFLAGS|" -e "s|@libs@|$PKG_LIBS|" src/Makevars.in > src/Makevars
