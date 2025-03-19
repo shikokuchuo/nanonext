@@ -21,6 +21,8 @@
 
 // internals -------------------------------------------------------------------
 
+static int nano_interrupt = 0;
+
 static SEXP mk_error_aio(const int xc, SEXP env) {
 
   SEXP err = PROTECT(Rf_ScalarInteger(xc));
@@ -652,5 +654,12 @@ SEXP rnng_recv_aio(SEXP con, SEXP mode, SEXP timeout, SEXP cvar, SEXP bytes, SEX
   exitlevel1:
   R_Free(raio);
   return mk_error_data(xc);
+
+}
+
+SEXP rnng_interrupt_switch(SEXP x) {
+
+  nano_interrupt = NANO_INTEGER(x);
+  return x;
 
 }

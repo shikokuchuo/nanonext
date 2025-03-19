@@ -587,26 +587,12 @@ SEXP rnng_serial_config(SEXP klass, SEXP sfunc, SEXP ufunc, SEXP vec) {
 
 // specials --------------------------------------------------------------------
 
-SEXP rnng_set_marker(SEXP x) {
-
-  special_bit = (uint8_t) NANO_INTEGER(x);
-  return x;
-
-}
-
 SEXP rnng_advance_rng_state(void) {
 
   GetRNGstate();
   (void) exp_rand();
   PutRNGstate();
   return R_NilValue;
-
-}
-
-SEXP rnng_interrupt_switch(SEXP x) {
-
-  nano_interrupt = NANO_INTEGER(x);
-  return x;
 
 }
 
