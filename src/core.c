@@ -20,6 +20,8 @@
 
 // internals -------------------------------------------------------------------
 
+static uint8_t special_bit = 0;
+
 static SEXP nano_eval_res;
 
 static void nano_eval_safe (void *call) {
@@ -652,6 +654,15 @@ int nano_matchargs(const SEXP mode) {
   }
 
   return INTEGER(mode)[0];
+
+}
+
+// specials --------------------------------------------------------------------
+
+SEXP rnng_set_marker(SEXP x) {
+
+  special_bit = (uint8_t) NANO_INTEGER(x);
+  return x;
 
 }
 

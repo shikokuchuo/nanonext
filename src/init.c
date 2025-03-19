@@ -20,9 +20,6 @@
 
 void (*eln2)(void (*)(void *), void *, double, int) = NULL;
 
-int nano_interrupt = 0;
-uint8_t special_bit = 0;
-
 nng_mtx *nano_wait_mtx;
 nng_cv *nano_wait_cv;
 nng_thread *nano_wait_thr = NULL;
