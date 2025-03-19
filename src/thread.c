@@ -22,11 +22,11 @@
 
 // threads callable and messenger ----------------------------------------------
 
-extern nng_thread *nano_wait_thr;
-extern nng_aio *nano_shared_aio;
-extern nng_mtx *nano_wait_mtx;
-extern nng_cv *nano_wait_cv;
-extern int nano_wait_condition;
+static nng_mtx *nano_wait_mtx = NULL;
+static nng_cv *nano_wait_cv = NULL;
+static nng_thread *nano_wait_thr = NULL;
+static nng_aio *nano_shared_aio = NULL;
+static int nano_wait_condition = 0;
 
 // # nocov start
 // tested interactively
