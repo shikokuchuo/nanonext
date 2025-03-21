@@ -1,5 +1,9 @@
 # nanonext (development version)
 
+#### Updates
+
+* More robust interruption on non-Windows platforms if `tools::SIGINT` is supplied or passed through to the `autoexit` argument of `daemon()` (thanks @LennardLux, #97).
+
 # nanonext 1.5.2
 
 #### Updates
