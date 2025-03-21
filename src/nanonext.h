@@ -92,8 +92,12 @@ typedef struct nano_handle_s {
 #include <Rinternals.h>
 #include <Rversion.h>
 #include <R_ext/Visibility.h>
-#if defined(NANONEXT_SIGNALS) && defined(_WIN32)
+#if defined(NANONEXT_SIGNALS)
+#ifdef _WIN32
 #include <Rembedded.h>
+#else
+extern int R_interrupts_pending;
+#endif
 #endif
 
 #define NANO_PTR(x) (void *) CAR(x)
